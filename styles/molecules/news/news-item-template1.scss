@@ -1,0 +1,42 @@
+@use "../../../assets/variables" as *;
+
+.news-template1 {
+  &-item {
+    padding: 10px;
+    border: 1px solid $cl-gray;
+    border-radius: $rd-lg;
+    &:last-child {
+      margin-bottom: 0 !important;
+    }
+    &-image {
+      width: 70px;
+      img {
+        border-radius: $rd-md;
+        height: 100%;
+    object-fit: cover;
+    object-position: center;
+      }
+    }
+    &-info {
+      width: calc(100% - 82px);
+      flex-direction: column;
+    }
+     &-title {
+        min-height: 40px;
+      }
+    &:first-child {
+      display: block !important;
+      .news-template1-item {
+        &-info, &-image {
+          width: 100%;
+        }
+        &-image {
+          margin-bottom: $space-sm;
+        }
+        &-title {
+        text-transform: uppercase;
+      }
+      }
+    }
+  }
+}

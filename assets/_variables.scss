@@ -1,0 +1,62 @@
+// font chữ
+$font-base: 'Poppins', sans-serif;
+
+// Màu sắc
+$cl-primary:#FF4560;
+$cl-secondary: #ea4141;
+$cl-third: rgba(254, 77, 80, 0.0705882353);
+$cl-gray: #E2E2E2;
+$cl-gray2: #f1f1f1;
+$cl-gray3: #dbdbdb;
+$cl-gray4: #C1C1C1;
+$cl-gray5: #7B7B7B;
+$cl-gray6: #F8F7F7;
+$cl-gray7: #EEEEEE;
+$cl-gray8: #585858;
+$cl-text: #121212;
+$cl-white: #ffffff;
+$cl-black: #000000;
+$cl-bg1: #fe4d5012;
+$cl-blur1: rgb(255 255 255 / 50%);
+$cl-blur2: rgb(18 18 18 / 10%);
+$cl-gradient-1: linear-gradient($cl-primary 70%, transparent);
+$cl-shadow-2: 0 0 15px rgb(0 0 0 / 5%);
+$cl-shadow-3: 0 2px 10px rgba(0, 0, 0, 0.035);
+$cl-blue: #2196F3;
+$cl-danger: #ff4d4d;
+$cl-success: #48B250;
+$cl-warning: #FFB800;
+
+
+// Khoảng cách (spacing)
+$space-xs: 6px;
+$space-sm: 12px;
+$space-ms: 16px;
+$space-md: 24px;
+$space-lg: 32px;
+$space-xl: 44px;
+
+// Font size
+$fz-xs: 12px;
+$fz-base: 14px;
+$fz-normal: 16px;
+$fz-large: 20px;
+$fz-xl: 28px;
+$fz-xxl: 56px;
+
+// Bo góc (radius)
+$rd-sm: 4px;
+$rd-md: 8px;
+$rd-lg: 12px;
+$rd-xs: 16px;
+$rd-xl: 20px;
+$rd-xxl: 24px;
+
+//gutter
+$gutter-x: 1rem;
+
+//layout
+$height-header: 68px;
+$height-menu-bottom: 53px;
+$height-header-admin: 80px;
+$width-taskbar: 240px;

@@ -1,0 +1,65 @@
+@use "@/assets/variables" as *;
+
+.file-manage {
+  &-left {
+    width: 240px;
+    border-right: 1px solid $cl-gray;
+    .v-treeview.v-list {
+      padding: 0;
+      height: 100%;
+    }
+    .v-list-item--density-compact:not(.v-list-item--nav).v-list-item--one-line {
+      padding-inline: 24px;
+    }
+    .v-treeview-indent-lines {
+      padding-left: 16px;
+    }
+    .v-list-item--active {
+      .button {
+        border-color: $cl-gray4;
+        .icon {
+          color: $cl-black !important;
+        }
+      }
+      & > .v-list-item__append > .file-manage-button-angle {
+        rotate: 90deg; 
+      }
+    }
+    .v-list-item__content {
+      overflow: inherit;
+      min-width: inherit;
+    }
+  }
+  &-right {
+    width: calc(100% - 240px);
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    overflow-y: auto;
+    height: calc(100dvh - 130px);
+  }
+  &-url {
+    &-detail {
+      max-width: inherit !important;
+    }
+  }
+  &-search {
+    z-index: 3 !important;
+  }
+  &-button {
+    &-angle {
+      color: $cl-gray5;
+      background: transparent !important;
+      margin-right: -0.5rem;
+      border-color: transparent !important;
+      position: absolute;
+      left: 0;
+    }
+  }
+  &-breadcrumb {
+    &-item:last-child {
+      .icon {
+        display: none;
+      }
+    }
+  }
+}
+

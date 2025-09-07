@@ -1,0 +1,1667 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "a title",
+      "views": 100
+    },
+    {
+      "id": "2",
+      "title": "another title",
+      "views": 200
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "categoryName": "Cà phê năng lượng",
+      "description": "Various types of coffee drinks",
+      "image": "/assets/image/category/yaoutvietquoc.png"
+    },
+    {
+      "id": "2",
+      "categoryName": "Yaourt",
+      "description": "Selection of premium teas",
+      "image": "/assets/image/category/yaoutvietquoc.png"
+    },
+    {
+      "id": "4",
+      "categoryName": "Matcha",
+      "description": "Refreshing fruit juices and smoothies",
+      "image": "/assets/image/category/machavietquoc.png"
+    }
+  ],
+  "products": [
+    {
+      "idProduct": "P001",
+      "productName": "Bạc Xỉu Năng Lượng",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 35000,
+      "priceDiscounts": 0,
+      "amount": 5,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "2"
+    },
+    {
+      "idProduct": "P002",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 28000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "2"
+    },
+    {
+      "idProduct": "P003",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 27000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "2"
+    },
+    {
+      "idProduct": "P004",
+      "productName": "Cà Phê Sữa Đá 22",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 30000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "2"
+    },
+    {
+      "productName": "sp 425",
+      "description": "",
+      "summaryContent": "",
+      "price": 1,
+      "priceDiscounts": 1,
+      "amount": 1,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "options": [],
+      "categoryId": "2",
+      "isActive": false
+    },
+    {
+      "idProduct": "P1751021588997",
+      "productName": "sp 552",
+      "description": "1",
+      "image": "/assets/image/product/chanh-day-2.png",
+      "summaryContent": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      "price": 1000,
+      "priceDiscounts": 500,
+      "amount": 1,
+      "amountOrder": 0,
+      "categoryId": "4",
+      "options": [
+        {
+          "id": "GROUP1",
+          "name": "nong lanh ne",
+          "required": true,
+          "variants": [
+            {
+              "id": "GROUP1VARIANT1",
+              "name": "nong",
+              "priceModifier": 1000,
+              "inStock": true
+            },
+            {
+              "id": "GROUP1VARIANT2",
+              "name": "lanh",
+              "priceModifier": 0,
+              "inStock": true
+            }
+          ]
+        }
+      ],
+      "isActive": true
+    },
+    {
+      "idProduct": "P1751695284433",
+      "productName": "new prouct 1 edit",
+      "description": "",
+      "summaryContent": "",
+      "price": 1,
+      "priceDiscounts": 1,
+      "amount": 1,
+      "amountOrder": 0,
+      "image": "/assets/image/product/male3-512.png",
+      "options": [
+        {
+          "id": "GROUP1",
+          "name": "nong lanh nhom 2",
+          "required": true,
+          "variants": [
+            {
+              "id": "GROUP1VARIANT1",
+              "name": "nong",
+              "priceModifier": 123,
+              "inStock": false
+            },
+            {
+              "id": "GROUP1VARIANT2",
+              "name": "lanh",
+              "priceModifier": 0,
+              "inStock": true
+            }
+          ]
+        }
+      ],
+      "isActive": true,
+      "categoryId": "1"
+    },
+    {
+      "idProduct": "P010",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 28000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "2"
+    },
+    {
+      "idProduct": "P011",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 28000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "2"
+    },
+    {
+      "idProduct": "P012",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 28000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "2"
+    },
+    {
+      "idProduct": "P013",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 28000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "4"
+    },
+    {
+      "idProduct": "P014",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 28000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "4"
+    },
+    {
+      "idProduct": "P015",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 28000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "4"
+    },
+    {
+      "idProduct": "P016",
+      "productName": "Cà Phê Sữa Đá",
+      "description": "Cà phê sữa đá thơm ngon, đậm đà",
+      "summaryContent": "Được pha từ cà phê Robusta chất lượng cao",
+      "price": 30000,
+      "priceDiscounts": 28000,
+      "amount": 100,
+      "amountOrder": 0,
+      "image": "/assets/image/product/cafelatte.png",
+      "isActive": true,
+      "options": [],
+      "categoryId": "4"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORDER1753361101193",
+      "date": "2025-07-24 19:45",
+      "time": "22:44",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P1751021588997",
+          "priceDiscounts": 500,
+          "quantity": 1,
+          "note": "123",
+          "selectedOptionsPush": [
+            {
+              "GROUP1": "GROUP1VARIANT2",
+              "optionName": "nong lanh ne",
+              "variantName": "lanh",
+              "variantPrice": 0
+            }
+          ],
+          "finalPriceDiscounts": 500
+        }
+      ],
+      "totalPrice": 500,
+      "totalPriceSave": 35500,
+      "totalPriceCurrent": 36000,
+      "status": "S3",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753440372712",
+      "date": "2025-07-25 17:46",
+      "time": "20:46",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P1751021588997",
+          "priceDiscounts": 500,
+          "quantity": 1,
+          "note": "123",
+          "selectedOptionsPush": [
+            {
+              "GROUP1": "GROUP1VARIANT2",
+              "optionName": "nong lanh ne",
+              "variantName": "lanh",
+              "variantPrice": 0
+            }
+          ],
+          "finalPriceDiscounts": 500
+        }
+      ],
+      "totalPrice": 500,
+      "totalPriceSave": 35500,
+      "totalPriceCurrent": 36000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753544686711",
+      "date": "2025-07-26 22:44",
+      "time": "23:44",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P1751021588997",
+          "priceDiscounts": 500,
+          "quantity": 1,
+          "note": "123",
+          "selectedOptionsPush": [
+            {
+              "GROUP1": "GROUP1VARIANT2",
+              "optionName": "nong lanh ne",
+              "variantName": "lanh",
+              "variantPrice": 0
+            }
+          ],
+          "finalPriceDiscounts": 500
+        }
+      ],
+      "totalPrice": 500,
+      "totalPriceSave": 35500,
+      "totalPriceCurrent": 36000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753544719493",
+      "date": "2025-07-26 22:45",
+      "time": "23:47",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính 1231232",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P1751021588997",
+          "priceDiscounts": 500,
+          "quantity": 1,
+          "note": "123",
+          "selectedOptionsPush": [
+            {
+              "GROUP1": "GROUP1VARIANT2",
+              "optionName": "nong lanh ne",
+              "variantName": "lanh",
+              "variantPrice": 0
+            }
+          ],
+          "finalPriceDiscounts": 500
+        }
+      ],
+      "totalPrice": 500,
+      "totalPriceSave": 35500,
+      "totalPriceCurrent": 36000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753594131510",
+      "date": "2025-07-27 12:28",
+      "time": "14:28",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 0,
+      "totalPriceSave": 35000,
+      "totalPriceCurrent": 35000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753594207380",
+      "date": "2025-07-27 12:30",
+      "time": "13:30",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 0,
+      "totalPriceSave": 35000,
+      "totalPriceCurrent": 35000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753594233644",
+      "date": "2025-07-27 12:30",
+      "time": "13:30",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 0,
+      "totalPriceSave": 35000,
+      "totalPriceCurrent": 35000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753594426819",
+      "date": "2025-07-27 12:33",
+      "time": "14:33",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 0,
+      "totalPriceSave": 35000,
+      "totalPriceCurrent": 35000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753598152629",
+      "date": "2025-07-27 13:35",
+      "time": "18:35",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753598541723",
+      "date": "2025-07-27 13:42",
+      "time": "16:42",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P003",
+          "priceDiscounts": 27000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 27000,
+      "totalPriceSave": 3000,
+      "totalPriceCurrent": 30000,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753599812902",
+      "date": "2025-07-27 14:03",
+      "time": "16:03",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753599988809",
+      "date": "2025-07-27 14:06",
+      "time": "17:06",
+      "address": "123",
+      "fullname": "123",
+      "phone": "123",
+      "note": "",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P003",
+          "priceDiscounts": 27000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 27000,
+      "totalPriceSave": 3000,
+      "totalPriceCurrent": 30000,
+      "point": 1350,
+      "status": "S1",
+      "userId": null
+    },
+    {
+      "id": "ORDER1753600142247",
+      "date": "2025-07-27 14:09",
+      "time": "19:08",
+      "address": "123123",
+      "fullname": "123",
+      "phone": "123",
+      "note": "",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P003",
+          "priceDiscounts": 27000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 55000,
+      "totalPriceSave": 5000,
+      "totalPriceCurrent": 60000,
+      "point": 0,
+      "status": "S1",
+      "userId": null
+    },
+    {
+      "id": "ORDER1753600231430",
+      "date": "2025-07-27 14:10",
+      "time": "17:10",
+      "address": "22",
+      "fullname": "222",
+      "phone": "222",
+      "note": "",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P003",
+          "priceDiscounts": 27000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 55000,
+      "totalPriceSave": 5000,
+      "totalPriceCurrent": 60000,
+      "point": 0,
+      "status": "S1",
+      "userId": null
+    },
+    {
+      "id": "ORDER1753601028089",
+      "date": "2025-07-27 14:23",
+      "time": "20:23",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "don moi nhat ne",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P1751021588997",
+          "priceDiscounts": 500,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": [
+            {
+              "GROUP1": "GROUP1VARIANT1",
+              "optionName": "nong lanh ne",
+              "variantName": "nong",
+              "variantPrice": 1000
+            }
+          ],
+          "finalPriceDiscounts": 1500
+        }
+      ],
+      "totalPrice": 29500,
+      "totalPriceSave": 2500,
+      "totalPriceCurrent": 32000,
+      "point": 1475,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753601135276",
+      "date": "2025-07-27 14:25",
+      "time": "18:25",
+      "address": "1",
+      "fullname": "1",
+      "phone": "1",
+      "note": "check 1",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 0,
+      "status": "S1",
+      "userId": null
+    },
+    {
+      "id": "ORDER1753601190335",
+      "date": "2025-07-27 14:26",
+      "time": "17:26",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "check 2",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753601229420",
+      "date": "2025-07-27 14:27",
+      "time": "19:27",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "check 3",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P1751021588997",
+          "priceDiscounts": 500,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": [
+            {
+              "GROUP1": "GROUP1VARIANT1",
+              "optionName": "nong lanh ne",
+              "variantName": "nong",
+              "variantPrice": 1000
+            }
+          ],
+          "finalPriceDiscounts": 1500
+        }
+      ],
+      "totalPrice": 29500,
+      "totalPriceSave": 2500,
+      "totalPriceCurrent": 32000,
+      "point": 1475,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753604384982",
+      "date": "2025-07-27 15:19",
+      "time": "21:19",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính 123",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753604533967",
+      "date": "2025-07-27 15:22",
+      "time": "19:22",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753604610574",
+      "date": "2025-07-27 15:23",
+      "time": "21:23",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753604687977",
+      "date": "2025-07-27 15:24",
+      "time": "21:24",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753604891139",
+      "date": "2025-07-27 15:28",
+      "time": "20:28",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753605305697",
+      "date": "2025-07-27 15:35",
+      "time": "21:35",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính moi nhat ne1 123123",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753848286286",
+      "date": "2025-07-30 11:04",
+      "time": "16:04",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P003",
+          "priceDiscounts": 27000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        },
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 27000,
+      "totalPriceSave": 38000,
+      "totalPriceCurrent": 65000,
+      "point": 1350,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753849726291",
+      "date": "2025-07-30 11:28",
+      "time": "14:28",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P1751021588997",
+          "priceDiscounts": 500,
+          "quantity": 2,
+          "note": "123",
+          "selectedOptionsPush": [
+            {
+              "id": "GROUP1VARIANT1",
+              "optionName": "nong lanh ne",
+              "variantName": "nong",
+              "variantPrice": 1000
+            }
+          ],
+          "finalPriceDiscounts": 500
+        }
+      ],
+      "totalPrice": 1000,
+      "totalPriceSave": 1000,
+      "totalPriceCurrent": 2000,
+      "point": 50,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1753849842878",
+      "date": "2025-07-30 11:30",
+      "time": "15:30",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P1751021588997",
+          "priceDiscounts": 500,
+          "quantity": 5,
+          "note": "333333",
+          "selectedOptionsPush": [
+            {
+              "id": "GROUP1VARIANT1",
+              "optionName": "nong lanh ne",
+              "variantName": "nong",
+              "variantPrice": 1000
+            }
+          ],
+          "finalPriceDiscounts": 500
+        }
+      ],
+      "totalPrice": 2500,
+      "totalPriceSave": 2500,
+      "totalPriceCurrent": 5000,
+      "point": 125,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1754026188725",
+      "date": "2025-08-01 12:29",
+      "time": "15:29",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P001",
+          "priceDiscounts": 0,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 0,
+      "totalPriceSave": 35000,
+      "totalPriceCurrent": 35000,
+      "point": 0,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1754026226137",
+      "date": "2025-08-01 12:30",
+      "time": "15:29",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P2",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1754026364871",
+      "date": "2025-08-01 12:32",
+      "time": "17:32",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P003",
+          "priceDiscounts": 27000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 27000,
+      "totalPriceSave": 3000,
+      "totalPriceCurrent": 30000,
+      "point": 1350,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1754026792190",
+      "date": "2025-08-01 12:39",
+      "time": "16:39",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1754026860239",
+      "date": "2025-08-01 12:41",
+      "time": "16:40",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1754026953437",
+      "date": "2025-08-01 12:42",
+      "time": "16:40",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1754027052131",
+      "date": "2025-08-01 12:44",
+      "time": "17:44",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "ORDER1754027165420",
+      "date": "2025-08-01 12:46",
+      "time": "18:46",
+      "address": "123 Hai Bà Trưng 2",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "note": "Giao giờ hành chính",
+      "paymentId": "P1",
+      "cartItems": [
+        {
+          "idProduct": "P002",
+          "priceDiscounts": 28000,
+          "quantity": 1,
+          "note": null,
+          "selectedOptionsPush": null,
+          "finalPriceDiscounts": null
+        }
+      ],
+      "totalPrice": 28000,
+      "totalPriceSave": 2000,
+      "totalPriceCurrent": 30000,
+      "point": 1400,
+      "status": "S1",
+      "userId": "M1750826556757"
+    }
+  ],
+  "status_orders": [
+    {
+      "id": "S1",
+      "name": "Cho xu ly",
+      "status": "orange",
+      "icon": "check"
+    },
+    {
+      "id": "S2",
+      "name": "Dang lam mon",
+      "status": "teal",
+      "icon": "chef_hat"
+    },
+    {
+      "id": "S3",
+      "name": "Cho nhan hang",
+      "status": "teal",
+      "icon": "delivery_truck_bolt"
+    },
+    {
+      "id": "S4",
+      "name": "Da xong",
+      "status": "green",
+      "icon": "task_alt"
+    },
+    {
+      "id": "S5",
+      "name": "Huy don",
+      "status": "pink",
+      "icon": "cancel"
+    }
+  ],
+  "payments": [
+    {
+      "id": "P1",
+      "name": "Tiền mặt",
+      "description": "Thanh toán bằng tiền mặt khi nhận hàng",
+      "image": "/assets/image/global/cash.png"
+    },
+    {
+      "id": "P2",
+      "name": "Chuyển khoản ngân hàng",
+      "description": "Chuyển khoản qua tài khoản ngân hàng",
+      "image": "/assets/image/global/bank-transfer.png"
+    }
+  ],
+  "categoriesNews": [
+    {
+      "id": "1",
+      "categoryName": "Khuyến mãi",
+      "description": "Thông tin về các chương trình khuyến mãi mới nhất",
+      "summaryContent": "Thông tin về các chương trình khuyến mãi mới nhất",
+      "image": "/assets/image/news_category/promotion.png"
+    },
+    {
+      "categoryName": "Khuyến mãi 12343",
+      "description": "Thông tin về các chương trình khuyến mãi mới nhất",
+      "image": "/assets/image/news/category/empty-data.png",
+      "summaryContent": "Thông tin về các chương trình khuyến mãi mới nhất",
+      "id": "2"
+    },
+    {
+      "id": "Categories1751609055598",
+      "categoryName": "klsjdlasd",
+      "description": "",
+      "image": "/assets/image/news/posts/yaoutvietquoc.png",
+      "summaryContent": ""
+    },
+    {
+      "id": "Categories1755494567349",
+      "categoryName": "123",
+      "description": "",
+      "image": "https://res.cloudinary.com/dl8wwezqp/image/upload/v1755494780/news/vdevoyfjbhoq5bjnx0y0.png",
+      "summaryContent": ""
+    },
+    {
+      "id": "Categories1755495675098",
+      "categoryName": "555",
+      "description": "",
+      "image": "https://res.cloudinary.com/dl8wwezqp/image/upload/v1755495674/CategoryNews/hqbtbrowq7hrjchczsbl.png",
+      "summaryContent": ""
+    },
+    {
+      "id": "Categories1755496063587",
+      "categoryName": "666",
+      "description": "",
+      "image": "https://res.cloudinary.com/dl8wwezqp/image/upload/v1755496080/CategoryNews/c8o9vm5nb31mmdtba9u3.png",
+      "summaryContent": ""
+    }
+  ],
+  "newsPosts": [
+    {
+      "id": "News1752560877583",
+      "title": "Cuộc thi “Gieo Vần Chill Chill – Gặt Bồ Lụa Gạo” Phê La",
+      "description": "<p>123123</p>",
+      "image": "/assets/image/news/posts/lua-dao-app.jpg",
+      "summaryContent": "",
+      "isActive": true,
+      "categoryId": "1",
+      "views": 0,
+      "time": "2025-07-17T16:42:15.885Z",
+      "author": "Admin",
+      "createdAt": "2025-05-24T09:51:16.597Z"
+    },
+    {
+      "id": "News1752560765931",
+      "title": "Phê Xỉu Vani – Chill Đây Chill Đó",
+      "description": "<p>asdasdasdasd 222 3 4</p>",
+      "image": "/assets/image/news/posts/8-Cover-Facebook.jpg",
+      "summaryContent": "",
+      "isActive": true,
+      "categoryId": "1",
+      "views": 0,
+      "time": "2025-07-15T06:26:05.931Z",
+      "author": "Admin",
+      "createdAt": "2025-05-24T09:51:16.597Z"
+    },
+    {
+      "id": "News1752770401871",
+      "title": "Lụa Gạo – Ô Long Gạo Sữa Tươi 🎶",
+      "description": "<p>123</p>",
+      "image": "/assets/image/news/posts/1-Cover-Facebook-scaled.jpg",
+      "summaryContent": "",
+      "isActive": true,
+      "categoryId": "1",
+      "views": 0,
+      "time": "2025-07-17T16:40:01.871Z",
+      "author": "Admin"
+    },
+    {
+      "id": "News1752770415885",
+      "title": "LY GẠO LÀNG CHILL",
+      "description": "<p>123</p>",
+      "image": "/assets/image/news/posts/KV-Ly-Resize_Cover-Fb-scaled.jpg",
+      "summaryContent": "",
+      "isActive": true,
+      "categoryId": "1",
+      "views": 0,
+      "time": "2025-07-17T16:40:15.885Z",
+      "author": "Admin"
+    },
+    {
+      "id": "News1755584776524",
+      "title": "hehe333",
+      "description": "<p>sonethimg new 123123123</p><figure class=\"image\"><img src=\"https://res.cloudinary.com/dl8wwezqp/image/upload/v1755584801/PostsNews/ryt74clqoelbxn4olzua.png\"></figure><figure class=\"image\"><img src=\"https://res.cloudinary.com/dl8wwezqp/image/upload/v1755585035/PostsNews/pgco4f2njnwnj0wuasfd.png\"></figure><p>&nbsp;</p><figure class=\"image\"><img src=\"https://res.cloudinary.com/dl8wwezqp/image/upload/v1755585208/PostsNews/o296oplhbix0gosdylih.png\"></figure>",
+      "image": "https://res.cloudinary.com/dl8wwezqp/image/upload/v1755584802/PostsNews/shjpwwno5wucxnibrcwp.png",
+      "summaryContent": "",
+      "isActive": false,
+      "categoryId": "1",
+      "views": 0,
+      "time": "2025-08-19T06:26:16.525Z",
+      "author": "Admin"
+    }
+  ],
+  "banners": [
+    {
+      "title": "banner 13232",
+      "description": "123",
+      "image": "/assets/image/banners/Resize-Digital-KV-OLongDaoHong_Cover-Fb-scaled.jpg",
+      "isActive": true,
+      "id": "Banner1750237042550"
+    },
+    {
+      "id": "BannerLMO4pKy4Md8idsb8E8B9P",
+      "title": "Banner 2",
+      "description": "",
+      "image": "/assets/image/banners/Resize-KV-Bong-Buoi-2_Cover-Fb-scaled.jpg",
+      "isActive": true
+    },
+    {
+      "id": "Banner7qmg_pnyoUJXXByNHXDqn",
+      "title": "213",
+      "description": "",
+      "image": "https://res.cloudinary.com/dl8wwezqp/image/upload/v1755584801/PostsNews/ryt74clqoelbxn4olzua.png",
+      "isActive": true
+    }
+  ],
+  "users": [
+    {
+      "id": "M1750826556757",
+      "fullname": "Nghe Duong",
+      "email": "duongthanhnghe12071996@gmail.com",
+      "password": "$2b$10$qmWwe2NjjegrOw.M90o0LuK/QkygN/PCfW7exyG2oE1YS1K79HYqi",
+      "gender": "male",
+      "phone": "0365305923",
+      "birthday": "2025-05-10",
+      "avatar": "https://res.cloudinary.com/dl8wwezqp/image/upload/v1755706313/Member/memberM1750826556757/1122092d3ebeece95f6a7bb8b0700a17_jrtp8k.png",
+      "active": true,
+      "role": 2,
+      "membership": {
+        "level": "Bronze",
+        "point": 11201,
+        "discountRate": 0,
+        "joinedAt": "2025-06-25T04:42:36.757Z",
+        "code": 1750826556757,
+        "barcode": "/assets/image/global/barcode-qr-code-transparent-free-free-png.png"
+      },
+      "createdAt": "2025-06-25T04:42:36.757Z",
+      "updatedAt": "2025-08-20T16:24:58.987Z"
+    },
+    {
+      "id": "M1754023332673",
+      "fullname": "tao 123",
+      "email": "duongthanhnghe120796@gmail.com",
+      "password": "$2b$10$eXJ9YaWvVPmeUarL1Q2B9OxdDmDD5D02Them4hhUIQeH2TQkB6C5S",
+      "gender": "male",
+      "phone": "",
+      "birthday": "2025-08-01",
+      "avatar": "https://res.cloudinary.com/dl8wwezqp/image/upload/v1755707504/Member/memberM1754023332673/1c580b58a1ba6904c02d990ef210c496_gnmes2.png",
+      "active": true,
+      "role": 1,
+      "membership": {
+        "level": "Bronze",
+        "point": 0,
+        "discountRate": 0,
+        "joinedAt": "2025-08-01T04:42:12.673Z",
+        "code": 1754023332673,
+        "barcode": "/barcodes/barcode-1754023332673.png"
+      },
+      "createdAt": "2025-08-01T04:42:12.674Z",
+      "updatedAt": "2025-08-20T16:31:49.416Z"
+    }
+  ],
+  "addresses": [
+    {
+      "id": "A1751889570001",
+      "fullname": "Dương Thanh Nghê",
+      "phone": "0365305923",
+      "address": "123 Hai Bà Trưng 2",
+      "note": "Giao giờ hành chính",
+      "tag": "Nhà",
+      "isDefault": true,
+      "createdAt": "2025-07-07T09:00:00Z",
+      "updatedAt": "2025-07-07T09:00:00Z",
+      "userId": "M1750826556757"
+    },
+    {
+      "id": "A1751875185457",
+      "fullname": "dia chi 1",
+      "phone": "123",
+      "address": "23 dao duy anh",
+      "note": "note gi do",
+      "tag": "Trường học",
+      "isDefault": false,
+      "createdAt": "2025-07-07T07:59:45.457Z",
+      "updatedAt": "2025-07-07T07:59:45.457Z",
+      "userId": "M1750826556757"
+    }
+  ],
+  "wishlist_items": [
+    {
+      "id": "WL1755333382754",
+      "userId": "M1750826556757",
+      "productId": "P001",
+      "createdAt": "2025-08-16T08:36:22.754Z",
+      "itemProduct": null
+    },
+    {
+      "id": "WL1755358707432",
+      "userId": "M1750826556757",
+      "productId": "P1751021588997",
+      "createdAt": "2025-08-16T15:38:27.432Z",
+      "itemProduct": null
+    }
+  ],
+  "membership_levels": [
+    {
+      "id": "TM01",
+      "name": "Bronze",
+      "minPoint": 0
+    },
+    {
+      "id": "TM02",
+      "name": "Silver",
+      "minPoint": 2000001
+    },
+    {
+      "id": "TM03",
+      "name": "Gold",
+      "minPoint": 5000000
+    },
+    {
+      "id": "TM04",
+      "name": "Platinum",
+      "minPoint": 10000000
+    }
+  ],
+  "searchKeywords": [
+    {
+      "id": "KW1752893614233",
+      "keyword": "a",
+      "totalCount": 45,
+      "lastSearchTime": "2025-07-19T08:14:16.749Z",
+      "createdAt": "2025-07-19T02:53:34.233Z"
+    },
+    {
+      "id": "KW1752893599529",
+      "keyword": "nghe",
+      "totalCount": 21,
+      "lastSearchTime": "2025-07-19T08:13:32.434Z",
+      "createdAt": "2025-07-19T02:53:19.529Z"
+    },
+    {
+      "id": "KW001",
+      "keyword": "sữa cho bé",
+      "totalCount": 5,
+      "lastSearchTime": "2025-07-17T11:30:00.000Z",
+      "createdAt": "2025-07-10T09:00:00.000Z"
+    },
+    {
+      "id": "KW002",
+      "keyword": "tã bỉm",
+      "totalCount": 2,
+      "lastSearchTime": "2025-07-15T15:00:00.000Z",
+      "createdAt": "2025-07-14T10:00:00.000Z"
+    },
+    {
+      "id": "KW1752895397234",
+      "keyword": "anghe",
+      "totalCount": 2,
+      "lastSearchTime": "2025-07-19T03:23:18.384Z",
+      "createdAt": "2025-07-19T03:23:17.234Z"
+    },
+    {
+      "id": "KW1752893886394",
+      "keyword": "aa",
+      "totalCount": 1,
+      "lastSearchTime": "2025-07-19T02:58:06.394Z",
+      "createdAt": "2025-07-19T02:58:06.394Z"
+    },
+    {
+      "id": "KW1752893972935",
+      "keyword": "a123",
+      "totalCount": 1,
+      "lastSearchTime": "2025-07-19T02:59:32.934Z",
+      "createdAt": "2025-07-19T02:59:32.934Z"
+    },
+    {
+      "id": "KW1752894016489",
+      "keyword": "nghe123",
+      "totalCount": 1,
+      "lastSearchTime": "2025-07-19T03:00:16.489Z",
+      "createdAt": "2025-07-19T03:00:16.489Z"
+    },
+    {
+      "id": "KW1752894136423",
+      "keyword": "asdads",
+      "totalCount": 1,
+      "lastSearchTime": "2025-07-19T03:02:16.423Z",
+      "createdAt": "2025-07-19T03:02:16.423Z"
+    },
+    {
+      "id": "KW1752894721838",
+      "keyword": "nhg",
+      "totalCount": 1,
+      "lastSearchTime": "2025-07-19T03:12:01.838Z",
+      "createdAt": "2025-07-19T03:12:01.838Z"
+    },
+    {
+      "id": "KW1752895244166",
+      "keyword": "123",
+      "totalCount": 1,
+      "lastSearchTime": "2025-07-19T03:20:44.166Z",
+      "createdAt": "2025-07-19T03:20:44.166Z"
+    }
+  ]
+}

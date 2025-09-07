@@ -1,0 +1,54 @@
+@use "@/assets/variables" as *;
+
+.taskbar {
+  height: 100dvh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: $width-taskbar;
+  background: $cl-white;
+  padding: 12px;
+  border-right: 1px solid $cl-gray;
+  z-index: 11;
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
+  &-icon {
+    color: $cl-gray5;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 1;
+    &.active {
+      color: $cl-text;
+      background-color: $cl-white;
+      box-shadow: 0px 3px 4px -1px #00000026;
+    }
+  }
+  &-href {
+    display: block;
+    position: relative;
+  }
+  &-text {
+    width: 100%;
+    justify-content: left;
+    padding-left: 48px;
+    &:hover,
+    &.active {
+      border-width: 1px;
+      border-style: solid;
+    }
+  }
+  &-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  &.active {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  @media (min-width: 1025px){
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+}

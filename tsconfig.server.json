@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "rootDir": "server",
+    "outDir": "dist/server",
+    "target": "es2019",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "strict": false,
+    "verbatimModuleSyntax": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@server/*": ["server/*"],
+    },
+    "resolveJsonModule": true,
+    "declaration": false,
+    "sourceMap": true
+  },
+  "include": ["server/**/*"],
+  "exclude": ["node_modules", ".nuxt", ".output", "dist"]
+}

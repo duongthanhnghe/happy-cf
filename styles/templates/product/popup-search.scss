@@ -1,0 +1,63 @@
+@use "../../../assets/variables" as *;
+
+.popup-search {
+  &-top {
+    padding: $space-sm $space-sm $space-sm $space-xl;
+    position: sticky;
+    top: 0;
+    background-color: $cl-primary;
+    z-index: 2;
+    @media (min-width: 1025px) {
+      background-color: $cl-white;
+    }
+  }
+  &-input {
+    position: relative;
+    &-cancel {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      cursor: pointer;
+      padding-right: 8px;
+    }
+    .v-input__details {
+      position: absolute;
+      width: 100%;
+    }
+    .v-field__prepend-inner {
+      font-size: $fz-normal;
+    }
+  }
+  .portal-popup {
+    &-header {
+      background-color: transparent;
+      padding: 0;
+      min-height: inherit;
+    }
+    &-close {
+      position: fixed;
+      left: 0;
+      top: $space-sm;
+      margin: 0;
+      background-color: transparent;
+      border-color: transparent;
+      z-index: 3;
+      @media (max-width: 1024px) {
+        width: $space-xl;
+        height: $space-xl;
+        .button-icon {
+          font-size: 24px !important;
+        }
+      }
+    }
+    &-body {
+      height: 100dvh;
+    }
+  }
+  @media (max-width: 1024px) {
+    .v-field__overlay {
+      border: none !important;
+    }
+  }
+}

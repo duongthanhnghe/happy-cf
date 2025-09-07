@@ -1,0 +1,23 @@
+@use "../../../assets/variables" as *;
+
+.footer {
+  padding: 24px 0;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  &-content {
+    background-color: $cl-blur1;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 2rem;
+    border-radius: $rd-xl;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+  }
+  &-logo {
+    max-width: 150px;
+  }
+}

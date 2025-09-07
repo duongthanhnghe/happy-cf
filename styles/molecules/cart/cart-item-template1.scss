@@ -1,0 +1,55 @@
+@use "../../../assets/variables" as *;
+
+.cart-template1 {
+  &-item {
+    display: flex;
+    background-color: $cl-white;
+    border-bottom: 1px solid $cl-gray2;
+    padding: 1rem;
+  }
+  &-image {
+    width: 70px;
+    img {
+      border-radius: $rd-md;
+    background-color: $cl-gray2;
+    }
+  }
+  &-info {
+    width: calc(100% - 70px);
+    padding-left: 12px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .heading {
+      padding-right: 70px;
+    }    
+  }
+  &-options {
+    color: $cl-gray5;
+    margin: -4px 0 8px 0;
+    span {
+      color: $cl-text;
+    }
+  }
+  &-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+  }
+  &-input {
+    display: flex;
+    width: fit-content;
+    padding: 4px;
+    background-color: $cl-gray2;
+    border-radius: $rd-md;
+  }
+  &-quantity {
+    min-width: 40px;
+  }
+  &-delete {
+    position: absolute;
+    right: -8px;
+    top: 0;
+  }
+}

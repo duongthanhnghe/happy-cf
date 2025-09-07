@@ -1,0 +1,35 @@
+@use '/assets/_variables.scss' as *;
+
+.category {
+  &-menu {
+    width: 90px;
+  }
+  &-item {
+    border-radius: $rd-lg 0 0 $rd-lg;
+    text-align: center;
+    padding: 1rem 0.5rem;
+    cursor: pointer;
+    &-src {
+      display: none;
+    }
+    &-title {
+      font-size: $fz-xs;
+    }
+    &:first-child {
+      border-radius: 0 0 0 $rd-lg;
+    }
+    &.active {
+      background-color: $cl-white;
+      .category {
+        &-item {
+          &-src {
+            display: block;
+          }
+          &-title {
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}

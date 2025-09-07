@@ -1,0 +1,46 @@
+@use "@/assets/variables" as *;
+
+.header-admin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: $height-header-admin;
+  background-color: $cl-white;
+  border-bottom: 1px solid $cl-gray;
+  padding: 0 1.5rem;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  z-index: 11;
+  &-right,
+  &-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  &-left {
+    flex: 1;
+  }
+  &-right {
+    justify-content: end;
+    &-avatar img {
+      border-radius: 50%;
+      width: $space-xl;
+      object-fit: cover;
+    }
+    &-list {
+      min-width: 200px;
+    }
+  }
+  .v-input {
+    max-width: 200px;
+  }
+  @media (min-width: 1025px) {
+    width: calc(100% - $width-taskbar);
+  }
+}
+
+.main-admin {
+  padding-top: $height-header-admin;
+}

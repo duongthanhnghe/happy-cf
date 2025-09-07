@@ -1,0 +1,72 @@
+import type { JwtPayload } from 'jsonwebtoken';
+
+export interface User {
+  id: string
+  fullname: string
+  email: string
+  gender: GenderType
+  phone: string
+  birthday?: string | null
+  avatar: string
+  active: boolean
+  role: number
+  membership: {
+    level: MembershipLevel
+    point: number
+    discountRate: number
+    joinedAt: string
+    barcode: string
+    code: number
+  }
+  createdAt: string
+  updatedAt: string
+}
+
+export type GenderType = 'male' | 'female';
+
+export type MembershipLevel = 'Bronze' | 'Silver' | 'Gold' | 'Platinum';
+
+export type IdUser = { id: string }
+
+export type UserLogin = Pick<User, 'email'> & { password: string }
+
+export type UserEdit = Partial<Pick<User, 'avatar' | 'birthday' | 'fullname' | 'gender' | 'phone'>>
+
+export type UserRegister = Pick<User, 'fullname' | 'email' | 'gender' > & { password: string }
+
+export interface TokenReset {
+  resetToken?: string
+  resetTokenExpire?: number
+}
+
+export interface ResetPassword {
+  email: string
+  token: string
+  newPassword: string
+}
+
+export interface ChangePassword {
+  userId: string
+  oldPassword: string
+  newPassword: string
+}
+
+export type UserWithResetToken = User & TokenReset
+
+export interface MyJwtPayload extends JwtPayload {
+  id: string;
+  email: string;
+}
+
+export interface MembershipLevels {
+  id: string
+  name: string
+  minPoint: number
+  icon: string
+  image: string
+}
+
+export interface InformationMembershipLevels {
+  currentLevel: MembershipLevels
+  nextLevel: MembershipLevels
+}

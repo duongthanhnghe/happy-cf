@@ -1,0 +1,111 @@
+<script lang="ts" setup>
+import { watch, onBeforeUnmount } from 'vue'
+import CreateVariantProduct from '@/components/products/CreateVariantProduct.vue'
+import {
+  useProductManageStore
+} from '@/stores/product/useProductManageStore'
+import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+import {
+  formatCurrency
+} from '@/utils/global'
+import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
+
+definePageMeta({
+  layout: 'admin-layout',
+  middleware: 'admin-role',
+})
+
+const store = useProductManageStore();
+const storeFileManage = useFileManageFolderStore();
+const folderName = FOLDER_UPLOAD.PRODUCT
+
+const openPopupAdd = () => {
+  store.handleResetFormProductItem()
+  store.handleTogglePopupAdd(true)
+}
+
+watch(() => storeFileManage.isTogglePopup, (newValue) => {
+  if(newValue && !storeFileManage.getItems) storeFileManage.getApiList(folderName)
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+  storeFileManage.items = null
+})
+</script>
+<template>
+
+<HeaderAdmin>
+  <template #left>
+    <v-text-field v-model="store.name" placeholder="Tìm kiếm tên..." hide-details></v-text-field>
+    <v-select label="Chon danh muc"
+        v-model="store.categorySelectedFilter"
+        :items="[{ id: '', categoryName: 'Tất cả' }, ...store.getItemsCategory]"
+        item-title="categoryName"
+        item-value="id"
+        hide-details
+    />
+  </template>
+
+  <template #right>
+    <Button label="Them moi" color="primary" :shadow="true" @click="openPopupAdd()" />
+  </template>
+</HeaderAdmin>
+
+<CreateProduct />
+<UpdateProduct />
+<CreateVariantProduct />
+<CreateCategoryProduct />
+<PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
+
+<v-container>
+  <v-data-table-server v-model:items-per-page="store.itemsPerPage" :headers="store.headers" :items="store.serverItems" :items-length="store.totalItems" :loading="store.loadingTable" :search="store.search" item-value="name" @update:options="options => {
+        store.currentTableOptions = options
+        store.loadItemsProduct(options)
+    }">
+    <template #item.index="{ index }">
+      {{ (store.currentTableOptions.page - 1) * store.itemsPerPage + index + 1 }}
+    </template>
+
+    <template #item.image="{ item }">
+      <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
+    </template>
+
+    <template #item.categoryId="{ item }">
+      <v-chip label v-if="item.categoryId">
+        {{ store.getCategoryName(item.categoryId)?.categoryName }}
+      </v-chip>
+    </template>
+
+    <template #item.price="{ item }">
+      {{ formatCurrency(item.price) }}
+    </template>
+
+    <template #item.priceDiscounts="{ item }">
+      {{ formatCurrency(item.priceDiscounts) }}
+    </template>
+
+    <template #item.options="{ item }">
+      <div v-if="item.options">
+        <div v-for="optionItem in item.options" :key="optionItem.id">
+        <v-chip label class="mb-sm">
+          {{optionItem.name}}
+        </v-chip>
+        </div>
+      </div>
+    </template>
+
+    <template #item.isActive="{ item }">
+      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" @click="store.toggleActive(item.id)">
+        {{ item.isActive === true ? 'Kich hoat' : 'Tat kich hoat' }}
+      </v-chip>
+    </template>
+
+    <template #item.actions="{ item }">
+      <div class="flex gap-sm justify-end">
+        <Button color="gray" size="sm" icon="edit" @click="store.handleEditProduct(item.id)" />
+        <Button color="gray" size="sm" icon="delete" @click="store.handleDeleteProduct(item.id)" />
+      </div>
+    </template>
+  </v-data-table-server>
+</v-container>
+</template>

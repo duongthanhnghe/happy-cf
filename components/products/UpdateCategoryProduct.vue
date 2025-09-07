@@ -1,0 +1,38 @@
+<script lang="ts" setup>
+import {
+  useCategoryManageStore
+} from '@/stores/product/useCategoryManageStore'
+import type { SubmitEventPromise } from 'vuetify';
+
+const store = useCategoryManageStore();
+
+const handleSubmitUpdate = async (event: SubmitEventPromise) => {
+    const results = await event
+  if (!results.valid) return
+  await store.submitUpdate();
+}
+
+</script>
+<template>
+<Popup popupId="popup-update-category" v-model="store.isTogglePopupUpdate" popupHeading="Sua danh muc" align="right">
+  <template #body>
+    <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
+      <div class="portal-popup-footer">
+        <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
+      </div>
+        <LabelInput label="Ten danh muc" required/>
+        <v-text-field v-model="store.updateCategoryItem.categoryName" :counter="50" :rules="store.categoryNameRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
+        <LabelInput label="Mo ta"/>
+        <v-textarea v-model="store.updateCategoryItem.description" :counter="500" label="Nhap mo ta" variant="outlined"></v-textarea>
+        <LabelInput label="Anh dai dien" required/>
+        <v-img v-if="store.updateCategoryItem.image" :src="store.updateCategoryItem.image" class="mb-sm" alt="Hinh anh" />
+        <div class="flex gap-sm">
+          <v-text-field v-model="store.updateCategoryItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
+          <Button color="black" :label="store.updateCategoryItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
+        </div>
+        <v-switch :label="`Tinh trang: ${store.updateCategoryItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.updateCategoryItem.isActive" inset
+        ></v-switch>
+    </v-form>
+  </template>
+</Popup>
+</template>

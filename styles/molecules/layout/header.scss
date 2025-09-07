@@ -1,0 +1,65 @@
+@use "../../../assets/variables" as *;
+
+.header {
+  background-color: $cl-primary;
+  min-height: $height-header;
+  &-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: $cl-primary;
+    z-index: 12;
+  }
+  &-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: $height-header;
+  }
+  &-left {
+    color: $cl-white;
+    font-weight: 600;
+  }
+  &-logo {
+    height: $space-xl;
+    object-fit: cover;
+  }
+  &-center {
+    flex: 1;
+    padding: 0 3rem;
+    .portal-control-item {
+      margin-bottom: 0;
+    }
+  }
+  &-search {
+    position: relative;
+    &-cancel {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      cursor: pointer;
+      padding-right: 8px;
+    }
+    .v-input__details {
+      position: absolute;
+      width: 100%;
+    }
+  }
+  &-cart {
+    &-count {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 18px;
+      height: 18px;
+      align-content: center;
+      border-radius: 50%;
+      font-weight: 400;
+      font-size: $fz-xs;
+      background-color: $cl-black;
+      color: $cl-white;
+    }
+  }
+}

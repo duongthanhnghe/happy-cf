@@ -1,0 +1,87 @@
+<script lang="ts" setup>
+import '@/styles/molecules/layout/header.scss';
+import {
+  useAccountStore
+} from '@/stores/users/useAccountStore'
+import {
+  useCartStore
+} from '@/stores/product/useCartOrderStore'
+import {
+  useSearchStore
+} from '../../../stores/product/useSearchStore.js'
+import {
+  useAddressesManageStore
+} from '@/stores/users/useAddressesStore.js'
+import { useSettingStore } from '@/stores/setting/useSettingStore';
+
+const storeSetting = useSettingStore();
+const storeCart = useCartStore()
+const storeAccount = useAccountStore()
+const storeSearch = useSearchStore()
+const storeAddress = useAddressesManageStore()
+
+const props = defineProps({
+  typeLeft: {
+    type: String,
+    default: 'logo',
+    validator: (value: string) => ['logo', 'address','name'].includes(value)
+  }
+})
+
+</script>
+<template>
+<PopupSearch />
+<PopupCart />
+<PopupEditItemToCart />
+<PopupAddItemToCart />
+
+<div class="header">
+  <div class="header-fixed">
+    <div class="container">
+      <div class="header-content">
+        <div class="header-left">
+          <template v-if="props.typeLeft === 'logo'">
+            <router-link :to="{ name: 'index' }">
+              <img v-if="storeSetting.getSettings?.logoUrl" class="header-logo" :src="storeSetting.getSettings?.logoUrl" :alt="storeSetting.getSettings?.name" />
+            </router-link>
+          </template>
+
+          <template v-else-if="props.typeLeft === 'address'">
+            <div class="flex gap-sm align-center">
+              <MaterialIcon size="30" name="location_on"/>
+              <div>
+                Giao hàng tới
+                <div class="text-limit flex" @click.prevent="storeAddress.handleTogglePopupList(true, true, true)">
+                  {{ storeCart.getNameAddressChoose || 'Chưa nhập địa chỉ' }}
+                  <MaterialIcon size="24" name="keyboard_arrow_down"/>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            {{ storeSetting.getSettings?.name }}
+            <div>
+              Xin chào {{ storeAccount.getDetailValue?.fullname || 'Quý khách' }}!
+            </div>
+          </template>
+        </div>
+        <div class="header-right flex gap-sm">
+          <Button
+          color="third"
+          icon="search"
+          class="rd-xs"
+          @click="storeSearch.handleTogglePopup(true)"
+          />
+        <Button
+          color="third"
+          icon="shopping_cart"
+          class="rd-xs"
+          @click="storeCart.handleTogglePopup(true)"
+          > <span class="header-cart-count">{{ storeCart.getCartCount }}</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</template>

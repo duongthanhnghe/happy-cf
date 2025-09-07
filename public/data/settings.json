@@ -1,0 +1,26 @@
+{
+  "name": "The Happy Coffee",
+  "logoUrl": "/assets/logo.png",
+  "phone": "1231231231111",
+  "email": "123@gmail.com",
+  "address": "123 Đường Nguyễn Trãi, Quận 5, TP. HCM",
+  "openingHours": "08:00 - 22:00",
+  "socialLinks": [
+    {
+      "name": "Facebook",
+      "icon": "Facebook",
+      "src": "https://facebook.com/thecoffeehouse"
+    },
+    {
+      "name": "Instagram",
+      "icon": "Instagram",
+      "src": "https://instagram.com/thecoffeehouse"
+    },
+    {
+      "name": "Tiktok",
+      "icon": "Tiktok",
+      "src": "https://tiktok.com/@thecoffeehouse"
+    }
+  ],
+  "description": "Chuỗi cửa hàng cà phê nổi tiếng với không gian hiện đại và đồ uống chất lượng."
+}
