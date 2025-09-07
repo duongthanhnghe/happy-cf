@@ -59,6 +59,7 @@ onBeforeUnmount(() => {
     }">
     
     <template #item.index="{ item }">
+    123
       <v-select
         :items="store.getListOrder"
         v-model="item.order"
