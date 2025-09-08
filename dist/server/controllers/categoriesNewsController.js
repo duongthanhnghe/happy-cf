@@ -1,4 +1,4 @@
-import { CategoryNewsModel } from "../models/NewsEntity.js";
+import { CategoryNewsModel, PostNewsModel } from "../models/NewsEntity.js";
 import { toCategoryNewsDTO, toCategoryNewsListDTO } from "../mappers/newsMapper.js";
 export const getAllCategories = async (_, res) => {
     try {
@@ -71,6 +71,13 @@ export const updateCategories = async (req, res) => {
 export const deleteCategories = async (req, res) => {
     try {
         const { id } = req.params;
+        const newsCount = await PostNewsModel.countDocuments({ categoryId: id });
+        if (newsCount > 0) {
+            return res.status(400).json({
+                code: 1,
+                message: "Không thể xoá, vẫn còn bài viết thuộc nhóm này",
+            });
+        }
         const deleted = await CategoryNewsModel.findByIdAndDelete(id);
         if (!deleted) {
             return res.status(404).json({ code: 1, message: "Category không tồn tại" });

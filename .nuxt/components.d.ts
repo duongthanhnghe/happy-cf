@@ -12,7 +12,19 @@ type HydrationStrategies = {
 }
 type LazyComponent<T> = (T & DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }>)
 interface _GlobalComponents {
-      'AvatarEdit': typeof import("../components/atoms/AvatarEdit.vue")['default']
+      'CreateBanner': typeof import("../components/admin/banners/CreateBanner.vue")['default']
+    'UpdateBanner': typeof import("../components/admin/banners/UpdateBanner.vue")['default']
+    'CreateCategoryNews': typeof import("../components/admin/news/CreateCategoryNews.vue")['default']
+    'CreatePost': typeof import("../components/admin/news/CreatePost.vue")['default']
+    'UpdateCategoryNews': typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']
+    'UpdatePost': typeof import("../components/admin/news/UpdatePost.vue")['default']
+    'CreateCategoryProduct': typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']
+    'CreateProduct': typeof import("../components/admin/products/CreateProduct.vue")['default']
+    'CreateVariantProduct': typeof import("../components/admin/products/CreateVariantProduct.vue")['default']
+    'UpdateCategoryProduct': typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']
+    'UpdateProduct': typeof import("../components/admin/products/UpdateProduct.vue")['default']
+    'DetailAccount': typeof import("../components/admin/users/DetailAccount.vue")['default']
+    'AvatarEdit': typeof import("../components/atoms/AvatarEdit.vue")['default']
     'Button': typeof import("../components/atoms/Button.vue")['default']
     'CKEditorCDN': typeof import("../components/atoms/CKEditorCDN.vue")['default']
     'CKEditorCDNBackup': typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']
@@ -24,11 +36,9 @@ interface _GlobalComponents {
     'MaterialIcon': typeof import("../components/atoms/MaterialIcon.vue")['default']
     'NoData': typeof import("../components/atoms/NoData.vue")['default']
     'Popup': typeof import("../components/atoms/Popup.vue")['default']
-    'CreateBanner': typeof import("../components/banners/CreateBanner.vue")['default']
-    'UpdateBanner': typeof import("../components/banners/UpdateBanner.vue")['default']
-    'Facebook': typeof import("../components/icons/Facebook.vue")['default']
-    'Instagram': typeof import("../components/icons/Instagram.vue")['default']
-    'Tiktok': typeof import("../components/icons/Tiktok.vue")['default']
+    'Facebook': typeof import("../components/atoms/icons/Facebook.vue")['default']
+    'Instagram': typeof import("../components/atoms/icons/Instagram.vue")['default']
+    'Tiktok': typeof import("../components/atoms/icons/Tiktok.vue")['default']
     'CartItemTemplate1': typeof import("../components/molecules/cart/CartItemTemplate1.vue")['default']
     'CartItemTemplate2': typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
     'FileImageItem': typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
@@ -38,10 +48,6 @@ interface _GlobalComponents {
     'PaymentItemTemplate1': typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']
     'ProductItemTemplate1': typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']
     'ProductItemWishlistTemplate': typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']
-    'CreateCategoryNews': typeof import("../components/news/CreateCategoryNews.vue")['default']
-    'CreatePost': typeof import("../components/news/CreatePost.vue")['default']
-    'UpdateCategoryNews': typeof import("../components/news/UpdateCategoryNews.vue")['default']
-    'UpdatePost': typeof import("../components/news/UpdatePost.vue")['default']
     'SectionBanner': typeof import("../components/organisms/banner/SectionBanner.vue")['default']
     'Footer': typeof import("../components/organisms/layout/Footer.vue")['default']
     'Header': typeof import("../components/organisms/layout/Header.vue")['default']
@@ -56,11 +62,6 @@ interface _GlobalComponents {
     'SectionProductSales': typeof import("../components/organisms/product/SectionProductSales.vue")['default']
     'PopupBarcode': typeof import("../components/organisms/user/PopupBarcode.vue")['default']
     'SectionAccount': typeof import("../components/organisms/user/SectionAccount.vue")['default']
-    'CreateCategoryProduct': typeof import("../components/products/CreateCategoryProduct.vue")['default']
-    'CreateProduct': typeof import("../components/products/CreateProduct.vue")['default']
-    'CreateVariantProduct': typeof import("../components/products/CreateVariantProduct.vue")['default']
-    'UpdateCategoryProduct': typeof import("../components/products/UpdateCategoryProduct.vue")['default']
-    'UpdateProduct': typeof import("../components/products/UpdateProduct.vue")['default']
     'CreateAbout': typeof import("../components/templates/about/CreateAbout.vue")['default']
     'UpdateAbout': typeof import("../components/templates/about/UpdateAbout.vue")['default']
     'PopupAddItemToCart': typeof import("../components/templates/cart/PopupAddItemToCart.vue")['default']
@@ -79,7 +80,6 @@ interface _GlobalComponents {
     'PopupCreateAddress': typeof import("../components/templates/user/address/PopupCreateAddress.vue")['default']
     'PopupManageAddress': typeof import("../components/templates/user/address/PopupManageAddress.vue")['default']
     'PopupUpdateAddress': typeof import("../components/templates/user/address/PopupUpdateAddress.vue")['default']
-    'DetailAccount': typeof import("../components/users/DetailAccount.vue")['default']
     'NuxtWelcome': typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
     'NuxtLayout': typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
     'NuxtErrorBoundary': typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -104,7 +104,19 @@ interface _GlobalComponents {
     'Body': typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
     'NuxtIsland': typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
     'NuxtRouteAnnouncer': typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
-      'LazyAvatarEdit': LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
+      'LazyCreateBanner': LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
+    'LazyUpdateBanner': LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
+    'LazyCreateCategoryNews': LazyComponent<typeof import("../components/admin/news/CreateCategoryNews.vue")['default']>
+    'LazyCreatePost': LazyComponent<typeof import("../components/admin/news/CreatePost.vue")['default']>
+    'LazyUpdateCategoryNews': LazyComponent<typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']>
+    'LazyUpdatePost': LazyComponent<typeof import("../components/admin/news/UpdatePost.vue")['default']>
+    'LazyCreateCategoryProduct': LazyComponent<typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']>
+    'LazyCreateProduct': LazyComponent<typeof import("../components/admin/products/CreateProduct.vue")['default']>
+    'LazyCreateVariantProduct': LazyComponent<typeof import("../components/admin/products/CreateVariantProduct.vue")['default']>
+    'LazyUpdateCategoryProduct': LazyComponent<typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']>
+    'LazyUpdateProduct': LazyComponent<typeof import("../components/admin/products/UpdateProduct.vue")['default']>
+    'LazyDetailAccount': LazyComponent<typeof import("../components/admin/users/DetailAccount.vue")['default']>
+    'LazyAvatarEdit': LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
     'LazyButton': LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
     'LazyCKEditorCDN': LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
     'LazyCKEditorCDNBackup': LazyComponent<typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']>
@@ -116,11 +128,9 @@ interface _GlobalComponents {
     'LazyMaterialIcon': LazyComponent<typeof import("../components/atoms/MaterialIcon.vue")['default']>
     'LazyNoData': LazyComponent<typeof import("../components/atoms/NoData.vue")['default']>
     'LazyPopup': LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
-    'LazyCreateBanner': LazyComponent<typeof import("../components/banners/CreateBanner.vue")['default']>
-    'LazyUpdateBanner': LazyComponent<typeof import("../components/banners/UpdateBanner.vue")['default']>
-    'LazyFacebook': LazyComponent<typeof import("../components/icons/Facebook.vue")['default']>
-    'LazyInstagram': LazyComponent<typeof import("../components/icons/Instagram.vue")['default']>
-    'LazyTiktok': LazyComponent<typeof import("../components/icons/Tiktok.vue")['default']>
+    'LazyFacebook': LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
+    'LazyInstagram': LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
+    'LazyTiktok': LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>
     'LazyCartItemTemplate1': LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate1.vue")['default']>
     'LazyCartItemTemplate2': LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
     'LazyFileImageItem': LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
@@ -130,10 +140,6 @@ interface _GlobalComponents {
     'LazyPaymentItemTemplate1': LazyComponent<typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']>
     'LazyProductItemTemplate1': LazyComponent<typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']>
     'LazyProductItemWishlistTemplate': LazyComponent<typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']>
-    'LazyCreateCategoryNews': LazyComponent<typeof import("../components/news/CreateCategoryNews.vue")['default']>
-    'LazyCreatePost': LazyComponent<typeof import("../components/news/CreatePost.vue")['default']>
-    'LazyUpdateCategoryNews': LazyComponent<typeof import("../components/news/UpdateCategoryNews.vue")['default']>
-    'LazyUpdatePost': LazyComponent<typeof import("../components/news/UpdatePost.vue")['default']>
     'LazySectionBanner': LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
     'LazyFooter': LazyComponent<typeof import("../components/organisms/layout/Footer.vue")['default']>
     'LazyHeader': LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
@@ -148,11 +154,6 @@ interface _GlobalComponents {
     'LazySectionProductSales': LazyComponent<typeof import("../components/organisms/product/SectionProductSales.vue")['default']>
     'LazyPopupBarcode': LazyComponent<typeof import("../components/organisms/user/PopupBarcode.vue")['default']>
     'LazySectionAccount': LazyComponent<typeof import("../components/organisms/user/SectionAccount.vue")['default']>
-    'LazyCreateCategoryProduct': LazyComponent<typeof import("../components/products/CreateCategoryProduct.vue")['default']>
-    'LazyCreateProduct': LazyComponent<typeof import("../components/products/CreateProduct.vue")['default']>
-    'LazyCreateVariantProduct': LazyComponent<typeof import("../components/products/CreateVariantProduct.vue")['default']>
-    'LazyUpdateCategoryProduct': LazyComponent<typeof import("../components/products/UpdateCategoryProduct.vue")['default']>
-    'LazyUpdateProduct': LazyComponent<typeof import("../components/products/UpdateProduct.vue")['default']>
     'LazyCreateAbout': LazyComponent<typeof import("../components/templates/about/CreateAbout.vue")['default']>
     'LazyUpdateAbout': LazyComponent<typeof import("../components/templates/about/UpdateAbout.vue")['default']>
     'LazyPopupAddItemToCart': LazyComponent<typeof import("../components/templates/cart/PopupAddItemToCart.vue")['default']>
@@ -171,7 +172,6 @@ interface _GlobalComponents {
     'LazyPopupCreateAddress': LazyComponent<typeof import("../components/templates/user/address/PopupCreateAddress.vue")['default']>
     'LazyPopupManageAddress': LazyComponent<typeof import("../components/templates/user/address/PopupManageAddress.vue")['default']>
     'LazyPopupUpdateAddress': LazyComponent<typeof import("../components/templates/user/address/PopupUpdateAddress.vue")['default']>
-    'LazyDetailAccount': LazyComponent<typeof import("../components/users/DetailAccount.vue")['default']>
     'LazyNuxtWelcome': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
     'LazyNuxtLayout': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
     'LazyNuxtErrorBoundary': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>
@@ -202,6 +202,18 @@ declare module 'vue' {
   export interface GlobalComponents extends _GlobalComponents { }
 }
 
+export const CreateBanner: typeof import("../components/admin/banners/CreateBanner.vue")['default']
+export const UpdateBanner: typeof import("../components/admin/banners/UpdateBanner.vue")['default']
+export const CreateCategoryNews: typeof import("../components/admin/news/CreateCategoryNews.vue")['default']
+export const CreatePost: typeof import("../components/admin/news/CreatePost.vue")['default']
+export const UpdateCategoryNews: typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']
+export const UpdatePost: typeof import("../components/admin/news/UpdatePost.vue")['default']
+export const CreateCategoryProduct: typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']
+export const CreateProduct: typeof import("../components/admin/products/CreateProduct.vue")['default']
+export const CreateVariantProduct: typeof import("../components/admin/products/CreateVariantProduct.vue")['default']
+export const UpdateCategoryProduct: typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']
+export const UpdateProduct: typeof import("../components/admin/products/UpdateProduct.vue")['default']
+export const DetailAccount: typeof import("../components/admin/users/DetailAccount.vue")['default']
 export const AvatarEdit: typeof import("../components/atoms/AvatarEdit.vue")['default']
 export const Button: typeof import("../components/atoms/Button.vue")['default']
 export const CKEditorCDN: typeof import("../components/atoms/CKEditorCDN.vue")['default']
@@ -214,11 +226,9 @@ export const Loading: typeof import("../components/atoms/Loading.vue")['default'
 export const MaterialIcon: typeof import("../components/atoms/MaterialIcon.vue")['default']
 export const NoData: typeof import("../components/atoms/NoData.vue")['default']
 export const Popup: typeof import("../components/atoms/Popup.vue")['default']
-export const CreateBanner: typeof import("../components/banners/CreateBanner.vue")['default']
-export const UpdateBanner: typeof import("../components/banners/UpdateBanner.vue")['default']
-export const Facebook: typeof import("../components/icons/Facebook.vue")['default']
-export const Instagram: typeof import("../components/icons/Instagram.vue")['default']
-export const Tiktok: typeof import("../components/icons/Tiktok.vue")['default']
+export const Facebook: typeof import("../components/atoms/icons/Facebook.vue")['default']
+export const Instagram: typeof import("../components/atoms/icons/Instagram.vue")['default']
+export const Tiktok: typeof import("../components/atoms/icons/Tiktok.vue")['default']
 export const CartItemTemplate1: typeof import("../components/molecules/cart/CartItemTemplate1.vue")['default']
 export const CartItemTemplate2: typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
 export const FileImageItem: typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
@@ -228,10 +238,6 @@ export const OrderItemTemplate1: typeof import("../components/molecules/order/Or
 export const PaymentItemTemplate1: typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']
 export const ProductItemTemplate1: typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']
 export const ProductItemWishlistTemplate: typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']
-export const CreateCategoryNews: typeof import("../components/news/CreateCategoryNews.vue")['default']
-export const CreatePost: typeof import("../components/news/CreatePost.vue")['default']
-export const UpdateCategoryNews: typeof import("../components/news/UpdateCategoryNews.vue")['default']
-export const UpdatePost: typeof import("../components/news/UpdatePost.vue")['default']
 export const SectionBanner: typeof import("../components/organisms/banner/SectionBanner.vue")['default']
 export const Footer: typeof import("../components/organisms/layout/Footer.vue")['default']
 export const Header: typeof import("../components/organisms/layout/Header.vue")['default']
@@ -246,11 +252,6 @@ export const SectionProductMostOrder: typeof import("../components/organisms/pro
 export const SectionProductSales: typeof import("../components/organisms/product/SectionProductSales.vue")['default']
 export const PopupBarcode: typeof import("../components/organisms/user/PopupBarcode.vue")['default']
 export const SectionAccount: typeof import("../components/organisms/user/SectionAccount.vue")['default']
-export const CreateCategoryProduct: typeof import("../components/products/CreateCategoryProduct.vue")['default']
-export const CreateProduct: typeof import("../components/products/CreateProduct.vue")['default']
-export const CreateVariantProduct: typeof import("../components/products/CreateVariantProduct.vue")['default']
-export const UpdateCategoryProduct: typeof import("../components/products/UpdateCategoryProduct.vue")['default']
-export const UpdateProduct: typeof import("../components/products/UpdateProduct.vue")['default']
 export const CreateAbout: typeof import("../components/templates/about/CreateAbout.vue")['default']
 export const UpdateAbout: typeof import("../components/templates/about/UpdateAbout.vue")['default']
 export const PopupAddItemToCart: typeof import("../components/templates/cart/PopupAddItemToCart.vue")['default']
@@ -269,7 +270,6 @@ export const PopupWishlist: typeof import("../components/templates/user/PopupWis
 export const PopupCreateAddress: typeof import("../components/templates/user/address/PopupCreateAddress.vue")['default']
 export const PopupManageAddress: typeof import("../components/templates/user/address/PopupManageAddress.vue")['default']
 export const PopupUpdateAddress: typeof import("../components/templates/user/address/PopupUpdateAddress.vue")['default']
-export const DetailAccount: typeof import("../components/users/DetailAccount.vue")['default']
 export const NuxtWelcome: typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
 export const NuxtLayout: typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
 export const NuxtErrorBoundary: typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -294,6 +294,18 @@ export const Html: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
 export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
 export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
+export const LazyCreateBanner: LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
+export const LazyUpdateBanner: LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
+export const LazyCreateCategoryNews: LazyComponent<typeof import("../components/admin/news/CreateCategoryNews.vue")['default']>
+export const LazyCreatePost: LazyComponent<typeof import("../components/admin/news/CreatePost.vue")['default']>
+export const LazyUpdateCategoryNews: LazyComponent<typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']>
+export const LazyUpdatePost: LazyComponent<typeof import("../components/admin/news/UpdatePost.vue")['default']>
+export const LazyCreateCategoryProduct: LazyComponent<typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']>
+export const LazyCreateProduct: LazyComponent<typeof import("../components/admin/products/CreateProduct.vue")['default']>
+export const LazyCreateVariantProduct: LazyComponent<typeof import("../components/admin/products/CreateVariantProduct.vue")['default']>
+export const LazyUpdateCategoryProduct: LazyComponent<typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']>
+export const LazyUpdateProduct: LazyComponent<typeof import("../components/admin/products/UpdateProduct.vue")['default']>
+export const LazyDetailAccount: LazyComponent<typeof import("../components/admin/users/DetailAccount.vue")['default']>
 export const LazyAvatarEdit: LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
 export const LazyButton: LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
 export const LazyCKEditorCDN: LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
@@ -306,11 +318,9 @@ export const LazyLoading: LazyComponent<typeof import("../components/atoms/Loadi
 export const LazyMaterialIcon: LazyComponent<typeof import("../components/atoms/MaterialIcon.vue")['default']>
 export const LazyNoData: LazyComponent<typeof import("../components/atoms/NoData.vue")['default']>
 export const LazyPopup: LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
-export const LazyCreateBanner: LazyComponent<typeof import("../components/banners/CreateBanner.vue")['default']>
-export const LazyUpdateBanner: LazyComponent<typeof import("../components/banners/UpdateBanner.vue")['default']>
-export const LazyFacebook: LazyComponent<typeof import("../components/icons/Facebook.vue")['default']>
-export const LazyInstagram: LazyComponent<typeof import("../components/icons/Instagram.vue")['default']>
-export const LazyTiktok: LazyComponent<typeof import("../components/icons/Tiktok.vue")['default']>
+export const LazyFacebook: LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
+export const LazyInstagram: LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
+export const LazyTiktok: LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>
 export const LazyCartItemTemplate1: LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate1.vue")['default']>
 export const LazyCartItemTemplate2: LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
 export const LazyFileImageItem: LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
@@ -320,10 +330,6 @@ export const LazyOrderItemTemplate1: LazyComponent<typeof import("../components/
 export const LazyPaymentItemTemplate1: LazyComponent<typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']>
 export const LazyProductItemTemplate1: LazyComponent<typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']>
 export const LazyProductItemWishlistTemplate: LazyComponent<typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']>
-export const LazyCreateCategoryNews: LazyComponent<typeof import("../components/news/CreateCategoryNews.vue")['default']>
-export const LazyCreatePost: LazyComponent<typeof import("../components/news/CreatePost.vue")['default']>
-export const LazyUpdateCategoryNews: LazyComponent<typeof import("../components/news/UpdateCategoryNews.vue")['default']>
-export const LazyUpdatePost: LazyComponent<typeof import("../components/news/UpdatePost.vue")['default']>
 export const LazySectionBanner: LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
 export const LazyFooter: LazyComponent<typeof import("../components/organisms/layout/Footer.vue")['default']>
 export const LazyHeader: LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
@@ -338,11 +344,6 @@ export const LazySectionProductMostOrder: LazyComponent<typeof import("../compon
 export const LazySectionProductSales: LazyComponent<typeof import("../components/organisms/product/SectionProductSales.vue")['default']>
 export const LazyPopupBarcode: LazyComponent<typeof import("../components/organisms/user/PopupBarcode.vue")['default']>
 export const LazySectionAccount: LazyComponent<typeof import("../components/organisms/user/SectionAccount.vue")['default']>
-export const LazyCreateCategoryProduct: LazyComponent<typeof import("../components/products/CreateCategoryProduct.vue")['default']>
-export const LazyCreateProduct: LazyComponent<typeof import("../components/products/CreateProduct.vue")['default']>
-export const LazyCreateVariantProduct: LazyComponent<typeof import("../components/products/CreateVariantProduct.vue")['default']>
-export const LazyUpdateCategoryProduct: LazyComponent<typeof import("../components/products/UpdateCategoryProduct.vue")['default']>
-export const LazyUpdateProduct: LazyComponent<typeof import("../components/products/UpdateProduct.vue")['default']>
 export const LazyCreateAbout: LazyComponent<typeof import("../components/templates/about/CreateAbout.vue")['default']>
 export const LazyUpdateAbout: LazyComponent<typeof import("../components/templates/about/UpdateAbout.vue")['default']>
 export const LazyPopupAddItemToCart: LazyComponent<typeof import("../components/templates/cart/PopupAddItemToCart.vue")['default']>
@@ -361,7 +362,6 @@ export const LazyPopupWishlist: LazyComponent<typeof import("../components/templ
 export const LazyPopupCreateAddress: LazyComponent<typeof import("../components/templates/user/address/PopupCreateAddress.vue")['default']>
 export const LazyPopupManageAddress: LazyComponent<typeof import("../components/templates/user/address/PopupManageAddress.vue")['default']>
 export const LazyPopupUpdateAddress: LazyComponent<typeof import("../components/templates/user/address/PopupUpdateAddress.vue")['default']>
-export const LazyDetailAccount: LazyComponent<typeof import("../components/users/DetailAccount.vue")['default']>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

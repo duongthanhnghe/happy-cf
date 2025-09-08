@@ -61,7 +61,7 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.isActive="{ item }">
-      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" @click="store.toggleActive(item.id)">
+      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Doi trang thai'" @click="store.toggleActive(item.id)">
         {{ item.isActive === true ? 'Kich hoat' : 'Tat kich hoat' }}
       </v-chip>
     </template>

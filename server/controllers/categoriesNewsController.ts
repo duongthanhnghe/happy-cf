@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { CategoryNewsModel } from "../models/NewsEntity";
+import { CategoryNewsModel, PostNewsModel } from "../models/NewsEntity";
 import { toCategoryNewsDTO, toCategoryNewsListDTO } from "../mappers/newsMapper";
 
 export const getAllCategories = async (_: Request, res: Response): Promise<Response> => {
@@ -78,6 +78,15 @@ export const updateCategories = async (req: Request, res: Response): Promise<Res
 export const deleteCategories = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { id } = req.params;
+
+    const newsCount = await PostNewsModel.countDocuments({ categoryId: id });
+    if (newsCount > 0) {
+      return res.status(400).json({
+        code: 1,
+        message: "Không thể xoá, vẫn còn bài viết thuộc nhóm này",
+      });
+    }
+
     const deleted = await CategoryNewsModel.findByIdAndDelete(id);
 
     if (!deleted) {

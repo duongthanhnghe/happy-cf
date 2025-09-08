@@ -2903,6 +2903,13 @@ const updateCategories$1 = async (req, res) => {
 const deleteCategories$1 = async (req, res) => {
   try {
     const { id } = req.params;
+    const newsCount = await PostNewsModel.countDocuments({ categoryId: id });
+    if (newsCount > 0) {
+      return res.status(400).json({
+        code: 1,
+        message: "Kh\xF4ng th\u1EC3 xo\xE1, v\u1EABn c\xF2n b\xE0i vi\u1EBFt thu\u1ED9c nh\xF3m n\xE0y"
+      });
+    }
     const deleted = await CategoryNewsModel.findByIdAndDelete(id);
     if (!deleted) {
       return res.status(404).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });

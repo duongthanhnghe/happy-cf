@@ -76,7 +76,7 @@ watch(() => getMembershipList.value, async (newValue) => {
     </template>
 
     <template #item.active="{ item }">
-      <v-chip label :color="`${item.active === true ? 'green' : 'red'}`" @click="store.toggleActive(item.id)">
+      <v-chip label :color="`${item.active === true ? 'green' : 'red'}`" v-tooltip.right="'Doi trang thai'" @click="store.toggleActive(item.id)">
         {{ item.active === true ? 'Kich hoat' : 'Tat kich hoat' }}
       </v-chip>
     </template>

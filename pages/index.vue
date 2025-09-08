@@ -28,5 +28,5 @@ const storeDisplay = useDisplayStore()
     <SectionNewsLatest headingText="Tin mới nhất" />
   </div>
 
-  <Footer />
+  <client-only><Footer /></client-only>
 </template>

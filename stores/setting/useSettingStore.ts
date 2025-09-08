@@ -1,8 +1,8 @@
 import { ref, computed, onMounted } from "vue"
 import { defineStore } from "pinia"
-import Facebook from "@/components/icons/Facebook.vue"
-import Instagram from "@/components/icons/Instagram.vue"
-import Tiktok from "@/components/icons/Tiktok.vue"
+import Facebook from "@/components/atoms/icons/Facebook.vue"
+import Instagram from "@/components/atoms/icons/Instagram.vue"
+import Tiktok from "@/components/atoms/icons/Tiktok.vue"
 
 const CACHE_TTL = 60 * 60 * 1000
 
