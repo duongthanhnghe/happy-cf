@@ -12,6 +12,12 @@ export function toPostNewsDTO(entity: PostNewsDocument): PostNewsDTO {
     categoryId: entity.categoryId.toString(),
     views: entity.views,
     author: entity.author,
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
+
     createdAt: entity.createdAt.toISOString(),
     updatedAt: entity.updatedAt.toISOString(),
   };
@@ -30,6 +36,12 @@ export function toCategoryNewsDTO(entity: CategoryNewsDocument): CategoryNewsDTO
     image: entity.image,
     order: entity.order,
     isActive: entity.isActive,
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
+    
     createdAt: entity.createdAt.toISOString(),
     updatedAt: entity.updatedAt.toISOString(),
   };

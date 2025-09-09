@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 import { usersAPI } from "@/services/users.service";
 import { jwtDecode } from 'jwt-decode'
 import type { User, MyJwtPayload, InformationMembershipLevels, MembershipLevels } from '@/server/types/dto/user.dto'
+import { ROUTES } from '@/shared/constants/routes';
 
 export const useAccountStore = defineStore("Account", () => {
 
@@ -52,7 +53,7 @@ export const useAccountStore = defineStore("Account", () => {
   const handleLogout = () => {
     token.value = ''
     localStorage.removeItem('token');
-    router.push({ path: '/' })
+    router.push({ path: ROUTES.PUBLIC.HOME.path })
     detailData.value = null;
   }
 

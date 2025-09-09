@@ -3,10 +3,11 @@ import type { SubmitEventPromise } from 'vuetify'
 import { useSettingUpdateStore } from '@/stores/setting/useSettingUpdateStore';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { showWarning } from '@/utils/toast';
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.SETTINGS.layout,
+  middleware: ROUTES.ADMIN.SETTINGS.middleware,
 })
 
 const storeSettingUpdate = useSettingUpdateStore();

@@ -5,10 +5,11 @@ import {
 } from '@/stores/product/useCategoryManageStore'
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-    middleware: 'admin-role',
+  layout: ROUTES.ADMIN.PRODUCT.children?.CATEGORY.layout,
+  middleware: ROUTES.ADMIN.PRODUCT.children?.CATEGORY.middleware,
 })
 
 const store = useCategoryManageStore();

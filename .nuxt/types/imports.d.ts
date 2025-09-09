@@ -34,6 +34,7 @@ declare global {
   const formatBytes: typeof import('../../utils/global')['formatBytes']
   const formatCurrency: typeof import('../../utils/global')['formatCurrency']
   const formatDateTime: typeof import('../../utils/global')['formatDateTime']
+  const generateSlug: typeof import('../../utils/global')['generateSlug']
   const getAppManifest: typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']
   const getCookie: typeof import('../../utils/global')['getCookie']
   const getCurrentDateTime: typeof import('../../utils/global')['getCurrentDateTime']
@@ -58,6 +59,8 @@ declare global {
   const mergeModels: typeof import('vue')['mergeModels']
   const navigateTo: typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']
   const nextTick: typeof import('vue')['nextTick']
+  const nullAndSpecialRules: typeof import('../../utils/validation')['nullAndSpecialRules']
+  const nullRules: typeof import('../../utils/validation')['nullRules']
   const onActivated: typeof import('vue')['onActivated']
   const onBeforeMount: typeof import('vue')['onBeforeMount']
   const onBeforeRouteLeave: typeof import('vue-router')['onBeforeRouteLeave']
@@ -174,6 +177,7 @@ declare global {
   const useScriptXPixel: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptXPixel']
   const useScriptYouTubePlayer: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptYouTubePlayer']
   const useSeoMeta: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useSeoMeta']
+  const useSeoWatchers: typeof import('../../utils/seoHandle')['useSeoWatchers']
   const useServerHead: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHead']
   const useServerHeadSafe: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHeadSafe']
   const useServerSeoMeta: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerSeoMeta']
@@ -237,6 +241,7 @@ declare module 'vue' {
     readonly formatBytes: UnwrapRef<typeof import('../../utils/global')['formatBytes']>
     readonly formatCurrency: UnwrapRef<typeof import('../../utils/global')['formatCurrency']>
     readonly formatDateTime: UnwrapRef<typeof import('../../utils/global')['formatDateTime']>
+    readonly generateSlug: UnwrapRef<typeof import('../../utils/global')['generateSlug']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
     readonly getCookie: UnwrapRef<typeof import('../../utils/global')['getCookie']>
     readonly getCurrentDateTime: UnwrapRef<typeof import('../../utils/global')['getCurrentDateTime']>
@@ -261,6 +266,8 @@ declare module 'vue' {
     readonly mergeModels: UnwrapRef<typeof import('vue')['mergeModels']>
     readonly navigateTo: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
+    readonly nullAndSpecialRules: UnwrapRef<typeof import('../../utils/validation')['nullAndSpecialRules']>
+    readonly nullRules: UnwrapRef<typeof import('../../utils/validation')['nullRules']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
     readonly onBeforeRouteLeave: UnwrapRef<typeof import('vue-router')['onBeforeRouteLeave']>
@@ -377,6 +384,7 @@ declare module 'vue' {
     readonly useScriptXPixel: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptXPixel']>
     readonly useScriptYouTubePlayer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptYouTubePlayer']>
     readonly useSeoMeta: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useSeoMeta']>
+    readonly useSeoWatchers: UnwrapRef<typeof import('../../utils/seoHandle')['useSeoWatchers']>
     readonly useServerHead: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHead']>
     readonly useServerHeadSafe: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHeadSafe']>
     readonly useServerSeoMeta: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerSeoMeta']>

@@ -4,9 +4,10 @@ import { useRoute } from 'vue-router'
 import {
   useOrderHistoryStore
 } from '@/stores/order/useOrderHistoryStore'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  headerTypeLeft: 'logo',
+  headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
 })
 
 const route = useRoute()

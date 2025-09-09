@@ -15,7 +15,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 import { useProductSales } from '@/composables/product/useProductSales'
-
+import { ROUTES } from '@/shared/constants/routes';
 
 const { getListProductSales, fetchListProductSales } = useProductSales()
 const storeDisplay = useDisplayStore()
@@ -47,7 +47,7 @@ watch(() => getListProductSales.value, (newValue) => {
   <Heading v-if="props.headingText" tag="h2" size="xl" weight="semibold" class="black flex justify-between mb-sm">
     {{ props.headingText }}
     <slot>
-    <router-link v-if="props.viewMore" :to="{ path: '/order' }" class="mr-ms">
+    <router-link v-if="props.viewMore" :to="{ path: ROUTES.PUBLIC.ORDER.path }" class="mr-ms">
       <Button size="xs" color="secondary" icon="keyboard_arrow_right"/>
     </router-link>
     </slot>

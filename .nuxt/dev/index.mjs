@@ -1128,7 +1128,22 @@ const plugins = [
 _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"24c5d-6eEG+hol+uPFcvLcRSmHu8YEivQ\"",
+    "mtime": "2025-09-09T07:53:36.527Z",
+    "size": 150621,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"8c13d-wXtQKHME+VwUJ9OzBt3RnArlYHo\"",
+    "mtime": "2025-09-09T07:53:36.529Z",
+    "size": 573757,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2774,6 +2789,10 @@ const bannerRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
   default: router$7
 }, Symbol.toStringTag, { value: 'Module' }));
 
+function generateSlug(text) {
+  return text.toLowerCase().replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, "a").replace(/[èéẹẻẽêềếệểễ]/g, "e").replace(/[ìíịỉĩ]/g, "i").replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, "o").replace(/[ùúụủũưừứựửữ]/g, "u").replace(/[ỳýỵỷỹ]/g, "y").replace(/đ/g, "d").replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+}
+
 const PostNewsSchema = new Schema(
   {
     title: { type: String, required: true },
@@ -2783,10 +2802,40 @@ const PostNewsSchema = new Schema(
     isActive: { type: Boolean, default: true },
     categoryId: { type: Types.ObjectId, ref: "CategoryNews", required: true },
     views: { type: Number, default: 0 },
-    author: { type: String }
+    author: { type: String },
+    titleSEO: {
+      type: String,
+      trim: true
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true,
+      required: true
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
   },
   { timestamps: true }
 );
+PostNewsSchema.index({ slug: 1 }, { unique: true });
+PostNewsSchema.index({ isActive: 1, createdAt: -1 });
+PostNewsSchema.index({ categoryId: 1, isActive: 1 });
+PostNewsSchema.pre("save", function(next) {
+  if (!this.slug && this.titleSEO) {
+    this.slug = generateSlug(this.titleSEO);
+  }
+  next();
+});
 const PostNewsModel = model("Post", PostNewsSchema, "posts");
 const CategoryNewsSchema = new Schema(
   {
@@ -2795,10 +2844,39 @@ const CategoryNewsSchema = new Schema(
     image: { type: String },
     summaryContent: { type: String },
     order: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    titleSEO: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
   },
   { timestamps: true }
 );
+CategoryNewsSchema.index({ slug: 1 }, { unique: true });
+CategoryNewsSchema.index({ isActive: 1, order: 1 });
+CategoryNewsSchema.pre("save", function(next) {
+  if (!this.slug && this.titleSEO) {
+    this.slug = generateSlug(this.titleSEO);
+  }
+  next();
+});
 const CategoryNewsModel = model("CategoryNews", CategoryNewsSchema, "post_categories");
 
 function toPostNewsDTO(entity) {
@@ -2812,6 +2890,11 @@ function toPostNewsDTO(entity) {
     categoryId: entity.categoryId.toString(),
     views: entity.views,
     author: entity.author,
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
     createdAt: entity.createdAt.toISOString(),
     updatedAt: entity.updatedAt.toISOString()
   };
@@ -2828,6 +2911,11 @@ function toCategoryNewsDTO(entity) {
     image: entity.image,
     order: entity.order,
     isActive: entity.isActive,
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
     createdAt: entity.createdAt.toISOString(),
     updatedAt: entity.updatedAt.toISOString()
   };
@@ -2958,9 +3046,22 @@ const toggleActive$3 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const getCategoryBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const category = await CategoryNewsModel.findOne({ slug });
+    if (!category) {
+      return res.status(404).json({ code: 1, message: "Category not found" });
+    }
+    res.json({ code: 0, data: category });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: "Server error" });
+  }
+};
 
 const router$6 = Router();
 router$6.get("/", getAllCategories$1);
+router$6.get("/slug/:slug", getCategoryBySlug);
 router$6.get("/:id", getCategoriesById$1);
 router$6.post("/", createCategories$1);
 router$6.put("/:id", updateCategories$1);

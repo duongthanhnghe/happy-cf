@@ -46,6 +46,7 @@ export const API_ENDPOINTS = {
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',
     GET_BY_ID: (id) => `/categoriesNews/${id}`,
+    GET_BY_SLUG: (slug) => `/categoriesNews/slug/${slug}`,
     CREATE: '/categoriesNews',
     UPDATE: (id) => `/categoriesNews/${id}`,
     DELETE: (id) => `/categoriesNews/${id}`,
@@ -56,6 +57,7 @@ export const API_ENDPOINTS = {
     LIST: '/newsPosts',
     LATEST: (limit) => `/newsPosts/latest?limit=${limit}`,
     GET_BY_ID: (id) => `/newsPosts/${id}`,
+    GET_BY_SLUG: (slug) => `/posts/slug/${slug}`,
     CREATE: '/newsPosts',
     UPDATE: (id) => `/newsPosts/${id}`,
     DELETE: (id) => `/newsPosts/${id}`,

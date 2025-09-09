@@ -6,6 +6,7 @@ import {
 } from '@/stores/users/useAccountStore'
 import PopupBarcode from './PopupBarcode.vue';
 import { useMembershipList } from '@/composables/user/useMembershipList'
+import { ROUTES } from '@/shared/constants/routes';
 
 const { getMembershipList, fetchMembershipList } = useMembershipList()
 const storeAccount = useAccountStore()
@@ -84,7 +85,7 @@ watchEffect(() => {
         <div class="information-account-card text-center">
           <Heading weight="semibold" class="text-center">Dang nhap</Heading>
           <div class="mt-sm mb-sm">Vui long dang nhap</div>
-          <NuxtLink :to="{ path: '/login' }">
+          <NuxtLink :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
             <Button color="black" label="Dang nhap" />
           </NuxtLink>
         </div>

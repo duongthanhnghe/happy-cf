@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  headerTypeLeft: 'name',
+  headerTypeLeft: ROUTES.PUBLIC.HOME.headerTypeLeft,
 })
 
 const storeDisplay = useDisplayStore()

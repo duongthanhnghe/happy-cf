@@ -4,10 +4,11 @@ import {
   useAboutManageStore
 } from '@/stores/about/useAboutManageStore'
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.ABOUT.layout,
+  middleware: ROUTES.ADMIN.ABOUT.middleware,
 })
 
 const store = useAboutManageStore();

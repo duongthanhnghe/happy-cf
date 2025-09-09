@@ -30,8 +30,10 @@ export { requestIdleCallback, cancelIdleCallback } from '#app/compat/idle-callba
 export { setInterval } from '#app/compat/interval';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useUploadImage } from '../composables/useUploadImage';
-export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage } from '../utils/global';
+export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage, generateSlug } from '../utils/global';
+export { useSeoWatchers } from '../utils/seoHandle';
 export { Toast, showSuccess, showToastError, showWarning, showConfirm } from '../utils/toast';
+export { nullRules, nullAndSpecialRules } from '../utils/validation';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/@pinia/nuxt/dist/runtime/composables';
 export { useNuxtDevTools } from '../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
 export { definePageMeta } from '../node_modules/nuxt/dist/pages/runtime/composables';

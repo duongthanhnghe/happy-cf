@@ -9,10 +9,11 @@ import {
 import {
   formatCurrency
 } from '@/utils/global'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.ORDER.layout,
+  middleware: ROUTES.ADMIN.ORDER.middleware,
 })
 
 const store = useOrderManageStore();

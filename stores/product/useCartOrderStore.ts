@@ -15,6 +15,7 @@ import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, Sel
 import type { AddressDTO } from '@/server/types/dto/address.dto'
 import type { CreateOrderBody, cartItems } from '@/server/types/dto/order.dto'
 import { Base64 } from "js-base64";
+import { ROUTES } from '@/shared/constants/routes';
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductStore();
@@ -405,8 +406,9 @@ export const useCartStore = defineStore("Cart", () => {
     deleteCartAll()
   }
 
-  const handleSubmitOk = (idOrder: string) => {
-    router.push({ path: `/order-tracking/${idOrder}` })
+  const handleSubmitOk = (id: string) => {
+    // router.push({ path: `/order-tracking/${idOrder}` })
+    router.push({ path: `${ROUTES.PUBLIC.ORDER_TRACKING}/${id}` })
     handleTogglePopup(false);
     deleteCartAll()
   }

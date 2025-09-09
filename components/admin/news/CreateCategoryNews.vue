@@ -16,28 +16,60 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 <template>
 <Popup popupId="popup-create-category" v-model="store.isTogglePopupAdd" popupHeading="Them danh muc" align="right">
   <template #body>
-    <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
       <div class="portal-popup-footer">
         <Button type="submit" color="primary" label="Luu danh muc" class="w-full" />
       </div>
-        
-        <LabelInput label="Ten danh muc" required/>
-        <v-text-field v-model="store.formItem.categoryName" :counter="200" :rules="store.categoryNameRules" label="Ten danh muc" variant="outlined" required></v-text-field>
-        
-        <LabelInput label="Mo ta"/>
-        <v-textarea v-model="store.formItem.summaryContent" :counter="500" label="Nhap mo ta" variant="outlined"></v-textarea>
-        
-        <LabelInput label="Noi dung"/>
-        <v-textarea v-model="store.formItem.description" label="Nhap noi dung" variant="outlined"></v-textarea>
-        
-        <LabelInput label="Anh dai dien"/>
-        <v-img v-if="store.formItem.image" :src="store.formItem.image" class="mb-sm" alt="Hinh anh" />
-        <div class="flex gap-sm">
-          <v-text-field v-model="store.formItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
-          <Button color="black" :label="store.formItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
-        </div>
-        <v-switch :label="`Tinh trang: ${store.formItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.formItem.isActive" inset
-        ></v-switch>
+      
+      <LabelInput label="Ten danh muc" required/>
+      <v-text-field v-model="store.formItem.categoryName" :rules="store.nullAndSpecialRules" label="Ten danh muc" variant="outlined" required></v-text-field>
+      
+      <LabelInput label="Mo ta"/>
+      <v-textarea v-model="store.formItem.summaryContent" :counter="500" label="Nhap mo ta" variant="outlined"></v-textarea>
+      
+      <LabelInput label="Noi dung"/>
+      <v-textarea v-model="store.formItem.description" label="Nhap noi dung" variant="outlined"></v-textarea>
+      
+      <LabelInput label="Anh dai dien"/>
+      <v-img v-if="store.formItem.image" :src="store.formItem.image" class="mb-sm" alt="Hinh anh" />
+      <div class="flex gap-sm">
+        <v-text-field v-model="store.formItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
+        <Button color="black" :label="store.formItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
+      </div>
+      <v-switch :label="`Tinh trang: ${store.formItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.formItem.isActive" inset
+      ></v-switch>
+
+      <LabelInput label="SEO Title" />
+      <v-text-field
+        v-model="store.formItem.titleSEO"
+        label="SEO Title"
+        variant="outlined"
+      />
+
+      <LabelInput label="SEO Description" />
+      <v-textarea
+        v-model="store.formItem.descriptionSEO"
+        :counter="160"
+        label="SEO Description"
+        variant="outlined"
+      />
+
+      <LabelInput label="Slug (URL)" required/>
+      <v-text-field
+        v-model="store.formItem.slug"
+        label="Slug"
+        variant="outlined"
+        :rules="store.nullRules"
+        required
+      />
+
+      <LabelInput label="Keywords (phân cách bằng dấu ,)" />
+      <v-text-field
+        v-model="store.formItem.keywords"
+        label="Keywords"
+        variant="outlined"
+      />
+
     </v-form>
   </template>
 </Popup>

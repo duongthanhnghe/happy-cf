@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import { ROUTES } from '@/shared/constants/routes';
+
 definePageMeta({
-  headerTypeLeft: 'address',
+  headerTypeLeft: ROUTES.PUBLIC.ORDER.headerTypeLeft,
 })
 </script>
 

@@ -2,9 +2,10 @@
 import { useUserAuthStore } from '@/stores/users/useUserAuthStore'
 import type { SubmitEventPromise } from 'vuetify';
 import { AUTH_TEXT_LOGIN, AUTH_TEXT_REGISTER, AUTH_TEXT_PASSWORD, AUTH_TEXT_USERNAME, AUTH_TEXT_FORGOT_PASSWORD, AUTH_TEXT_LOGIN_GOOGLE, AUTH_TEXT_LOGIN_EMAIL, AUTH_TEXT_REGISTER_HINT } from '@/const/text'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'auth-layout'
+  layout: ROUTES.PUBLIC.LOGIN.layout,
 })
 
 const store = useUserAuthStore();

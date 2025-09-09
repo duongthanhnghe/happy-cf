@@ -9,6 +9,11 @@ export function toPostNewsDTO(entity) {
         categoryId: entity.categoryId.toString(),
         views: entity.views,
         author: entity.author,
+        // SEO
+        titleSEO: entity.titleSEO,
+        descriptionSEO: entity.descriptionSEO,
+        slug: entity.slug,
+        keywords: entity.keywords,
         createdAt: entity.createdAt.toISOString(),
         updatedAt: entity.updatedAt.toISOString(),
     };
@@ -25,6 +30,11 @@ export function toCategoryNewsDTO(entity) {
         image: entity.image,
         order: entity.order,
         isActive: entity.isActive,
+        // SEO
+        titleSEO: entity.titleSEO,
+        descriptionSEO: entity.descriptionSEO,
+        slug: entity.slug,
+        keywords: entity.keywords,
         createdAt: entity.createdAt.toISOString(),
         updatedAt: entity.updatedAt.toISOString(),
     };

@@ -12,9 +12,10 @@ import {
   AUTH_TEXT_PASSWORD_NEW,
   AUTH_TEXT_CONFIRM_PASSWORD,
 } from '@/const/text'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'auth-layout'
+  layout: ROUTES.PUBLIC.RESET_PASSWORD.layout,
 })
 
 const store = useUserAuthStore();

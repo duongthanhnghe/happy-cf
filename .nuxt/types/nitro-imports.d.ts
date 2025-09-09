@@ -44,6 +44,7 @@ declare global {
   const fromPlainHandler: typeof import('../../node_modules/h3')['fromPlainHandler']
   const fromWebHandler: typeof import('../../node_modules/h3')['fromWebHandler']
   const generateBarcode: typeof import('../../server/utils/barcodeGenerator')['generateBarcode']
+  const generateSlug: typeof import('../../server/utils/generateSlug')['generateSlug']
   const getCookie: typeof import('../../node_modules/h3')['getCookie']
   const getHeader: typeof import('../../node_modules/h3')['getHeader']
   const getHeaders: typeof import('../../node_modules/h3')['getHeaders']
@@ -143,4 +144,5 @@ export { appendCorsHeaders, appendCorsPreflightHeaders, appendHeader, appendHead
 export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from '/Users/mac/happy-coffee/node_modules/nuxt/dist/core/runtime/nitro/utils/paths';
 export { defineAppConfig } from '/Users/mac/happy-coffee/node_modules/nuxt/dist/core/runtime/nitro/utils/config';
 export { generateBarcode } from '/Users/mac/happy-coffee/server/utils/barcodeGenerator';
+export { generateSlug } from '/Users/mac/happy-coffee/server/utils/generateSlug';
 export { transporter, sendResetPasswordEmail } from '/Users/mac/happy-coffee/server/utils/mailer';

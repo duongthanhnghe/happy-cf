@@ -5,10 +5,11 @@ import {
 } from '@/stores/news/useCategoryManageStore'
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.NEWS.children?.CATEGORY.layout,
+  middleware: ROUTES.ADMIN.NEWS.children?.CATEGORY.middleware,
 })
 
 const storeFileManage = useFileManageFolderStore();
@@ -82,6 +83,9 @@ onBeforeUnmount(() => {
 
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
+      <NuxtLink :to="`/news/${item.slug}`" target="_blank">
+        <Button color="gray" size="sm" icon="visibility" />
+      </NuxtLink>
       <Button color="gray" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
       <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>

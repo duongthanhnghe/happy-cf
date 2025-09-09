@@ -14,6 +14,8 @@ type LazyComponent<T> = (T & DefineComponent<HydrationStrategies, {}, {}, {}, {}
 interface _GlobalComponents {
       'CreateBanner': typeof import("../components/admin/banners/CreateBanner.vue")['default']
     'UpdateBanner': typeof import("../components/admin/banners/UpdateBanner.vue")['default']
+    'HeaderAdmin': typeof import("../components/admin/layout/HeaderAdmin.vue")['default']
+    'Sidebar': typeof import("../components/admin/layout/Sidebar.vue")['default']
     'CreateCategoryNews': typeof import("../components/admin/news/CreateCategoryNews.vue")['default']
     'CreatePost': typeof import("../components/admin/news/CreatePost.vue")['default']
     'UpdateCategoryNews': typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']
@@ -51,9 +53,7 @@ interface _GlobalComponents {
     'SectionBanner': typeof import("../components/organisms/banner/SectionBanner.vue")['default']
     'Footer': typeof import("../components/organisms/layout/Footer.vue")['default']
     'Header': typeof import("../components/organisms/layout/Header.vue")['default']
-    'HeaderAdmin': typeof import("../components/organisms/layout/HeaderAdmin.vue")['default']
     'MenuBottom': typeof import("../components/organisms/layout/MenuBottom.vue")['default']
-    'Sidebar': typeof import("../components/organisms/layout/Sidebar.vue")['default']
     'SectionNewsLatest': typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']
     'ProductCategoryMenu': typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']
     'UseProductCategoryMenu': typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']
@@ -106,6 +106,8 @@ interface _GlobalComponents {
     'NuxtRouteAnnouncer': typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
       'LazyCreateBanner': LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
     'LazyUpdateBanner': LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
+    'LazyHeaderAdmin': LazyComponent<typeof import("../components/admin/layout/HeaderAdmin.vue")['default']>
+    'LazySidebar': LazyComponent<typeof import("../components/admin/layout/Sidebar.vue")['default']>
     'LazyCreateCategoryNews': LazyComponent<typeof import("../components/admin/news/CreateCategoryNews.vue")['default']>
     'LazyCreatePost': LazyComponent<typeof import("../components/admin/news/CreatePost.vue")['default']>
     'LazyUpdateCategoryNews': LazyComponent<typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']>
@@ -143,9 +145,7 @@ interface _GlobalComponents {
     'LazySectionBanner': LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
     'LazyFooter': LazyComponent<typeof import("../components/organisms/layout/Footer.vue")['default']>
     'LazyHeader': LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
-    'LazyHeaderAdmin': LazyComponent<typeof import("../components/organisms/layout/HeaderAdmin.vue")['default']>
     'LazyMenuBottom': LazyComponent<typeof import("../components/organisms/layout/MenuBottom.vue")['default']>
-    'LazySidebar': LazyComponent<typeof import("../components/organisms/layout/Sidebar.vue")['default']>
     'LazySectionNewsLatest': LazyComponent<typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']>
     'LazyProductCategoryMenu': LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']>
     'LazyUseProductCategoryMenu': LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']>
@@ -204,6 +204,8 @@ declare module 'vue' {
 
 export const CreateBanner: typeof import("../components/admin/banners/CreateBanner.vue")['default']
 export const UpdateBanner: typeof import("../components/admin/banners/UpdateBanner.vue")['default']
+export const HeaderAdmin: typeof import("../components/admin/layout/HeaderAdmin.vue")['default']
+export const Sidebar: typeof import("../components/admin/layout/Sidebar.vue")['default']
 export const CreateCategoryNews: typeof import("../components/admin/news/CreateCategoryNews.vue")['default']
 export const CreatePost: typeof import("../components/admin/news/CreatePost.vue")['default']
 export const UpdateCategoryNews: typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']
@@ -241,9 +243,7 @@ export const ProductItemWishlistTemplate: typeof import("../components/molecules
 export const SectionBanner: typeof import("../components/organisms/banner/SectionBanner.vue")['default']
 export const Footer: typeof import("../components/organisms/layout/Footer.vue")['default']
 export const Header: typeof import("../components/organisms/layout/Header.vue")['default']
-export const HeaderAdmin: typeof import("../components/organisms/layout/HeaderAdmin.vue")['default']
 export const MenuBottom: typeof import("../components/organisms/layout/MenuBottom.vue")['default']
-export const Sidebar: typeof import("../components/organisms/layout/Sidebar.vue")['default']
 export const SectionNewsLatest: typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']
 export const ProductCategoryMenu: typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']
 export const UseProductCategoryMenu: typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']
@@ -296,6 +296,8 @@ export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components
 export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
 export const LazyCreateBanner: LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
 export const LazyUpdateBanner: LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
+export const LazyHeaderAdmin: LazyComponent<typeof import("../components/admin/layout/HeaderAdmin.vue")['default']>
+export const LazySidebar: LazyComponent<typeof import("../components/admin/layout/Sidebar.vue")['default']>
 export const LazyCreateCategoryNews: LazyComponent<typeof import("../components/admin/news/CreateCategoryNews.vue")['default']>
 export const LazyCreatePost: LazyComponent<typeof import("../components/admin/news/CreatePost.vue")['default']>
 export const LazyUpdateCategoryNews: LazyComponent<typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']>
@@ -333,9 +335,7 @@ export const LazyProductItemWishlistTemplate: LazyComponent<typeof import("../co
 export const LazySectionBanner: LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
 export const LazyFooter: LazyComponent<typeof import("../components/organisms/layout/Footer.vue")['default']>
 export const LazyHeader: LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
-export const LazyHeaderAdmin: LazyComponent<typeof import("../components/organisms/layout/HeaderAdmin.vue")['default']>
 export const LazyMenuBottom: LazyComponent<typeof import("../components/organisms/layout/MenuBottom.vue")['default']>
-export const LazySidebar: LazyComponent<typeof import("../components/organisms/layout/Sidebar.vue")['default']>
 export const LazySectionNewsLatest: LazyComponent<typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']>
 export const LazyProductCategoryMenu: LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']>
 export const LazyUseProductCategoryMenu: LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']>

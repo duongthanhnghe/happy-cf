@@ -2,10 +2,11 @@
 import { watch, onBeforeUnmount } from "vue";
 import { usePostManageStore } from '@/stores/news/usePostManageStore';
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.NEWS.children?.POST.layout,
+  middleware: ROUTES.ADMIN.NEWS.children?.POST.middleware,
 })
 
 const store = usePostManageStore();

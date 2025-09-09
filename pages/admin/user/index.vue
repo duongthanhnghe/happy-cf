@@ -5,10 +5,11 @@ import {
   useUserManageStore
 } from '@/stores/users/useUserManageStore'
 import { useMembershipList } from '@/composables/user/useMembershipList'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.USER.layout,
+  middleware: ROUTES.ADMIN.USER.middleware,
 })
 
 const store = useUserManageStore();

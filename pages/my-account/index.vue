@@ -13,11 +13,12 @@ import {
   useWishlistStore
 } from '@/stores/users/useWishlistStore';
 import { useAccountEditStore } from '@/stores/users/useAccountEditStore'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'user-layout',
-  headerTypeLeft: 'logo',
-  middleware: 'auth-login',
+  layout: ROUTES.PUBLIC.MY_ACCOUNT.layout,
+  headerTypeLeft: ROUTES.PUBLIC.MY_ACCOUNT.headerTypeLeft,
+  middleware: ROUTES.PUBLIC.MY_ACCOUNT.middleware,
 })
 
 const store = useAccountStore();

@@ -5,10 +5,11 @@ import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStor
 import {
   copyText
 } from '@/utils/global'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.FILE_MANAGE.layout,
+  middleware: ROUTES.ADMIN.FILE_MANAGE.middleware,
 })
 
 const storeFileManage = useFileManageFolderStore()

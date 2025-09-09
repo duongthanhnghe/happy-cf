@@ -10,6 +10,7 @@ import { useAddressesManageStore } from '@/stores/users/useAddressesStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useAccountStore } from '@/stores/users/useAccountStore';
 import { usePaymentStatus } from '@/composables/order/usePaymentStatus';
+import { ROUTES } from '@/shared/constants/routes';
 
 const { getListPaymentStatus, fetchPaymentStatus } = usePaymentStatus();
 const store = useCartStore();
@@ -30,7 +31,7 @@ const submitOrder = async (event: SubmitEventPromise) => {
 
 const handleBackOrder = () => {
   router.push({ 
-    path: '/order',
+    path: ROUTES.PUBLIC.ORDER.path,
   })
   store.isTogglePopup = false;
 }

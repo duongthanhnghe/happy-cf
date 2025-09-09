@@ -16,13 +16,13 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 <template>
 <Popup popupId="popup-update-category" v-model="store.isTogglePopupUpdate" popupHeading="Sua danh muc" align="right">
   <template #body>
-    <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
+    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
       <div class="portal-popup-footer">
         <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
       </div>
         
       <LabelInput label="Ten danh muc" required/>
-      <v-text-field v-model="store.updateItem.categoryName" :counter="200" :rules="store.categoryNameRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
+      <v-text-field v-model="store.updateItem.categoryName" :counter="200" :rules="store.nullAndSpecialRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
       
       <LabelInput label="Mo ta"/>
       <v-textarea v-model="store.updateItem.summaryContent" :counter="500" label="Nhap mo ta" variant="outlined"></v-textarea>
@@ -38,6 +38,39 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
       </div>
       <v-switch :label="`Tinh trang: ${store.updateItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.updateItem.isActive" inset
         ></v-switch>
+
+      <!-- SEO -->
+        <LabelInput label="SEO Title" />
+        <v-text-field
+          v-model="store.updateItem.titleSEO"
+          :counter="70"
+          label="SEO Title"
+          variant="outlined"
+        />
+
+        <LabelInput label="SEO Description" />
+        <v-textarea
+          v-model="store.updateItem.descriptionSEO"
+          :counter="160"
+          label="SEO Description"
+          variant="outlined"
+        />
+
+        <LabelInput label="Slug (URL)" required/>
+        <v-text-field
+          v-model="store.updateItem.slug"
+          label="Slug"
+          variant="outlined"
+          :rules="store.nullRules"
+        />
+
+        <LabelInput label="Keywords (phân cách bằng dấu ,)" />
+        <v-text-field
+          v-model="store.updateItem.keywords"
+          label="Keywords"
+          variant="outlined"
+        />
+
     </v-form>
   </template>
 </Popup>

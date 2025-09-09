@@ -11,9 +11,10 @@ import {
   AUTH_TEXT_FORGOT_PASSWORD,
   AUTH_TEXT_EMAIL_HINT,
 } from '@/const/text'
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'auth-layout'
+  layout: ROUTES.PUBLIC.FORGOT_PASSWORD.layout,
 })
 
 const store = useUserAuthStore();

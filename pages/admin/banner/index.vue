@@ -5,10 +5,11 @@ import {
 } from '@/stores/banners/useBannerManageStore'
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.BANNER.layout,
+  middleware: ROUTES.ADMIN.BANNER.middleware,
 })
 
 const store = useBannerManageStore();

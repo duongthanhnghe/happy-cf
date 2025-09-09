@@ -6,6 +6,12 @@ export interface CategoryNewsDTO {
   summaryContent?: string
   order: number
   isActive: boolean
+  // SEO
+  titleSEO?: string
+  descriptionSEO?: string
+  slug: string
+  keywords?: string[]
+
   createdAt: string
   updatedAt: string
 }
@@ -26,6 +32,12 @@ export interface PostNewsDTO {
   isActive: boolean
   views: number
   author: string
+  // SEO
+  titleSEO: string
+  descriptionSEO: string
+  slug: string
+  keywords?: string[]
+  
   createdAt: string
   updatedAt: string
 }

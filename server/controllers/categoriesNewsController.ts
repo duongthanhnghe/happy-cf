@@ -147,3 +147,16 @@ export const toggleActive = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message })
   }
 }
+
+export const getCategoryBySlug = async (req: Request, res: Response) => {
+  try {
+    const { slug } = req.params;
+    const category = await CategoryNewsModel.findOne({ slug });
+    if (!category) {
+      return res.status(404).json({ code: 1, message: "Category not found" });
+    }
+    res.json({ code: 0, data: category });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: "Server error" });
+  }
+};

@@ -69,6 +69,16 @@ export const newsAPI = {
     }
   },
 
+  getCategoryBySlug: async (slug: string): Promise<ApiResponse<CategoryNewsDTO>> => {
+    try {
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES_NEWS.GET_BY_SLUG(slug)}`)
+      return await response.json()
+    } catch (err: any) {
+      console.error(`Error fetching category with slug ${slug}:`, err)
+      return { code: 1, message: err.message ?? "Failed to fetch category by slug", data: null as any }
+    }
+  },
+
   updateCategory: async (id: string, bodyData: UpdateCategoryNewsDTO): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES_NEWS.UPDATE(id)}`, {

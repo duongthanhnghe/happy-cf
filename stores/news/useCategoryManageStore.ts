@@ -1,8 +1,9 @@
 import { ref, reactive, watch, computed } from "vue";
 import { defineStore } from "pinia";
 import { newsAPI } from "@/services/news.service";
+import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 import {
-  Loading
+  Loading, generateSlug
 } from '@/utils/global'
 import type { CategoryNewsDTO, CreateCategoryNewsDTO, UpdateCategoryNewsDTO } from '@/server/types/dto/news.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
@@ -12,6 +13,7 @@ import { useNewsCategoryDetail } from '@/composables/news/useNewsCategoryDetail'
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
+import { useSeoWatchers } from "@/utils/seoHandle";
 
 export const useCategoryManageStore = defineStore("CategoryNewsManage", () => {
 
@@ -20,38 +22,22 @@ const { getDetailNewsCategoryApi, fetchDetailNewsCategory } = useNewsCategoryDet
 const storeFileManage = useFileManageFolderStore();
   
 //state global  
-const valid = ref<boolean>(false)
-const categoryNameRules = [
-  (value:string) => {
-    if (value) return true
-    return 'Ten khong duoc trong'
-  },
-  (value:string) => {
-    if (value?.length <= 200) return true
-    return 'Ten khong duoc qua 10 ky tu'
-  },
-  (value:string) => {
-    const regex = /^[\p{L}0-9\s]+$/u
-    if (regex.test(value)) return true
-    return 'Ten khong duoc chua ky tu dac biet'
-  }
-]
-
-const formItem = reactive<CreateCategoryNewsDTO>({
+const defaultForm: CreateCategoryNewsDTO = {
   categoryName: '',
   description: '',
   image: '',
   summaryContent: '',
-  isActive: false
-});
+  isActive: false,
+  // SEO
+  titleSEO: '',
+  descriptionSEO: '',
+  slug: '',
+  keywords: []
+};
 
-const updateItem = reactive<UpdateCategoryNewsDTO>({
-  categoryName: '',
-  description: '',
-  image: '',
-  summaryContent: '',
-  isActive: false
-});
+const formItem = reactive<CreateCategoryNewsDTO>({ ...defaultForm })
+
+const updateItem = reactive<CreateCategoryNewsDTO>({ ...defaultForm })
 
 //state list
 const dataList = ref<CategoryNewsDTO[] | null>(null);
@@ -159,16 +145,8 @@ const ListAllCategoryApi = {
   };
 
   const handleResetForm = () => {
-    formItem.categoryName = ''
-    formItem.description = ''
-    formItem.summaryContent = ''
-    formItem.image = ''
-
-    //update
-    updateItem.categoryName = ''
-    updateItem.description = ''
-    updateItem.summaryContent = ''
-    updateItem.image = ''
+    Object.assign(formItem, defaultForm)
+    Object.assign(updateItem, defaultForm)
   }
 
   const handleReload = async () => {
@@ -274,17 +252,20 @@ const ListAllCategoryApi = {
     target.image = newValue.url
   })
 
+  // SEO
+  useSeoWatchers(formItem, { sourceKey: 'categoryName', autoSlug: true, autoTitleSEO: true })
+  useSeoWatchers(updateItem, { sourceKey: 'categoryName', autoSlug: true, autoTitleSEO: true })
+
   const getListOrder = computed(() => {
     return Array.from({ length: maxOrder.value }, (_, i) => i + 1)
   })
 
   return {
-    // state
-    valid,
     dataList,
     isTogglePopupAdd,
     isTogglePopupUpdate,
-    categoryNameRules,
+    nullAndSpecialRules,
+    nullRules,
     detailData,
     formItem,
     updateItem,

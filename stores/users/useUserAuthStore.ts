@@ -10,7 +10,7 @@ import { jwtDecode } from 'jwt-decode'
 import { showWarning, showSuccess } from "@/utils/toast";
 import type { UserRegister, ResetPassword, MyJwtPayload } from '@/server/types/dto/user.dto'
 import { useAccountStore } from '@/stores/users/useAccountStore'
-
+import { ROUTES } from '@/shared/constants/routes';
 
 export const useUserAuthStore = defineStore("UserAuth", () => {
 
@@ -85,7 +85,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         const decoded = jwtDecode<MyJwtPayload>(data.data.token) 
         storeAccount.handleGetDetailAccount(decoded.id)
         setTimeout(function(){
-          router.push({ path: '/' })
+          router.push({ path: ROUTES.PUBLIC.HOME.path })
         }, 2000);
       } else {
         showWarning(data.message);
@@ -114,7 +114,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         showSuccess(data.message);
         handleResetFormUserItem()
         setTimeout(function(){
-          router.push({ name: 'login' })
+          router.push({ path: ROUTES.PUBLIC.LOGIN.path })
         }, 3000);
         showWarning('Vui long nhap day du thong tin!');
       }
@@ -166,7 +166,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
           newPassword.value = ''
           newPasswordConfirm.value = ''
           setTimeout(function(){
-            router.push({ name: 'login' })
+            router.push({ path: ROUTES.PUBLIC.LOGIN.path })
           }, 3000);
         } else {
           newPassword.value = ''

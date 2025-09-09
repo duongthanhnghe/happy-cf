@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/autoplay';
 import { watch } from 'vue';
 import {
   useDisplayStore
@@ -11,11 +14,8 @@ import {
   Navigation,
   Autoplay
 } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/autoplay';
-
 import { useProductMostOrder } from '@/composables/product/useProductMostOrder'
+import { ROUTES } from '@/shared/constants/routes';
 
 const { getListProductMostOrder, fetchListProductMostOrder } = useProductMostOrder()
 const storeDisplay = useDisplayStore()
@@ -47,7 +47,7 @@ watch(() => getListProductMostOrder.value, (newValue) => {
   <Heading v-if="props.headingText" tag="h2" size="xl" weight="semibold" class="black flex justify-between mb-sm">
     {{ props.headingText }}
     <slot>
-    <router-link v-if="props.viewMore" :to="{ path: '/order' }" class="mr-ms">
+    <router-link v-if="props.viewMore" :to="{ path: ROUTES.PUBLIC.ORDER.path }" class="mr-ms">
       <Button size="xs" color="secondary" icon="keyboard_arrow_right"/>
     </router-link>
     </slot>

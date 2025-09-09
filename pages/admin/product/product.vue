@@ -8,10 +8,11 @@ import {
   formatCurrency
 } from '@/utils/global'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
+import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'admin-role',
+  layout: ROUTES.ADMIN.PRODUCT.children?.LIST.layout,
+  middleware: ROUTES.ADMIN.PRODUCT.children?.LIST.middleware,
 })
 
 const store = useProductManageStore();
