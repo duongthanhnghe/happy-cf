@@ -86,6 +86,14 @@ declare module 'nuxt/schema' {
    },
   }
   interface PublicRuntimeConfig {
+   siteUrl: string,
+
+   siteName: string,
+
+   siteDescription: string,
+
+   siteImage: string,
+
    cloudinaryCloudName: string,
   }
 }

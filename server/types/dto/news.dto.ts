@@ -47,3 +47,11 @@ export type CreatePostNewsDTO = Omit<PostNewsDTO, "id" | "createdAt" | "updatedA
 export type UpdatePostNewsDTO = Partial<Omit<CreatePostNewsDTO, "createdAt" | "updatedAt">>
 
 export type IdPostNews = { id: string }
+
+//pagination
+// export interface PostNewsPaginationDTO {
+//   page: number,
+//   limit: number,
+//   total: number,
+//   totalPages: number,
+// }

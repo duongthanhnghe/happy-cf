@@ -7,10 +7,12 @@ import {
   deletePosts,
   getPostsLatest,
   toggleActive,
+  getPostsByCategory,
 } from '../controllers/postNewsController'
 
 const router = Router()
 
+router.get('/category/:categoryId', getPostsByCategory)
 router.get('/',          getAllPosts)
 router.get('/latest', getPostsLatest)
 router.get('/:id',       getPostsById)

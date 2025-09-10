@@ -23,11 +23,25 @@ export default defineNuxtConfig({
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
     
     public: {
+      siteUrl: process.env.DOMAIN || 'Website',
+      siteName: 'Happy Coffee',
+      siteDescription: 'Mô tả website',
+      siteImage: '/assets/logo.png',
       cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME
     }
   },
   app: {
     head: {
+      htmlAttrs: {
+        lang: 'vi'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'author', content: 'Happy Coffee' },
+        { property: 'og:site_name', content: 'Happy Coffee' },
+        { property: 'og:locale', content: 'vi_VN' }
+      ],
       script: [
         {
           src: "https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js",

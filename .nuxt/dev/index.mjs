@@ -656,6 +656,10 @@ const _inlineRuntimeConfig = {
     }
   },
   "public": {
+    "siteUrl": "http://0.0.0.0:3000",
+    "siteName": "Happy Coffee",
+    "siteDescription": "Mô tả website",
+    "siteImage": "/assets/logo.png",
     "cloudinaryCloudName": "dl8wwezqp"
   },
   "cloudinaryApiKey": "785428416695536",
@@ -1037,7 +1041,7 @@ const _Iy5esgeLoAxjrauMyKWVqYk1CX4hTYMbGYOo1jwFkv4 = (function(nitro) {
 
 const rootDir = "/Users/mac/happy-coffee";
 
-const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[{"rel":"stylesheet","href":"https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@100..700"}],"style":[],"script":[{"src":"https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js","defer":true},{"innerHTML":"\n            document.addEventListener(\"DOMContentLoaded\", function() { \n              const div = document.createElement(\"div\"); \n              div.id = \"loader\"; \n              div.className = \"loader\"; \n              div.innerHTML = '<div class=\"loader-icon\"></div>'; \n              document.body.insertBefore(div, document.body.firstChild); \n            });\n          ","type":"text/javascript"}],"noscript":[]};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"author","content":"Happy Coffee"},{"property":"og:site_name","content":"Happy Coffee"},{"property":"og:locale","content":"vi_VN"}],"link":[{"rel":"stylesheet","href":"https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@100..700"}],"style":[],"script":[{"src":"https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js","defer":true},{"innerHTML":"\n            document.addEventListener(\"DOMContentLoaded\", function() { \n              const div = document.createElement(\"div\"); \n              div.id = \"loader\"; \n              div.className = \"loader\"; \n              div.innerHTML = '<div class=\"loader-icon\"></div>'; \n              document.body.insertBefore(div, document.body.firstChild); \n            });\n          ","type":"text/javascript"}],"noscript":[],"htmlAttrs":{"lang":"vi"}};
 
 const appRootTag = "div";
 
@@ -1131,16 +1135,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"24c5d-6eEG+hol+uPFcvLcRSmHu8YEivQ\"",
-    "mtime": "2025-09-09T07:53:36.527Z",
-    "size": 150621,
+    "etag": "\"250dd-gPjmS3PkBlgRAkhOJiZXBwsslRM\"",
+    "mtime": "2025-09-09T16:15:35.568Z",
+    "size": 151773,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"8c13d-wXtQKHME+VwUJ9OzBt3RnArlYHo\"",
-    "mtime": "2025-09-09T07:53:36.529Z",
-    "size": 573757,
+    "etag": "\"8d17b-GKyO4aj4M6bbZ4N0P2V3srxL5vU\"",
+    "mtime": "2025-09-09T16:15:35.570Z",
+    "size": 577915,
     "path": "index.mjs.map"
   }
 };
@@ -3053,7 +3057,7 @@ const getCategoryBySlug = async (req, res) => {
     if (!category) {
       return res.status(404).json({ code: 1, message: "Category not found" });
     }
-    res.json({ code: 0, data: category });
+    res.json({ code: 0, data: toCategoryNewsDTO(category) });
   } catch (err) {
     res.status(500).json({ code: 1, message: "Server error" });
   }
@@ -3808,8 +3812,31 @@ const toggleActive$1 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const getPostsByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+    const query = { categoryId };
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
 
 const router$2 = Router();
+router$2.get("/category/:categoryId", getPostsByCategory);
 router$2.get("/", getAllPosts);
 router$2.get("/latest", getPostsLatest);
 router$2.get("/:id", getPostsById);

@@ -93,3 +93,33 @@ export const toggleActive = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message })
   }
 }
+
+export const getPostsByCategory = async (req: Request, res: Response) => {
+  try {
+    const { categoryId } = req.params
+    const page = parseInt(req.query.page as string, 10) || 1
+    const limit = parseInt(req.query.limit as string, 10) || 10
+    const skip = (page - 1) * limit
+
+    const query = { categoryId }
+
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+    ])
+
+    const totalPages = Math.ceil(total / limit)
+
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: 'Success'
+    })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}

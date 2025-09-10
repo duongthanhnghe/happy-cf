@@ -62,6 +62,7 @@ export const API_ENDPOINTS = {
     UPDATE: (id) => `/newsPosts/${id}`,
     DELETE: (id) => `/newsPosts/${id}`,
     TOGGLE_ACTIVE: (id) => `/newsPosts/toggleActive/${id}`,
+    GET_BY_CATEGORY: (categoryId) => `/newsPosts/category/${categoryId}`,
   },
   BANNERS: {
     LIST: '/banners',

@@ -102,7 +102,7 @@ body .bg {
 }
 
 .weight-semibold {
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 .weight-bold {
@@ -1528,16 +1528,32 @@ margin: 0.25rem 0 !important;
   margin: -10px;
 }
 .v-select-order {
-  max-width: $space-xl;
+  max-width: calc($space-xl + 20px);
+  .v-field__overlay {
+    background: transparent !important;
+  }
   .v-field__append-inner {
     display: none !important;
   }
   .v-field--appended {
     padding-inline-end: 0 !important;
   }
+  .v-input__append {
+    z-index: -1;
+  }
   .v-field__input {
-    padding: 0 !important;
+    padding: 0 1rem 0 0 !important;
     justify-content: center !important;
+  }
+  .icon {
+    font-size: 24px !important;
+    margin-top: -1px;
+    transition: 0.4s all;
+  }
+  &.v-select--active-menu {
+    .icon {
+      rotate: 180deg;
+    }
   }
 }
 

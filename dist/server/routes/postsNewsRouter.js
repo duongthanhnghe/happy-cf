@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { getAllPosts, getPostsById, createPosts, updatePosts, deletePosts, getPostsLatest, toggleActive, } from '../controllers/postNewsController.js';
+import { getAllPosts, getPostsById, createPosts, updatePosts, deletePosts, getPostsLatest, toggleActive, getPostsByCategory, } from '../controllers/postNewsController.js';
 const router = Router();
+router.get('/category/:categoryId', getPostsByCategory);
 router.get('/', getAllPosts);
 router.get('/latest', getPostsLatest);
 router.get('/:id', getPostsById);

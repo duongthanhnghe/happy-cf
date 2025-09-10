@@ -18,7 +18,6 @@ export function useSeoWatchers<T extends SeoFields & Record<string, any>>(
 ) {
   const { sourceKey, autoTitleSEO = true, autoSlug = true } = options
 
-  // khi thay đổi source field → cập nhật SEO
   watch(
     () => item[sourceKey],
     (newValue: string, oldValue: string) => {
@@ -34,7 +33,6 @@ export function useSeoWatchers<T extends SeoFields & Record<string, any>>(
     }
   )
 
-  // khi người dùng gõ slug thủ công → chuẩn hóa
   // if (autoSlug) {
     watch(() => item.slug, (newValue: string | undefined) => {
         if (!newValue) return

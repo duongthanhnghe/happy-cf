@@ -136,7 +136,7 @@ export const getCategoryBySlug = async (req, res) => {
         if (!category) {
             return res.status(404).json({ code: 1, message: "Category not found" });
         }
-        res.json({ code: 0, data: category });
+        res.json({ code: 0, data: toCategoryNewsDTO(category) });
     }
     catch (err) {
         res.status(500).json({ code: 1, message: "Server error" });

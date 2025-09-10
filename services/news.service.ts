@@ -303,4 +303,36 @@ export const newsAPI = {
       }
     }
   },
+  getPostsByCategory: async (
+    id: string,
+    page: number,
+    limit: number
+  ): Promise<ApiResponse<{ posts: PostNewsDTO[]; pagination: { page: number; limit: number; total: number; totalPages: number } }>> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.NEWS_POSTS.GET_BY_CATEGORY(id)}?page=${page}&limit=${limit}`
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        return {
+          code: 1,
+          message: errorData.message || "Failed to fetch posts by category",
+          data: { posts: [], pagination: { page, limit, total: 0, totalPages: 0 } }
+        }
+      }
+
+      const data: ApiResponse<{ posts: PostNewsDTO[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> =
+        await response.json()
+
+      return data
+    } catch (err: any) {
+      console.error(`Error fetching posts by category slug "${id}":`, err)
+      return {
+        code: 1,
+        message: err.message || "Unexpected error while fetching posts by category",
+        data: { posts: [], pagination: { page, limit, total: 0, totalPages: 0 } }
+      }
+    }
+  },
 }
