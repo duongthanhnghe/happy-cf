@@ -44,6 +44,11 @@ export function toCategoryProductDTO(entity) {
         image: entity.image,
         order: entity.order,
         isActive: entity.isActive,
+        // SEO
+        titleSEO: entity.titleSEO,
+        descriptionSEO: entity.descriptionSEO,
+        slug: entity.slug,
+        keywords: entity.keywords,
         createdAt: ((_b = entity.createdAt) === null || _b === void 0 ? void 0 : _b.toISOString()) || "",
         updatedAt: ((_c = entity.updatedAt) === null || _c === void 0 ? void 0 : _c.toISOString()) || "",
     };

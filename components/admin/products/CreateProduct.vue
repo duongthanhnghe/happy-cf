@@ -14,16 +14,16 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 
 <Popup popupId="popup-create-product" v-model="store.isTogglePopupAdd" popupHeading="Them san pham" align="right">
   <template #body>
-    <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
       <div class="portal-popup-footer">
         <Button type="submit" color="primary" label="Luu moi" class="w-full" />
       </div>
         <LabelInput label="Ten san pham" required/>
-        <v-text-field v-model="store.formProductItem.productName" :counter="100" :rules="store.productNameRules" label="Nhap ten san pham" variant="outlined" required></v-text-field>
+        <v-text-field v-model="store.formProductItem.productName" :counter="100" :rules="store.nullAndSpecialRules" label="Nhap ten san pham" variant="outlined" required></v-text-field>
         <div class="row">
           <div class="col-6">
             <LabelInput label="Gia goc" required/>
-            <v-text-field v-model="store.formProductItem.price" :rules="store.productNumberRules" type="number" label="0" variant="outlined"></v-text-field>
+            <v-text-field v-model="store.formProductItem.price" :rules="store.nullRules" type="number" label="0" variant="outlined"></v-text-field>
           </div>
           <div class="col-6">
             <LabelInput label="Gia khuyen mai" required/>
@@ -31,7 +31,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           </div>
           <div class="col-6">
             <LabelInput label="So luong" required/>
-            <v-text-field v-model="store.formProductItem.amount" :rules="store.productNumberRules" type="number" label="Nhap so luong" variant="outlined"></v-text-field>
+            <v-text-field v-model="store.formProductItem.amount" :rules="store.nullRules" type="number" label="Nhap so luong" variant="outlined"></v-text-field>
           </div>
           <div class="col-6 flex gap-sm align-anchor">
             <div class="flex-1">
@@ -42,7 +42,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
                 item-title="categoryName"
                 item-value="id"
                 variant="solo"
-                :rules="[value => !!value || 'Vui lòng chọn danh mục']"
+                :rules="store.nullRules"
               />
             </div>
             <Button icon="add" color="secondary" class="mt-xs" @click.stop.prevent="store.openPopupAddCategory()" />
@@ -53,7 +53,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
         <LabelInput label="Mo ta"/>
         <v-textarea v-model="store.formProductItem.summaryContent" :counter="500" label="Nhap mo ta" variant="outlined"></v-textarea>
         <LabelInput label="Anh dai dien" required/>
-        <v-img v-if="store.formProductItem.image" :src="store.formProductItem.image" class="mb-sm" alt="Hinh anh" />
+        <v-img v-if="store.formProductItem.image" :src="store.formProductItem.image" :rules="store.nullRules" class="mb-sm" alt="Hinh anh" required/>
         <div class="flex gap-sm">
           <v-text-field v-model="store.formProductItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
           <Button color="black" :label="store.formProductItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>

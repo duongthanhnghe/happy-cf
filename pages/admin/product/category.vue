@@ -73,6 +73,9 @@ onBeforeUnmount(() => {
 
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
+        <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${item.slug}`" target="_blank">
+          <Button color="gray" size="sm" icon="visibility" />
+        </NuxtLink>
         <Button color="gray" size="sm" icon="edit" @click="store.handleEditCategory(item.id.toString())" />
         <Button color="gray" size="sm" icon="delete" @click="store.handleDeleteCategory(item.id.toString())" />
       </div>

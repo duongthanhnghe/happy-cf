@@ -80,13 +80,13 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
       const data = await usersAPI.Login(dataLogin)
       if (data.code === 0 && data.data.token) {
         localStorage.setItem('token', data.data.token);
-        showSuccess(data.message);
+        // showSuccess(data.message);
         handleResetFormUserItem()
         const decoded = jwtDecode<MyJwtPayload>(data.data.token) 
         storeAccount.handleGetDetailAccount(decoded.id)
         setTimeout(function(){
           router.push({ path: ROUTES.PUBLIC.HOME.path })
-        }, 2000);
+        }, 500);
       } else {
         showWarning(data.message);
       }
@@ -115,8 +115,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         handleResetFormUserItem()
         setTimeout(function(){
           router.push({ path: ROUTES.PUBLIC.LOGIN.path })
-        }, 3000);
-        showWarning('Vui long nhap day du thong tin!');
+        }, 1000);
       }
       else showWarning(data.message);
       Loading(false);

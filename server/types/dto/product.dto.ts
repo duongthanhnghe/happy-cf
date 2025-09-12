@@ -36,7 +36,7 @@ export interface ProductDTO {
   updatedAt: string;
 }
 
-export type PostProductPaginationDTO = PaginationDTO<ProductDTO>
+export type ProductPaginationDTO = PaginationDTO<ProductDTO>
 
 export interface CategoryProductDTO {
   id: string;
@@ -45,6 +45,12 @@ export interface CategoryProductDTO {
   image: string;
   order: number;
   isActive: boolean;
+  //SEO
+  titleSEO: string;
+  descriptionSEO: string;
+  slug: string;
+  keywords?: string[]
+  canonicalUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -70,7 +76,7 @@ export type UpdateCategoryProductDTO = Partial<Omit<CreateCategoryProductDTO, "c
 
 
 export interface CategoryWithProductsDTO extends CategoryProductDTO {
-  products: ProductDTO[]
+  products: ProductPaginationDTO
 }
 
 export interface SelectedOptionPushDTO {
@@ -91,3 +97,4 @@ export interface CartDTO extends ProductDTO {
 export type SelectedOptionDTO = SelectedOptionPushDTO & {id: string}
 
 export type SelectedOptionMap = Record<string, string>;
+

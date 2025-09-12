@@ -45,7 +45,6 @@ const updatePostItem = reactive<CreatePostNewsDTO>({ ...defaultForm })
 
 //state list
 const dataList = ref<PostNewsDTO[]| null>(null);
-// const itemsPerPage = 10
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Hinh anh', key: 'image', sortable: false, },
@@ -64,7 +63,7 @@ const dataList = ref<PostNewsDTO[]| null>(null);
   const search = ref<string>('')
   const currentTableOptions = ref<TableOpt>({
   page: 1,
-  itemsPerPage: 3,
+  itemsPerPage: 20,
   sortBy: [],
 })
 const filterCategory = ref<string>()

@@ -8,11 +8,13 @@ import {
   getProductsByCategory,
   toggleActive,
   updateOrder,
+  getCategoriesBySlug,
 } from '../controllers/categoriesProductController.js'
 
 const router = Router()
 
 router.get('/',          getAllCategories)
+router.get('/slug/:slug',    getCategoriesBySlug)
 router.get('/:id',       getCategoriesById)
 router.post('/',         createCategories)
 router.put('/:id',       updateCategories)

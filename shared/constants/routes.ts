@@ -200,6 +200,13 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
           middleware: [],
           layout: 'default',
         },
+        CATEGORY: {
+          path: '/product-category',
+          label: 'Danh mục sản phẩm',
+          icon: 'description',
+          middleware: ['category-product-detail'],
+          layout: 'default',
+        },
         DETAIL: {
           path: '/products/:id',
           label: 'Chi tiết sản phẩm',

@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
   CATEGORIES: {
     LIST: '/categories',
     GET_BY_ID: (id) => `/categories/${id}`,
+    GET_BY_SLUG: (slug) => `/categories/slug/${slug}`,
     CREATE: '/categories',
     UPDATE: (id) => `/categories/${id}`,
     DELETE: (id) => `/categories/${id}`,

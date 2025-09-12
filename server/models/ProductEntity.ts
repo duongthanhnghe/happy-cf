@@ -46,6 +46,12 @@ export interface CategoryProduct {
   image: string;
   order: number;
   isActive: boolean;
+  //SEO
+  titleSEO: string;
+  descriptionSEO: string;
+  slug: string;
+  canonicalUrl?: string;
+  keywords?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -103,6 +109,27 @@ const CategoryProductSchema = new Schema<CategoryProduct>(
     image: { type: String, required: true },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
+    titleSEO: {
+      type: String,
+      trim: true,
+      required: true,
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, 'Slug chỉ được chứa chữ thường, số và dấu gạch ngang']
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
   },
   { timestamps: true }
 );

@@ -25,6 +25,23 @@ export const getCategoriesById = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
+export const getCategoriesBySlug = async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const category = await CategoryProductEntity.findOne({ slug }).lean();
+        if (!category) {
+            return res.status(404).json({ code: 1, message: "Danh mục không tồn tại" });
+        }
+        return res.json({
+            code: 0,
+            data: toCategoryProductDTO(category),
+            message: "Success",
+        });
+    }
+    catch (err) {
+        return res.status(500).json({ code: 1, message: err.message });
+    }
+};
 export const createCategories = async (req, res) => {
     try {
         const { categoryName, image } = req.body;
@@ -93,8 +110,28 @@ export const getProductsByCategory = async (req, res) => {
             return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
         }
         const categoryId = new Types.ObjectId(req.params.id);
-        const products = await ProductEntity.find({ categoryId }).lean();
-        return res.json({ code: 0, data: toProductListDTO(products) });
+        const page = parseInt(req.query.page, 10) || 1;
+        let limit = parseInt(req.query.limit, 10) || 10;
+        // lấy tất cả nếu limit = -1
+        if (limit === -1) {
+            limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
+        }
+        const skip = (page - 1) * limit;
+        const [total, products] = await Promise.all([
+            ProductEntity.countDocuments({ categoryId, isActive: true }),
+            ProductEntity.find({ categoryId, isActive: true })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+        ]);
+        const totalPages = Math.ceil(total / limit);
+        return res.json({
+            code: 0,
+            data: toProductListDTO(products),
+            pagination: { page, limit, total, totalPages },
+            message: "Success",
+        });
     }
     catch (err) {
         return res.status(500).json({ code: 1, message: err.message });

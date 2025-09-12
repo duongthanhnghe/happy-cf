@@ -53,6 +53,19 @@ export const categoriesAPI = {
       throw err
     }
   },
+  getDetailBySlug: async (slug: string) => {
+    try {
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.GET_BY_SLUG(slug)}`)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch category with ID ${slug}`)
+      }
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error(`Error getting category detail with ID ${slug}:`, err)
+      throw err
+    }
+  },
   update: async (id: string, bodyData: UpdateCategoryProductDTO) => {
     try {
 
@@ -95,13 +108,24 @@ export const categoriesAPI = {
       throw err
     }
   },
-  getListByCategory: async (id:string) => {
+  getListByCategory: async (id: string, page: number, limit: number) => {
     try {
-      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}`)
-      const { data } = await res.json()
-      return data
+      const res = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}?page=${page}&limit=${limit}`
+      )
+
+      const result = await res.json()
+      if (result.code !== 0) {
+        throw new Error(result.message || 'Lỗi khi lấy sản phẩm theo danh mục')
+      }
+
+      return {
+        code: 0,
+        data: result.data,           // danh sách sản phẩm
+        pagination: result.pagination // thông tin phân trang: page, totalPages, total, limit ...
+      }
     } catch (err) {
-      console.error('Error fetching all products:', err)
+      console.error('Error fetching products by category:', err)
       throw err
     }
   },

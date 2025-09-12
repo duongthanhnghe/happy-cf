@@ -36,6 +36,28 @@ export const getCategoriesById = async (req: Request<{ id: string }>, res: Respo
   }
 };
 
+export const getCategoriesBySlug = async (
+  req: Request<{ slug: string }>,
+  res: Response
+) => {
+  try {
+    const { slug } = req.params;
+
+    const category = await CategoryProductEntity.findOne({ slug }).lean();
+    if (!category) {
+      return res.status(404).json({ code: 1, message: "Danh mục không tồn tại" });
+    }
+
+    return res.json({
+      code: 0,
+      data: toCategoryProductDTO(category),
+      message: "Success",
+    });
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
 export const createCategories = async (req: Request<{}, {}, CreateCategoryProductBody>, res: Response) => {
   try {
     const { categoryName, image } = req.body;
@@ -114,16 +136,44 @@ export const deleteCategories = async (req: Request<{ id: string }>, res: Respon
   }
 };
 
-export const getProductsByCategory = async (req: Request<{ id: string }>, res: Response) => {
+export const getProductsByCategory = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
   try {
     if (!Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
     }
 
     const categoryId = new Types.ObjectId(req.params.id);
-    const products = await ProductEntity.find({ categoryId }).lean();
 
-    return res.json({ code: 0, data: toProductListDTO(products) });
+    const page = parseInt(req.query.page as string, 10) || 1;
+    let limit = parseInt(req.query.limit as string, 10) || 10;
+
+    // lấy tất cả nếu limit = -1
+    if (limit === -1) {
+      limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [total, products] = await Promise.all([
+      ProductEntity.countDocuments({ categoryId, isActive: true }),
+      ProductEntity.find({ categoryId, isActive: true })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return res.json({
+      code: 0,
+      data: toProductListDTO(products),
+      pagination: { page, limit, total, totalPages },
+      message: "Success",
+    });
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message });
   }

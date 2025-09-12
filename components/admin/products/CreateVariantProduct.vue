@@ -2,6 +2,7 @@
 import {
   useProductManageStore
 } from '@/stores/product/useProductManageStore'
+import { showWarning } from '@/utils/toast';
 import type { SubmitEventPromise } from 'vuetify';
 
 const store = useProductManageStore();
@@ -9,7 +10,7 @@ const store = useProductManageStore();
 const handleSubmitCreateOption = async (event: SubmitEventPromise) => {
   const result = await event
   if (!result.valid){
-    alert('Vui long nhap day du thong tin');
+    showWarning('Vui long nhap day du thong tin');
     return
   }
   await store.handleSubmitCreateOption()
@@ -20,7 +21,7 @@ const handleSubmitCreateOption = async (event: SubmitEventPromise) => {
 <Popup children popupId="popup-create-variant-product" v-model="store.isTogglePopupAddVariant" popupHeading="Bien the san pham" align="right">
   <template #body>
     <v-form v-model="store.validOptions" validate-on="submit lazy" @submit.prevent="handleSubmitCreateOption">
-        <div v-for="(optionItem, index) in store.updateProductItem._id != '' ? store.updateProductItem.options : store.formProductItem.options" :key="index" class="mb-md">
+        <div v-for="(optionItem, index) in store.updateProductItem.id != '' ? store.updateProductItem.options : store.formProductItem.options" :key="index" class="mb-md">
           <Heading v-if="optionItem.name" tag="div" size="md" weight="semibold" class="black mb-xs">
             Nhom: {{ optionItem.name }}
           </Heading>
@@ -28,7 +29,7 @@ const handleSubmitCreateOption = async (event: SubmitEventPromise) => {
             <div class="flex gap-sm align-anchor ">
               <div class="flex-1">
                 <LabelInput label="Ten nhom bien the" required/>
-                <v-text-field v-model="optionItem.name" :counter="50" :rules="store.optionNameRules" label="Nhap ten nhom" variant="outlined" required></v-text-field>
+                <v-text-field v-model="optionItem.name" :counter="50" :rules="store.nullRules" label="Nhap ten nhom" variant="outlined" required></v-text-field>
               </div>
               <div>
                 <LabelInput label="Bat buoc?"/>
@@ -40,7 +41,7 @@ const handleSubmitCreateOption = async (event: SubmitEventPromise) => {
             <div v-for="(variantItem, indexVariant) in optionItem.variants" :key="indexVariant" class="flex justify-between align-anchor gap-sm">
               <div class="flex-1">
               <LabelInput label="Ten bien the" required/>
-              <v-text-field v-model="variantItem.name" :counter="50" :rules="store.variantNameRules" label="Nhap ten" variant="outlined" required></v-text-field>
+              <v-text-field v-model="variantItem.name" :counter="50" :rules="store.nullRules" label="Nhap ten" variant="outlined" required></v-text-field>
               </div>
               <div>
                 <LabelInput label="Gia cong them"/>

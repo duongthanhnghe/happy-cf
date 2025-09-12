@@ -1,10 +1,10 @@
 import { useSettingStore } from '@/stores/setting/useSettingStore'
 
-export const useCategoryNewsSEO = () => {
+export const useCategoryProductSEO = () => {
   const configRuntime = useRuntimeConfig()
   const settingStore = useSettingStore()
 
-  const setCategoryNewsSEO = (category: any, routePath: string) => {
+  const setCategoryProductSEO = (category: any, routePath: string) => {
     if (!category) return
 
     const canonicalUrl = `${configRuntime.public.siteUrl}${routePath}/${category.slug}`
@@ -14,7 +14,7 @@ export const useCategoryNewsSEO = () => {
       meta: [
         {
           name: 'description',
-          content: category.descriptionSEO || category.summaryContent || ''
+          content: category.descriptionSEO || category.description || ''
         },
         {
           name: 'keywords', 
@@ -28,7 +28,7 @@ export const useCategoryNewsSEO = () => {
         // Open Graph
         { property: 'og:type', content: 'website' },
         { property: 'og:title', content: category.titleSEO || category.categoryName },
-        { property: 'og:description', content: category.descriptionSEO || category.summaryContent || '' },
+        { property: 'og:description', content: category.descriptionSEO || category.description || '' },
         { property: 'og:image', content: category.image || '' },
         { property: 'og:url', content: canonicalUrl },
         { property: 'og:site_name', content: settingStore.getSettings?.name || '' },
@@ -36,7 +36,7 @@ export const useCategoryNewsSEO = () => {
         // Twitter Card
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: category.titleSEO || category.categoryName },
-        { name: 'twitter:description', content: category.descriptionSEO || category.summaryContent || '' },
+        { name: 'twitter:description', content: category.descriptionSEO || category.description || '' },
         { name: 'twitter:image', content: category.image || '' },
       ],
       
@@ -69,6 +69,6 @@ export const useCategoryNewsSEO = () => {
   }
 
   return {
-    setCategoryNewsSEO
+    setCategoryProductSEO
   }
 }

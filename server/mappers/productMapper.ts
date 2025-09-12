@@ -60,6 +60,12 @@ export function toCategoryProductDTO(entity: CategoryProduct): CategoryProductDT
     image: entity.image,
     order: entity.order,
     isActive: entity.isActive,
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
+    
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
   };

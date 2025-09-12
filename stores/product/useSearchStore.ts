@@ -33,6 +33,7 @@ const handleCancelSearch = () => {
 }
 
 const items = ref<ProductDTO[]|null>(null)
+
 function load({ done }: { done: (status: 'ok' | 'empty') => void }) {
   if(!items.value) return
   const start = items.value.length

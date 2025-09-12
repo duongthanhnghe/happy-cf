@@ -8,9 +8,10 @@ const useHandle = useProductCategoryMenu();
 const { getListCategory, fetchCategoryList } = useProductCategory();
 
 watch(() => getListCategory.value, (newValue) => {
-  if(!newValue) {
+  if(newValue.length === 0) {
     fetchCategoryList()
-  } else useHandle.handleItemClickScroll(newValue[0].id)
+  }
+  else useHandle.handleItemClickScroll(newValue[0].id)
 }, { immediate: true })
 
 </script>

@@ -12,6 +12,8 @@ import { useProductCategoryDetail } from '@/composables/product/useProductCatego
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
+import { nullRules, nullAndSpecialRules } from '@/utils/validation'
+import { useSeoWatchers } from "@/utils/seoHandle";
 
 export const useCategoryManageStore = defineStore("CategoryManage", () => {
 
@@ -19,32 +21,21 @@ const { getListCategoryAll, fetchCategoryList } = useProductCategory()
 const { getProductCategoryDetail, fetchProductCategoryDetail } = useProductCategoryDetail()
 const storeFileManage = useFileManageFolderStore();
 
-//state global  
-const valid = ref<boolean>(false)
-const categoryNameRules = [
-  (value:string) => {
-    if (value) return true
-    return 'Ten khong duoc trong'
-  },
-  (value:string) => {
-    if (value?.length <= 100) return true
-    return 'Ten khong duoc qua 100 ky tu'
-  },
-]
-const formCategoryItem = reactive<CreateCategoryProductDTO>({
+const defaultForm: CreateCategoryProductDTO = {
   categoryName: '',
   description: '',
   image: '',
-  isActive: false
-});
+  isActive: false,
+  // SEO
+  titleSEO: '',
+  descriptionSEO: '',
+  slug: '',
+  keywords: []
+};
 
-const updateCategoryItem = reactive<UpdateCategoryProductDTO>({
-  id: '',
-  categoryName: '',
-  description: '',
-  image: '',
-  isActive: false
-});
+const formCategoryItem = reactive<CreateCategoryProductDTO>({ ...defaultForm })
+
+const updateCategoryItem = reactive<UpdateCategoryProductDTO>({ ...defaultForm, id: '' })
 
 //state list
 const dataListCategory = ref<CategoryProductDTO[] | null>(null);
@@ -158,17 +149,8 @@ const ListAllCategoryApi = {
   };
 
   const handleResetFormCategoryItem = () => {
-    formCategoryItem.categoryName = ''
-    formCategoryItem.description = ''
-    formCategoryItem.image = ''
-    formCategoryItem.isActive = false
-
-    //update
-    updateCategoryItem.id = ''
-    updateCategoryItem.categoryName = ''
-    updateCategoryItem.description = ''
-    updateCategoryItem.image = ''
-    updateCategoryItem.isActive = false
+    Object.assign(formCategoryItem, defaultForm)
+    Object.assign(updateCategoryItem, defaultForm)
   }
 
   const handleReload = async () => {
@@ -264,17 +246,21 @@ const ListAllCategoryApi = {
     target.image = newValue.url
   })
 
+  // SEO
+  useSeoWatchers(formCategoryItem, { sourceKey: 'categoryName', autoSlug: true, autoTitleSEO: true })
+  useSeoWatchers(updateCategoryItem, { sourceKey: 'categoryName', autoSlug: true, autoTitleSEO: true })
+
   const getListOrder = computed(() => {
     return Array.from({ length: maxOrder.value }, (_, i) => i + 1)
   })
 
   return {
     // state
-    valid,
     dataListCategory,
     isTogglePopupAdd,
     isTogglePopupUpdate,
-    categoryNameRules,
+    nullRules,
+    nullAndSpecialRules,
     detailData,
     formCategoryItem,
     updateCategoryItem,

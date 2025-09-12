@@ -1135,16 +1135,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"258a2-mCA/EevWZ6n+jdIp2A0uZoFCO8w\"",
-    "mtime": "2025-09-11T10:19:14.099Z",
-    "size": 153762,
+    "etag": "\"26313-Tcgj3kZpQhEjcZy4VipNG4Qz7+w\"",
+    "mtime": "2025-09-12T07:17:59.595Z",
+    "size": 156435,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"8f85e-r3ng5hVM4+EHNKAR2O6z7FgPaE4\"",
-    "mtime": "2025-09-11T10:19:14.103Z",
-    "size": 587870,
+    "etag": "\"91e0c-ptbLxxxILW7cRm8XTiZe5uFFglI\"",
+    "mtime": "2025-09-12T07:17:59.595Z",
+    "size": 597516,
     "path": "index.mjs.map"
   }
 };
@@ -3125,7 +3125,28 @@ const CategoryProductSchema = new Schema(
     description: { type: String },
     image: { type: String, required: true },
     order: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    titleSEO: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
   },
   { timestamps: true }
 );
@@ -3178,6 +3199,11 @@ function toCategoryProductDTO(entity) {
     image: entity.image,
     order: entity.order,
     isActive: entity.isActive,
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
     createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
     updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || ""
   };
@@ -3202,6 +3228,22 @@ const getCategoriesById = async (req, res) => {
       return res.status(404).json({ code: 1, message: "Danh m\u1EE5c kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
     return res.json({ code: 0, data: toCategoryProductDTO(category) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getCategoriesBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const category = await CategoryProductEntity.findOne({ slug }).lean();
+    if (!category) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({
+      code: 0,
+      data: toCategoryProductDTO(category),
+      message: "Success"
+    });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -3274,8 +3316,23 @@ const getProductsByCategory = async (req, res) => {
       return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
     }
     const categoryId = new Types.ObjectId(req.params.id);
-    const products = await ProductEntity.find({ categoryId }).lean();
-    return res.json({ code: 0, data: toProductListDTO(products) });
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    if (limit === -1) {
+      limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
+    }
+    const skip = (page - 1) * limit;
+    const [total, products] = await Promise.all([
+      ProductEntity.countDocuments({ categoryId, isActive: true }),
+      ProductEntity.find({ categoryId, isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toProductListDTO(products),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -3322,6 +3379,7 @@ const toggleActive$2 = async (req, res) => {
 
 const router$5 = Router();
 router$5.get("/", getAllCategories);
+router$5.get("/slug/:slug", getCategoriesBySlug);
 router$5.get("/:id", getCategoriesById);
 router$5.post("/", createCategories);
 router$5.put("/:id", updateCategories);

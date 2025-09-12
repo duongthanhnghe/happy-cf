@@ -11,6 +11,7 @@ import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
 import { useCategoryManageStore } from '@/stores/product/useCategoryManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
+import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 
 export const useProductManageStore = defineStore("ProductManage", () => {
 
@@ -22,28 +23,6 @@ const storeCategory = useCategoryManageStore();
 
 //state global  
 const validOptions = ref(false)
-const productNameRules = [
-  (value:string) => {
-    if (value) return true
-    return 'Ten khong duoc trong'
-  },
-  (value:string) => {
-    if (value?.length <= 100) return true
-    return 'Ten khong duoc qua 100 ky tu'
-  },
-  (value:string) => {
-    const regex = /^[\p{L}0-9\s]+$/u
-    if (regex.test(value)) return true
-    return 'Ten khong duoc chua ky tu dac biet'
-  }
-]
-
-const productNumberRules = [
-  (value: number) => {
-    if (value) return true
-    return 'Noi dung khong duoc trong'
-  },
-]
 
 const productPriceDiscountRules = [
   (value: number) => {
@@ -68,27 +47,6 @@ const productPriceDiscountUpdateRules = [
     const price = Number(updateProductItem.price)
     if (discount <= price) return true
     return 'Gia khuyen mai khong duoc lon hon gia goc'
-  },
-]
-
-const optionNameRules = [
-  (value: string) => {
-    if (value) return true
-    return 'Ten nhom bien the khong duoc trong'
-  },
-]
-
-const variantNameRules = [
-  (value: string) => {
-    if (value) return true
-    return 'Ten bien the khong duoc trong'
-  },
-]
-
-const priceModifierRules = [
-  (value: number) => {
-    if (value) return true
-    return 'Gia khong duoc trong'
   },
 ]
 
@@ -136,7 +94,7 @@ const dataList = ref<ProductDTO[]|null>(null);
   const categorySelectedFilter = ref<string>()
   const currentTableOptions = ref<TableOpt>({
   page: 1,
-  itemsPerPage: 3,
+  itemsPerPage: 20,
   sortBy: [],
 })
 const isTogglePopupUpdate = ref<boolean>(false);
@@ -154,7 +112,6 @@ const checkSelectImage = ref<boolean>(true)
     currentTableOptions.value.page = getListProductAll.value.pagination.page
     currentTableOptions.value.itemsPerPage = getListProductAll.value.pagination.limit
   }
-
 
   const ListDataApi = {
     async fetch({ items, sortBy, search, filterCategory }: {
@@ -491,13 +448,13 @@ const checkSelectImage = ref<boolean>(true)
   const getListImageAdd = computed(() => formProductItem.listImage);
 
   return {
+    nullRules,
+    nullAndSpecialRules,
     validOptions,
     dataList,
     isTogglePopupAdd,
     isTogglePopupAddVariant,
     isTogglePopupUpdate,
-    productNameRules,
-    productNumberRules,
     productPriceDiscountRules,
     productPriceDiscountUpdateRules,
     detailData,
@@ -510,9 +467,6 @@ const checkSelectImage = ref<boolean>(true)
     search,
     headers,
     currentTableOptions,
-    optionNameRules,
-    variantNameRules,
-    priceModifierRules,
     categorySelectedFilter,
     // actions
     handleTogglePopupAdd,
