@@ -17,7 +17,6 @@ const PostNewsSchema = new Schema({
         type: String,
         maxlength: 160,
         trim: true,
-        required: true
     },
     slug: {
         type: String,

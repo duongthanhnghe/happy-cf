@@ -1,3 +1,4 @@
+import type { PaginationDTO } from '../common/pagination.dto'
 export interface CategoryNewsDTO {
   id: string
   categoryName: string
@@ -37,21 +38,15 @@ export interface PostNewsDTO {
   descriptionSEO: string
   slug: string
   keywords?: string[]
-  
+
   createdAt: string
   updatedAt: string
 }
 
 export type CreatePostNewsDTO = Omit<PostNewsDTO, "id" | "createdAt" | "updatedAt" | "views">
 
-export type UpdatePostNewsDTO = Partial<Omit<CreatePostNewsDTO, "createdAt" | "updatedAt">>
+export type UpdatePostNewsDTO = Partial<Omit<CreatePostNewsDTO, "author">>
 
 export type IdPostNews = { id: string }
 
-//pagination
-// export interface PostNewsPaginationDTO {
-//   page: number,
-//   limit: number,
-//   total: number,
-//   totalPages: number,
-// }
+export type PostNewsPaginationDTO = PaginationDTO<PostNewsDTO>

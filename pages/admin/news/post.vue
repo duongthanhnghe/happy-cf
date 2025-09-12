@@ -19,7 +19,7 @@ const openPopupAdd = () => {
 
 watch(() => storeFileManage.isTogglePopup, (newValue) => {
   if(newValue && !storeFileManage.getItems && store.folderName) storeFileManage.getApiList(store.folderName)
-}, { immediate: true })
+})
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -43,12 +43,21 @@ onBeforeUnmount(() => {
 <PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
-  <v-data-table-server v-model:items-per-page="store.itemsPerPage" :headers="store.headers" :items="store.serverItems" :items-length="store.totalItems" :loading="store.loadingTable" :search="store.search" item-value="name" @update:options="options => {
+  <v-data-table-server
+    v-model:page="store.currentTableOptions.page"
+    v-model:items-per-page="store.currentTableOptions.itemsPerPage"
+    :headers="store.headers"
+    :items="store.serverItems"
+    :items-length="store.totalItems"
+    :loading="store.loadingTable"
+    :search="store.search"
+    item-value="name"
+    :items-per-page-options="[10, 20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
+    @update:options="options => {
         store.currentTableOptions = options
-        store.loadItems(options)
     }">
     <template #item.index="{ index }">
-      {{ (store.currentTableOptions.page - 1) * store.itemsPerPage + index + 1 }}
+      {{ (store.currentTableOptions.page - 1) * store.currentTableOptions.itemsPerPage + index + 1 }}
     </template>
 
     <template #item.image="{ item }">
@@ -73,6 +82,9 @@ onBeforeUnmount(() => {
 
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
+        <NuxtLink :to="`${ROUTES.PUBLIC.NEWS.children?.DETAIL?.path}/${item.slug}`" target="_blank">
+          <Button color="gray" size="sm" icon="visibility" />
+        </NuxtLink>
         <Button color="gray" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
         <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>

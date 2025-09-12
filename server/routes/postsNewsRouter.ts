@@ -8,12 +8,18 @@ import {
   getPostsLatest,
   toggleActive,
   getPostsByCategory,
+  getPostBySlug,
+  getRelatedPostsBySlug,
+  updateView,
 } from '../controllers/postNewsController'
 
 const router = Router()
 
 router.get('/category/:categoryId', getPostsByCategory)
 router.get('/',          getAllPosts)
+router.get('/slug/:slug',    getPostBySlug)
+router.get("/related/:slug", getRelatedPostsBySlug)
+router.patch("/view/:slug", updateView)
 router.get('/latest', getPostsLatest)
 router.get('/:id',       getPostsById)
 router.post('/',         createPosts)

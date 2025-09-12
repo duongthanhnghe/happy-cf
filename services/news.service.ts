@@ -6,7 +6,8 @@ import type {
   CreateCategoryNewsDTO, 
   UpdateCategoryNewsDTO, 
   CategoryNewsDTO, 
-  PostNewsDTO 
+  PostNewsDTO,
+  PostNewsPaginationDTO
 } from "@server/types/dto/news.dto"
 import type { ApiResponse } from "@server/types/common/api-response"
 
@@ -116,9 +117,9 @@ export const newsAPI = {
   },
 
   // ================== POSTS ==================
-  getAllPosts: async (): Promise<ApiResponse<PostNewsDTO[]>> => {
+  getAllPosts: async (page: number, limit: number ): Promise<PostNewsPaginationDTO> => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.NEWS_POSTS.LIST}`)
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.NEWS_POSTS.LIST}?page=${page}&limit=${limit}`)
       const data = await response.json()
       return data
     } catch (err: any) {
@@ -126,7 +127,13 @@ export const newsAPI = {
       return {
         code: 1,
         message: err.message ?? "Failed to fetch posts",
-        data: []
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
       }
     }
   },
@@ -168,6 +175,21 @@ export const newsAPI = {
       return {
         code: 1,
         message: err.message ?? `Failed to fetch post with ID ${id}`,
+        data: null as any
+      }
+    }
+  },
+
+  getPostBySlug: async (slug: string): Promise<ApiResponse<PostNewsDTO>> => {
+    try {
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.NEWS_POSTS.GET_BY_SLUG(slug)}`)
+      const data = await response.json()
+      return data
+    } catch (err: any) {
+      console.error(`Error fetching post with slug ${slug}:`, err)
+      return {
+        code: 1,
+        message: err.message ?? `Failed to fetch post with slug ${slug}`,
         data: null as any
       }
     }
@@ -335,4 +357,50 @@ export const newsAPI = {
       }
     }
   },
+  getRelatedPosts: async (slug: string, limit: number): Promise<ApiResponse<PostNewsDTO[]>> => {
+    try {
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.NEWS_POSTS.RELATED_BY_SLUG(slug)}?limit=${limit}`)
+      const data = await response.json()
+      return data
+    } catch (err: any) {
+      return {
+        code: 1,
+        message: err.message ?? `Failed to fetch related posts for slug ${slug}`,
+        data: [],
+      }
+    }
+  },
+  updateViews: async (slug: string): Promise<ApiResponse<null>> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.NEWS_POSTS.UPDATE_VIEWS(slug)}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        return {
+          code: 1,
+          message: errorData.message || `Failed to update views for slug "${slug}"`,
+          data: null,
+        }
+      }
+
+      const data: ApiResponse<null> = await response.json()
+      return data
+    } catch (err: any) {
+      console.error(`Error updating views for slug "${slug}":`, err)
+      return {
+        code: 1,
+        message: err.message || "Unexpected error while updating views",
+        data: null,
+      }
+    }
+  },
+
 }

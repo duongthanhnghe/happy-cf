@@ -37,7 +37,7 @@ const defaultForm: CreateCategoryNewsDTO = {
 
 const formItem = reactive<CreateCategoryNewsDTO>({ ...defaultForm })
 
-const updateItem = reactive<CreateCategoryNewsDTO>({ ...defaultForm })
+const updateItem = reactive<UpdateCategoryNewsDTO>({ ...defaultForm })
 
 //state list
 const dataList = ref<CategoryNewsDTO[] | null>(null);

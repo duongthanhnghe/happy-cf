@@ -34,9 +34,6 @@ watch(valueChangePage, (newVal) => {
       <template v-if="storeCategoryMain.getTotalPages && storeCategoryMain.getTotalPages.length > 1">
         <div class="flex gap-sm justify-end">
           <Pagination :totalPages="storeCategoryMain.getTotalPages" v-model:page="storeCategoryMain.page" v-model:valueChangePage="valueChangePage" />
-          <!-- <SelectPagination :totalPages="storeCategoryMain.getTotalPages" v-model="storeCategoryMain.page"/> -->
-          <!-- <Button :color="storeCategoryMain.btnChangePage ? 'secondary':'black'" icon="keyboard_arrow_left" @click.prevent="storeCategoryMain.handleChangePage(false)" :disabled="storeCategoryMain.btnChangePage" />
-          <Button :color="storeCategoryMain.btnChangePage ? 'black':'secondary'" icon="keyboard_arrow_right" @click.prevent="storeCategoryMain.handleChangePage(true)" :disabled="!storeCategoryMain.btnChangePage" /> -->
         </div>
       </template>
     </div>

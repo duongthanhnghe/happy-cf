@@ -19,7 +19,7 @@ export const useNewsCategoryDetail = () => {
     }
   }
 
-  //fetch theo id
+  //fetch theo slug
   const fetchDetailNewsCategorySlug = async (slug: string) => {
     try {
       const data = await newsAPI.getCategoryBySlug(slug)

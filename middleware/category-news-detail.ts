@@ -18,8 +18,6 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => 
       await fetchDetailNewsCategory(id)
     } else if (slug) {
       const data = await fetchDetailNewsCategorySlug(slug)
-      // console.log("data 123")
-      // console.log(data)
       if(data?.data.id) {
         await fetchPostByCategory(data.data.id, 1, storeCategoryMain.limit)
       }

@@ -3,10 +3,39 @@ import { ProductEntity, CategoryProductEntity } from "../models/ProductEntity.js
 import { WishlistModel } from "../models/WishlistEntity.js";
 import { OrderEntity } from "../models/OrderEntity.js";
 import { toProductDTO, toProductListDTO, } from "../mappers/productMapper.js";
-export const getAllProduct = async (_, res) => {
+// export const getAllProduct = async (_: Request, res: Response) => {
+//   try {
+//     const products = await ProductEntity.find()
+//     return res.json({ code: 0, data: toProductListDTO(products) })
+//   } catch (err: any) {
+//     console.error("Get all product error:", err)
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }
+export const getAllProduct = async (req, res) => {
     try {
-        const products = await ProductEntity.find();
-        return res.json({ code: 0, data: toProductListDTO(products) });
+        const page = parseInt(req.query.page, 10) || 1;
+        let limit = parseInt(req.query.limit, 10) || 10;
+        const query = {};
+        // Nếu limit = -1 => lấy tất cả
+        if (limit === -1) {
+            limit = await ProductEntity.countDocuments(query);
+        }
+        const skip = (page - 1) * limit;
+        const [total, products] = await Promise.all([
+            ProductEntity.countDocuments(query),
+            ProductEntity.find(query)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+        ]);
+        const totalPages = Math.ceil(total / limit);
+        return res.json({
+            code: 0,
+            data: toProductListDTO(products),
+            pagination: { page, limit, total, totalPages },
+            message: "Success"
+        });
     }
     catch (err) {
         console.error("Get all product error:", err);

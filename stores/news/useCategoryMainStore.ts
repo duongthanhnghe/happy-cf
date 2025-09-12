@@ -20,7 +20,7 @@ export const useCategoryMainStore = defineStore("CategoryMainNewsStore", () => {
 
   watch(getDetailNewsCategoryApi, (newValue) => {
     if(newValue) {
-      setCategoryNewsSEO(newValue, ROUTES.PUBLIC.NEWS.children?.LIST.path || '')
+      setCategoryNewsSEO(newValue, ROUTES.PUBLIC.NEWS.children?.MAIN.path || '')
     }
   }, { immediate: true })
 

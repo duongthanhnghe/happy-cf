@@ -1,5 +1,6 @@
 export interface MenuItem {
   path?: string;
+  name?: string;
   label: string;
   icon: string;
   middleware?: string[];

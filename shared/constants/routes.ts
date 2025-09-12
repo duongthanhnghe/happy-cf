@@ -165,7 +165,7 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       label: 'Tin tức',
       icon: 'article',
       children: {
-        LIST: {
+        MAIN: {
           path: '/news',
           label: 'Blog',
           icon: 'article',
@@ -173,17 +173,18 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
           layout: 'default',
         },
         CATEGORY: {
-          path: '/news/:categorySlug',
+          path: '/news-category',
           label: 'Danh mục Blog',
           icon: 'description',
           middleware: ['category-news-detail'],
           layout: 'default',
         },
         DETAIL: {
-          path: '/news/:categorySlug/:postSlug',
+          name: 'post-detail',
+          path: '/post',
           label: 'Chi tiết Blog',
           icon: 'description',
-          middleware: ['post-news-detail'],
+          middleware: ['post-detail'],
           layout: 'default',
         }
       }

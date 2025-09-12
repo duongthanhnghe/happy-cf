@@ -4,23 +4,30 @@ import type {
   ProductDTO, 
   WishlistItem, 
   CreateProductDTO, 
-  UpdateProductDTO 
+  UpdateProductDTO,
+  PostProductPaginationDTO
 } from '@/server/types/dto/product.dto'
 import type { ApiResponse } from '@/server/types/common/api-response'
 
 export const productsAPI = {
   // Lấy toàn bộ sản phẩm
-  getAll: async (): Promise<ApiResponse<ProductDTO[]>> => {
+  getAll: async (page: number, limit: number): Promise<PostProductPaginationDTO> => {
     try {
-      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_ALL}`)
+      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_ALL}?page=${page}&limit=${limit}`)
       const data = await res.json()
       return data
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching all products:', err)
       return {
         code: 1,
-        message: "Failed to fetch products",
-        data: []
+        message: err.message ?? "Failed to fetch posts",
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
       }
     }
   },

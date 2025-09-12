@@ -4,7 +4,7 @@ import type { CategoryProductDTO } from '@/server/types/dto/product.dto'
 
 export const useProductCategory = () => {
   
-  const listCategory = ref<CategoryProductDTO[]|null>(null)
+  const listCategory = ref<CategoryProductDTO[]>([])
   
   const fetchCategoryList = async () => {
     try {

@@ -1,3 +1,4 @@
+import type { PaginationDTO } from '../common/pagination.dto'
 export interface VariantDTO {
   id: string;
   name: string;
@@ -35,6 +36,8 @@ export interface ProductDTO {
   updatedAt: string;
 }
 
+export type PostProductPaginationDTO = PaginationDTO<ProductDTO>
+
 export interface CategoryProductDTO {
   id: string;
   categoryName: string;
@@ -48,7 +51,7 @@ export interface CategoryProductDTO {
 
 export type CreateProductDTO = Omit<ProductDTO, "id" | "createdAt" | "updatedAt" | "amountOrder">;
 
-export type UpdateProductDTO = Partial<CreateProductDTO> & { id: string; amountOrder: number };
+export type UpdateProductDTO = Partial<CreateProductDTO> & { id: string; };
 
 export type CreateCategoryProductBody = Omit<CategoryProductDTO, "id" | "createdAt" | "updatedAt" >;
 

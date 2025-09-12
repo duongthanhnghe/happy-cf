@@ -1,27 +1,31 @@
 <script setup lang="ts">
 const props = defineProps({
-  totalPages: {
-    type: Array as () => string[],
+  listOrder: {
+    type: Array as () => number[],
     default: () => []
   },
-  page: {
+  order: {
+    type: Number,
+    default: 1
+  },
+  tooltip: {
     type: String,
-    default: "1"
   }
 })
 
-const emit = defineEmits(["update:page"])
+const emit = defineEmits(["update:modelValue"])
 </script>
 
 <template>
   <client-only>
     <v-select
-      :items="totalPages"
-      :model-value="page"
+      v-tooltip.right="tooltip"
+      :items="listOrder"
+      :model-value="order"
       variant="outlined"  
       class="v-select-order weight-semibold"
       hide-details
-      @update:model-value="emit('update:page', $event)"
+      @update:model-value="emit('update:modelValue', $event)"
     >
       <template v-slot:append>
         <MaterialIcon name="keyboard_arrow_down" />

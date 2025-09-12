@@ -12,6 +12,8 @@ import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStor
 import { useFileSelectContextStore } from "@/stores/file-manage/useFileSelectContextStore"
 import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
+import { nullRules, nullAndSpecialRules } from '@/utils/validation'
+import { useSeoWatchers } from "@/utils/seoHandle";
 
 export const usePostManageStore = defineStore("PostManage", () => {
 const { getListCategoryApi, fetchCategoryList } = useNewsCategory()
@@ -21,49 +23,29 @@ const storeFileManage = useFileManageFolderStore()
 const contextStore = useFileSelectContextStore()
 
 const folderName = FOLDER_UPLOAD.POST
-const valid = ref<boolean>(false)
-const titleRules = [
-  (value: string) => {
-    if (value) return true
-    return 'Tieu de khong duoc trong'
-  },
-  (value: string) => {
-    if (value?.length <= 200) return true
-    return 'Tieu de khong duoc qua 10 ky tu'
-  },
-]
 
-const descriptionRules = [
-    (v: string) => !!v && v.replace(/<[^>]*>/g, '').trim().length > 0 || 'Nội dung không được để trống'
-]
-
-const catalogRules = [
-  (value: string | number) => !!value || 'Vui lòng chọn danh mục'
-]
-
-const formPostItem = reactive<CreatePostNewsDTO>({
+const defaultForm: CreatePostNewsDTO = {
   title: '',
   description: '',
   image: '',
   summaryContent: '',
   isActive: false,
   categoryId: '',
-  author: "Admin"
-});
+  author: "Admin",
+  // SEO
+  titleSEO: '',
+  descriptionSEO: '',
+  slug: '',
+  keywords: []
+};
 
-const updatePostItem = reactive<UpdatePostNewsDTO>({
-  title: '',
-  description: '',
-  image: '',
-  summaryContent: '',
-  isActive: false,
-  categoryId: '',
-});
+const formPostItem = reactive<CreatePostNewsDTO>({ ...defaultForm })
 
+const updatePostItem = reactive<CreatePostNewsDTO>({ ...defaultForm })
 
 //state list
 const dataList = ref<PostNewsDTO[]| null>(null);
-const itemsPerPage = 10
+// const itemsPerPage = 10
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Hinh anh', key: 'image', sortable: false, },
@@ -82,7 +64,7 @@ const itemsPerPage = 10
   const search = ref<string>('')
   const currentTableOptions = ref<TableOpt>({
   page: 1,
-  itemsPerPage: itemsPerPage,
+  itemsPerPage: 3,
   sortBy: [],
 })
 const filterCategory = ref<string>()
@@ -92,63 +74,75 @@ const isTogglePopupAdd = ref<boolean>(false);
 
 
 const getListData = async () => {
-  await fetchPostList()
-  dataList.value = getListPostApi.value
+  await fetchPostList(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage)
+
+  if(!getListPostApi.value) return
+  dataList.value = getListPostApi.value.data
+  totalItems.value = getListPostApi.value.pagination.total
+  currentTableOptions.value.page = getListPostApi.value.pagination.page
+  currentTableOptions.value.itemsPerPage = getListPostApi.value.pagination.limit
 }
 
 const ListDataApi = {
-    async fetch ({ page, itemsPerPage, sortBy, search, filterCategory }:{ page: TableOpt["page"], itemsPerPage: TableOpt["itemsPerPage"], sortBy: TableOpt["sortBy"], search: { title: string }, filterCategory?: string }) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          const start = (page - 1) * itemsPerPage
-          const end = start + itemsPerPage
-          const items = dataList.value?.slice().filter(item => {
-            if (search.title && !item.title.toLowerCase().includes(search.title.toLowerCase())) {
-              return false
-            }
-            if (filterCategory && item.categoryId !== filterCategory ) {
-              return false
-            }
-            return true
+  async fetch({ items, sortBy, search, filterCategory }: {
+    items: PostNewsDTO[],
+    sortBy: TableOpt["sortBy"],
+    search: { title: string },
+    filterCategory?: string
+  }) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        let filtered = items.slice()
+
+        if (search.title) {
+          filtered = filtered.filter(item =>
+            item.title.toLowerCase().includes(search.title.toLowerCase())
+          )
+        }
+        if (filterCategory) {
+          filtered = filtered.filter(item => item.categoryId === filterCategory)
+        }
+
+        if (sortBy.length) {
+          const sortKey = sortBy[0].key
+          const sortOrder = sortBy[0].order
+          filtered.sort((a: any, b: any) => {
+            const aValue = a[sortKey]
+            const bValue = b[sortKey]
+            return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
           })
-          if (sortBy.length) {
-            const sortKey = sortBy[0].key
-            const sortOrder = sortBy[0].order
-            items?.sort((a:any, b:any) => {
-              const aValue = a[sortKey]
-              const bValue = b[sortKey]
-              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-            })
-          }
-          const paginated = items?.slice(start, end === -1 ? undefined : end)
-          resolve({ items: paginated, total: items?.length })
-        }, 500)
-      })
-    },
-  }
-  
-  async function loadItems(opt:TableOpt) {
-    loadingTable.value = true;
+        }
 
-    await getListData();
+        resolve({ items: filtered })
+      }, 200)
+    })
+  },
+}
 
-    const { items, total } = await ListDataApi.fetch({
-        page: opt.page,
-        itemsPerPage: opt.itemsPerPage,
-        sortBy: opt.sortBy,
-        search: { title: name.value }, filterCategory: filterCategory.value
-      }) as { items: PostNewsDTO[]; total: number };
-      serverItems.value = items;
-      totalItems.value = total;
-      loadingTable.value = false;
+ async function loadItems(opt: TableOpt) {
+    loadingTable.value = true
+
+    await getListData()
+
+    const { items } = await ListDataApi.fetch({
+      items: dataList.value || [],
+      sortBy: opt.sortBy,
+      search: { title: name.value },
+      filterCategory: filterCategory.value
+    }) as { items: PostNewsDTO[] }
+
+    serverItems.value = items
+    if(getListPostApi.value) totalItems.value = getListPostApi.value.pagination.total
+
+    loadingTable.value = false
   }
 
   watch([name,filterCategory], () => {
     loadItems(currentTableOptions.value);
   })
 
-  watch(dataList, (newVal) => {
-    dataList.value = newVal;
+  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
+    loadItems(currentTableOptions.value);
   })
 
   const getCategoryName = (id:string) => {
@@ -167,21 +161,8 @@ const ListDataApi = {
   };
 
   const handleResetForm = () => {
-    formPostItem.title = ''
-    formPostItem.description = ''
-    formPostItem.summaryContent = ''
-    formPostItem.image = ''
-    formPostItem.isActive = false
-    formPostItem.categoryId = ''
-    formPostItem.author = "Admin"
-
-    //update
-    updatePostItem.title = ''
-    updatePostItem.description = ''
-    updatePostItem.summaryContent = ''
-    updatePostItem.image = ''
-    updatePostItem.isActive = false
-    updatePostItem.categoryId = ''
+    Object.assign(formPostItem, defaultForm)
+    Object.assign(updatePostItem, defaultForm)
   }
   
   const handleReload = async () => {
@@ -267,8 +248,11 @@ const ListDataApi = {
     }
   }
 
-  // doi kich hoat
   const { toggleActive } = useToggleActiveStatus(newsAPI.toggleActivePost, serverItems );
+
+  // SEO
+  useSeoWatchers(formPostItem, { sourceKey: 'title', autoSlug: true, autoTitleSEO: true })
+  useSeoWatchers(updatePostItem, { sourceKey: 'title', autoSlug: true, autoTitleSEO: true })
 
   const handleAddImage = () => {
     contextStore.setContext("post")
@@ -291,14 +275,10 @@ const ListDataApi = {
   const getListCategory = computed(() => getListCategoryApi.value)
 
   return {
-    // state
-    valid,
     dataList,
     isTogglePopupAdd,
     isTogglePopupUpdate,
-    titleRules,
-    descriptionRules,
-    catalogRules,
+    nullRules,
     detailData,
     formPostItem,
     updatePostItem,
@@ -307,7 +287,7 @@ const ListDataApi = {
     totalItems,
     name,
     search,
-    itemsPerPage,
+    // itemsPerPage,
     headers,
     currentTableOptions,
     filterCategory,

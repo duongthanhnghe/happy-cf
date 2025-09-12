@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { watch, onBeforeUnmount } from 'vue'
+import { watch, onBeforeUnmount, ref } from 'vue'
 import {
   useCategoryManageStore
 } from '@/stores/news/useCategoryManageStore'
 import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
+import SelectOrder from '@/components/atoms/SelectOrder.vue';
 
 definePageMeta({
   layout: ROUTES.ADMIN.NEWS.children?.CATEGORY.layout,
@@ -23,7 +24,7 @@ const openPopupAdd = () => {
 
 watch(() => storeFileManage.isTogglePopup, (newValue) => {
   if(newValue && !storeFileManage.getItems) storeFileManage.getApiList(folderName)
-}, { immediate: true })
+})
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -60,15 +61,7 @@ onBeforeUnmount(() => {
     }">
     
     <template #item.index="{ item }">
-      <v-select
-        v-tooltip.right="'Doi STT'"
-        :items="store.getListOrder"
-        v-model="item.order"
-        variant="outlined"
-        hide-details
-        class="v-select-order"
-        @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"
-      ></v-select>
+      <SelectOrder :order="item.order" :listOrder="store.getListOrder" @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"/>
     </template>
 
     <template #item.image="{ item }">
@@ -83,7 +76,7 @@ onBeforeUnmount(() => {
 
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
-      <NuxtLink :to="`/news/${item.slug}`" target="_blank">
+      <NuxtLink :to="`${ROUTES.PUBLIC.NEWS.children?.CATEGORY.path}/${item.slug}`" target="_blank">
         <Button color="gray" size="sm" icon="visibility" />
       </NuxtLink>
       <Button color="gray" size="sm" icon="edit" @click="store.handleEdit(item.id)" />

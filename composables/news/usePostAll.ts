@@ -1,15 +1,15 @@
 import { ref, computed } from "vue";
 import { newsAPI } from "@/services/news.service";
-import type { PostNewsDTO } from '@/server/types/dto/news.dto'
+import type { PostNewsPaginationDTO } from '@/server/types/dto/news.dto'
 
 export const usePostAll = () => {
   
-  const listData = ref<PostNewsDTO[]>([])
-  
-  const fetchPostList = async () => {
+  const listData = ref<PostNewsPaginationDTO>()
+
+  const fetchPostList = async (page: number, limit: number) => {
     try {
-      const data = await newsAPI.getAllPosts()
-      if(data.code === 0) listData.value = data.data
+      const data: PostNewsPaginationDTO = await newsAPI.getAllPosts(page, limit)
+      if(data.code === 0) listData.value = data
     } catch (error) {
       console.error("Error fetching post:", error)
     }

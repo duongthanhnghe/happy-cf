@@ -21,9 +21,7 @@ const storeFileManage = useFileManageFolderStore();
 const storeCategory = useCategoryManageStore();
 
 //state global  
-const valid = ref(false)
 const validOptions = ref(false)
-const itemsCategory = ref<CategoryProductDTO[]|null>([]);
 const productNameRules = [
   (value:string) => {
     if (value) return true
@@ -94,7 +92,7 @@ const priceModifierRules = [
   },
 ]
 
-const formProductItem = reactive<CreateProductDTO>({
+const defaultForm: CreateProductDTO = {
   productName: '',
   description: '',
   summaryContent: '',
@@ -106,27 +104,14 @@ const formProductItem = reactive<CreateProductDTO>({
   options: [],
   categoryId: '',
   isActive: false
-});
+};
 
-const updateProductItem = reactive<UpdateProductDTO>({
-  id: '',
-  productName: '',
-  description: '',
-  summaryContent: '',
-  price: 0,
-  priceDiscounts: 0,
-  amount: 0,
-  amountOrder: 0,
-  image: '',
-  listImage: [],
-  options: [],
-  categoryId: '',
-  isActive: false
-});
+const formProductItem = reactive<CreateProductDTO>({ ...defaultForm })
+
+const updateProductItem = reactive<UpdateProductDTO>({ ...defaultForm, id: ''})
 
 //state list
-const dataListProduct = ref<ProductDTO[]|null>(null);
-const itemsPerPage = 10
+const dataList = ref<ProductDTO[]|null>(null);
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Hinh anh', key: 'image', sortable: false, },
@@ -146,12 +131,12 @@ const itemsPerPage = 10
   const serverItems = ref<ProductDTO[]>([])
   const loadingTable = ref<boolean>(true)
   const totalItems = ref<number>(0)
-  const name = ref<string|null>('')
+  const name = ref<string>('')
   const search = ref<string>('')
-  const categorySelectedFilter = ref<string|null>('')
+  const categorySelectedFilter = ref<string>()
   const currentTableOptions = ref<TableOpt>({
   page: 1,
-  itemsPerPage: itemsPerPage,
+  itemsPerPage: 3,
   sortBy: [],
 })
 const isTogglePopupUpdate = ref<boolean>(false);
@@ -160,66 +145,77 @@ const isTogglePopupAdd = ref<boolean>(false);
 const isTogglePopupAddVariant = ref<boolean>(false);
 const checkSelectImage = ref<boolean>(true)
 
-const getListAllProduct = async () => {
-  await fetchListProductAll()
-  if(getListProductAll.value) dataListProduct.value = getListProductAll.value
-}
-
-const ListAllProductApi = {
-  async fetch ({ page, itemsPerPage, sortBy, search, filterCategory }: { page: number, itemsPerPage: number, sortBy: TableOpt['sortBy'], search: { productName: string|null }, filterCategory: string|null }) {
-    return new Promise(resolve => {
-
-      setTimeout(() => {
-        const start = (page - 1) * itemsPerPage
-        const end = start + itemsPerPage
-        const items = dataListProduct.value?.slice().filter(item => {
-          if (search.productName && !item.productName.toLowerCase().includes(search.productName.toLowerCase())) {
-            return false
-          } 
-          if (filterCategory && item.categoryId?.toString() !== filterCategory ) {
-            return false
-          }
-          else {
-            return true
-          }
-        })
-        if (sortBy.length) {
-          const sortKey = sortBy[0].key
-          const sortOrder = sortBy[0].order
-          items?.sort((a:any, b:any) => {
-            const aValue = a[sortKey]
-            const bValue = b[sortKey]
-            return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-          })
-        }
-        const paginated = items?.slice(start, end === -1 ? undefined : end)
-        resolve({ items: paginated, total: items?.length })
-      }, 500)
-    })
-  },
-}
-  
-async function loadItemsProduct(opt: TableOpt ) {
-  loadingTable.value = true;
-
-  await getListAllProduct();
-
-  const { items, total } = await ListAllProductApi.fetch({ page: opt.page, itemsPerPage: opt.itemsPerPage, sortBy: opt.sortBy, search: { productName: name.value }, filterCategory: categorySelectedFilter.value }) as { items: ProductDTO[], total: number };
-    serverItems.value = items;
-    totalItems.value = total;
-    loadingTable.value = false;
+  const getListAllProduct = async () => {
+    await fetchListProductAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage)
+   
+    if(!getListProductAll.value) return
+    dataList.value = getListProductAll.value.data
+    totalItems.value = getListProductAll.value.pagination.total
+    currentTableOptions.value.page = getListProductAll.value.pagination.page
+    currentTableOptions.value.itemsPerPage = getListProductAll.value.pagination.limit
   }
 
-  watch(name, () => {
-    search.value = String(Date.now())
+
+  const ListDataApi = {
+    async fetch({ items, sortBy, search, filterCategory }: {
+      items: ProductDTO[],
+      sortBy: TableOpt["sortBy"],
+      search: { productName: string },
+      filterCategory?: string
+    }) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          let filtered = items.slice()
+
+          if (search.productName) {
+            filtered = filtered.filter(item =>
+              item.productName.toLowerCase().includes(search.productName.toLowerCase())
+            )
+          }
+          if (filterCategory) {
+            filtered = filtered.filter(item => item.categoryId === filterCategory)
+          }
+
+          if (sortBy.length) {
+            const sortKey = sortBy[0].key
+            const sortOrder = sortBy[0].order
+            filtered.sort((a: any, b: any) => {
+              const aValue = a[sortKey]
+              const bValue = b[sortKey]
+              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
+            })
+          }
+
+          resolve({ items: filtered })
+        }, 200)
+      })
+    },
+  }
+
+  async function loadItems(opt: TableOpt) {
+    loadingTable.value = true
+
+    await getListAllProduct()
+
+    const { items } = await ListDataApi.fetch({
+      items: dataList.value || [],
+      sortBy: opt.sortBy,
+      search: { productName: name.value },
+      filterCategory: categorySelectedFilter.value
+    }) as { items: ProductDTO[] }
+
+    serverItems.value = items
+    if(getListProductAll.value) totalItems.value = getListProductAll.value.pagination.total
+
+    loadingTable.value = false
+  }
+
+  watch([name,categorySelectedFilter], () => {
+    loadItems(currentTableOptions.value);
   })
 
-  watch(categorySelectedFilter, () => {
-    loadItemsProduct(currentTableOptions.value);
-  })
-
-  watch(dataListProduct, (newVal) => {
-    dataListProduct.value = newVal;
+  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
+    loadItems(currentTableOptions.value);
   })
 
   const handleTogglePopupAdd = (value: boolean) => {
@@ -232,26 +228,17 @@ async function loadItemsProduct(opt: TableOpt ) {
   };
 
   const getCategoryName = (id: string) => {
-    if (!itemsCategory.value) return;
-    return itemsCategory.value.find(item => item.id === id)
+    if (!getListCategoryAll.value) return;
+    return getListCategoryAll.value.find(item => item.id === id)
   }
 
-  const handleResetFormProductItem = () => {
-    formProductItem.productName = '',
-    formProductItem.description = '',
-    formProductItem.summaryContent = '',
-    formProductItem.price = 0,
-    formProductItem.priceDiscounts = 0,
-    formProductItem.amount = 0,
-    formProductItem.image = '',
-    formProductItem.listImage = [],
-    formProductItem.options = [],
-    formProductItem.categoryId = ''
-    formProductItem.isActive = false
+  const handleReset = () => {
+    Object.assign(formProductItem, defaultForm)
+    Object.assign(updateProductItem, defaultForm)
   }
 
   const handleReload = async () => {
-    await loadItemsProduct(currentTableOptions.value);
+    await loadItems(currentTableOptions.value);
   }
 
   // actions add
@@ -285,7 +272,7 @@ async function loadItemsProduct(opt: TableOpt ) {
       if(data.code === 0){
         showSuccess(data.message ?? '')
         isTogglePopupAdd.value = false;
-        handleResetFormProductItem()
+        handleReset()
         handleReload()
       } else showWarning(data.message ?? '')
       Loading(false);
@@ -356,7 +343,7 @@ async function loadItemsProduct(opt: TableOpt ) {
       if(data.code === 0){
         showSuccess(data.message ?? '')
         isTogglePopupUpdate.value = false;
-        handleResetFormProductItem()
+        handleReset()
         handleReload()
       } else showWarning(data.message ?? '')
       Loading(false);
@@ -375,8 +362,8 @@ async function loadItemsProduct(opt: TableOpt ) {
       const data = await productsAPI.delete(productId)
       if(data.code === 0){
         showSuccess(data.message ?? '')
-        if(dataListProduct.value){
-          dataListProduct.value = dataListProduct.value.filter(item => 
+        if(dataList.value){
+          dataList.value = dataList.value.filter(item => 
             item.id !== productId
           )
         }
@@ -494,23 +481,18 @@ async function loadItemsProduct(opt: TableOpt ) {
     storeCategory.handleTogglePopupAdd(true)
   }
 
-  watchEffect( async () => {
-    if (itemsCategory.value && itemsCategory.value.length === 0) {
-      await fetchCategoryList()
-      if(getListCategoryAll.value) itemsCategory.value = getListCategoryAll.value
-    }
-  })
+  watch(() => getListCategoryAll.value, async (newValue) => {
+    if(newValue.length === 0) await fetchCategoryList()
+  }, { immediate: true })
+
 
   //getters
-  const getItemsCategory = computed(() => itemsCategory.value);
+  const getItemsCategory = computed(() => getListCategoryAll.value);
   const getListImageAdd = computed(() => formProductItem.listImage);
 
   return {
-    // state
-    valid,
     validOptions,
-    dataListProduct,
-    itemsCategory,
+    dataList,
     isTogglePopupAdd,
     isTogglePopupAddVariant,
     isTogglePopupUpdate,
@@ -526,7 +508,6 @@ async function loadItemsProduct(opt: TableOpt ) {
     totalItems,
     name,
     search,
-    itemsPerPage,
     headers,
     currentTableOptions,
     optionNameRules,
@@ -540,11 +521,11 @@ async function loadItemsProduct(opt: TableOpt ) {
     handleEditProduct,
     handleDeleteProduct,
     getListAllProduct,
-    loadItemsProduct,
+    loadItems,
     submitCreate,
     submitUpdate,
     handleReload,
-    handleResetFormProductItem,
+    handleReset,
     handleAddOptionGroup,
     handleAddVariant,
     handleRemoveOptionGroup,
