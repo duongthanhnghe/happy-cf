@@ -39,11 +39,9 @@ const cardItemClass= 'card card-sm bg-white';
 
 </script>
 <template>
-  <template v-if="store.getDetailValue?.id">
   <PopupUpdateAccount />
   <PopupOrderHistory />
   <PopupWishlist />
-  </template>
   <div class="account-bg bg-gray2">
     <SectionAccount :showBarcode="false"/>
     <div v-if="store.getDetailValue?.id" class="container pt-ms">

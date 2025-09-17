@@ -1,7 +1,11 @@
 {
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "types": ["@types/node", "nuxt","@nuxt/schema"],
+    "types": [
+      "@types/node",
+      "nuxt",
+      "@nuxt/schema",
+    ],
     "strict": true,
     "allowJs": true,
     "target": "ESNext",
@@ -19,9 +23,10 @@
   },
   "include": [
     ".nuxt",
+    "env.d.ts",
     "**/*.ts",
     "**/*.js",
-    "**/*.vue"
+    "**/*.vue",
   ],
   "exclude": [
     "node_modules",

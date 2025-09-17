@@ -1,30 +1,33 @@
 <script lang="ts" setup>
 import './index.scss';
-import { watch } from 'vue';
-import { useProductCategory } from '@/composables/product/useProductCategory';
+import { watch } from 'vue'
 import { useProductCategoryMenu } from './useProductCategoryMenu';
+import type { CategoryProductDTO } from '@server/types/dto/product.dto'
 
 const useHandle = useProductCategoryMenu();
-const { getListCategory, fetchCategoryList } = useProductCategory();
 
-watch(() => getListCategory.value, (newValue) => {
-  if(newValue.length === 0) {
-    fetchCategoryList()
-  }
-  else useHandle.handleItemClickScroll(newValue[0].id)
+const props = withDefaults(defineProps<{
+  items?: CategoryProductDTO[]
+  loading?: boolean
+}>(), {
+  items: () => [],
+  loading: false,
+})
+
+watch(() => props.items, (newValue) => {
+  if(newValue.length > 0) useHandle.handleItemClickScroll(newValue[0].id)
 }, { immediate: true })
 
 </script>
 
 <template>
-<div class="category-menu">
-<template v-if="getListCategory && getListCategory.length > 0">
-  <template v-for="category, in getListCategory" >
-    <div :class="['category-item', { active: useHandle.elActive.value === category.id }]" @click="useHandle.handleItemClickScroll(category.id)" :id="`scroll-${category.id}`">
-      <img class="category-item-src" :src="category.image" :alt="category.categoryName" />
-      <div class="category-item-title" :class="['category-item-title', { active: useHandle.elActive.value === category.id }]">{{ category.categoryName }}</div>
-    </div>
-  </template>
-  </template>
-</div>
+  <div v-if="props.loading">Đang tải dữ liệu...</div>
+  <div v-else class="category-menu">
+    <template v-for="category, in props.items" >
+      <div :class="['category-item', { active: useHandle.elActive.value === category.id }]" @click="useHandle.handleItemClickScroll(category.id)" :id="`scroll-${category.id}`">
+        <img class="category-item-src" :src="category.image" :alt="category.categoryName" />
+        <div class="category-item-title" :class="['category-item-title', { active: useHandle.elActive.value === category.id }]">{{ category.categoryName }}</div>
+      </div>
+    </template>
+  </div>
 </template>

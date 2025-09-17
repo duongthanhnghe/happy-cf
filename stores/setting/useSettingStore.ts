@@ -1,52 +1,46 @@
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, markRaw } from "vue"
 import { defineStore } from "pinia"
 import Facebook from "@/components/atoms/icons/Facebook.vue"
 import Instagram from "@/components/atoms/icons/Instagram.vue"
 import Tiktok from "@/components/atoms/icons/Tiktok.vue"
 
-const CACHE_TTL = 60 * 60 * 1000
+const CACHE_TTL = 3 * 24 * 60 * 60 * 1000
 
 export const useSettingStore = defineStore("SettingStore", () => {
   const detailData = ref<any | null>(null)
   const lastFetched = ref<number | null>(null)
 
   const fetchSetting = async (force = false) => {
+    const now = Date.now()
+
+    if (
+      !force &&
+      detailData.value &&
+      lastFetched.value &&
+      now - (lastFetched.value ?? 0) < CACHE_TTL
+    ) {
+      return detailData.value
+    }
+
     try {
-      const now = Date.now()
-
-      if (!force && detailData.value && lastFetched.value && (now - lastFetched.value < CACHE_TTL)) {
-        return
-      }
-
-      const res = await fetch("/data/settings.json")
-      const json = await res.json()
-      detailData.value = json
+      const configRuntime = useRuntimeConfig()
+      const res = await $fetch(`${configRuntime.public.siteUrl}/data/settings.json`)
+      detailData.value = res
       lastFetched.value = now
+      return detailData.value
     } catch (err) {
       console.error("Error loading settings", err)
+      return null
     }
   }
 
   const getSettings = computed(() => detailData.value)
 
   const iconMap: Record<string, any> = {
-    Facebook,
-    Instagram,
-    Tiktok,
+    Facebook: markRaw(Facebook),
+    Instagram: markRaw(Instagram),
+    Tiktok: markRaw(Tiktok),
   }
-
-  onMounted(() => {
-    if (process.client) {
-      if (!detailData.value) {
-        fetchSetting(true)
-      } else {
-        const now = Date.now()
-        if (!lastFetched.value || (now - lastFetched.value > CACHE_TTL)) {
-          fetchSetting(true)
-        }
-      }
-    }
-  })
 
   return {
     detailData,
@@ -54,11 +48,5 @@ export const useSettingStore = defineStore("SettingStore", () => {
     fetchSetting,
     getSettings,
     iconMap,
-  }
-}, {
-  persist: {
-    key: 'SettingStore',
-    storage: typeof window !== 'undefined' ? localStorage : undefined,
-    paths: ['detailData', 'lastFetched'],
   }
 })

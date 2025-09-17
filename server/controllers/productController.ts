@@ -1,5 +1,6 @@
 import type { Request, Response } from "express"
-import mongoose from "mongoose"
+import type { PipelineStage } from "mongoose"
+import mongoose, { Types } from "mongoose"
 import { ProductEntity, CategoryProductEntity } from "../models/ProductEntity"
 import { WishlistModel } from "../models/WishlistEntity"
 import { OrderEntity } from "../models/OrderEntity"
@@ -8,15 +9,6 @@ import {
   toProductListDTO,
 } from "../mappers/productMapper"
 
-// export const getAllProduct = async (_: Request, res: Response) => {
-//   try {
-//     const products = await ProductEntity.find()
-//     return res.json({ code: 0, data: toProductListDTO(products) })
-//   } catch (err: any) {
-//     console.error("Get all product error:", err)
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
 export const getAllProduct = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string, 10) || 1
@@ -24,7 +16,6 @@ export const getAllProduct = async (req: Request, res: Response) => {
 
     const query: any = {}
 
-    // Nếu limit = -1 => lấy tất cả
     if (limit === -1) {
       limit = await ProductEntity.countDocuments(query)
     }
@@ -130,17 +121,59 @@ export const deleteProduct = async (req: Request<{ id: string }>, res: Response)
   }
 }
 
-export const getWishlistByUserId = async (req: Request<{ userId: string }>, res: Response) => {
+export const getWishlistByUserId = async (
+  req: Request<{ userId: string }>, 
+  res: Response
+) => {
   try {
-    const { userId } = req.params
-    const items = await WishlistModel.find({
-      userId: new mongoose.Types.ObjectId(userId)
-    }).populate("productId")
-    return res.json({ code: 0, data: items })
+    const { userId } = req.params;
+
+    if (!Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ code: 1, message: "Invalid userId" });
+    }
+
+    const items = await WishlistModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "productId",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      { $unwind: "$product" },
+      {
+        $match: {
+          "product.isActive": true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          userId: 1,
+          createdAt: 1,
+          product: 1,
+        },
+      },
+    ]);
+
+    const mapped = items.map(item => ({
+      id: item._id.toString(),            
+      userId: item.userId.toString(),
+      createdAt: item.createdAt,
+      product: toProductDTO(item.product),
+    }));
+
+    return res.json({ code: 0, data: mapped });
   } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
+    return res.status(500).json({ code: 1, message: err.message });
   }
-}
+};
 
 export const addWishlistItem = async (
   req: Request<{ userId: string }, {}, { productId: string }>,
@@ -175,6 +208,63 @@ export const deleteWishlistItem = async (
     return res.status(500).json({ code: 1, message: err.message })
   }
 }
+
+export const getPromotionalProducts = async (
+  req: Request<{}, {}, {}, { limit?: number }>,
+  res: Response
+) => {
+  try {
+    const limit = req.query.limit ? Number(req.query.limit) : 20
+
+    const products = await ProductEntity.aggregate([
+      {
+        $match: {
+          isActive: true,
+          amount: { $gt: 0 },
+          $expr: { $lt: ["$priceDiscounts", "$price"] }
+        }
+      },
+      {
+        $addFields: {
+          discountPercent: {
+            $cond: [
+              { $and: [{ $ifNull: ["$price", false] }, { $ifNull: ["$priceDiscounts", false] }] },
+              {
+                $round: [
+                  { $multiply: [{ $divide: [{ $subtract: ["$price", "$priceDiscounts"] }, "$price"] }, 100] },
+                  0
+                ]
+              },
+              0
+            ]
+          }
+        }
+      },
+      { $sort: { discountPercent: -1 } },
+      { $limit: limit }
+    ])
+
+    res.json({
+      code: 0,
+      data: toProductListDTO(
+        products.map(p => ({
+          ...p,
+          isPromotional: true,
+          discountPercent: p.price && p.priceDiscounts
+            ? Math.round(((p.price - p.priceDiscounts) / p.price) * 100)
+            : 0
+        }))
+      )
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      code: 1,
+      message: "Server error"
+    })
+  }
+}
+
 
 export const getMostOrderedProduct = async (
   req: Request<{}, {}, {}, { limit?: number }>,
@@ -225,6 +315,86 @@ export const getMostOrderedProduct = async (
     res.status(500).json({ code: 1, message: "Server error" });
   }
 };
+
+export const searchProducts = async (
+  req: Request<{}, {}, {}, { keyword?: string; page?: number; limit?: number }>,
+  res: Response
+) => {
+  try {
+    const keyword = req.query.keyword?.trim() || ""
+    const page = req.query.page ? Number(req.query.page) : 1
+    const limit = req.query.limit ? Number(req.query.limit) : 20
+    const skip = (page - 1) * limit
+
+    const matchStage: any = {
+      isActive: true,
+      amount: { $gt: 0 },
+    }
+
+    if (keyword) {
+      matchStage.$or = [
+        { productName: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { summaryContent: { $regex: keyword, $options: "i" } }
+      ]
+    }
+
+    const pipeline: PipelineStage[] = [
+      { $match: matchStage },
+      {
+        $addFields: {
+          discountPercent: {
+            $cond: [
+              { $and: [{ $ifNull: ["$price", false] }, { $ifNull: ["$priceDiscounts", false] }] },
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      { $divide: [{ $subtract: ["$price", "$priceDiscounts"] }, "$price"] },
+                      100
+                    ]
+                  },
+                  0
+                ]
+              },
+              0
+            ]
+          }
+        }
+      },
+      { $sort: { discountPercent: -1, amount: -1 } },
+      { $skip: skip },
+      { $limit: limit }
+    ]
+
+    const [products, totalCount] = await Promise.all([
+      ProductEntity.aggregate(pipeline),
+      ProductEntity.countDocuments(matchStage)
+    ])
+
+    res.json({
+      code: 0,
+      data: toProductListDTO(
+        products.map(p => ({
+          ...p,
+          isPromotional: p.discountPercent > 0
+        }))
+      ),
+      pagination: {
+        total: totalCount,
+        page: page,
+        totalPages: Math.ceil(totalCount / limit),
+        limit: limit
+      }
+    })
+  } catch (error) {
+    console.error("Error searching products:", error)
+    res.status(500).json({
+      code: 1,
+      message: "Server error"
+    })
+  }
+}
 
 export const toggleActive = async (req: Request, res: Response) => {
   try {

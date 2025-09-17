@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import '@/styles/templates/product/popup-search.scss'
 import { globalText } from '@/const/text.js';
-import { useSearchStore } from '../../../stores/product/useSearchStore'
+import { useSearchStore } from '@/stores/product/useSearchStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
-import ProductItemTemplate1 from './../../molecules/product/ProductItemTemplate1.vue';
-import SectionProductMostOrder from '@/components/organisms/product/SectionProductMostOrder.vue';
+import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 
 const store = useSearchStore()
 const storeDisplay = useDisplayStore()
+const storeProductMostOrder = useProductMostOrderStore()
 
 </script>
 
@@ -47,6 +47,7 @@ const storeDisplay = useDisplayStore()
           <Button color="secondary" label="Tải thêm" @click="props.onClick" />
         </template>
       </v-infinite-scroll>
+
       <div v-else>
         <div v-if="store.getSearchKeyword && store.getSearchKeyword.length > 0" class="flex flex-wrap gap-xs container mt-sm">
           <div v-for="(item, index) in store.getSearchKeyword" :key="index">
@@ -55,8 +56,8 @@ const storeDisplay = useDisplayStore()
         </div>
       </div>
 
-      <div v-if="store.isTogglePopup" :class="`mt-md container ${storeDisplay.isMobileTable ? 'pr-0':''}`">
-        <SectionProductMostOrder headingText="Goi y cho ban"/>
+      <div :class="`mt-md container ${storeDisplay.isMobileTable ? 'pr-0':''}`">
+        <SectionProductMostOrder :items="storeProductMostOrder.getListData" :loading="storeProductMostOrder.loading" headingText="Goi y cho ban"/>
       </div>
     </template>
   </Popup>

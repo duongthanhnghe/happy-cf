@@ -1,13 +1,13 @@
-import {
-  useAccountStore
-} from '@/stores/users/useAccountStore'
+import { useAccountStore } from '@/stores/users/useAccountStore'
+import { ROUTES } from '@/shared/constants/routes';
 
 export default defineNuxtRouteMiddleware(() => {
-  const storeAccount = useAccountStore();
-  
-  const isAuthenticated = storeAccount.getDetailValue?.id || process.client && localStorage.getItem('token')
-  
-  if (!isAuthenticated && process.client) {
-    return navigateTo('/login', { replace: true })
+  const storeAccount = useAccountStore()
+  const token = useCookie<string | null>('token')
+
+  const isAuthenticated = !!(storeAccount.getDetailValue?.id || token.value)
+
+  if (!isAuthenticated) {
+    return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
   }
 })

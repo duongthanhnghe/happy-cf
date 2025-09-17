@@ -10,9 +10,11 @@ import {
 import { useOrderDetail } from "@/composables/order/useOrderDetail";
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useSettingStore } from '@/stores/setting/useSettingStore';
+import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
 
 const { getDetailOrder, fetchOrderDetail } = useOrderDetail();
 const storeHistory = useOrderHistoryStore();
+const storeOrderStatus = useOrderStatusStore();
 const storeSetting = useSettingStore();
 const props = defineProps({
   idOrder: {
@@ -23,7 +25,7 @@ const props = defineProps({
 const elCurrent = ref(ORDER_STATUS.PENDING)
 
 const activeIndex = computed(() => {
-  return storeHistory.getListStatus.findIndex(item => item.id === elCurrent.value)
+  return storeOrderStatus.getListData.findIndex(item => item.id === elCurrent.value)
 })
 
 watch(() => props.idOrder, () => {
@@ -49,8 +51,8 @@ watch(() => getDetailOrder.value?.status.id, (newId) => {
       <div class="text-size-large weight-normal">Đơn hàng</div>
       {{ getDetailOrder?.code }}
     </div>
-    <div v-if="storeHistory.getListStatus" class="flex justify-between mt-xl mb-md">
-      <div v-for="(items, index) in storeHistory.getListStatus.filter(i => i.id !== ORDER_STATUS.CANCELLED)" :key="items.id" :class="{ 'is-active': index <= activeIndex }" class="flex-1 text-center text-color-white popup-detail-order-status-item">
+    <div class="flex justify-between mt-xl mb-md">
+      <div v-for="(items, index) in storeOrderStatus.getListData.filter(i => i.id !== ORDER_STATUS.CANCELLED)" :key="items.id" :class="{ 'is-active': index <= activeIndex }" class="flex-1 text-center text-color-white popup-detail-order-status-item">
         <div class="avatar-src popup-detail-order-status-icon m-auto">
           <MaterialIcon size="26" :name="items.icon"/>
         </div>

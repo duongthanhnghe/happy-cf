@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
+import { useBannerStore } from '@/stores/client/banner/useBannerStore';
+import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore';
+import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
+import { usePostLatestStore } from '@/stores/client/news/usePostLatestStore';
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
@@ -7,26 +11,36 @@ definePageMeta({
 })
 
 const storeDisplay = useDisplayStore()
+const storeBanner = useBannerStore()
+const storeProductSale = useProductSaleStore()
+const storeProductMostOrder = useProductMostOrderStore()
+const storeNewsLatest = usePostLatestStore()
+
+await storeBanner.fetchBannerStore()
+await storeProductSale.fetchProductStore()
+await storeProductMostOrder.fetchProductStore()
+await storeNewsLatest.fetchPostStore()
+
 </script>
 
 <template>
   <SectionAccount />
-  <SectionBanner />
+  <SectionBanner :items="storeBanner.getListData" :loading="storeBanner.loading" />
 
   <div class="pt-section pb-section">
     <div :class="['container', storeDisplay.isMobileTable ? 'pr-0' : '']">
-      <SectionProductSales headingText="Khuyến mãi" :viewMore="true" />
+      <SectionProductSales :items="storeProductSale.getListData" :loading="storeProductSale.loading" headingText="Khuyến mãi" :viewMore="true" />
     </div>
   </div>
 
   <div class="pb-section">
     <div :class="['container', storeDisplay.isMobileTable ? 'pr-0' : '']">
-      <SectionProductMostOrder headingText="Gợi ý cho bạn" :viewMore="true" />
+      <SectionProductMostOrder :items="storeProductMostOrder.getListData" :loading="storeProductMostOrder.loading" headingText="Gợi ý cho bạn" :viewMore="true" />
     </div>
   </div>
 
   <div class="pb-section">
-    <SectionNewsLatest headingText="Tin mới nhất" />
+    <SectionNewsLatest :items="storeNewsLatest.getListData" :loading="storeNewsLatest.loading" headingText="Tin mới nhất" />
   </div>
 
   <client-only><Footer /></client-only>

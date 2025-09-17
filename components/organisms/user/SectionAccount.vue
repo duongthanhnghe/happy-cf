@@ -5,11 +5,11 @@ import {
   useAccountStore
 } from '@/stores/users/useAccountStore'
 import PopupBarcode from './PopupBarcode.vue';
-import { useMembershipList } from '@/composables/user/useMembershipList'
 import { ROUTES } from '@/shared/constants/routes';
+import { useMembershipStore } from '@/stores/shared/useMembershipStore'
 
-const { getMembershipList, fetchMembershipList } = useMembershipList()
 const storeAccount = useAccountStore()
+const storeMembership = useMembershipStore()
 
 const props = defineProps({
   showBarcode: {
@@ -18,17 +18,15 @@ const props = defineProps({
   },
 })
 
-watch(() => storeAccount.getDetailValue, () => {
-    if(!getMembershipList.value) {
-      fetchMembershipList()
-    }
+watch(() => storeAccount.getDetailValue?.id, (newValue) => {
+    if(newValue && storeMembership.getListData.length === 0) storeMembership.fetchMembershipStore()
   },
   { immediate: true }
 )
 
 watchEffect(() => {
-  if (getMembershipList.value && getMembershipList.value.length > 0) {
-    storeAccount.getNextMembershipLevel(getMembershipList.value)
+  if (storeMembership.getListData.length > 0) {
+    storeAccount.getNextMembershipLevel(storeMembership.getListData)
   }
 })
 
@@ -36,19 +34,18 @@ watchEffect(() => {
 <template>
   <div class="information-account">
     <div class="container">
-  
-      <template v-if="storeAccount.getDetailValue?.id">
-        <div class="information-account-card">
+      <div v-if="storeAccount.getLoading && !storeAccount.getDetailValue?.id" class="information-account-card">Đang tải tài khoản...</div>
+      <div v-else-if="!storeAccount.getLoading && storeAccount.getDetailValue?.id" class="information-account-card">
           <div class="flex justify-between">
             <div class="flex align-center gap-sm">
               <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
               <div class="text-size-xs">
-                <Heading weight="semibold"> {{ storeAccount.getDetailValue?.fullname }} </Heading>
-                <span class="text-color-gray8">Hang {{ storeAccount.getDetailValue?.membership.level }}</span>
+                <Heading weight="semibold"> {{ storeAccount.getDetailValue?.fullname || '' }} </Heading>
+                <span class="text-color-gray8">Hang {{ storeAccount.getDetailValue?.membership.level || '' }}</span>
               </div>
             </div>
             <div class="flex gap-sm">
-              <Button color="secondary" :label="`${storeAccount.getDetailValue?.membership.point}`" icon="diamond_shine" class="information-account-point" :disabled="false" size="sm" />
+              <Button color="secondary" :label="`${storeAccount.getDetailValue?.membership.point || 0}`" icon="diamond_shine" class="information-account-point" :disabled="false" size="sm" />
               <Button @click.prevent="storeAccount.handleTogglePopupBarcode(true)" :border="false" color="gray" icon="qr_code_scanner" size="sm"/>
             </div>
           </div>
@@ -78,18 +75,14 @@ watchEffect(() => {
               </div>
             </template>
           </div>
-        </div>
-      </template>
-
-      <template v-if="!storeAccount.getDetailValue?.id">
-        <div class="information-account-card text-center">
-          <Heading weight="semibold" class="text-center">Dang nhap</Heading>
-          <div class="mt-sm mb-sm">Vui long dang nhap</div>
-          <NuxtLink :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
-            <Button color="black" label="Dang nhap" />
-          </NuxtLink>
-        </div>
-      </template>
+      </div>
+      <div v-else class="information-account-card text-center">
+        <Heading weight="semibold" class="text-center">Dang nhap</Heading>
+        <div class="mt-sm mb-sm">Vui long dang nhap</div>
+        <NuxtLink :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
+          <Button color="black" label="Dang nhap" />
+        </NuxtLink>
+      </div>
     </div>
   </div>
 

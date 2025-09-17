@@ -3,11 +3,11 @@ import { defineStore } from "pinia";
 import { ordersAPI } from "@/services/orders.service";
 import type { OrderDTO} from '@/server/types/dto/order.dto'
 import { useAccountStore } from '@/stores/users/useAccountStore';
-import { useOrderStatus } from "@/composables/order/useOrderStatus";
+import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
 
 export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   const storeAccount = useAccountStore();
-  const { getListOrderStatus, fetchOrderStatus } = useOrderStatus();
+  const storeOrderStatus = useOrderStatusStore();
 
   //state
   const dataList = ref<OrderDTO[]|null>(null)
@@ -67,16 +67,15 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   });
 
   watch(() => isTogglePopupAdd.value, async (newValue) => {
-    if(newValue && getListOrderStatus.value.length === 0) await fetchOrderStatus()
+    // if(newValue && storeOrderStatus.getListData.length === 0) await storeOrderStatus.fetchOrderStatusStore()
     if(newValue && !dataList.value) getApiData()
   }, { immediate: true })
 
-  watch(() => [isTogglePopupDetail.value,checkPageDetail.value], async (newValue) => {
-    if(newValue && getListOrderStatus.value.length === 0) await fetchOrderStatus()
+  watch(() => [isTogglePopupDetail.value,checkPageDetail.value,isTogglePopupAdd.value], async (newValue) => {
+    if(newValue && storeOrderStatus.getListData.length === 0) await storeOrderStatus.fetchOrderStatusStore()
   }, { immediate: true })
 
   //getters
-  const getListStatus = computed(() => getListOrderStatus.value)
   const getItems = computed(() => items.value)
   const getIdOrderPopupDetail = computed(() => idOrderPopupDetail.value);
   const getCheckPageDetail = computed(() => checkPageDetail.value)
@@ -104,7 +103,6 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
     getItems,
     canLoadMore,
     getIdOrderPopupDetail,
-    getListStatus,
     getCheckPageDetail
   };
 });

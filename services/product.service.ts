@@ -5,13 +5,13 @@ import type {
   WishlistItem, 
   CreateProductDTO, 
   UpdateProductDTO,
-  PostProductPaginationDTO
+  ProductPaginationDTO
 } from '@/server/types/dto/product.dto'
 import type { ApiResponse } from '@/server/types/common/api-response'
 
 export const productsAPI = {
   // Lấy toàn bộ sản phẩm
-  getAll: async (page: number, limit: number): Promise<PostProductPaginationDTO> => {
+  getAll: async (page: number, limit: number): Promise<ProductPaginationDTO> => {
     try {
       const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_ALL}?page=${page}&limit=${limit}`)
       const data = await res.json()
@@ -147,6 +147,43 @@ export const productsAPI = {
         code: 1,
         message: err.message ?? "Failed to fetch most ordered products",
         data: []
+      }
+    }
+  },
+
+  getPromotional: async (limit: number): Promise<ApiResponse<ProductDTO[]>> => {
+    try {
+      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_PROMOTION(limit)}`)
+      const data = await res.json()
+      return data
+    } catch (err: any) {
+      console.error('Error fetching promotional products:', err)
+      return {
+        code: 1,
+        message: err.message ?? "Failed to fetch promotional products",
+        data: []
+      }
+    }
+  },
+
+  search: async (keyword: string, page = 1, limit = 20): Promise<ProductPaginationDTO> => {
+    try {
+      const url = `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.SEARCH}?keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${limit}`
+      const res = await fetch(url)
+      const data = await res.json()
+      return data
+    } catch (err: any) {
+      console.error("Error searching products:", err)
+      return {
+        code: 1,
+        message: err.message ?? "Failed to fetch posts",
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
       }
     }
   },

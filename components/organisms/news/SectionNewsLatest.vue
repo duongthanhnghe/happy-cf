@@ -1,30 +1,28 @@
 <script lang="ts" setup>
-import { watch } from 'vue';
-import { useNewsLatest } from '@/composables/news/useNewsLatest'
+import type { PostNewsDTO } from '@server/types/dto/news.dto'
 
-const { getListNewsLatest, getApiListNewsLatest } = useNewsLatest()
-
-const props = defineProps({
-  headingText: {
-    type: String,
-  }
+const props = withDefaults(defineProps<{
+  items?: PostNewsDTO[]
+  loading?: boolean
+  headingText?: string
+}>(), {
+  items: () => [],
+  loading: false,
+  headingText: '',
 })
-
-watch(() => getListNewsLatest.value, (newValue) => {
-  if(!newValue) getApiListNewsLatest()
-}, { immediate: true })
 
 </script>
 
 <template>
-  <div class="container">
-    <Heading tag="h2" size="xl" weight="semibold" class="black mb-sm">
-      {{ props.headingText }}
-    </Heading>
-    <div v-if="getListNewsLatest && getListNewsLatest.length > 0">
-      <template v-for="(item, index) in getListNewsLatest" :key="index">
+  <div v-if="props.loading">Đang tải dữ liệu...</div>
+  <template v-else>
+    <div class="container">
+      <Heading tag="h2" size="xl" weight="semibold" class="black mb-sm">
+        {{ props.headingText }}
+      </Heading>
+      <template v-for="(item, index) in props.items" :key="index">
         <NewsItemTemplate1 :item="item" />
       </template>
     </div>
-  </div>
+  </template>
 </template>

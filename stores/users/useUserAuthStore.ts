@@ -11,6 +11,7 @@ import { showWarning, showSuccess } from "@/utils/toast";
 import type { UserRegister, ResetPassword, MyJwtPayload } from '@/server/types/dto/user.dto'
 import { useAccountStore } from '@/stores/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
+import { setCookie } from '@/utils/global'
 
 export const useUserAuthStore = defineStore("UserAuth", () => {
 
@@ -19,7 +20,8 @@ const storeAccount = useAccountStore();
 //state global  
 const router = useRouter()
 const route = useRoute()
-const token = ref<string | null>(process.client ? localStorage.getItem('token') : null)
+// const token = ref<string | null>(process.client ? localStorage.getItem('token') : null)
+const token = useCookie<string | null>("token", { sameSite: "lax" });
 const valid = ref<boolean>(false)
 const showPassword = ref<boolean>(false)
 const showPasswordConfirm = ref<boolean>(false)
@@ -79,8 +81,8 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
     
       const data = await usersAPI.Login(dataLogin)
       if (data.code === 0 && data.data.token) {
-        localStorage.setItem('token', data.data.token);
-        // showSuccess(data.message);
+        // localStorage.setItem('token', data.data.token);
+        setCookie('token', data.data.token, 7)
         handleResetFormUserItem()
         const decoded = jwtDecode<MyJwtPayload>(data.data.token) 
         storeAccount.handleGetDetailAccount(decoded.id)

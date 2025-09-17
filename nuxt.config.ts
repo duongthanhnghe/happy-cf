@@ -1,7 +1,3 @@
-import { fileURLToPath } from 'url'
-import { dirname, resolve } from 'path'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   components: [
@@ -69,22 +65,16 @@ export default defineNuxtConfig({
     }
   },
   vite: {
-    css: {
-      preprocessorOptions: {
-        sass: {
-          additionalData: (content, filename) => {
-            if (filename.includes('vuetify/styles')) return ''
-            return content
-          }
-        }
-      }
-    },
-    resolve: {
-      alias: {
-        'vuetify/styles': resolve(__dirname, 'plugins/vuetify-empty.sass'),
-        '@shared': resolve(__dirname, 'shared'),
-      }
-    },
+    // css: {
+    //   preprocessorOptions: {
+    //     sass: {
+    //       additionalData: (content, filename) => {
+    //         if (filename.includes('vuetify/styles')) return ''
+    //         return content
+    //       }
+    //     }
+    //   }
+    // },
     define: {
       'process.env.DEBUG': false,
     },

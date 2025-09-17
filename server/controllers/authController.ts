@@ -12,7 +12,6 @@ import { SearchKeywordModel } from "../models/SearchKeywordEntity"
 import { toSearchKeywordListDTO } from "../mappers/searchKeywordMapper"
 import { toMembershipLevelListDTO } from "../mappers/membershipLevelMapper"
 
-
 export const register = async (req: Request, res: Response) => {
   try {
     const { fullname, email, password, gender } = req.body;

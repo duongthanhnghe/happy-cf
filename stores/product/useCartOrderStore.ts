@@ -16,11 +16,13 @@ import type { AddressDTO } from '@/server/types/dto/address.dto'
 import type { CreateOrderBody, cartItems } from '@/server/types/dto/order.dto'
 import { Base64 } from "js-base64";
 import { ROUTES } from '@/shared/constants/routes';
+import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductStore();
   const storeAddress = useAddressesManageStore();
   const storeAccount = useAccountStore();
+  const storePaymentStatus = usePaymentStatusStore();
 
   const router = useRouter()
   
@@ -339,6 +341,10 @@ export const useCartStore = defineStore("Cart", () => {
 
   const handleTogglePopup = async (value: boolean) => {
     isTogglePopup.value = value
+
+    if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
+
+    // lay dia chi mac dinh
     if(!storeAccount.getDetailValue?.id) return
     if(isTogglePopup.value === true) {
       await handleGetDefaultAddress()

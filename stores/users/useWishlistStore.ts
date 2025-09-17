@@ -8,7 +8,7 @@ import {
 import {
   Loading
 } from '@/utils/global'
-import { showConfirm, showSuccess } from "@/utils/toast";
+import { showConfirm } from "@/utils/toast";
 
 export const useWishlistStore = defineStore("Wishlist", () => {
   //store
@@ -19,25 +19,14 @@ export const useWishlistStore = defineStore("Wishlist", () => {
   const wishlistIds  = reactive(new Set<string>())
   const isTogglePopupAdd = ref(false);
 
-  //actions list
   const loadItems = async () => {
     const userId = storeAccount.getDetailValue?.id;
     if(!userId) return
+    
     const data = await productsAPI.getWishlistByUserId(userId);
-   
-    // const parse = await Promise.all(
-    //   data.data.map(async (items) => {
-    //     await fetchDetailProduct(items?.productId)
-    //     return {
-    //       ...items,
-    //       itemProduct: getDetailProduct.value
-    //     }
-    //   })
-    // ) as WishlistItem[]|null;
     if(data.code === 0) dataList.value = data.data
   }
 
-  // actions global
   const handleTogglePopupAdd = (value: boolean) => {
     if(!dataList.value) loadItems()
     isTogglePopupAdd.value = value
@@ -68,7 +57,6 @@ export const useWishlistStore = defineStore("Wishlist", () => {
     Loading(true)
     const data = await productsAPI.removeFromWishlist(userId, productId);
     if(data.code === 0) {
-      showSuccess('Xoa thanh cong')
       loadItems()
       wishlistIds.delete(productId)
     }
@@ -81,8 +69,9 @@ export const useWishlistStore = defineStore("Wishlist", () => {
     const list = await productsAPI.getWishlistByUserId(userId)
 
     if(list.data.length === 0) return
+    dataList.value = list.data
     wishlistIds.clear()
-    list.data.forEach(item => wishlistIds.add(item.productId._id.toString()))
+    list.data.forEach(item => wishlistIds.add(item.product.id))
   }
 
   watch(() => storeAccount.getDetailValue?.id, id => {
@@ -95,11 +84,9 @@ export const useWishlistStore = defineStore("Wishlist", () => {
   const getListOrders = computed(() => dataList.value);
 
   return {
-    // state
     dataList,
     isTogglePopupAdd,
     wishlistIds,
-
     // actions
     loadItems,
     handleTogglePopupAdd,

@@ -3,20 +3,14 @@ import { productsAPI } from "@/services/product.service";
 import type { ProductDTO } from '@/server/types/dto/product.dto';
 
 export const useProductSales = () => {
-  const listProductSales = ref<ProductDTO[]|null>(null);
+  const listProductSales = ref<ProductDTO[]|[]>([]);
   const limitProductSales = ref<number>(10);
 
   const fetchListProductSales = async () => {
     try {
-      const data = await productsAPI.getAll()
+      const data = await productsAPI.getPromotional(limitProductSales.value)
       if(data.code === 0) {
-        listProductSales.value = data.data.filter((product: ProductDTO) =>
-          product.priceDiscounts !== null &&
-          product.price !== null &&
-          product.amount !== null &&
-          product.priceDiscounts < product.price &&
-          product.amount > 0
-        ).slice(0, limitProductSales.value)
+        listProductSales.value = data.data
       }
     } catch (err) {
       console.error('Error most order', err)

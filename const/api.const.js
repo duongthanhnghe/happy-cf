@@ -29,6 +29,8 @@ export const API_ENDPOINTS = {
     CREATE: '/products',
     TOGGLE_ACTIVE: (id) => `/products/toggleActive/${id}`,
     LIST_MOST_ORDER: (limit) => `/products/most-order?limit=${limit}`,
+    LIST_PROMOTION: (limit) => `/products/promotion?limit=${limit}`,
+    SEARCH: '/products/search',
     LIST_BY_CATEGORY: (categoryId) => `/categories/${categoryId}/products`,
     LIST_BY_USER_WISHLIST: (id) => `/users/${id}/wishlist`,
     ADD_WISHLIST:  (userId) => `/users/${userId}/wishlist`,

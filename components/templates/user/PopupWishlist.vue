@@ -11,7 +11,7 @@ const store = useWishlistStore();
     <template #body>
       <div class="row row-sm">
         <div v-if="store.getListOrders" v-for="item in store.getListOrders" :key="item.id"  class="col-6 col-md-4 mb-sm">
-            <ProductItemWishlistTemplate :product="item.productId"/>
+            <ProductItemWishlistTemplate :product="item.product"/>
         </div>
         <div v-else>
           <NoData />

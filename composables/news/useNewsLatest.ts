@@ -3,23 +3,22 @@ import type { PostNewsDTO } from '@/server/types/dto/news.dto'
 import { newsAPI } from "@/services/news.service";
 export const useNewsLatest = () => {
 
-  const dataListNewsLatest = ref<{ data: PostNewsDTO[] } | null>(null);
-  const limitListNewsLatest = ref<number>(5)
+  const dataListNewsLatest = ref<PostNewsDTO[]>([]);
 
-  const getApiListNewsLatest = async () => {
+  const getApiListNewsLatest = async (limit: number) => {
     try {
-      const data = await newsAPI.getLatestPosts(limitListNewsLatest.value)
-      dataListNewsLatest.value = data
+      const data = await newsAPI.getLatestPosts(limit)
+      if(data.code === 0){
+        dataListNewsLatest.value = data.data
+      }
     } catch (err) {
       console.error('Error most order', err)
     }
   }
 
-  const getListNewsLatest = computed(() => dataListNewsLatest.value?.data);
+  const getListNewsLatest = computed(() => dataListNewsLatest.value);
 
   return {
-    dataListNewsLatest,
-    limitListNewsLatest,
     getApiListNewsLatest,
     getListNewsLatest
   }

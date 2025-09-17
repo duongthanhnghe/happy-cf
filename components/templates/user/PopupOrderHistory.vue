@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useOrderHistoryStore } from '@/stores/order/useOrderHistoryStore';
+import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
+
 const store = useOrderHistoryStore();
+const storeOrderStatus = useOrderStatusStore();
+
 </script>
 <template>
   <Popup
@@ -14,11 +18,10 @@ const store = useOrderHistoryStore();
       <div class="order-history-body">
         <div class="container pb-sm bg-primary sticky">
           <v-select
-            :disabled="!store.getListStatus.length"
             variant="outlined"
             label="Chọn danh mục"
             v-model="store.filterStatusOrder"
-            :items="[{ id: '', name: 'Tất cả' }, ...store.getListStatus]"
+            :items="[{ id: '', name: 'Tất cả' }, ...storeOrderStatus.getListData]"
             item-title="name"
             item-value="id"
             hide-details

@@ -1132,22 +1132,7 @@ const plugins = [
 _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"26313-Tcgj3kZpQhEjcZy4VipNG4Qz7+w\"",
-    "mtime": "2025-09-12T07:17:59.595Z",
-    "size": 156435,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"91e0c-ptbLxxxILW7cRm8XTiZe5uFFglI\"",
-    "mtime": "2025-09-12T07:17:59.595Z",
-    "size": 597516,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -4078,10 +4063,45 @@ const deleteProduct = async (req, res) => {
 const getWishlistByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
-    const items = await WishlistModel.find({
-      userId: new mongoose.Types.ObjectId(userId)
-    }).populate("productId");
-    return res.json({ code: 0, data: items });
+    if (!Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ code: 1, message: "Invalid userId" });
+    }
+    const items = await WishlistModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId)
+        }
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "productId",
+          foreignField: "_id",
+          as: "product"
+        }
+      },
+      { $unwind: "$product" },
+      {
+        $match: {
+          "product.isActive": true
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          userId: 1,
+          createdAt: 1,
+          product: 1
+        }
+      }
+    ]);
+    const mapped = items.map((item) => ({
+      id: item._id.toString(),
+      userId: item.userId.toString(),
+      createdAt: item.createdAt,
+      product: toProductDTO(item.product)
+    }));
+    return res.json({ code: 0, data: mapped });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -4107,6 +4127,54 @@ const deleteWishlistItem = async (req, res) => {
     return res.json({ code: 0, message: "Deleted" });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPromotionalProducts = async (req, res) => {
+  try {
+    const limit = req.query.limit ? Number(req.query.limit) : 20;
+    const products = await ProductEntity.aggregate([
+      {
+        $match: {
+          isActive: true,
+          amount: { $gt: 0 },
+          $expr: { $lt: ["$priceDiscounts", "$price"] }
+        }
+      },
+      {
+        $addFields: {
+          discountPercent: {
+            $cond: [
+              { $and: [{ $ifNull: ["$price", false] }, { $ifNull: ["$priceDiscounts", false] }] },
+              {
+                $round: [
+                  { $multiply: [{ $divide: [{ $subtract: ["$price", "$priceDiscounts"] }, "$price"] }, 100] },
+                  0
+                ]
+              },
+              0
+            ]
+          }
+        }
+      },
+      { $sort: { discountPercent: -1 } },
+      { $limit: limit }
+    ]);
+    res.json({
+      code: 0,
+      data: toProductListDTO(
+        products.map((p) => ({
+          ...p,
+          isPromotional: true,
+          discountPercent: p.price && p.priceDiscounts ? Math.round((p.price - p.priceDiscounts) / p.price * 100) : 0
+        }))
+      )
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: 1,
+      message: "Server error"
+    });
   }
 };
 const getMostOrderedProduct = async (req, res) => {
@@ -4145,6 +4213,78 @@ const getMostOrderedProduct = async (req, res) => {
     res.status(500).json({ code: 1, message: "Server error" });
   }
 };
+const searchProducts = async (req, res) => {
+  var _a;
+  try {
+    const keyword = ((_a = req.query.keyword) == null ? void 0 : _a.trim()) || "";
+    const page = req.query.page ? Number(req.query.page) : 1;
+    const limit = req.query.limit ? Number(req.query.limit) : 20;
+    const skip = (page - 1) * limit;
+    const matchStage = {
+      isActive: true,
+      amount: { $gt: 0 }
+    };
+    if (keyword) {
+      matchStage.$or = [
+        { productName: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { summaryContent: { $regex: keyword, $options: "i" } }
+      ];
+    }
+    const pipeline = [
+      { $match: matchStage },
+      {
+        $addFields: {
+          discountPercent: {
+            $cond: [
+              { $and: [{ $ifNull: ["$price", false] }, { $ifNull: ["$priceDiscounts", false] }] },
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      { $divide: [{ $subtract: ["$price", "$priceDiscounts"] }, "$price"] },
+                      100
+                    ]
+                  },
+                  0
+                ]
+              },
+              0
+            ]
+          }
+        }
+      },
+      { $sort: { discountPercent: -1, amount: -1 } },
+      { $skip: skip },
+      { $limit: limit }
+    ];
+    const [products, totalCount] = await Promise.all([
+      ProductEntity.aggregate(pipeline),
+      ProductEntity.countDocuments(matchStage)
+    ]);
+    res.json({
+      code: 0,
+      data: toProductListDTO(
+        products.map((p) => ({
+          ...p,
+          isPromotional: p.discountPercent > 0
+        }))
+      ),
+      pagination: {
+        total: totalCount,
+        page,
+        totalPages: Math.ceil(totalCount / limit),
+        limit
+      }
+    });
+  } catch (error) {
+    console.error("Error searching products:", error);
+    res.status(500).json({
+      code: 1,
+      message: "Server error"
+    });
+  }
+};
 const toggleActive = async (req, res) => {
   try {
     const { id } = req.params;
@@ -4166,7 +4306,9 @@ const toggleActive = async (req, res) => {
 
 const router$1 = Router();
 router$1.get("/", getAllProduct);
+router$1.get("/promotion", getPromotionalProducts);
 router$1.get("/most-order", getMostOrderedProduct);
+router$1.get("/search", searchProducts);
 router$1.post("/", createProduct);
 router$1.get("/:id", getProductById);
 router$1.put("/:id", updateProduct);

@@ -8,7 +8,9 @@ export const useOrderStatus = () => {
   const fetchOrderStatus = async () => {
     try {
       const data = await ordersAPI.getAllStatus()
-      listOrderStatus.value = data.data;
+      if(data.code === 0){
+        listOrderStatus.value = data.data;
+      }
     } catch (err) {
       console.error('Error status', err)
     }
@@ -22,7 +24,6 @@ export const useOrderStatus = () => {
   const getListOrderStatus = computed(() => listOrderStatus.value);
 
   return {
-    listOrderStatus,
     fetchOrderStatus,
     getOrderStatusItem,
     getListOrderStatus

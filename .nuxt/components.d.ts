@@ -72,7 +72,6 @@ interface _GlobalComponents {
     'FileManageFolder': typeof import("../components/templates/file-manage/FileManageFolder.vue")['default']
     'FileManageImage': typeof import("../components/templates/file-manage/FileManageImage.vue")['default']
     'PopupFileManageImage': typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']
-    'OrderMain': typeof import("../components/templates/order/OrderMain/index.vue")['default']
     'PopupOrderDetail': typeof import("../components/templates/order/PopupOrderDetail.vue")['default']
     'PopupSearch': typeof import("../components/templates/product/PopupSearch.vue")['default']
     'PopupChangePassword': typeof import("../components/templates/user/PopupChangePassword.vue")['default']
@@ -166,7 +165,6 @@ interface _GlobalComponents {
     'LazyFileManageFolder': LazyComponent<typeof import("../components/templates/file-manage/FileManageFolder.vue")['default']>
     'LazyFileManageImage': LazyComponent<typeof import("../components/templates/file-manage/FileManageImage.vue")['default']>
     'LazyPopupFileManageImage': LazyComponent<typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']>
-    'LazyOrderMain': LazyComponent<typeof import("../components/templates/order/OrderMain/index.vue")['default']>
     'LazyPopupOrderDetail': LazyComponent<typeof import("../components/templates/order/PopupOrderDetail.vue")['default']>
     'LazyPopupSearch': LazyComponent<typeof import("../components/templates/product/PopupSearch.vue")['default']>
     'LazyPopupChangePassword': LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
@@ -266,7 +264,6 @@ export const PopupEditItemToCart: typeof import("../components/templates/cart/Po
 export const FileManageFolder: typeof import("../components/templates/file-manage/FileManageFolder.vue")['default']
 export const FileManageImage: typeof import("../components/templates/file-manage/FileManageImage.vue")['default']
 export const PopupFileManageImage: typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']
-export const OrderMain: typeof import("../components/templates/order/OrderMain/index.vue")['default']
 export const PopupOrderDetail: typeof import("../components/templates/order/PopupOrderDetail.vue")['default']
 export const PopupSearch: typeof import("../components/templates/product/PopupSearch.vue")['default']
 export const PopupChangePassword: typeof import("../components/templates/user/PopupChangePassword.vue")['default']
@@ -360,7 +357,6 @@ export const LazyPopupEditItemToCart: LazyComponent<typeof import("../components
 export const LazyFileManageFolder: LazyComponent<typeof import("../components/templates/file-manage/FileManageFolder.vue")['default']>
 export const LazyFileManageImage: LazyComponent<typeof import("../components/templates/file-manage/FileManageImage.vue")['default']>
 export const LazyPopupFileManageImage: LazyComponent<typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']>
-export const LazyOrderMain: LazyComponent<typeof import("../components/templates/order/OrderMain/index.vue")['default']>
 export const LazyPopupOrderDetail: LazyComponent<typeof import("../components/templates/order/PopupOrderDetail.vue")['default']>
 export const LazyPopupSearch: LazyComponent<typeof import("../components/templates/product/PopupSearch.vue")['default']>
 export const LazyPopupChangePassword: LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>

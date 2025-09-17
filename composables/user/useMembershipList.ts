@@ -4,21 +4,22 @@ import type { MembershipLevels } from '@/server/types/dto/user.dto'
 
 export const useMembershipList = () => {
  
-  const listMembership = ref<{ data: MembershipLevels[] } | null>(null);
+  const listMembership = ref<MembershipLevels[]>([]);
 
   const fetchMembershipList = async () => {
     try {
       const data = await usersAPI.getAllMembershipLevel()
-      listMembership.value = data;
+      if(data.code === 0){
+        listMembership.value = data.data;
+      }
     } catch (err) {
       console.error('Error membership', err)
     }
   }
 
-  const getMembershipList = computed(() => listMembership.value?.data);
+  const getMembershipList = computed(() => listMembership.value);
 
   return {
-    listMembership,
     fetchMembershipList,
     getMembershipList
   }

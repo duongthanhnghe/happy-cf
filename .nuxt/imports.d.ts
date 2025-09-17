@@ -33,6 +33,7 @@ export { useUploadImage } from '../composables/useUploadImage';
 export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage, generateSlug } from '../utils/global';
 export { usePagination } from '../utils/paginationHandle';
 export { useSeoWatchers } from '../utils/seoHandle';
+export { storageWithTTL } from '../utils/storageWithTTL';
 export { Toast, showSuccess, showToastError, showWarning, showConfirm } from '../utils/toast';
 export { nullRules, nullAndSpecialRules } from '../utils/validation';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/@pinia/nuxt/dist/runtime/composables';

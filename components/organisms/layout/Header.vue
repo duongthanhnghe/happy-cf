@@ -41,9 +41,9 @@ const props = defineProps({
       <div class="header-content">
         <div class="header-left">
           <template v-if="props.typeLeft === 'logo'">
-            <router-link :to="{ name: 'index' }">
+            <!-- <NuxtLink :to="{ path: '/' }"> -->
               <img v-if="storeSetting.getSettings?.logoUrl" class="header-logo" :src="storeSetting.getSettings?.logoUrl" :alt="storeSetting.getSettings?.name" />
-            </router-link>
+            <!-- </NuxtLink> -->
           </template>
 
           <template v-else-if="props.typeLeft === 'address'">

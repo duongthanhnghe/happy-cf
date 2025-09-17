@@ -107,6 +107,7 @@ declare global {
   const showSuccess: typeof import('../../utils/toast')['showSuccess']
   const showToastError: typeof import('../../utils/toast')['showToastError']
   const showWarning: typeof import('../../utils/toast')['showWarning']
+  const storageWithTTL: typeof import('../../utils/storageWithTTL')['storageWithTTL']
   const storeToRefs: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['storeToRefs']
   const toRaw: typeof import('vue')['toRaw']
   const toRef: typeof import('vue')['toRef']
@@ -315,6 +316,7 @@ declare module 'vue' {
     readonly showSuccess: UnwrapRef<typeof import('../../utils/toast')['showSuccess']>
     readonly showToastError: UnwrapRef<typeof import('../../utils/toast')['showToastError']>
     readonly showWarning: UnwrapRef<typeof import('../../utils/toast')['showWarning']>
+    readonly storageWithTTL: UnwrapRef<typeof import('../../utils/storageWithTTL')['storageWithTTL']>
     readonly storeToRefs: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['storeToRefs']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>

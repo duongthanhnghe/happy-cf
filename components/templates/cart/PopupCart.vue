@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import '@/styles/templates/cart/popup-cart.scss'
 import type { SubmitEventPromise } from 'vuetify';
-import { watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { formatCurrency } from '@/utils/global'
 import { showWarning } from '@/utils/toast'
@@ -9,14 +8,14 @@ import { useCartStore } from '@/stores/product/useCartOrderStore'
 import { useAddressesManageStore } from '@/stores/users/useAddressesStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useAccountStore } from '@/stores/users/useAccountStore';
-import { usePaymentStatus } from '@/composables/order/usePaymentStatus';
 import { ROUTES } from '@/shared/constants/routes';
+import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
 
-const { getListPaymentStatus, fetchPaymentStatus } = usePaymentStatus();
 const store = useCartStore();
 const storeAddress = useAddressesManageStore();
 const storeDisplay = useDisplayStore()
 const storeAccount = useAccountStore();
+const storePaymentStatus = usePaymentStatusStore();
 
 const router = useRouter();
 
@@ -35,12 +34,6 @@ const handleBackOrder = () => {
   })
   store.isTogglePopup = false;
 }
-
-watch(() => store.isTogglePopup, (newValue) => {
-  if (newValue) {
-    fetchPaymentStatus();
-  }
-})
 
 </script>
 <template>
@@ -100,11 +93,9 @@ watch(() => store.isTogglePopup, (newValue) => {
           <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
             Thanh toan
           </Heading>
-          <div v-if="getListPaymentStatus.length > 0">
-            <v-radio-group inline v-model="store.paymentSelected" class="payment-template1-group" nameRadio="namePayment">
-              <PaymentItemTemplate1 v-for="(item, index) in getListPaymentStatus" :key="index" :item="item" />
-            </v-radio-group>
-          </div>
+          <v-radio-group inline v-model="store.paymentSelected" class="payment-template1-group" nameRadio="namePayment">
+            <PaymentItemTemplate1 v-for="(item, index) in storePaymentStatus.getListData" :key="index" :item="item" />
+          </v-radio-group>
 
           <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
             Ghi chu

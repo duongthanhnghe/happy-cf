@@ -66,7 +66,7 @@ export type UpdateCategoryProductBody = Partial<CreateCategoryProductBody> & { i
 export interface WishlistItem {
   id: string
   userId: string
-  productId: string
+  product: ProductDTO
   createdAt: Date
 }
 
