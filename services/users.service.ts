@@ -132,13 +132,29 @@ export const usersAPI = {
 
     return await res.json()
   },
-  getAllUsers: async () => {
-  try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.LIST}`)
-      const data = await response.json()
+  getAllUsers: async (page: number = 1, limit: number = 10, role: number = 1) => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.LIST}?page=${page}&limit=${limit}&role=${role}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
       return data;
     } catch (err) {
-      console.error('Error:', err)
+      console.error("Error getAllUsers:", err);
+      return {
+        code: 1,
+        message: "Failed to fetch orders",
+        data: [],
+        pagination: {
+          total: 0,
+          totalPages: 0,
+          page: 1,
+          limit,
+        },
+      }
     }
   },
   delete: async (id:string) => {

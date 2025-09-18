@@ -52,15 +52,7 @@ onBeforeUnmount(() => {
         store.loadItems(options)
     }">
      <template #item.index="{ item }">
-      <v-select
-        v-tooltip.right="'Doi STT'"
-        :items="store.getListOrder"
-        v-model="item.order"
-        variant="outlined"
-        hide-details
-        class="v-select-order"
-        @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"
-      ></v-select>
+      <SelectOrder :order="item.order" :listOrder="store.getListOrder" @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"/>
     </template>
 
     <template #item.image="{ item }">

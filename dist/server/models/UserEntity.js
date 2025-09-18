@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 const MembershipSchema = new Schema({
     level: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], required: true },
     point: { type: Number, default: 0 },
@@ -23,5 +24,6 @@ const UserSchema = new Schema({
     createdAt: { type: Date },
     updatedAt: { type: Date },
 }, { timestamps: true });
+UserSchema.plugin(mongoosePaginate);
 export const UserModel = model("User", UserSchema, "users");
 //# sourceMappingURL=UserEntity.js.map

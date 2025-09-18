@@ -165,24 +165,61 @@ export const deleteUsers = async (req: Request, res: Response) => {
   res.json({ code: 200, message: "Delete success" });
 };
 
-export const getAllUsers = async (_: Request, res: Response) => {
+export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await UserModel.find()
+   
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const role = req.query.role ? parseInt(req.query.role as string) : undefined;
 
+    const filter: any = {};
+    if (role !== undefined) {
+      filter.role = role;
+    }
+
+    if (limit === -1) {
+    
+      const users = await UserModel.find(filter).sort({ createdAt: -1 });
+
+      return res.status(200).json({
+        code: 0,
+        data: toUserListDTO(users),
+        pagination: {
+          total: users.length,
+          totalPages: 1,
+          page: 1,
+          limit: users.length,
+        },
+      });
+    }
+
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 },
+    };
+
+    const result = await (UserModel as any).paginate(filter, options);
     return res.status(200).json({
       code: 0,
-      data: toUserListDTO(users),
-    })
+      data: toUserListDTO(result.docs),
+      pagination: {
+        total: result.totalDocs,
+        totalPages: result.totalPages,
+        page: result.page,
+        limit: result.limit,
+      },
+    });
   } catch (error: any) {
-    console.error("getAllUsers error:", error)
+    console.error("getAllUsers error:", error);
 
     return res.status(500).json({
       code: 500,
       message: "Internal server error",
       error: error.message,
-    })
+    });
   }
-}
+};
 
 export const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;

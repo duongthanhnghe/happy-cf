@@ -10,6 +10,10 @@ import {
   formatCurrency
 } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
+import { ORDER_STATUS } from "@/shared/constants/order-status";
+import {
+  useUserManageStore
+} from '@/stores/users/useUserManageStore'
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,
@@ -18,12 +22,14 @@ definePageMeta({
 
 const store = useOrderManageStore();
 const storeHistory = useOrderHistoryStore();
+const storeUser = useUserManageStore();
 const idOrder = ref<string>('')
 
 const handleDetailPopup = (id:string) => {
   storeHistory.handleTogglePopupDetail(true, id)
   idOrder.value = id
 }
+
 </script>
 <template>
 
@@ -38,14 +44,24 @@ const handleDetailPopup = (id:string) => {
 </HeaderAdmin>
 
 <PopupOrderDetail :idOrder="idOrder" />
+<DetailAccount />
 
 <v-container>
-  <v-data-table-server v-model:items-per-page="store.itemsPerPage" :headers="store.headers" :items="store.serverItems" :items-length="store.totalItems" :loading="store.loadingTable" :search="store.search" item-value="name" @update:options="options => {
+  <v-data-table-server
+    v-model:page="store.currentTableOptions.page"
+    v-model:items-per-page="store.currentTableOptions.itemsPerPage"
+    :headers="store.headers"
+    :items="store.serverItems"
+    :items-length="store.totalItems"
+    :loading="store.loadingTable"
+    :search="store.search"
+    item-value="name"
+    :items-per-page-options="[20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
+    @update:options="options => {
         store.currentTableOptions = options
-        store.loadItemsProduct(options)
     }">
     <template #item.index="{ index }">
-      {{ (store.currentTableOptions.page - 1) * store.itemsPerPage + index + 1 }}
+      {{ (store.currentTableOptions.page - 1) * store.currentTableOptions.itemsPerPage + index + 1 }}
     </template>
 
     <template #item.totalPrice="{ item }">
@@ -58,16 +74,43 @@ const handleDetailPopup = (id:string) => {
       </v-chip>
     </template>
 
+    <template #item.fullname="{ item }">
+      <div class="min-width-200 flex gap-xs align-center white-space">
+        <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeUser.handleEdit(item.userId?._id.toString())" />
+        <span class="text-limit">{{ item.fullname }}</span>
+      </div>
+    </template>
+
     <template #item.time="{ item }">
       <v-chip label color="blue">
         {{ item.time }}
       </v-chip>
     </template>
 
-    <template #item.status="{ item }">
-      <v-chip :color="item.status.status" label>
-        {{ item.status.name }}
+    <template #item.status="{ item: order }">
+      <v-chip :color="order.status.status" label>
+        {{ order.status.name }}
       </v-chip>
+      <template v-if="ORDER_STATUS.CANCELLED !== order.status.id">
+        <v-menu transition="slide-x-transition" activator="parent">
+          <v-list>
+            <v-list-item
+              v-for="statusItem in store.getListStatus"
+              :key="statusItem.id"
+              class="header-admin-right-list"
+              @click.prevent="store.handleUpdateStatusOrder(order.id, order.status.id, statusItem.id)"
+              :class="{ active: statusItem.index == order.status.index }"
+            >
+              <v-list-item-title>
+                <div class="flex align-center gap-sm weight-medium">
+                  <MaterialIcon v-if="statusItem.icon" :size="24" :name="statusItem.icon" />
+                  {{ statusItem.name }}
+                </div>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </template>
     </template>
 
     <template #item.paymentId="{ item }">

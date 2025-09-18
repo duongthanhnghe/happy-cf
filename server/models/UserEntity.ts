@@ -1,5 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
-
+import mongoosePaginate from "mongoose-paginate-v2";
+import type { PaginateModel } from "mongoose";
 export interface Membership {
   level: "Bronze" | "Silver" | "Gold" | "Platinum";
   point: number;
@@ -58,5 +59,7 @@ const UserSchema = new Schema<User>(
   },
   { timestamps: true }
 );
+
+UserSchema.plugin(mongoosePaginate);
 
 export const UserModel = model("User", UserSchema, "users");

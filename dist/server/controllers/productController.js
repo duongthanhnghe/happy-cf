@@ -102,61 +102,6 @@ export const deleteProduct = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// export const getWishlistByUserId = async (req: Request<{ userId: string }>, res: Response) => {
-//   try {
-//     const { userId } = req.params
-//     const items = await WishlistModel.find({
-//       userId: new mongoose.Types.ObjectId(userId)
-//     }).populate("productId")
-//     return res.json({ code: 0, data: items })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
-// export const getWishlistByUserId = async (req: Request<{ userId: string }>, res: Response) => {
-//   try {
-//     const { userId } = req.params;
-//     const items = await WishlistModel.aggregate([
-//       {
-//         $match: {
-//           userId: new mongoose.Types.ObjectId(userId)
-//         }
-//       },
-//       {
-//         $lookup: {
-//           from: "products", // tên collection của ProductModel
-//           localField: "productId",
-//           foreignField: "_id",
-//           as: "product"
-//         }
-//       },
-//       { $unwind: "$product" }, // giải nén mảng product
-//       {
-//         $match: {
-//           "product.isActive": true // chỉ giữ sản phẩm active
-//         }
-//       },
-//       {
-//         $project: {
-//           _id: 1,
-//           userId: 1,
-//           productId: 1,
-//           createdAt: 1,
-//           product: 1
-//         }
-//       }
-//     ]);
-//     const mapped = items.map(item => ({
-//       id: item._id.toString(),
-//       userId: item.userId.toString(),
-//       createdAt: item.createdAt,
-//       product: toProductListDTO(item.product)
-//     }));
-//     return res.json({ code: 0, data: mapped });
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message });
-//   }
-// };
 export const getWishlistByUserId = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -171,7 +116,7 @@ export const getWishlistByUserId = async (req, res) => {
             },
             {
                 $lookup: {
-                    from: "products", // collection name
+                    from: "products",
                     localField: "productId",
                     foreignField: "_id",
                     as: "product",
@@ -180,7 +125,7 @@ export const getWishlistByUserId = async (req, res) => {
             { $unwind: "$product" },
             {
                 $match: {
-                    "product.isActive": true, // chỉ lấy sp active
+                    "product.isActive": true,
                 },
             },
             {
@@ -193,10 +138,10 @@ export const getWishlistByUserId = async (req, res) => {
             },
         ]);
         const mapped = items.map(item => ({
-            id: item._id.toString(), // wishlistId
+            id: item._id.toString(),
             userId: item.userId.toString(),
             createdAt: item.createdAt,
-            product: toProductDTO(item.product), // chuẩn hóa product
+            product: toProductDTO(item.product),
         }));
         return res.json({ code: 0, data: mapped });
     }

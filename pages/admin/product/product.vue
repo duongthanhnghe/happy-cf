@@ -58,10 +58,6 @@ onBeforeUnmount(() => {
 <PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
-  <!-- <v-data-table-server v-model:items-per-page="store.itemsPerPage" :headers="store.headers" :items="store.serverItems" :items-length="store.totalItems" :loading="store.loadingTable" :search="store.search" item-value="name" @update:options="options => {
-        store.currentTableOptions = options
-        store.loadItemsProduct(options)
-    }"> -->
     <v-data-table-server
     v-model:page="store.currentTableOptions.page"
     v-model:items-per-page="store.currentTableOptions.itemsPerPage"

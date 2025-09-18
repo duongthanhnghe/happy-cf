@@ -1,5 +1,6 @@
 import type { ProductDTO } from './product.dto.js';
 import { Types } from "mongoose";
+import type { PaginationDTO } from '../common/pagination.dto'
 
 export interface ProductInOrder extends cartItems {
   data: ProductDTO
@@ -52,14 +53,12 @@ export interface OrderDTO {
   phone: string;
   note: string;
   paymentId: PaymentDTO;
-  // paymentId: string;
   cartItems: cartItems[];
   totalPrice: number;
   totalPriceSave: number;
   totalPriceCurrent: number;
   point: number;
   status: OrderStatusDTO;
-  // status: string;
   userId: string | null;
   createdAt: string;
   updatedAt: string;
@@ -69,37 +68,5 @@ export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "up
   paymentId: string;
   status: string;
 }
-// export type UpdateOrderBody = Partial<Omit<CreateOrderBody, "createdAt" | "updatedAt">>
 
-// export interface Payment {
-//   _id: string
-//   name: string
-//   description: string
-//   image: string
-// }
-
-// export interface OrderStatus {
-//   _id: string
-//   name: string
-//   status: string
-//   icon: string
-// }
-
-// export interface Order {
-//   _id: string
-//   code: string
-//   time: string
-//   address: string
-//   fullname: string
-//   phone: string
-//   note: string
-//   paymentId: Types.ObjectId
-//   cartItems: cartItems[]
-//   totalPrice: number
-//   totalPriceSave: number
-//   totalPriceCurrent: number
-//   point: number
-//   status: string
-//   userId: Types.ObjectId | null
-//   createdAt: string
-// }
+export type OrderPaginationDTO = PaginationDTO<OrderDTO>

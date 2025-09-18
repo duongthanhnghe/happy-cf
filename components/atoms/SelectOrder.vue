@@ -23,12 +23,12 @@ const emit = defineEmits(["update:modelValue"])
       :items="listOrder"
       :model-value="order"
       variant="outlined"  
-      class="v-select-order weight-semibold"
+      class="v-select-order"
       hide-details
       @update:model-value="emit('update:modelValue', $event)"
     >
       <template v-slot:append>
-        <MaterialIcon name="keyboard_arrow_down" />
+        <MaterialIcon name="keyboard_arrow_down" :size="16"/>
       </template>
     </v-select>
   </client-only>

@@ -17,10 +17,9 @@ export const useUserManageStore = defineStore("UserManage", () => {
 
   const { getDetailUserApi, fetchDetailUser } = useUserDetail()
   const { getListUserAllApi, fetchListUserAll } = useUserAll()
-//state list
-const dataList = ref<User[]| null>(null);
 
-const itemsPerPage = 10
+  const dataList = ref<User[]>([]);
+
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Avatar', key: 'image', sortable: false, },
@@ -33,87 +32,85 @@ const itemsPerPage = 10
     { title: 'Ngay tham gia', key: 'createdAt', sortable: false, },
     { title: '', key: 'actions', sortable: false },
   ])
-  const serverItems = ref<User[]>([])
-  const loadingTable = ref<boolean>(true)
-  const totalItems = ref<number>(0)
-  const name = ref<string>('')
-  const phone = ref<string>('')
-  const email = ref<string>('')
-  const search = ref<string>('')
-  const filterTypeMember = ref<string>()
-  const currentTableOptions = ref<TableOpt>({
-  page: 1,
-  itemsPerPage: itemsPerPage,
-  sortBy: [],
-})
+    const serverItems = ref<User[]>([])
+    const loadingTable = ref<boolean>(true)
+    const totalItems = ref<number>(0)
+    const name = ref<string>('')
+    const phone = ref<string>('')
+    const email = ref<string>('')
+    const search = ref<string>('')
+    const filterTypeMember = ref<string>()
+    const currentTableOptions = ref<TableOpt>({
+    page: 1,
+    itemsPerPage: 20,
+    sortBy: [],
+  })
+  const isTogglePopupUpdate = ref<boolean>(false);
+  const detailData = ref<User|null>(null);
+  const role = USER_ROLES.USER;
 
-//state edit
-const isTogglePopupUpdate = ref<boolean>(false);
-const detailData = ref<User|null>(null);
+  const getListData = async () => {
+    await fetchListUserAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage,role)
 
-//actions list
-const getListData = async () => {
-  await fetchListUserAll()
-  if(getListUserAllApi.value) dataList.value = getListUserAllApi.value
-}
+    if(!getListUserAllApi.value) return
+    dataList.value = getListUserAllApi.value.data
+    totalItems.value = getListUserAllApi.value.pagination.total
+    currentTableOptions.value.page = getListUserAllApi.value.pagination.page
+    currentTableOptions.value.itemsPerPage = getListUserAllApi.value.pagination.limit
+  }
 
-const ListAllApi = {
-    async fetch ({
-      page, itemsPerPage, sortBy,
-      search, filterTypeMember
-    }:{ page: TableOpt["page"],itemsPerPage: TableOpt["itemsPerPage"],sortBy: TableOpt["sortBy"],search: { fullname: string, phone: string, email: string }, filterTypeMember?: string} ) {
+  const ListAllApi = {
+    async fetch({ items, search, filterTypeMember }: {
+      items: User[],
+      search: { fullname: string, phone: string, email: string },
+      filterTypeMember?: string
+    }) {
       return new Promise(resolve => {
         setTimeout(() => {
-          const start = (page - 1) * itemsPerPage
-          const end = start + itemsPerPage
-          const items = dataList.value?.slice().filter(item => {
-            if (search.fullname && !item.fullname.toLowerCase().includes(search.fullname.toLowerCase())) {
-              return false
-            }
-            if (search.phone && !item.phone.toLowerCase().includes(search.phone.toLowerCase())) {
-              return false
-            }
-            if (search.email && !item.email.toLowerCase().includes(search.email.toLowerCase())) {
-              return false
-            }
-            if (filterTypeMember && item.membership.level !== filterTypeMember ) {
-              return false
-            }
-            if(item.role === USER_ROLES.ADMIN) {
-              return false
-            }
-            return true
-          })
-          if (sortBy.length) {
-            const sortKey = sortBy[0].key
-            const sortOrder = sortBy[0].order
-            items?.sort((a:any, b:any) => {
-              const aValue = a[sortKey]
-              const bValue = b[sortKey]
-              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-            })
+          let filtered = items.slice()
+
+          if (search.fullname) {
+            filtered = filtered.filter(item =>
+              item.fullname.toLowerCase().includes(search.fullname.toLowerCase())
+            )
           }
-          const paginated = items?.slice(start, end === -1 ? undefined : end)
-          resolve({ items: paginated, total: items?.length })
+
+          if (search.phone) {
+            filtered = filtered.filter(item =>
+              item.phone.toLowerCase().includes(search.phone.toLowerCase())
+            )
+          }
+
+          if (search.email) {
+            filtered = filtered.filter(item =>
+              item.email.toLowerCase().includes(search.email.toLowerCase())
+            )
+          }
+
+          if (filterTypeMember) {
+            filtered = filtered.filter(item => item.membership.level !== filterTypeMember)
+          }
+
+          resolve({ items: filtered })
         }, 500)
       })
     },
   }
 
+
   async function loadItems(opt: TableOpt) {
     loadingTable.value = true
     await getListData()
 
-    const { items, total } = await ListAllApi.fetch({
-      page: opt.page,
-      itemsPerPage: opt.itemsPerPage,
-      sortBy: opt.sortBy,
+    const { items } = await ListAllApi.fetch({
+      items: dataList.value || [],
       search: { fullname: name.value, phone: phone.value, email: email.value },
       filterTypeMember: filterTypeMember.value
-    }) as { items: User[]; total: number }
+    }) as { items: User[] }
 
-    serverItems.value  = items
-    totalItems.value   = total
+    serverItems.value = items
+    if(getListUserAllApi.value) totalItems.value = getListUserAllApi.value.pagination.total
+
     loadingTable.value = false
   }
 
@@ -121,11 +118,10 @@ const ListAllApi = {
     loadItems(currentTableOptions.value);
   })
 
-  watch(dataList, (newVal) => {
-    dataList.value = newVal;
+  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
+    loadItems(currentTableOptions.value);
   })
 
-  //actions global
   const handleTogglePopupUpdate = (value: boolean) => {
     isTogglePopupUpdate.value = value;
   };
@@ -142,7 +138,6 @@ const ListAllApi = {
     handleTogglePopupUpdate(true);
   }
 
-  //actions delete
   const handleDelete = async (id:string) => {
     const confirm = await showConfirm('Bạn có chắc xoá mục này?')
     if (!confirm) return
@@ -166,10 +161,8 @@ const ListAllApi = {
     }
   }
 
-  // doi kich hoat
   const { toggleActive } = useToggleActiveStatus(usersAPI.toggleActive, serverItems );
 
-  //getters
   const getDetailUser = computed(() => detailData.value);
   
   return {
@@ -184,7 +177,6 @@ const ListAllApi = {
     phone,
     email,
     search,
-    itemsPerPage,
     headers,
     currentTableOptions,
     filterTypeMember,

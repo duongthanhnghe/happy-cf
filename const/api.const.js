@@ -43,6 +43,7 @@ export const API_ENDPOINTS = {
     GET_BY_ID: (id) => `/orders/${id}`,
     DELETE: (id) => `/orders/${id}`,
     LIST_STATUS: '/orders/status',
+    UPDATE_STATUS: '/orders/status',
     LIST_PAYMENTS: '/orders/payments',
     LIST_BY_USER: (id) => `/orders/users/${id}/orders`,
   },

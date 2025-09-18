@@ -30,7 +30,7 @@ const colorType = (color: string) => {
 }
 
 watch(() => getMembershipList.value, async (newValue) => {
- if(!newValue) await fetchMembershipList()
+ if(newValue.length === 0) await fetchMembershipList()
 }, { immediate: true })
 
 </script>
@@ -49,20 +49,21 @@ watch(() => getMembershipList.value, async (newValue) => {
 
 <v-container>
   <v-data-table-server class="category-table elevation-0"
-    v-model:items-per-page="store.itemsPerPage"
+    v-model:page="store.currentTableOptions.page"
+    v-model:items-per-page="store.currentTableOptions.itemsPerPage"
     :headers="store.headers"
     :items="store.serverItems"
     :items-length="store.totalItems"
     :loading="store.loadingTable"
     :search="store.search"
     item-value="name"
+    :items-per-page-options="[20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
     @update:options="options => {
-      store.currentTableOptions = options
-      store.loadItems(options)
+        store.currentTableOptions = options
     }">
     
     <template #item.index="{ index }">
-      {{ (store.currentTableOptions.page - 1) * store.itemsPerPage + index + 1 }}
+      {{ (store.currentTableOptions.page - 1) * store.currentTableOptions.itemsPerPage + index + 1 }}
     </template>
 
     <template #item.image="{ item }">

@@ -1,20 +1,55 @@
 import { UserModel } from "../models/UserEntity.js";
 import { OrderEntity, OrderStatusEntity, PaymentEntity } from "../models/OrderEntity.js";
 import { MembershipLevelModel } from "../models/MembershipLevelEntity.js";
-import { toOrderDTO, toOrderListDTO, toOrderStatusListDTO, toPaymentListDTO } from "../mappers/orderMapper.js";
-export const getAllOrder = async (_, res) => {
+import { toOrderDTO, toOrderStatusListDTO, toPaymentListDTO } from "../mappers/orderMapper.js";
+export const getAllOrder = async (req, res) => {
     try {
-        const orders = await OrderEntity.find()
-            .populate('cartItems.idProduct').populate("paymentId").populate("status").sort({ createdAt: -1 });
-        return res.json({ code: 0, data: toOrderListDTO(orders) });
-    }
-    catch (err) {
-        console.error('Get orders error:', err);
-        res.status(500).json({
-            code: 1,
-            message: err.message || 'Internal Server Error',
-            data: [],
+        let { page = 1, limit = 10 } = req.query;
+        const numPage = Number(page);
+        let numLimit = Number(limit);
+        if (numLimit === -1) {
+            const orders = await OrderEntity.find({})
+                .sort({ createdAt: -1 })
+                .populate("paymentId")
+                .populate("status")
+                .populate("userId");
+            return res.json({
+                code: 0,
+                data: orders,
+                pagination: {
+                    page: 1,
+                    limit: orders.length,
+                    totalPages: 1,
+                    total: orders.length
+                }
+            });
+        }
+        const options = {
+            page: numPage,
+            limit: numLimit,
+            sort: { createdAt: -1 },
+            populate: [
+                { path: "paymentId", model: "Payment" },
+                { path: "status", model: "OrderStatus" },
+                { path: "userId", model: "User" }
+            ]
+        };
+        const result = await OrderEntity.paginate({}, options);
+        return res.json({
+            code: 0,
+            data: result.docs,
+            pagination: {
+                page: result.page,
+                limit: result.limit,
+                totalPages: result.totalPages,
+                total: result.totalDocs
+            }
         });
+    }
+    catch (error) {
+        return res
+            .status(500)
+            .json({ code: 1, message: "Lỗi lấy danh sách order", error });
     }
 };
 export const getOrderById = async (req, res) => {
@@ -71,6 +106,29 @@ export const getOrdersByUserId = async (req, res) => {
     }
     catch (err) {
         return res.status(500).json({ code: 1, message: err.message });
+    }
+};
+export const updateOrderStatus = async (req, res) => {
+    try {
+        const { orderId, statusId } = req.body;
+        if (!orderId || !statusId) {
+            return res.status(400).json({ code: 1, message: "Thiếu orderId hoặc statusId" });
+        }
+        const status = await OrderStatusEntity.findById(statusId);
+        if (!status) {
+            return res.status(404).json({ code: 1, message: "Status không tồn tại" });
+        }
+        const order = await OrderEntity.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ code: 1, message: "Order không tồn tại" });
+        }
+        order.status = statusId;
+        await order.save();
+        return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) });
+    }
+    catch (err) {
+        console.error("Lỗi updateOrderStatus:", err);
+        return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
     }
 };
 export const getAllStatus = async (_, res) => {

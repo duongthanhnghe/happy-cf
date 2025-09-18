@@ -7,6 +7,7 @@ import {
   getAllStatus,
   getAllPayment,
   getOrdersByUserId,
+  updateOrderStatus,
 } from '../controllers/orderController.js'
 
 const router = Router()
@@ -18,5 +19,6 @@ router.get('/:id',       getOrderById)
 router.post('/',         createOrder)
 router.delete('/:id',    deleteOrder)
 router.get('/users/:userId/orders', getOrdersByUserId)
+router.put('/status',               updateOrderStatus)
 
 export default router

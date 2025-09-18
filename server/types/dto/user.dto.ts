@@ -1,4 +1,5 @@
 import type { JwtPayload } from 'jsonwebtoken';
+import type { PaginationDTO } from '../common/pagination.dto'
 
 export interface User {
   id: string
@@ -21,6 +22,8 @@ export interface User {
   createdAt: string
   updatedAt: string
 }
+
+export type UserPaginationDTO = PaginationDTO<User>
 
 export type GenderType = 'male' | 'female';
 

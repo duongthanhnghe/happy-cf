@@ -5,21 +5,55 @@ import type {
   OrderDTO,
   OrderStatusDTO,
   PaymentDTO,
+  OrderPaginationDTO,
 } from '@server/types/dto/order.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
 
 export const ordersAPI = {
-  getAll: async (): Promise<ApiResponse<OrderDTO[]>> => {
+  // getAll: async (): Promise<ApiResponse<OrderDTO[]>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST}`)
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error('Error:', err)
+  //     return {
+  //       code: 1,
+  //       message: 'Failed to fetch orders',
+  //       data: [],
+  //     }
+  //   }
+  // },
+
+  getAll: async (
+    page = 1,
+    limit = 10,
+    search = ""
+  ): Promise<OrderPaginationDTO> => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST}`)
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      })
+      if (search) params.append("search", search)
+
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST}?${params}`
+      )
       const data = await response.json()
       return data
     } catch (err) {
-      console.error('Error:', err)
+      console.error("Error:", err)
       return {
         code: 1,
-        message: 'Failed to fetch orders',
+        message: "Failed to fetch orders",
         data: [],
+        pagination: {
+          total: 0,
+          totalPages: 0,
+          page: 1,
+          limit,
+        },
       }
     }
   },
@@ -138,6 +172,34 @@ export const ordersAPI = {
         code: 1,
         message: 'Failed to fetch payments',
         data: [],
+      }
+    }
+  },
+  updateStatusOrder: async (orderId: string, statusId: string): Promise<ApiResponse<OrderDTO>> => {
+    try {
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.UPDATE_STATUS}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, statusId }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        return {
+          code: 1,
+          message: errorData.message || 'Failed to update order status',
+          data: undefined as any,
+        }
+      }
+
+      const data: ApiResponse<OrderDTO> = await response.json()
+      return data
+    } catch (err) {
+      console.error(`Error updating status for order ${orderId}:`, err)
+      return {
+        code: 1,
+        message: 'Unexpected error while updating order status',
+        data: undefined as any,
       }
     }
   },

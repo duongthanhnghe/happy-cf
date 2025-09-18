@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 const SelectedOptionsPushSchema = new Schema({
     optionName: { type: String, required: true },
     variantName: { type: String, required: true },
@@ -20,7 +21,8 @@ const PaymentSchema = new Schema({
 const OrderStatusSchema = new Schema({
     name: { type: String, required: true },
     status: { type: String, required: true },
-    icon: { type: String }
+    icon: { type: String },
+    index: { type: Number }
 }, { timestamps: true });
 const OrderSchema = new Schema({
     code: { type: String, required: true },
@@ -38,7 +40,9 @@ const OrderSchema = new Schema({
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null }
 }, { timestamps: true });
+OrderSchema.plugin(mongoosePaginate);
 export const PaymentEntity = model("Payment", PaymentSchema, "payments");
 export const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
+// export const OrderEntity = model("Order", OrderSchema, "orders");
 export const OrderEntity = model("Order", OrderSchema, "orders");
 //# sourceMappingURL=OrderEntity.js.map

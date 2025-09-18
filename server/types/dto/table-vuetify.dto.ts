@@ -10,6 +10,7 @@ export interface TableHeaders {
   title: string
   key: string
   sortable: boolean
+  class?: string
 }
 
 export interface FilterTime {

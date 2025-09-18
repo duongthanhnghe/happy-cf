@@ -16,7 +16,6 @@ watch(() => route.meta, (meta) => {
 
 <template>
   <div>
-    <FirstLoader />
     <Header :type-left="storeLayout.headerTypeLeft"/>
     <slot />
     <MenuBottom />

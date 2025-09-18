@@ -141,12 +141,43 @@ export const deleteUsers = async (req, res) => {
     await UserModel.findByIdAndDelete(id);
     res.json({ code: 200, message: "Delete success" });
 };
-export const getAllUsers = async (_, res) => {
+export const getAllUsers = async (req, res) => {
     try {
-        const users = await UserModel.find();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const role = req.query.role ? parseInt(req.query.role) : undefined;
+        const filter = {};
+        if (role !== undefined) {
+            filter.role = role;
+        }
+        if (limit === -1) {
+            const users = await UserModel.find(filter).sort({ createdAt: -1 });
+            return res.status(200).json({
+                code: 0,
+                data: toUserListDTO(users),
+                pagination: {
+                    total: users.length,
+                    totalPages: 1,
+                    page: 1,
+                    limit: users.length,
+                },
+            });
+        }
+        const options = {
+            page,
+            limit,
+            sort: { createdAt: -1 },
+        };
+        const result = await UserModel.paginate(filter, options);
         return res.status(200).json({
             code: 0,
-            data: toUserListDTO(users),
+            data: toUserListDTO(result.docs),
+            pagination: {
+                total: result.totalDocs,
+                totalPages: result.totalPages,
+                page: result.page,
+                limit: result.limit,
+            },
         });
     }
     catch (error) {

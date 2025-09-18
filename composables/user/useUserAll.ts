@@ -1,14 +1,14 @@
 import { ref, computed } from "vue";
 import { usersAPI } from "@/services/users.service";
-import type { User } from '@/server/types/dto/user.dto';
+import type { UserPaginationDTO } from '@/server/types/dto/user.dto';
 
 export const useUserAll = () => {
-  const listUserAll = ref<User[]|null>(null);
+  const listUserAll = ref<UserPaginationDTO>();
 
-  const fetchListUserAll = async () => {
+  const fetchListUserAll = async (page: number, limit: number, role: number) => {
     try {
-      const data = await usersAPI.getAllUsers()
-      if(data.code === 0) listUserAll.value = data.data
+      const data = await usersAPI.getAllUsers(page,limit,role)
+      if(data.code === 0) listUserAll.value = data
     } catch (err) {
       console.error('Error product all', err)
     }

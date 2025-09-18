@@ -1,6 +1,7 @@
 import { Schema, model, Document, Types } from "mongoose";
 import type { selectedOptionsPush, cartItems } from "../types/dto/order.dto"
-
+import mongoosePaginate from "mongoose-paginate-v2";
+import type { PaginateModel } from "mongoose";
 export interface Payment {
   _id: Types.ObjectId;
   name: string;
@@ -70,7 +71,8 @@ const OrderStatusSchema = new Schema<OrderStatus>(
   {
     name: { type: String, required: true },
     status: { type: String, required: true },
-    icon: { type: String }
+    icon: { type: String },
+    index: { type: Number }
   },
   { timestamps: true }
 );
@@ -95,7 +97,10 @@ const OrderSchema = new Schema<Order>(
   { timestamps: true }
 );
 
+OrderSchema.plugin(mongoosePaginate);
 
 export const PaymentEntity = model("Payment", PaymentSchema, "payments");
 export const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
-export const OrderEntity = model("Order", OrderSchema, "orders");
+// export const OrderEntity = model("Order", OrderSchema, "orders");
+export const OrderEntity = model<Order, PaginateModel<Order>>("Order", OrderSchema, "orders");
+

@@ -14,6 +14,7 @@ import fs, { promises } from 'node:fs';
 import nodemailer from 'file:///Users/mac/happy-coffee/node_modules/nodemailer/lib/nodemailer.js';
 import multer from 'file:///Users/mac/happy-coffee/node_modules/multer/index.js';
 import { v2 } from 'file:///Users/mac/happy-coffee/node_modules/cloudinary/cloudinary.js';
+import mongoosePaginate from 'file:///Users/mac/happy-coffee/node_modules/mongoose-paginate-v2/dist/index.js';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/mac/happy-coffee/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/mac/happy-coffee/node_modules/ufo/dist/index.mjs';
 import { renderToString } from 'file:///Users/mac/happy-coffee/node_modules/vue/server-renderer/index.mjs';
@@ -1132,7 +1133,22 @@ const plugins = [
 _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"27df0-XZGaqqIesrqouzwfOUioDjUeEaw\"",
+    "mtime": "2025-09-18T11:05:19.093Z",
+    "size": 163312,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"989d8-pzH6YCws9rITFA5PuSQlZ8xbKYo\"",
+    "mtime": "2025-09-18T11:05:19.099Z",
+    "size": 625112,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2237,6 +2253,7 @@ const UserSchema = new Schema(
   },
   { timestamps: true }
 );
+UserSchema.plugin(mongoosePaginate);
 const UserModel = model("User", UserSchema, "users");
 
 const MembershipLevelSchema = new Schema(
@@ -2486,12 +2503,43 @@ const deleteUsers = async (req, res) => {
   await UserModel.findByIdAndDelete(id);
   res.json({ code: 200, message: "Delete success" });
 };
-const getAllUsers = async (_, res) => {
+const getAllUsers = async (req, res) => {
   try {
-    const users = await UserModel.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const role = req.query.role ? parseInt(req.query.role) : void 0;
+    const filter = {};
+    if (role !== void 0) {
+      filter.role = role;
+    }
+    if (limit === -1) {
+      const users = await UserModel.find(filter).sort({ createdAt: -1 });
+      return res.status(200).json({
+        code: 0,
+        data: toUserListDTO(users),
+        pagination: {
+          total: users.length,
+          totalPages: 1,
+          page: 1,
+          limit: users.length
+        }
+      });
+    }
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 }
+    };
+    const result = await UserModel.paginate(filter, options);
     return res.status(200).json({
       code: 0,
-      data: toUserListDTO(users)
+      data: toUserListDTO(result.docs),
+      pagination: {
+        total: result.totalDocs,
+        totalPages: result.totalPages,
+        page: result.page,
+        limit: result.limit
+      }
     });
   } catch (error) {
     console.error("getAllUsers error:", error);
@@ -3573,7 +3621,8 @@ const OrderStatusSchema = new Schema(
   {
     name: { type: String, required: true },
     status: { type: String, required: true },
-    icon: { type: String }
+    icon: { type: String },
+    index: { type: Number }
   },
   { timestamps: true }
 );
@@ -3596,6 +3645,7 @@ const OrderSchema = new Schema(
   },
   { timestamps: true }
 );
+OrderSchema.plugin(mongoosePaginate);
 const PaymentEntity = model("Payment", PaymentSchema, "payments");
 const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
 const OrderEntity = model("Order", OrderSchema, "orders");
@@ -3645,7 +3695,6 @@ function toOrderDTO(entity) {
     updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || ""
   };
 }
-const toOrderListDTO = (orders) => orders.map(toOrderDTO);
 function toCartItemDTO(entity) {
   return {
     idProduct: entity.idProduct ? new Types.ObjectId(entity.idProduct) : new Types.ObjectId(),
@@ -3664,17 +3713,47 @@ function toSelectedOptionDTO(entity) {
   };
 }
 
-const getAllOrder = async (_, res) => {
+const getAllOrder = async (req, res) => {
   try {
-    const orders = await OrderEntity.find().populate("cartItems.idProduct").populate("paymentId").populate("status").sort({ createdAt: -1 });
-    return res.json({ code: 0, data: toOrderListDTO(orders) });
-  } catch (err) {
-    console.error("Get orders error:", err);
-    res.status(500).json({
-      code: 1,
-      message: err.message || "Internal Server Error",
-      data: []
+    let { page = 1, limit = 10 } = req.query;
+    const numPage = Number(page);
+    let numLimit = Number(limit);
+    if (numLimit === -1) {
+      const orders = await OrderEntity.find({}).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId");
+      return res.json({
+        code: 0,
+        data: orders,
+        pagination: {
+          page: 1,
+          limit: orders.length,
+          totalPages: 1,
+          total: orders.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        { path: "paymentId", model: "Payment" },
+        { path: "status", model: "OrderStatus" },
+        { path: "userId", model: "User" }
+      ]
+    };
+    const result = await OrderEntity.paginate({}, options);
+    return res.json({
+      code: 0,
+      data: result.docs,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
     });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch order", error });
   }
 };
 const getOrderById = async (req, res) => {
@@ -3729,6 +3808,28 @@ const getOrdersByUserId = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId, statusId } = req.body;
+    if (!orderId || !statusId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu orderId ho\u1EB7c statusId" });
+    }
+    const status = await OrderStatusEntity.findById(statusId);
+    if (!status) {
+      return res.status(404).json({ code: 1, message: "Status kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const order = await OrderEntity.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    order.status = statusId;
+    await order.save();
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
+  } catch (err) {
+    console.error("L\u1ED7i updateOrderStatus:", err);
+    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
+  }
+};
 const getAllStatus = async (_, res) => {
   try {
     const status = await OrderStatusEntity.find().sort({ index: 1 });
@@ -3771,6 +3872,7 @@ router$3.get("/:id", getOrderById);
 router$3.post("/", createOrder);
 router$3.delete("/:id", deleteOrder);
 router$3.get("/users/:userId/orders", getOrdersByUserId);
+router$3.put("/status", updateOrderStatus);
 
 const orderManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

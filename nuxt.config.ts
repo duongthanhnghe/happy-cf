@@ -81,6 +81,7 @@ export default defineNuxtConfig({
     ssr: {
       noExternal: ['vuetify'],
     },
+    optimizeDeps: { include: ['vuetify/components', 'vuetify/directives'] },
     server: {
       proxy: {
         '/api': 'http://127.0.0.1:5000'
