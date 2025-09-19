@@ -3,7 +3,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import { useNewsCategoryDetail } from '@/composables/news/useNewsCategoryDetail'
 import { ROUTES } from '@/shared/constants/routes';
 import { usePostByCategory } from '@/composables/news/usePostByCategory'
-import { useCategoryMainStore } from '@/stores/news/useCategoryMainStore';
+import { useCategoryMainStore } from '@/stores/client/news/useCategoryMainStore';
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => {
   const categoryComposable = useNewsCategoryDetail()

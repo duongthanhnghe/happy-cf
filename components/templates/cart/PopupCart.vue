@@ -4,10 +4,10 @@ import type { SubmitEventPromise } from 'vuetify';
 import { useRouter } from 'vue-router';
 import { formatCurrency } from '@/utils/global'
 import { showWarning } from '@/utils/toast'
-import { useCartStore } from '@/stores/product/useCartOrderStore'
-import { useAddressesManageStore } from '@/stores/users/useAddressesStore'
+import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
-import { useAccountStore } from '@/stores/users/useAccountStore';
+import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
 

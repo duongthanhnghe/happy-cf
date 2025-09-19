@@ -6,7 +6,7 @@ import {
 } from '@/utils/global'
 import { showSuccess, showWarning } from "@/utils/toast";
 import type { FileManageImage, FileManageFolder } from "@/server/types/dto/file-manage.dto"
-import { useAccountStore } from '@/stores/users/useAccountStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
 
 export const useFileManageFolderStore = defineStore("FileManageFolder", () => {
   

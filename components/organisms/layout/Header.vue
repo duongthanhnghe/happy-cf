@@ -2,17 +2,17 @@
 import '@/styles/molecules/layout/header.scss';
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore'
+} from '@/stores/client/users/useAccountStore'
 import {
   useCartStore
-} from '@/stores/product/useCartOrderStore'
+} from '@/stores/client/product/useCartOrderStore'
 import {
   useSearchStore
-} from '../../../stores/product/useSearchStore.js'
+} from '@/stores/client/product/useSearchStore'
 import {
   useAddressesManageStore
-} from '@/stores/users/useAddressesStore.js'
-import { useSettingStore } from '@/stores/setting/useSettingStore';
+} from '@/stores/client/users/useAddressesStore'
+import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 
 const storeSetting = useSettingStore();
 const storeCart = useCartStore()

@@ -3,7 +3,7 @@ import { watch, watchEffect } from 'vue';
 import '@/styles/organisms/user/section-account.scss'
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore'
+} from '@/stores/client/users/useAccountStore'
 import PopupBarcode from './PopupBarcode.vue';
 import { ROUTES } from '@/shared/constants/routes';
 import { useMembershipStore } from '@/stores/shared/useMembershipStore'

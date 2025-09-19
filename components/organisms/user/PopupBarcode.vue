@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore'
+} from '@/stores/client/users/useAccountStore'
 
 const storeAccount = useAccountStore();
 

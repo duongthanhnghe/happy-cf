@@ -1,4 +1,4 @@
-import { useAccountStore } from '@/stores/users/useAccountStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
 
 export default defineNuxtRouteMiddleware(() => {

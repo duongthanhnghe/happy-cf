@@ -1,11 +1,12 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { categoriesAPI } from "@/services/categories-product.service";
-import type { CategoryProductDTO, CategoryWithProductsDTO } from '@/server/types/dto/product.dto'
+import type { CategoryProductDTO, CategoryWithProductsDTO, ProductSortType } from '@/server/types/dto/product.dto'
 
 export const useOrderStore = defineStore('order', () => {
   const resultData = ref<CategoryWithProductsDTO[]|null>(null)
   const limit = 20
+  const filterType = ref<ProductSortType>('discount')
 
   async function load(category:CategoryWithProductsDTO , { done }: { done: (status: 'ok' | 'empty') => void }) {
     try {
@@ -18,7 +19,7 @@ export const useOrderStore = defineStore('order', () => {
       }
 
       const nextPage = currentPage + 1
-      const res = await categoriesAPI.getListByCategory(category.id, nextPage, limit)
+      const res = await categoriesAPI.getListByCategory(category.id, nextPage, limit, filterType.value)
 
       if (res.data && res.data.length > 0) {
         category.products.data.push(...res.data)
@@ -37,7 +38,7 @@ export const useOrderStore = defineStore('order', () => {
     return await Promise.all(
       categories.map(async category => ({
         ...category,
-        products: await categoriesAPI.getListByCategory(category.id, 1, limit),
+        products: await categoriesAPI.getListByCategory(category.id, 1, limit, filterType.value),
       }))
     )
   }

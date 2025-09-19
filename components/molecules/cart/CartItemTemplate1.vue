@@ -2,7 +2,7 @@
 import '@/styles/molecules/cart/cart-item-template1.scss'
 import {
   useCartStore
-} from '@/stores/product/useCartOrderStore'
+} from '@/stores/client/product/useCartOrderStore'
 import {
   defineProps
 } from 'vue'
@@ -11,7 +11,7 @@ import {
 } from '@/utils/global'
 import {
   useProductStore
-} from '@/stores/product/useProductOrderStore'
+} from '@/stores/client/product/useProductOrderStore'
 import type { CartDTO } from '@/server/types/dto/product.dto';
 
 const props = defineProps<{

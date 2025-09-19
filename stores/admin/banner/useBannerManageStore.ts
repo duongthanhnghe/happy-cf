@@ -7,7 +7,7 @@ import {
 import type { BannerDTO, CreateBannerBody } from '@server/types/dto/banner.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
 

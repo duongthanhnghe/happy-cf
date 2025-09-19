@@ -9,7 +9,7 @@ import { useRoute } from 'vue-router'
 import { jwtDecode } from 'jwt-decode'
 import { showWarning, showSuccess } from "@/utils/toast";
 import type { UserRegister, ResetPassword, MyJwtPayload } from '@/server/types/dto/user.dto'
-import { useAccountStore } from '@/stores/users/useAccountStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { setCookie } from '@/utils/global'
 

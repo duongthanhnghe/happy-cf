@@ -167,9 +167,9 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       children: {
         MAIN: {
           path: '/news',
-          label: 'Blog',
+          label: 'Uu dai',
           icon: 'article',
-          middleware: [],
+          middleware: ['news-main'],
           layout: 'default',
         },
         CATEGORY: {

@@ -3,7 +3,7 @@ import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   useOrderHistoryStore
-} from '@/stores/order/useOrderHistoryStore'
+} from '@/stores/client/order/useOrderHistoryStore'
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({

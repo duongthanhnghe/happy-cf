@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import '@/styles/templates/product/popup-search.scss'
 import { globalText } from '@/const/text.js';
-import { useSearchStore } from '@/stores/product/useSearchStore'
+import { useSearchStore } from '@/stores/client/product/useSearchStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 

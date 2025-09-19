@@ -2,8 +2,8 @@
 import { watch, onBeforeUnmount } from 'vue'
 import {
   useAboutManageStore
-} from '@/stores/about/useAboutManageStore'
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+} from '@/stores/admin/about/useAboutManageStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({

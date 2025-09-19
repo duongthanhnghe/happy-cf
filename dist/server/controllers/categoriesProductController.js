@@ -104,6 +104,40 @@ export const deleteCategories = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
+// export const getProductsByCategory = async (
+//   req: Request<{ id: string }>,
+//   res: Response
+// ) => {
+//   try {
+//     if (!Types.ObjectId.isValid(req.params.id)) {
+//       return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
+//     }
+//     const categoryId = new Types.ObjectId(req.params.id);
+//     const page = parseInt(req.query.page as string, 10) || 1;
+//     let limit = parseInt(req.query.limit as string, 10) || 10;
+//     if (limit === -1) {
+//       limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
+//     }
+//     const skip = (page - 1) * limit;
+//     const [total, products] = await Promise.all([
+//       ProductEntity.countDocuments({ categoryId, isActive: true }),
+//       ProductEntity.find({ categoryId, isActive: true })
+//         .sort({ createdAt: -1 })
+//         .skip(skip)
+//         .limit(limit)
+//         .lean(),
+//     ]);
+//     const totalPages = Math.ceil(total / limit);
+//     return res.json({
+//       code: 0,
+//       data: toProductListDTO(products),
+//       pagination: { page, limit, total, totalPages },
+//       message: "Success",
+//     });
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
 export const getProductsByCategory = async (req, res) => {
     try {
         if (!Types.ObjectId.isValid(req.params.id)) {
@@ -112,18 +146,62 @@ export const getProductsByCategory = async (req, res) => {
         const categoryId = new Types.ObjectId(req.params.id);
         const page = parseInt(req.query.page, 10) || 1;
         let limit = parseInt(req.query.limit, 10) || 10;
-        // lấy tất cả nếu limit = -1
+        const sortType = req.query.sort || "default";
         if (limit === -1) {
             limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
         }
         const skip = (page - 1) * limit;
         const [total, products] = await Promise.all([
             ProductEntity.countDocuments({ categoryId, isActive: true }),
-            ProductEntity.find({ categoryId, isActive: true })
-                .sort({ createdAt: -1 })
-                .skip(skip)
-                .limit(limit)
-                .lean(),
+            ProductEntity.aggregate([
+                { $match: { categoryId, isActive: true } },
+                // Ép kiểu price & priceDiscount sang số
+                {
+                    $addFields: {
+                        price: { $toDouble: "$price" },
+                        priceDiscount: { $toDouble: "$priceDiscount" },
+                    },
+                },
+                // Tính toán giảm giá
+                {
+                    $addFields: {
+                        hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
+                        discountValue: {
+                            $cond: [
+                                { $lt: ["$priceDiscount", "$price"] },
+                                { $subtract: ["$price", "$priceDiscount"] },
+                                0,
+                            ],
+                        },
+                        discountPercent: {
+                            $cond: [
+                                { $lt: ["$priceDiscount", "$price"] },
+                                {
+                                    $multiply: [
+                                        { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
+                                        100,
+                                    ],
+                                },
+                                0,
+                            ],
+                        },
+                    },
+                },
+                // Sort động theo sortType
+                {
+                    $sort: sortType === "discount"
+                        ? { hasDiscount: -1, discountPercent: -1 }
+                        : sortType === "popular"
+                            ? { amountOrder: -1 }
+                            : sortType === "price_desc"
+                                ? { price: -1 }
+                                : sortType === "price_asc"
+                                    ? { price: 1 }
+                                    : { updatedAt: -1 },
+                },
+                { $skip: skip },
+                { $limit: limit },
+            ]),
         ]);
         const totalPages = Math.ceil(total / limit);
         return res.json({

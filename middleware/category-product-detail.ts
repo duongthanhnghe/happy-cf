@@ -3,7 +3,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import { useProductCategoryDetail } from '@/composables/product/useProductCategoryDetail'
 import { ROUTES } from '@/shared/constants/routes';
 import { useProductByCategory } from '@/composables/product/useProductByCategory'
-import { useCategoryMainStore } from '@/stores/product/useCategoryMainStore';
+import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore';
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => {
   const categoryComposable = useProductCategoryDetail()
@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => 
     if (slug) {
       const data = await fetchProductCategoryDetailSlug(slug)
       if(data?.data.id) {
-        await fetchProductByCategory(data.data.id, 1, storeCategoryMain.limit)
+        await fetchProductByCategory(data.data.id, 1, storeCategoryMain.limit, storeCategoryMain.filterType)
       }
     } else {
       return navigateTo(ROUTES.PUBLIC.ERROR.path)

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { usePostManageStore } from '@/stores/news/usePostManageStore'
+import { usePostManageStore } from '@/stores/admin/news/usePostManageStore'
 import type { SubmitEventPromise } from 'vuetify';
 import { showWarning } from '@/utils/toast';
 

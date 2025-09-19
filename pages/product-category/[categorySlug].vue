@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue"
 import { ROUTES } from '@/shared/constants/routes'
-import { useCategoryMainStore } from '@/stores/product/useCategoryMainStore'
+import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
@@ -23,13 +23,18 @@ watch(valueChangePage, (newVal) => {
       <h1 v-if="storeCategoryMain.getDetail.categoryName">{{ storeCategoryMain.getDetail.categoryName }}</h1>
       <h1 v-else></h1>
       <p>{{ storeCategoryMain.getDetail.description }}</p>
-      <template v-if="storeCategoryMain.getListItems">
-        <div v-for="item in storeCategoryMain.getListItems" :key="item.id">
-          <div class="mt-md">
-            {{ item.productName }}
-          </div>
+      <v-select
+      v-model="storeCategoryMain.filterType"
+      :items="[{title: 'Moi nhat',value:''},...storeCategoryMain.filterArray]"
+      item-title="title"
+      item-value="value"
+      hide-details />
+
+      <div class="row row-sm" v-if="storeCategoryMain.getListItems">
+        <div v-for="item in storeCategoryMain.getListItems" :key="item.id" class="mb-sm col-6 col-md-4">
+          <ProductItemTemplate1 :product="item" background="bg-white" />
         </div>
-      </template>
+      </div>
 
       <template v-if="storeCategoryMain.getTotalPages && storeCategoryMain.getTotalPages.length > 1">
         <div class="flex gap-sm justify-end">

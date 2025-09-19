@@ -3,13 +3,13 @@ import '@/styles/molecules/order/order-item-detail-template1.scss'
 import { ref, computed, watch } from 'vue'
 import {
   useOrderHistoryStore
-} from '@/stores/order/useOrderHistoryStore'
+} from '@/stores/client/order/useOrderHistoryStore'
 import {
   formatCurrency
 } from '@/utils/global'
 import { useOrderDetail } from "@/composables/order/useOrderDetail";
 import { ORDER_STATUS } from "@/shared/constants/order-status"
-import { useSettingStore } from '@/stores/setting/useSettingStore';
+import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
 
 const { getDetailOrder, fetchOrderDetail } = useOrderDetail();

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue"
 import { ROUTES } from '@/shared/constants/routes'
-import { usePostDetailStore } from '@/stores/news/usePostDetailStore'
+import { usePostDetailStore } from '@/stores/client/news/usePostDetailStore'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.NEWS.children?.DETAIL.middleware ?? { middleware: ['post-detail'] },

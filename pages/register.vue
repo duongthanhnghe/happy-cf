@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useUserAuthStore
-} from '@/stores/users/useUserAuthStore'
+} from '@/stores/client/users/useUserAuthStore'
 import type { SubmitEventPromise } from 'vuetify';
 import { AUTH_TEXT_LOGIN, AUTH_TEXT_LOGIN_GOOGLE, AUTH_TEXT_LOGIN_EMAIL, AUTH_TEXT_REGISTER, AUTH_TEXT_FULLNAME, AUTH_TEXT_PASSWORD, AUTH_TEXT_REGISTER_HINT2, GLOBAL_TEXT_MALE, GLOBAL_TEXT_FEMALE } from '@/const/text'
 import { ROUTES } from '@/shared/constants/routes';

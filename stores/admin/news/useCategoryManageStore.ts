@@ -10,7 +10,7 @@ import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dt
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useNewsCategory } from '@/composables/news/useNewsCategory'
 import { useNewsCategoryDetail } from '@/composables/news/useNewsCategoryDetail'
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
 import { useSeoWatchers } from "@/utils/seoHandle";

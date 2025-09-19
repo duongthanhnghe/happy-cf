@@ -2,8 +2,8 @@
 import { watch, onBeforeUnmount, ref } from 'vue'
 import {
   useCategoryManageStore
-} from '@/stores/news/useCategoryManageStore'
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+} from '@/stores/admin/news/useCategoryManageStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
 import SelectOrder from '@/components/atoms/SelectOrder.vue';

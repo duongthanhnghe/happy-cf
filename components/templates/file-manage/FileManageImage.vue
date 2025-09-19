@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 
 const store = useFileManageFolderStore()
 const props = defineProps({

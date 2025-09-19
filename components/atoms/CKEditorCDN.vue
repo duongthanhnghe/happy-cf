@@ -12,8 +12,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue"
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
-import { useFileSelectContextStore } from '@/stores/file-manage/useFileSelectContextStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
+import { useFileSelectContextStore } from '@/stores/admin/file-manage/useFileSelectContextStore'
 import { fileManageAPI } from "@/services/file-manage.service";
 import {
   Loading

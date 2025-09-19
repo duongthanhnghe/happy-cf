@@ -4,7 +4,7 @@ import {
   copyText, formatBytes, downloadImage
 } from '@/utils/global'
 
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 
 const store = useFileManageFolderStore()
 const props = defineProps({

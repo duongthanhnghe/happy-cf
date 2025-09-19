@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useCartStore
-} from '@/stores/product/useCartOrderStore'
+} from '@/stores/client/product/useCartOrderStore'
 import {
   defineProps
 } from 'vue'

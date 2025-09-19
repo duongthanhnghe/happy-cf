@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {
   useAccountEditStore
-} from '@/stores/users/useAccountEditStore'
+} from '@/stores/client/users/useAccountEditStore'
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore'
+} from '@/stores/client/users/useAccountStore'
 import type {
   SubmitEventPromise
 } from 'vuetify';

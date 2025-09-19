@@ -29,7 +29,6 @@ export { withCtx, withDirectives, withKeys, withMemo, withModifiers, withScopeId
 export { requestIdleCallback, cancelIdleCallback } from '#app/compat/idle-callback';
 export { setInterval } from '#app/compat/interval';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
-export { useUploadImage } from '../composables/useUploadImage';
 export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage, generateSlug } from '../utils/global';
 export { usePagination } from '../utils/paginationHandle';
 export { useSeoWatchers } from '../utils/seoHandle';

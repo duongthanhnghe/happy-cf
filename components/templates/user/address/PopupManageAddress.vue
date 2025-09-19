@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {
   useAddressesManageStore
-} from '@/stores/users/useAddressesStore';
+} from '@/stores/client/users/useAddressesStore';
 import {
   useCartStore
-} from '@/stores/product/useCartOrderStore';
+} from '@/stores/client/product/useCartOrderStore';
 
 const store = useAddressesManageStore();
 const storeCart = useCartStore();

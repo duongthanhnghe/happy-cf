@@ -31,7 +31,7 @@ import {
 
 import {
   useWishlistStore
-} from '@/stores/users/useWishlistStore';
+} from '@/stores/client/users/useWishlistStore';
 
 const props = defineProps({
   product: {

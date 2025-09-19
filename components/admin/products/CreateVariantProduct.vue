@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useProductManageStore
-} from '@/stores/product/useProductManageStore'
+} from '@/stores/admin/product/useProductManageStore'
 import { showWarning } from '@/utils/toast';
 import type { SubmitEventPromise } from 'vuetify';
 

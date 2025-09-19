@@ -11,12 +11,14 @@ import {
   getPostBySlug,
   getRelatedPostsBySlug,
   updateView,
+  getAllPostsPagination,
 } from '../controllers/postNewsController'
 
 const router = Router()
 
 router.get('/category/:categoryId', getPostsByCategory)
 router.get('/',          getAllPosts)
+router.get('/pagination',          getAllPostsPagination)
 router.get('/slug/:slug',    getPostBySlug)
 router.get("/related/:slug", getRelatedPostsBySlug)
 router.patch("/view/:slug", updateView)

@@ -235,7 +235,7 @@ export const getMostOrderedProduct = async (req, res) => {
         const productMap = {};
         for (const order of orders) {
             for (const item of order.cartItems) {
-                const id = (_a = item.idProduct) === null || _a === void 0 ? void 0 : _a.toString(); // đảm bảo id thành string
+                const id = (_a = item.idProduct) === null || _a === void 0 ? void 0 : _a.toString();
                 if (!id)
                     continue;
                 if (!productMap[id]) {

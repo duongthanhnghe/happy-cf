@@ -9,7 +9,7 @@ import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dt
 import { showSuccess, showWarning, showConfirm } from "@/utils/toast";
 import { useProductCategory } from '@/composables/product/useProductCategory'
 import { useProductCategoryDetail } from '@/composables/product/useProductCategoryDetail'
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation'

@@ -2,7 +2,7 @@ import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { ordersAPI } from "@/services/orders.service";
 import type { OrderDTO} from '@/server/types/dto/order.dto'
-import { useAccountStore } from '@/stores/users/useAccountStore';
+import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
 
 export const useOrderHistoryStore = defineStore("OrderHistory", () => {

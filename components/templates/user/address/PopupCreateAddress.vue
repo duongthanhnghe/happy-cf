@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useAddressesManageStore
-} from '@/stores/users/useAddressesStore'
+} from '@/stores/client/users/useAddressesStore'
 import type { SubmitEventPromise } from 'vuetify';
 import { ADDRESS_TAG } from "@/shared/constants/address-tag";
 

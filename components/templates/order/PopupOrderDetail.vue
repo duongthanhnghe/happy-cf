@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useOrderHistoryStore
-} from '@/stores/order/useOrderHistoryStore'
+} from '@/stores/client/order/useOrderHistoryStore'
 
 const storeHistory = useOrderHistoryStore()
 

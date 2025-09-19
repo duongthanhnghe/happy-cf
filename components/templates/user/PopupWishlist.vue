@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useWishlistStore
-} from '@/stores/users/useWishlistStore';
+} from '@/stores/client/users/useWishlistStore';
 
 const store = useWishlistStore();
 

@@ -3,12 +3,12 @@ import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
 import { setCookie, getCookie, getCurrentDateTime, Loading } from "@/utils/global";
 import { showConfirm } from "@/utils/toast"
-import { useProductStore } from "@/stores/product/useProductOrderStore";
+import { useProductStore } from "@/stores/client/product/useProductOrderStore";
 import { showWarning, showSuccess } from "@/utils/toast";
 import { ordersAPI } from "@/services/orders.service";
 // import { sendOrderEmail } from '@/services/email-service';
-import { useAccountStore } from '@/stores/users/useAccountStore'
-import { useAddressesManageStore } from '@/stores/users/useAddressesStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
+import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
 import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, SelectedOptionMap, OptionDTO } from '@/server/types/dto/product.dto';

@@ -1136,16 +1136,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"27df0-XZGaqqIesrqouzwfOUioDjUeEaw\"",
-    "mtime": "2025-09-18T11:05:19.093Z",
-    "size": 163312,
+    "etag": "\"28760-f9NM8CU919RdfiMnOMkYj7VNBDU\"",
+    "mtime": "2025-09-19T10:15:57.904Z",
+    "size": 165728,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"989d8-pzH6YCws9rITFA5PuSQlZ8xbKYo\"",
-    "mtime": "2025-09-18T11:05:19.099Z",
-    "size": 625112,
+    "etag": "\"9b0e4-rUOoOUhsIhUzwAIjKZM7Q1heme0\"",
+    "mtime": "2025-09-19T10:15:57.905Z",
+    "size": 635108,
     "path": "index.mjs.map"
   }
 };
@@ -3351,13 +3351,54 @@ const getProductsByCategory = async (req, res) => {
     const categoryId = new Types.ObjectId(req.params.id);
     const page = parseInt(req.query.page, 10) || 1;
     let limit = parseInt(req.query.limit, 10) || 10;
+    const sortType = req.query.sort || "default";
     if (limit === -1) {
       limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
     }
     const skip = (page - 1) * limit;
     const [total, products] = await Promise.all([
       ProductEntity.countDocuments({ categoryId, isActive: true }),
-      ProductEntity.find({ categoryId, isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
+      ProductEntity.aggregate([
+        { $match: { categoryId, isActive: true } },
+        // Ép kiểu price & priceDiscount sang số
+        {
+          $addFields: {
+            price: { $toDouble: "$price" },
+            priceDiscount: { $toDouble: "$priceDiscount" }
+          }
+        },
+        // Tính toán giảm giá
+        {
+          $addFields: {
+            hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
+            discountValue: {
+              $cond: [
+                { $lt: ["$priceDiscount", "$price"] },
+                { $subtract: ["$price", "$priceDiscount"] },
+                0
+              ]
+            },
+            discountPercent: {
+              $cond: [
+                { $lt: ["$priceDiscount", "$price"] },
+                {
+                  $multiply: [
+                    { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
+                    100
+                  ]
+                },
+                0
+              ]
+            }
+          }
+        },
+        // Sort động theo sortType
+        {
+          $sort: sortType === "discount" ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 } : sortType === "popular" ? { amountOrder: -1 } : sortType === "price_desc" ? { price: -1 } : sortType === "price_asc" ? { price: 1 } : { updatedAt: -1 }
+        },
+        { $skip: skip },
+        { $limit: limit }
+      ])
     ]);
     const totalPages = Math.ceil(total / limit);
     return res.json({
@@ -4042,10 +4083,42 @@ const updateView = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const getAllPostsPagination = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    const search = req.query.search || "";
+    const query = { isActive: true };
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { summaryContent: { $regex: search, $options: "i" } }
+      ];
+    }
+    if (limit === -1) {
+      limit = await PostNewsModel.countDocuments(query);
+    }
+    const skip = (page - 1) * limit;
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
 
 const router$2 = Router();
 router$2.get("/category/:categoryId", getPostsByCategory);
 router$2.get("/", getAllPosts);
+router$2.get("/pagination", getAllPostsPagination);
 router$2.get("/slug/:slug", getPostBySlug);
 router$2.get("/related/:slug", getRelatedPostsBySlug);
 router$2.patch("/view/:slug", updateView);

@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { useAccountStore } from '@/stores/users/useAccountStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import type { MyJwtPayload } from '@/server/types/dto/user.dto'
 import { jwtDecode } from 'jwt-decode'
 import { ROUTES } from '@/shared/constants/routes';

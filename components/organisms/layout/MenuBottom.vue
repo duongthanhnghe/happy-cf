@@ -3,7 +3,7 @@ import '@/styles/molecules/layout/menu-bottom.scss';
 import { useRoute } from 'vue-router'
 import {
   useOrderHistoryStore
-} from '@/stores/order/useOrderHistoryStore'
+} from '@/stores/client/order/useOrderHistoryStore'
 import { ROUTES } from '@/shared/constants/routes';
 import type { MenuItem } from 'server/types/common/menu-item';
 
@@ -14,6 +14,7 @@ const listMenu: MenuItem[] = [
   ROUTES.PUBLIC.HOME,
   ROUTES.PUBLIC.ORDER,
   { label: 'Don hang', icon:'category', action: () => storeOrder.handleTogglePopupAdd(true) },
+  ROUTES.PUBLIC.NEWS.children!.MAIN,
   ROUTES.PUBLIC.MY_ACCOUNT,
 ]
 

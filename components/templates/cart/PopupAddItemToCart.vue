@@ -4,16 +4,16 @@ import {
 } from 'vue'
 import {
   useProductStore
-} from '@/stores/product/useProductOrderStore'
+} from '@/stores/client/product/useProductOrderStore'
 import {
   useCartStore
-} from '@/stores/product/useCartOrderStore'
+} from '@/stores/client/product/useCartOrderStore'
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore';
+} from '@/stores/client/users/useAccountStore';
 import {
   useWishlistStore
-} from '@/stores/users/useWishlistStore';
+} from '@/stores/client/users/useWishlistStore';
 import { formatCurrency } from '@/utils/global';
 import '@/styles/templates/cart/popup-add-item-to-cart.scss'
 import {

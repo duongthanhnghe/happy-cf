@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useProductManageStore } from '@/stores/product/useProductManageStore'
+import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
 import type { SubmitEventPromise } from 'vuetify';
 const store = useProductManageStore();
 

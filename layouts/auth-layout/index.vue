@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import './index.scss'
 import { IMAGE_AUTH_LOGIN } from '@/const/image'
-import { useSettingStore } from '@/stores/setting/useSettingStore';
+import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 import { ROUTES } from '@/shared/constants/routes';
 
 const storeSetting = useSettingStore();

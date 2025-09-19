@@ -3,7 +3,7 @@ import { watch } from "vue";
 import { formatDateTime } from '@/utils/global'
 import {
   useUserManageStore
-} from '@/stores/users/useUserManageStore'
+} from '@/stores/admin/users/useUserManageStore'
 import { useMembershipList } from '@/composables/user/useMembershipList'
 import { ROUTES } from '@/shared/constants/routes';
 

@@ -38,7 +38,7 @@
 <script lang="ts" setup>
 import {
   useUserAuthStore
-} from '@/stores/users/useUserAuthStore'
+} from '@/stores/client/users/useUserAuthStore'
 import '@/styles/organisms/layout/header-admin.scss'
 import { IMAGE_AVATAR_DEFAULT } from '@/const/image';
 

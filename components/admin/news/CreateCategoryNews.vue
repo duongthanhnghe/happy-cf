@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useCategoryManageStore
-} from '@/stores/news/useCategoryManageStore'
+} from '@/stores/admin/news/useCategoryManageStore'
 import type { SubmitEventPromise } from 'vuetify';
 
 const store = useCategoryManageStore();

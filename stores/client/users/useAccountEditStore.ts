@@ -6,7 +6,7 @@ import {
   Loading
 } from '@/utils/global'
 import type { UserEdit, ChangePassword } from '@/server/types/dto/user.dto'
-import { useAccountStore } from '@/stores/users/useAccountStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { showWarning, showSuccess } from "@/utils/toast";
 
 export const useAccountEditStore = defineStore("useAccountEdit", () => {

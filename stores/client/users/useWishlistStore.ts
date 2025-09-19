@@ -4,7 +4,7 @@ import { productsAPI } from "@/services/product.service";
 import type { WishlistItem } from '@/server/types/dto/product.dto'
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore';
+} from '@/stores/client/users/useAccountStore';
 import {
   Loading
 } from '@/utils/global'

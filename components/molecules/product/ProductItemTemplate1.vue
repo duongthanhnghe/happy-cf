@@ -2,7 +2,9 @@
 <div v-if="product && product.isActive" :class="['product-template1-item', background ,listView ? 'product-template1-listView' : '' ,storeCart.getTemplate1Amount(product.id) != 0 ? 'active' : '']">
   <div class="product-template1-image">
     <img v-lazy="product.image" :alt="product.productName" class="product-template1-image-src">
-    <Button v-if="storeAccount.getDetailValue?.id" class="product-template1-favorite" :color="`${isFavorite ? 'black' : 'secondary'}`" size="xs" icon="favorite" @click="toggleLike()"/>
+    <client-only>
+      <Button v-if="storeAccount.getDetailValue?.id" class="product-template1-favorite" :color="`${isFavorite ? 'black' : 'secondary'}`" size="xs" icon="favorite" @click="toggleLike()"/>
+    </client-only>
     <div v-if="product.amount == 0" class="product-template1-amount">
       {{orderText.textStockNull}}
     </div>
@@ -66,16 +68,16 @@ import {
 } from 'vue'
 import {
   useCartStore
-} from '../../../stores/product/useCartOrderStore'
+} from '../../../stores/client/product/useCartOrderStore'
 import {
   useProductStore
-} from '../../../stores/product/useProductOrderStore'
+} from '../../../stores/client/product/useProductOrderStore'
 import {
   useWishlistStore
-} from '@/stores/users/useWishlistStore';
+} from '@/stores/client/users/useWishlistStore';
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore';
+} from '@/stores/client/users/useAccountStore';
 import type { ProductDTO } from '@/server/types/dto/product.dto';
 
 

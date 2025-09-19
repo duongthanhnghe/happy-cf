@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { watch, onBeforeUnmount } from "vue";
-import { usePostManageStore } from '@/stores/news/usePostManageStore';
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+import { usePostManageStore } from '@/stores/admin/news/usePostManageStore';
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({

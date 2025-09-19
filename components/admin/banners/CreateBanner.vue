@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useBannerManageStore
-} from '@/stores/banners/useBannerManageStore'
+} from '@/stores/admin/banner/useBannerManageStore'
 import type { SubmitEventPromise } from 'vuetify'
 
 const store = useBannerManageStore();

@@ -42,6 +42,7 @@ interface _GlobalComponents {
     'Facebook': typeof import("../components/atoms/icons/Facebook.vue")['default']
     'Instagram': typeof import("../components/atoms/icons/Instagram.vue")['default']
     'Tiktok': typeof import("../components/atoms/icons/Tiktok.vue")['default']
+    'Breadcrumb': typeof import("../components/molecules/breadcrumb/Breadcrumb.vue")['default']
     'CartItemTemplate1': typeof import("../components/molecules/cart/CartItemTemplate1.vue")['default']
     'CartItemTemplate2': typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
     'FileImageItem': typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
@@ -135,6 +136,7 @@ interface _GlobalComponents {
     'LazyFacebook': LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
     'LazyInstagram': LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
     'LazyTiktok': LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>
+    'LazyBreadcrumb': LazyComponent<typeof import("../components/molecules/breadcrumb/Breadcrumb.vue")['default']>
     'LazyCartItemTemplate1': LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate1.vue")['default']>
     'LazyCartItemTemplate2': LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
     'LazyFileImageItem': LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
@@ -234,6 +236,7 @@ export const SelectOrder: typeof import("../components/atoms/SelectOrder.vue")['
 export const Facebook: typeof import("../components/atoms/icons/Facebook.vue")['default']
 export const Instagram: typeof import("../components/atoms/icons/Instagram.vue")['default']
 export const Tiktok: typeof import("../components/atoms/icons/Tiktok.vue")['default']
+export const Breadcrumb: typeof import("../components/molecules/breadcrumb/Breadcrumb.vue")['default']
 export const CartItemTemplate1: typeof import("../components/molecules/cart/CartItemTemplate1.vue")['default']
 export const CartItemTemplate2: typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
 export const FileImageItem: typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
@@ -327,6 +330,7 @@ export const LazySelectOrder: LazyComponent<typeof import("../components/atoms/S
 export const LazyFacebook: LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
 export const LazyInstagram: LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
 export const LazyTiktok: LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>
+export const LazyBreadcrumb: LazyComponent<typeof import("../components/molecules/breadcrumb/Breadcrumb.vue")['default']>
 export const LazyCartItemTemplate1: LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate1.vue")['default']>
 export const LazyCartItemTemplate2: LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
 export const LazyFileImageItem: LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>

@@ -2,10 +2,10 @@
 import { ref } from "vue";
 import {
   useOrderManageStore
-} from '@/stores/order/useOrderManageStore'
+} from '@/stores/admin/order/useOrderManageStore'
 import {
   useOrderHistoryStore
-} from '@/stores/order/useOrderHistoryStore'
+} from '@/stores/client/order/useOrderHistoryStore'
 import {
   formatCurrency
 } from '@/utils/global'
@@ -13,7 +13,7 @@ import { ROUTES } from '@/shared/constants/routes';
 import { ORDER_STATUS } from "@/shared/constants/order-status";
 import {
   useUserManageStore
-} from '@/stores/users/useUserManageStore'
+} from '@/stores/admin/users/useUserManageStore'
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,

@@ -403,4 +403,31 @@ export const newsAPI = {
     }
   },
 
+  //client
+  getAllPostsPagination: async (
+    page: number|string,
+    limit: number,
+    search: string = ""
+  ): Promise<PostNewsPaginationDTO> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.NEWS_POSTS.LIST_PAGINATION}?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+      )
+      const data = await response.json()
+      return data
+    } catch (err: any) {
+      console.error("Error fetching posts:", err)
+      return {
+        code: 1,
+        message: err.message ?? "Failed to fetch posts",
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
+      }
+    }
+  }
 }

@@ -3,15 +3,6 @@ import { PostNewsModel } from "../models/NewsEntity"
 import { toPostNewsDTO, toPostNewsListDTO } from "../mappers/newsMapper"
 import mongoose from "mongoose"
 
-// export const getAllPosts = async (_: Request, res: Response) => {
-//   try {
-//     const posts = await PostNewsModel.find()
-//     return res.json({ code: 0, data: toPostNewsListDTO(posts) })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
-
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string, 10) || 1
@@ -210,6 +201,50 @@ export const updateView = async (req: Request, res: Response) => {
     )
     if (!post) return res.status(404).json({ code: 1, message: "Bài viết không tồn tại" })
     return res.json({ code: 0, data: { views: post.views }, message: "Cập nhật lượt xem thành công" })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+//client
+export const getAllPostsPagination = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string, 10) || 1
+    let limit = parseInt(req.query.limit as string, 10) || 10
+    const search = (req.query.search as string) || ""
+
+    const query: any = { isActive: true }
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { summaryContent: { $regex: search, $options: "i" } }
+      ]
+    }
+
+    // Nếu limit = -1 thì lấy tất cả
+    if (limit === -1) {
+      limit = await PostNewsModel.countDocuments(query)
+    }
+
+    const skip = (page - 1) * limit
+
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find(query)
+        .sort({ createdAt: -1 }) // mới nhất lên đầu
+        .skip(skip)
+        .limit(limit)
+    ])
+
+    const totalPages = Math.ceil(total / limit)
+
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    })
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message })
   }

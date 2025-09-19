@@ -2,7 +2,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app'
 import { usePostDetail } from '@/composables/news/usePostDetail'
 import { ROUTES } from '@/shared/constants/routes';
-import { usePostDetailStore } from '@/stores/news/usePostDetailStore';
+import { usePostDetailStore } from '@/stores/client/news/usePostDetailStore';
 import { usePostRelated } from '@/composables/news/usePostRelated'
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => {

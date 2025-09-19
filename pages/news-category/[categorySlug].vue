@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue"
 import { ROUTES } from '@/shared/constants/routes'
-import { useCategoryMainStore } from '@/stores/news/useCategoryMainStore'
+import { useCategoryMainStore } from '@/stores/client/news/useCategoryMainStore'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.NEWS.children?.CATEGORY.middleware || '',

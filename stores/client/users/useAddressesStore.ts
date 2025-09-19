@@ -7,7 +7,7 @@ import {
 import type { AddressDTO, CreateAddressBody } from '@/server/types/dto/address.dto'
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore'
+} from '@/stores/client/users/useAccountStore'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { ADDRESS_TAG } from "@/shared/constants/address-tag";
 import { useAddressAll  } from '@/composables/user/useAddressAll'

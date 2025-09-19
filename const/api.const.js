@@ -59,6 +59,7 @@ export const API_ENDPOINTS = {
   },
   NEWS_POSTS: {
     LIST: '/newsPosts',
+    LIST_PAGINATION: '/newsPosts/pagination',
     LATEST: (limit) => `/newsPosts/latest?limit=${limit}`,
     GET_BY_ID: (id) => `/newsPosts/${id}`,
     GET_BY_SLUG: (slug) => `/newsPosts/slug/${slug}`,

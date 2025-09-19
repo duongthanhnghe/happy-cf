@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   useUserAuthStore
-} from '@/stores/users/useUserAuthStore'
+} from '@/stores/client/users/useUserAuthStore'
 import type {
   SubmitEventPromise
 } from 'vuetify';

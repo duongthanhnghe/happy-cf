@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import "./index.scss"
 import { onMounted, onBeforeUnmount } from "vue";
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import {
   copyText
 } from '@/utils/global'

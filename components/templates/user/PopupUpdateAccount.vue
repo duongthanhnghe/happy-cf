@@ -17,9 +17,9 @@ import {
 } from '@/const/text'
 import PopupChangePassword from './PopupChangePassword.vue';
 import { IMAGE_EMPTY_DEFAULT } from '@/const/image'
-import { useAccountEditStore } from '@/stores/users/useAccountEditStore'
-import { useAccountStore } from '@/stores/users/useAccountStore'
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
+import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 
 const storeAccountEdit = useAccountEditStore()

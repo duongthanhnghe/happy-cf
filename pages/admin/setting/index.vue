@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { SubmitEventPromise } from 'vuetify'
-import { useSettingUpdateStore } from '@/stores/setting/useSettingUpdateStore';
+import { useSettingUpdateStore } from '@/stores/admin/setting/useSettingUpdateStore';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { showWarning } from '@/utils/toast';
 import { ROUTES } from '@/shared/constants/routes';

@@ -1,4 +1,4 @@
-import { useSettingStore } from '@/stores/setting/useSettingStore'
+import { useSettingStore } from '@/stores/shared/setting/useSettingStore'
 
 export const useCategoryNewsSEO = () => {
   const configRuntime = useRuntimeConfig()

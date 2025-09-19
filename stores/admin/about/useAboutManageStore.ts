@@ -7,8 +7,8 @@ import {
 import type { AboutDTO, CreateAboutBody } from '@server/types/dto/about.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
-import { useFileSelectContextStore } from "@/stores/file-manage/useFileSelectContextStore"
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
+import { useFileSelectContextStore } from "@/stores/admin/file-manage/useFileSelectContextStore"
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import '@/styles/molecules/layout/footer.scss';
 import { IMAGE_FOOTER } from '@/const/image'
-import { useSettingStore } from '@/stores/setting/useSettingStore';
+import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 
 const storeSetting = useSettingStore();
 const listLink = [

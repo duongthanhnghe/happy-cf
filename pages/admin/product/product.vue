@@ -2,8 +2,8 @@
 import { watch, onBeforeUnmount } from 'vue'
 import {
   useProductManageStore
-} from '@/stores/product/useProductManageStore'
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore';
+} from '@/stores/admin/product/useProductManageStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import {
   formatCurrency
 } from '@/utils/global'

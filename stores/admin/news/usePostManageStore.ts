@@ -8,8 +8,8 @@ import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useNewsCategory } from '@/composables/news/useNewsCategory'
 import { usePostDetail } from '@/composables/news/usePostDetail'
 import { usePostAll } from '@/composables/news/usePostAll'
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
-import { useFileSelectContextStore } from "@/stores/file-manage/useFileSelectContextStore"
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
+import { useFileSelectContextStore } from "@/stores/admin/file-manage/useFileSelectContextStore"
 import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation'

@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { useCartStore } from "@/stores/product/useCartOrderStore";
+import { useCartStore } from "@/stores/client/product/useCartOrderStore";
 import { useProductDetail } from "@/composables/product/useProductDetail";
 import type { ProductDTO, CartDTO, SelectedOptionDTO } from "@/server/types/dto/product.dto";
 

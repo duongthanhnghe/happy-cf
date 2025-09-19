@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useOrderHistoryStore } from '@/stores/order/useOrderHistoryStore';
+import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore';
 import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
 
 const store = useOrderHistoryStore();

@@ -2,17 +2,17 @@
 import './index.scss';
 import {
   useAccountStore
-} from '@/stores/users/useAccountStore'
+} from '@/stores/client/users/useAccountStore'
 import {
   useAddressesManageStore
-} from '@/stores/users/useAddressesStore'
+} from '@/stores/client/users/useAddressesStore'
 import {
   useOrderHistoryStore
-} from '@/stores/order/useOrderHistoryStore';
+} from '@/stores/client/order/useOrderHistoryStore';
 import {
   useWishlistStore
-} from '@/stores/users/useWishlistStore';
-import { useAccountEditStore } from '@/stores/users/useAccountEditStore'
+} from '@/stores/client/users/useWishlistStore';
+import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({

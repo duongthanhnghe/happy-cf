@@ -8,8 +8,8 @@ import { useProductAll } from '@/composables/product/useProductAll'
 import { useProductCategory } from '@/composables/product/useProductCategory'
 import { useProductDetail } from '@/composables/product/useProductDetail'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
-import { useFileManageFolderStore } from '@/stores/file-manage/useFileManageStore'
-import { useCategoryManageStore } from '@/stores/product/useCategoryManageStore'
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
+import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 

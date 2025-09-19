@@ -5,8 +5,8 @@ import {
 } from '@/utils/global'
 import {
   useOrderHistoryStore
-} from '@/stores/order/useOrderHistoryStore'
-import { useSettingStore } from '@/stores/setting/useSettingStore';
+} from '@/stores/client/order/useOrderHistoryStore'
+import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 
 const storeSetting = useSettingStore();
 const store = useOrderHistoryStore();

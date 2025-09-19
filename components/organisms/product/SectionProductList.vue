@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { watch } from 'vue'
-import { useOrderStore } from '@/stores/product/useOrderIndexStore'
+import { useOrderStore } from '@/stores/client/product/useOrderIndexStore'
 import type { CategoryProductDTO } from '@server/types/dto/product.dto'
+import { ROUTES } from '@/shared/constants/routes';
 
 const store = useOrderStore()
 
@@ -42,9 +43,14 @@ watch(mappedData, (val) => {
     <div v-if="props.loading">Đang tải dữ liệu...</div>
     <template v-else>
       <div v-for="category in store.getListProducts" :key="category.id" class="pt-sm" :id="`product-category-scroll${category.id}`" :data-id="`scroll-${category.id}`" rel="js-section-scroll">
-        <Heading tag="div" size="md" weight="semibold" class="black mb-xs">
-          {{ category.categoryName }}
-        </Heading>
+        <div class="flex justify-between">
+          <Heading tag="div" size="md" weight="semibold" class="black mb-xs">
+            {{ category.categoryName }}
+          </Heading>
+          <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`">
+            <Button color="secondary" size="xs" icon="keyboard_arrow_right" />
+          </NuxtLink>
+        </div>
         <template v-if="category.products.data && category.products.data.length > 0">
           <v-infinite-scroll
           height="auto"

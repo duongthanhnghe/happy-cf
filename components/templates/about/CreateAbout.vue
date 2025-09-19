@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useAboutManageStore } from '@/stores/about/useAboutManageStore'
+import { useAboutManageStore } from '@/stores/admin/about/useAboutManageStore'
 import type { SubmitEventPromise } from 'vuetify'
 import { showWarning } from '@/utils/toast';
 
