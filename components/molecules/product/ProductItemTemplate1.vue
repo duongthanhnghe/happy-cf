@@ -61,17 +61,15 @@ import {
   formatCurrency
 } from '@/utils/global'
 import {
-  defineProps,
   ref,
-  watch,
   computed
 } from 'vue'
 import {
   useCartStore
-} from '../../../stores/client/product/useCartOrderStore'
+} from '@/stores/client/product/useCartOrderStore'
 import {
   useProductStore
-} from '../../../stores/client/product/useProductOrderStore'
+} from '@/stores/client/product/useProductOrderStore'
 import {
   useWishlistStore
 } from '@/stores/client/users/useWishlistStore';

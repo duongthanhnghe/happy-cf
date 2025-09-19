@@ -43,8 +43,8 @@ watch(mappedData, (val) => {
     <div v-if="props.loading">Đang tải dữ liệu...</div>
     <template v-else>
       <div v-for="category in store.getListProducts" :key="category.id" class="pt-sm" :id="`product-category-scroll${category.id}`" :data-id="`scroll-${category.id}`" rel="js-section-scroll">
-        <div class="flex justify-between">
-          <Heading tag="div" size="md" weight="semibold" class="black mb-xs">
+        <div class="flex justify-between mb-sm">
+          <Heading tag="div" size="md" weight="semibold" class="black">
             {{ category.categoryName }}
           </Heading>
           <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`">

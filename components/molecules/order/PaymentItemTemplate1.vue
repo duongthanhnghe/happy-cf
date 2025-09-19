@@ -2,9 +2,6 @@
 import {
   useCartStore
 } from '@/stores/client/product/useCartOrderStore'
-import {
-  defineProps
-} from 'vue'
 import '@/styles/molecules/order/payment-item-template1.scss'
 
 const props = defineProps({

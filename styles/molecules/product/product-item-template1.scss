@@ -2,26 +2,26 @@
 
 .product-template1 {
   &-item {
-    border-radius: $rd-lg;
-    border: 1px solid $cl-gray7;
     overflow: hidden;
     position: relative;
-    // margin-bottom: calc($gutter-x * 2);
-    &.active {
-      border-color: $cl-primary;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    }
+    // &.active {
+    //   border-color: $cl-primary;
+    //   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    // }
   }
   &-image {
+    background-color: $cl-gray6;
+    border-radius: $rd-lg;
+    border: 1px solid $cl-gray7;
     position: relative;
     img {
-      border-radius: $rd-sm;
+      border-radius: $rd-lg;
       padding: $space-xs;
     }
   }
   &-amount {
     color: $cl-white;
-        position: absolute;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -48,26 +48,29 @@
     }
   }
   &-content {
-    padding: 10px;
+    padding: 10px 10px 0 10px;
   }
   &-title {
-    min-height: 45px;
-    margin-bottom: 8px;
+    min-height: 36px;
+    line-height: 1.5;
+    font-size: $fz-xs;
+    margin-bottom: 12px;
   }
   &-price * {
     line-height: 1;
     font-weight: 600;
     display: flex;
     gap: 8px;
-    align-items: center;
+    align-items: baseline;
     span {
       text-decoration: line-through;
       font-weight: 400;
       color: $cl-gray5;
+      font-size: $fz-xs;
     }
   }
   &-action {
-        position: absolute;
+    position: absolute;
     height: 100%;
     width: 100%;
     top: 0;
@@ -86,13 +89,13 @@
       visibility: visible;
     }
     &-before {
-          position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    background-color: $cl-white;
-    opacity: 0.7;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background-color: $cl-white;
+      opacity: 0.7;
     }
   }
   &-input {
@@ -101,8 +104,10 @@
     padding: 6px;
     background-color: $cl-white;
     border-radius: 30px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-        position: relative;
+    box-shadow:
+      rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
+      rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+    position: relative;
     .portal-control-item {
       margin-bottom: 0;
     }
@@ -158,7 +163,14 @@
       }
       &-content {
         width: calc(100% - 87px);
-        padding-right: 2.25rem;
+        padding: 0 0 0 10px;
+      }
+      &-plus {
+        bottom: 0;
+        right: 0;
+      }
+      &-favorite {
+        display: none;
       }
     }
   }
