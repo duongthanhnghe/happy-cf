@@ -63,11 +63,11 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   }
 
   watch([filterStatusOrder], () => {
+    items.value = null;
     getApiData()
   });
 
   watch(() => isTogglePopupAdd.value, async (newValue) => {
-    // if(newValue && storeOrderStatus.getListData.length === 0) await storeOrderStatus.fetchOrderStatusStore()
     if(newValue && !dataList.value) getApiData()
   }, { immediate: true })
 
@@ -79,6 +79,7 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   const getItems = computed(() => items.value)
   const getIdOrderPopupDetail = computed(() => idOrderPopupDetail.value);
   const getCheckPageDetail = computed(() => checkPageDetail.value)
+  const getOrderStatus = computed(() => storeOrderStatus.getListData)
   const canLoadMore = computed(() => {
     if(!items.value?.length || !dataList.value?.length) return false
     return items.value.length < dataList.value.length
@@ -103,6 +104,7 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
     getItems,
     canLoadMore,
     getIdOrderPopupDetail,
-    getCheckPageDetail
+    getCheckPageDetail,
+    getOrderStatus
   };
 });
