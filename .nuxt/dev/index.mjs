@@ -1133,22 +1133,7 @@ const plugins = [
 _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"2c929-ImTiaBI+aNZi3j02cpc+/CZ1XkY\"",
-    "mtime": "2025-09-25T06:41:02.097Z",
-    "size": 182569,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"ab0bc-8M/7vTTX7PlgH6VjW9drqQMtxa0\"",
-    "mtime": "2025-09-25T06:41:02.099Z",
-    "size": 700604,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -4054,6 +4039,7 @@ const getRewardHistoryByUserId = async (req, res) => {
       }
     });
   } catch (err) {
+    console.error("L\u1ED7i getRewardHistoryByUserId:", err);
     return res.status(500).json({ code: 1, message: err.message });
   }
 };

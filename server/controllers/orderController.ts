@@ -226,17 +226,17 @@ export const setPointAndUpgrade = async (userId: string, point: number) => {
 
 export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params
-    let { page = 1, limit = 10 } = req.query
+    const { userId } = req.params;
+    let { page = 1, limit = 10 } = req.query;
 
-    const numPage = Number(page)
-    const numLimit = Number(limit)
+    const numPage = Number(page);
+    const numLimit = Number(limit);
 
     const query = {
       userId,
       "reward.awarded": true,
       "reward.points": { $gt: 0 }
-    }
+    };
 
     const result = await OrderEntity.paginate(query, {
       page: numPage,
@@ -247,7 +247,7 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
         { path: "status", model: "OrderStatus" },
         { path: "transaction", model: "PaymentTransaction" }
       ]
-    })
+    });
 
     return res.json({
       code: 0,
@@ -258,8 +258,9 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
         totalPages: result.totalPages,
         total: result.totalDocs
       }
-    })
+    });
   } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
+    console.error("Lỗi getRewardHistoryByUserId:", err);
+    return res.status(500).json({ code: 1, message: err.message });
   }
-}
+};

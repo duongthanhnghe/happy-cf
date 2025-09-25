@@ -17,6 +17,7 @@ import {
 } from '@/stores/client/product-review/useProductReviewByUserStore';
 import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
 import { ROUTES } from '@/shared/constants/routes';
+import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
 
 definePageMeta({
   layout: ROUTES.PUBLIC.MY_ACCOUNT.layout,
@@ -30,6 +31,7 @@ const storeAddress = useAddressesManageStore();
 const storeOrder = useOrderHistoryStore();
 const storeWishlist = useWishlistStore();
 const storeProductReview = useProductReviewByUserStore();
+const storeHistoryReward = useHistoryRewardByUserStore();
 
 const menuAccount = [
   { label: 'Thong tin ca nhan', icon:'person', action: () => storeAccountEdit.handleEditAccount() },
@@ -37,6 +39,7 @@ const menuAccount = [
   { label: 'Lich su don hang', icon:'prescriptions', action: () => storeOrder.handleTogglePopupAdd(true) },
   { label: 'Danh sach yeu thich', icon:'favorite', action: () => storeWishlist.handleTogglePopupAdd(true) },
   { label: 'Danh gia', icon:'comment', action: () => storeProductReview.handleTogglePopup(true) },
+  { label: 'Lich su tich diem', icon:'comment', action: () => storeHistoryReward.handleTogglePopup(true) },
   { label: 'Dang xuat', icon:'logout', action: () => store.handleLogout() },
 ]
 

@@ -80,6 +80,7 @@ interface _GlobalComponents {
     'PopupProductReviewSubmit': typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']
     'PopupSearch': typeof import("../components/templates/product/PopupSearch.vue")['default']
     'PopupChangePassword': typeof import("../components/templates/user/PopupChangePassword.vue")['default']
+    'PopupHistoryRewardByUser': typeof import("../components/templates/user/PopupHistoryRewardByUser.vue")['default']
     'PopupOrderHistory': typeof import("../components/templates/user/PopupOrderHistory.vue")['default']
     'PopupUpdateAccount': typeof import("../components/templates/user/PopupUpdateAccount.vue")['default']
     'PopupWishlist': typeof import("../components/templates/user/PopupWishlist.vue")['default']
@@ -178,6 +179,7 @@ interface _GlobalComponents {
     'LazyPopupProductReviewSubmit': LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']>
     'LazyPopupSearch': LazyComponent<typeof import("../components/templates/product/PopupSearch.vue")['default']>
     'LazyPopupChangePassword': LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
+    'LazyPopupHistoryRewardByUser': LazyComponent<typeof import("../components/templates/user/PopupHistoryRewardByUser.vue")['default']>
     'LazyPopupOrderHistory': LazyComponent<typeof import("../components/templates/user/PopupOrderHistory.vue")['default']>
     'LazyPopupUpdateAccount': LazyComponent<typeof import("../components/templates/user/PopupUpdateAccount.vue")['default']>
     'LazyPopupWishlist': LazyComponent<typeof import("../components/templates/user/PopupWishlist.vue")['default']>
@@ -282,6 +284,7 @@ export const PopupProductReviewByUser: typeof import("../components/templates/pr
 export const PopupProductReviewSubmit: typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']
 export const PopupSearch: typeof import("../components/templates/product/PopupSearch.vue")['default']
 export const PopupChangePassword: typeof import("../components/templates/user/PopupChangePassword.vue")['default']
+export const PopupHistoryRewardByUser: typeof import("../components/templates/user/PopupHistoryRewardByUser.vue")['default']
 export const PopupOrderHistory: typeof import("../components/templates/user/PopupOrderHistory.vue")['default']
 export const PopupUpdateAccount: typeof import("../components/templates/user/PopupUpdateAccount.vue")['default']
 export const PopupWishlist: typeof import("../components/templates/user/PopupWishlist.vue")['default']
@@ -380,6 +383,7 @@ export const LazyPopupProductReviewByUser: LazyComponent<typeof import("../compo
 export const LazyPopupProductReviewSubmit: LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']>
 export const LazyPopupSearch: LazyComponent<typeof import("../components/templates/product/PopupSearch.vue")['default']>
 export const LazyPopupChangePassword: LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
+export const LazyPopupHistoryRewardByUser: LazyComponent<typeof import("../components/templates/user/PopupHistoryRewardByUser.vue")['default']>
 export const LazyPopupOrderHistory: LazyComponent<typeof import("../components/templates/user/PopupOrderHistory.vue")['default']>
 export const LazyPopupUpdateAccount: LazyComponent<typeof import("../components/templates/user/PopupUpdateAccount.vue")['default']>
 export const LazyPopupWishlist: LazyComponent<typeof import("../components/templates/user/PopupWishlist.vue")['default']>

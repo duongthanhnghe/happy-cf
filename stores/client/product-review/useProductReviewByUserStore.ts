@@ -18,7 +18,6 @@ const { getDetailReview, fetchDetailReview } = useProductReviewDetail()
 const storeAccount = useAccountStore();
 
 //state
-const txtSearch = ref('');
 const isTogglePopup = ref<boolean>(false);
 const isTogglePopupSubmit = ref<boolean>(false);
 const limit = 1
@@ -117,7 +116,6 @@ const handleResetForm = () => {
   return {
     // state
     items,
-    txtSearch,
     isTogglePopup,
     isTogglePopupSubmit,
     formDataItem,

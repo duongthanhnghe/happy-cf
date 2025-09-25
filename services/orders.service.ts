@@ -188,6 +188,7 @@ export const ordersAPI = {
       }
     }
   },
+  
   getRewardHistoryByUserId: async (
     userId: string,
     page = 1,
