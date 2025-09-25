@@ -24,30 +24,29 @@ const store = useOrderHistoryStore();
             :text="item.name"
           />
         </v-tabs>
-        <div class="container pb-sm">
+        <div class="container pt-ms pb-ms">
           <template v-if="store.getItems?.length">
-          <v-infinite-scroll
-            height="auto"
-            mode="manual"
-            @load="store.loadItems"
-          >
-            <template v-for="item in store.getItems" :key="item.id">
-              <OrderItemTemplate1 :item="item" />
-            </template>
-
-            <template #load-more="{ props }">
-              <template v-if="store.canLoadMore">
-                <Button
-                  color="secondary"
-                  label="Tải thêm"
-                  class="mt-sm"
-                  @click="props.onClick"
-                />
+            <v-infinite-scroll
+              height="auto"
+              mode="manual"
+              @load="store.loadItems"
+            >
+              <template v-for="item in store.getItems" :key="item.id">
+                <OrderItemTemplate1 :item="item" />
               </template>
-            </template>
-          </v-infinite-scroll>
+
+              <template #load-more="{ props }">
+                <template v-if="store.canLoadMore">
+                  <Button
+                    color="secondary"
+                    label="Tải thêm"
+                    @click="props.onClick"
+                  />
+                </template>
+              </template>
+            </v-infinite-scroll>
           </template>
-          <div v-else class="pt-sm no-data">
+          <div v-else>
             <NoData />
           </div>
         </div>
