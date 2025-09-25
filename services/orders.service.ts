@@ -10,21 +10,6 @@ import type {
 import type { ApiResponse } from '@server/types/common/api-response'
 
 export const ordersAPI = {
-  // getAll: async (): Promise<ApiResponse<OrderDTO[]>> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST}`)
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error('Error:', err)
-  //     return {
-  //       code: 1,
-  //       message: 'Failed to fetch orders',
-  //       data: [],
-  //     }
-  //   }
-  // },
-
   getAll: async (
     page = 1,
     limit = 10,
@@ -200,6 +185,53 @@ export const ordersAPI = {
         code: 1,
         message: 'Unexpected error while updating order status',
         data: undefined as any,
+      }
+    }
+  },
+  getRewardHistoryByUserId: async (
+    userId: string,
+    page = 1,
+    limit = 10
+  ): Promise<any> => {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      })
+
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_REWARDS_BY_USER(userId)}?${params}`
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        return {
+          code: 1,
+          message: errorData.message || 'Failed to fetch reward history',
+          data: [],
+          pagination: {
+            page,
+            limit,
+            total: 0,
+            totalPages: 0
+          }
+        }
+      }
+
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error(`Error fetching reward history for user ${userId}:`, err)
+      return {
+        code: 1,
+        message: `Failed to fetch reward history for user ${userId}`,
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
       }
     }
   },

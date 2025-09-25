@@ -274,7 +274,7 @@ export const getMostOrderedProduct = async (
     const limit = req.query.limit ? Number(req.query.limit) : 10;
 
     const orders = await OrderEntity.find().lean();
-    const products = await ProductEntity.find().lean();
+    const products = await ProductEntity.find({ isActive: true, amount: { $gt: 0 } }).lean();
 
     const productMap: Record<string, { product: any; quantity: number }> = {};
 

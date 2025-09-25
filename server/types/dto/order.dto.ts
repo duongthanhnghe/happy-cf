@@ -1,4 +1,5 @@
-import type { ProductDTO } from './product.dto.js';
+import type { ProductDTO } from './product.dto';
+import type { PaymentTransactionDTO, PaymentMethod } from './payment-transaction.dto';
 import { Types } from "mongoose";
 import type { PaginationDTO } from '../common/pagination.dto'
 
@@ -34,6 +35,7 @@ export interface PaymentDTO {
   name: string;
   description: string;
   image: string;
+  method: PaymentMethod,
 }
 
 export interface OrderStatusDTO {
@@ -57,14 +59,19 @@ export interface OrderDTO {
   totalPrice: number;
   totalPriceSave: number;
   totalPriceCurrent: number;
-  point: number;
   status: OrderStatusDTO;
   userId: string | null;
+  transaction: PaymentTransactionDTO | null;
+  reward: {
+    points: number,
+    awarded: boolean,
+    awardedAt: string | null;
+  }
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status"> {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward"> {
   paymentId: string;
   status: string;
 }

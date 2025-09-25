@@ -280,6 +280,10 @@ body .bg {
   }
 }
 
+.pd-0 {
+  padding: 0 !important;
+}
+
 .pt {
   &-0 {
     padding-top: 0 !important;
@@ -377,10 +381,6 @@ body .bg {
   &-section {
     padding-right: $space-md !important;
   }
-}
-
-.pd-0 {
-  padding: 0 !important;
 }
 
 .mb {
@@ -1597,7 +1597,7 @@ thead.v-data-table__thead {
     top: 0;
     left: 0;
     background-color: $cl-white;
-    z-index: 1;
+    z-index: 2;
 }
 body .v-data-table__thead th {
   font-weight: 700!important;
@@ -1620,11 +1620,27 @@ body .v-data-table__thead th:last-child, body .v-data-table__tr td:last-child {
 }
 
 /* Hover row effect */
-body tbody tr:hover {
+body tbody tr:hover td {
   background-color: $cl-gray6!important;
   transition: background-color 0.2s ease-in-out!important;
 }
 
+// fix cot
+.v-data-table-sticky-cl, .v-data-table-sticky-cl-right {
+  position: sticky;
+  left: 0;
+  background-color: $cl-white;
+  z-index: 1;
+}
+
+td.v-data-table-sticky-cl, td.v-data-table-sticky-cl-right {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.v-data-table-sticky-cl-right {
+    left: auto;
+    right: 0;
+}
 /* Nút hành động */
 .v-btn {
   letter-spacing: inherit !important;

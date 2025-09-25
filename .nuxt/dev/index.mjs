@@ -1136,16 +1136,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"28760-f9NM8CU919RdfiMnOMkYj7VNBDU\"",
-    "mtime": "2025-09-19T10:15:57.904Z",
-    "size": 165728,
+    "etag": "\"2c929-ImTiaBI+aNZi3j02cpc+/CZ1XkY\"",
+    "mtime": "2025-09-25T06:41:02.097Z",
+    "size": 182569,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"9b0e4-rUOoOUhsIhUzwAIjKZM7Q1heme0\"",
-    "mtime": "2025-09-19T10:15:57.905Z",
-    "size": 635108,
+    "etag": "\"ab0bc-8M/7vTTX7PlgH6VjW9drqQMtxa0\"",
+    "mtime": "2025-09-25T06:41:02.099Z",
+    "size": 700604,
     "path": "index.mjs.map"
   }
 };
@@ -1563,7 +1563,9 @@ const _lazy_E6ks5a = () => Promise.resolve().then(function () { return categorie
 const _lazy_pqgcrd = () => Promise.resolve().then(function () { return categoriesProductRouter; });
 const _lazy_NC4wll = () => Promise.resolve().then(function () { return fileManageRouter; });
 const _lazy_pDFBy2 = () => Promise.resolve().then(function () { return orderManageRouter; });
+const _lazy_vGiHBT = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
 const _lazy_FlpZsr = () => Promise.resolve().then(function () { return postsNewsRouter; });
+const _lazy_c4C7PP = () => Promise.resolve().then(function () { return productReviewRouter; });
 const _lazy_AMn0Ft = () => Promise.resolve().then(function () { return productRouter; });
 const _lazy_WjDJNS = () => Promise.resolve().then(function () { return settingRouter; });
 const _lazy_vHw4MT = () => Promise.resolve().then(function () { return renderer$1; });
@@ -1578,7 +1580,9 @@ const handlers = [
   { route: '/categoriesProductRouter', handler: _lazy_pqgcrd, lazy: true, middleware: false, method: undefined },
   { route: '/fileManageRouter', handler: _lazy_NC4wll, lazy: true, middleware: false, method: undefined },
   { route: '/orderManageRouter', handler: _lazy_pDFBy2, lazy: true, middleware: false, method: undefined },
+  { route: '/paymentTransactionRoutes', handler: _lazy_vGiHBT, lazy: true, middleware: false, method: undefined },
   { route: '/postsNewsRouter', handler: _lazy_FlpZsr, lazy: true, middleware: false, method: undefined },
+  { route: '/productReviewRouter', handler: _lazy_c4C7PP, lazy: true, middleware: false, method: undefined },
   { route: '/productRouter', handler: _lazy_AMn0Ft, lazy: true, middleware: false, method: undefined },
   { route: '/settingRouter', handler: _lazy_WjDJNS, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_error', handler: _lazy_vHw4MT, lazy: true, middleware: false, method: undefined },
@@ -2052,18 +2056,18 @@ const toggleActive$6 = async (req, res) => {
   }
 };
 
-const router$a = Router();
-router$a.get("/", getAllAbout);
-router$a.get("/:id", getAboutById);
-router$a.post("/", createAbout);
-router$a.put("/:id", updateAbout);
-router$a.delete("/:id", deleteAbout);
-router$a.patch("/updateOrder/:id", updateOrder$3);
-router$a.patch("/toggleActive/:id", toggleActive$6);
+const router$c = Router();
+router$c.get("/", getAllAbout);
+router$c.get("/:id", getAboutById);
+router$c.post("/", createAbout);
+router$c.put("/:id", updateAbout);
+router$c.delete("/:id", deleteAbout);
+router$c.patch("/updateOrder/:id", updateOrder$3);
+router$c.patch("/toggleActive/:id", toggleActive$6);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$a
+  default: router$c
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const AddressSchema = new Schema(
@@ -2209,18 +2213,18 @@ const getDefaultAddressByUserId = async (req, res) => {
   }
 };
 
-const router$9 = Router();
-router$9.get("/default/:userId", getDefaultAddressByUserId);
-router$9.get("/:userId", getAllAddress);
-router$9.get("/:id", getAddressById);
-router$9.post("/", createAddress);
-router$9.put("/:id", updateAddress);
-router$9.delete("/:id", deleteAddress);
-router$9.post("/:id/set-default", setAddressDefault);
+const router$b = Router();
+router$b.get("/default/:userId", getDefaultAddressByUserId);
+router$b.get("/:userId", getAllAddress);
+router$b.get("/:id", getAddressById);
+router$b.post("/", createAddress);
+router$b.put("/:id", updateAddress);
+router$b.delete("/:id", deleteAddress);
+router$b.post("/:id/set-default", setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$9
+  default: router$b
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const MembershipSchema = new Schema(
@@ -2661,25 +2665,25 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$8 = express.Router();
-router$8.get("/users", getAllUsers);
-router$8.put("/users/me", authenticate, updateAccount);
-router$8.get("/users/:id", getUserById);
-router$8.patch("/users/toggleActive/:id", toggleActive$5);
-router$8.post("/register", register);
-router$8.post("/login", login);
-router$8.post("/forgot-password", forgotPassword);
-router$8.post("/reset-password", resetPassword);
-router$8.post("/change-password", changePassword);
-router$8.get("/membership-level", getAllMembershipLevel);
-router$8.post("/set-point", setPoint);
-router$8.post("/search-keywords/log", logSearchKeyword);
-router$8.get("/search-keywords/list", getTopSearchKeyword);
-router$8.delete("/:id", deleteUsers);
+const router$a = express.Router();
+router$a.get("/users", getAllUsers);
+router$a.put("/users/me", authenticate, updateAccount);
+router$a.get("/users/:id", getUserById);
+router$a.patch("/users/toggleActive/:id", toggleActive$5);
+router$a.post("/register", register);
+router$a.post("/login", login);
+router$a.post("/forgot-password", forgotPassword);
+router$a.post("/reset-password", resetPassword);
+router$a.post("/change-password", changePassword);
+router$a.get("/membership-level", getAllMembershipLevel);
+router$a.post("/set-point", setPoint);
+router$a.post("/search-keywords/log", logSearchKeyword);
+router$a.get("/search-keywords/list", getTopSearchKeyword);
+router$a.delete("/:id", deleteUsers);
 
 const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$8
+  default: router$a
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const BannerSchema = new Schema(
@@ -2812,18 +2816,18 @@ const toggleActive$4 = async (req, res) => {
   }
 };
 
-const router$7 = Router();
-router$7.get("/", getAllBanners);
-router$7.get("/:id", getBannerById);
-router$7.post("/", createBanner);
-router$7.put("/:id", updateBanner);
-router$7.delete("/:id", deleteBanner);
-router$7.patch("/updateOrder/:id", updateOrder$2);
-router$7.patch("/toggleActive/:id", toggleActive$4);
+const router$9 = Router();
+router$9.get("/", getAllBanners);
+router$9.get("/:id", getBannerById);
+router$9.post("/", createBanner);
+router$9.put("/:id", updateBanner);
+router$9.delete("/:id", deleteBanner);
+router$9.patch("/updateOrder/:id", updateOrder$2);
+router$9.patch("/toggleActive/:id", toggleActive$4);
 
 const bannerRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$7
+  default: router$9
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function generateSlug(text) {
@@ -3095,19 +3099,19 @@ const getCategoryBySlug = async (req, res) => {
   }
 };
 
-const router$6 = Router();
-router$6.get("/", getAllCategories$1);
-router$6.get("/slug/:slug", getCategoryBySlug);
-router$6.get("/:id", getCategoriesById$1);
-router$6.post("/", createCategories$1);
-router$6.put("/:id", updateCategories$1);
-router$6.delete("/:id", deleteCategories$1);
-router$6.patch("/toggleActive/:id", toggleActive$3);
-router$6.patch("/updateOrder/:id", updateOrder$1);
+const router$8 = Router();
+router$8.get("/", getAllCategories$1);
+router$8.get("/slug/:slug", getCategoryBySlug);
+router$8.get("/:id", getCategoriesById$1);
+router$8.post("/", createCategories$1);
+router$8.put("/:id", updateCategories$1);
+router$8.delete("/:id", deleteCategories$1);
+router$8.patch("/toggleActive/:id", toggleActive$3);
+router$8.patch("/updateOrder/:id", updateOrder$1);
 
 const categoriesNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$6
+  default: router$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const VariantSchema = new Schema(
@@ -3451,20 +3455,20 @@ const toggleActive$2 = async (req, res) => {
   }
 };
 
-const router$5 = Router();
-router$5.get("/", getAllCategories);
-router$5.get("/slug/:slug", getCategoriesBySlug);
-router$5.get("/:id", getCategoriesById);
-router$5.post("/", createCategories);
-router$5.put("/:id", updateCategories);
-router$5.delete("/:id", deleteCategories);
-router$5.get("/:id/products", getProductsByCategory);
-router$5.patch("/toggleActive/:id", toggleActive$2);
-router$5.patch("/updateOrder/:id", updateOrder);
+const router$7 = Router();
+router$7.get("/", getAllCategories);
+router$7.get("/slug/:slug", getCategoriesBySlug);
+router$7.get("/:id", getCategoriesById);
+router$7.post("/", createCategories);
+router$7.put("/:id", updateCategories);
+router$7.delete("/:id", deleteCategories);
+router$7.get("/:id/products", getProductsByCategory);
+router$7.patch("/toggleActive/:id", toggleActive$2);
+router$7.patch("/updateOrder/:id", updateOrder);
 
 const categoriesProductRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$5
+  default: router$7
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const uploadImageMulter = multer({ dest: "uploads/" });
@@ -3619,16 +3623,16 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const router$4 = express.Router();
-router$4.get("/images", getImages);
-router$4.get("/images/folders", getFolders);
-router$4.delete("/images/delete", deleteImage);
-router$4.get("/images/search", searchImage);
-router$4.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
+const router$6 = express.Router();
+router$6.get("/images", getImages);
+router$6.get("/images/folders", getFolders);
+router$6.delete("/images/delete", deleteImage);
+router$6.get("/images/search", searchImage);
+router$6.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
 
 const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$4
+  default: router$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const SelectedOptionsPushSchema = new Schema(
@@ -3654,7 +3658,8 @@ const PaymentSchema = new Schema(
   {
     name: { type: String, required: true },
     description: { type: String },
-    image: { type: String }
+    image: { type: String },
+    method: { type: String }
   },
   { timestamps: true }
 );
@@ -3680,9 +3685,15 @@ const OrderSchema = new Schema(
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
-    point: { type: Number, default: 0 },
+    // point: { type: Number, default: 0 },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", default: null }
+    userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
+    reward: {
+      points: { type: Number, default: 0 },
+      awarded: { type: Boolean, default: false },
+      awardedAt: { type: Date, default: null }
+    }
   },
   { timestamps: true }
 );
@@ -3691,13 +3702,49 @@ const PaymentEntity = model("Payment", PaymentSchema, "payments");
 const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
 const OrderEntity = model("Order", OrderSchema, "orders");
 
+const PAYMENT_TRANSACTION_STATUS = {
+  PENDING: "pending",
+  PAID: "paid",
+  FAILED: "failed",
+  REFUNDED: "refunded"
+};
+const PaymentTransactionStatusText = {
+  [PAYMENT_TRANSACTION_STATUS.PENDING]: "Ch\u1EDD thanh to\xE1n",
+  [PAYMENT_TRANSACTION_STATUS.PAID]: "\u0110\xE3 thanh to\xE1n",
+  [PAYMENT_TRANSACTION_STATUS.FAILED]: "Thanh to\xE1n th\u1EA5t b\u1EA1i",
+  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "\u0110\xE3 ho\xE0n ti\u1EC1n"
+};
+const PaymentTransactionStatusColor = {
+  [PAYMENT_TRANSACTION_STATUS.PENDING]: "orange",
+  [PAYMENT_TRANSACTION_STATUS.PAID]: "green",
+  [PAYMENT_TRANSACTION_STATUS.FAILED]: "red",
+  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "blue"
+};
+
+function toPaymentTransactionDTO(entity) {
+  var _a, _b, _c, _d;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    orderId: ((_b = entity.orderId) == null ? void 0 : _b.toString()) || "",
+    amount: entity.amount,
+    method: entity.method,
+    status: entity.status,
+    statusText: PaymentTransactionStatusText[entity.status],
+    statusColor: PaymentTransactionStatusColor[entity.status],
+    createdAt: ((_c = entity.createdAt) == null ? void 0 : _c.toISOString()) || "",
+    updatedAt: ((_d = entity.updatedAt) == null ? void 0 : _d.toISOString()) || ""
+  };
+}
+const toPaymentTransactionListDTO = (list) => list.map(toPaymentTransactionDTO);
+
 function toPaymentDTO(entity) {
   var _a;
   return {
     id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
     name: entity.name,
     description: entity.description || "",
-    image: entity.image || ""
+    image: entity.image || "",
+    method: entity.method || null
   };
 }
 const toPaymentListDTO = (payments) => payments.map(toPaymentDTO);
@@ -3713,7 +3760,7 @@ function toOrderStatusDTO(entity) {
 }
 const toOrderStatusListDTO = (list) => list.map(toOrderStatusDTO);
 function toOrderDTO(entity) {
-  var _a, _b, _c;
+  var _a, _b, _c, _d, _e;
   return {
     id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
     code: entity.code,
@@ -3722,20 +3769,28 @@ function toOrderDTO(entity) {
     fullname: entity.fullname,
     phone: entity.phone,
     note: entity.note || "",
-    // paymentId: entity.paymentId ? entity.paymentId.toString() : "",
     paymentId: toPaymentDTO(entity.paymentId),
     cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map(toCartItemDTO) : [],
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
-    point: entity.point || 0,
-    // status: entity.status ? entity.status.toString() : "",
     status: toOrderStatusDTO(entity.status),
-    userId: entity.userId ? entity.userId.toString() : null,
-    createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
-    updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || ""
+    userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
+    transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
+    reward: entity.reward ? {
+      points: (_b = entity.reward.points) != null ? _b : 0,
+      awarded: (_c = entity.reward.awarded) != null ? _c : false,
+      awardedAt: entity.reward.awardedAt ? new Date(entity.reward.awardedAt).toISOString() : null
+    } : {
+      points: 0,
+      awarded: false,
+      awardedAt: null
+    },
+    createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
+    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || ""
   };
 }
+const toOrderListDTO = (orders) => orders.map(toOrderDTO);
 function toCartItemDTO(entity) {
   return {
     idProduct: entity.idProduct ? new Types.ObjectId(entity.idProduct) : new Types.ObjectId(),
@@ -3754,16 +3809,55 @@ function toSelectedOptionDTO(entity) {
   };
 }
 
+const ORDER_STATUS = {
+  PENDING: "68a93304c9f7de47a9f3a7e2",
+  CONFIRMED: "68a93304c9f7de47a9f3a7e3",
+  DELIVERING: "68a93304c9f7de47a9f3a7e4",
+  COMPLETED: "68a93304c9f7de47a9f3a7e5",
+  CANCELLED: "68a93304c9f7de47a9f3a7e6"
+};
+
+const PRODUCT_REVIEW_STATUS = {
+  PENDING: "pending",
+  APPROVED: "approved",
+  REJECTED: "rejected"
+};
+const ProductReviewStatusText = {
+  [PRODUCT_REVIEW_STATUS.PENDING]: "Ch\u01B0a \u0111\xE1nh gi\xE1",
+  [PRODUCT_REVIEW_STATUS.APPROVED]: "\u0110\xE3 \u0111\xE1nh gi\xE1",
+  [PRODUCT_REVIEW_STATUS.REJECTED]: "\u0110\xE3 b\u1ECB \u1EA9n"
+};
+const ProductReviewStatusColor = {
+  [PRODUCT_REVIEW_STATUS.PENDING]: "orange",
+  [PRODUCT_REVIEW_STATUS.APPROVED]: "green",
+  [PRODUCT_REVIEW_STATUS.REJECTED]: "red"
+};
+
+const ProductReviewSchema = new Schema(
+  {
+    orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    rating: { type: Number, required: true, min: 0, max: 5 },
+    comment: { type: String, default: "" },
+    images: { type: [String], default: [] },
+    status: { type: String, enum: Object.values(PRODUCT_REVIEW_STATUS), default: PRODUCT_REVIEW_STATUS.PENDING }
+  },
+  { timestamps: true }
+);
+ProductReviewSchema.plugin(mongoosePaginate);
+const ProductReviewEntity = model("ProductReview", ProductReviewSchema, "product_reviews");
+
 const getAllOrder = async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
     const numPage = Number(page);
     let numLimit = Number(limit);
     if (numLimit === -1) {
-      const orders = await OrderEntity.find({}).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId");
+      const orders = await OrderEntity.find({}).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
       return res.json({
         code: 0,
-        data: orders,
+        data: toOrderListDTO(orders),
         pagination: {
           page: 1,
           limit: orders.length,
@@ -3779,13 +3873,14 @@ const getAllOrder = async (req, res) => {
       populate: [
         { path: "paymentId", model: "Payment" },
         { path: "status", model: "OrderStatus" },
-        { path: "userId", model: "User" }
+        { path: "userId", model: "User" },
+        { path: "transaction", model: "PaymentTransaction" }
       ]
     };
     const result = await OrderEntity.paginate({}, options);
     return res.json({
       code: 0,
-      data: result.docs,
+      data: toOrderListDTO(result.docs),
       pagination: {
         page: result.page,
         limit: result.limit,
@@ -3799,7 +3894,7 @@ const getAllOrder = async (req, res) => {
 };
 const getOrderById = async (req, res) => {
   try {
-    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status");
+    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
@@ -3814,16 +3909,15 @@ const createOrder = async (req, res) => {
     if (!(data == null ? void 0 : data.fullname) || !(data == null ? void 0 : data.phone) || !(data == null ? void 0 : data.paymentId) || !(data == null ? void 0 : data.cartItems)) {
       return res.status(400).json({ code: 1, message: "D\u1EEF li\u1EC7u \u0111\u01A1n h\xE0ng kh\xF4ng h\u1EE3p l\u1EC7" });
     }
-    const newOrder = await OrderEntity.create({ ...data, userId });
-    let membershipUpdate = null;
-    if (userId && typeof point === "number" && point > 0) {
-      membershipUpdate = await setPointAndUpgrade(userId, point);
-    }
+    const newOrder = await OrderEntity.create({
+      ...data,
+      userId,
+      reward: { points: point || 0, awarded: false }
+    });
     return res.status(201).json({
       code: 0,
       message: "\u0110\u1EB7t h\xE0ng th\xE0nh c\xF4ng",
-      data: toOrderDTO(newOrder),
-      membership: membershipUpdate
+      data: toOrderDTO(newOrder)
     });
   } catch (err) {
     console.error("L\u1ED7i createOrder:", err);
@@ -3864,6 +3958,30 @@ const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
     order.status = statusId;
+    if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
+      console.log(order.cartItems);
+      const existingReviews = await ProductReviewEntity.find({ orderId });
+      if (existingReviews.length === 0) {
+        const reviews = order.cartItems.map((item) => ({
+          orderId,
+          userId: order.userId,
+          productId: item.idProduct,
+          rating: 0,
+          // Mặc định chưa có đánh giá
+          comment: null,
+          images: [],
+          status: "pending"
+          // Trạng thái mặc định là pending
+        }));
+        await ProductReviewEntity.insertMany(reviews);
+      }
+    }
+    if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
+      await setPointAndUpgrade(order.userId.toString(), order.reward.points);
+      order.reward.awarded = true;
+      order.reward.awardedAt = /* @__PURE__ */ new Date();
+      await order.save();
+    }
     await order.save();
     return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
   } catch (err) {
@@ -3904,20 +4022,166 @@ const setPointAndUpgrade = async (userId, point) => {
     levelChanged
   };
 };
+const getRewardHistoryByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    let { page = 1, limit = 10 } = req.query;
+    const numPage = Number(page);
+    const numLimit = Number(limit);
+    const query = {
+      userId,
+      "reward.awarded": true,
+      "reward.points": { $gt: 0 }
+    };
+    const result = await OrderEntity.paginate(query, {
+      page: numPage,
+      limit: numLimit,
+      sort: { "reward.awardedAt": -1 },
+      populate: [
+        { path: "paymentId", model: "Payment" },
+        { path: "status", model: "OrderStatus" },
+        { path: "transaction", model: "PaymentTransaction" }
+      ]
+    });
+    return res.json({
+      code: 0,
+      data: toOrderListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
 
-const router$3 = Router();
-router$3.get("/", getAllOrder);
-router$3.get("/status", getAllStatus);
-router$3.get("/payments", getAllPayment);
-router$3.get("/:id", getOrderById);
-router$3.post("/", createOrder);
-router$3.delete("/:id", deleteOrder);
-router$3.get("/users/:userId/orders", getOrdersByUserId);
-router$3.put("/status", updateOrderStatus);
+const router$5 = Router();
+router$5.get("/", getAllOrder);
+router$5.get("/status", getAllStatus);
+router$5.get("/payments", getAllPayment);
+router$5.get("/:id", getOrderById);
+router$5.post("/", createOrder);
+router$5.delete("/:id", deleteOrder);
+router$5.get("/users/:userId/orders", getOrdersByUserId);
+router$5.get("/users/:userId/rewards", getRewardHistoryByUserId);
+router$5.put("/status", updateOrderStatus);
 
 const orderManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$3
+  default: router$5
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const PaymentTransactionSchema = new Schema(
+  {
+    orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
+    amount: { type: Number, required: true },
+    method: { type: String, enum: ["cash", "bank_transfer"], required: true },
+    status: {
+      type: String,
+      enum: Object.values(PAYMENT_TRANSACTION_STATUS),
+      default: PAYMENT_TRANSACTION_STATUS.PENDING
+    }
+  },
+  { timestamps: true }
+);
+PaymentTransactionSchema.plugin(mongoosePaginate);
+const PaymentTransactionEntity = model("PaymentTransaction", PaymentTransactionSchema);
+
+const createPaymentTransaction = async (req, res) => {
+  try {
+    const { orderId, amount, method } = req.body;
+    if (!orderId || !amount || !method) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu d\u1EEF li\u1EC7u b\u1EAFt bu\u1ED9c" });
+    }
+    const existingTransaction = await PaymentTransactionEntity.findOne({ orderId });
+    if (existingTransaction) {
+      return res.status(400).json({
+        code: 1,
+        message: "\u0110\u01A1n h\xE0ng n\xE0y \u0111\xE3 c\xF3 giao d\u1ECBch thanh to\xE1n"
+      });
+    }
+    const transaction = await PaymentTransactionEntity.create({
+      orderId,
+      amount,
+      method,
+      status: "pending"
+    });
+    await OrderEntity.findByIdAndUpdate(orderId, {
+      transaction: transaction._id
+    });
+    res.json({
+      code: 0,
+      data: transaction,
+      message: "T\u1EA1o giao d\u1ECBch th\xE0nh c\xF4ng"
+    });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updatePaymentTransactionStatus = async (req, res) => {
+  try {
+    const { transactionId, status } = req.body;
+    const transaction = await PaymentTransactionEntity.findByIdAndUpdate(
+      transactionId,
+      { status, updatedAt: /* @__PURE__ */ new Date() },
+      { new: true }
+    );
+    if (!transaction) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
+    }
+    res.json({ code: 0, data: transaction, message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng" });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPaymentTransactions = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status } = req.query;
+    const query = {};
+    if (status) query.status = status;
+    const result = await PaymentTransactionEntity.paginate(query, {
+      page: Number(page),
+      limit: Number(limit),
+      sort: { createdAt: -1 },
+      populate: "orderId"
+    });
+    res.json({
+      code: 0,
+      data: toPaymentTransactionListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deletePaymentTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const transaction = await PaymentTransactionEntity.findByIdAndDelete(id);
+    if (!transaction) return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
+    res.json({ code: 0, message: "X\xF3a giao d\u1ECBch th\xE0nh c\xF4ng" });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$4 = Router();
+router$4.post("/", createPaymentTransaction);
+router$4.put("/status", updatePaymentTransactionStatus);
+router$4.get("/", getPaymentTransactions);
+router$4.delete("/:id", deletePaymentTransaction);
+
+const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$4
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllPosts = async (req, res) => {
@@ -4115,21 +4379,219 @@ const getAllPostsPagination = async (req, res) => {
   }
 };
 
-const router$2 = Router();
-router$2.get("/category/:categoryId", getPostsByCategory);
-router$2.get("/", getAllPosts);
-router$2.get("/pagination", getAllPostsPagination);
-router$2.get("/slug/:slug", getPostBySlug);
-router$2.get("/related/:slug", getRelatedPostsBySlug);
-router$2.patch("/view/:slug", updateView);
-router$2.get("/latest", getPostsLatest);
-router$2.get("/:id", getPostsById);
-router$2.post("/", createPosts);
-router$2.put("/:id", updatePosts);
-router$2.delete("/:id", deletePosts);
-router$2.patch("/toggleActive/:id", toggleActive$1);
+const router$3 = Router();
+router$3.get("/category/:categoryId", getPostsByCategory);
+router$3.get("/", getAllPosts);
+router$3.get("/pagination", getAllPostsPagination);
+router$3.get("/slug/:slug", getPostBySlug);
+router$3.get("/related/:slug", getRelatedPostsBySlug);
+router$3.patch("/view/:slug", updateView);
+router$3.get("/latest", getPostsLatest);
+router$3.get("/:id", getPostsById);
+router$3.post("/", createPosts);
+router$3.put("/:id", updatePosts);
+router$3.delete("/:id", deletePosts);
+router$3.patch("/toggleActive/:id", toggleActive$1);
 
 const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$3
+}, Symbol.toStringTag, { value: 'Module' }));
+
+function toProductReviewDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    orderId: entity.orderId.toString(),
+    userId: typeof entity.userId === "object" && "fullname" in entity.userId ? toUserDTO(entity.userId) : entity.userId.toString(),
+    productId: typeof entity.productId === "object" && "productName" in entity.productId ? toProductDTO(entity.productId) : entity.productId.toString(),
+    rating: entity.rating,
+    comment: entity.comment || null,
+    images: entity.images || [],
+    status: entity.status,
+    statusText: ProductReviewStatusText[entity.status],
+    statusColor: ProductReviewStatusColor[entity.status],
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString()
+  };
+}
+const toProductReviewListDTO = (entities) => entities.map(toProductReviewDTO);
+
+const getAllProductReviews = async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+    const numPage = Number(page);
+    let numLimit = Number(limit);
+    if (numLimit === -1) {
+      const reviews = await ProductReviewEntity.find({}).sort({ createdAt: -1 }).populate("userId").populate("productId");
+      return res.json({
+        code: 0,
+        data: toProductReviewListDTO(reviews),
+        pagination: {
+          page: 1,
+          limit: reviews.length,
+          totalPages: 1,
+          total: reviews.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        // { path: "orderId", model: "Order" },
+        { path: "userId", model: "User" },
+        { path: "productId", model: "Product" }
+      ]
+    };
+    const result = await ProductReviewEntity.paginate({}, options);
+    return res.json({
+      code: 0,
+      data: toProductReviewListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1",
+      error
+    });
+  }
+};
+const getProductReviewById = async (req, res) => {
+  try {
+    const review = await ProductReviewEntity.findById(req.params.id).populate("orderId").populate("userId").populate("productId");
+    if (!review) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toProductReviewDTO(review) });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y \u0111\xE1nh gi\xE1", error });
+  }
+};
+const updateProductReviewStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    if (!id || !status) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu id ho\u1EB7c status" });
+    }
+    const review = await ProductReviewEntity.findById(id);
+    if (!review) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    review.status = status;
+    await review.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng",
+      data: toProductReviewDTO(review)
+    });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1", error });
+  }
+};
+const deleteProductReview = async (req, res) => {
+  try {
+    const deleted = await ProductReviewEntity.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "X\xF3a \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng" });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i x\xF3a \u0111\xE1nh gi\xE1", error });
+  }
+};
+const submitProductReview = async (req, res) => {
+  try {
+    const { reviewId, rating, comment, images } = req.body;
+    if (!reviewId || !rating) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu reviewId ho\u1EB7c rating" });
+    }
+    const review = await ProductReviewEntity.findById(reviewId);
+    if (!review) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    review.rating = rating;
+    review.comment = comment || null;
+    review.images = images || [];
+    review.status = "approved";
+    await review.save();
+    return res.json({ code: 0, message: "G\u1EEDi \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng", data: toProductReviewDTO(review) });
+  } catch (error) {
+    console.error("L\u1ED7i submitProductReview:", error);
+    return res.status(500).json({ code: 1, message: "L\u1ED7i g\u1EEDi \u0111\xE1nh gi\xE1", error });
+  }
+};
+const getReviewsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { status, page = 1, limit = 10 } = req.query;
+    if (!userId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu userId" });
+    }
+    if (!status) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu status" });
+    }
+    const numPage = Number(page);
+    const numLimit = Number(limit);
+    const query = {
+      userId,
+      status
+      // Sử dụng status từ query string
+    };
+    if (numLimit === -1) {
+      const reviews = await ProductReviewEntity.find(query).populate("productId").sort({ createdAt: -1 });
+      return res.json({
+        code: 0,
+        data: toProductReviewListDTO(reviews),
+        pagination: {
+          page: 1,
+          limit: reviews.length,
+          totalPages: 1,
+          total: reviews.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        // { path: "orderId", model: "Order" },
+        { path: "productId", model: "Product" }
+      ]
+    };
+    const result = await ProductReviewEntity.paginate(query, options);
+    return res.json({
+      code: 0,
+      data: toProductReviewListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (error) {
+    console.error("L\u1ED7i getReviewsByUser:", error);
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1", error });
+  }
+};
+
+const router$2 = Router();
+router$2.get("/", getAllProductReviews);
+router$2.get("/:id", getProductReviewById);
+router$2.get("/user/:userId/reviews", getReviewsByUser);
+router$2.put("/status", updateProductReviewStatus);
+router$2.put("/submit", submitProductReview);
+router$2.delete("/:id", deleteProductReview);
+
+const productReviewRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -4357,7 +4819,7 @@ const getMostOrderedProduct = async (req, res) => {
   try {
     const limit = req.query.limit ? Number(req.query.limit) : 10;
     const orders = await OrderEntity.find().lean();
-    const products = await ProductEntity.find().lean();
+    const products = await ProductEntity.find({ isActive: true, amount: { $gt: 0 } }).lean();
     const productMap = {};
     for (const order of orders) {
       for (const item of order.cartItems) {

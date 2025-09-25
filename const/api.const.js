@@ -46,6 +46,7 @@ export const API_ENDPOINTS = {
     UPDATE_STATUS: '/orders/status',
     LIST_PAYMENTS: '/orders/payments',
     LIST_BY_USER: (id) => `/orders/users/${id}/orders`,
+    LIST_REWARDS_BY_USER: (id) => `/orders/users/${id}/rewards`,
   },
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',
@@ -111,5 +112,20 @@ export const API_ENDPOINTS = {
     GET_FOLDERS: () => `/fileManage/images/folders`,
     DELETE_IMAGE: (id) => `/fileManage/images/delete?publicId=${id}`,
     SEARCH_IMAGE: () => `/fileManage/images/search`
+  },
+  PAYMENT_TRANSACTIONS: {
+    CREATE: '/payment-transactions',
+    LIST: '/payment-transactions',
+    GET_BY_ID: (id) => `/payment-transactions/${id}`,
+    DELETE: (id) => `/payment-transactions/${id}`,
+    UPDATE_STATUS: '/payment-transactions/status',
+  },
+  PRODUCT_REVIEWS: {
+    LIST: '/product-reviews',
+    GET_BY_ID: (id) => `/product-reviews/${id}`,
+    DELETE: (id) => `/product-reviews/${id}`,
+    UPDATE_STATUS: '/product-reviews/status',
+    SUBMIT: '/product-reviews/submit',
+    GET_BY_USER_PENDING: (userId) => `/product-reviews/user/${userId}/reviews`,
   },
 }

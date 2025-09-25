@@ -10,6 +10,7 @@ import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
+import { nullRules, phoneRules } from '@/utils/validation'
 
 const store = useCartStore();
 const storeAddress = useAddressesManageStore();
@@ -50,7 +51,7 @@ const handleBackOrder = () => {
           <Heading tag="div" size="md" weight="semibold" class="popup-cart-card flex justify-between pb-0 mb-0 black">
             San pham da chon
             <slot>
-            <Button @click.prevent="handleBackOrder" size="xs" color="secondary" icon="keyboard_arrow_right"/>
+            <Button tag="div" @click.prevent="handleBackOrder" size="xs" color="secondary" icon="keyboard_arrow_right"/>
             </slot>
           </Heading>
           <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
@@ -78,15 +79,15 @@ const handleBackOrder = () => {
             </div>
             <div class="col-6">
               <LabelInput label="Địa chỉ nhận hàng" required/>
-              <v-text-field type="text" required v-model="store.informationOrder.address" :rules="store.addressRules" variant="outlined" />
+              <v-text-field type="text" required v-model="store.informationOrder.address" :rules="nullRules" variant="outlined" />
             </div>
             <div class="col-6">
               <LabelInput label="Họ và tên" required/>
-              <v-text-field type="text" required v-model="store.informationOrder.fullname" :rules="store.fullnameRules" variant="outlined" />
+              <v-text-field type="text" required v-model="store.informationOrder.fullname" :rules="nullRules" variant="outlined" />
             </div>
             <div class="col-6">
               <LabelInput label="Số điện thoại" required/>
-              <v-text-field type="number" required v-model="store.informationOrder.phone" :rules="store.phoneRules" variant="outlined" />
+              <v-text-field type="tel" required v-model="store.informationOrder.phone" :rules="phoneRules" maxlength="11" variant="outlined" />
             </div>
           </div>
 

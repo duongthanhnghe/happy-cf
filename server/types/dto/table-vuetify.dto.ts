@@ -10,7 +10,8 @@ export interface TableHeaders {
   title: string
   key: string
   sortable: boolean
-  class?: string
+  headerProps?: Record<string, any> | ((header: TableHeaders) => Record<string, any>)
+  cellProps?: Record<string, any> | ((data: { item: any; value: any }) => Record<string, any>)
 }
 
 export interface FilterTime {

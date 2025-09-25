@@ -7,6 +7,7 @@ import type {
 } from "../types/dto/order.dto";
 import type { Order, OrderStatus, Payment } from "../models/OrderEntity";
 import { Types } from "mongoose";
+import { toPaymentTransactionDTO } from "../mappers/paymentTransactionMapper"
 
 export function toPaymentDTO(entity: Payment): PaymentDTO {
   return {
@@ -14,6 +15,7 @@ export function toPaymentDTO(entity: Payment): PaymentDTO {
     name: entity.name,
     description: entity.description || "",
     image: entity.image || "",
+    method: entity.method || null,
   };
 }
 
@@ -42,7 +44,6 @@ export function toOrderDTO(entity: Order): OrderDTO {
     fullname: entity.fullname,
     phone: entity.phone,
     note: entity.note || "",
-    // paymentId: entity.paymentId ? entity.paymentId.toString() : "",
     paymentId: toPaymentDTO(entity.paymentId as any),
     cartItems: Array.isArray(entity.cartItems)
       ? entity.cartItems.map(toCartItemDTO)
@@ -50,10 +51,26 @@ export function toOrderDTO(entity: Order): OrderDTO {
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
-    point: entity.point || 0,
-    // status: entity.status ? entity.status.toString() : "",
     status:toOrderStatusDTO(entity.status as any),
-    userId: entity.userId ? entity.userId.toString() : null,
+    userId: entity.userId
+      ? (entity.userId as any)._id
+        ? (entity.userId as any)._id.toString()
+        : entity.userId.toString()           
+      : null,
+    transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction as any) : null,
+    reward: entity.reward
+      ? {
+          points: entity.reward.points ?? 0,
+          awarded: entity.reward.awarded ?? false,
+          awardedAt: entity.reward.awardedAt
+            ? new Date(entity.reward.awardedAt).toISOString()
+            : null,
+        }
+      : {
+          points: 0,
+          awarded: false,
+          awardedAt: null,
+        },
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
   };

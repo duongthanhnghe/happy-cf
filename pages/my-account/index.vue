@@ -12,6 +12,9 @@ import {
 import {
   useWishlistStore
 } from '@/stores/client/users/useWishlistStore';
+import {
+  useProductReviewByUserStore
+} from '@/stores/client/product-review/useProductReviewByUserStore';
 import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
 import { ROUTES } from '@/shared/constants/routes';
 
@@ -26,12 +29,14 @@ const storeAccountEdit = useAccountEditStore()
 const storeAddress = useAddressesManageStore();
 const storeOrder = useOrderHistoryStore();
 const storeWishlist = useWishlistStore();
+const storeProductReview = useProductReviewByUserStore();
 
 const menuAccount = [
   { label: 'Thong tin ca nhan', icon:'person', action: () => storeAccountEdit.handleEditAccount() },
   { label: 'Dia chi da luu', icon:'edit_location', action: () => storeAddress.handleTogglePopupList(true,false,false) },
   { label: 'Lich su don hang', icon:'prescriptions', action: () => storeOrder.handleTogglePopupAdd(true) },
   { label: 'Danh sach yeu thich', icon:'favorite', action: () => storeWishlist.handleTogglePopupAdd(true) },
+  { label: 'Danh gia', icon:'comment', action: () => storeProductReview.handleTogglePopup(true) },
   { label: 'Dang xuat', icon:'logout', action: () => store.handleLogout() },
 ]
 
@@ -42,6 +47,8 @@ const cardItemClass= 'card card-sm bg-white';
   <PopupUpdateAccount />
   <PopupOrderHistory />
   <PopupWishlist />
+  <PopupProductReviewByUser />
+
   <div class="account-bg bg-gray2">
     <SectionAccount :showBarcode="false"/>
     <div v-if="store.getDetailValue?.id" class="container pt-ms">

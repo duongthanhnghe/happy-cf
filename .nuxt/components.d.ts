@@ -31,6 +31,7 @@ interface _GlobalComponents {
     'CKEditorCDN': typeof import("../components/atoms/CKEditorCDN.vue")['default']
     'CKEditorCDNBackup': typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']
     'ControlImage': typeof import("../components/atoms/ControlImage.vue")['default']
+    'DateFilter': typeof import("../components/atoms/DateFilter.vue")['default']
     'FirstLoader': typeof import("../components/atoms/FirstLoader.vue")['default']
     'Heading': typeof import("../components/atoms/Heading.vue")['default']
     'LabelInput': typeof import("../components/atoms/LabelInput.vue")['default']
@@ -51,6 +52,7 @@ interface _GlobalComponents {
     'OrderItemDetailTemplate1': typeof import("../components/molecules/order/OrderItemDetailTemplate1.vue")['default']
     'OrderItemTemplate1': typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']
     'PaymentItemTemplate1': typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']
+    'ProductReviewItemTemplate1': typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']
     'ProductItemTemplate1': typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']
     'ProductItemWishlistTemplate': typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']
     'SectionBanner': typeof import("../components/organisms/banner/SectionBanner.vue")['default']
@@ -74,6 +76,8 @@ interface _GlobalComponents {
     'FileManageImage': typeof import("../components/templates/file-manage/FileManageImage.vue")['default']
     'PopupFileManageImage': typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']
     'PopupOrderDetail': typeof import("../components/templates/order/PopupOrderDetail.vue")['default']
+    'PopupProductReviewByUser': typeof import("../components/templates/product-review/PopupProductReviewByUser.vue")['default']
+    'PopupProductReviewSubmit': typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']
     'PopupSearch': typeof import("../components/templates/product/PopupSearch.vue")['default']
     'PopupChangePassword': typeof import("../components/templates/user/PopupChangePassword.vue")['default']
     'PopupOrderHistory': typeof import("../components/templates/user/PopupOrderHistory.vue")['default']
@@ -125,6 +129,7 @@ interface _GlobalComponents {
     'LazyCKEditorCDN': LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
     'LazyCKEditorCDNBackup': LazyComponent<typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']>
     'LazyControlImage': LazyComponent<typeof import("../components/atoms/ControlImage.vue")['default']>
+    'LazyDateFilter': LazyComponent<typeof import("../components/atoms/DateFilter.vue")['default']>
     'LazyFirstLoader': LazyComponent<typeof import("../components/atoms/FirstLoader.vue")['default']>
     'LazyHeading': LazyComponent<typeof import("../components/atoms/Heading.vue")['default']>
     'LazyLabelInput': LazyComponent<typeof import("../components/atoms/LabelInput.vue")['default']>
@@ -145,6 +150,7 @@ interface _GlobalComponents {
     'LazyOrderItemDetailTemplate1': LazyComponent<typeof import("../components/molecules/order/OrderItemDetailTemplate1.vue")['default']>
     'LazyOrderItemTemplate1': LazyComponent<typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']>
     'LazyPaymentItemTemplate1': LazyComponent<typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']>
+    'LazyProductReviewItemTemplate1': LazyComponent<typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']>
     'LazyProductItemTemplate1': LazyComponent<typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']>
     'LazyProductItemWishlistTemplate': LazyComponent<typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']>
     'LazySectionBanner': LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
@@ -168,6 +174,8 @@ interface _GlobalComponents {
     'LazyFileManageImage': LazyComponent<typeof import("../components/templates/file-manage/FileManageImage.vue")['default']>
     'LazyPopupFileManageImage': LazyComponent<typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']>
     'LazyPopupOrderDetail': LazyComponent<typeof import("../components/templates/order/PopupOrderDetail.vue")['default']>
+    'LazyPopupProductReviewByUser': LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewByUser.vue")['default']>
+    'LazyPopupProductReviewSubmit': LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']>
     'LazyPopupSearch': LazyComponent<typeof import("../components/templates/product/PopupSearch.vue")['default']>
     'LazyPopupChangePassword': LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
     'LazyPopupOrderHistory': LazyComponent<typeof import("../components/templates/user/PopupOrderHistory.vue")['default']>
@@ -225,6 +233,7 @@ export const Button: typeof import("../components/atoms/Button.vue")['default']
 export const CKEditorCDN: typeof import("../components/atoms/CKEditorCDN.vue")['default']
 export const CKEditorCDNBackup: typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']
 export const ControlImage: typeof import("../components/atoms/ControlImage.vue")['default']
+export const DateFilter: typeof import("../components/atoms/DateFilter.vue")['default']
 export const FirstLoader: typeof import("../components/atoms/FirstLoader.vue")['default']
 export const Heading: typeof import("../components/atoms/Heading.vue")['default']
 export const LabelInput: typeof import("../components/atoms/LabelInput.vue")['default']
@@ -245,6 +254,7 @@ export const NewsItemTemplate1: typeof import("../components/molecules/news/News
 export const OrderItemDetailTemplate1: typeof import("../components/molecules/order/OrderItemDetailTemplate1.vue")['default']
 export const OrderItemTemplate1: typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']
 export const PaymentItemTemplate1: typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']
+export const ProductReviewItemTemplate1: typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']
 export const ProductItemTemplate1: typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']
 export const ProductItemWishlistTemplate: typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']
 export const SectionBanner: typeof import("../components/organisms/banner/SectionBanner.vue")['default']
@@ -268,6 +278,8 @@ export const FileManageFolder: typeof import("../components/templates/file-manag
 export const FileManageImage: typeof import("../components/templates/file-manage/FileManageImage.vue")['default']
 export const PopupFileManageImage: typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']
 export const PopupOrderDetail: typeof import("../components/templates/order/PopupOrderDetail.vue")['default']
+export const PopupProductReviewByUser: typeof import("../components/templates/product-review/PopupProductReviewByUser.vue")['default']
+export const PopupProductReviewSubmit: typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']
 export const PopupSearch: typeof import("../components/templates/product/PopupSearch.vue")['default']
 export const PopupChangePassword: typeof import("../components/templates/user/PopupChangePassword.vue")['default']
 export const PopupOrderHistory: typeof import("../components/templates/user/PopupOrderHistory.vue")['default']
@@ -319,6 +331,7 @@ export const LazyButton: LazyComponent<typeof import("../components/atoms/Button
 export const LazyCKEditorCDN: LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
 export const LazyCKEditorCDNBackup: LazyComponent<typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']>
 export const LazyControlImage: LazyComponent<typeof import("../components/atoms/ControlImage.vue")['default']>
+export const LazyDateFilter: LazyComponent<typeof import("../components/atoms/DateFilter.vue")['default']>
 export const LazyFirstLoader: LazyComponent<typeof import("../components/atoms/FirstLoader.vue")['default']>
 export const LazyHeading: LazyComponent<typeof import("../components/atoms/Heading.vue")['default']>
 export const LazyLabelInput: LazyComponent<typeof import("../components/atoms/LabelInput.vue")['default']>
@@ -339,6 +352,7 @@ export const LazyNewsItemTemplate1: LazyComponent<typeof import("../components/m
 export const LazyOrderItemDetailTemplate1: LazyComponent<typeof import("../components/molecules/order/OrderItemDetailTemplate1.vue")['default']>
 export const LazyOrderItemTemplate1: LazyComponent<typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']>
 export const LazyPaymentItemTemplate1: LazyComponent<typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']>
+export const LazyProductReviewItemTemplate1: LazyComponent<typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']>
 export const LazyProductItemTemplate1: LazyComponent<typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']>
 export const LazyProductItemWishlistTemplate: LazyComponent<typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']>
 export const LazySectionBanner: LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
@@ -362,6 +376,8 @@ export const LazyFileManageFolder: LazyComponent<typeof import("../components/te
 export const LazyFileManageImage: LazyComponent<typeof import("../components/templates/file-manage/FileManageImage.vue")['default']>
 export const LazyPopupFileManageImage: LazyComponent<typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']>
 export const LazyPopupOrderDetail: LazyComponent<typeof import("../components/templates/order/PopupOrderDetail.vue")['default']>
+export const LazyPopupProductReviewByUser: LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewByUser.vue")['default']>
+export const LazyPopupProductReviewSubmit: LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']>
 export const LazyPopupSearch: LazyComponent<typeof import("../components/templates/product/PopupSearch.vue")['default']>
 export const LazyPopupChangePassword: LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
 export const LazyPopupOrderHistory: LazyComponent<typeof import("../components/templates/user/PopupOrderHistory.vue")['default']>

@@ -25,28 +25,6 @@ export const useCartStore = defineStore("Cart", () => {
   const storePaymentStatus = usePaymentStatusStore();
 
   const router = useRouter()
-  
-  const addressRules = [
-    (value: string) => {
-      if (value) return true
-      return 'Dia chi khong duoc trong'
-    },
-  ]
-  
-  const fullnameRules = [
-    (value: string) => {
-      if (value) return true
-      return 'Ho va ten khong duoc trong'
-    },
-  ]
-
-  const phoneRules = [
-    (value: string) => {
-      if (value) return true
-      return 'So dien thoai khong duoc trong'
-    },
-  ]
-
   const timeCurrent = getCurrentDateTime('time');
   const timeRules = [
     (value: string) => {
@@ -325,9 +303,6 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const deleteCartAll = async () => {
-    const confirm = await showConfirm('Bạn có chắc xoá?')
-    if (!confirm) return
-
     cartCount.value = 0;
     cartListItem.value = [];
     updateCookie();
@@ -407,16 +382,13 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const handleSubmitCancel = () => {
-    router.push({ name: 'index' })
+    router.push({ path: '/' })
     handleTogglePopup(false);
-    deleteCartAll()
   }
 
   const handleSubmitOk = (id: string) => {
-    // router.push({ path: `/order-tracking/${idOrder}` })
-    router.push({ path: `${ROUTES.PUBLIC.ORDER_TRACKING}/${id}` })
+    router.push({ path: `${ROUTES.PUBLIC.ORDER_TRACKING.path}/${id}` })
     handleTogglePopup(false);
-    deleteCartAll()
   }
 
   //submit dat hang
@@ -452,7 +424,6 @@ export const useCartStore = defineStore("Cart", () => {
       totalPrice: totalPriceDiscount.value,
       totalPriceSave: totalPriceSave.value,
       totalPriceCurrent: totalPriceCurrent.value,
-      point: point,
       status: ORDER_STATUS.PENDING,
       userId: userId,
     };
@@ -460,9 +431,11 @@ export const useCartStore = defineStore("Cart", () => {
     try {
       const result = await ordersAPI.create(orderData,userId,point);
       if (result.code === 0 && result.data.id) {
+        deleteCartAll()
         showConfirm("Đặt hàng thành công","Đơn hàng của bạn đang đuợc tiêp nhân và xử lý",'success','Theo doi don hang','Ve trang chu',() => handleSubmitOk(result.data.id),handleSubmitCancel)
         //  await sendOrderEmail('duongthanhnghe120796@gmail.com', orderData);
       }
+      Loading(false);
     } catch (err: any) {
       showWarning(err.message);
       Loading(false);
@@ -498,9 +471,6 @@ export const useCartStore = defineStore("Cart", () => {
     selectedOptionsData,
     isTogglePopup,
     timeRules,
-    fullnameRules,
-    addressRules,
-    phoneRules,
     informationOrder,
     idAddressChoose,
     // actions

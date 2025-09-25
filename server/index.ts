@@ -16,7 +16,9 @@ import orderManageRoutes from './routes/orderManageRouter'
 import categoriesProductRoutes from './routes/categoriesProductRouter'
 import productRoutes from './routes/productRouter'
 import addressRoutes from './routes/addressesRouter'
+import paymentTransactionRoutes from './routes/paymentTransactionRoutes'
 import wishlistRoutes from './routes/productRouter'
+import productReviewRouter from "./routes/productReviewRouter";
 import { v2 as cloudinary } from 'cloudinary'
 
 
@@ -60,11 +62,12 @@ app.use('/api/banners', express.json(), bannerRoutes)
 app.use('/api/categoriesNews', express.json(), categoriesNewsRoutes)
 app.use('/api/newsPosts', express.json(), postsNewsRoutes)
 app.use('/api/orders', express.json(), orderManageRoutes)
+app.use('/api/payment-transactions', express.json(), paymentTransactionRoutes)
 app.use('/api/categories', express.json(), categoriesProductRoutes)
 app.use('/api/products', express.json(), productRoutes)
 app.use('/api/addresses', express.json(), addressRoutes)
+app.use("/api/product-reviews", productReviewRouter);
 app.use('/api', express.json(), wishlistRoutes)
-
 
 // Error handler
 app.use((err:unknown, _req: Request, res:Response, _next: NextFunction) => {

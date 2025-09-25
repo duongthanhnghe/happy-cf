@@ -16,7 +16,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   const listItems = ref<ProductDTO[]|null>(null);
   const pagination = computed(() => getProductByCategoryApi.value?.pagination)
   const page = ref('1')
-  const limit = 20
+  const limit = 2
   const filterType = ref<ProductSortType>('discount')
   const filterArray = ref([
     {
@@ -36,6 +36,8 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
       value: 'price_asc',
     },
   ])
+  const maxPrice = ref(0)
+  const rangePrice = ref([0, maxPrice.value])
 
   watch(getProductCategoryDetail, (newValue) => {
     if(newValue) {
@@ -46,6 +48,9 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   watch(getProductByCategoryApi, (newValue) => {
     if (newValue && newValue.data) {
       listItems.value = newValue.data
+      if(listItems.value && listItems.value.length > 0) {
+        maxPrice.value = Math.max(...listItems.value.map(item => item.price || 0))
+      }
     }
   }, { immediate: true })
 
@@ -75,9 +80,21 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
 
   const { handleChangePage, getTotalPages } = usePagination(page, computed(() => pagination.value?.totalPages ?? 0))
 
-  const getDetail = computed(() => getProductCategoryDetail.value);
+  watch([listItems, filterType], () => {
+    if (listItems.value?.length) {
+      rangePrice.value = [0, maxPrice.value]
+    }
+  }, { immediate: true })
 
-  const getListItems = computed(() => listItems.value);
+  const getListItems = computed(() => {
+    const [min, max] = rangePrice.value
+    return listItems.value?.filter(item => {
+      const price = item.price || 0
+      return price >= min && price <= max
+    })
+  })
+
+  const getDetail = computed(() => getProductCategoryDetail.value);
 
   return {
     filterType,
@@ -87,6 +104,8 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     getDetail,
     getListItems,
     getTotalPages,
-    handleChangePage
+    rangePrice,
+    maxPrice,
+    handleChangePage,
   };
 });

@@ -1,0 +1,1 @@
+{"version":3,"file":"order-status.js","sourceRoot":"","sources":["../../../../server/shared/constants/order-status.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,YAAY,GAAG;IAC1B,OAAO,EAAE,0BAA0B;IACnC,SAAS,EAAE,0BAA0B;IACrC,UAAU,EAAE,0BAA0B;IACtC,SAAS,EAAE,0BAA0B;IACrC,SAAS,EAAE,0BAA0B;CACtC,CAAA"}

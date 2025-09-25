@@ -190,7 +190,7 @@ export const getProductsByCategory = async (req, res) => {
                 // Sort động theo sortType
                 {
                     $sort: sortType === "discount"
-                        ? { hasDiscount: -1, discountPercent: -1 }
+                        ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 }
                         : sortType === "popular"
                             ? { amountOrder: -1 }
                             : sortType === "price_desc"

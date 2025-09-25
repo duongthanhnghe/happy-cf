@@ -1,11 +1,12 @@
+import type { OrderDTO, OrderPaginationDTO } from '@/server/types/dto/order.dto'
+import type { PaymentMethod } from '@/server/types/dto/payment-transaction.dto'
+import type { TableOpt, TableHeaders, FilterTime } from '@/server/types/dto/table-vuetify.dto'
+import type { PaymentTransactionStatus } from "@/server/types/dto/payment-transaction.dto"
 import { ref, watch, computed } from "vue";
 import { defineStore } from "pinia";
 import { ordersAPI } from "@/services/orders.service";
-import type { OrderDTO, OrderPaginationDTO } from '@/server/types/dto/order.dto'
-import type { TableOpt, TableHeaders, FilterTime } from '@/server/types/dto/table-vuetify.dto'
-import {
-  Loading
-} from '@/utils/global'
+import { paymentTransactionsAPI } from "@/services/payment-transaction.service";
+import { Loading } from '@/utils/global'
 import { useOrderStatus } from "@/composables/order/useOrderStatus";
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { ORDER_STATUS } from "@/shared/constants/order-status";
@@ -20,15 +21,16 @@ const headers = ref<TableHeaders[]>([
   { title: 'STT', key: 'index', sortable: false },
   { title: 'Ma don hang', key: 'code', sortable: false, },
   { title: 'Nguoi dat', key: 'fullname', sortable: false, },
-  { title: 'So dien thoai', key: 'phone', sortable: false, },
+  // { title: 'So dien thoai', key: 'phone', sortable: false, },
   { title: 'Dia chi', key: 'address', sortable: false, },
   { title: 'Lay hang luc', key: 'time', sortable: false, },
-  { title: 'Dat hang luc', key: 'createdAt', sortable: false, },
-  { title: 'Thanh toan', key: 'paymentId', sortable: false, },
+  { title: 'Thoi gian', key: 'createdAt', sortable: false, },
+  { title: 'HTTT', key: 'paymentId', sortable: false, },
+  { title: 'Thanh toan', key: 'transaction', sortable: false, },
   { title: 'Tong cong', key: 'totalPrice', sortable: false, },
   { title: 'Tinh trang don', key: 'status', sortable: false, },
-  { title: 'Ghi chu', key: 'note', sortable: false, },
-  { title: '', key: 'actions', sortable: false },
+  { title: '', key: 'actions', sortable: false, headerProps: { class: 'v-data-table-sticky-cl-right' },
+    cellProps: { class: 'v-data-table-sticky-cl-right' }},
 ])
 const serverItems = ref<OrderDTO[]>([])
 const loadingTable = ref<boolean>(true)
@@ -37,14 +39,15 @@ const name = ref<string>('')
 const phone = ref<string>('')
 const search = ref<string>('')
 const idOrder = ref<string>('')
-const fromDay = ref<string|null>(null)
-const toDay = ref(new Date(new Date().setHours(23, 59, 59, 999)))
+const fromDay = ref<string>('')
+const toDay = ref<string>('')
 const currentTableOptions = ref<TableOpt>({
   page: 1,
   itemsPerPage: 20,
   sortBy: [],
 })
-const filterStatusOrder = ref<string|null>()
+const filterStatusOrder = ref<string|null>(null)
+const filterStatusTransactionOrder = ref<string|null>(null)
 const isTogglePopupAdd = ref(false);
 
 const getListAllProduct = async () => {
@@ -57,22 +60,11 @@ const getListAllProduct = async () => {
   currentTableOptions.value.itemsPerPage = data.pagination.limit
 }
 
-const parseVNDateString = (dateStr:string) => {
-  if (!dateStr) return null
-  const isoLike = dateStr.replace(' ', 'T')
-  const date = new Date(isoLike)
-  return isNaN(date.getTime()) ? null : date
-}
+const filterByDate = (item: OrderDTO, filterTime: FilterTime) => {
+  const itemDate = new Date(item.createdAt)
 
-const filterByDate = (item:OrderDTO, filterTime:FilterTime) => {
-  const itemDate = parseVNDateString(item.createdAt.toString())
   const from = filterTime.fromDay ? new Date(filterTime.fromDay) : null
   const to = filterTime.toDay ? new Date(filterTime.toDay) : null
-
-  if (!itemDate || isNaN(itemDate.getTime())) return false
-
-  if (from) from.setHours(0, 0, 0, 0)
-  if (to) to.setHours(23, 59, 59, 999)
 
   return (!from || itemDate >= from) && (!to || itemDate <= to)
 }
@@ -85,6 +77,7 @@ const ListAllProductApi = {
     sortBy,
     search,
     filterStatusOrder,
+    filterStatusTransactionOrder,
     filterTime
   }: {
     items: OrderDTO[],
@@ -92,7 +85,8 @@ const ListAllProductApi = {
     itemsPerPage: number,
     sortBy: TableOpt["sortBy"],
     search: { fullname: string; phone: string; idOrder: string },
-    filterStatusOrder?: string | null,
+    filterStatusOrder?: string,
+    filterStatusTransactionOrder?: string,
     filterTime?: FilterTime
   }) {
     return new Promise(resolve => {
@@ -116,7 +110,11 @@ const ListAllProductApi = {
         }
 
         if (filterStatusOrder) {
-          filtered = filtered.filter(item => item.status.toString() === filterStatusOrder)
+          filtered = filtered.filter(item => item.status.id === filterStatusOrder)
+        }
+
+        if (filterStatusTransactionOrder) {
+          filtered = filtered.filter(item => item.transaction?.status === filterStatusTransactionOrder)
         }
         if (filterTime) {
           filtered = filtered.filter(item => filterByDate(item, filterTime))
@@ -146,7 +144,8 @@ async function loadItemsProduct(opt:TableOpt) {
       idOrder: idOrder.value,
     },
     filterTime: { fromDay: fromDay.value, toDay: toDay.value },
-    filterStatusOrder: filterStatusOrder.value,
+    filterStatusOrder: filterStatusOrder.value || '',
+    filterStatusTransactionOrder: filterStatusTransactionOrder.value || '',
   })) as { items: OrderDTO[] }
 
   serverItems.value = items;
@@ -154,7 +153,7 @@ async function loadItemsProduct(opt:TableOpt) {
   loadingTable.value = false;
 }
 
-  watch([name, phone, idOrder, fromDay, filterStatusOrder], () => {
+  watch([name, phone, idOrder, fromDay, toDay, filterStatusOrder, filterStatusTransactionOrder], () => {
     loadItemsProduct(currentTableOptions.value);
   });
 
@@ -197,7 +196,7 @@ async function loadItemsProduct(opt:TableOpt) {
     }
   }
 
-  const handleUpdateStatusOrder = async (idOrder:string, idStatusCurrent:string, idStatusNew:string) => {
+  const handleUpdateStatusOrder = async (orderId:string, idStatusNew:string, transactionId: string | undefined, amount: number, method: PaymentMethod) => {
     if(ORDER_STATUS.CANCELLED === idStatusNew) {
       const confirmed = await showConfirm('Bạn có chắc chan huy?')
       if (!confirmed) return
@@ -205,7 +204,27 @@ async function loadItemsProduct(opt:TableOpt) {
 
     Loading(true);
     try {
-      const data = await ordersAPI.updateStatusOrder(idOrder, idStatusNew)
+      const data = await ordersAPI.updateStatusOrder(orderId, idStatusNew)
+      if(data.code === 0) {
+        showSuccess(data.message ?? '')
+        if(idStatusNew === ORDER_STATUS.CONFIRMED && !transactionId) {
+          await paymentTransactionsAPI.create({orderId, amount, method})
+        }
+        handleReload()
+      } else {
+        showWarning(data.message ?? '')
+      }
+      Loading(false);
+    } catch (err) {
+      console.error('Error submitting form:', err)
+      Loading(false);
+    }
+  }
+
+  const handleUpdateStatusTransactionOrder = async (transactionId:string, status: PaymentTransactionStatus) => {
+    Loading(true);
+    try {
+      const data = await paymentTransactionsAPI.updateStatus(transactionId, status)
       if(data.code === 0) {
         showSuccess(data.message ?? '')
         handleReload()
@@ -218,6 +237,32 @@ async function loadItemsProduct(opt:TableOpt) {
       Loading(false);
     }
   }
+
+  const resetFilter = () => {
+    name.value = ''
+    phone.value = ''
+    idOrder.value = ''
+    fromDay.value = ''
+    toDay.value = ''
+    filterStatusOrder.value = null
+    filterStatusTransactionOrder.value = null
+    currentTableOptions.value.page = 1
+    currentTableOptions.value.itemsPerPage = 20
+  }
+
+  const hasFilter = computed(() => {
+    return (
+      name.value !== '' ||
+      phone.value !== '' ||
+      idOrder.value !== '' ||
+      fromDay.value !== '' ||
+      toDay.value !== '' ||
+      filterStatusOrder.value !== null ||
+      filterStatusTransactionOrder.value !== null ||
+      currentTableOptions.value.page !== 1 ||
+      currentTableOptions.value.itemsPerPage !== 20
+    )
+  })
 
   watch(() => getListOrderStatus.value, async (newValue) => {
     if(newValue.length === 0) await fetchOrderStatus()
@@ -243,6 +288,8 @@ async function loadItemsProduct(opt:TableOpt) {
     headers,
     currentTableOptions,
     filterStatusOrder,
+    filterStatusTransactionOrder,
+    hasFilter,
     // actions
     handleTogglePopupAdd,
     getListAllProduct,
@@ -250,6 +297,8 @@ async function loadItemsProduct(opt:TableOpt) {
     handleReload,
     handleDelete,
     handleUpdateStatusOrder,
+    handleUpdateStatusTransactionOrder,
+    resetFilter,
     getListStatus
   };
 });

@@ -16,7 +16,7 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   const idOrderPopupDetail = ref<string>('')
   const filterStatusOrder = ref<string|null>('')
   const items = ref<OrderDTO[]|null>(null)
-  const pageSize = 10
+  const pageSize = 2
   const checkPageDetail = ref(false)
 
   //actions

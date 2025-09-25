@@ -16,7 +16,8 @@ const CartItemsSchema = new Schema({
 const PaymentSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String },
-    image: { type: String }
+    image: { type: String },
+    method: { type: String },
 }, { timestamps: true });
 const OrderStatusSchema = new Schema({
     name: { type: String, required: true },
@@ -36,13 +37,18 @@ const OrderSchema = new Schema({
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
-    point: { type: Number, default: 0 },
+    // point: { type: Number, default: 0 },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", default: null }
+    userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
+    reward: {
+        points: { type: Number, default: 0 },
+        awarded: { type: Boolean, default: false },
+        awardedAt: { type: Date, default: null },
+    }
 }, { timestamps: true });
 OrderSchema.plugin(mongoosePaginate);
 export const PaymentEntity = model("Payment", PaymentSchema, "payments");
 export const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
-// export const OrderEntity = model("Order", OrderSchema, "orders");
 export const OrderEntity = model("Order", OrderSchema, "orders");
 //# sourceMappingURL=OrderEntity.js.map

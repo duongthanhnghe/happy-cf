@@ -15,7 +15,9 @@ import orderManageRoutes from './routes/orderManageRouter.js';
 import categoriesProductRoutes from './routes/categoriesProductRouter.js';
 import productRoutes from './routes/productRouter.js';
 import addressRoutes from './routes/addressesRouter.js';
+import paymentTransactionRoutes from './routes/paymentTransactionRoutes.js';
 import wishlistRoutes from './routes/productRouter.js';
+import productReviewRouter from "./routes/productReviewRouter.js";
 import { v2 as cloudinary } from 'cloudinary';
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 cloudinary.config({
@@ -50,9 +52,11 @@ app.use('/api/banners', express.json(), bannerRoutes);
 app.use('/api/categoriesNews', express.json(), categoriesNewsRoutes);
 app.use('/api/newsPosts', express.json(), postsNewsRoutes);
 app.use('/api/orders', express.json(), orderManageRoutes);
+app.use('/api/payment-transactions', express.json(), paymentTransactionRoutes);
 app.use('/api/categories', express.json(), categoriesProductRoutes);
 app.use('/api/products', express.json(), productRoutes);
 app.use('/api/addresses', express.json(), addressRoutes);
+app.use("/api/product-reviews", productReviewRouter);
 app.use('/api', express.json(), wishlistRoutes);
 // Error handler
 app.use((err, _req, res, _next) => {

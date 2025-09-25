@@ -7,5 +7,12 @@ function noSpecialCharRule(value: string) {
   return regex.test(value) || 'Nội dung không được chứa ký tự đặc biệt'
 }
 
+function phoneRule(value: string) {
+  if (!value) return requiredRule(value)
+  const regex = /^[0-9]{10,}$/
+  return regex.test(value) || 'Số điện thoại phải có ít nhất 10 số'
+}
+
 export const nullRules = [requiredRule]
 export const nullAndSpecialRules = [requiredRule, noSpecialCharRule]
+export const phoneRules = [requiredRule, phoneRule]

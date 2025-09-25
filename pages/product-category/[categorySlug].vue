@@ -24,16 +24,26 @@ watch(valueChangePage, (newVal) => {
       <h1 v-else></h1>
       <p>{{ storeCategoryMain.getDetail.description }}</p>
       <v-select
-      v-model="storeCategoryMain.filterType"
-      :items="[{title: 'Moi nhat',value:''},...storeCategoryMain.filterArray]"
-      item-title="title"
-      item-value="value"
-      hide-details />
-
-      <div class="row row-sm" v-if="storeCategoryMain.getListItems">
+        v-model="storeCategoryMain.filterType"
+        :items="[{title: 'Moi nhat',value:''},...storeCategoryMain.filterArray]"
+        item-title="title"
+        item-value="value"
+        hide-details
+      />
+      <v-range-slider
+        v-model="storeCategoryMain.rangePrice"
+        step="10"
+        :min="0"
+        :max="storeCategoryMain.maxPrice"
+        thumb-label="always"
+      ></v-range-slider>
+      <div class="row row-sm" v-if="storeCategoryMain.getListItems && storeCategoryMain.getListItems.length > 0">
         <div v-for="item in storeCategoryMain.getListItems" :key="item.id" class="mb-sm col-6 col-md-4">
           <ProductItemTemplate1 :product="item" background="bg-white" />
         </div>
+      </div>
+      <div v-else>
+        <NoData />
       </div>
 
       <template v-if="storeCategoryMain.getTotalPages && storeCategoryMain.getTotalPages.length > 1">

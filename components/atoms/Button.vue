@@ -1,6 +1,10 @@
 <template>
-    <button
-      v-bind="inputId ? { id: inputId } : {}"
+    <component
+      :is="tag"
+      v-bind="{
+        ...(inputId ? { id: inputId } : {}),
+        ...(disabled ? { disabled: true } : {}),
+      }"
       :class="[
         'button',
         color ? `button-${color}` : '',
@@ -11,8 +15,6 @@
         label ? '' : 'button-no-text',
         inputClass,
       ]"
-      :disabled="disabled"
-      :type="type"
       @change="$emit('handleOnChange')"
       @click="$emit('handleOnClick')"
     >
@@ -24,7 +26,7 @@
       />
       {{ label }}
       <slot></slot>
-    </button>
+    </component>
 </template>
 
 <script setup>
@@ -32,7 +34,10 @@
 const props = defineProps({
   label: String|Number,
   icon: String,
-  type: String,
+  tag: {
+    type: String,
+    default: 'button',
+  },
   color: {
     type: String,
     validator: (value) => ['primary','secondary','third','black','gray','blur'].includes(value)

@@ -7,10 +7,11 @@ import {
   useOrderHistoryStore
 } from '@/stores/client/order/useOrderHistoryStore'
 import {
-  formatCurrency
+  formatCurrency, formatDateTime
 } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
 import { ORDER_STATUS } from "@/shared/constants/order-status";
+import { PAYMENT_TRANSACTION_STATUS } from "@/shared/constants/payment-transaction-status";
 import {
   useUserManageStore
 } from '@/stores/admin/users/useUserManageStore'
@@ -36,10 +37,13 @@ const handleDetailPopup = (id:string) => {
 <HeaderAdmin>
   <template #left>
     <v-text-field v-model="store.idOrder"  placeholder="Ma don hang..." hide-details></v-text-field>
-    <v-text-field v-model="store.name"  placeholder="Tên nguoi dat..." hide-details></v-text-field>
+    <!-- <v-text-field v-model="store.name"  placeholder="Tên nguoi dat..." hide-details></v-text-field> -->
     <v-text-field v-model="store.phone" type="number"  placeholder="So dien thoai..." hide-details></v-text-field>
-    <v-text-field v-model="store.fromDay" type="datetime-local"  hide-details></v-text-field>
-    <v-select label="Chon tinh trang" v-model="store.filterStatusOrder" :items="[{ id: null, name: 'Tất cả' }, ...store.getListStatus]" item-title="name" item-value="id" hide-details />
+    <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'Tất cả' }, ...store.getListStatus]" item-title="name" item-value="id" hide-details />
+    <v-select label="Thanh toan" v-model="store.filterStatusTransactionOrder" :items="[{ status: '', name: 'Tất cả' }, ...Object.values(PAYMENT_TRANSACTION_STATUS)
+]" item-title="name" item-value="status" hide-details />
+    <DateFilter v-model:fromDay="store.fromDay" v-model:toDay="store.toDay" />
+    <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
 </HeaderAdmin>
 
@@ -68,16 +72,13 @@ const handleDetailPopup = (id:string) => {
       {{ formatCurrency(item.totalPrice) }}
     </template>
 
-    <template #item.phone="{ item }">
-      <v-chip label>
-        {{ item.phone }}
-      </v-chip>
-    </template>
-
     <template #item.fullname="{ item }">
-      <div class="min-width-200 flex gap-xs align-center white-space">
-        <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeUser.handleEdit(item.userId?._id.toString())" />
-        <span class="text-limit">{{ item.fullname }}</span>
+      <div class="min-width-200 flex gap-sm align-center white-space">
+        <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeUser.handleEdit(item.userId)" />
+        <div>
+          <span class="text-limit">{{ item.fullname }}</span>
+          <span class="text-limit text-color-gray5">{{ item.phone }}</span>
+        </div>
       </div>
     </template>
 
@@ -87,9 +88,14 @@ const handleDetailPopup = (id:string) => {
       </v-chip>
     </template>
 
+    <template #item.createdAt="{ item }">
+      {{ formatDateTime(item.createdAt) }}
+    </template>
+
     <template #item.status="{ item: order }">
       <v-chip :color="order.status.status" label>
         {{ order.status.name }}
+        <MaterialIcon name="keyboard_arrow_down" />
       </v-chip>
       <template v-if="ORDER_STATUS.CANCELLED !== order.status.id">
         <v-menu transition="slide-x-transition" activator="parent">
@@ -97,12 +103,11 @@ const handleDetailPopup = (id:string) => {
             <v-list-item
               v-for="statusItem in store.getListStatus"
               :key="statusItem.id"
-              class="header-admin-right-list"
-              @click.prevent="store.handleUpdateStatusOrder(order.id, order.status.id, statusItem.id)"
+              @click.prevent="store.handleUpdateStatusOrder(order.id, statusItem.id, order.transaction?.id, order.totalPrice, order.paymentId.method)"
               :class="{ active: statusItem.index == order.status.index }"
             >
               <v-list-item-title>
-                <div class="flex align-center gap-sm weight-medium">
+                <div class="flex align-center gap-sm">
                   <MaterialIcon v-if="statusItem.icon" :size="24" :name="statusItem.icon" />
                   {{ statusItem.name }}
                 </div>
@@ -120,10 +125,33 @@ const handleDetailPopup = (id:string) => {
       </v-chip>
     </template>
 
+    <template #item.transaction="{ item }">
+      <v-chip v-if="item.transaction" label :color="item.transaction?.statusColor">
+        {{ item.transaction?.statusText }}
+        <MaterialIcon name="keyboard_arrow_down" />
+      </v-chip>
+      <template v-if="PAYMENT_TRANSACTION_STATUS && item.transaction">
+        <v-menu transition="slide-x-transition" activator="parent">
+          <v-list>
+            <v-list-item
+              v-for="statusItem in PAYMENT_TRANSACTION_STATUS"
+              :key="statusItem.status"
+              :class="{ active: statusItem.status == item.transaction?.status }"
+              @click.prevent="store.handleUpdateStatusTransactionOrder(item.transaction?.id, statusItem.status)"
+            >
+              <v-list-item-title>
+                  {{ statusItem.name }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </template>
+    </template>
+
     <template #item.actions="{ item }">
-      <div class="flex gap-sm justify-end">
-        <Button color="gray" size="sm" icon="visibility" @click="handleDetailPopup(item.id)" />
-        <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
+      <div class=" flex gap-xs justify-end">
+        <Button :border="false" color="secondary" size="sm" icon="visibility" @click="handleDetailPopup(item.id)" />
+        <Button :border="false" color="secondary" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>
     </template>
   </v-data-table-server>

@@ -91,11 +91,14 @@ watch(() => getDetailOrder.value?.status.id, (newId) => {
         </div>
       </div>
       <div class="flex gap-sm justify-end mt-xs">
+        <Button v-if="getDetailOrder?.reward.points != 0 && getDetailOrder?.reward.awarded" color="secondary" :label="`+${getDetailOrder?.reward.points}`" icon="diamond_shine" :disabled="false" size="sm" />
         <v-chip v-if="getDetailOrder.paymentId" label color="gray">
           <img width="20" :src="getDetailOrder?.paymentId.image" alt="icon" class="mr-xs"/>
           {{ getDetailOrder?.paymentId.name }}
         </v-chip>
-        <Button v-if="getDetailOrder?.point != 0" color="secondary" :label="`+${getDetailOrder?.point}`" icon="diamond_shine" :disabled="false" size="sm" />
+        <v-chip v-if="getDetailOrder.transaction" label :color="getDetailOrder.transaction.statusColor">
+          {{ getDetailOrder.transaction.statusText }}
+        </v-chip>
       </div>
     </div>
     <div class="card-sm bg-white mt-sm flex gap-sm justify-between">

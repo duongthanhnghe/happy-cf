@@ -27,8 +27,14 @@ declare module "nitropack/types" {
     '/orderManageRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/orderManageRouter').default>>>>
     }
+    '/paymentTransactionRoutes': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/paymentTransactionRoutes').default>>>>
+    }
     '/postsNewsRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/postsNewsRouter').default>>>>
+    }
+    '/productReviewRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/productReviewRouter').default>>>>
     }
     '/productRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/productRouter').default>>>>

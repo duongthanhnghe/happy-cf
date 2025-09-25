@@ -1,61 +1,3 @@
-// import { createVuetify } from 'vuetify'
-// import * as components from 'vuetify/components'
-// import * as directives from 'vuetify/directives'
-// import 'vuetify/styles'
-
-// // Icons
-// import { aliases, mdi } from 'vuetify/iconsets/mdi'
-// import { h } from 'vue'
-
-// // Locale
-// import { vi } from 'vuetify/locale'
-
-// export default defineNuxtPlugin((nuxtApp) => {
-//   const vuetify = createVuetify({
-//     components,
-//     directives,
-//     icons: {
-//       defaultSet: 'mdi',
-//       aliases,
-//       sets: {
-//         mdi,
-//         materialSymbols: {
-//           component: {
-//             props: {
-//               icon: { type: String, required: true }
-//             },
-//             render() {
-//               return h(
-//                 'span',
-//                 {
-//                   class: 'material-symbols-rounded',
-//                   style: {
-//                     fontVariationSettings: `'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24`,
-//                   },
-//                 },
-//                 this.icon
-//               )
-//             }
-//           }
-//         }
-//       }
-//     },
-//     defaults: {
-//       VDataTable: { itemsPerPageText: 'Số hàng / trang' },
-//       VDataTableServer: { itemsPerPageText: 'Số hàng / trang' },
-//       VSelect: {
-//         appendInnerIcon: 'mdi-angle-down',
-//       },
-//     },
-//     locale: {
-//       locale: 'vi',
-//       messages: { vi }
-//     }
-//   })
-
-//   nuxtApp.vueApp.use(vuetify)
-// })
-
 import { defineNuxtPlugin } from '#app'
 import { createVuetify } from 'vuetify'
 
@@ -141,7 +83,11 @@ import {
   VIcon,
   VDataTable,
   VDataTableServer,
-  VTreeview
+  VTreeview,
+  VDatePicker,
+  VTimePicker,
+  VRangeSlider,
+  VRating,
 } from 'vuetify/components'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -190,7 +136,11 @@ export default defineNuxtPlugin((nuxtApp) => {
       VIcon,
       VDataTable,
       VDataTableServer,
-      VTreeview
+      VTreeview,
+      VDatePicker,
+      VTimePicker,
+      VRangeSlider,
+      VRating
     },
     // ✅ Chỉ import directives cần thiết
     directives: {

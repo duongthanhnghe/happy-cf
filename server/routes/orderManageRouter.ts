@@ -8,6 +8,7 @@ import {
   getAllPayment,
   getOrdersByUserId,
   updateOrderStatus,
+  getRewardHistoryByUserId,
 } from '../controllers/orderController.js'
 
 const router = Router()
@@ -19,6 +20,7 @@ router.get('/:id',       getOrderById)
 router.post('/',         createOrder)
 router.delete('/:id',    deleteOrder)
 router.get('/users/:userId/orders', getOrdersByUserId)
+router.get('/users/:userId/rewards', getRewardHistoryByUserId)
 router.put('/status',               updateOrderStatus)
 
 export default router

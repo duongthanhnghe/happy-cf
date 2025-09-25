@@ -231,7 +231,7 @@ export const getMostOrderedProduct = async (req, res) => {
     try {
         const limit = req.query.limit ? Number(req.query.limit) : 10;
         const orders = await OrderEntity.find().lean();
-        const products = await ProductEntity.find().lean();
+        const products = await ProductEntity.find({ isActive: true, amount: { $gt: 0 } }).lean();
         const productMap = {};
         for (const order of orders) {
             for (const item of order.cartItems) {

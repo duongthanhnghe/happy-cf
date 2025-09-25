@@ -1,7 +1,9 @@
 import { UserModel } from "../models/UserEntity.js";
 import { OrderEntity, OrderStatusEntity, PaymentEntity } from "../models/OrderEntity.js";
 import { MembershipLevelModel } from "../models/MembershipLevelEntity.js";
-import { toOrderDTO, toOrderStatusListDTO, toPaymentListDTO } from "../mappers/orderMapper.js";
+import { toOrderDTO, toOrderListDTO, toOrderStatusListDTO, toPaymentListDTO } from "../mappers/orderMapper.js";
+import { ORDER_STATUS } from "../shared/constants/order-status.js";
+import { ProductReviewEntity } from "../models/ProductReviewEntity.js";
 export const getAllOrder = async (req, res) => {
     try {
         let { page = 1, limit = 10 } = req.query;
@@ -12,10 +14,11 @@ export const getAllOrder = async (req, res) => {
                 .sort({ createdAt: -1 })
                 .populate("paymentId")
                 .populate("status")
-                .populate("userId");
+                .populate("userId")
+                .populate({ path: "transaction", model: "PaymentTransaction" });
             return res.json({
                 code: 0,
-                data: orders,
+                data: toOrderListDTO(orders),
                 pagination: {
                     page: 1,
                     limit: orders.length,
@@ -31,13 +34,14 @@ export const getAllOrder = async (req, res) => {
             populate: [
                 { path: "paymentId", model: "Payment" },
                 { path: "status", model: "OrderStatus" },
-                { path: "userId", model: "User" }
+                { path: "userId", model: "User" },
+                { path: "transaction", model: "PaymentTransaction" }
             ]
         };
         const result = await OrderEntity.paginate({}, options);
         return res.json({
             code: 0,
-            data: result.docs,
+            data: toOrderListDTO(result.docs),
             pagination: {
                 page: result.page,
                 limit: result.limit,
@@ -54,7 +58,7 @@ export const getAllOrder = async (req, res) => {
 };
 export const getOrderById = async (req, res) => {
     try {
-        const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status");
+        const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
         if (!order) {
             return res.status(404).json({ code: 1, message: "Order không tồn tại" });
         }
@@ -70,16 +74,15 @@ export const createOrder = async (req, res) => {
         if (!(data === null || data === void 0 ? void 0 : data.fullname) || !(data === null || data === void 0 ? void 0 : data.phone) || !(data === null || data === void 0 ? void 0 : data.paymentId) || !(data === null || data === void 0 ? void 0 : data.cartItems)) {
             return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" });
         }
-        const newOrder = await OrderEntity.create({ ...data, userId });
-        let membershipUpdate = null;
-        if (userId && typeof point === "number" && point > 0) {
-            membershipUpdate = await setPointAndUpgrade(userId, point);
-        }
+        const newOrder = await OrderEntity.create({
+            ...data,
+            userId,
+            reward: { points: point || 0, awarded: false }
+        });
         return res.status(201).json({
             code: 0,
             message: "Đặt hàng thành công",
             data: toOrderDTO(newOrder),
-            membership: membershipUpdate,
         });
     }
     catch (err) {
@@ -123,6 +126,30 @@ export const updateOrderStatus = async (req, res) => {
             return res.status(404).json({ code: 1, message: "Order không tồn tại" });
         }
         order.status = statusId;
+        // Nếu status = COMPLETED → tạo danh sách đánh giá
+        if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
+            console.log(order.cartItems);
+            const existingReviews = await ProductReviewEntity.find({ orderId: orderId });
+            if (existingReviews.length === 0) {
+                const reviews = order.cartItems.map((item) => ({
+                    orderId: orderId,
+                    userId: order.userId,
+                    productId: item.idProduct,
+                    rating: 0, // Mặc định chưa có đánh giá
+                    comment: null,
+                    images: [],
+                    status: "pending", // Trạng thái mặc định là pending
+                }));
+                await ProductReviewEntity.insertMany(reviews);
+            }
+        }
+        // Nếu status = done → cộng điểm cho user (nếu chưa cộng)
+        if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
+            await setPointAndUpgrade(order.userId.toString(), order.reward.points);
+            order.reward.awarded = true;
+            order.reward.awardedAt = new Date();
+            await order.save();
+        }
         await order.save();
         return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) });
     }
@@ -169,5 +196,41 @@ export const setPointAndUpgrade = async (userId, point) => {
         point: user.membership.point,
         levelChanged,
     };
+};
+export const getRewardHistoryByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        let { page = 1, limit = 10 } = req.query;
+        const numPage = Number(page);
+        const numLimit = Number(limit);
+        const query = {
+            userId,
+            "reward.awarded": true,
+            "reward.points": { $gt: 0 }
+        };
+        const result = await OrderEntity.paginate(query, {
+            page: numPage,
+            limit: numLimit,
+            sort: { "reward.awardedAt": -1 },
+            populate: [
+                { path: "paymentId", model: "Payment" },
+                { path: "status", model: "OrderStatus" },
+                { path: "transaction", model: "PaymentTransaction" }
+            ]
+        });
+        return res.json({
+            code: 0,
+            data: toOrderListDTO(result.docs),
+            pagination: {
+                page: result.page,
+                limit: result.limit,
+                totalPages: result.totalPages,
+                total: result.totalDocs
+            }
+        });
+    }
+    catch (err) {
+        return res.status(500).json({ code: 1, message: err.message });
+    }
 };
 //# sourceMappingURL=orderController.js.map
