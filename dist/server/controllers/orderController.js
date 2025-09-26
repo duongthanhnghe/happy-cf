@@ -230,6 +230,7 @@ export const getRewardHistoryByUserId = async (req, res) => {
         });
     }
     catch (err) {
+        console.error("Lỗi getRewardHistoryByUserId:", err);
         return res.status(500).json({ code: 1, message: err.message });
     }
 };

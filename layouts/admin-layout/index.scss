@@ -11,6 +11,9 @@
     .v-table__wrapper {
       height: calc(100dvh - 201px);
     }
+    .v-data-table-no-footer .v-table__wrapper {
+      height: calc(100dvh - 131px);
+    }
     & > .v-container {
       padding: 24px;
     }

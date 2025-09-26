@@ -92,10 +92,18 @@ export const API_ENDPOINTS = {
     UPDATE: '/auth/users/me',
     LIST: '/auth/users',
     LIST_MEMBERSHIP_LEVEL: '/auth/membership-level',
+    GET_MEMBERSHIP_LEVEL_BY_ID: (id) => `/auth/membership-level/${id}`,
+    UPDATE_MEMBERSHIP_LEVEL: (id) => `/auth/membership-level/${id}`,
     SET_POINT: '/auth/set-point',
     LOG_SEARCH_KEYWORD: '/auth/search-keywords/log',
     LIST_SEARCH_KEYWORD: (limit) => `/auth/search-keywords/list?limit=${limit}`,
     TOGGLE_ACTIVE: (id) => `/auth/users/toggleActive/${id}`,
+    //benefit
+    CREATE_MEMBERSHIP_BENEFIT: '/auth/membership-benefit',
+    LIST_MEMBERSHIP_BENEFIT: '/auth/membership-benefit',
+    GET_MEMBERSHIP_BENEFIT_BY_ID: (id) => `/auth/membership-benefit/${id}`,
+    UPDATE_MEMBERSHIP_BENEFIT: (id) => `/auth/membership-benefit/${id}`,
+    DELETE_MEMBERSHIP_BENEFIT: (id) => `/auth/membership-benefit/${id}`,
   },
   ADDRESSES: {
     LIST: '/addresses',

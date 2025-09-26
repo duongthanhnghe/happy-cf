@@ -6,6 +6,7 @@ export const FOLDER_UPLOAD = {
   DEFAULT: 'Default',
   MEMBER: 'Member/member',
   MEMBER_MAIN: 'Member',
+  CONFIG: 'Config',
   POST: 'PostsNews',
   PRODUCT: 'Product',
 }

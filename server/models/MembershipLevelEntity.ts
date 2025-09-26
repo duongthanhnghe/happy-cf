@@ -1,11 +1,13 @@
-import mongoose, { Schema, model, Types } from "mongoose";
+import mongoose, { Schema, model, Types, Document } from "mongoose";
+import "./MembershipBenefitEntity.js";
 
 export interface MembershipLevelsDocument extends Document {
-  _id: Types.ObjectId
-  name: string
-  minPoint: number
-  icon: string
-  image: string
+  _id: Types.ObjectId;
+  name: string;
+  minPoint: number;
+  icon: string;
+  image: string;
+  benefits: Types.ObjectId[];
 }
 
 const MembershipLevelSchema = new Schema<MembershipLevelsDocument>(
@@ -14,11 +16,12 @@ const MembershipLevelSchema = new Schema<MembershipLevelsDocument>(
     minPoint: { type: Number, required: true },
     icon: { type: String },
     image: { type: String },
+    benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
   },
   { timestamps: false }
 );
 
-export const MembershipLevelModel = model(
+export const MembershipLevelModel = model<MembershipLevelsDocument>(
   "MembershipLevel",
   MembershipLevelSchema,
   "membership_levels"

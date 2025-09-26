@@ -8,8 +8,8 @@ import { useMembershipList } from '@/composables/user/useMembershipList'
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
-  layout: ROUTES.ADMIN.USER.layout,
-  middleware: ROUTES.ADMIN.USER.middleware,
+  layout: ROUTES.ADMIN.USER.children?.CUSTOMER.layout,
+  middleware: ROUTES.ADMIN.USER.children?.CUSTOMER.middleware,
 })
 
 const store = useUserManageStore();

@@ -61,12 +61,26 @@ export interface MyJwtPayload extends JwtPayload {
   email: string;
 }
 
+export interface MembershipBenefitDTO {
+  id: string;
+  name: string;
+  description?: string;
+  icon?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface MembershipLevels {
   id: string
   name: string
   minPoint: number
   icon: string
   image: string
+  benefits: MembershipBenefitDTO[];
+}
+
+export interface UpdateMembershipLevels extends Omit<MembershipLevels, 'benefits'> {
+  benefits: string[];
 }
 
 export interface InformationMembershipLevels {

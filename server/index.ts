@@ -4,6 +4,7 @@ import cors from 'cors'
 import express from 'express'
 import { fileURLToPath } from 'url'
 import * as dotenv from 'dotenv'
+import cookieParser from 'cookie-parser'
 import type { Request, Response, NextFunction } from 'express'
 import fileManageRoutes from './routes/fileManageRouter'
 import settingRoutes from './routes/settingRouter'
@@ -36,7 +37,8 @@ const HOST = process.env.HOST || '0.0.0.0'
 const barcodePath = fileURLToPath(new URL('./public/barcodes', import.meta.url))
 
 app.use(cors({
-  origin: (origin, cb) => cb(null, origin), // trả về chính origin gọi đến
+  // origin: (origin, cb) => cb(null, origin), // trả về chính origin gọi đến
+  origin: process.env.DOMAIN,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -52,7 +54,7 @@ app.use((req, res, next) => {
 })
 
 await connectDB()
-
+app.use(cookieParser())
 app.use('/barcodes', express.static(barcodePath))
 app.use('/api/settings', express.json(), settingRoutes)
 app.use('/api/fileManage', express.json(), fileManageRoutes)

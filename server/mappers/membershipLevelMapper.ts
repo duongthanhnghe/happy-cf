@@ -1,5 +1,6 @@
 import type { MembershipLevelsDocument } from "../models/MembershipLevelEntity"
 import type { MembershipLevels } from "../types/dto/user.dto"
+import { toMembershipBenefitListDTO } from "../mappers/MembershipBenefitMapper"
 
 export function toMembershipLevelDTO(entity: MembershipLevelsDocument): MembershipLevels {
   return {
@@ -8,6 +9,9 @@ export function toMembershipLevelDTO(entity: MembershipLevelsDocument): Membersh
     minPoint: entity.minPoint,
     icon: entity.icon,
     image: entity.image,
+    benefits: Array.isArray(entity.benefits)
+      ? toMembershipBenefitListDTO(entity.benefits as any)
+      : [],
   }
 }
 

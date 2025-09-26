@@ -657,7 +657,7 @@ const _inlineRuntimeConfig = {
     }
   },
   "public": {
-    "siteUrl": "http://0.0.0.0:3000",
+    "siteUrl": "http://localhost:3000",
     "siteName": "Happy Coffee",
     "siteDescription": "Mô tả website",
     "siteImage": "/assets/logo.png",
@@ -2245,12 +2245,27 @@ const UserSchema = new Schema(
 UserSchema.plugin(mongoosePaginate);
 const UserModel = model("User", UserSchema, "users");
 
+const MembershipBenefitSchema = new Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    description: { type: String },
+    icon: { type: String }
+  },
+  { timestamps: true }
+);
+const MembershipBenefitModel = model(
+  "MembershipBenefit",
+  MembershipBenefitSchema,
+  "membership_benefits"
+);
+
 const MembershipLevelSchema = new Schema(
   {
     name: { type: String, required: true, unique: true },
     minPoint: { type: Number, required: true },
     icon: { type: String },
-    image: { type: String }
+    image: { type: String },
+    benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
   },
   { timestamps: false }
 );
@@ -2353,13 +2368,28 @@ const toSearchKeywordListDTO = (keywords) => {
   return keywords.map(toSearchKeywordDTO);
 };
 
+function toMembershipBenefitDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    name: entity.name,
+    description: entity.description,
+    icon: entity.icon,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString()
+  };
+}
+const toMembershipBenefitListDTO = (items) => {
+  return items.map(toMembershipBenefitDTO);
+};
+
 function toMembershipLevelDTO(entity) {
   return {
     id: entity._id.toString(),
     name: entity.name,
     minPoint: entity.minPoint,
     icon: entity.icon,
-    image: entity.image
+    image: entity.image,
+    benefits: Array.isArray(entity.benefits) ? toMembershipBenefitListDTO(entity.benefits) : []
   };
 }
 const toMembershipLevelListDTO = (items) => {
@@ -2410,6 +2440,15 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ code: 1, message: "Mat khau khong dung, vui long nhap lai!" });
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
+    res.cookie("token", token, {
+      httpOnly: true,
+      // FE không đọc trực tiếp
+      secure: false,
+      // localhost => false
+      sameSite: "lax",
+      // thử 'none' nếu khác port
+      maxAge: 12 * 60 * 60 * 1e3
+    });
     res.status(200).json({ code: 0, message: "\u0110\u0103ng nh\u1EADp th\xE0nh c\xF4ng", data: { token, user: toUserDTO(user) } });
   } catch (err) {
     res.status(500).json({ code: 500, message: "\u0110\u0103ng nh\u1EADp th\u1EA5t b\u1EA1i, vui l\xF2ng th\u1EED l\u1EA1i", error: err });
@@ -2557,13 +2596,65 @@ const changePassword = async (req, res) => {
 };
 const getAllMembershipLevel = async (_, res) => {
   try {
-    const data = await MembershipLevelModel.find();
+    const data = await MembershipLevelModel.find().populate("benefits");
     return res.status(200).json({
       code: 0,
       data: toMembershipLevelListDTO(data)
     });
   } catch (error) {
     console.error("getAllMembershipLevel error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+const getMembershipLevelById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const level = await MembershipLevelModel.findById(id).populate("benefits");
+    if (!level) {
+      return res.status(404).json({
+        code: 1,
+        message: "Membership level kh\xF4ng t\u1ED3n t\u1EA1i"
+      });
+    }
+    return res.json({
+      code: 0,
+      data: toMembershipLevelDTO(level)
+    });
+  } catch (error) {
+    console.error("getMembershipLevelById error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+const updateMembershipLevel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    const updated = await MembershipLevelModel.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    ).populate("benefits");
+    if (!updated) {
+      return res.status(404).json({
+        code: 1,
+        message: "Membership level not found"
+      });
+    }
+    return res.json({
+      code: 0,
+      message: "Membership level updated successfully",
+      data: updated
+    });
+  } catch (error) {
+    console.error("updateMembershipLevel error:", error);
     return res.status(500).json({
       code: 1,
       message: "Internal server error",
@@ -2634,15 +2725,84 @@ const toggleActive$5 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const createMembershipBenefit = async (req, res) => {
+  try {
+    const { name, description, icon } = req.body;
+    const existing = await MembershipBenefitModel.findOne({ name });
+    if (existing) {
+      return res.status(400).json({ code: 1, message: "Benefit \u0111\xE3 t\u1ED3n t\u1EA1i" });
+    }
+    const benefit = await MembershipBenefitModel.create({ name, description, icon });
+    return res.status(201).json({
+      code: 0,
+      message: "T\u1EA1o benefit th\xE0nh c\xF4ng",
+      data: toMembershipBenefitDTO(benefit)
+    });
+  } catch (err) {
+    console.error("createMembershipBenefit error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+const getAllMembershipBenefits = async (_, res) => {
+  try {
+    const benefits = await MembershipBenefitModel.find().sort({ createdAt: -1 });
+    return res.json({
+      code: 0,
+      data: toMembershipBenefitListDTO(benefits)
+    });
+  } catch (err) {
+    console.error("getAllMembershipBenefits error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+const getMembershipBenefitById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const benefit = await MembershipBenefitModel.findById(id);
+    if (!benefit) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
+    return res.json({ code: 0, data: toMembershipBenefitDTO(benefit) });
+  } catch (err) {
+    console.error("getMembershipBenefitById error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+const updateMembershipBenefit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    const benefit = await MembershipBenefitModel.findByIdAndUpdate(id, updateData, { new: true });
+    if (!benefit) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt benefit th\xE0nh c\xF4ng",
+      data: toMembershipBenefitDTO(benefit)
+    });
+  } catch (err) {
+    console.error("updateMembershipBenefit error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+const deleteMembershipBenefit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await MembershipBenefitModel.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
+    return res.json({ code: 0, message: "X\xF3a benefit th\xE0nh c\xF4ng" });
+  } catch (err) {
+    console.error("deleteMembershipBenefit error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
 
 const authenticate = (req, res, next) => {
-  const authHeader = req.headers.authorization || "";
-  const token = authHeader.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Thi\u1EBFu token" });
+  var _a;
+  console.log("Cookies received:", req.cookies);
+  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  if (!token) {
+    return res.status(401).json({ message: "Thi\u1EBFu token" });
+  }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    console.log("decoded");
-    console.log(decoded);
     req.user = decoded;
     next();
   } catch (err) {
@@ -2660,11 +2820,18 @@ router$a.post("/login", login);
 router$a.post("/forgot-password", forgotPassword);
 router$a.post("/reset-password", resetPassword);
 router$a.post("/change-password", changePassword);
-router$a.get("/membership-level", getAllMembershipLevel);
 router$a.post("/set-point", setPoint);
+router$a.delete("/:id", deleteUsers);
+router$a.get("/membership-level", getAllMembershipLevel);
+router$a.get("/membership-level/:id", getMembershipLevelById);
+router$a.put("/membership-level/:id", updateMembershipLevel);
 router$a.post("/search-keywords/log", logSearchKeyword);
 router$a.get("/search-keywords/list", getTopSearchKeyword);
-router$a.delete("/:id", deleteUsers);
+router$a.get("/membership-benefit", getAllMembershipBenefits);
+router$a.get("/membership-benefit/:id", getMembershipBenefitById);
+router$a.post("/membership-benefit", authenticate, createMembershipBenefit);
+router$a.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
+router$a.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
 
 const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

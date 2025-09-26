@@ -1,3 +1,4 @@
+import { toMembershipBenefitListDTO } from "../mappers/MembershipBenefitMapper.js";
 export function toMembershipLevelDTO(entity) {
     return {
         id: entity._id.toString(),
@@ -5,6 +6,9 @@ export function toMembershipLevelDTO(entity) {
         minPoint: entity.minPoint,
         icon: entity.icon,
         image: entity.image,
+        benefits: Array.isArray(entity.benefits)
+            ? toMembershipBenefitListDTO(entity.benefits)
+            : [],
     };
 }
 export const toMembershipLevelListDTO = (items) => {

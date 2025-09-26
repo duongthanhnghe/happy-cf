@@ -71,11 +71,24 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       layout: 'admin-layout',
     },
     USER: {
-      path: '/admin/user',
-      label: 'QL Khách hàng',
+      label: 'Thanh vien',
       icon: 'person',
-      middleware: ['admin-role'],
-      layout: 'admin-layout',
+      children: {
+        CUSTOMER: {
+          path: '/admin/user',
+          label: 'QL Khách hàng',
+          icon: 'person',
+          middleware: ['admin-role'],
+          layout: 'admin-layout',
+        },
+        MEMBERSHIP_LEVEL: {
+          path: '/admin/user/membership',
+          label: 'Loai thanh vien',
+          icon: 'article',
+          middleware: ['admin-role'],
+          layout: 'admin-layout',
+        },
+      },
     },
     FILE_MANAGE: {
       path: '/admin/file-manage',
