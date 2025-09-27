@@ -12,12 +12,12 @@ export const useAccountStore = defineStore("Account", () => {
   // const token = ref<string | null>(process.client ? localStorage.getItem('token') : null)
   const token = useCookie<string | null>("token", { sameSite: "lax" });
   const isTogglePopupBarcode = ref<boolean>(false);
+  const isTogglePopupMembershipInformation = ref<boolean>(false);
   const informationMembershipLevel = ref<InformationMembershipLevels|null>(null);
   const detailData = ref<User|null>(null)
   const userId = ref<string|null>(null)
   const loading = ref(false)
 
-  //actions
   const handleGetDetailAccount = async (userId: string) => {
     const data = await usersAPI.getDetailAccount(userId)
     detailData.value = data.data;
@@ -25,10 +25,15 @@ export const useAccountStore = defineStore("Account", () => {
 
   //popup barcode
   const handleTogglePopupBarcode = (value: boolean) => {
+    if(isTogglePopupBarcode.value) return
     isTogglePopupBarcode.value = value;
   }
 
-  //check next level
+  //popup barcode
+  const handleTogglePopupMembershipInformation = (value: boolean) => {
+    isTogglePopupMembershipInformation.value = value;
+  }
+
   const handleNextMembershipLevel = (currentPoint: number, membershipLevels: MembershipLevels[]) => {
     const sortedLevels = [...membershipLevels].sort((a, b) => a.minPoint - b.minPoint)
     const maxLevelPoint = membershipLevels.at(-1)?.minPoint as number
@@ -59,7 +64,6 @@ export const useAccountStore = defineStore("Account", () => {
     token.value = null
     detailData.value = null
     userId.value = null
-    // localStorage.removeItem('token');
     router.push({ path: ROUTES.PUBLIC.HOME.path })
   }
 
@@ -109,11 +113,13 @@ export const useAccountStore = defineStore("Account", () => {
     detailData,
     userId,
     isTogglePopupBarcode,
+    isTogglePopupMembershipInformation,
     // actions
     handleGetDetailAccount,
     handleTogglePopupBarcode,
     getNextMembershipLevel,
     handleLogout,
+    handleTogglePopupMembershipInformation,
     refreshAccount,
     //getters
     getDetailValue,

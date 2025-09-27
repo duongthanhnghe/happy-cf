@@ -4,7 +4,6 @@ import '@/styles/organisms/user/section-account.scss'
 import {
   useAccountStore
 } from '@/stores/client/users/useAccountStore'
-import PopupBarcode from './PopupBarcode.vue';
 import { ROUTES } from '@/shared/constants/routes';
 import { useMembershipStore } from '@/stores/shared/useMembershipStore'
 import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
@@ -43,7 +42,7 @@ watchEffect(() => {
               <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
               <div class="text-size-xs">
                 <Heading weight="semibold"> {{ storeAccount.getDetailValue?.fullname || '' }} </Heading>
-                <span class="text-color-gray8">Hang {{ storeAccount.getDetailValue?.membership.level || '' }}</span>
+                <span @click="storeAccount.handleTogglePopupMembershipInformation(true)" class="text-color-gray8">Hang {{ storeAccount.getDetailValue?.membership.level || '' }} </span>
               </div>
             </div>
             <div class="flex gap-sm">
@@ -87,7 +86,4 @@ watchEffect(() => {
       </div>
     </div>
   </div>
-
-  <PopupBarcode />
-  <PopupHistoryRewardByUser />
 </template>

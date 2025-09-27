@@ -61,8 +61,6 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           <v-text-field v-model="store.formItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
           <Button color="black" :label="store.formItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
         </div>
-        
-
     </v-form>
   </template>
 </Popup>

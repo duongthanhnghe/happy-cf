@@ -56,7 +56,7 @@ onBeforeUnmount(() => {
 
       <template #item.actions="{ item }">
         <div class="flex justify-end">
-          <Button color="gray" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
+          <Button :border="false" color="secondary" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
         </div>
       </template>
 

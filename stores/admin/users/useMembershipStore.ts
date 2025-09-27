@@ -25,12 +25,13 @@ export const useMembershipStore = defineStore("MembershipStore", () => {
 
   const dataList = ref<MembershipLevels[]>([]);
   const headers = ref<TableHeaders[]>([
+    { title: 'Ảnh minh họa', key: 'image', sortable: false, },
     { title: 'Tên cấp độ', key: 'name', sortable: false, },
     { title: 'Điểm tối thiểu', key: 'minPoint', sortable: false, },
     { title: 'Icon hiển thị', key: 'icon', sortable: false, },
-    { title: 'Ảnh minh họa', key: 'image', sortable: false, },
     { title: 'Loi ich', key: 'benefits', sortable: false, },
-    { title: '', key: 'actions', sortable: false },
+    { title: '', key: 'actions', sortable: false, headerProps: { class: 'v-data-table-sticky-cl-right' },
+    cellProps: { class: 'v-data-table-sticky-cl-right' } },
   ])
   
   const serverItems = ref<MembershipLevels[]>([])
