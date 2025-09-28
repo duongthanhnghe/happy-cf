@@ -10,15 +10,15 @@ import {
   formatCurrency
 } from '@/utils/global'
 import {
-  useProductStore
-} from '@/stores/client/product/useProductOrderStore'
+  useProductDetailStore
+} from '@/stores/client/product/useProductDetailStore'
 import type { CartDTO } from '@/server/types/dto/product.dto';
 
 const props = defineProps<{
   item: CartDTO
 }>()
 
-const storeProduct = useProductStore()
+const storeProduct = useProductDetailStore()
 const storeCart = useCartStore();
 
 </script>

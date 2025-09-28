@@ -1,26 +1,14 @@
 <script setup>
-import { watch } from 'vue'
-import {
-  useProductStore
-} from '@/stores/client/product/useProductOrderStore'
-import {
-  useCartStore
-} from '@/stores/client/product/useCartOrderStore'
-import { formatCurrency } from '~/utils/global';
 import '@/styles/templates/cart/popup-add-item-to-cart.scss'
-import {
-  useDisplayStore
-} from '@/stores/shared/useDisplayStore'
+import { watch } from 'vue'
+import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
+import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { formatCurrency } from '~/utils/global';
+import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 
-//store
-const storeProduct = useProductStore();
+const storeProduct = useProductDetailStore();
 const storeCart = useCartStore();
 const storeDisplay = useDisplayStore()
-
-//method
-const setTogglePopupEdit = () => {
-  storeProduct.togglePopup('edit', false);
-}
 
 const handleChangeVariant = (idOption, idVariant, optionName, variantName, variantPrice) => {
   storeCart.setSelectedOptionsData(idOption, idVariant, optionName, variantName, variantPrice);
@@ -45,7 +33,7 @@ watch(() => storeProduct.getProductDetailDataEdit?.selectedOptionsPush, (newValu
 </script>
 
 <template>
-  <Popup :children="true" :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" align="bottom" popupId="popup-edit" :modelValue="storeProduct.getPopupState('edit')" :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" @update:modelValue="setTogglePopupEdit">
+  <Popup :children="storeCart.isTogglePopup ? true: false" :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" align="bottom" popupId="popup-edit" :modelValue="storeProduct.getPopupState('edit')" :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" @update:modelValue="storeProduct.togglePopup('edit', false)">
     <template #body v-if="storeProduct.getProductDetailDataEdit">
       <div class="popup-detail-product">
         <div class="popup-detail-product-image">
@@ -111,7 +99,7 @@ watch(() => storeProduct.getProductDetailDataEdit?.selectedOptionsPush, (newValu
 
           <div class="flex justify-center">
             <Button color="gray" icon="check_indeterminate_small" @click="storeProduct.inDecrementEdit(false)" />
-            <Button :disabled="true" :border="false" color="secondary" class="popup-detail-product-quantity pd-0 text-size-large weight-medium" :label="storeProduct.getQuantityEdit"/>
+            <Button :disabled="true" :border="false" color="secondary" class="popup-detail-product-quantity pd-0 text-size-large weight-medium" :label="storeProduct.quantityEdit"/>
             <Button color="gray" icon="add" @click="storeProduct.inDecrementEdit(true)" />
           </div>
         </div>
@@ -123,18 +111,18 @@ watch(() => storeProduct.getProductDetailDataEdit?.selectedOptionsPush, (newValu
       <div class="portal-popup-footer">
       <Button
         v-if="storeProduct.getProductDetailDataEdit?.finalPriceDiscounts && storeProduct.getProductDetailDataEdit?.finalPriceDiscounts != undefined"
-        :label="'Cập nhật - ' + formatCurrency(parseInt(storeProduct.getPriceTotal))"
+        :label="'Cập nhật - ' + formatCurrency(parseInt(storeProduct.priceTotalEdit))"
         class="w-full"
         color="primary"
-        @handleOnClick="storeCart.updateProductWithOptions(storeProduct.getProductDetailDataEdit, storeProduct.getQuantityEdit, storeProduct.getProductDetailDataEdit.note, storeProduct.getProductDetailDataEdit.productKey)"
+        @handleOnClick="storeCart.updateProductWithOptions(storeProduct.getProductDetailDataEdit, storeProduct.quantityEdit, storeProduct.getProductDetailDataEdit.note, storeProduct.getProductDetailDataEdit.productKey)"
       />
       <template v-else>
       <Button
         v-if="storeProduct.getProductDetailDataEdit.id"
-        :label="'Cập nhật - ' + formatCurrency(parseInt(storeProduct.getPriceTotal))"
+        :label="'Cập nhật - ' + formatCurrency(parseInt(storeProduct.priceTotalEdit))"
         class="w-full"
         color="primary"
-        @handleOnClick="storeCart.updateNormalProduct(storeProduct.getProductDetailDataEdit, storeProduct.getQuantityEdit, storeProduct.getProductDetailDataEdit.note, storeProduct.getProductDetailDataEdit.id)"
+        @handleOnClick="storeCart.updateNormalProduct(storeProduct.getProductDetailDataEdit, storeProduct.quantityEdit, storeProduct.getProductDetailDataEdit.note, storeProduct.getProductDetailDataEdit.id)"
       />
       </template>
       </div>

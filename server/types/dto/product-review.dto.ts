@@ -70,4 +70,14 @@ export interface ProductReviewWithProductDTO extends Omit<ProductReviewDTO, "pro
   productId: ProductDTO;
 }
 
-export type ProductReviewPaginationDTO = PaginationDTO<ProductReviewWithUserDTO>
+export interface ReviewSummaryDTO {
+  averageRating: number
+  totalReviews: number
+  ratingsBreakdown: Record<number, number>
+}
+
+export interface PaginationReviewDTO<T> extends PaginationDTO<T> {
+  summary: ReviewSummaryDTO
+}
+
+export type ProductReviewPaginationDTO = PaginationReviewDTO<ProductReviewWithUserDTO>

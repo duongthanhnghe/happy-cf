@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue"
 import { ROUTES } from '@/shared/constants/routes'
 import { usePostDetailStore } from '@/stores/client/news/usePostDetailStore'
 

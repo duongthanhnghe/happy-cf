@@ -82,9 +82,40 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 
         <Button class="w-full" :border="false" color="gray" label="Them anh" @click.prevent="store.handleAddListImage()"/>
 
-
         <v-switch :label="`Tinh trang: ${store.updateProductItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.updateProductItem.isActive" inset
         ></v-switch>
+
+        <LabelInput label="SEO Title" />
+        <v-text-field
+          v-model="store.updateProductItem.titleSEO"
+          label="SEO Title"
+          variant="outlined"
+        />
+
+        <LabelInput label="SEO Description" />
+        <v-textarea
+          v-model="store.updateProductItem.descriptionSEO"
+          :counter="160"
+          label="SEO Description"
+          variant="outlined"
+        />
+
+        <LabelInput label="Slug (URL)" required/>
+        <v-text-field
+          v-model="store.updateProductItem.slug"
+          label="Slug"
+          variant="outlined"
+          :rules="store.nullRules"
+          required
+        />
+
+        <LabelInput label="Keywords (phân cách bằng dấu ,)" />
+        <v-text-field
+          v-model="store.updateProductItem.keywords"
+          label="Keywords"
+          variant="outlined"
+        />
+
     </v-form>
     <Button :label="`${store.updateProductItem.options?.length ? 'Sua bien the':'Them bien the'}`" class="w-full" @click="store.handleTogglePopupAddVariant" />
   </template>

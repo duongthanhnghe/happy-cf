@@ -161,4 +161,36 @@ export const productReviewAPI = {
       }
     }
   },
+
+  getReviewsByProduct: async (
+    productId: string,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<ProductReviewPaginationDTO> => {
+    try {
+      let url = `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.GET_BY_PRODUCT_ID(productId)}?page=${page}&limit=${limit}`;
+     
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch product reviews");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error("Error fetching reviews by product:", err);
+      return {
+        code: 1,
+        message: "Failed to fetch product reviews",
+        data: [],
+        pagination: {
+          total: 0,
+          totalPages: 0,
+          page,
+          limit,
+        },
+      };
+    }
+  },
+
 };

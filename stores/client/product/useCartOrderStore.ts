@@ -1,9 +1,9 @@
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed } from "vue";
 import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
 import { setCookie, getCookie, getCurrentDateTime, Loading } from "@/utils/global";
 import { showConfirm } from "@/utils/toast"
-import { useProductStore } from "@/stores/client/product/useProductOrderStore";
+import { useProductDetailStore } from "@/stores/client/product/useProductDetailStore";
 import { showWarning, showSuccess } from "@/utils/toast";
 import { ordersAPI } from "@/services/orders.service";
 // import { sendOrderEmail } from '@/services/email-service';
@@ -19,7 +19,7 @@ import { ROUTES } from '@/shared/constants/routes';
 import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
 
 export const useCartStore = defineStore("Cart", () => {
-  const storeProduct = useProductStore();
+  const storeProduct = useProductDetailStore();
   const storeAddress = useAddressesManageStore();
   const storeAccount = useAccountStore();
   const storePaymentStatus = usePaymentStatusStore();
@@ -77,6 +77,7 @@ export const useCartStore = defineStore("Cart", () => {
     const existingProduct = cartListItem.value?.find(
       (item) => item.productKey === productKey
     );
+      
 
     if (existingProduct && existingProduct.quantity) {
       existingProduct.quantity = existingProduct.quantity + quantity;
@@ -110,6 +111,7 @@ export const useCartStore = defineStore("Cart", () => {
       });
 
       cartCount.value = cartCount.value + quantity;
+      if(!storeProduct.popups.order) showSuccess('Dat hang thanh cong')
     }
 
     resetValuePopupOrder();
@@ -190,22 +192,21 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const addProductToCart = (product: ProductDTO,quantity: number, note: string) => {
-    if (!product || product.amount <= 0) return;
+    if (!product || product.amount <= 0) return false;
     buildSelectedOptions(product.options)
     selectedOptionsData.value = buildSelectedOptions(product.options)
-    if (selectedOptionsData.value.length > 0) {
+    if (product.options.length > 0) {
       addProductWithOptions(product, selectedOptionsData.value, quantity, note);
     } else {
       addNormalProduct(product);
     }
-    updateCookie();
+    return true;
+    // updateCookie();
   };
 
   const resetValuePopupOrder = () => {
     selectedOptionsData.value = [];
-    storeProduct.productDetailEdit = null;
-    storeProduct.togglePopup("edit", false);
-    storeProduct.togglePopup("order", false);
+    storeProduct.resetFormCart();
     updateCookie();
   }
 
@@ -214,12 +215,15 @@ export const useCartStore = defineStore("Cart", () => {
       const selectedVariantId = selectedOptionsData.value[option.id]
       const variant = option.variants.find(v => v.id === selectedVariantId)
 
+      if (!variant) return null; // chưa chọn thì bỏ qua
+
       return {
         optionName: option.name,
         variantName: variant?.name ?? "",
         variantPrice: variant?.priceModifier ?? 0
       }
     })
+    .filter((opt): opt is SelectedOptionPushDTO => opt !== null);
   }
 
   const clearTempSelected = () => {
@@ -300,6 +304,14 @@ export const useCartStore = defineStore("Cart", () => {
       updateCookie();
       showSuccess("Đã xóa sản phẩm khỏi giỏ hàng!");
     }
+  };
+
+  const handleDeleteCartAll = async () => {
+    const confirm = await showConfirm('Bạn có chắc xoá?')
+    if (!confirm) return
+    
+    deleteCartAll()
+    isTogglePopup.value = false
   };
 
   const deleteCartAll = async () => {
@@ -442,6 +454,12 @@ export const useCartStore = defineStore("Cart", () => {
     }
   };
 
+  const syncCartCookie = () => {
+    cartCount.value = getCookie("cartCount") || 0
+    cartListItem.value = getCookie("cartListItem") || []
+    handleCalcTotalPriceCurrent()
+  };
+
   //getters
   const getCartCount = computed(() => cartCount.value);
   const getCartListItem = computed(() => cartListItem.value);
@@ -454,14 +472,6 @@ export const useCartStore = defineStore("Cart", () => {
   const getSelectedOptionsData = computed(() => selectedOptionsData.value);
   const getIdAddressChoose = computed(() => idAddressChoose.value);
   const getNameAddressChoose = computed(() => informationOrder.address);
-  
-  onMounted(() => {
-    if(process.client){
-      cartCount.value = getCookie("cartCount") || 0
-      cartListItem.value = getCookie("cartListItem") || []
-      handleCalcTotalPriceCurrent()
-    }
-  });
 
   return {
     // state
@@ -479,6 +489,7 @@ export const useCartStore = defineStore("Cart", () => {
     updateQuantity,
     deleteCart,
     deleteCartAll,
+    handleDeleteCartAll,
     setSelectedOptionsData,
     getTemplate1Amount,
     updateProductWithOptions,
@@ -488,6 +499,7 @@ export const useCartStore = defineStore("Cart", () => {
     handleChooseAddress,
     syncTempSelectedFromSelectedOptionsData,
     clearTempSelected,
+    syncCartCookie,
     // getters
     tempSelected,
     getCartCount,

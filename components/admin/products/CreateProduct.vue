@@ -81,6 +81,38 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 
         <v-switch :label="`Tinh trang: ${store.formProductItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.formProductItem.isActive" inset
         ></v-switch>
+
+        <LabelInput label="SEO Title" />
+        <v-text-field
+          v-model="store.formProductItem.titleSEO"
+          label="SEO Title"
+          variant="outlined"
+        />
+
+        <LabelInput label="SEO Description" />
+        <v-textarea
+          v-model="store.formProductItem.descriptionSEO"
+          :counter="160"
+          label="SEO Description"
+          variant="outlined"
+        />
+
+        <LabelInput label="Slug (URL)" required/>
+        <v-text-field
+          v-model="store.formProductItem.slug"
+          label="Slug"
+          variant="outlined"
+          :rules="store.nullRules"
+          required
+        />
+
+        <LabelInput label="Keywords (phân cách bằng dấu ,)" />
+        <v-text-field
+          v-model="store.formProductItem.keywords"
+          label="Keywords"
+          variant="outlined"
+        />
+
     </v-form>
     <Button type="submit" label="Them bien the" class="w-full" @click.prevent="store.handleTogglePopupAddVariant" />
   </template>

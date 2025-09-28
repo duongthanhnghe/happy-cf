@@ -1,18 +1,11 @@
 <script lang="ts" setup>
 import '@/styles/molecules/layout/header.scss';
-import {
-  useAccountStore
-} from '@/stores/client/users/useAccountStore'
-import {
-  useCartStore
-} from '@/stores/client/product/useCartOrderStore'
-import {
-  useSearchStore
-} from '@/stores/client/product/useSearchStore'
-import {
-  useAddressesManageStore
-} from '@/stores/client/users/useAddressesStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
+import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { useSearchStore } from '@/stores/client/product/useSearchStore'
+import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
 import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { ROUTES } from '@/shared/constants/routes';
 
 const storeSetting = useSettingStore();
 const storeCart = useCartStore()
@@ -34,6 +27,7 @@ const props = defineProps({
 <PopupCart />
 <PopupEditItemToCart />
 <PopupAddItemToCart />
+<PopupManageAddress />
 
 <div class="header">
   <div class="header-fixed">
@@ -41,9 +35,9 @@ const props = defineProps({
       <div class="header-content">
         <div class="header-left">
           <template v-if="props.typeLeft === 'logo'">
-            <!-- <NuxtLink :to="{ path: '/' }"> -->
+            <NuxtLink :to="{ path: ROUTES.PUBLIC.HOME.path }">
               <img v-if="storeSetting.getSettings?.logoUrl" class="header-logo" :src="storeSetting.getSettings?.logoUrl" :alt="storeSetting.getSettings?.name" />
-            <!-- </NuxtLink> -->
+            </NuxtLink>
           </template>
 
           <template v-else-if="props.typeLeft === 'address'">

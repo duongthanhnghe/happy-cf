@@ -46,6 +46,11 @@ export function toProductDTO(entity: Product): ProductDTO {
     isActive: entity.isActive,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
   };
 }
 

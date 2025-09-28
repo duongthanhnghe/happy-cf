@@ -12,6 +12,7 @@ import {
   deleteWishlistItem,
   toggleActive,
   searchProducts,
+  getRelatedProducts,
 } from '../controllers/productController.js'
 
 const router = Router()
@@ -20,6 +21,7 @@ router.get('/', getAllProduct)
 router.get('/promotion', getPromotionalProducts)
 router.get('/most-order', getMostOrderedProduct)
 router.get('/search', searchProducts)
+router.get('/related/:slug', getRelatedProducts)
 router.post('/',         createProduct)
 router.get('/:id',       getProductById)
 router.put('/:id',       updateProduct)

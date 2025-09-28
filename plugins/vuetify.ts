@@ -89,6 +89,9 @@ import {
   VRangeSlider,
   VRating,
   VCheckboxBtn,
+  VBreadcrumbs,
+  VBreadcrumbsItem,
+  VBreadcrumbsDivider,
 } from 'vuetify/components'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -142,7 +145,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       VTimePicker,
       VRangeSlider,
       VRating,
-      VCheckboxBtn
+      VCheckboxBtn,
+      VBreadcrumbs,
+      VBreadcrumbsItem,
+      VBreadcrumbsDivider,
     },
     // ✅ Chỉ import directives cần thiết
     directives: {

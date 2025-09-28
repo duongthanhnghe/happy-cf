@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
         <NuxtLink :to="`${ROUTES.PUBLIC.NEWS.children?.DETAIL?.path}/${item.slug}`" target="_blank">
-          <Button color="gray" size="sm" icon="visibility" />
+          <Button tag="div" color="gray" size="sm" icon="visibility" />
         </NuxtLink>
         <Button color="gray" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
         <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />

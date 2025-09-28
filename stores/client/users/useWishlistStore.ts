@@ -48,9 +48,6 @@ export const useWishlistStore = defineStore("Wishlist", () => {
   }
 
   const handleDeleteWishlist = async (productId: string) => {
-    const confirm = await showConfirm('Bạn có chắc xoá mục này?')
-    if (!confirm) return
-
     const userId = storeAccount.getDetailValue?.id;
     if(!userId || !productId) return
 
@@ -87,14 +84,12 @@ export const useWishlistStore = defineStore("Wishlist", () => {
     dataList,
     isTogglePopupAdd,
     wishlistIds,
-    // actions
     loadItems,
     handleTogglePopupAdd,
     handleAddWishlist,
     handleDeleteWishlist,
     isInWishlist,
     fetchWishlist,
-    //getters
     getListOrders,
   };
 });

@@ -34,6 +34,12 @@ export interface ProductDTO {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  //SEO
+  titleSEO: string;
+  descriptionSEO: string;
+  slug: string;
+  keywords?: string[]
+  canonicalUrl?: string;
 }
 
 export type ProductPaginationDTO = PaginationDTO<ProductDTO>

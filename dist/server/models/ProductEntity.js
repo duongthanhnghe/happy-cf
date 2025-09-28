@@ -28,6 +28,27 @@ const ProductSchema = new Schema({
     options: { type: [OptionSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     isActive: { type: Boolean, default: true },
+    titleSEO: {
+        type: String,
+        trim: true,
+        required: true,
+    },
+    descriptionSEO: {
+        type: String,
+        maxlength: 160,
+        trim: true,
+    },
+    slug: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        match: [/^[a-z0-9-]+$/, 'Slug chỉ được chứa chữ thường, số và dấu gạch ngang']
+    },
+    keywords: {
+        type: [String],
+        default: []
+    }
 }, { timestamps: true });
 const CategoryProductSchema = new Schema({
     categoryName: { type: String, required: true, trim: true },

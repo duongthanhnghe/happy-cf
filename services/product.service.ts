@@ -117,6 +117,23 @@ export const productsAPI = {
     }
   },
 
+  getRelatedBySlug: async (slug: string, limit = 10): Promise<ApiResponse<ProductDTO[]>> => {
+    try {
+      const res = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.RELATED_BY_SLUG(slug)}?limit=${limit}`
+      )
+      const data = await res.json()
+      return data
+    } catch (err: any) {
+      console.error(`Error fetching related products by slug ${slug}:`, err)
+      return {
+        code: 1,
+        message: err.message ?? "Failed to fetch related products",
+        data: []
+      }
+    }
+  },
+
   // Wishlist theo user
   getWishlistByUserId: async (userId: string): Promise<ApiResponse<WishlistItem[]>> => {
     try {

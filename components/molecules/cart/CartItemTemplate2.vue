@@ -1,21 +1,20 @@
 <script lang="ts" setup>
 import '@/styles/molecules/cart/cart-item-template1.scss'
-import {
-  defineProps
-} from 'vue'
-import {
-  formatCurrency
-} from '~/utils/global'
+import { defineProps } from 'vue'
+import { formatCurrency } from '@/utils/global'
 import type { selectedOptionsPush } from '@/server/types/dto/order.dto';
 
-const props = defineProps({
-  data:     Object,
-  finalPriceDiscounts: Number,
-  note: String,
-  priceDiscounts: Number,
-  quantity: Number,
-  selectedOptionsPush: Array,
-})
+const props = defineProps<{
+  data: {
+    image: string
+    productName: string
+  }
+  finalPriceDiscounts?: number
+  note?: string
+  priceDiscounts: number
+  quantity: number
+  selectedOptionsPush?: selectedOptionsPush[]
+}>()
 
 </script>
 <template>
@@ -28,8 +27,8 @@ const props = defineProps({
         {{ props.data?.productName }}
       </Heading>
       <div class="text-color-gray5 text-size-xs">
-        <div v-if="props.selectedOptionsPush" v-for="(item, index) in props.selectedOptionsPush as selectedOptionsPush[]" :key="index">
-            {{ item.optionName }}:  <span>{{ item.variantName }} </span>
+        <div v-for="item in props.selectedOptionsPush" :key="item.optionName">
+          {{ item.optionName }}: <span>{{ item.variantName }}</span>
         </div>
         <div class="text-color-gray5 text-size-xs">
           {{ props.note }}

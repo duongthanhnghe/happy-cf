@@ -4,7 +4,6 @@ import type { PostNewsDTO } from '@/server/types/dto/news.dto';
 import { useState } from "nuxt/app";
 
 export const usePostDetail = () => {
-  // const detailData = ref<PostNewsDTO|null>(null);
   const detailData = useState<PostNewsDTO | null>('post-news-detail', () => null)
 
   const fetchDetailPost = async (id: string) => {

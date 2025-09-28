@@ -28,6 +28,7 @@ interface _GlobalComponents {
     'DetailAccount': typeof import("../components/admin/users/DetailAccount.vue")['default']
     'UpdateMembership': typeof import("../components/admin/users/UpdateMembership.vue")['default']
     'AvatarEdit': typeof import("../components/atoms/AvatarEdit.vue")['default']
+    'BreadcrumbDefault': typeof import("../components/atoms/BreadcrumbDefault.vue")['default']
     'Button': typeof import("../components/atoms/Button.vue")['default']
     'CKEditorCDN': typeof import("../components/atoms/CKEditorCDN.vue")['default']
     'CKEditorCDNBackup': typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']
@@ -130,6 +131,7 @@ interface _GlobalComponents {
     'LazyDetailAccount': LazyComponent<typeof import("../components/admin/users/DetailAccount.vue")['default']>
     'LazyUpdateMembership': LazyComponent<typeof import("../components/admin/users/UpdateMembership.vue")['default']>
     'LazyAvatarEdit': LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
+    'LazyBreadcrumbDefault': LazyComponent<typeof import("../components/atoms/BreadcrumbDefault.vue")['default']>
     'LazyButton': LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
     'LazyCKEditorCDN': LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
     'LazyCKEditorCDNBackup': LazyComponent<typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']>
@@ -238,6 +240,7 @@ export const UpdateProduct: typeof import("../components/admin/products/UpdatePr
 export const DetailAccount: typeof import("../components/admin/users/DetailAccount.vue")['default']
 export const UpdateMembership: typeof import("../components/admin/users/UpdateMembership.vue")['default']
 export const AvatarEdit: typeof import("../components/atoms/AvatarEdit.vue")['default']
+export const BreadcrumbDefault: typeof import("../components/atoms/BreadcrumbDefault.vue")['default']
 export const Button: typeof import("../components/atoms/Button.vue")['default']
 export const CKEditorCDN: typeof import("../components/atoms/CKEditorCDN.vue")['default']
 export const CKEditorCDNBackup: typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']
@@ -340,6 +343,7 @@ export const LazyUpdateProduct: LazyComponent<typeof import("../components/admin
 export const LazyDetailAccount: LazyComponent<typeof import("../components/admin/users/DetailAccount.vue")['default']>
 export const LazyUpdateMembership: LazyComponent<typeof import("../components/admin/users/UpdateMembership.vue")['default']>
 export const LazyAvatarEdit: LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
+export const LazyBreadcrumbDefault: LazyComponent<typeof import("../components/atoms/BreadcrumbDefault.vue")['default']>
 export const LazyButton: LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
 export const LazyCKEditorCDN: LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
 export const LazyCKEditorCDNBackup: LazyComponent<typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']>

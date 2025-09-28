@@ -37,8 +37,8 @@ const HOST = process.env.HOST || '0.0.0.0'
 const barcodePath = fileURLToPath(new URL('./public/barcodes', import.meta.url))
 
 app.use(cors({
-  // origin: (origin, cb) => cb(null, origin), // trả về chính origin gọi đến
-  origin: process.env.DOMAIN,
+  // origin: process.env.DOMAIN,
+  origin: "*",
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],

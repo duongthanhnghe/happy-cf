@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { getAllProduct, getProductById, createProduct, updateProduct, deleteProduct, getPromotionalProducts, getMostOrderedProduct, getWishlistByUserId, addWishlistItem, deleteWishlistItem, toggleActive, searchProducts, } from '../controllers/productController.js';
+import { getAllProduct, getProductById, createProduct, updateProduct, deleteProduct, getPromotionalProducts, getMostOrderedProduct, getWishlistByUserId, addWishlistItem, deleteWishlistItem, toggleActive, searchProducts, getRelatedProducts, } from '../controllers/productController.js';
 const router = Router();
 router.get('/', getAllProduct);
 router.get('/promotion', getPromotionalProducts);
 router.get('/most-order', getMostOrderedProduct);
 router.get('/search', searchProducts);
+router.get('/related/:slug', getRelatedProducts);
 router.post('/', createProduct);
 router.get('/:id', getProductById);
 router.put('/:id', updateProduct);

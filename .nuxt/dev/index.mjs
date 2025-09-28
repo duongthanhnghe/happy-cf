@@ -3304,7 +3304,28 @@ const ProductSchema = new Schema(
     listImage: { type: [ListImageSchema], default: [] },
     options: { type: [OptionSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    titleSEO: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
   },
   { timestamps: true }
 );
@@ -3375,7 +3396,12 @@ function toProductDTO(entity) {
     categoryId: entity.categoryId ? entity.categoryId.toString() : "",
     isActive: entity.isActive,
     createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
-    updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || ""
+    updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || "",
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords
   };
 }
 const toProductListDTO = (list) => list.map(toProductDTO);
@@ -4735,11 +4761,91 @@ const getReviewsByUser = async (req, res) => {
     return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1", error });
   }
 };
+const getReviewsByProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+    if (!productId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu productId" });
+    }
+    const product = await ProductEntity.findById(productId);
+    if (!product) {
+      return res.status(404).json({ code: 1, message: "S\u1EA3n ph\u1EA9m kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const numPage = Number(page);
+    const numLimit = Number(limit);
+    const query = { productId: product._id, status: "approved" };
+    const summaryAgg = await ProductReviewEntity.aggregate([
+      { $match: query },
+      {
+        $group: {
+          _id: "$rating",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    const totalReviews = summaryAgg.reduce((acc, cur) => acc + cur.count, 0);
+    const sumRatings = summaryAgg.reduce(
+      (acc, cur) => acc + cur._id * cur.count,
+      0
+    );
+    const averageRating = totalReviews > 0 ? parseFloat((sumRatings / totalReviews).toFixed(1)) : 0;
+    const ratingsBreakdown = {};
+    for (let i = 1; i <= 5; i++) {
+      const found = summaryAgg.find((s) => s._id === i);
+      ratingsBreakdown[i] = found ? found.count : 0;
+    }
+    if (numLimit === -1) {
+      const reviews = await ProductReviewEntity.find(query).populate("userId").sort({ createdAt: -1 });
+      return res.json({
+        code: 0,
+        data: toProductReviewListDTO(reviews),
+        pagination: {
+          page: 1,
+          limit: reviews.length,
+          totalPages: 1,
+          total: reviews.length
+        },
+        summary: {
+          averageRating,
+          totalReviews,
+          ratingsBreakdown
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [{ path: "userId", model: "User" }]
+    };
+    const result = await ProductReviewEntity.paginate(query, options);
+    return res.json({
+      code: 0,
+      data: toProductReviewListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      },
+      summary: {
+        averageRating,
+        totalReviews,
+        ratingsBreakdown
+      }
+    });
+  } catch (error) {
+    console.error("L\u1ED7i getReviewsByProduct:", error);
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1", error });
+  }
+};
 
 const router$2 = Router();
 router$2.get("/", getAllProductReviews);
 router$2.get("/:id", getProductReviewById);
 router$2.get("/user/:userId/reviews", getReviewsByUser);
+router$2.get("/product/:productId/reviews", getReviewsByProduct);
 router$2.put("/status", updateProductReviewStatus);
 router$2.put("/submit", submitProductReview);
 router$2.delete("/:id", deleteProductReview);
@@ -4786,7 +4892,12 @@ const getAllProduct = async (req, res) => {
 };
 const getProductById = async (req, res) => {
   try {
-    const product = await ProductEntity.findById(req.params.id);
+    let product;
+    if (/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
+      product = await ProductEntity.findById(req.params.id);
+    } else {
+      product = await ProductEntity.findOne({ slug: req.params.id });
+    }
     if (!product) {
       return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
@@ -4847,6 +4958,30 @@ const deleteProduct = async (req, res) => {
     }
     return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
   } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getRelatedProducts = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const limit = req.query.limit ? Number(req.query.limit) : 10;
+    const product = await ProductEntity.findOne({ slug }).lean();
+    if (!product) {
+      return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const related = await ProductEntity.find({
+      _id: { $ne: product._id },
+      categoryId: product.categoryId,
+      isActive: true,
+      amount: { $gt: 0 }
+    }).limit(limit).sort({ createdAt: -1 }).lean();
+    return res.json({
+      code: 0,
+      data: toProductListDTO(related),
+      message: "Success"
+    });
+  } catch (err) {
+    console.error("Get related products error:", err);
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
@@ -5099,6 +5234,7 @@ router$1.get("/", getAllProduct);
 router$1.get("/promotion", getPromotionalProducts);
 router$1.get("/most-order", getMostOrderedProduct);
 router$1.get("/search", searchProducts);
+router$1.get("/related/:slug", getRelatedProducts);
 router$1.post("/", createProduct);
 router$1.get("/:id", getProductById);
 router$1.put("/:id", updateProduct);

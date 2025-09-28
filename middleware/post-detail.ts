@@ -6,16 +6,14 @@ import { usePostDetailStore } from '@/stores/client/news/usePostDetailStore';
 import { usePostRelated } from '@/composables/news/usePostRelated'
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => {
-  const { fetchDetailPost, fetchDetailPostSlug, getDetailPostApi } = usePostDetail()
+  const { fetchDetailPostSlug, getDetailPostApi } = usePostDetail()
   const { fetchPostListRelated } = usePostRelated()
   const storePostDetail = usePostDetailStore()
 
-  const id = to.params.id as string | undefined
   const slug = to.params.postSlug as string | undefined
+
   try {
-    if (id) {
-      await fetchDetailPost(id)
-    } else if (slug) {
+    if (slug) {
       const data = await fetchDetailPostSlug(slug)
       if(data?.data.id) {
         await fetchPostListRelated(slug, storePostDetail.limitRelated)

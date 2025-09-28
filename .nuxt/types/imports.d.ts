@@ -36,6 +36,7 @@ declare global {
   const formatDateTime: typeof import('../../utils/global')['formatDateTime']
   const generateSlug: typeof import('../../utils/global')['generateSlug']
   const getAppManifest: typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']
+  const getBreadcrumbs: typeof import('../../utils/breadcrumb')['getBreadcrumbs']
   const getCookie: typeof import('../../utils/global')['getCookie']
   const getCurrentDateTime: typeof import('../../utils/global')['getCurrentDateTime']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
@@ -244,6 +245,7 @@ declare module 'vue' {
     readonly formatDateTime: UnwrapRef<typeof import('../../utils/global')['formatDateTime']>
     readonly generateSlug: UnwrapRef<typeof import('../../utils/global')['generateSlug']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
+    readonly getBreadcrumbs: UnwrapRef<typeof import('../../utils/breadcrumb')['getBreadcrumbs']>
     readonly getCookie: UnwrapRef<typeof import('../../utils/global')['getCookie']>
     readonly getCurrentDateTime: UnwrapRef<typeof import('../../utils/global')['getCurrentDateTime']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>

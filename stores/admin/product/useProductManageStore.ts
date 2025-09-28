@@ -12,6 +12,7 @@ import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileMana
 import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation'
+import { useSeoWatchers } from "@/utils/seoHandle";
 
 export const useProductManageStore = defineStore("ProductManage", () => {
 
@@ -61,7 +62,12 @@ const defaultForm: CreateProductDTO = {
   listImage: [],
   options: [],
   categoryId: '',
-  isActive: false
+  isActive: false,
+  // SEO
+  titleSEO: '',
+  descriptionSEO: '',
+  slug: '',
+  keywords: []
 };
 
 const formProductItem = reactive<CreateProductDTO>({ ...defaultForm })
@@ -133,16 +139,6 @@ const checkSelectImage = ref<boolean>(true)
             filtered = filtered.filter(item => item.categoryId === filterCategory)
           }
 
-          if (sortBy.length) {
-            const sortKey = sortBy[0].key
-            const sortOrder = sortBy[0].order
-            filtered.sort((a: any, b: any) => {
-              const aValue = a[sortKey]
-              const bValue = b[sortKey]
-              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-            })
-          }
-
           resolve({ items: filtered })
         }, 200)
       })
@@ -212,17 +208,10 @@ const checkSelectImage = ref<boolean>(true)
       }));
 
       const newProduct = {
-        productName: formProductItem.productName,
-        description: formProductItem.description,
-        summaryContent: formProductItem.summaryContent,
+        ...formProductItem,
         price: Number(formProductItem.price),
         priceDiscounts: Number(formProductItem.priceDiscounts),
-        amount: Number(formProductItem.amount),
-        image: formProductItem.image,
-        listImage: formProductItem.listImage,
-        options: parseNumberOption,
-        isActive: formProductItem.isActive,
-        categoryId: formProductItem.categoryId
+        options: parseNumberOption
       }
 
       const data = await productsAPI.create(newProduct)
@@ -239,45 +228,14 @@ const checkSelectImage = ref<boolean>(true)
     }
   }
 
-    const handleEditProduct = async (productId: string) => {
-      if(!productId) return
-      await fetchDetailProduct(productId)
-      if(getDetailProduct.value) detailData.value = getDetailProduct.value
-      if(!detailData.value) return
-      handleTogglePopupUpdate(true)
-
-      const {
-        id,
-        productName,
-        description,
-        summaryContent,
-        price,
-        priceDiscounts,
-        amount,
-        amountOrder,
-        image,
-        listImage,
-        options,
-        isActive,
-        categoryId
-      } = detailData.value
-
-      Object.assign(updateProductItem, {
-        id,
-        productName,
-        description,
-        summaryContent,
-        price,
-        priceDiscounts,
-        amount,
-        amountOrder,
-        image,
-        listImage,
-        options,
-        isActive,
-        categoryId
-      })
-    }
+  const handleEditProduct = async (productId: string) => {
+    if(!productId) return
+    await fetchDetailProduct(productId)
+    if(getDetailProduct.value) detailData.value = getDetailProduct.value
+    if(!detailData.value) return
+    handleTogglePopupUpdate(true)
+    Object.assign(updateProductItem, detailData.value);
+  }
 
   async function submitUpdate() {
     Loading(true);
@@ -437,6 +395,10 @@ const checkSelectImage = ref<boolean>(true)
     storeCategory.handleResetFormCategoryItem()
     storeCategory.handleTogglePopupAdd(true)
   }
+
+  // SEO
+  useSeoWatchers(formProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
+  useSeoWatchers(updateProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
 
   watch(() => getListCategoryAll.value, async (newValue) => {
     if(newValue.length === 0) await fetchCategoryList()

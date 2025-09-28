@@ -46,10 +46,18 @@ export const getAllProduct = async (req: Request, res: Response) => {
 
 export const getProductById = async (req: Request<{ id: string }>, res: Response) => {
   try {
-    const product = await ProductEntity.findById(req.params.id)
+
+    let product
+    if (/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
+      product = await ProductEntity.findById(req.params.id)
+    } else {
+      product = await ProductEntity.findOne({ slug: req.params.id })
+    }
+
     if (!product) {
       return res.status(404).json({ code: 1, message: "Product không tồn tại" })
     }
+
     return res.json({ code: 0, data: toProductDTO(product) })
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message })
@@ -117,6 +125,40 @@ export const deleteProduct = async (req: Request<{ id: string }>, res: Response)
     }
     return res.json({ code: 0, message: "Xoá thành công" })
   } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const getRelatedProducts = async (
+  req: Request<{ slug: string }, {}, {}, { limit?: number }>,
+  res: Response
+) => {
+  try {
+    const { slug } = req.params
+    const limit = req.query.limit ? Number(req.query.limit) : 10
+
+    const product = await ProductEntity.findOne({ slug }).lean()
+    if (!product) {
+      return res.status(404).json({ code: 1, message: "Product không tồn tại" })
+    }
+
+    const related = await ProductEntity.find({
+      _id: { $ne: product._id },            
+      categoryId: product.categoryId,     
+      isActive: true,
+      amount: { $gt: 0 }
+    })
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .lean()
+
+    return res.json({
+      code: 0,
+      data: toProductListDTO(related),
+      message: "Success"
+    })
+  } catch (err: any) {
+    console.error("Get related products error:", err)
     return res.status(500).json({ code: 1, message: err.message })
   }
 }

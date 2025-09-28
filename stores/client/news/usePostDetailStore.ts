@@ -1,9 +1,8 @@
-import { ref, watch, computed } from "vue";
+import { watch, computed } from "vue";
 import { defineStore } from "pinia";
 import { ROUTES } from '@/shared/constants/routes'
 import { usePostDetail } from '@/composables/news/usePostDetail'
 import { usePostRelated } from '@/composables/news/usePostRelated'
-import type { PostNewsDTO } from '@/server/types/dto/news.dto'
 import { usePostNewsSEO } from '@/composables/seo/usePostNewsSEO'
 
 export const usePostDetailStore = defineStore("PostDetailStore", () => {
@@ -11,7 +10,6 @@ export const usePostDetailStore = defineStore("PostDetailStore", () => {
   const { getListPostRelatedApi } = usePostRelated()
   const { setNewsSEO } = usePostNewsSEO()
 
-  const listItems = ref<PostNewsDTO[]|null>(null);
   const limitRelated = 12
   const routePath = ROUTES.PUBLIC.NEWS.children?.DETAIL?.path ?? '/post'
 
@@ -21,15 +19,9 @@ export const usePostDetailStore = defineStore("PostDetailStore", () => {
     }
   }, { immediate: true })
 
-  watch(getListPostRelatedApi, (newValue) => {
-    if (newValue && newValue) {
-      listItems.value = newValue
-    }
-  })
-
   const getDetail = computed(() => getDetailPostApi.value);
 
-  const getListItems = computed(() => listItems.value);
+  const getListItems = computed(() => getListPostRelatedApi.value);
 
   return {
     getDetail,

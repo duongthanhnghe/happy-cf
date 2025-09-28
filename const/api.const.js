@@ -27,6 +27,7 @@ export const API_ENDPOINTS = {
     DELETE: (id) => `/products/${id}`,
     UPDATE: (id) => `/products/${id}`,
     CREATE: '/products',
+    RELATED_BY_SLUG: (slug) => `/products/related/${slug}`,
     TOGGLE_ACTIVE: (id) => `/products/toggleActive/${id}`,
     LIST_MOST_ORDER: (limit) => `/products/most-order?limit=${limit}`,
     LIST_PROMOTION: (limit) => `/products/promotion?limit=${limit}`,
@@ -135,5 +136,6 @@ export const API_ENDPOINTS = {
     UPDATE_STATUS: '/product-reviews/status',
     SUBMIT: '/product-reviews/submit',
     GET_BY_USER_PENDING: (userId) => `/product-reviews/user/${userId}/reviews`,
+    GET_BY_PRODUCT_ID: (id) => `/product-reviews/product/${id}/reviews`,
   },
 }
