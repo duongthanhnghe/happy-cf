@@ -42,6 +42,7 @@ interface _GlobalComponents {
     'NoData': typeof import("../components/atoms/NoData.vue")['default']
     'Popup': typeof import("../components/atoms/Popup.vue")['default']
     'SelectOrder': typeof import("../components/atoms/SelectOrder.vue")['default']
+    'VTreeCustom': typeof import("../components/atoms/VTreeCustom.vue")['default']
     'Facebook': typeof import("../components/atoms/icons/Facebook.vue")['default']
     'Instagram': typeof import("../components/atoms/icons/Instagram.vue")['default']
     'Tiktok': typeof import("../components/atoms/icons/Tiktok.vue")['default']
@@ -145,6 +146,7 @@ interface _GlobalComponents {
     'LazyNoData': LazyComponent<typeof import("../components/atoms/NoData.vue")['default']>
     'LazyPopup': LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
     'LazySelectOrder': LazyComponent<typeof import("../components/atoms/SelectOrder.vue")['default']>
+    'LazyVTreeCustom': LazyComponent<typeof import("../components/atoms/VTreeCustom.vue")['default']>
     'LazyFacebook': LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
     'LazyInstagram': LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
     'LazyTiktok': LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>
@@ -254,6 +256,7 @@ export const MaterialIcon: typeof import("../components/atoms/MaterialIcon.vue")
 export const NoData: typeof import("../components/atoms/NoData.vue")['default']
 export const Popup: typeof import("../components/atoms/Popup.vue")['default']
 export const SelectOrder: typeof import("../components/atoms/SelectOrder.vue")['default']
+export const VTreeCustom: typeof import("../components/atoms/VTreeCustom.vue")['default']
 export const Facebook: typeof import("../components/atoms/icons/Facebook.vue")['default']
 export const Instagram: typeof import("../components/atoms/icons/Instagram.vue")['default']
 export const Tiktok: typeof import("../components/atoms/icons/Tiktok.vue")['default']
@@ -357,6 +360,7 @@ export const LazyMaterialIcon: LazyComponent<typeof import("../components/atoms/
 export const LazyNoData: LazyComponent<typeof import("../components/atoms/NoData.vue")['default']>
 export const LazyPopup: LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
 export const LazySelectOrder: LazyComponent<typeof import("../components/atoms/SelectOrder.vue")['default']>
+export const LazyVTreeCustom: LazyComponent<typeof import("../components/atoms/VTreeCustom.vue")['default']>
 export const LazyFacebook: LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
 export const LazyInstagram: LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
 export const LazyTiktok: LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>

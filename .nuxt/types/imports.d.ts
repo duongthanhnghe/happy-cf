@@ -31,6 +31,7 @@ declare global {
   const downloadImage: typeof import('../../utils/global')['downloadImage']
   const effect: typeof import('vue')['effect']
   const effectScope: typeof import('vue')['effectScope']
+  const findItemInTree: typeof import('../../utils/treeHelpers')['findItemInTree']
   const formatBytes: typeof import('../../utils/global')['formatBytes']
   const formatCurrency: typeof import('../../utils/global')['formatCurrency']
   const formatDateTime: typeof import('../../utils/global')['formatDateTime']
@@ -56,6 +57,7 @@ declare global {
   const isVue2: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue2']
   const isVue3: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']
   const loadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']
+  const markAllSelectable: typeof import('../../utils/treeHelpers')['markAllSelectable']
   const markRaw: typeof import('vue')['markRaw']
   const mergeModels: typeof import('vue')['mergeModels']
   const navigateTo: typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']
@@ -240,6 +242,7 @@ declare module 'vue' {
     readonly downloadImage: UnwrapRef<typeof import('../../utils/global')['downloadImage']>
     readonly effect: UnwrapRef<typeof import('vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly findItemInTree: UnwrapRef<typeof import('../../utils/treeHelpers')['findItemInTree']>
     readonly formatBytes: UnwrapRef<typeof import('../../utils/global')['formatBytes']>
     readonly formatCurrency: UnwrapRef<typeof import('../../utils/global')['formatCurrency']>
     readonly formatDateTime: UnwrapRef<typeof import('../../utils/global')['formatDateTime']>
@@ -265,6 +268,7 @@ declare module 'vue' {
     readonly isVue2: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue2']>
     readonly isVue3: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']>
     readonly loadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']>
+    readonly markAllSelectable: UnwrapRef<typeof import('../../utils/treeHelpers')['markAllSelectable']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly mergeModels: UnwrapRef<typeof import('vue')['mergeModels']>
     readonly navigateTo: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']>

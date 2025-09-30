@@ -1,6 +1,39 @@
 import { Types } from "mongoose";
 import { CategoryProductEntity, ProductEntity } from "../models/ProductEntity.js";
 import { toProductListDTO, toCategoryProductDTO, toCategoryProductListDTO, } from "../mappers/productMapper.js";
+function buildCategoryTree(list) {
+    const map = new Map();
+    list.forEach(cat => {
+        map.set(cat.id, { ...cat, children: [] });
+    });
+    const tree = [];
+    map.forEach(cat => {
+        if (cat.parentId) {
+            const parent = map.get(cat.parentId);
+            if (parent) {
+                parent.children.push(cat);
+            }
+            else {
+                tree.push(cat);
+            }
+        }
+        else {
+            tree.push(cat);
+        }
+    });
+    return tree;
+}
+export const getAllCategoriesTree = async (_, res) => {
+    try {
+        const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
+        const dtoList = toCategoryProductListDTO(categories);
+        const tree = buildCategoryTree(dtoList);
+        return res.json({ code: 0, data: tree });
+    }
+    catch (err) {
+        return res.status(500).json({ code: 1, message: err.message });
+    }
+};
 export const getAllCategories = async (_, res) => {
     try {
         const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
@@ -44,9 +77,18 @@ export const getCategoriesBySlug = async (req, res) => {
 };
 export const createCategories = async (req, res) => {
     try {
-        const { categoryName, image } = req.body;
+        const { categoryName, image, parentId } = req.body;
         if (!categoryName || !image) {
             return res.status(400).json({ code: 1, message: "Thiếu categoryName hoặc image" });
+        }
+        if (parentId && !Types.ObjectId.isValid(parentId)) {
+            return res.status(400).json({ code: 1, message: "parentId không hợp lệ" });
+        }
+        if (parentId) {
+            const parent = await CategoryProductEntity.findById(parentId);
+            if (!parent) {
+                return res.status(400).json({ code: 1, message: "Danh mục cha không tồn tại" });
+            }
         }
         const existed = await CategoryProductEntity.findOne({ categoryName });
         if (existed) {
@@ -56,10 +98,10 @@ export const createCategories = async (req, res) => {
         const maxOrder = lastItem ? lastItem.order : 0;
         const newItem = new CategoryProductEntity({
             ...req.body,
+            parentId: parentId || null,
             order: maxOrder + 1,
         });
         await newItem.save();
-        // const newCategory = new CategoryProductEntity({ categoryName, description, image });
         return res.status(201).json({ code: 0, message: "Tạo thành công", data: toCategoryProductDTO(newItem) });
     }
     catch (err) {
@@ -70,6 +112,16 @@ export const updateCategories = async (req, res) => {
     try {
         if (!Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
+        }
+        const { parentId } = req.body;
+        if (parentId && !Types.ObjectId.isValid(parentId)) {
+            return res.status(400).json({ code: 1, message: "parentId không hợp lệ" });
+        }
+        if (parentId) {
+            const parent = await CategoryProductEntity.findById(parentId);
+            if (!parent) {
+                return res.status(400).json({ code: 1, message: "Danh mục cha không tồn tại" });
+            }
         }
         const updatedCategory = await CategoryProductEntity.findByIdAndUpdate(req.params.id, req.body, { new: true }).lean();
         if (!updatedCategory) {
@@ -87,6 +139,13 @@ export const deleteCategories = async (req, res) => {
             return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
         }
         const categoryId = new Types.ObjectId(req.params.id);
+        const hasChildren = await CategoryProductEntity.exists({ parentId: categoryId });
+        if (hasChildren) {
+            return res.json({
+                code: 1,
+                message: "Không thể xóa danh mục vì vẫn còn danh mục con"
+            });
+        }
         const hasProducts = await ProductEntity.exists({ categoryId });
         if (hasProducts) {
             return res.json({
@@ -104,40 +163,6 @@ export const deleteCategories = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// export const getProductsByCategory = async (
-//   req: Request<{ id: string }>,
-//   res: Response
-// ) => {
-//   try {
-//     if (!Types.ObjectId.isValid(req.params.id)) {
-//       return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
-//     }
-//     const categoryId = new Types.ObjectId(req.params.id);
-//     const page = parseInt(req.query.page as string, 10) || 1;
-//     let limit = parseInt(req.query.limit as string, 10) || 10;
-//     if (limit === -1) {
-//       limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
-//     }
-//     const skip = (page - 1) * limit;
-//     const [total, products] = await Promise.all([
-//       ProductEntity.countDocuments({ categoryId, isActive: true }),
-//       ProductEntity.find({ categoryId, isActive: true })
-//         .sort({ createdAt: -1 })
-//         .skip(skip)
-//         .limit(limit)
-//         .lean(),
-//     ]);
-//     const totalPages = Math.ceil(total / limit);
-//     return res.json({
-//       code: 0,
-//       data: toProductListDTO(products),
-//       pagination: { page, limit, total, totalPages },
-//       message: "Success",
-//     });
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message });
-//   }
-// };
 export const getProductsByCategory = async (req, res) => {
     try {
         if (!Types.ObjectId.isValid(req.params.id)) {

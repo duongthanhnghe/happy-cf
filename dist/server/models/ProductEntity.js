@@ -56,6 +56,7 @@ const CategoryProductSchema = new Schema({
     image: { type: String, required: true },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
+    parentId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", default: null },
     titleSEO: {
         type: String,
         trim: true,

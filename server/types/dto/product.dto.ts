@@ -51,6 +51,7 @@ export interface CategoryProductDTO {
   image: string;
   order: number;
   isActive: boolean;
+  parentId: string | null;
   //SEO
   titleSEO: string;
   descriptionSEO: string;

@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { getAllCategories, getCategoriesById, createCategories, updateCategories, deleteCategories, getProductsByCategory, toggleActive, updateOrder, getCategoriesBySlug, } from '../controllers/categoriesProductController.js';
+import { getAllCategories, getCategoriesById, createCategories, updateCategories, deleteCategories, getProductsByCategory, toggleActive, updateOrder, getCategoriesBySlug, getAllCategoriesTree, } from '../controllers/categoriesProductController.js';
 const router = Router();
+router.get('/tree', getAllCategoriesTree);
 router.get('/', getAllCategories);
 router.get('/slug/:slug', getCategoriesBySlug);
 router.get('/:id', getCategoriesById);

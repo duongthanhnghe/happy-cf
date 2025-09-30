@@ -1133,7 +1133,22 @@ const plugins = [
 _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"2f56a-6PNCkEYvUUEYJr94PKWgzcchWJM\"",
+    "mtime": "2025-09-29T06:53:37.008Z",
+    "size": 193898,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"b663c-r/brmTnfCFSwbXkzbBuPxM266OQ\"",
+    "mtime": "2025-09-29T06:53:37.015Z",
+    "size": 747068,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -3336,6 +3351,7 @@ const CategoryProductSchema = new Schema(
     image: { type: String, required: true },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
+    parentId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", default: null },
     titleSEO: {
       type: String,
       trim: true,
@@ -3414,6 +3430,7 @@ function toCategoryProductDTO(entity) {
     image: entity.image,
     order: entity.order,
     isActive: entity.isActive,
+    parentId: entity.parentId ? entity.parentId.toString() : "",
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,
@@ -3425,6 +3442,36 @@ function toCategoryProductDTO(entity) {
 }
 const toCategoryProductListDTO = (list) => list.map(toCategoryProductDTO);
 
+function buildCategoryTree(list) {
+  const map = /* @__PURE__ */ new Map();
+  list.forEach((cat) => {
+    map.set(cat.id, { ...cat, children: [] });
+  });
+  const tree = [];
+  map.forEach((cat) => {
+    if (cat.parentId) {
+      const parent = map.get(cat.parentId);
+      if (parent) {
+        parent.children.push(cat);
+      } else {
+        tree.push(cat);
+      }
+    } else {
+      tree.push(cat);
+    }
+  });
+  return tree;
+}
+const getAllCategoriesTree = async (_, res) => {
+  try {
+    const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
+    const dtoList = toCategoryProductListDTO(categories);
+    const tree = buildCategoryTree(dtoList);
+    return res.json({ code: 0, data: tree });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
 const getAllCategories = async (_, res) => {
   try {
     const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
@@ -3465,9 +3512,18 @@ const getCategoriesBySlug = async (req, res) => {
 };
 const createCategories = async (req, res) => {
   try {
-    const { categoryName, image } = req.body;
+    const { categoryName, image, parentId } = req.body;
     if (!categoryName || !image) {
       return res.status(400).json({ code: 1, message: "Thi\u1EBFu categoryName ho\u1EB7c image" });
+    }
+    if (parentId && !Types.ObjectId.isValid(parentId)) {
+      return res.status(400).json({ code: 1, message: "parentId kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    if (parentId) {
+      const parent = await CategoryProductEntity.findById(parentId);
+      if (!parent) {
+        return res.status(400).json({ code: 1, message: "Danh m\u1EE5c cha kh\xF4ng t\u1ED3n t\u1EA1i" });
+      }
     }
     const existed = await CategoryProductEntity.findOne({ categoryName });
     if (existed) {
@@ -3477,6 +3533,7 @@ const createCategories = async (req, res) => {
     const maxOrder = lastItem ? lastItem.order : 0;
     const newItem = new CategoryProductEntity({
       ...req.body,
+      parentId: parentId || null,
       order: maxOrder + 1
     });
     await newItem.save();
@@ -3489,6 +3546,16 @@ const updateCategories = async (req, res) => {
   try {
     if (!Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    const { parentId } = req.body;
+    if (parentId && !Types.ObjectId.isValid(parentId)) {
+      return res.status(400).json({ code: 1, message: "parentId kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    if (parentId) {
+      const parent = await CategoryProductEntity.findById(parentId);
+      if (!parent) {
+        return res.status(400).json({ code: 1, message: "Danh m\u1EE5c cha kh\xF4ng t\u1ED3n t\u1EA1i" });
+      }
     }
     const updatedCategory = await CategoryProductEntity.findByIdAndUpdate(
       req.params.id,
@@ -3509,6 +3576,13 @@ const deleteCategories = async (req, res) => {
       return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
     }
     const categoryId = new Types.ObjectId(req.params.id);
+    const hasChildren = await CategoryProductEntity.exists({ parentId: categoryId });
+    if (hasChildren) {
+      return res.json({
+        code: 1,
+        message: "Kh\xF4ng th\u1EC3 x\xF3a danh m\u1EE5c v\xEC v\u1EABn c\xF2n danh m\u1EE5c con"
+      });
+    }
     const hasProducts = await ProductEntity.exists({ categoryId });
     if (hasProducts) {
       return res.json({
@@ -3634,6 +3708,7 @@ const toggleActive$2 = async (req, res) => {
 };
 
 const router$7 = Router();
+router$7.get("/tree", getAllCategoriesTree);
 router$7.get("/", getAllCategories);
 router$7.get("/slug/:slug", getCategoriesBySlug);
 router$7.get("/:id", getCategoriesById);

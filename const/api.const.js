@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
   },
   CATEGORIES: {
     LIST: '/categories',
+    LIST_TREE: '/categories/tree',
     GET_BY_ID: (id) => `/categories/${id}`,
     GET_BY_SLUG: (slug) => `/categories/slug/${slug}`,
     CREATE: '/categories',

@@ -52,6 +52,7 @@ export interface CategoryProduct {
   image: string;
   order: number;
   isActive: boolean;
+  parentId?: Types.ObjectId | null;
   //SEO
   titleSEO: string;
   descriptionSEO: string;
@@ -136,6 +137,7 @@ const CategoryProductSchema = new Schema<CategoryProduct>(
     image: { type: String, required: true },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
+    parentId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", default: null },
     titleSEO: {
       type: String,
       trim: true,

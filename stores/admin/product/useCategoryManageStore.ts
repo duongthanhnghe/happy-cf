@@ -1,54 +1,58 @@
 import { ref, reactive, watch, computed } from "vue";
 import { defineStore } from "pinia";
 import { categoriesAPI } from "@/services/categories-product.service";
-import {
-  Loading
-} from '@/utils/global'
+import { Loading } from '@/utils/global'
 import type { CategoryProductDTO, CreateCategoryProductDTO, UpdateCategoryProductDTO } from '@/server/types/dto/product.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
 import { showSuccess, showWarning, showConfirm } from "@/utils/toast";
 import { useProductCategory } from '@/composables/product/useProductCategory'
+import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree'
 import { useProductCategoryDetail } from '@/composables/product/useProductCategoryDetail'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 import { useSeoWatchers } from "@/utils/seoHandle";
+import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 
 export const useCategoryManageStore = defineStore("CategoryManage", () => {
 
-const { getListCategoryAll, fetchCategoryList } = useProductCategory()
-const { getProductCategoryDetail, fetchProductCategoryDetail } = useProductCategoryDetail()
-const storeFileManage = useFileManageFolderStore();
+  const { getListCategoryAll, fetchCategoryList } = useProductCategory()
+  const { getListCategoryAllTree, fetchCategoryListTree } = useProductCategoryTree()
+  const { getProductCategoryDetail, fetchProductCategoryDetail } = useProductCategoryDetail()
+  const storeFileManage = useFileManageFolderStore();
 
-const defaultForm: CreateCategoryProductDTO = {
-  categoryName: '',
-  description: '',
-  image: '',
-  isActive: false,
-  // SEO
-  titleSEO: '',
-  descriptionSEO: '',
-  slug: '',
-  keywords: []
-};
 
-const formCategoryItem = reactive<CreateCategoryProductDTO>({ ...defaultForm })
-
-const updateCategoryItem = reactive<UpdateCategoryProductDTO>({ ...defaultForm, id: '' })
-
-//state list
-const dataListCategory = ref<CategoryProductDTO[] | null>(null);
-const maxOrder = ref<number>(0)
-const itemsPerPage = 10
+  const defaultForm: CreateCategoryProductDTO = {
+    categoryName: '',
+    description: '',
+    image: '',
+    isActive: false,
+    parentId: null,
+    titleSEO: '',
+    descriptionSEO: '',
+    slug: '',
+    keywords: []
+  };
+  const formCategoryItem = reactive<CreateCategoryProductDTO>({ ...defaultForm })
+  const updateCategoryItem = reactive<UpdateCategoryProductDTO>({ ...defaultForm, id: '' })
+  const selectedCategory = ref<CategoryProductDTO[]>([])
+  const selectedCategoryName = ref<string[]>([])
+  const treeItems = computed(() => {
+    const items = getListCategoryAllTree.value ?? []
+    return markAllSelectable(items)
+  })
+  const treeItemsForEdit = computed(() => {
+    const items = getListCategoryAllTree.value ?? []
+    return markAllSelectable(items, updateCategoryItem.id)
+  })
+  const dataListCategory = ref<CategoryProductDTO[] | null>(null);
+  const maxOrder = ref<number>(0)
+  const itemsPerPage = 10
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Hinh anh', key: 'image', sortable: false, },
-    {
-      title: 'Ten danh muc',
-      sortable: false,
-      key: 'categoryName',
-    },
+    { title: 'Ten danh muc', sortable: false, key: 'categoryName'},
     { title: 'Mo ta', key: 'description', sortable: false, },
     { title: 'Tinh trang', key: 'isActive', sortable: false, },
     { title: '', key: 'actions', sortable: false},
@@ -59,21 +63,44 @@ const itemsPerPage = 10
   const name = ref<string>('')
   const search = ref<string>('')
   const currentTableOptions = ref<TableOpt>({
-  page: 1,
-  itemsPerPage: itemsPerPage,
-  sortBy: [],
-})
-const isTogglePopupUpdate = ref<boolean>(false);
-const detailData = ref<CategoryProductDTO | null>(null);
-const isTogglePopupAdd = ref<boolean>(false);
+    page: 1,
+    itemsPerPage: itemsPerPage,
+    sortBy: [],
+  })
+  const isTogglePopupUpdate = ref<boolean>(false);
+  const detailData = ref<CategoryProductDTO | null>(null);
+  const isTogglePopupAdd = ref<boolean>(false);
 
+  //utils handle
+  const handleTogglePopupAdd = (value: boolean) => {
+    updateCategoryItem.id = ''
+    isTogglePopupAdd.value = value;
+  };
 
-const getListAllCategory = async () => {
-  await fetchCategoryList()
-  if(getListCategoryAll.value) dataListCategory.value = getListCategoryAll.value
-}
+  const handleTogglePopupUpdate = (value: boolean) => {
+    isTogglePopupUpdate.value = value;
+  };
 
-const ListAllCategoryApi = {
+  const handleResetFormCategoryItem = () => {
+    Object.assign(formCategoryItem, defaultForm)
+    Object.assign(updateCategoryItem, defaultForm)
+
+    selectedCategory.value = []
+    selectedCategoryName.value = []
+    fetchCategoryListTree()
+  }
+
+  const handleReload = async () => {
+    await loadItemsCategory(currentTableOptions.value);
+  }
+
+  // LIST
+  const getListAllCategory = async () => {
+    await fetchCategoryList()
+    if(getListCategoryAll.value) dataListCategory.value = getListCategoryAll.value
+  }
+
+  const ListAllCategoryApi = {
     async fetch ({ page, itemsPerPage, sortBy, search }: {
       page: TableOpt['page'],
       itemsPerPage: TableOpt['itemsPerPage'],
@@ -130,7 +157,6 @@ const ListAllCategoryApi = {
   watch(dataListCategory, (newVal) => {
     dataListCategory.value = newVal;
 
-    // tinh max order
     if(newVal && newVal.length > 0) {
       maxOrder.value = Math.max(...newVal.map(item => item.order))
     } else {
@@ -138,31 +164,12 @@ const ListAllCategoryApi = {
     }
   })
 
-  //actions global
-  const handleTogglePopupAdd = (value: boolean) => {
-    updateCategoryItem.id = ''
-    isTogglePopupAdd.value = value;
-  };
 
-  const handleTogglePopupUpdate = (value: boolean) => {
-    isTogglePopupUpdate.value = value;
-  };
-
-  const handleResetFormCategoryItem = () => {
-    Object.assign(formCategoryItem, defaultForm)
-    Object.assign(updateCategoryItem, defaultForm)
-  }
-
-  const handleReload = async () => {
-    await loadItemsCategory(currentTableOptions.value);
-  }
-
-  //actions add
+  //CRUD
   async function submitCreate() {
     Loading(true);
     try {
       const newCategory = {...formCategoryItem}
-
       const data = await categoriesAPI.create(newCategory)
       if(data.code === 0) {
         showSuccess(data.message)
@@ -177,7 +184,6 @@ const ListAllCategoryApi = {
     }
   }
 
-  //actions edit
   const handleEditCategory = async (id: string) => {
     if(!id) return
     await fetchProductCategoryDetail(id)
@@ -185,12 +191,14 @@ const ListAllCategoryApi = {
     if(!detailData.value) return
     handleTogglePopupUpdate(true);
     Object.assign(updateCategoryItem, detailData.value);
+    if(updateCategoryItem.parentId) setSelectedCategory(updateCategoryItem.parentId)
   }
 
   async function submitUpdate() {
     Loading(true);
     try {
       const newCategory = {...updateCategoryItem}
+      console.log(newCategory)
       const data = await categoriesAPI.update(newCategory.id, newCategory)
       if(data.code === 0){
         showSuccess(data.message)
@@ -203,9 +211,8 @@ const ListAllCategoryApi = {
       console.error('Error submitting form:', err)
       Loading(false);
     }
-}
+  }
 
-  //actions delete
   const handleDeleteCategory = async (id: string) => {
     const confirmed = await showConfirm('Bạn có chắc xoá?')
     if (!confirmed) return
@@ -230,12 +237,19 @@ const ListAllCategoryApi = {
     }
   }
 
-  // doi kich hoat
+  // chang active
   const { toggleActive } = useToggleActiveStatus(categoriesAPI.toggleActive, serverItems );
+
 
   // change order
   const { handleChangeOrder } = useChangeOrder(categoriesAPI.updateOrder, () => loadItemsCategory(currentTableOptions.value));
 
+  const getListOrder = computed(() => {
+    return Array.from({ length: maxOrder.value }, (_, i) => i + 1)
+  })
+
+
+  //upload image
   const handleAddImage = () => {
     storeFileManage.handleTogglePopup(true)
   }
@@ -246,13 +260,43 @@ const ListAllCategoryApi = {
     target.image = newValue.url
   })
 
+
   // SEO
   useSeoWatchers(formCategoryItem, { sourceKey: 'categoryName', autoSlug: true, autoTitleSEO: true })
   useSeoWatchers(updateCategoryItem, { sourceKey: 'categoryName', autoSlug: true, autoTitleSEO: true })
 
-  const getListOrder = computed(() => {
-    return Array.from({ length: maxOrder.value }, (_, i) => i + 1)
+  // Tree category
+  const setSelectedCategory = (parentId: string | null) => {
+    if (parentId) {
+      const sourceTree = updateCategoryItem.id ? treeItemsForEdit.value : treeItems.value
+      const parentCategory = findItemInTree(sourceTree, parentId)
+      if (parentCategory) {
+        selectedCategory.value = [parentCategory]
+        selectedCategoryName.value = [parentCategory.categoryName]
+      }
+    } else {
+      selectedCategory.value = []
+      selectedCategoryName.value = []
+    }
+  }
+
+  watch(selectedCategory, (val) => {
+    if (val.length > 0) {
+      if(updateCategoryItem.id) updateCategoryItem.parentId = val[0].id;
+      else formCategoryItem.parentId = val[0].id;
+      selectedCategoryName.value = val.map(cat => cat.categoryName);
+    } else {
+      formCategoryItem.parentId = null;
+      updateCategoryItem.parentId = null;
+      selectedCategoryName.value = [];
+    }
   })
+
+  watch(getListCategoryAllTree, (newValue) => {
+    if(newValue?.length === 0 && newValue) fetchCategoryListTree()
+  }, { immediate: true})
+
+
 
   return {
     // state
@@ -272,6 +316,8 @@ const ListAllCategoryApi = {
     itemsPerPage,
     headers,
     currentTableOptions,
+    selectedCategory,
+    selectedCategoryName,
     // actions
     handleTogglePopupAdd,
     handleTogglePopupUpdate,
@@ -287,5 +333,9 @@ const ListAllCategoryApi = {
     toggleActive,
     handleChangeOrder,
     getListOrder,
+    getListCategoryAll,
+    getListCategoryAllTree,
+    treeItems,
+    treeItemsForEdit,
   };
 });

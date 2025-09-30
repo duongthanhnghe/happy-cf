@@ -14,10 +14,19 @@ export const categoriesAPI = {
       console.error('Error:', err)
     }
   },
+  getAllTree: async () => {
+    try {
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.LIST_TREE}`);
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  },
   create: async (bodyData: CreateCategoryProductDTO) => {
     try {
       if (!bodyData.categoryName || !bodyData.image) {
-        throw new Error('Missing required fields: categoryName, id, image')
+        throw new Error('Missing required fields: categoryName, image')
       }
 
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.CREATE}`, {
@@ -57,12 +66,12 @@ export const categoriesAPI = {
     try {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.GET_BY_SLUG(slug)}`)
       if (!response.ok) {
-        throw new Error(`Failed to fetch category with ID ${slug}`)
+        throw new Error(`Failed to fetch category with slug ${slug}`)
       }
       const data = await response.json()
       return data
     } catch (err) {
-      console.error(`Error getting category detail with ID ${slug}:`, err)
+      console.error(`Error getting category detail with slug ${slug}:`, err)
       throw err
     }
   },
@@ -71,7 +80,7 @@ export const categoriesAPI = {
 
       const payload = {
         ...bodyData,
-        _id: new Types.ObjectId(bodyData.id)
+        _id: bodyData.id,
       };
 
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.UPDATE(id)}`, {
@@ -98,8 +107,7 @@ export const categoriesAPI = {
       })
 
       if (!response.ok) {
-        return await response.json()
-        // throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       return await response.json()

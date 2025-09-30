@@ -49,6 +49,7 @@ export function toCategoryProductDTO(entity) {
         image: entity.image,
         order: entity.order,
         isActive: entity.isActive,
+        parentId: entity.parentId ? entity.parentId.toString() : "",
         // SEO
         titleSEO: entity.titleSEO,
         descriptionSEO: entity.descriptionSEO,

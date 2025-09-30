@@ -28,7 +28,7 @@ watch(valueChangePage, (newVal) => {
         price: {{ store.getDetail.price }}
         priceDiscounts: {{ store.getDetail.priceDiscounts }}
       </div>
-      <Button :color="`${store.isFavorite ? 'black' : 'secondary'}`" icon="favorite" @click.prevent="store.toggleLike()"/>
+      <Button :color="`${store.isFavorite ? 'black' : 'secondary'}`" icon="favorite" @click.prevent="store.toggleLike(store.getDetail.id)"/>
 
 
       <template v-if="store.getDetail?.options.length > 0">
