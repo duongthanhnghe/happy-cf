@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
+import { showWarning } from '@/utils/toast';
 import type { SubmitEventPromise } from 'vuetify';
 const store = useProductManageStore();
 
 const handleSubmitCreate = async (event: SubmitEventPromise) => {
   const result = await event
-  if (!result.valid) return
+  if (!result.valid || store.selectedCategoryName.length === 0) {
+    showWarning('Vui long nhap day du thong tin!')
+    return
+  }
   store.submitCreate()
 }
 
@@ -21,31 +25,36 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
         <LabelInput label="Ten san pham" required/>
         <v-text-field v-model="store.formProductItem.productName" :counter="100" :rules="store.nullAndSpecialRules" label="Nhap ten san pham" variant="outlined" required></v-text-field>
         <div class="row">
-          <div class="col-6">
+          <div class="col-4">
             <LabelInput label="Gia goc" required/>
             <v-text-field v-model="store.formProductItem.price" :rules="store.nullRules" type="number" label="0" variant="outlined"></v-text-field>
           </div>
-          <div class="col-6">
+          <div class="col-4">
             <LabelInput label="Gia khuyen mai" required/>
             <v-text-field v-model="store.formProductItem.priceDiscounts" :rules="store.productPriceDiscountRules" type="number" label="0" variant="outlined"></v-text-field>
           </div>
-          <div class="col-6">
+          <div class="col-4">
             <LabelInput label="So luong" required/>
             <v-text-field v-model="store.formProductItem.amount" :rules="store.nullRules" type="number" label="Nhap so luong" variant="outlined"></v-text-field>
           </div>
-          <div class="col-6 flex gap-sm align-anchor">
+          <div class="col-12 flex gap-sm align-anchor">
             <div class="flex-1">
               <LabelInput label="Danh muc san pham" required/>
-              <v-select label="Chon danh muc"
-                v-model="store.formProductItem.categoryId"
-                :items="store.getItemsCategory ? store.getItemsCategory : []"
-                item-title="categoryName"
-                item-value="id"
-                variant="solo"
-                :rules="store.nullRules"
-              />
+              <VTreeChoose :label="store.selectedCategoryName">
+                <v-treeview
+                  :items="store.treeItems"
+                  item-value="id"
+                  item-title="categoryName"
+                  selectable
+                  return-object
+                  select-strategy="single-independent"
+                  v-model:selected="store.selectedCategory"
+                  open-all
+                  density="compact"
+                >
+                </v-treeview>
+              </VTreeChoose>
             </div>
-            <Button icon="add" color="secondary" class="mt-xs" @click.stop.prevent="store.openPopupAddCategory()" />
           </div>
         </div>
         <LabelInput label="Noi dung"/>

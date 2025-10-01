@@ -96,6 +96,38 @@ export const getCategoriesBySlug = async (
   }
 };
 
+export const getChildrenCategories = async (
+  req: Request<{ id: string }, {}, {}, { includeInactive?: string }>,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const { includeInactive } = req.query;
+
+    if (!Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
+    }
+
+    const query: any = { parentId: id };
+
+    if (!includeInactive || includeInactive === "false") {
+      query.isActive = true;
+    }
+
+    const children = await CategoryProductEntity.find(query)
+      .lean()
+      .sort({ order: 1 });
+
+    return res.json({
+      code: 0,
+      data: toCategoryProductListDTO(children),
+      message: "Success",
+    });
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
 export const createCategories = async (req: Request<{}, {}, CreateCategoryProductBody>, res: Response) => {
   try {
     const { categoryName, image, parentId } = req.body;
@@ -216,20 +248,48 @@ export const getProductsByCategory = async (
 
     const categoryId = new Types.ObjectId(req.params.id);
 
+    const categories = await CategoryProductEntity.aggregate([
+      { $match: { _id: categoryId } },
+      {
+        $graphLookup: {
+          from: "product_categories",      // 👈 tên collection (mặc định là model name viết thường + "s")
+          startWith: "$_id",
+          connectFromField: "_id",
+          connectToField: "parentId",
+          as: "descendants"
+        }
+      },
+      {
+        $project: {
+          ids: {
+            $concatArrays: [["$_id"], "$descendants._id"]
+          }
+        }
+      }
+    ]);
+
+    const categoryIds: Types.ObjectId[] = categories[0]?.ids || [categoryId];
+
     const page = parseInt(req.query.page as string, 10) || 1;
     let limit = parseInt(req.query.limit as string, 10) || 10;
     const sortType = (req.query.sort as string) || "default";
 
     if (limit === -1) {
-      limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
+      limit = await ProductEntity.countDocuments({
+        categoryId: { $in: categoryIds },
+        isActive: true
+      });
     }
 
     const skip = (page - 1) * limit;
 
     const [total, products] = await Promise.all([
-      ProductEntity.countDocuments({ categoryId, isActive: true }),
+      ProductEntity.countDocuments({
+        categoryId: { $in: categoryIds },
+        isActive: true
+      }),
       ProductEntity.aggregate([
-        { $match: { categoryId, isActive: true } },
+        { $match: { categoryId: { $in: categoryIds }, isActive: true } },
 
         // Ép kiểu price & priceDiscount sang số
         {

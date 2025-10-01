@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import {
-  useCategoryManageStore
-} from '@/stores/admin/product/useCategoryManageStore'
+import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManageStore'
 import type { SubmitEventPromise } from 'vuetify';
 
 const store = useCategoryManageStore();
@@ -22,12 +20,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
       </div>
 
       <LabelInput label="Thuoc danh muc"/>
-      <input 
-        type="hidden" 
-        :value="store.selectedCategory"
-        required
-      />
-      <VTreeCustom :label="store.selectedCategoryName">
+      <VTreeChoose :label="store.selectedCategoryName">
         <v-treeview
           :items="store.treeItems"
           item-value="id"
@@ -40,15 +33,14 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           density="compact"
         >
         </v-treeview>
-      </VTreeCustom>
+      </VTreeChoose>
       
         <LabelInput label="Ten danh muc" required/>
         <v-text-field v-model="store.formCategoryItem.categoryName" :counter="50" :rules="store.nullAndSpecialRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
         <LabelInput label="Mo ta"/>
         <v-textarea v-model="store.formCategoryItem.description" :counter="500" label="Nhap mo ta" variant="outlined"></v-textarea>
         <LabelInput label="Anh dai dien" required/>
-        <!-- <v-img v-if="store.formCategoryItem.image" :src="store.formCategoryItem.image" class="mb-sm" alt="Hinh anh" :rules="store.nullRules" required /> -->
-        <v-img v-if="store.formCategoryItem.image" :src="store.formCategoryItem.image" class="mb-sm" alt="Hinh anh"/>
+        <v-img v-if="store.formCategoryItem.image" :src="store.formCategoryItem.image" class="mb-sm" alt="Hinh anh" :rules="store.nullRules" required />
         <div class="flex gap-sm">
           <v-text-field v-model="store.formCategoryItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
           <Button color="black" :label="store.formCategoryItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>

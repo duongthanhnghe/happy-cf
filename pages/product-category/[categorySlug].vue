@@ -23,6 +23,14 @@ watch(valueChangePage, (newVal) => {
       <h1 v-if="storeCategoryMain.getDetail.categoryName">{{ storeCategoryMain.getDetail.categoryName }}</h1>
       <h1 v-else></h1>
       <p>{{ storeCategoryMain.getDetail.description }}</p>
+      <v-radio-group v-if="storeCategoryMain.getListCategoryChildren.length > 1" v-model="storeCategoryMain.filterCategory">
+        <v-radio
+          v-for="item in [{ id: '', categoryName: storeCategoryMain.getDetail.categoryName }, ...storeCategoryMain.getListCategoryChildren]"
+          :key="item.id"
+          :label="item.categoryName"
+          :value="item.id"
+        />
+      </v-radio-group>
       <v-select
         v-model="storeCategoryMain.filterType"
         :items="[{title: 'Moi nhat',value:''},...storeCategoryMain.filterArray]"

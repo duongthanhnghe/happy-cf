@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
     LIST_TREE: '/categories/tree',
     GET_BY_ID: (id) => `/categories/${id}`,
     GET_BY_SLUG: (slug) => `/categories/slug/${slug}`,
+    GET_CHILDREN: (id) => `/categories/${id}/children`,
     CREATE: '/categories',
     UPDATE: (id) => `/categories/${id}`,
     DELETE: (id) => `/categories/${id}`,

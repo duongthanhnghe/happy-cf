@@ -6,17 +6,20 @@ import { useProductCategoryDetail } from '@/composables/product/useProductCatego
 import { useProductByCategory } from '@/composables/product/useProductByCategory'
 import { useCategoryProductSEO } from '@/composables/seo/useCategoryProductSEO'
 import { usePagination } from '@/utils/paginationHandle'
+import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren'
 import type { ProductDTO, ProductSortType } from '@/server/types/dto/product.dto'
 
 export const useCategoryMainStore = defineStore("CategoryMainProductStore", () => {
   const { setCategoryProductSEO } = useCategoryProductSEO()
   const { getProductCategoryDetail } = useProductCategoryDetail()
   const { getProductByCategoryApi, fetchProductByCategory } = useProductByCategory()
+  const { getListCategoryChildren, fetchCategoryChildrenList } = useProductCategoryChildren()
 
   const listItems = ref<ProductDTO[]|null>(null);
   const pagination = computed(() => getProductByCategoryApi.value?.pagination)
   const page = ref('1')
   const limit = 2
+  const filterCategory = ref<string>('')
   const filterType = ref<ProductSortType>('discount')
   const filterArray = ref([
     {
@@ -42,6 +45,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   watch(getProductCategoryDetail, (newValue) => {
     if(newValue) {
       setCategoryProductSEO(newValue, ROUTES.PUBLIC.NEWS.children?.MAIN.path || '')
+      fetchCategoryChildrenList(newValue.id, false)
     }
   }, { immediate: true })
 
@@ -54,13 +58,13 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     }
   }, { immediate: true })
 
-  watch(filterType, (newValue) => {
-    filterType.value = newValue
-    if(page.value !== '1') {
+  watch([filterType, filterCategory], ([newFilterType, newFilterCategory]) => {
+    if (page.value !== '1') {
       page.value = '1'
     } else {
-      if(getProductCategoryDetail.value?.id) {
-        fetchProductByCategory(getProductCategoryDetail.value?.id,Number(page.value), limit, newValue)
+      if (getProductCategoryDetail.value?.id) {
+        const categoryId = newFilterCategory || getProductCategoryDetail.value.id
+        fetchProductByCategory(categoryId, Number(page.value), limit, newFilterType)
       }
     }
   })
@@ -106,6 +110,8 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     getTotalPages,
     rangePrice,
     maxPrice,
+    getListCategoryChildren,
+    filterCategory,
     handleChangePage,
   };
 });

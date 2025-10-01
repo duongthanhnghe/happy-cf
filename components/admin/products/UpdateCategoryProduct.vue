@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import {
-  useCategoryManageStore
-} from '@/stores/admin/product/useCategoryManageStore'
+import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManageStore'
 import type { SubmitEventPromise } from 'vuetify';
 
 const store = useCategoryManageStore();
 
 const handleSubmitUpdate = async (event: SubmitEventPromise) => {
-    const results = await event
+  const results = await event
   if (!results.valid) return
   await store.submitUpdate();
 }
@@ -22,7 +20,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
       </div>
 
       <LabelInput label="Thuoc danh muc"/>
-      <VTreeCustom :label="store.selectedCategoryName">
+      <VTreeChoose :label="store.selectedCategoryName">
         <v-treeview
           :items="store.treeItemsForEdit"
           item-value="id"
@@ -36,7 +34,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           density="compact"
         >
         </v-treeview>
-      </VTreeCustom>
+      </VTreeChoose>
 
       <LabelInput label="Ten danh muc" required/>
       <v-text-field v-model="store.updateCategoryItem.categoryName" :counter="50" :rules="store.nullAndSpecialRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>

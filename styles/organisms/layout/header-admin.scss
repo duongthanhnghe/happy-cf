@@ -3,11 +3,9 @@
 .header-admin {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
   height: $height-header-admin;
-  background-color: $cl-white;
-  border-bottom: 1px solid $cl-gray;
-  padding: 0 1.5rem;
+  padding: 0 $space-md;
   position: fixed;
   top: 0;
   right: 0;

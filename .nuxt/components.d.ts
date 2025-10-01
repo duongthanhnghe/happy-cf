@@ -40,9 +40,10 @@ interface _GlobalComponents {
     'Loading': typeof import("../components/atoms/Loading.vue")['default']
     'MaterialIcon': typeof import("../components/atoms/MaterialIcon.vue")['default']
     'NoData': typeof import("../components/atoms/NoData.vue")['default']
+    'PageProgress': typeof import("../components/atoms/PageProgress.vue")['default']
     'Popup': typeof import("../components/atoms/Popup.vue")['default']
     'SelectOrder': typeof import("../components/atoms/SelectOrder.vue")['default']
-    'VTreeCustom': typeof import("../components/atoms/VTreeCustom.vue")['default']
+    'VTreeChoose': typeof import("../components/atoms/VTreeChoose.vue")['default']
     'Facebook': typeof import("../components/atoms/icons/Facebook.vue")['default']
     'Instagram': typeof import("../components/atoms/icons/Instagram.vue")['default']
     'Tiktok': typeof import("../components/atoms/icons/Tiktok.vue")['default']
@@ -144,9 +145,10 @@ interface _GlobalComponents {
     'LazyLoading': LazyComponent<typeof import("../components/atoms/Loading.vue")['default']>
     'LazyMaterialIcon': LazyComponent<typeof import("../components/atoms/MaterialIcon.vue")['default']>
     'LazyNoData': LazyComponent<typeof import("../components/atoms/NoData.vue")['default']>
+    'LazyPageProgress': LazyComponent<typeof import("../components/atoms/PageProgress.vue")['default']>
     'LazyPopup': LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
     'LazySelectOrder': LazyComponent<typeof import("../components/atoms/SelectOrder.vue")['default']>
-    'LazyVTreeCustom': LazyComponent<typeof import("../components/atoms/VTreeCustom.vue")['default']>
+    'LazyVTreeChoose': LazyComponent<typeof import("../components/atoms/VTreeChoose.vue")['default']>
     'LazyFacebook': LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
     'LazyInstagram': LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
     'LazyTiktok': LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>
@@ -254,9 +256,10 @@ export const LabelInput: typeof import("../components/atoms/LabelInput.vue")['de
 export const Loading: typeof import("../components/atoms/Loading.vue")['default']
 export const MaterialIcon: typeof import("../components/atoms/MaterialIcon.vue")['default']
 export const NoData: typeof import("../components/atoms/NoData.vue")['default']
+export const PageProgress: typeof import("../components/atoms/PageProgress.vue")['default']
 export const Popup: typeof import("../components/atoms/Popup.vue")['default']
 export const SelectOrder: typeof import("../components/atoms/SelectOrder.vue")['default']
-export const VTreeCustom: typeof import("../components/atoms/VTreeCustom.vue")['default']
+export const VTreeChoose: typeof import("../components/atoms/VTreeChoose.vue")['default']
 export const Facebook: typeof import("../components/atoms/icons/Facebook.vue")['default']
 export const Instagram: typeof import("../components/atoms/icons/Instagram.vue")['default']
 export const Tiktok: typeof import("../components/atoms/icons/Tiktok.vue")['default']
@@ -358,9 +361,10 @@ export const LazyLabelInput: LazyComponent<typeof import("../components/atoms/La
 export const LazyLoading: LazyComponent<typeof import("../components/atoms/Loading.vue")['default']>
 export const LazyMaterialIcon: LazyComponent<typeof import("../components/atoms/MaterialIcon.vue")['default']>
 export const LazyNoData: LazyComponent<typeof import("../components/atoms/NoData.vue")['default']>
+export const LazyPageProgress: LazyComponent<typeof import("../components/atoms/PageProgress.vue")['default']>
 export const LazyPopup: LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
 export const LazySelectOrder: LazyComponent<typeof import("../components/atoms/SelectOrder.vue")['default']>
-export const LazyVTreeCustom: LazyComponent<typeof import("../components/atoms/VTreeCustom.vue")['default']>
+export const LazyVTreeChoose: LazyComponent<typeof import("../components/atoms/VTreeChoose.vue")['default']>
 export const LazyFacebook: LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
 export const LazyInstagram: LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
 export const LazyTiktok: LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>

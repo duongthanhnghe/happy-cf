@@ -92,6 +92,7 @@ import {
   VBreadcrumbs,
   VBreadcrumbsItem,
   VBreadcrumbsDivider,
+  VAutocomplete,
 } from 'vuetify/components'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -149,6 +150,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       VBreadcrumbs,
       VBreadcrumbsItem,
       VBreadcrumbsDivider,
+      VAutocomplete,
     },
     // ✅ Chỉ import directives cần thiết
     directives: {

@@ -4,6 +4,7 @@ const storeFirstLoader = useFirstLoaderStore()
 </script>
 <template>
   <FirstLoader :class="{ active: storeFirstLoader.loaderActive }" />
+  <PageProgress />
   <div>
     <NuxtLayout>
       <NuxtPage />

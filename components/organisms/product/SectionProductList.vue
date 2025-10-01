@@ -51,6 +51,11 @@ watch(mappedData, (val) => {
             <Button color="secondary" size="xs" icon="keyboard_arrow_right" />
           </NuxtLink>
         </div>
+        <div v-if="category.children" class="flex gap-xs">
+          <NuxtLink v-for="itemChildren in category.children" :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${itemChildren?.slug}`">
+            <Button color="secondary" :label="itemChildren?.categoryName" size="xs" />
+          </NuxtLink>
+        </div>
         <template v-if="category.products.data && category.products.data.length > 0">
           <v-infinite-scroll
           height="auto"

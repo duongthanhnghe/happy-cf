@@ -50,7 +50,6 @@ const props = defineProps({
 <style lang="scss">
 .v-tree-custom {
   position: relative;
-  
   .v-field--disabled {
     opacity: 1 !important;
   }

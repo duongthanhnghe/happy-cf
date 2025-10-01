@@ -6,21 +6,23 @@ import type { ProductDTO, CategoryProductDTO, CreateProductDTO, UpdateProductDTO
 import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
 import { useProductAll } from '@/composables/product/useProductAll'
 import { useProductCategory } from '@/composables/product/useProductCategory'
+import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree'
 import { useProductDetail } from '@/composables/product/useProductDetail'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
-import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 import { useSeoWatchers } from "@/utils/seoHandle";
+import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
+
 
 export const useProductManageStore = defineStore("ProductManage", () => {
 
 const { getListProductAll, fetchListProductAll } = useProductAll()
 const { getListCategoryAll, fetchCategoryList } = useProductCategory()
+const { getListCategoryAllTree, fetchCategoryListTree } = useProductCategoryTree()
 const { getDetailProduct, fetchDetailProduct } = useProductDetail()
 const storeFileManage = useFileManageFolderStore();
-const storeCategory = useCategoryManageStore();
 
 //state global  
 const validOptions = ref(false)
@@ -69,12 +71,14 @@ const defaultForm: CreateProductDTO = {
   slug: '',
   keywords: []
 };
-
 const formProductItem = reactive<CreateProductDTO>({ ...defaultForm })
-
 const updateProductItem = reactive<UpdateProductDTO>({ ...defaultForm, id: ''})
-
-//state list
+const selectedCategory = ref<CategoryProductDTO[]>([])
+const selectedCategoryName = ref<string[]>([])
+const treeItems = computed(() => {
+  const items = getListCategoryAllTree.value ?? []
+  return markAllSelectable(items)
+})
 const dataList = ref<ProductDTO[]|null>(null);
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
@@ -90,7 +94,8 @@ const dataList = ref<ProductDTO[]|null>(null);
       key: 'categoryId',
     },
     { title: 'Tinh trang', key: 'isActive', sortable: false, },
-    { title: '', key: 'actions', sortable: false },
+    { title: '', key: 'actions', sortable: false , headerProps: { class: 'v-data-table-sticky-cl-right' },
+    cellProps: { class: 'v-data-table-sticky-cl-right' }},
   ])
   const serverItems = ref<ProductDTO[]>([])
   const loadingTable = ref<boolean>(true)
@@ -188,6 +193,10 @@ const checkSelectImage = ref<boolean>(true)
   const handleReset = () => {
     Object.assign(formProductItem, defaultForm)
     Object.assign(updateProductItem, defaultForm)
+
+    selectedCategory.value = []
+    selectedCategoryName.value = []
+    fetchCategoryListTree()
   }
 
   const handleReload = async () => {
@@ -235,6 +244,7 @@ const checkSelectImage = ref<boolean>(true)
     if(!detailData.value) return
     handleTogglePopupUpdate(true)
     Object.assign(updateProductItem, detailData.value);
+    if(updateProductItem.categoryId) setSelectedCategory(updateProductItem.categoryId)
   }
 
   async function submitUpdate() {
@@ -391,11 +401,6 @@ const checkSelectImage = ref<boolean>(true)
     isTogglePopupAddVariant.value = false;
   }
 
-  const openPopupAddCategory = () => {
-    storeCategory.handleResetFormCategoryItem()
-    storeCategory.handleTogglePopupAdd(true)
-  }
-
   // SEO
   useSeoWatchers(formProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
   useSeoWatchers(updateProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
@@ -404,6 +409,36 @@ const checkSelectImage = ref<boolean>(true)
     if(newValue.length === 0) await fetchCategoryList()
   }, { immediate: true })
 
+  // Tree category
+  const setSelectedCategory = (parentId: string | null) => {
+    if (parentId) {
+      const sourceTree = updateProductItem.id ? treeItems.value : []
+      const parentCategory = findItemInTree(sourceTree, parentId)
+      if (parentCategory) {
+        selectedCategory.value = [parentCategory]
+        selectedCategoryName.value = [parentCategory.categoryName]
+      }
+    } else {
+      selectedCategory.value = []
+      selectedCategoryName.value = []
+    }
+  }
+
+  watch(selectedCategory, (val) => {
+    if (val.length > 0) {
+      if(updateProductItem.id) updateProductItem.categoryId = val[0].id;
+      else formProductItem.categoryId = val[0].id;
+      selectedCategoryName.value = val.map(cat => cat.categoryName);
+    } else {
+      formProductItem.categoryId = '';
+      updateProductItem.categoryId = '';
+      selectedCategoryName.value = [];
+    }
+  })
+
+  watch(getListCategoryAllTree, (newValue) => {
+    if(newValue?.length === 0 && newValue) fetchCategoryListTree()
+  }, { immediate: true})
 
   //getters
   const getItemsCategory = computed(() => getListCategoryAll.value);
@@ -430,6 +465,8 @@ const checkSelectImage = ref<boolean>(true)
     headers,
     currentTableOptions,
     categorySelectedFilter,
+    selectedCategoryName,
+    selectedCategory,
     // actions
     handleTogglePopupAdd,
     handleTogglePopupAddVariant,
@@ -450,11 +487,11 @@ const checkSelectImage = ref<boolean>(true)
     getCategoryName,
     handleDeleteListImage,
     handleAddListImage,
-    openPopupAddCategory,
     handleAddImage,
     toggleActive,
     //getters
     getItemsCategory,
     getListImageAdd,
+    treeItems,
   };
 });

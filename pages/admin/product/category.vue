@@ -32,7 +32,7 @@ onBeforeUnmount(() => {
 <template>
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name" placeholder="Tìm kiếm tên..." hide-details></v-text-field>
+    <v-text-field v-model="store.name" placeholder="Tìm kiếm tên..." variant="outlined" hide-details></v-text-field>
   </template>
 
   <template #right>
@@ -57,6 +57,12 @@ onBeforeUnmount(() => {
       <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
     </template>
 
+    <template #item.parentId="{ item }">
+      <v-chip label v-if="item.parentId">
+        {{ store.getCategoryName(item.parentId)?.categoryName }}
+      </v-chip>
+    </template>
+
     <template #item.isActive="{ item }">
       <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Doi trang thai'" @click="store.toggleActive(item.id)">
         {{ item.isActive === true ? 'Kich hoat' : 'Tat kich hoat' }}
@@ -66,10 +72,10 @@ onBeforeUnmount(() => {
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
         <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${item.slug}`" target="_blank">
-          <Button color="gray" size="sm" icon="visibility" />
+          <Button :border="false" color="secondary" size="sm" icon="visibility" />
         </NuxtLink>
-        <Button color="gray" size="sm" icon="edit" @click="store.handleEditCategory(item.id.toString())" />
-        <Button color="gray" size="sm" icon="delete" @click="store.handleDeleteCategory(item.id.toString())" />
+        <Button :border="false" color="secondary" size="sm" icon="edit" @click="store.handleEditCategory(item.id.toString())" />
+        <Button :border="false" color="secondary" size="sm" icon="delete" @click="store.handleDeleteCategory(item.id.toString())" />
       </div>
     </template>
   </v-data-table-server>

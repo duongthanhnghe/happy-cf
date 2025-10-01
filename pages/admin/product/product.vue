@@ -36,13 +36,17 @@ onBeforeUnmount(() => {
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name" placeholder="Tìm kiếm tên..." hide-details></v-text-field>
-    <v-select label="Chon danh muc"
-        v-model="store.categorySelectedFilter"
-        :items="[{ id: '', categoryName: 'Tất cả' }, ...store.getItemsCategory]"
-        item-title="categoryName"
-        item-value="id"
-        hide-details
+    <v-text-field v-model="store.name" placeholder="Tìm kiếm tên..." variant="outlined" hide-details></v-text-field>
+    <v-autocomplete
+      label="Chọn danh mục"
+      v-model="store.categorySelectedFilter"
+      :items="[{ id: '', categoryName: 'Tất cả' }, ...store.getItemsCategory]"
+      item-title="categoryName"
+      item-value="id"
+      hide-details
+      clearable
+      autocomplete="off" 
+      variant="outlined"
     />
   </template>
 
@@ -54,7 +58,6 @@ onBeforeUnmount(() => {
 <CreateProduct />
 <UpdateProduct />
 <CreateVariantProduct />
-<CreateCategoryProduct />
 <PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
@@ -112,10 +115,10 @@ onBeforeUnmount(() => {
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
         <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.DETAIL?.path}/${item.slug}`" target="_blank">
-          <Button tag="div" color="gray" size="sm" icon="visibility" />
+          <Button tag="div" :border="false" color="secondary" size="sm" icon="visibility" />
         </NuxtLink>
-        <Button color="gray" size="sm" icon="edit" @click="store.handleEditProduct(item.id)" />
-        <Button color="gray" size="sm" icon="delete" @click="store.handleDeleteProduct(item.id)" />
+        <Button :border="false" color="secondary" size="sm" icon="edit" @click="store.handleEditProduct(item.id)" />
+        <Button :border="false" color="secondary" size="sm" icon="delete" @click="store.handleDeleteProduct(item.id)" />
       </div>
     </template>
   </v-data-table-server>

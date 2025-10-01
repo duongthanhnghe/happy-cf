@@ -54,8 +54,10 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     { title: 'Hinh anh', key: 'image', sortable: false, },
     { title: 'Ten danh muc', sortable: false, key: 'categoryName'},
     { title: 'Mo ta', key: 'description', sortable: false, },
+    { title: 'Danh muc cha', key: 'parentId', sortable: false, },
     { title: 'Tinh trang', key: 'isActive', sortable: false, },
-    { title: '', key: 'actions', sortable: false},
+    { title: '', key: 'actions', sortable: false, headerProps: { class: 'v-data-table-sticky-cl-right' },
+    cellProps: { class: 'v-data-table-sticky-cl-right' }},
   ])
   const serverItems = ref<CategoryProductDTO[]>([])
   const loadingTable = ref<boolean>(true)
@@ -92,6 +94,11 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
 
   const handleReload = async () => {
     await loadItemsCategory(currentTableOptions.value);
+  }
+
+  const getCategoryName = (id: string) => {
+    if (!getListCategoryAll.value) return;
+    return getListCategoryAll.value.find(item => item.id === id)
   }
 
   // LIST
@@ -297,7 +304,6 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
   }, { immediate: true})
 
 
-
   return {
     // state
     dataListCategory,
@@ -332,6 +338,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     handleAddImage,
     toggleActive,
     handleChangeOrder,
+    getCategoryName,
     getListOrder,
     getListCategoryAll,
     getListCategoryAllTree,

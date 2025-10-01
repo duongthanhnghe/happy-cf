@@ -1136,16 +1136,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"2f56a-6PNCkEYvUUEYJr94PKWgzcchWJM\"",
-    "mtime": "2025-09-29T06:53:37.008Z",
-    "size": 193898,
+    "etag": "\"2fe0d-Sv/OpOfo4i2Aua4iYWPdbptVN+8\"",
+    "mtime": "2025-09-30T09:53:44.527Z",
+    "size": 196109,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"b663c-r/brmTnfCFSwbXkzbBuPxM266OQ\"",
-    "mtime": "2025-09-29T06:53:37.015Z",
-    "size": 747068,
+    "etag": "\"b87ae-QQ2MjKzCbbe/Xyiw6zEhItSgOFU\"",
+    "mtime": "2025-09-30T09:53:44.536Z",
+    "size": 755630,
     "path": "index.mjs.map"
   }
 };
@@ -3510,6 +3510,27 @@ const getCategoriesBySlug = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const getChildrenCategories = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { includeInactive } = req.query;
+    if (!Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    const query = { parentId: id };
+    if (!includeInactive || includeInactive === "false") {
+      query.isActive = true;
+    }
+    const children = await CategoryProductEntity.find(query).lean().sort({ order: 1 });
+    return res.json({
+      code: 0,
+      data: toCategoryProductListDTO(children),
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
 const createCategories = async (req, res) => {
   try {
     const { categoryName, image, parentId } = req.body;
@@ -3600,22 +3621,50 @@ const deleteCategories = async (req, res) => {
   }
 };
 const getProductsByCategory = async (req, res) => {
+  var _a;
   try {
     if (!Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
     }
     const categoryId = new Types.ObjectId(req.params.id);
+    const categories = await CategoryProductEntity.aggregate([
+      { $match: { _id: categoryId } },
+      {
+        $graphLookup: {
+          from: "product_categories",
+          // 👈 tên collection (mặc định là model name viết thường + "s")
+          startWith: "$_id",
+          connectFromField: "_id",
+          connectToField: "parentId",
+          as: "descendants"
+        }
+      },
+      {
+        $project: {
+          ids: {
+            $concatArrays: [["$_id"], "$descendants._id"]
+          }
+        }
+      }
+    ]);
+    const categoryIds = ((_a = categories[0]) == null ? void 0 : _a.ids) || [categoryId];
     const page = parseInt(req.query.page, 10) || 1;
     let limit = parseInt(req.query.limit, 10) || 10;
     const sortType = req.query.sort || "default";
     if (limit === -1) {
-      limit = await ProductEntity.countDocuments({ categoryId, isActive: true });
+      limit = await ProductEntity.countDocuments({
+        categoryId: { $in: categoryIds },
+        isActive: true
+      });
     }
     const skip = (page - 1) * limit;
     const [total, products] = await Promise.all([
-      ProductEntity.countDocuments({ categoryId, isActive: true }),
+      ProductEntity.countDocuments({
+        categoryId: { $in: categoryIds },
+        isActive: true
+      }),
       ProductEntity.aggregate([
-        { $match: { categoryId, isActive: true } },
+        { $match: { categoryId: { $in: categoryIds }, isActive: true } },
         // Ép kiểu price & priceDiscount sang số
         {
           $addFields: {
@@ -3712,6 +3761,7 @@ router$7.get("/tree", getAllCategoriesTree);
 router$7.get("/", getAllCategories);
 router$7.get("/slug/:slug", getCategoriesBySlug);
 router$7.get("/:id", getCategoriesById);
+router$7.get("/:id/children", getChildrenCategories);
 router$7.post("/", createCategories);
 router$7.put("/:id", updateCategories);
 router$7.delete("/:id", deleteCategories);
