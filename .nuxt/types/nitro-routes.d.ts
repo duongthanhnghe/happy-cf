@@ -24,6 +24,9 @@ declare module "nitropack/types" {
     '/fileManageRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/fileManageRouter').default>>>>
     }
+    '/locationRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/locationRouter').default>>>>
+    }
     '/orderManageRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/orderManageRouter').default>>>>
     }

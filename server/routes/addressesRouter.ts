@@ -12,7 +12,7 @@ import {
 const router = Router()
 
 router.get('/default/:userId', getDefaultAddressByUserId)
-router.get('/:userId',          getAllAddress)
+router.get('/user/:userId',          getAllAddress)
 router.get('/:id',       getAddressById)
 router.post('/',         createAddress)
 router.put('/:id',       updateAddress)

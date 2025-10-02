@@ -15,6 +15,7 @@ export function toUserDTO(entity: User): UserDTO {
     membership: {
       level: entity.membership.level,
       point: entity.membership.point,
+      balancePoint: entity.membership.balancePoint,
       discountRate: entity.membership.discountRate,
       joinedAt: entity.membership.joinedAt?.toString(),
       barcode: entity.membership.barcode || "",

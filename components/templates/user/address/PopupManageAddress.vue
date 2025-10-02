@@ -21,7 +21,7 @@ const handleChooseAddress = (item: any) => {
 
 </script>
 <template>
-  <Popup :children="store.isChildrenPopupManage" popupId="popup-list-address" v-model="store.isTogglePopupList" popupHeading="Dia chi" bodyClass="bg-gray2" align="right">
+  <Popup popupId="popup-list-address" v-model="store.isTogglePopupList" popupHeading="Dia chi" bodyClass="bg-gray2" align="right">
     <template #body>
         <template v-if="store.getListAddress && store.getListAddress.length > 0">
           <div  v-for="item in store.getListAddress" :key="item.id" class="card card-sm bg-white mb-ms">

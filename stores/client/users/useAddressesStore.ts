@@ -1,224 +1,233 @@
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, nextTick } from "vue";
 import { defineStore } from "pinia";
 import { addressesAPI } from "@/services/addresses.service";
-import {
-  Loading
-} from '@/utils/global'
+import { Loading } from '@/utils/global'
 import type { AddressDTO, CreateAddressBody } from '@/server/types/dto/address.dto'
-import {
-  useAccountStore
-} from '@/stores/client/users/useAccountStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { ADDRESS_TAG } from "@/shared/constants/address-tag";
-import { useAddressAll  } from '@/composables/user/useAddressAll'
+import { useAddressAll } from '@/composables/user/useAddressAll'
+import { useLocationStore } from '@/stores/shared/useLocationStore';
 
 export const useAddressesManageStore = defineStore("AddressesManage", () => {
+  const { getListAddressAllApi, fetchAddressAll } = useAddressAll()  
+  const storeAccount = useAccountStore();
+  const storeLocation = useLocationStore();
 
-const { getListAddressAllApi, fetchAddressAll } = useAddressAll()  
-const storeAccount = useAccountStore();
+  const defaultForm: CreateAddressBody = {
+    fullname: '',
+    phone: '',
+    address: '',
+    note: '',
+    tag: ADDRESS_TAG.HOME,
+    isDefault: false,
+    userId: '',
+    provinceCode: 0,
+    districtCode: 0,
+    wardCode: 0,
+  };
+  const formDataItem = reactive<CreateAddressBody>({ ...defaultForm })
+  const dataList = ref<AddressDTO[] | null>(null);
+  const detailData = ref<AddressDTO | null>(null);
+  const isTogglePopupList = ref(false);
+  const isTogglePopupUpdate = ref(false);
+  const isTogglePopupAdd = ref(false);
+  const isChildrenPopupManage = ref(false);
+  const actionChangeAddress = ref(false);
 
-//state global  
-const valid = ref<boolean>(false)
-const titleRules = [
-  (value:string) => {
-    if (value) return true
-    return 'Noi dung khong duoc trong'
-  },
-  (value:string) => {
-    if (value?.length <= 100) return true
-    return 'Noi dung khong duoc qua 100 ky tu'
-  },
-]
-
-const formDataItem = reactive<CreateAddressBody>({
-  fullname: '',
-  phone: '',
-  address: '',
-  note: '',
-  tag: ADDRESS_TAG.HOME,
-  isDefault: false,
-  userId: '',
-});
-
-const dataList = ref<AddressDTO[] | null>(null);
-const isTogglePopupList = ref<boolean>(false);
-const actionChangeAddress = ref<boolean>(false)
-const isTogglePopupUpdate = ref<boolean>(false);
-const detailData = ref<AddressDTO | null>(null);
-const isTogglePopupAdd = ref<boolean>(false);
-const isChildrenPopupManage = ref<boolean>(false);
-
-//actions list
-  async function loadItems() {
-    const userId = storeAccount.getDetailValue?.id
-    if(!userId) return
-    await fetchAddressAll(userId)
-    if(getListAddressAllApi.value && getListAddressAllApi.value.length > 0) dataList.value = getListAddressAllApi.value
-  }
-
-  watch(dataList, (newVal) => {
-    dataList.value = newVal;
-  })
-
-  //actions global
-  const handleTogglePopupList = (value: boolean, action: boolean, popupChildren: boolean) => {
+  // utils
+  const handleTogglePopupList = (value: boolean, action: boolean) => {
     isTogglePopupList.value = value;
     actionChangeAddress.value = action
-    isChildrenPopupManage.value = popupChildren
     if(!dataList.value) loadItems();
   };
 
-  const handleTogglePopupAdd = (value: boolean) => {
+  const handleTogglePopupAdd = async (value: boolean) => {
+    if(storeLocation.getListProvinces.length === 0) await storeLocation.fetchProvincesStore()
     isTogglePopupAdd.value = value;
   };
 
-  const handleTogglePopupUpdate = (value: boolean) => {
+  const handleTogglePopupUpdate = async (value: boolean) => {
+    if(storeLocation.getListProvinces.length === 0) await storeLocation.fetchProvincesStore()
     isTogglePopupUpdate.value = value;
   };
 
-  const handleResetForm = () => {
-    formDataItem.fullname = ''
-    formDataItem.phone = ''
-    formDataItem.address = ''
-    formDataItem.note = ''
-    formDataItem.tag = ADDRESS_TAG.HOME
-    formDataItem.isDefault = false
-    formDataItem.userId = ''
+  async function loadItems() {
+    const userId = storeAccount.getDetailValue?.id
+    if (!userId) return
+    await fetchAddressAll(userId)
+    if (getListAddressAllApi.value?.length) {
+      dataList.value = getListAddressAllApi.value
+    }
   }
 
-  //actions add
+  const handleResetForm = () => {
+    Object.assign(formDataItem, defaultForm)
+    storeLocation.resetLocation()
+  }
+
+  //CRUD
   async function submitCreate() {
     Loading(true);
     try {
       if(!storeAccount.getDetailValue?.id) return
-      formDataItem.userId = storeAccount.getDetailValue?.id;
+      formDataItem.userId = storeAccount.getDetailValue.id
 
-      const newDataItem = {...formDataItem}
-
+      const newDataItem: CreateAddressBody = { ...formDataItem }
       const data = await addressesAPI.create(newDataItem)
-      if(data.code === 0){
-        showSuccess('Tao thanh cong')
-        isTogglePopupAdd.value = false;
+
+      if (data.code === 0) {
+        showSuccess(data.message)
         handleResetForm()
-        loadItems();
+        loadItems()
+        isTogglePopupAdd.value = false
       } else {
-        showWarning('Tao that bai')
+        showWarning(data.message)
       }
       Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+      Loading(false);
     }
-    Loading(false);
   }
 
-  //actions edit
   const handleEdit = async (id: string) => {
-    const data = await addressesAPI.getDetail(id)
-    detailData.value = data.data
-    if(!detailData.value) return
-    handleTogglePopupUpdate(true);
-    Object.assign(formDataItem, detailData.value);
+    Loading(true);
+    try {
+      const data = await addressesAPI.getDetail(id)
+      detailData.value = data.data
+      if(!detailData.value) return
+      
+      await storeLocation.setLocationProgrammatically(
+        detailData.value.provinceCode,
+        detailData.value.districtCode,
+        detailData.value.wardCode
+      )
+      
+      Object.assign(formDataItem, detailData.value);
+      await nextTick()
+      handleTogglePopupUpdate(true);
+    } finally {
+      Loading(false);
+    }
   }
 
   async function submitUpdate() {
     Loading(true);
     try {
       if(!detailData.value) return
-      const newDataItem = {...formDataItem}
+      const newDataItem: CreateAddressBody = { ...formDataItem }
       const data = await addressesAPI.update(detailData.value.id, newDataItem)
-      if(data.code === 0){
-        showSuccess('Cap nhat thanh cong')
-        isTogglePopupUpdate.value = false;
+
+      if (data.code === 0) {
+        showSuccess(data.message)
+        isTogglePopupUpdate.value = false
         handleResetForm()
-        loadItems();
-      } else if (data.code === 1){
-        showWarning('Dia chi không tồn tại')
+        loadItems()
+      } else if (data.code === 1) {
+        showWarning(data.message)
       } else {
-        showWarning('Cap nhat that bai')
+        showWarning(data.message)
       }
+      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+      Loading(false);
     }
-    Loading(false);
   }
 
-  //actions delete
   const handleDelete = async (id: string) => {
     const confirm = await showConfirm('Bạn có chắc xoá mục này?')
     if (!confirm) return
 
-    if(formDataItem.isDefault){
-      showWarning('Khong the xoa dia chi mac dinh')
+    if (formDataItem.isDefault) {
+      showWarning('Không thể xoá địa chỉ mặc định')
       return
-    } else {
-      Loading(true);
-      try {
-        const data = await addressesAPI.delete(id)
-        if(data.code === 0){
-          showSuccess('Xoa thanh cong')
-          if(dataList.value){
-            dataList.value = dataList.value.filter(item => 
-              item.id !== id
-            )
-          }
-          loadItems();
-          handleTogglePopupUpdate(false);
-        } else if (data.code === 1){
-          showWarning('Dia chi không tồn tại')
-        } else {
-          showWarning('Xoa that bai')
+    }
+    Loading(true);
+    try {
+      const data = await addressesAPI.delete(id)
+      if (data.code === 0) {
+        showSuccess(data.message)
+        if (dataList.value) {
+          dataList.value = dataList.value.filter(item => item.id !== id)
         }
-        Loading(false);
-      } catch (err) {
-        console.error('Error submitting form:', err)
-        Loading(false);
+        loadItems()
+        isTogglePopupUpdate.value = false
+      } else if (data.code === 1) {
+        showWarning(data.message)
+      } else {
+        showWarning(data.message)
       }
+      Loading(false);
+    } catch (err) {
+      console.error('Error submitting form:', err)
+      Loading(false);
     }
   }
 
+  //Get default
   const getDefaultAddress = async (userId: string) => {
     await fetchAddressAll(userId)
-    
-    if(!getListAddressAllApi.value || getListAddressAllApi.value.length === 0) return
-
+    if (!getListAddressAllApi.value?.length) return
     try {
-      const data = await addressesAPI.getDefaultAddressByUserId(userId)
-      if(!data) return
-      return data
-    } catch (err) {
+      return await addressesAPI.getDefaultAddressByUserId(userId)
+    } catch {
       return null
     }
   }
 
-  //getters
+  //set value location
+  watch(() => storeLocation.selectedProvince,
+    (newVal) => {
+      if (newVal !== null) {
+        formDataItem.provinceCode = newVal
+      }
+    }
+  )
+
+  watch(() => storeLocation.selectedDistrict,
+    (newVal) => {
+      if (newVal !== null) {
+        formDataItem.districtCode = newVal
+      }
+    }
+  )
+
+  watch(() => storeLocation.selectedWard,
+    (newVal) => {
+      if (newVal !== null) {
+        formDataItem.wardCode = newVal
+      }
+    }
+  )
+
+  // getters
   const getListAddress = computed(() => dataList.value);
   const getActionChangeAddress = computed(() => actionChangeAddress.value);
 
   return {
-    // state
-    valid,
-    dataList,
-    isTogglePopupList,
-    isTogglePopupAdd,
-    isTogglePopupUpdate,
-    titleRules,
-    detailData,
     formDataItem,
-    actionChangeAddress,
+    dataList,
+    detailData,
+    isTogglePopupList,
+    isTogglePopupUpdate,
+    isTogglePopupAdd,
     isChildrenPopupManage,
-    // actions
+    actionChangeAddress,
+
+    loadItems,
+    handleResetForm,
+    submitCreate,
+    handleEdit,
+    submitUpdate,
+    handleDelete,
+    getDefaultAddress,
     handleTogglePopupList,
     handleTogglePopupAdd,
     handleTogglePopupUpdate,
-    handleEdit,
-    handleDelete,
-    loadItems,
-    submitCreate,
-    submitUpdate,
-    handleResetForm,
-    getDefaultAddress,
-    //getters
+
     getListAddress,
     getActionChangeAddress,
-  };
+  }
 });

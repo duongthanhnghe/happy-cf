@@ -20,6 +20,7 @@ import addressRoutes from './routes/addressesRouter'
 import paymentTransactionRoutes from './routes/paymentTransactionRoutes'
 import wishlistRoutes from './routes/productRouter'
 import productReviewRouter from "./routes/productReviewRouter";
+import locationRoutes from './routes/locationRouter'
 import { v2 as cloudinary } from 'cloudinary'
 
 
@@ -69,6 +70,7 @@ app.use('/api/categories', express.json(), categoriesProductRoutes)
 app.use('/api/products', express.json(), productRoutes)
 app.use('/api/addresses', express.json(), addressRoutes)
 app.use("/api/product-reviews", productReviewRouter);
+app.use('/api/location', express.json(), locationRoutes)
 app.use('/api', express.json(), wishlistRoutes)
 
 // Error handler

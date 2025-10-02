@@ -93,7 +93,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 
         <LabelInput label="Ảnh liên quan" />
         <div
-          class="row row-sm"
+          class="row row-xs"
           v-if="store.formItem.listImage && store.formItem.listImage.length > 0"
         >
           <div

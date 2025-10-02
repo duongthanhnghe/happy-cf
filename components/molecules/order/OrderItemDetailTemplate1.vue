@@ -10,12 +10,22 @@ import {
 import { useOrderDetail } from "@/composables/order/useOrderDetail";
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
-import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
+import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore';
+import { useLocation } from "@/composables/product/useLocation"
 
 const { getDetailOrder, fetchOrderDetail } = useOrderDetail();
 const storeHistory = useOrderHistoryStore();
 const storeOrderStatus = useOrderStatusStore();
 const storeSetting = useSettingStore();
+const { 
+  fetchProvinceDetail, 
+  fetchDistrictDetail, 
+  fetchWardDetail, 
+  getProvinceDetail, 
+  getDistrictDetail, 
+  getWardDetail 
+} = useLocation();
+
 const props = defineProps({
   idOrder: {
     type: String,
@@ -44,6 +54,18 @@ watch(() => getDetailOrder.value?.status.id, (newId) => {
   { immediate: true }
 )
 
+watch(
+  () => getDetailOrder.value,
+  (val) => {
+    if (val) {
+      if (val.provinceCode) fetchProvinceDetail(val.provinceCode)
+      if (val.districtCode) fetchDistrictDetail(val.districtCode)
+      if (val.wardCode) fetchWardDetail(val.wardCode, val.districtCode)
+    }
+  },
+  { immediate: true }
+)
+
 </script>
 <template>
   <template v-if="getDetailOrder">
@@ -66,7 +88,10 @@ watch(() => getDetailOrder.value?.status.id, (newId) => {
       <div class="flex justify-between">
         <span class="flex gap-xs align-center weight-semibold text-color-black">
           <Button size="xs" color="secondary" icon="location_on" :disable="true"/>
-          {{ getDetailOrder?.address }}
+          {{ getDetailOrder?.address }},
+          {{ getWardDetail?.name }},
+          {{ getDistrictDetail?.name }},
+          {{ getProvinceDetail?.name }}
         </span>
         <span class="flex gap-xs align-center text-color-gray5">
           <Button size="xs" color="secondary" icon="schedule" :disable="true"/>

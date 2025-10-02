@@ -6,6 +6,7 @@ export function toMembershipLevelDTO(entity) {
         minPoint: entity.minPoint,
         icon: entity.icon,
         image: entity.image,
+        discountRate: entity.discountRate,
         benefits: Array.isArray(entity.benefits)
             ? toMembershipBenefitListDTO(entity.benefits)
             : [],

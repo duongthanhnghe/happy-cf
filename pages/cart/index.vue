@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import '@/styles/templates/cart/popup-cart.scss'
+import { watch, onMounted, onBeforeUnmount } from 'vue'
 import type { SubmitEventPromise } from 'vuetify';
 import { formatCurrency } from '@/utils/global'
 import { showWarning } from '@/utils/toast'
@@ -9,6 +10,7 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
 import { nullRules, phoneRules } from '@/utils/validation'
+import { useLocationStore } from '@/stores/shared/useLocationStore';
 
 definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
@@ -18,6 +20,7 @@ const store = useCartStore();
 const storeAddress = useAddressesManageStore();
 const storeAccount = useAccountStore();
 const storePaymentStatus = usePaymentStatusStore();
+const storeLocation = useLocationStore();
 
 const submitOrder = async (event: SubmitEventPromise) => {
   const results = await event
@@ -28,6 +31,42 @@ const submitOrder = async (event: SubmitEventPromise) => {
   store.submitOrder()
 }
 
+watch(() => storeLocation.selectedProvince, async (newVal) => {
+  if (storeLocation.isSetting) return
+  
+  if (newVal) {
+    await storeLocation.fetchDistrictsStore(newVal)
+    storeLocation.selectedDistrict = null
+    storeLocation.selectedWard = null
+    console.log('chay o dya')
+  } else {
+    storeLocation.districts = []
+    storeLocation.wards = []
+  }
+})
+
+watch(() => storeLocation.selectedDistrict, async (newVal) => {
+  if (storeLocation.isSetting) return
+  
+  if (newVal) {
+    await storeLocation.fetchWardsStore(newVal)
+    storeLocation.selectedWard = null
+    console.log('chay o dya')
+  } else {
+    storeLocation.wards = []
+  }
+})
+
+onMounted(async () => {
+  await storeLocation.fetchProvincesStore()
+  if(storeAccount.getDetailValue?.id) await store.handleGetDefaultAddress()
+  if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
+})
+
+onBeforeUnmount(() => {
+  storeLocation.resetLocation
+})
+
 </script>
 <template>
 
@@ -35,6 +74,9 @@ const submitOrder = async (event: SubmitEventPromise) => {
   <div class="container pb-section">
     <BreadcrumbDefault />
     <v-form v-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
+
+      
+
       <div>
         <div class="rd-lg overflow-hidden">
           <Heading tag="div" size="md" weight="semibold" class="popup-cart-card flex justify-between pb-0 mb-0 black">
@@ -60,17 +102,13 @@ const submitOrder = async (event: SubmitEventPromise) => {
           <Heading tag="div" size="md" weight="semibold" class="flex justify-between black mb-sm">
             Thông tin đặt hàng
             <slot v-if="storeAccount.getDetailValue?.id">
-            <Button  @click.prevent="storeAddress.handleTogglePopupList(true,true,true)" size="xs" color="secondary" icon="keyboard_arrow_right"/>
+            <Button  @click.prevent="storeAddress.handleTogglePopupList(true,true)" size="xs" color="secondary" icon="keyboard_arrow_right"/>
             </slot>
           </Heading>
-          <div class="popup-cart-information row row-sm">
+          <div class="popup-cart-information row row-xs">
             <div class="col-6">
               <LabelInput label="Giờ lấy hang" required/>
               <v-text-field type="time" v-model="store.informationOrder.time" required :rules="store.timeRules" variant="outlined" />
-            </div>
-            <div class="col-6">
-              <LabelInput label="Địa chỉ nhận hàng" required/>
-              <v-text-field type="text" required v-model="store.informationOrder.address" :rules="nullRules" variant="outlined" />
             </div>
             <div class="col-6">
               <LabelInput label="Họ và tên" required/>
@@ -79,6 +117,46 @@ const submitOrder = async (event: SubmitEventPromise) => {
             <div class="col-6">
               <LabelInput label="Số điện thoại" required/>
               <v-text-field type="tel" required v-model="store.informationOrder.phone" :rules="phoneRules" maxlength="11" variant="outlined" />
+            </div>
+            <div class="col-6">
+              <LabelInput label="Toà nhà, số nhà, tên đường" required/>
+              <v-text-field type="text" required v-model="store.informationOrder.address" :rules="nullRules" variant="outlined" />
+            </div>
+            <div class="col-4">
+              <LabelInput label="Thành phố" required/>
+              <v-autocomplete
+                v-model="storeLocation.selectedProvince"
+                  label="Chọn thành phố"
+                  :items="storeLocation.getListProvinces ?? []"
+                  item-title="name"
+                  item-value="code"
+                  variant="outlined"
+                  :rules="nullRules"
+                />
+            </div>
+            <div class="col-4">
+              <LabelInput label="Quan huyen" required/>
+               <v-autocomplete
+                v-model="storeLocation.selectedDistrict"
+                  label="Chọn quan huyen"
+                  :items="storeLocation.getListDistricts ?? []"
+                  item-title="name"
+                  item-value="code"
+                  variant="outlined"
+                  :rules="nullRules"
+                />
+            </div>
+            <div class="col-4">
+              <LabelInput label="Phuong xa" required/>
+              <v-autocomplete
+                v-model="storeLocation.selectedWard"
+                  label="Chọn phuong xa"
+                  :items="storeLocation.getListWards ?? []"
+                  item-title="name"
+                  item-value="code"
+                  variant="outlined"
+                  :rules="nullRules"
+                />
             </div>
           </div>
 

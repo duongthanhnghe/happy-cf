@@ -45,7 +45,7 @@ watch(valueChangePage, (newVal) => {
         :max="storeCategoryMain.maxPrice"
         thumb-label="always"
       ></v-range-slider>
-      <div class="row row-sm" v-if="storeCategoryMain.getListItems && storeCategoryMain.getListItems.length > 0">
+      <div class="row row-xs" v-if="storeCategoryMain.getListItems && storeCategoryMain.getListItems.length > 0">
         <div v-for="item in storeCategoryMain.getListItems" :key="item.id" class="mb-sm col-6 col-md-4">
           <ProductItemTemplate1 :product="item" background="bg-white" />
         </div>

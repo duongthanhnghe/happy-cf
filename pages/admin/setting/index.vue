@@ -34,7 +34,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 
       <div :class="`${cardItemClass}`">
         <Heading class="mb-sm" tag="div" weight="semibold" size="md">Thông tin co ban</Heading>
-        <div class="row row-sm">
+        <div class="row row-xs">
           <div class="col-12 col-md-6 col-xxl-4">
             <LabelInput label="Ten cong ty" required/>
             <v-text-field v-model="storeSettingUpdate.formItem.name" :rules="storeSettingUpdate.contentRules" label="Nhap ten cong ty" variant="outlined" required></v-text-field>
@@ -64,7 +64,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 
       <div :class="`${cardItemClass} mt-md`">
         <Heading class="mb-sm" tag="div" weight="semibold" size="md">Mang xa hoi</Heading>
-        <div class="row row-sm">
+        <div class="row row-xs">
           <div v-if="storeSettingUpdate.formItem.socialLinks" v-for="(item, index) in storeSettingUpdate.formItem.socialLinks" :key="item.name" class="col-12 col-md-6 col-xxl-4">
             <LabelInput :label="item.name"/>
             <v-text-field v-model="storeSettingUpdate.formItem.socialLinks[index].src" :label="`Nhap duong dan `+item.name" variant="outlined"></v-text-field> 

@@ -15,6 +15,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 import { ROUTES } from '@/shared/constants/routes';
 import type { ProductDTO } from '@server/types/dto/product.dto'
+import type { SwiperOptions } from 'swiper/types';
 
 const storeDisplay = useDisplayStore()
 
@@ -25,6 +26,7 @@ const props = withDefaults(defineProps<{
   runSlide?: boolean
   viewMore?: boolean
   background?: string
+  breakpoints?: SwiperOptions['breakpoints']
 }>(), {
   items: () => [],
   loading: false,
@@ -47,14 +49,14 @@ const props = withDefaults(defineProps<{
     </Heading>
     <template v-if="runSlide">
       <client-only>
-      <swiper :modules="[Navigation, Autoplay]" :slides-per-view="2.3" :space-between="10" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" class="mySwiper">
+      <swiper :modules="[Navigation, Autoplay]" :breakpoints=props.breakpoints :space-between="10" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" class="mySwiper">
         <swiper-slide v-for="product in props.items" :key="product.id">
           <ProductItemTemplate1 :product="product" :background="props.background" />
         </swiper-slide>
       </swiper>
       </client-only>
     </template>
-    <div v-else class="row row-sm">
+    <div v-else class="row row-xs">
       <div v-for="(product, index) in props.items" :key="index" class="col-6 mb-sm">
         <ProductItemTemplate1 :product="product" :background="props.background" />
       </div>

@@ -11,18 +11,18 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
-import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, SelectedOptionMap, OptionDTO } from '@/server/types/dto/product.dto';
+import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, OptionDTO } from '@/server/types/dto/product.dto';
 import type { AddressDTO } from '@/server/types/dto/address.dto'
 import type { CreateOrderBody, cartItems } from '@/server/types/dto/order.dto'
 import { Base64 } from "js-base64";
 import { ROUTES } from '@/shared/constants/routes';
-import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
+import { useLocationStore } from '@/stores/shared/useLocationStore';
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
   const storeAddress = useAddressesManageStore();
   const storeAccount = useAccountStore();
-  const storePaymentStatus = usePaymentStatusStore();
+  const storeLocation = useLocationStore();
 
   const router = useRouter()
   const timeCurrent = getCurrentDateTime('time');
@@ -200,8 +200,8 @@ export const useCartStore = defineStore("Cart", () => {
     } else {
       addNormalProduct(product);
     }
+    updateCookie();
     return true;
-    // updateCookie();
   };
 
   const resetValuePopupOrder = () => {
@@ -328,14 +328,6 @@ export const useCartStore = defineStore("Cart", () => {
 
   const handleTogglePopup = async (value: boolean) => {
     isTogglePopup.value = value
-
-    if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
-
-    // lay dia chi mac dinh
-    if(!storeAccount.getDetailValue?.id) return
-    if(isTogglePopup.value === true) {
-      await handleGetDefaultAddress()
-    }
   };
 
   const handleGetDefaultAddress = async () => {
@@ -354,6 +346,11 @@ export const useCartStore = defineStore("Cart", () => {
     informationOrder.fullname = data.fullname
     informationOrder.note = data.note ? data.note : ''
     idAddressChoose.value = data.id
+    storeLocation.setLocationProgrammatically(
+      data.provinceCode,
+      data.districtCode,
+      data.wardCode
+    )
   }
 
   const setSelectedOptionsData = (
@@ -438,6 +435,9 @@ export const useCartStore = defineStore("Cart", () => {
       totalPriceCurrent: totalPriceCurrent.value,
       status: ORDER_STATUS.PENDING,
       userId: userId,
+      provinceCode: storeLocation.selectedProvince || 0,
+      districtCode: storeLocation.selectedDistrict || 0,
+      wardCode: storeLocation.selectedWard || 0,
     };
 
     try {
@@ -500,6 +500,7 @@ export const useCartStore = defineStore("Cart", () => {
     syncTempSelectedFromSelectedOptionsData,
     clearTempSelected,
     syncCartCookie,
+    handleGetDefaultAddress,
     // getters
     tempSelected,
     getCartCount,

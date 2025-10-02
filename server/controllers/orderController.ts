@@ -79,16 +79,38 @@ export const getOrderById = async (req: Request, res: Response) => {
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { data, userId, point } = req.body
+    const { data, userId, point, usedPoint } = req.body
 
     if (!data?.fullname || !data?.phone || !data?.paymentId || !data?.cartItems) {
       return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" })
     }
 
+    let deductedPoints = 0;
+
+    // ✅ Nếu có user và muốn dùng điểm
+    if (userId && usedPoint && usedPoint > 0) {
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ code: 1, message: "Không tìm thấy user" });
+      }
+
+      if (user.membership.balancePoint < usedPoint) {
+        return res.status(400).json({ code: 1, message: "Điểm tích lũy không đủ" });
+      }
+
+      // ✅ Trừ điểm từ balancePoint trong DB
+      user.membership.balancePoint -= usedPoint;
+      await user.save();
+
+      deductedPoints = usedPoint;
+    }
+
     const newOrder = await OrderEntity.create({
       ...data,
       userId,
-      reward: { points: point || 0, awarded: false }
+      reward: { points: point || 0, awarded: false, awardedAt: null },
+      usedPoint: deductedPoints,
+      pointRefund: false,
     })
 
     return res.status(201).json({
@@ -145,7 +167,6 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
 
     // Nếu status = COMPLETED → tạo danh sách đánh giá
     if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
-      console.log(order.cartItems)
       const existingReviews = await ProductReviewEntity.find({ orderId: orderId });
 
       if (existingReviews.length === 0) {
@@ -170,6 +191,18 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
       order.reward.awarded = true
       order.reward.awardedAt = new Date()
       await order.save()
+    }
+
+    if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
+      if (!order.pointsRefunded) {
+        const user = await UserModel.findById(order.userId);
+        if (user) {
+          user.membership.balancePoint += order.usedPoints;
+          await user.save();
+
+          order.pointsRefunded = true; // đánh dấu đã hoàn rồi
+        }
+      }
     }
 
     await order.save()
@@ -205,6 +238,7 @@ export const setPointAndUpgrade = async (userId: string, point: number) => {
 
   const levels = await MembershipLevelModel.find()
   const newPoint = (user.membership?.point || 0) + point
+  const newBalancePoint = (user.membership?.balancePoint || 0) + point
 
   const newLevel = levels
     .filter((level) => newPoint >= level.minPoint)
@@ -212,14 +246,20 @@ export const setPointAndUpgrade = async (userId: string, point: number) => {
 
   const levelChanged = newLevel && user.membership?.level !== newLevel.name
 
-  if (newLevel) user.membership.level = newLevel.name as MembershipLevel
+  if (newLevel){
+    user.membership.level = newLevel.name as MembershipLevel
+    user.membership.discountRate = newLevel.discountRate ?? 0
+  } 
   user.membership.point = newPoint
+  user.membership.balancePoint = newBalancePoint
 
   await user.save()
 
   return {
     level: user.membership.level,
     point: user.membership.point,
+    balancePoint: user.membership.balancePoint,
+    discountRate: user.membership.discountRate,
     levelChanged,
   }
 }

@@ -37,12 +37,20 @@ a {
   flex-wrap: wrap;
   margin-right: calc($gutter-x * -1);
   margin-left: calc($gutter-x * -1);
-  &-sm {
-    margin-right: -6px;
-    margin-left: -6px;
+  &-xs {
+    margin-right: -$space-xs;
+    margin-left: -$space-xs;
     [class*="col-"] {
-      padding-right: 6px;
-      padding-left: 6px;
+      padding-right: $space-xs;
+      padding-left: $space-xs;
+    }
+  }
+  &-sm {
+    margin-right: -$space-sm;
+    margin-left: -$space-sm;
+    [class*="col-"] {
+      padding-right: $space-sm;
+      padding-left: $space-sm;
     }
   }
 }
@@ -619,6 +627,18 @@ body .bg {
   cursor: pointer;
 }
 
+.z-index {
+  &-1 {
+    z-index: 1;
+  }
+  &-2 {
+    z-index: 2;
+  }
+  &-3 {
+    z-index: 3;
+  }
+}
+
 .opacity {
   &-0 {
     opacity: 0;
@@ -639,6 +659,9 @@ body .bg {
   &-direction-column {
     flex-direction: column;
   }
+  &-direction-row {
+    flex-direction: row !important;
+  }
 }
 
 .justify {
@@ -652,8 +675,6 @@ body .bg {
     justify-content: space-between;
   }
 }
-
-
 
 .align {
   &-anchor {
@@ -1343,6 +1364,10 @@ body .bg {
 // vuetify custom
 .v-infinite-scroll__side {
   padding: 0 !important;
+  &:last-child {
+    width: 100%;
+    text-align: center;
+  }
 }
 .hide-side .v-infinite-scroll__side {
   display: none !important;

@@ -51,6 +51,9 @@ export interface OrderDTO {
   code: string;
   time: string;
   address: string;
+  provinceCode: number;
+  districtCode: number;
+  wardCode: number;
   fullname: string;
   phone: string;
   note: string;
@@ -66,7 +69,9 @@ export interface OrderDTO {
     points: number,
     awarded: boolean,
     awardedAt: string | null;
-  }
+  };
+  usedPoints: number;
+  pointsRefunded: boolean
   createdAt: string;
   updatedAt: string;
 }
@@ -74,6 +79,9 @@ export interface OrderDTO {
 export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward"> {
   paymentId: string;
   status: string;
+  provinceCode: number;
+  districtCode: number;
+  wardCode: number;
 }
 
 export type OrderPaginationDTO = PaginationDTO<OrderDTO>

@@ -7,6 +7,9 @@ export interface AddressDTO {
   note?: string
   tag: TagAddress
   isDefault: boolean
+  provinceCode: number
+  districtCode: number
+  wardCode: number
   createdAt: string
   updatedAt: string
 }
@@ -16,4 +19,3 @@ export type CreateAddressBody = Omit<AddressDTO, "id" | "createdAt" | "updatedAt
 export type IdAddress = { id: string }
 
 export type TagAddress = "Nhà" | "Công ty" | "Trường học" | "Khác";
-

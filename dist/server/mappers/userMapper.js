@@ -13,6 +13,7 @@ export function toUserDTO(entity) {
         membership: {
             level: entity.membership.level,
             point: entity.membership.point,
+            balancePoint: entity.membership.balancePoint,
             discountRate: entity.membership.discountRate,
             joinedAt: (_c = entity.membership.joinedAt) === null || _c === void 0 ? void 0 : _c.toString(),
             barcode: entity.membership.barcode || "",

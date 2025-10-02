@@ -177,23 +177,29 @@ export const getAllPayment = async (_, res) => {
     }
 };
 export const setPointAndUpgrade = async (userId, point) => {
-    var _a, _b;
+    var _a, _b, _c, _d;
     const user = await UserModel.findById(userId);
     if (!user)
         return null;
     const levels = await MembershipLevelModel.find();
     const newPoint = (((_a = user.membership) === null || _a === void 0 ? void 0 : _a.point) || 0) + point;
+    const newBalancePoint = (((_b = user.membership) === null || _b === void 0 ? void 0 : _b.balancePoint) || 0) + point;
     const newLevel = levels
         .filter((level) => newPoint >= level.minPoint)
         .sort((a, b) => b.minPoint - a.minPoint)[0];
-    const levelChanged = newLevel && ((_b = user.membership) === null || _b === void 0 ? void 0 : _b.level) !== newLevel.name;
-    if (newLevel)
+    const levelChanged = newLevel && ((_c = user.membership) === null || _c === void 0 ? void 0 : _c.level) !== newLevel.name;
+    if (newLevel) {
         user.membership.level = newLevel.name;
+        user.membership.discountRate = (_d = newLevel.discountRate) !== null && _d !== void 0 ? _d : 0;
+    }
     user.membership.point = newPoint;
+    user.membership.balancePoint = newBalancePoint;
     await user.save();
     return {
         level: user.membership.level,
         point: user.membership.point,
+        balancePoint: user.membership.balancePoint,
+        discountRate: user.membership.discountRate,
         levelChanged,
     };
 };

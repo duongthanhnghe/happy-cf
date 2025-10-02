@@ -7,6 +7,7 @@ export interface MembershipLevelsDocument extends Document {
   minPoint: number;
   icon: string;
   image: string;
+  discountRate: number;
   benefits: Types.ObjectId[];
 }
 
@@ -16,6 +17,7 @@ const MembershipLevelSchema = new Schema<MembershipLevelsDocument>(
     minPoint: { type: Number, required: true },
     icon: { type: String },
     image: { type: String },
+    discountRate: { type: Number },
     benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
   },
   { timestamps: false }

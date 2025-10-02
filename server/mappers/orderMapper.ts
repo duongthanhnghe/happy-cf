@@ -42,6 +42,9 @@ export function toOrderDTO(entity: Order): OrderDTO {
     time: entity.time,
     address: entity.address,
     fullname: entity.fullname,
+    provinceCode: entity.provinceCode,
+    districtCode: entity.districtCode,
+    wardCode: entity.wardCode,
     phone: entity.phone,
     note: entity.note || "",
     paymentId: toPaymentDTO(entity.paymentId as any),
@@ -71,6 +74,8 @@ export function toOrderDTO(entity: Order): OrderDTO {
           awarded: false,
           awardedAt: null,
         },
+    usedPoints: entity.usedPoints,
+    pointsRefunded: entity.pointsRefunded,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
   };

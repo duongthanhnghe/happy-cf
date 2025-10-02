@@ -84,7 +84,7 @@ export type UpdateCategoryProductDTO = Partial<Omit<CreateCategoryProductDTO, "c
 
 export interface CategoryWithProductsDTO extends CategoryProductDTO {
   products: ProductPaginationDTO
-  children: CategoryProductDTO
+  children: CategoryProductDTO[] | null
 }
 
 export interface SelectedOptionPushDTO {

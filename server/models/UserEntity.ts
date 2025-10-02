@@ -4,6 +4,7 @@ import type { PaginateModel } from "mongoose";
 export interface Membership {
   level: "Bronze" | "Silver" | "Gold" | "Platinum";
   point: number;
+  balancePoint: number;
   discountRate: number;
   joinedAt: Date;
   barcode?: string;
@@ -32,6 +33,7 @@ const MembershipSchema = new Schema(
   {
     level: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], required: true },
     point: { type: Number, default: 0 },
+    balancePoint: { type: Number, default: 0 },
     discountRate: { type: Number, default: 0 },
     joinedAt: { type: Date, default: Date.now },
     barcode: { type: String },

@@ -35,6 +35,8 @@ export const register = async (req, res) => {
             membership: {
                 level: "Bronze",
                 point: 0,
+                balancePoint: 0,
+                membership: 0,
                 discountRate: 0,
                 joinedAt: new Date(),
                 code: Date.now(),
@@ -289,6 +291,7 @@ export const setPoint = async (req, res) => {
     if (!user)
         return res.status(404).json({ code: 1, message: "Không tìm thấy người dùng" });
     user.membership.point = point;
+    user.membership.balancePoint = point;
     await user.save();
     res.json({ code: 0, message: "Tích điểm thành công", data: toUserDTO(user) });
 };

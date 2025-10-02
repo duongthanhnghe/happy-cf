@@ -109,7 +109,7 @@ export const API_ENDPOINTS = {
     DELETE_MEMBERSHIP_BENEFIT: (id) => `/auth/membership-benefit/${id}`,
   },
   ADDRESSES: {
-    LIST: '/addresses',
+    LIST: '/addresses/user',
     GET_BY_ID: (id) => `/addresses/${id}`,
     CREATE: '/addresses',
     UPDATE: (id) => `/addresses/${id}`,
@@ -140,4 +140,12 @@ export const API_ENDPOINTS = {
     GET_BY_USER_PENDING: (userId) => `/product-reviews/user/${userId}/reviews`,
     GET_BY_PRODUCT_ID: (id) => `/product-reviews/product/${id}/reviews`,
   },
+  LOCATION: {
+    PROVINCES: '/location/provinces',
+    PROVINCE_DETAIL: (provinceCode) => `/location/provinces/${provinceCode}`,
+    DISTRICTS: (provinceCode) => `/location/districts/${provinceCode}`,
+    DISTRICT_DETAIL: (districtCode) => `/location/district/${districtCode}`,
+    WARDS: (districtCode) => `/location/wards/${districtCode}`,
+    WARD_DETAIL: (wardCode,districtCode) => `/location/ward/${wardCode}?districtCode=${districtCode}`,
+  }
 }

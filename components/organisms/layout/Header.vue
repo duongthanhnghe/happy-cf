@@ -45,7 +45,7 @@ const props = defineProps({
               <MaterialIcon size="30" name="location_on"/>
               <div>
                 Giao hàng tới
-                <div class="text-limit flex" @click.prevent="storeAddress.handleTogglePopupList(true, true, true)">
+                <div class="text-limit flex" @click.prevent="storeAddress.handleTogglePopupList(true, true)">
                   {{ storeCart.getNameAddressChoose || 'Chưa nhập địa chỉ' }}
                   <MaterialIcon size="24" name="keyboard_arrow_down"/>
                 </div>

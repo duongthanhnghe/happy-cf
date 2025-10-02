@@ -48,7 +48,7 @@ const handleFileChange = (event: Event) => {
         :class="{ 'hide-side': store.getItems.length < store.pageSize }"
         @load="store.load"
       >
-        <div class="row row-sm mb-sm">
+        <div class="row row-xs mb-sm">
           <div :class="`${props.column} mb-sm`" v-for="(item, index) in store.getItems" :key="index">
             <FileImageItem :item="item" :chooseImage="props.chooseImage" />
           </div>

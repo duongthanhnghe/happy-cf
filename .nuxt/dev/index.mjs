@@ -1136,16 +1136,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"2fe0d-Sv/OpOfo4i2Aua4iYWPdbptVN+8\"",
-    "mtime": "2025-09-30T09:53:44.527Z",
-    "size": 196109,
+    "etag": "\"31900-Q2MSfOOYcMNzvn47mfyyNfg7vkk\"",
+    "mtime": "2025-10-02T17:31:34.319Z",
+    "size": 203008,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"b87ae-QQ2MjKzCbbe/Xyiw6zEhItSgOFU\"",
-    "mtime": "2025-09-30T09:53:44.536Z",
-    "size": 755630,
+    "etag": "\"bf08b-Vs4tl1i6N/uLTwWvozz6T80F+Jc\"",
+    "mtime": "2025-10-02T17:31:34.326Z",
+    "size": 782475,
     "path": "index.mjs.map"
   }
 };
@@ -1562,6 +1562,7 @@ const _lazy_f3VTyF = () => Promise.resolve().then(function () { return bannerRou
 const _lazy_E6ks5a = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
 const _lazy_pqgcrd = () => Promise.resolve().then(function () { return categoriesProductRouter; });
 const _lazy_NC4wll = () => Promise.resolve().then(function () { return fileManageRouter; });
+const _lazy_h7Ioq1 = () => Promise.resolve().then(function () { return locationRouter; });
 const _lazy_pDFBy2 = () => Promise.resolve().then(function () { return orderManageRouter; });
 const _lazy_vGiHBT = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
 const _lazy_FlpZsr = () => Promise.resolve().then(function () { return postsNewsRouter; });
@@ -1579,6 +1580,7 @@ const handlers = [
   { route: '/categoriesNewsRouter', handler: _lazy_E6ks5a, lazy: true, middleware: false, method: undefined },
   { route: '/categoriesProductRouter', handler: _lazy_pqgcrd, lazy: true, middleware: false, method: undefined },
   { route: '/fileManageRouter', handler: _lazy_NC4wll, lazy: true, middleware: false, method: undefined },
+  { route: '/locationRouter', handler: _lazy_h7Ioq1, lazy: true, middleware: false, method: undefined },
   { route: '/orderManageRouter', handler: _lazy_pDFBy2, lazy: true, middleware: false, method: undefined },
   { route: '/paymentTransactionRoutes', handler: _lazy_vGiHBT, lazy: true, middleware: false, method: undefined },
   { route: '/postsNewsRouter', handler: _lazy_FlpZsr, lazy: true, middleware: false, method: undefined },
@@ -2056,18 +2058,18 @@ const toggleActive$6 = async (req, res) => {
   }
 };
 
-const router$c = Router();
-router$c.get("/", getAllAbout);
-router$c.get("/:id", getAboutById);
-router$c.post("/", createAbout);
-router$c.put("/:id", updateAbout);
-router$c.delete("/:id", deleteAbout);
-router$c.patch("/updateOrder/:id", updateOrder$3);
-router$c.patch("/toggleActive/:id", toggleActive$6);
+const router$d = Router();
+router$d.get("/", getAllAbout);
+router$d.get("/:id", getAboutById);
+router$d.post("/", createAbout);
+router$d.put("/:id", updateAbout);
+router$d.delete("/:id", deleteAbout);
+router$d.patch("/updateOrder/:id", updateOrder$3);
+router$d.patch("/toggleActive/:id", toggleActive$6);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$c
+  default: router$d
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const AddressSchema = new Schema(
@@ -2082,7 +2084,10 @@ const AddressSchema = new Schema(
       enum: ["Nh\xE0", "C\xF4ng ty", "Tr\u01B0\u1EDDng h\u1ECDc", "Kh\xE1c"],
       default: "Kh\xE1c"
     },
-    isDefault: { type: Boolean, default: false }
+    isDefault: { type: Boolean, default: false },
+    provinceCode: { type: Number, required: true },
+    districtCode: { type: Number, required: true },
+    wardCode: { type: Number, required: true }
   },
   { timestamps: true }
 );
@@ -2090,14 +2095,18 @@ const AddressModel = model("Address", AddressSchema, "addresses");
 
 function toAddressDTO(doc) {
   return {
-    id: doc._id ? doc._id.toString() : "",
+    id: doc._id.toString(),
     userId: doc.userId ? doc.userId.toString() : "",
     fullname: doc.fullname,
     phone: doc.phone,
     address: doc.address,
+    // chi tiết: số nhà, đường
     note: doc.note,
     tag: doc.tag,
     isDefault: doc.isDefault,
+    provinceCode: doc.provinceCode,
+    districtCode: doc.districtCode,
+    wardCode: doc.wardCode,
     createdAt: doc.createdAt.toISOString(),
     updatedAt: doc.updatedAt.toISOString()
   };
@@ -2121,12 +2130,13 @@ const getAllAddress = async (req, res) => {
 const getAddressById = async (req, res) => {
   try {
     const { id } = req.params;
-    const address = await AddressModel.findById(id);
+    const address = await AddressModel.findById(id).lean();
     if (!address) {
       return res.status(404).json({ code: 1, message: "address kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
     return res.json({ code: 0, data: toAddressDTO(address) });
   } catch (err) {
+    console.error("Error getAddressById:", err);
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
@@ -2213,24 +2223,25 @@ const getDefaultAddressByUserId = async (req, res) => {
   }
 };
 
-const router$b = Router();
-router$b.get("/default/:userId", getDefaultAddressByUserId);
-router$b.get("/:userId", getAllAddress);
-router$b.get("/:id", getAddressById);
-router$b.post("/", createAddress);
-router$b.put("/:id", updateAddress);
-router$b.delete("/:id", deleteAddress);
-router$b.post("/:id/set-default", setAddressDefault);
+const router$c = Router();
+router$c.get("/default/:userId", getDefaultAddressByUserId);
+router$c.get("/user/:userId", getAllAddress);
+router$c.get("/:id", getAddressById);
+router$c.post("/", createAddress);
+router$c.put("/:id", updateAddress);
+router$c.delete("/:id", deleteAddress);
+router$c.post("/:id/set-default", setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$b
+  default: router$c
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const MembershipSchema = new Schema(
   {
     level: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], required: true },
     point: { type: Number, default: 0 },
+    balancePoint: { type: Number, default: 0 },
     discountRate: { type: Number, default: 0 },
     joinedAt: { type: Date, default: Date.now },
     barcode: { type: String },
@@ -2280,6 +2291,7 @@ const MembershipLevelSchema = new Schema(
     minPoint: { type: Number, required: true },
     icon: { type: String },
     image: { type: String },
+    discountRate: { type: Number },
     benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
   },
   { timestamps: false }
@@ -2305,6 +2317,7 @@ function toUserDTO(entity) {
     membership: {
       level: entity.membership.level,
       point: entity.membership.point,
+      balancePoint: entity.membership.balancePoint,
       discountRate: entity.membership.discountRate,
       joinedAt: (_c = entity.membership.joinedAt) == null ? void 0 : _c.toString(),
       barcode: entity.membership.barcode || "",
@@ -2404,6 +2417,7 @@ function toMembershipLevelDTO(entity) {
     minPoint: entity.minPoint,
     icon: entity.icon,
     image: entity.image,
+    discountRate: entity.discountRate,
     benefits: Array.isArray(entity.benefits) ? toMembershipBenefitListDTO(entity.benefits) : []
   };
 }
@@ -2435,6 +2449,8 @@ const register = async (req, res) => {
       membership: {
         level: "Bronze",
         point: 0,
+        balancePoint: 0,
+        membership: 0,
         discountRate: 0,
         joinedAt: /* @__PURE__ */ new Date(),
         code: Date.now(),
@@ -2682,6 +2698,7 @@ const setPoint = async (req, res) => {
   const user = await UserModel.findById(userId);
   if (!user) return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y ng\u01B0\u1EDDi d\xF9ng" });
   user.membership.point = point;
+  user.membership.balancePoint = point;
   await user.save();
   res.json({ code: 0, message: "T\xEDch \u0111i\u1EC3m th\xE0nh c\xF4ng", data: toUserDTO(user) });
 };
@@ -2825,32 +2842,32 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$a = express.Router();
-router$a.get("/users", getAllUsers);
-router$a.put("/users/me", authenticate, updateAccount);
-router$a.get("/users/:id", getUserById);
-router$a.patch("/users/toggleActive/:id", toggleActive$5);
-router$a.post("/register", register);
-router$a.post("/login", login);
-router$a.post("/forgot-password", forgotPassword);
-router$a.post("/reset-password", resetPassword);
-router$a.post("/change-password", changePassword);
-router$a.post("/set-point", setPoint);
-router$a.delete("/:id", deleteUsers);
-router$a.get("/membership-level", getAllMembershipLevel);
-router$a.get("/membership-level/:id", getMembershipLevelById);
-router$a.put("/membership-level/:id", updateMembershipLevel);
-router$a.post("/search-keywords/log", logSearchKeyword);
-router$a.get("/search-keywords/list", getTopSearchKeyword);
-router$a.get("/membership-benefit", getAllMembershipBenefits);
-router$a.get("/membership-benefit/:id", getMembershipBenefitById);
-router$a.post("/membership-benefit", authenticate, createMembershipBenefit);
-router$a.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
-router$a.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
+const router$b = express.Router();
+router$b.get("/users", getAllUsers);
+router$b.put("/users/me", authenticate, updateAccount);
+router$b.get("/users/:id", getUserById);
+router$b.patch("/users/toggleActive/:id", toggleActive$5);
+router$b.post("/register", register);
+router$b.post("/login", login);
+router$b.post("/forgot-password", forgotPassword);
+router$b.post("/reset-password", resetPassword);
+router$b.post("/change-password", changePassword);
+router$b.post("/set-point", setPoint);
+router$b.delete("/:id", deleteUsers);
+router$b.get("/membership-level", getAllMembershipLevel);
+router$b.get("/membership-level/:id", getMembershipLevelById);
+router$b.put("/membership-level/:id", updateMembershipLevel);
+router$b.post("/search-keywords/log", logSearchKeyword);
+router$b.get("/search-keywords/list", getTopSearchKeyword);
+router$b.get("/membership-benefit", getAllMembershipBenefits);
+router$b.get("/membership-benefit/:id", getMembershipBenefitById);
+router$b.post("/membership-benefit", authenticate, createMembershipBenefit);
+router$b.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
+router$b.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
 
 const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$a
+  default: router$b
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const BannerSchema = new Schema(
@@ -2983,18 +3000,18 @@ const toggleActive$4 = async (req, res) => {
   }
 };
 
-const router$9 = Router();
-router$9.get("/", getAllBanners);
-router$9.get("/:id", getBannerById);
-router$9.post("/", createBanner);
-router$9.put("/:id", updateBanner);
-router$9.delete("/:id", deleteBanner);
-router$9.patch("/updateOrder/:id", updateOrder$2);
-router$9.patch("/toggleActive/:id", toggleActive$4);
+const router$a = Router();
+router$a.get("/", getAllBanners);
+router$a.get("/:id", getBannerById);
+router$a.post("/", createBanner);
+router$a.put("/:id", updateBanner);
+router$a.delete("/:id", deleteBanner);
+router$a.patch("/updateOrder/:id", updateOrder$2);
+router$a.patch("/toggleActive/:id", toggleActive$4);
 
 const bannerRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$9
+  default: router$a
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function generateSlug(text) {
@@ -3266,19 +3283,19 @@ const getCategoryBySlug = async (req, res) => {
   }
 };
 
-const router$8 = Router();
-router$8.get("/", getAllCategories$1);
-router$8.get("/slug/:slug", getCategoryBySlug);
-router$8.get("/:id", getCategoriesById$1);
-router$8.post("/", createCategories$1);
-router$8.put("/:id", updateCategories$1);
-router$8.delete("/:id", deleteCategories$1);
-router$8.patch("/toggleActive/:id", toggleActive$3);
-router$8.patch("/updateOrder/:id", updateOrder$1);
+const router$9 = Router();
+router$9.get("/", getAllCategories$1);
+router$9.get("/slug/:slug", getCategoryBySlug);
+router$9.get("/:id", getCategoriesById$1);
+router$9.post("/", createCategories$1);
+router$9.put("/:id", updateCategories$1);
+router$9.delete("/:id", deleteCategories$1);
+router$9.patch("/toggleActive/:id", toggleActive$3);
+router$9.patch("/updateOrder/:id", updateOrder$1);
 
 const categoriesNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$8
+  default: router$9
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const VariantSchema = new Schema(
@@ -3756,22 +3773,22 @@ const toggleActive$2 = async (req, res) => {
   }
 };
 
-const router$7 = Router();
-router$7.get("/tree", getAllCategoriesTree);
-router$7.get("/", getAllCategories);
-router$7.get("/slug/:slug", getCategoriesBySlug);
-router$7.get("/:id", getCategoriesById);
-router$7.get("/:id/children", getChildrenCategories);
-router$7.post("/", createCategories);
-router$7.put("/:id", updateCategories);
-router$7.delete("/:id", deleteCategories);
-router$7.get("/:id/products", getProductsByCategory);
-router$7.patch("/toggleActive/:id", toggleActive$2);
-router$7.patch("/updateOrder/:id", updateOrder);
+const router$8 = Router();
+router$8.get("/tree", getAllCategoriesTree);
+router$8.get("/", getAllCategories);
+router$8.get("/slug/:slug", getCategoriesBySlug);
+router$8.get("/:id", getCategoriesById);
+router$8.get("/:id/children", getChildrenCategories);
+router$8.post("/", createCategories);
+router$8.put("/:id", updateCategories);
+router$8.delete("/:id", deleteCategories);
+router$8.get("/:id/products", getProductsByCategory);
+router$8.patch("/toggleActive/:id", toggleActive$2);
+router$8.patch("/updateOrder/:id", updateOrder);
 
 const categoriesProductRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$7
+  default: router$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const uploadImageMulter = multer({ dest: "uploads/" });
@@ -3926,14 +3943,122 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const router$6 = express.Router();
-router$6.get("/images", getImages);
-router$6.get("/images/folders", getFolders);
-router$6.delete("/images/delete", deleteImage);
-router$6.get("/images/search", searchImage);
-router$6.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
+const router$7 = express.Router();
+router$7.get("/images", getImages);
+router$7.get("/images/folders", getFolders);
+router$7.delete("/images/delete", deleteImage);
+router$7.get("/images/search", searchImage);
+router$7.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
 
 const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$7
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const getAllProvinces = async (_, res) => {
+  try {
+    const response = await fetch("https://provinces.open-api.vn/api/?depth=1");
+    const data = await response.json();
+    return res.json({ code: 0, data });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch t\u1EC9nh/th\xE0nh", error: err.message });
+  }
+};
+const getDistrictsByProvince = async (req, res) => {
+  try {
+    const { provinceCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
+    const data = await response.json();
+    if (!data || !data.districts) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
+    }
+    return res.json({ code: 0, data: data.districts });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y qu\u1EADn/huy\u1EC7n", error: err.message });
+  }
+};
+const getWardsByDistrict = async (req, res) => {
+  try {
+    const { districtCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+    const data = await response.json();
+    if (!data || !data.wards) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
+    }
+    return res.json({ code: 0, data: data.wards });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y x\xE3/ph\u01B0\u1EDDng", error: err.message });
+  }
+};
+const getProvinceDetail = async (req, res) => {
+  try {
+    const { provinceCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=1`);
+    const data = await response.json();
+    if (!data || !data.name) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y t\u1EC9nh/th\xE0nh" });
+    }
+    return res.json({ code: 0, data });
+  } catch (err) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt t\u1EC9nh/th\xE0nh",
+      error: err.message
+    });
+  }
+};
+const getDistrictDetail = async (req, res) => {
+  try {
+    const { districtCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=1`);
+    const data = await response.json();
+    if (!data || !data.name) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
+    }
+    return res.json({ code: 0, data });
+  } catch (err) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt qu\u1EADn/huy\u1EC7n",
+      error: err.message
+    });
+  }
+};
+const getWardDetail = async (req, res) => {
+  const { wardCode } = req.params;
+  const districtCode = req.query.districtCode;
+  if (!districtCode) {
+    return res.status(400).json({
+      code: 1,
+      message: "Thi\u1EBFu districtCode khi t\xECm x\xE3/ph\u01B0\u1EDDng c\xF3 m\xE3 ng\u1EAFn"
+    });
+  }
+  try {
+    const resp = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+    const district = await resp.json();
+    if (resp.ok && district && Array.isArray(district.wards)) {
+      const ward = district.wards.find(
+        (w) => String(w.code) === String(wardCode)
+      );
+      if (ward) {
+        return res.json({ code: 0, data: ward });
+      }
+    }
+    return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt x\xE3/ph\u01B0\u1EDDng", error: err.message });
+  }
+};
+
+const router$6 = express.Router();
+router$6.get("/provinces", getAllProvinces);
+router$6.get("/provinces/:provinceCode", getProvinceDetail);
+router$6.get("/districts/:provinceCode", getDistrictsByProvince);
+router$6.get("/district/:districtCode", getDistrictDetail);
+router$6.get("/wards/:districtCode", getWardsByDistrict);
+router$6.get("/ward/:wardCode", getWardDetail);
+
+const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$6
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3980,6 +4105,9 @@ const OrderSchema = new Schema(
     code: { type: String, required: true },
     time: { type: String, required: true },
     address: { type: String, required: true },
+    provinceCode: { type: Number, required: true },
+    districtCode: { type: Number, required: true },
+    wardCode: { type: Number, required: true },
     fullname: { type: String, required: true },
     phone: { type: String, required: true },
     note: { type: String },
@@ -3988,7 +4116,6 @@ const OrderSchema = new Schema(
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
-    // point: { type: Number, default: 0 },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
@@ -3996,7 +4123,9 @@ const OrderSchema = new Schema(
       points: { type: Number, default: 0 },
       awarded: { type: Boolean, default: false },
       awardedAt: { type: Date, default: null }
-    }
+    },
+    usedPoints: { type: Number, default: 0 },
+    pointsRefunded: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
@@ -4070,6 +4199,9 @@ function toOrderDTO(entity) {
     time: entity.time,
     address: entity.address,
     fullname: entity.fullname,
+    provinceCode: entity.provinceCode,
+    districtCode: entity.districtCode,
+    wardCode: entity.wardCode,
     phone: entity.phone,
     note: entity.note || "",
     paymentId: toPaymentDTO(entity.paymentId),
@@ -4089,6 +4221,8 @@ function toOrderDTO(entity) {
       awarded: false,
       awardedAt: null
     },
+    usedPoints: entity.usedPoints,
+    pointsRefunded: entity.pointsRefunded,
     createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
     updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || ""
   };
@@ -4208,14 +4342,29 @@ const getOrderById = async (req, res) => {
 };
 const createOrder = async (req, res) => {
   try {
-    const { data, userId, point } = req.body;
+    const { data, userId, point, usedPoint } = req.body;
     if (!(data == null ? void 0 : data.fullname) || !(data == null ? void 0 : data.phone) || !(data == null ? void 0 : data.paymentId) || !(data == null ? void 0 : data.cartItems)) {
       return res.status(400).json({ code: 1, message: "D\u1EEF li\u1EC7u \u0111\u01A1n h\xE0ng kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    let deductedPoints = 0;
+    if (userId && usedPoint && usedPoint > 0) {
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y user" });
+      }
+      if (user.membership.balancePoint < usedPoint) {
+        return res.status(400).json({ code: 1, message: "\u0110i\u1EC3m t\xEDch l\u0169y kh\xF4ng \u0111\u1EE7" });
+      }
+      user.membership.balancePoint -= usedPoint;
+      await user.save();
+      deductedPoints = usedPoint;
     }
     const newOrder = await OrderEntity.create({
       ...data,
       userId,
-      reward: { points: point || 0, awarded: false }
+      reward: { points: point || 0, awarded: false, awardedAt: null },
+      usedPoint: deductedPoints,
+      pointRefund: false
     });
     return res.status(201).json({
       code: 0,
@@ -4262,7 +4411,6 @@ const updateOrderStatus = async (req, res) => {
     }
     order.status = statusId;
     if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
-      console.log(order.cartItems);
       const existingReviews = await ProductReviewEntity.find({ orderId });
       if (existingReviews.length === 0) {
         const reviews = order.cartItems.map((item) => ({
@@ -4284,6 +4432,16 @@ const updateOrderStatus = async (req, res) => {
       order.reward.awarded = true;
       order.reward.awardedAt = /* @__PURE__ */ new Date();
       await order.save();
+    }
+    if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
+      if (!order.pointsRefunded) {
+        const user = await UserModel.findById(order.userId);
+        if (user) {
+          user.membership.balancePoint += order.usedPoints;
+          await user.save();
+          order.pointsRefunded = true;
+        }
+      }
     }
     await order.save();
     return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
@@ -4309,19 +4467,26 @@ const getAllPayment = async (_, res) => {
   }
 };
 const setPointAndUpgrade = async (userId, point) => {
-  var _a, _b;
+  var _a, _b, _c, _d;
   const user = await UserModel.findById(userId);
   if (!user) return null;
   const levels = await MembershipLevelModel.find();
   const newPoint = (((_a = user.membership) == null ? void 0 : _a.point) || 0) + point;
+  const newBalancePoint = (((_b = user.membership) == null ? void 0 : _b.balancePoint) || 0) + point;
   const newLevel = levels.filter((level) => newPoint >= level.minPoint).sort((a, b) => b.minPoint - a.minPoint)[0];
-  const levelChanged = newLevel && ((_b = user.membership) == null ? void 0 : _b.level) !== newLevel.name;
-  if (newLevel) user.membership.level = newLevel.name;
+  const levelChanged = newLevel && ((_c = user.membership) == null ? void 0 : _c.level) !== newLevel.name;
+  if (newLevel) {
+    user.membership.level = newLevel.name;
+    user.membership.discountRate = (_d = newLevel.discountRate) != null ? _d : 0;
+  }
   user.membership.point = newPoint;
+  user.membership.balancePoint = newBalancePoint;
   await user.save();
   return {
     level: user.membership.level,
     point: user.membership.point,
+    balancePoint: user.membership.balancePoint,
+    discountRate: user.membership.discountRate,
     levelChanged
   };
 };

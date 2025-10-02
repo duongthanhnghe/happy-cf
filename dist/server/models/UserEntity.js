@@ -3,6 +3,7 @@ import mongoosePaginate from "mongoose-paginate-v2";
 const MembershipSchema = new Schema({
     level: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], required: true },
     point: { type: Number, default: 0 },
+    balancePoint: { type: Number, default: 0 },
     discountRate: { type: Number, default: 0 },
     joinedAt: { type: Date, default: Date.now },
     barcode: { type: String },

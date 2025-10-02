@@ -73,7 +73,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 
         <LabelInput label="Anh lien quan" />
 
-        <div class="row row-sm" v-if="store.updateProductItem.listImage && store.updateProductItem.listImage.length > 0">
+        <div class="row row-xs" v-if="store.updateProductItem.listImage && store.updateProductItem.listImage.length > 0">
           <div class="col-6 col-md-4" v-for="item in store.updateProductItem.listImage" :key="item.id">
             <ControlImage :src="item.src" :label="item.src" className="mb-sm">
               <template #action>

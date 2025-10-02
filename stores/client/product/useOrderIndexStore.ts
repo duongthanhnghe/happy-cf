@@ -1,15 +1,14 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { categoriesAPI } from "@/services/categories-product.service";
-import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren'
 import type { CategoryProductDTO, CategoryWithProductsDTO, ProductSortType } from '@/server/types/dto/product.dto'
 
 export const useOrderStore = defineStore('order', () => {
-  const { fetchCategoryChildrenList } = useProductCategoryChildren()
   
   const resultData = ref<CategoryWithProductsDTO[]|null>(null)
-  const limit = 20
+  const limit = 4
   const filterType = ref<ProductSortType>('discount')
+  const filterCategory = ref<Record<string, string>>({})
 
   async function load(category:CategoryWithProductsDTO , { done }: { done: (status: 'ok' | 'empty') => void }) {
     try {
@@ -38,26 +37,30 @@ export const useOrderStore = defineStore('order', () => {
   }
 
   const mapProductsByCategory = async (categories: CategoryProductDTO[]) => {
-    return await Promise.all(
+    const mapped = await Promise.all(
       categories.map(async category => {
         const products = await categoriesAPI.getListByCategory(category.id,1,limit,filterType.value)
-        const children: CategoryProductDTO = await fetchCategoryChildrenList(category.id, false)
+          if (category.id) {
+            filterCategory.value[category.id] = category.id
+          }
 
         return {
           ...category,
           products,
-          children: children || [] as CategoryProductDTO[]
         }
       })
     )
+    
+    return mapped
   }
 
   const getListProducts = computed(() => resultData.value)
-
+ 
   return {
     resultData,
     load,
     mapProductsByCategory,
     getListProducts,
+    filterCategory,
   }
 })
