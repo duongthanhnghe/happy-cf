@@ -70,14 +70,31 @@ export const getOrderById = async (req, res) => {
 };
 export const createOrder = async (req, res) => {
     try {
-        const { data, userId, point } = req.body;
+        const { data, userId, point, usedPoint } = req.body;
         if (!(data === null || data === void 0 ? void 0 : data.fullname) || !(data === null || data === void 0 ? void 0 : data.phone) || !(data === null || data === void 0 ? void 0 : data.paymentId) || !(data === null || data === void 0 ? void 0 : data.cartItems)) {
             return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" });
+        }
+        let deductedPoints = 0;
+        // ✅ Nếu có user và muốn dùng điểm
+        if (userId && usedPoint && usedPoint > 0) {
+            const user = await UserModel.findById(userId);
+            if (!user) {
+                return res.status(404).json({ code: 1, message: "Không tìm thấy user" });
+            }
+            if (user.membership.balancePoint < usedPoint) {
+                return res.status(400).json({ code: 1, message: "Điểm tích lũy không đủ" });
+            }
+            // ✅ Trừ điểm từ balancePoint trong DB
+            user.membership.balancePoint -= usedPoint;
+            await user.save();
+            deductedPoints = usedPoint;
         }
         const newOrder = await OrderEntity.create({
             ...data,
             userId,
-            reward: { points: point || 0, awarded: false }
+            reward: { points: point || 0, awarded: false, awardedAt: null },
+            usedPoint: deductedPoints,
+            pointRefund: false,
         });
         return res.status(201).json({
             code: 0,
@@ -128,7 +145,6 @@ export const updateOrderStatus = async (req, res) => {
         order.status = statusId;
         // Nếu status = COMPLETED → tạo danh sách đánh giá
         if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
-            console.log(order.cartItems);
             const existingReviews = await ProductReviewEntity.find({ orderId: orderId });
             if (existingReviews.length === 0) {
                 const reviews = order.cartItems.map((item) => ({
@@ -149,6 +165,16 @@ export const updateOrderStatus = async (req, res) => {
             order.reward.awarded = true;
             order.reward.awardedAt = new Date();
             await order.save();
+        }
+        if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
+            if (!order.pointsRefunded) {
+                const user = await UserModel.findById(order.userId);
+                if (user) {
+                    user.membership.balancePoint += order.usedPoints;
+                    await user.save();
+                    order.pointsRefunded = true; // đánh dấu đã hoàn rồi
+                }
+            }
         }
         await order.save();
         return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) });
@@ -238,6 +264,39 @@ export const getRewardHistoryByUserId = async (req, res) => {
     catch (err) {
         console.error("Lỗi getRewardHistoryByUserId:", err);
         return res.status(500).json({ code: 1, message: err.message });
+    }
+};
+export const checkPoint = async (req, res) => {
+    try {
+        const { userId, usedPoint, orderTotal } = req.body;
+        if (!userId || !usedPoint || !orderTotal) {
+            return res.status(400).json({ success: false, message: "Thiếu dữ liệu" });
+        }
+        const user = await UserModel.findById(userId).select("membership.balancePoint");
+        if (!user) {
+            return res.status(404).json({ success: false, message: "Không tìm thấy user" });
+        }
+        const balancePoint = user.membership.balancePoint || 0;
+        const maxPointAllow = Math.floor(orderTotal * 0.1); // toi da 10%
+        if (usedPoint > balancePoint) {
+            return res.json({
+                code: 2,
+                message: "Số điểm bạn có không đủ để sử dụng",
+            });
+        }
+        if (usedPoint > maxPointAllow) {
+            return res.json({
+                code: 1,
+                message: `Bạn chỉ được sử dụng tối đa ${maxPointAllow} điểm cho đơn hàng này`,
+            });
+        }
+        return res.json({
+            code: 0,
+            data: { appliedPoint: usedPoint },
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ success: false, message: "Lỗi server" });
     }
 };
 //# sourceMappingURL=orderController.js.map

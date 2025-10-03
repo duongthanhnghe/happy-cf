@@ -55,6 +55,11 @@ export const useCartStore = defineStore("Cart", () => {
   const selectedOptionsData = ref<SelectedOptionPushDTO[]>([]);
   const tempSelected = reactive<Record<string, string>>({});
   const idAddressChoose = ref('')
+  const usedPointOrder = reactive({
+    pointInput: 0,
+    usedPoint: 0,
+    checkBalancePoint: false
+  });
 
   const addNormalProduct = (product: ProductDTO) => {
     const existingProduct = cartListItem.value?.find(
@@ -278,7 +283,9 @@ export const useCartStore = defineStore("Cart", () => {
       return total + item.priceDiscounts * item.quantity;
     }, 0);
 
-    totalPriceSave.value = totalPriceCurrent.value - totalPriceDiscount.value;
+    totalPriceDiscount.value = totalPriceDiscount.value - usedPointOrder.usedPoint
+
+    totalPriceSave.value = totalPriceCurrent.value - totalPriceDiscount.value
   };
 
   const deleteCart = async (productKey: string) => {
@@ -420,6 +427,7 @@ export const useCartStore = defineStore("Cart", () => {
 
     const userId = storeAccount.getDetailValue?.id ? storeAccount.getDetailValue?.id : null
     const point = storeAccount.getDetailValue?.id ? Math.round(totalPriceDiscount.value * 0.05) : 0
+    const newUsedPoint = usedPointOrder.checkBalancePoint ? usedPointOrder.usedPoint : 0
 
     const orderData: CreateOrderBody = {
       code: 'ORDER' + Date.now(),
@@ -438,14 +446,19 @@ export const useCartStore = defineStore("Cart", () => {
       provinceCode: storeLocation.selectedProvince || 0,
       districtCode: storeLocation.selectedDistrict || 0,
       wardCode: storeLocation.selectedWard || 0,
+      usedPoints: usedPointOrder.usedPoint,
+      pointsRefunded: false, 
     };
 
     try {
-      const result = await ordersAPI.create(orderData,userId,point);
+      const result = await ordersAPI.create(orderData,userId,point,newUsedPoint);
       if (result.code === 0 && result.data.id) {
         deleteCartAll()
         showConfirm("Đặt hàng thành công","Đơn hàng của bạn đang đuợc tiêp nhân và xử lý",'success','Theo doi don hang','Ve trang chu',() => handleSubmitOk(result.data.id),handleSubmitCancel)
         //  await sendOrderEmail('duongthanhnghe120796@gmail.com', orderData);
+        usedPointOrder.pointInput = 0,
+        usedPointOrder.usedPoint = 0,
+        usedPointOrder.checkBalancePoint = false
       }
       Loading(false);
     } catch (err: any) {
@@ -453,6 +466,36 @@ export const useCartStore = defineStore("Cart", () => {
       Loading(false);
     }
   };
+
+  const handleCheckPoint = async () => {
+    if(!storeAccount.getDetailValue?.id || usedPointOrder.pointInput == 0 || totalPriceDiscount.value === 0) {
+      showWarning('Vui long kiem tra lai thong tin!')
+      return
+    }
+
+    if(usedPointOrder.pointInput >= Math.floor(totalPriceCurrent.value * 0.1)) {
+      showWarning(`Chỉ được dùng tối đa ${Math.floor(totalPriceCurrent.value * 0.1)} điểm`)
+      return
+    }
+
+    Loading(true);
+    try {
+      const res = await ordersAPI.checkPoint(storeAccount.getDetailValue?.id,usedPointOrder.pointInput,totalPriceDiscount.value);
+      if (res.code === 0) {
+        usedPointOrder.checkBalancePoint = true
+        usedPointOrder.usedPoint = Number(res.data.appliedPoint)
+      } else {
+        usedPointOrder.checkBalancePoint = false
+        usedPointOrder.usedPoint = 0
+        showWarning(res.message ?? '')
+      }
+      handleCalcTotalPriceCurrent()
+      Loading(false);
+    } catch (err: any) {
+      showWarning(err.message);
+      Loading(false);
+    }
+  }
 
   const syncCartCookie = () => {
     cartCount.value = getCookie("cartCount") || 0
@@ -483,6 +526,7 @@ export const useCartStore = defineStore("Cart", () => {
     timeRules,
     informationOrder,
     idAddressChoose,
+    usedPointOrder,
     // actions
     addProductToCart,
     handleTogglePopup,
@@ -501,6 +545,7 @@ export const useCartStore = defineStore("Cart", () => {
     clearTempSelected,
     syncCartCookie,
     handleGetDefaultAddress,
+    handleCheckPoint,
     // getters
     tempSelected,
     getCartCount,

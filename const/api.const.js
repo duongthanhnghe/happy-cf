@@ -50,6 +50,7 @@ export const API_ENDPOINTS = {
     LIST_PAYMENTS: '/orders/payments',
     LIST_BY_USER: (id) => `/orders/users/${id}/orders`,
     LIST_REWARDS_BY_USER: (id) => `/orders/users/${id}/rewards`,
+    CHECK_POINT: "/orders/check-point",
   },
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',

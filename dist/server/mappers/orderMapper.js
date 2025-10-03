@@ -62,6 +62,8 @@ export function toOrderDTO(entity) {
                 awarded: false,
                 awardedAt: null,
             },
+        usedPoints: entity.usedPoints,
+        pointsRefunded: entity.pointsRefunded,
         createdAt: ((_d = entity.createdAt) === null || _d === void 0 ? void 0 : _d.toISOString()) || "",
         updatedAt: ((_e = entity.updatedAt) === null || _e === void 0 ? void 0 : _e.toISOString()) || "",
     };

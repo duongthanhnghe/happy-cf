@@ -40,7 +40,6 @@ const OrderSchema = new Schema({
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
-    // point: { type: Number, default: 0 },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
@@ -48,7 +47,9 @@ const OrderSchema = new Schema({
         points: { type: Number, default: 0 },
         awarded: { type: Boolean, default: false },
         awardedAt: { type: Date, default: null },
-    }
+    },
+    usedPoints: { type: Number, default: 0 },
+    pointsRefunded: { type: Boolean, default: false }
 }, { timestamps: true });
 OrderSchema.plugin(mongoosePaginate);
 export const PaymentEntity = model("Payment", PaymentSchema, "payments");

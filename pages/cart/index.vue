@@ -38,7 +38,6 @@ watch(() => storeLocation.selectedProvince, async (newVal) => {
     await storeLocation.fetchDistrictsStore(newVal)
     storeLocation.selectedDistrict = null
     storeLocation.selectedWard = null
-    console.log('chay o dya')
   } else {
     storeLocation.districts = []
     storeLocation.wards = []
@@ -51,7 +50,6 @@ watch(() => storeLocation.selectedDistrict, async (newVal) => {
   if (newVal) {
     await storeLocation.fetchWardsStore(newVal)
     storeLocation.selectedWard = null
-    console.log('chay o dya')
   } else {
     storeLocation.wards = []
   }
@@ -74,9 +72,6 @@ onBeforeUnmount(() => {
   <div class="container pb-section">
     <BreadcrumbDefault />
     <v-form v-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
-
-      
-
       <div>
         <div class="rd-lg overflow-hidden">
           <Heading tag="div" size="md" weight="semibold" class="popup-cart-card flex justify-between pb-0 mb-0 black">
@@ -173,14 +168,38 @@ onBeforeUnmount(() => {
           <v-textarea class="mb-0" :rows="5" v-model="store.informationOrder.note" variant="outlined" />
         </div>
 
+
+        <div v-if="storeAccount.getDetailValue?.id" class="card-sm bg-white mt-ms mb-ms pb-0">
+          <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
+            Su dung diem <span>(Ban dang co {{ storeAccount.getDetailValue.membership.balancePoint }})</span>
+          </Heading>
+          <div class="flex gap-sm">
+            <v-text-field type="number" v-model="store.usedPointOrder.pointInput" variant="outlined" />
+            <Button @click.prevent="store.handleCheckPoint()" color="black" label="Ap dung" :disabled="store.usedPointOrder.pointInput == 0" />
+          </div>
+        </div>
+
         <div class="card-sm bg-white mt-ms">
           <div class="popup-cart-footer-item">
-          <Heading tag="div" size="md" weight="normal">Tong cong</Heading>
-          <Heading tag="div" size="xl" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }}</Heading>
+            <Heading tag="div" size="md" weight="normal">Tong cong</Heading>
+            <Heading tag="div" size="xl" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }}</Heading>
           </div>
+
           <div v-if="store.getTotalPriceSave != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
           Ban tiet kiem duoc {{ formatCurrency(store.getTotalPriceSave) }} <span class="popup-cart-footer-item-current">{{ formatCurrency(store.getTotalPriceCurrent) }}</span>
           </div>
+
+          <div v-if="store.usedPointOrder.usedPoint != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
+          Point <span>{{ formatCurrency(store.usedPointOrder.usedPoint).replace('đ','') }}</span>
+          </div>
+
+          <div v-if="store.getTotalPriceDiscount != 0 && storeAccount.getDetailValue?.id" class="popup-cart-footer-item popup-cart-footer-item-save">
+            Hoan tien point
+            <span class="text-color-primary">
+              +{{ formatCurrency(store.getTotalPoint).replace('đ','') }}
+            </span>
+          </div>
+
           <Button type="submit" label="Dat hang" color="primary" class="mt-sm w-full" />
         </div>
       </div>

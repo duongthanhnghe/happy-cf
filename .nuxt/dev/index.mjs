@@ -1136,16 +1136,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"31900-Q2MSfOOYcMNzvn47mfyyNfg7vkk\"",
-    "mtime": "2025-10-02T17:31:34.319Z",
-    "size": 203008,
+    "etag": "\"31de9-R5vuyG5jLGBA27vXRGcazWfRYAs\"",
+    "mtime": "2025-10-03T03:42:04.734Z",
+    "size": 204265,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"bf08b-Vs4tl1i6N/uLTwWvozz6T80F+Jc\"",
-    "mtime": "2025-10-02T17:31:34.326Z",
-    "size": 782475,
+    "etag": "\"c03a6-lN7mjkdyiiAsPIq8e5XHFSIO+Hc\"",
+    "mtime": "2025-10-03T03:42:04.736Z",
+    "size": 787366,
     "path": "index.mjs.map"
   }
 };
@@ -4526,6 +4526,38 @@ const getRewardHistoryByUserId = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const checkPoint = async (req, res) => {
+  try {
+    const { userId, usedPoint, orderTotal } = req.body;
+    if (!userId || !usedPoint || !orderTotal) {
+      return res.status(400).json({ success: false, message: "Thi\u1EBFu d\u1EEF li\u1EC7u" });
+    }
+    const user = await UserModel.findById(userId).select("membership.balancePoint");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Kh\xF4ng t\xECm th\u1EA5y user" });
+    }
+    const balancePoint = user.membership.balancePoint || 0;
+    const maxPointAllow = Math.floor(orderTotal * 0.1);
+    if (usedPoint > balancePoint) {
+      return res.json({
+        code: 2,
+        message: "S\u1ED1 \u0111i\u1EC3m b\u1EA1n c\xF3 kh\xF4ng \u0111\u1EE7 \u0111\u1EC3 s\u1EED d\u1EE5ng"
+      });
+    }
+    if (usedPoint > maxPointAllow) {
+      return res.json({
+        code: 1,
+        message: `B\u1EA1n ch\u1EC9 \u0111\u01B0\u1EE3c s\u1EED d\u1EE5ng t\u1ED1i \u0111a ${maxPointAllow} \u0111i\u1EC3m cho \u0111\u01A1n h\xE0ng n\xE0y`
+      });
+    }
+    return res.json({
+      code: 0,
+      data: { appliedPoint: usedPoint }
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "L\u1ED7i server" });
+  }
+};
 
 const router$5 = Router();
 router$5.get("/", getAllOrder);
@@ -4533,6 +4565,7 @@ router$5.get("/status", getAllStatus);
 router$5.get("/payments", getAllPayment);
 router$5.get("/:id", getOrderById);
 router$5.post("/", createOrder);
+router$5.post("/check-point", checkPoint);
 router$5.delete("/:id", deleteOrder);
 router$5.get("/users/:userId/orders", getOrdersByUserId);
 router$5.get("/users/:userId/rewards", getRewardHistoryByUserId);

@@ -46,7 +46,8 @@ export const ordersAPI = {
   create: async (
     bodyData: CreateOrderBody,
     userId: string | null,
-    point: number
+    point: number,
+    usedPoint: number,
   ): Promise<ApiResponse<OrderDTO>> => {
     try {
       if (!bodyData.fullname || !bodyData.phone || !bodyData.paymentId || !bodyData.cartItems?.length) {
@@ -60,7 +61,7 @@ export const ordersAPI = {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.CREATE}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: bodyData, userId, point }),
+        body: JSON.stringify({ data: bodyData, userId, point, usedPoint }),
       })
 
       if (!response.ok) {
@@ -233,6 +234,32 @@ export const ordersAPI = {
           total: 0,
           totalPages: 0
         }
+      }
+    }
+  },
+  checkPoint: async (
+    userId: string,
+    usedPoint: number,
+    orderTotal: number
+  ): Promise<ApiResponse<{ appliedPoint: number }>> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.CHECK_POINT}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, usedPoint, orderTotal }),
+        }
+      )
+
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error("Error checking point:", err)
+      return {
+        code: 1,
+        message: "Unexpected error while checking point",
+        data: { appliedPoint: 0 },
       }
     }
   },

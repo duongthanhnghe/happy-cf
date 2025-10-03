@@ -273,6 +273,7 @@ body .bg {
   &-disabled {
     cursor: not-allowed;
     pointer-events: none;
+    opacity: 0.7;
   }
   &-upload-file {
     position: relative;

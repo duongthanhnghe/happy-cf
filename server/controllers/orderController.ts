@@ -304,3 +304,42 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+
+export const checkPoint = async (req: Request, res: Response) => {
+  try {
+    const { userId, usedPoint, orderTotal } = req.body;
+
+    if (!userId || !usedPoint || !orderTotal) {
+      return res.status(400).json({ success: false, message: "Thiếu dữ liệu" });
+    }
+
+    const user = await UserModel.findById(userId).select("membership.balancePoint");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy user" });
+    }
+
+    const balancePoint = user.membership.balancePoint || 0;
+    const maxPointAllow = Math.floor(orderTotal * 0.1); // toi da 10%
+
+    if (usedPoint > balancePoint) {
+      return res.json({
+        code: 2,
+        message: "Số điểm bạn có không đủ để sử dụng",
+      });
+    }
+
+    if (usedPoint > maxPointAllow) {
+      return res.json({
+        code: 1,
+        message: `Bạn chỉ được sử dụng tối đa ${maxPointAllow} điểm cho đơn hàng này`,
+      });
+    }
+
+    return res.json({
+      code: 0,
+      data: { appliedPoint: usedPoint },
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+};
