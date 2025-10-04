@@ -2,7 +2,7 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useHistoryRewardByUser } from "@/composables/user/useHistoryRewardByUser";
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
-import type { OrderPaginationDTO } from "@/server/types/dto/order.dto";
+import type { RewardHistoryPaginationDTO } from "@/server/types/dto/reward-history.dto";
 
 export const useHistoryRewardByUserStore = defineStore("HistoryRewardByUserStore", () => {
 
@@ -11,7 +11,7 @@ export const useHistoryRewardByUserStore = defineStore("HistoryRewardByUserStore
 
   const isTogglePopup = ref<boolean>(false);
   const limit = 20
-  const items = ref<OrderPaginationDTO|null>(null)
+  const items = ref<RewardHistoryPaginationDTO|null>(null)
 
   const handleTogglePopup = (value: boolean) => {
     isTogglePopup.value = value;

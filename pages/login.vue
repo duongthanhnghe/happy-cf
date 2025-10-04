@@ -1,12 +1,18 @@
 <script lang="ts" setup>
+import { onMounted } from 'vue'
 import { useUserAuthStore } from '@/stores/client/users/useUserAuthStore'
 import type { SubmitEventPromise } from 'vuetify';
 import { AUTH_TEXT_LOGIN, AUTH_TEXT_REGISTER, AUTH_TEXT_PASSWORD, AUTH_TEXT_USERNAME, AUTH_TEXT_FORGOT_PASSWORD, AUTH_TEXT_LOGIN_GOOGLE, AUTH_TEXT_LOGIN_EMAIL, AUTH_TEXT_REGISTER_HINT } from '@/const/text'
 import { ROUTES } from '@/shared/constants/routes';
+import { useGoogleAuth } from '@/composables/user/useGoogleAuth'
 
 definePageMeta({
   layout: ROUTES.PUBLIC.LOGIN.layout,
 })
+  const config = useRuntimeConfig()
+
+// Debug: Check client ID
+console.log('Google Client ID:', config.public.GOOGLE_CLIENT_ID)
 
 const store = useUserAuthStore();
 
@@ -15,10 +21,33 @@ const handleSubmitLogin = async (event: SubmitEventPromise) => {
   if (!result.valid) return
   store.submitLogin()
 }
+
+const { initializeGoogleSignIn, renderButton } = useGoogleAuth()
+
+const googleButtonId = 'google-signin-button'
+
+onMounted(() => {
+ 
+  // Initialize Google Sign-In
+  initializeGoogleSignIn()
+  
+  // Wait a bit for script to load, then render button
+  setTimeout(() => {
+    renderButton(googleButtonId)
+  }, 500)
+})
 </script>
 <template>
       <Heading class="mb-xl text-center" tag="div" color="primary" size="2xl">{{AUTH_TEXT_LOGIN}}</Heading>
-      <Button icon="account_circle" color="gray" :shadow="true" :label="AUTH_TEXT_LOGIN_GOOGLE" class="w-full" />
+
+      <client-only>
+      <div class="d-flex justify-center my-4">
+      <!-- Google button sẽ render vào đây -->
+      <div :id="googleButtonId"></div>
+    </div>
+      </client-only>
+
+      <Button @click.prevent="store.handleGoogleLogin()" icon="account_circle" color="gray" :shadow="true" :label="AUTH_TEXT_LOGIN_GOOGLE" class="w-full" />
       <div class="text-center text-size-xs text-color-gray5 mt-md mb-md line-height1">
         {{ AUTH_TEXT_LOGIN_EMAIL }}
       </div>

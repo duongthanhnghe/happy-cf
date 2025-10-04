@@ -85,6 +85,22 @@ export const createOrder = async (req: Request, res: Response) => {
       return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" })
     }
 
+    let membershipDiscountRate = 0
+    let membershipDiscountAmount = 0
+
+    if (userId) {
+      const user = await UserModel.findById(userId)
+      if (user) {
+        membershipDiscountRate = user.membership.discountRate || 0
+
+        if (membershipDiscountRate > 0) {
+          membershipDiscountAmount = Math.floor(data.totalPriceCurrent * (membershipDiscountRate / 100))
+          // cập nhật lại totalPriceDiscount trước khi tính tiếp
+          data.totalPriceDiscount = data.totalPriceCurrent - membershipDiscountAmount
+        }
+      }
+    }
+
     let deductedPoints = 0;
 
     // ✅ Nếu có user và muốn dùng điểm
@@ -109,8 +125,10 @@ export const createOrder = async (req: Request, res: Response) => {
       ...data,
       userId,
       reward: { points: point || 0, awarded: false, awardedAt: null },
-      usedPoint: deductedPoints,
-      pointRefund: false,
+      usedPoints: deductedPoints,
+      pointsRefunded: false,
+      membershipDiscountRate,
+      membershipDiscountAmount,
     })
 
     return res.status(201).json({
@@ -163,6 +181,13 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
       return res.status(404).json({ code: 1, message: "Order không tồn tại" })
     }
 
+    if (order.status?.toString() === ORDER_STATUS.COMPLETED || order.status?.toString() === ORDER_STATUS.CANCELLED) {
+      return res.status(400).json({
+        code: 1,
+        message: "Đơn hàng đã hoàn tất hoặc đã hủy, không thể thay đổi trạng thái nữa"
+      })
+    }
+
     order.status = statusId
 
     // Nếu status = COMPLETED → tạo danh sách đánh giá
@@ -175,10 +200,10 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
           orderId: orderId,
           userId: order.userId,
           productId: item.idProduct,
-          rating: 0, // Mặc định chưa có đánh giá
+          rating: 0,
           comment: null,
           images: [],
-          status: "pending", // Trạng thái mặc định là pending
+          status: "pending",
         }));
 
         await ProductReviewEntity.insertMany(reviews);
@@ -272,16 +297,20 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
     const numPage = Number(page);
     const numLimit = Number(limit);
 
+    // 👉 Lấy tất cả order có liên quan đến điểm
     const query = {
       userId,
-      "reward.awarded": true,
-      "reward.points": { $gt: 0 }
+      $or: [
+        { "reward.points": { $gt: 0 } },   // có thưởng điểm
+        { usedPoints: { $gt: 0 } },        // có sử dụng điểm
+        { pointsRefunded: true }           // có hoàn điểm
+      ]
     };
 
     const result = await OrderEntity.paginate(query, {
       page: numPage,
       limit: numLimit,
-      sort: { "reward.awardedAt": -1 },
+      sort: { createdAt: -1 },
       populate: [
         { path: "paymentId", model: "Payment" },
         { path: "status", model: "OrderStatus" },
@@ -289,9 +318,39 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
       ]
     });
 
+    const history = result.docs.map((order: any) => {
+      let historyType = "";
+      let points = 0;
+
+      if (order.usedPoints > 0 && order.pointsRefunded) {
+        historyType = "refunded";   // đã hoàn điểm
+        points = order.usedPoints;
+      } else if (order.usedPoints > 0) {
+        historyType = "used";      // đã dùng điểm
+        points = order.usedPoints;
+      } else if (order.reward.points > 0 && order.reward.awarded) {
+        historyType = "earned";    // đã được cộng điểm
+        points = order.reward.points;
+      } else if (order.reward.points > 0 && !order.reward.awarded) {
+        historyType = "pending_reward"; // chờ cộng điểm
+        points = order.reward.points;
+      } else {
+        historyType = "none"; // không có biến động điểm
+      }
+
+      return {
+        orderId: order._id,
+        code: order.code,
+        createdAt: order.createdAt,
+        historyType,
+        points,
+        order: toOrderDTO(order)
+      };
+    });
+
     return res.json({
       code: 0,
-      data: toOrderListDTO(result.docs),
+      data: history,
       pagination: {
         page: result.page,
         limit: result.limit,
@@ -304,6 +363,7 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+
 
 export const checkPoint = async (req: Request, res: Response) => {
   try {

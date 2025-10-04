@@ -95,15 +95,17 @@ const handleDetailPopup = (id:string) => {
     <template #item.status="{ item: order }">
       <v-chip :color="order.status.status" label>
         {{ order.status.name }}
-        <MaterialIcon name="keyboard_arrow_down" />
+        <template v-if="order.status.id !== ORDER_STATUS.CANCELLED && order.status.id !== ORDER_STATUS.COMPLETED">
+          <MaterialIcon  name="keyboard_arrow_down" />
+        </template>
       </v-chip>
-      <template v-if="ORDER_STATUS.CANCELLED !== order.status.id">
+      <template v-if="order.status.id !== ORDER_STATUS.CANCELLED && order.status.id !== ORDER_STATUS.COMPLETED">
         <v-menu transition="slide-x-transition" activator="parent">
           <v-list>
             <v-list-item
               v-for="statusItem in store.getListStatus"
               :key="statusItem.id"
-              @click.prevent="store.handleUpdateStatusOrder(order.id, statusItem.id, order.transaction?.id, order.totalPrice, order.paymentId.method)"
+              @click.prevent="store.handleUpdateStatusOrder(order.id, statusItem.id, statusItem.name, order.transaction?.id, order.totalPrice, order.paymentId.method)"
               :class="{ active: statusItem.index == order.status.index }"
             >
               <v-list-item-title>

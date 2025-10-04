@@ -550,6 +550,9 @@ body .bg {
     &-danger {
       color: $cl-danger;
     }
+    &-green {
+      color: green;
+    }
     &-gray {
       color: $cl-gray;
     }
@@ -585,6 +588,9 @@ body .bg {
     &-xxl {
       font-size: $fz-xxl;
     }
+  }
+  &-line-through {
+    text-decoration: line-through;
   }
 }
 

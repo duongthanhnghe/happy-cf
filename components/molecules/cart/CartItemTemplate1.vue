@@ -49,8 +49,9 @@ const storeCart = useCartStore();
           <Button v-if="item.productKey" color="secondary" size="xs" icon="add" @click.prevent="storeCart.updateQuantity(item.productKey,true)" />
           <Button v-else color="secondary" size="xs" icon="add" @click.prevent="storeCart.updateQuantity(item.id,true)" />
         </div>
-        <div class="text-color-danger">
-          {{ formatCurrency(item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts) }}
+        <div class="flex gap-xs">
+          <span class="text-color-danger">{{ formatCurrency(item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts) }}</span>
+          <span class="text-color-gray5 text-line-through">{{ formatCurrency(item.price) }}</span>
         </div>
       </div>
       <div class="cart-template1-delete flex">

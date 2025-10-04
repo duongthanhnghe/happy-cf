@@ -18,7 +18,7 @@ const props = defineProps({
 
 </script>
 <template>
-<Popup :children="props.typePopup" popupId="popup-detail-order" v-model="storeHistory.isTogglePopupDetail" bodyClass="bg-gradient-1 pb-0" align="right">
+<Popup :children="props.typePopup" popupId="popup-detail-order" v-model="storeHistory.isTogglePopupDetail" bodyClass="bg-gradient-1 pb-md" align="right">
   <template #body>
     <OrderItemDetailTemplate1 :idOrder="props.idOrder" />
   </template>

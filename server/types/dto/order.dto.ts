@@ -72,11 +72,13 @@ export interface OrderDTO {
   };
   usedPoints: number;
   pointsRefunded: boolean
+  membershipDiscountRate: number,
+  membershipDiscountAmount: number,
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward"> {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount"> {
   paymentId: string;
   status: string;
   provinceCode: number;

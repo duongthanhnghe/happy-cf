@@ -6,10 +6,12 @@ export function toUserDTO(entity: User): UserDTO {
     id: entity._id?.toString() || "",
     fullname: entity.fullname,
     email: entity.email,
-    gender: entity.gender,
+    gender: entity.gender || undefined,
     phone: entity.phone || "",
     birthday: entity.birthday?.toString() || null,
     avatar: entity.avatar || "",
+    googleId: entity.googleId,
+    authProvider: entity.authProvider,
     active: entity.active,
     role: entity.role,
     membership: {

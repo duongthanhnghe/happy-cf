@@ -5,12 +5,14 @@ export interface User {
   id: string
   fullname: string
   email: string
-  gender: GenderType
+  gender?: GenderType
   phone: string
   birthday?: string | null
   avatar: string
   active: boolean
   role: number
+  googleId?: string
+  authProvider: 'local' | 'google' | 'facebook'
   membership: {
     level: MembershipLevel
     point: number
@@ -26,7 +28,7 @@ export interface User {
 
 export type UserPaginationDTO = PaginationDTO<User>
 
-export type GenderType = 'male' | 'female';
+export type GenderType = 'male' | 'female' | 'other';
 
 export type MembershipLevel = 'Bronze' | 'Silver' | 'Gold' | 'Platinum';
 

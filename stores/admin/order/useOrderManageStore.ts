@@ -196,9 +196,9 @@ async function loadItemsProduct(opt:TableOpt) {
     }
   }
 
-  const handleUpdateStatusOrder = async (orderId:string, idStatusNew:string, transactionId: string | undefined, amount: number, method: PaymentMethod) => {
-    if(ORDER_STATUS.CANCELLED === idStatusNew) {
-      const confirmed = await showConfirm('Bạn có chắc chan huy?')
+  const handleUpdateStatusOrder = async (orderId:string, idStatusNew:string, statusName: string, transactionId: string | undefined, amount: number, method: PaymentMethod) => {
+    if(idStatusNew === ORDER_STATUS.CANCELLED || idStatusNew === ORDER_STATUS.COMPLETED ) {
+      const confirmed = await showConfirm(`Bạn có chắc chan: ${statusName}?`)
       if (!confirmed) return
     }
 
@@ -207,8 +207,10 @@ async function loadItemsProduct(opt:TableOpt) {
       const data = await ordersAPI.updateStatusOrder(orderId, idStatusNew)
       if(data.code === 0) {
         showSuccess(data.message ?? '')
-        if(idStatusNew === ORDER_STATUS.CONFIRMED && !transactionId) {
-          await paymentTransactionsAPI.create({orderId, amount, method})
+        if(!transactionId){
+          if(idStatusNew === ORDER_STATUS.CONFIRMED || idStatusNew === ORDER_STATUS.DELIVERING || idStatusNew === ORDER_STATUS.COMPLETED) {
+            await paymentTransactionsAPI.create({orderId, amount, method})
+          }
         }
         handleReload()
       } else {

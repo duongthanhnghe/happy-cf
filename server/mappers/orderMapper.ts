@@ -76,6 +76,8 @@ export function toOrderDTO(entity: Order): OrderDTO {
         },
     usedPoints: entity.usedPoints,
     pointsRefunded: entity.pointsRefunded,
+    membershipDiscountRate: entity.membershipDiscountRate,
+    membershipDiscountAmount: entity.membershipDiscountAmount,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
   };

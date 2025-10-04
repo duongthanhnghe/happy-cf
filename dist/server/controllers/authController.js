@@ -11,6 +11,8 @@ import { SearchKeywordModel } from "../models/SearchKeywordEntity.js";
 import { toSearchKeywordListDTO } from "../mappers/searchKeywordMapper.js";
 import { toMembershipLevelListDTO, toMembershipLevelDTO } from "../mappers/membershipLevelMapper.js";
 import { toMembershipBenefitDTO, toMembershipBenefitListDTO } from "../mappers/MembershipBenefitMapper.js";
+import { OAuth2Client } from "google-auth-library";
+const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
 export const register = async (req, res) => {
     try {
         const { fullname, email, password, gender } = req.body;
@@ -32,6 +34,8 @@ export const register = async (req, res) => {
             avatar: process.env.IMAGE_AVATAR_DEFAULT || "",
             active: true,
             role: 1,
+            authProvider: 'local',
+            googleId: null,
             membership: {
                 level: "Bronze",
                 point: 0,
@@ -70,6 +74,78 @@ export const login = async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ code: 500, message: "Đăng nhập thất bại, vui lòng thử lại", error: err });
+    }
+};
+export const googleLogin = async (req, res) => {
+    try {
+        const { token } = req.body; // FE gửi Google ID Token về BE
+        // Xác thực token từ Google
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        if (!payload) {
+            return res.status(400).json({ code: 1, message: "Xác thực Google thất bại" });
+        }
+        const { email, name, picture, sub } = payload;
+        // Kiểm tra user đã tồn tại chưa
+        let user = await UserModel.findOne({ email });
+        if (!user) {
+            const barcode = Date.now().toString();
+            const barcodeFilename = `barcode-${barcode}.png`;
+            const barcodePath = await generateBarcode(barcode, barcodeFilename);
+            user = await UserModel.create({
+                fullname: name,
+                email,
+                // password: "", // Google login => không cần password
+                // gender: "",
+                phone: "",
+                birthday: new Date().toISOString(),
+                avatar: picture || process.env.IMAGE_AVATAR_DEFAULT,
+                authProvider: 'google',
+                googleId: sub,
+                active: true,
+                role: 1,
+                membership: {
+                    level: "Bronze",
+                    point: 0,
+                    balancePoint: 0,
+                    membership: 0,
+                    discountRate: 0,
+                    joinedAt: new Date(),
+                    code: Date.now(),
+                    barcode: barcodePath || ""
+                }
+            });
+        }
+        else {
+            // Nếu user đã tồn tại nhưng chưa có authProvider
+            if (!user.authProvider) {
+                user.authProvider = 'google';
+                user.googleId = sub;
+                await user.save();
+            }
+        }
+        // Tạo JWT token
+        const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+            expiresIn: "12h",
+        });
+        res.cookie('token', jwtToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 12 * 60 * 60 * 1000,
+        });
+        return res.status(200).json({
+            code: 0,
+            message: "Đăng nhập Google thành công",
+            data: { token: jwtToken, user: toUserDTO(user) },
+        });
+    }
+    catch (err) {
+        console.error("Google login error:", err);
+        res.status(500).json({ code: 1, message: "Đăng nhập Google thất bại", error: err.message });
     }
 };
 export const forgotPassword = async (req, res) => {

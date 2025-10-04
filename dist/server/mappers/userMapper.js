@@ -4,10 +4,12 @@ export function toUserDTO(entity) {
         id: ((_a = entity._id) === null || _a === void 0 ? void 0 : _a.toString()) || "",
         fullname: entity.fullname,
         email: entity.email,
-        gender: entity.gender,
+        gender: entity.gender || undefined,
         phone: entity.phone || "",
         birthday: ((_b = entity.birthday) === null || _b === void 0 ? void 0 : _b.toString()) || null,
         avatar: entity.avatar || "",
+        googleId: entity.googleId,
+        authProvider: entity.authProvider,
         active: entity.active,
         role: entity.role,
         membership: {

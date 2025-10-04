@@ -12,8 +12,25 @@ const MembershipSchema = new Schema({
 const UserSchema = new Schema({
     fullname: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true },
-    gender: { type: String, enum: ["male", "female"], required: true },
+    password: { type: String, required: function () {
+            return this.authProvider !== 'google';
+        } },
+    authProvider: {
+        type: String,
+        enum: ['local', 'google', 'facebook'],
+        default: 'local'
+    },
+    googleId: {
+        type: String,
+        sparse: true,
+        unique: true
+    },
+    gender: {
+        type: String,
+        enum: ["male", "female", "other"], // ⭐ Thêm "other"
+        required: false, // ⭐ Không bắt buộc
+        default: undefined // ⭐ Hoặc default: "other"
+    },
     phone: { type: String },
     birthday: { type: Date },
     avatar: { type: String },

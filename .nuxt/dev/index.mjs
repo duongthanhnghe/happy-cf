@@ -12,6 +12,7 @@ import jwt from 'file:///Users/mac/happy-coffee/node_modules/jsonwebtoken/index.
 import bwipjs from 'file:///Users/mac/happy-coffee/node_modules/bwip-js/dist/bwip-js-node.mjs';
 import fs, { promises } from 'node:fs';
 import nodemailer from 'file:///Users/mac/happy-coffee/node_modules/nodemailer/lib/nodemailer.js';
+import { OAuth2Client } from 'file:///Users/mac/happy-coffee/node_modules/google-auth-library/build/src/index.js';
 import multer from 'file:///Users/mac/happy-coffee/node_modules/multer/index.js';
 import { v2 } from 'file:///Users/mac/happy-coffee/node_modules/cloudinary/cloudinary.js';
 import mongoosePaginate from 'file:///Users/mac/happy-coffee/node_modules/mongoose-paginate-v2/dist/index.js';
@@ -644,6 +645,12 @@ const _inlineRuntimeConfig = {
       "/__nuxt_error": {
         "cache": false
       },
+      "/**": {
+        "headers": {
+          "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+          "Cross-Origin-Embedder-Policy": "unsafe-none"
+        }
+      },
       "/_nuxt/builds/meta/**": {
         "headers": {
           "cache-control": "public, max-age=31536000, immutable"
@@ -661,7 +668,8 @@ const _inlineRuntimeConfig = {
     "siteName": "Happy Coffee",
     "siteDescription": "Mô tả website",
     "siteImage": "/assets/logo.png",
-    "cloudinaryCloudName": "dl8wwezqp"
+    "cloudinaryCloudName": "dl8wwezqp",
+    "GOOGLE_CLIENT_ID": "1036928626180-p62cm07r5mtp5gisv2jd433eskrismq6.apps.googleusercontent.com"
   },
   "cloudinaryApiKey": "785428416695536",
   "cloudinaryApiSecret": "w2NE8N4tV-kouwXqO0QYZuF-YW8"
@@ -1042,7 +1050,7 @@ const _Iy5esgeLoAxjrauMyKWVqYk1CX4hTYMbGYOo1jwFkv4 = (function(nitro) {
 
 const rootDir = "/Users/mac/happy-coffee";
 
-const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"author","content":"Happy Coffee"},{"property":"og:site_name","content":"Happy Coffee"},{"property":"og:locale","content":"vi_VN"}],"link":[{"rel":"stylesheet","href":"https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@100..700"}],"style":[],"script":[{"src":"https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js","defer":true},{"innerHTML":"\n            document.addEventListener(\"DOMContentLoaded\", function() { \n              const div = document.createElement(\"div\"); \n              div.id = \"loader\"; \n              div.className = \"loader\"; \n              div.innerHTML = '<div class=\"loader-icon\"></div>'; \n              document.body.insertBefore(div, document.body.firstChild); \n            });\n          ","type":"text/javascript"}],"noscript":[],"htmlAttrs":{"lang":"vi"}};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"author","content":"Happy Coffee"},{"property":"og:site_name","content":"Happy Coffee"},{"property":"og:locale","content":"vi_VN"},{"http-equiv":"Cross-Origin-Opener-Policy","content":"same-origin-allow-popups"},{"http-equiv":"Cross-Origin-Embedder-Policy","content":"unsafe-none"}],"link":[{"rel":"stylesheet","href":"https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@100..700"}],"style":[],"script":[{"src":"https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js","defer":true},{"innerHTML":"\n            document.addEventListener(\"DOMContentLoaded\", function() { \n              const div = document.createElement(\"div\"); \n              div.id = \"loader\"; \n              div.className = \"loader\"; \n              div.innerHTML = '<div class=\"loader-icon\"></div>'; \n              document.body.insertBefore(div, document.body.firstChild); \n            });\n          ","type":"text/javascript"}],"noscript":[],"htmlAttrs":{"lang":"vi"}};
 
 const appRootTag = "div";
 
@@ -1136,16 +1144,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"31de9-R5vuyG5jLGBA27vXRGcazWfRYAs\"",
-    "mtime": "2025-10-03T03:42:04.734Z",
-    "size": 204265,
+    "etag": "\"33376-+T91gIrST2ZnlfI3Tqo4FlVNlq0\"",
+    "mtime": "2025-10-04T09:10:58.849Z",
+    "size": 209782,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"c03a6-lN7mjkdyiiAsPIq8e5XHFSIO+Hc\"",
-    "mtime": "2025-10-03T03:42:04.736Z",
-    "size": 787366,
+    "etag": "\"c5b30-iZr33OqQYCpmcJw8PSgH/2esLIw\"",
+    "mtime": "2025-10-04T09:10:58.856Z",
+    "size": 809776,
     "path": "index.mjs.map"
   }
 };
@@ -2253,8 +2261,28 @@ const UserSchema = new Schema(
   {
     fullname: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true },
-    gender: { type: String, enum: ["male", "female"], required: true },
+    password: { type: String, required: function() {
+      return this.authProvider !== "google";
+    } },
+    authProvider: {
+      type: String,
+      enum: ["local", "google", "facebook"],
+      default: "local"
+    },
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      // ⭐ Thêm "other"
+      required: false,
+      // ⭐ Không bắt buộc
+      default: void 0
+      // ⭐ Hoặc default: "other"
+    },
     phone: { type: String },
     birthday: { type: Date },
     avatar: { type: String },
@@ -2308,10 +2336,12 @@ function toUserDTO(entity) {
     id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
     fullname: entity.fullname,
     email: entity.email,
-    gender: entity.gender,
+    gender: entity.gender || void 0,
     phone: entity.phone || "",
     birthday: ((_b = entity.birthday) == null ? void 0 : _b.toString()) || null,
     avatar: entity.avatar || "",
+    googleId: entity.googleId,
+    authProvider: entity.authProvider,
     active: entity.active,
     role: entity.role,
     membership: {
@@ -2425,6 +2455,7 @@ const toMembershipLevelListDTO = (items) => {
   return items.map(toMembershipLevelDTO);
 };
 
+const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
 const register = async (req, res) => {
   try {
     const { fullname, email, password, gender } = req.body;
@@ -2446,6 +2477,8 @@ const register = async (req, res) => {
       avatar: process.env.IMAGE_AVATAR_DEFAULT || "",
       active: true,
       role: 1,
+      authProvider: "local",
+      googleId: null,
       membership: {
         level: "Bronze",
         point: 0,
@@ -2483,6 +2516,72 @@ const login = async (req, res) => {
     res.status(200).json({ code: 0, message: "\u0110\u0103ng nh\u1EADp th\xE0nh c\xF4ng", data: { token, user: toUserDTO(user) } });
   } catch (err) {
     res.status(500).json({ code: 500, message: "\u0110\u0103ng nh\u1EADp th\u1EA5t b\u1EA1i, vui l\xF2ng th\u1EED l\u1EA1i", error: err });
+  }
+};
+const googleLogin = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID
+    });
+    const payload = ticket.getPayload();
+    if (!payload) {
+      return res.status(400).json({ code: 1, message: "X\xE1c th\u1EF1c Google th\u1EA5t b\u1EA1i" });
+    }
+    const { email, name, picture, sub } = payload;
+    let user = await UserModel.findOne({ email });
+    if (!user) {
+      const barcode = Date.now().toString();
+      const barcodeFilename = `barcode-${barcode}.png`;
+      const barcodePath = await generateBarcode(barcode, barcodeFilename);
+      user = await UserModel.create({
+        fullname: name,
+        email,
+        // password: "", // Google login => không cần password
+        // gender: "",
+        phone: "",
+        birthday: (/* @__PURE__ */ new Date()).toISOString(),
+        avatar: picture || process.env.IMAGE_AVATAR_DEFAULT,
+        authProvider: "google",
+        googleId: sub,
+        active: true,
+        role: 1,
+        membership: {
+          level: "Bronze",
+          point: 0,
+          balancePoint: 0,
+          membership: 0,
+          discountRate: 0,
+          joinedAt: /* @__PURE__ */ new Date(),
+          code: Date.now(),
+          barcode: barcodePath || ""
+        }
+      });
+    } else {
+      if (!user.authProvider) {
+        user.authProvider = "google";
+        user.googleId = sub;
+        await user.save();
+      }
+    }
+    const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "12h"
+    });
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 12 * 60 * 60 * 1e3
+    });
+    return res.status(200).json({
+      code: 0,
+      message: "\u0110\u0103ng nh\u1EADp Google th\xE0nh c\xF4ng",
+      data: { token: jwtToken, user: toUserDTO(user) }
+    });
+  } catch (err) {
+    console.error("Google login error:", err);
+    res.status(500).json({ code: 1, message: "\u0110\u0103ng nh\u1EADp Google th\u1EA5t b\u1EA1i", error: err.message });
   }
 };
 const forgotPassword = async (req, res) => {
@@ -2849,6 +2948,7 @@ router$b.get("/users/:id", getUserById);
 router$b.patch("/users/toggleActive/:id", toggleActive$5);
 router$b.post("/register", register);
 router$b.post("/login", login);
+router$b.post("/google-login", googleLogin);
 router$b.post("/forgot-password", forgotPassword);
 router$b.post("/reset-password", resetPassword);
 router$b.post("/change-password", changePassword);
@@ -4125,7 +4225,9 @@ const OrderSchema = new Schema(
       awardedAt: { type: Date, default: null }
     },
     usedPoints: { type: Number, default: 0 },
-    pointsRefunded: { type: Boolean, default: false }
+    pointsRefunded: { type: Boolean, default: false },
+    membershipDiscountRate: { type: Number, default: 0 },
+    membershipDiscountAmount: { type: Number, default: 0 }
   },
   { timestamps: true }
 );
@@ -4223,6 +4325,8 @@ function toOrderDTO(entity) {
     },
     usedPoints: entity.usedPoints,
     pointsRefunded: entity.pointsRefunded,
+    membershipDiscountRate: entity.membershipDiscountRate,
+    membershipDiscountAmount: entity.membershipDiscountAmount,
     createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
     updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || ""
   };
@@ -4346,6 +4450,18 @@ const createOrder = async (req, res) => {
     if (!(data == null ? void 0 : data.fullname) || !(data == null ? void 0 : data.phone) || !(data == null ? void 0 : data.paymentId) || !(data == null ? void 0 : data.cartItems)) {
       return res.status(400).json({ code: 1, message: "D\u1EEF li\u1EC7u \u0111\u01A1n h\xE0ng kh\xF4ng h\u1EE3p l\u1EC7" });
     }
+    let membershipDiscountRate = 0;
+    let membershipDiscountAmount = 0;
+    if (userId) {
+      const user = await UserModel.findById(userId);
+      if (user) {
+        membershipDiscountRate = user.membership.discountRate || 0;
+        if (membershipDiscountRate > 0) {
+          membershipDiscountAmount = Math.floor(data.totalPriceCurrent * (membershipDiscountRate / 100));
+          data.totalPriceDiscount = data.totalPriceCurrent - membershipDiscountAmount;
+        }
+      }
+    }
     let deductedPoints = 0;
     if (userId && usedPoint && usedPoint > 0) {
       const user = await UserModel.findById(userId);
@@ -4363,8 +4479,10 @@ const createOrder = async (req, res) => {
       ...data,
       userId,
       reward: { points: point || 0, awarded: false, awardedAt: null },
-      usedPoint: deductedPoints,
-      pointRefund: false
+      usedPoints: deductedPoints,
+      pointsRefunded: false,
+      membershipDiscountRate,
+      membershipDiscountAmount
     });
     return res.status(201).json({
       code: 0,
@@ -4396,6 +4514,7 @@ const getOrdersByUserId = async (req, res) => {
   }
 };
 const updateOrderStatus = async (req, res) => {
+  var _a, _b;
   try {
     const { orderId, statusId } = req.body;
     if (!orderId || !statusId) {
@@ -4409,6 +4528,12 @@ const updateOrderStatus = async (req, res) => {
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
+    if (((_a = order.status) == null ? void 0 : _a.toString()) === ORDER_STATUS.COMPLETED || ((_b = order.status) == null ? void 0 : _b.toString()) === ORDER_STATUS.CANCELLED) {
+      return res.status(400).json({
+        code: 1,
+        message: "\u0110\u01A1n h\xE0ng \u0111\xE3 ho\xE0n t\u1EA5t ho\u1EB7c \u0111\xE3 h\u1EE7y, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i tr\u1EA1ng th\xE1i n\u1EEFa"
+      });
+    }
     order.status = statusId;
     if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
       const existingReviews = await ProductReviewEntity.find({ orderId });
@@ -4418,11 +4543,9 @@ const updateOrderStatus = async (req, res) => {
           userId: order.userId,
           productId: item.idProduct,
           rating: 0,
-          // Mặc định chưa có đánh giá
           comment: null,
           images: [],
           status: "pending"
-          // Trạng thái mặc định là pending
         }));
         await ProductReviewEntity.insertMany(reviews);
       }
@@ -4498,22 +4621,55 @@ const getRewardHistoryByUserId = async (req, res) => {
     const numLimit = Number(limit);
     const query = {
       userId,
-      "reward.awarded": true,
-      "reward.points": { $gt: 0 }
+      $or: [
+        { "reward.points": { $gt: 0 } },
+        // có thưởng điểm
+        { usedPoints: { $gt: 0 } },
+        // có sử dụng điểm
+        { pointsRefunded: true }
+        // có hoàn điểm
+      ]
     };
     const result = await OrderEntity.paginate(query, {
       page: numPage,
       limit: numLimit,
-      sort: { "reward.awardedAt": -1 },
+      sort: { createdAt: -1 },
       populate: [
         { path: "paymentId", model: "Payment" },
         { path: "status", model: "OrderStatus" },
         { path: "transaction", model: "PaymentTransaction" }
       ]
     });
+    const history = result.docs.map((order) => {
+      let historyType = "";
+      let points = 0;
+      if (order.usedPoints > 0 && order.pointsRefunded) {
+        historyType = "refunded";
+        points = order.usedPoints;
+      } else if (order.usedPoints > 0) {
+        historyType = "used";
+        points = order.usedPoints;
+      } else if (order.reward.points > 0 && order.reward.awarded) {
+        historyType = "earned";
+        points = order.reward.points;
+      } else if (order.reward.points > 0 && !order.reward.awarded) {
+        historyType = "pending_reward";
+        points = order.reward.points;
+      } else {
+        historyType = "none";
+      }
+      return {
+        orderId: order._id,
+        code: order.code,
+        createdAt: order.createdAt,
+        historyType,
+        points,
+        order: toOrderDTO(order)
+      };
+    });
     return res.json({
       code: 0,
-      data: toOrderListDTO(result.docs),
+      data: history,
       pagination: {
         page: result.page,
         limit: result.limit,

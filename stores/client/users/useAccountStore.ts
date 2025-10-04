@@ -19,6 +19,7 @@ export const useAccountStore = defineStore("Account", () => {
   const loading = ref(false)
 
   const handleGetDetailAccount = async (userId: string) => {
+    if(!userId) return
     const data = await usersAPI.getDetailAccount(userId)
     detailData.value = data.data;
   };
@@ -34,16 +35,47 @@ export const useAccountStore = defineStore("Account", () => {
     isTogglePopupMembershipInformation.value = value;
   }
 
+  // const handleNextMembershipLevel = (currentPoint: number, membershipLevels: MembershipLevels[]) => {
+  //   const sortedLevels = [...membershipLevels].sort((a, b) => a.minPoint - b.minPoint)
+  //   const maxLevelPoint = membershipLevels.at(-1)?.minPoint as number
+
+  //   const currentLevel = sortedLevels
+  //     .filter(level => currentPoint >= level.minPoint)
+  //     .slice(-1)[0]
+
+  //   const currentIndex = sortedLevels.findIndex(l => l.id === currentLevel.id)
+  //   const nextLevel = currentPoint < maxLevelPoint ? sortedLevels[currentIndex + 1] : sortedLevels[currentIndex]
+
+  //   return {
+  //     currentLevel,
+  //     nextLevel
+  //   }
+  // }
+
   const handleNextMembershipLevel = (currentPoint: number, membershipLevels: MembershipLevels[]) => {
+    if (!membershipLevels || membershipLevels.length === 0) {
+      return null
+    }
+
     const sortedLevels = [...membershipLevels].sort((a, b) => a.minPoint - b.minPoint)
-    const maxLevelPoint = membershipLevels.at(-1)?.minPoint as number
+    
+    // Tìm level hiện tại: level cao nhất mà user đạt được
+    let currentLevel = sortedLevels[0] // Default = Bronze (level thấp nhất)
+    let currentIndex = 0
 
-    const currentLevel = sortedLevels
-      .filter(level => currentPoint >= level.minPoint)
-      .slice(-1)[0]
+    // Duyệt ngược từ cao xuống thấp để tìm level phù hợp
+    for (let i = sortedLevels.length - 1; i >= 0; i--) {
+      if (currentPoint >= sortedLevels[i].minPoint) {
+        currentLevel = sortedLevels[i]
+        currentIndex = i
+        break
+      }
+    }
 
-    const currentIndex = sortedLevels.findIndex(l => l.id === currentLevel.id)
-    const nextLevel = currentPoint < maxLevelPoint ? sortedLevels[currentIndex + 1] : sortedLevels[currentIndex]
+    // Next level: level kế tiếp hoặc giữ nguyên nếu đã max
+    const nextLevel = currentIndex < sortedLevels.length - 1
+      ? sortedLevels[currentIndex + 1]
+      : currentLevel // Đã ở level cao nhất
 
     return {
       currentLevel,

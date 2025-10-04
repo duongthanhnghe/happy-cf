@@ -95,6 +95,8 @@ declare module 'nuxt/schema' {
    siteImage: string,
 
    cloudinaryCloudName: string,
+
+   GOOGLE_CLIENT_ID: string,
   }
 }
 declare module 'vue' {

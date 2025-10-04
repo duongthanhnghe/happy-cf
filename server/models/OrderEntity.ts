@@ -46,6 +46,8 @@ export interface Order {
   };
   usedPoints: number;
   pointsRefunded: boolean;
+  membershipDiscountRate: number;
+  membershipDiscountAmount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -116,7 +118,9 @@ const OrderSchema = new Schema<Order>(
       awardedAt: { type: Date, default: null },
     },
     usedPoints: { type: Number, default: 0 },
-    pointsRefunded: { type: Boolean, default: false }
+    pointsRefunded: { type: Boolean, default: false },
+    membershipDiscountRate: { type: Number, default: 0 },
+    membershipDiscountAmount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

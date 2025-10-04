@@ -1,13 +1,14 @@
 import { ref, computed } from "vue";
 import { ordersAPI } from "@/services/orders.service";
-import type { OrderPaginationDTO } from "@/server/types/dto/order.dto";
+import type { RewardHistoryPaginationDTO } from "@/server/types/dto/reward-history.dto";
+
 export const useHistoryRewardByUser = () => {
   
-  const listData = ref<OrderPaginationDTO>();
+  const listData = ref<RewardHistoryPaginationDTO>();
 
   const fetchListOrder = async (userId: string, page: number, limit: number) => {
     try {
-      const data: OrderPaginationDTO = await ordersAPI.getRewardHistoryByUserId(userId, page, limit)
+      const data: RewardHistoryPaginationDTO = await ordersAPI.getRewardHistoryByUserId(userId, page, limit)
       if(data.code === 0) {
         listData.value = data
         return data

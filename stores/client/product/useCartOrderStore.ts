@@ -50,6 +50,7 @@ export const useCartStore = defineStore("Cart", () => {
   const totalPriceCurrent = ref(0);
   const totalPriceDiscount = ref(0);
   const totalPriceSave = ref(0);
+  const totalDiscountRateMembership = ref(0);
   const isTogglePopup = ref(false);
   const paymentSelected = ref(PAYMENT_STATUS.BANK);
   const selectedOptionsData = ref<SelectedOptionPushDTO[]>([]);
@@ -285,7 +286,13 @@ export const useCartStore = defineStore("Cart", () => {
 
     totalPriceDiscount.value = totalPriceDiscount.value - usedPointOrder.usedPoint
 
+    if(storeAccount.getDetailValue?.membership.discountRate !== 0){ //uu dai thanh vien
+      totalDiscountRateMembership.value = totalPriceCurrent.value * (storeAccount.getDetailValue?.membership.discountRate / 100)
+      totalPriceDiscount.value = totalPriceDiscount.value - totalDiscountRateMembership.value
+    } 
+
     totalPriceSave.value = totalPriceCurrent.value - totalPriceDiscount.value
+    
   };
 
   const deleteCart = async (productKey: string) => {
@@ -446,8 +453,6 @@ export const useCartStore = defineStore("Cart", () => {
       provinceCode: storeLocation.selectedProvince || 0,
       districtCode: storeLocation.selectedDistrict || 0,
       wardCode: storeLocation.selectedWard || 0,
-      usedPoints: usedPointOrder.usedPoint,
-      pointsRefunded: false, 
     };
 
     try {
@@ -459,6 +464,7 @@ export const useCartStore = defineStore("Cart", () => {
         usedPointOrder.pointInput = 0,
         usedPointOrder.usedPoint = 0,
         usedPointOrder.checkBalancePoint = false
+        totalDiscountRateMembership.value = 0;
       }
       Loading(false);
     } catch (err: any) {
@@ -527,6 +533,7 @@ export const useCartStore = defineStore("Cart", () => {
     informationOrder,
     idAddressChoose,
     usedPointOrder,
+    totalDiscountRateMembership,
     // actions
     addProductToCart,
     handleTogglePopup,

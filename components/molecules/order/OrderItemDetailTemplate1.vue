@@ -73,13 +73,23 @@ watch(
       <div class="text-size-large weight-normal">Đơn hàng</div>
       {{ getDetailOrder?.code }}
     </div>
-    <div class="flex justify-between mt-xl mb-md">
+    <div v-if="getDetailOrder.status.id !== ORDER_STATUS.CANCELLED" class="flex justify-between mt-xl mb-md">
       <div v-for="(items, index) in storeOrderStatus.getListData.filter(i => i.id !== ORDER_STATUS.CANCELLED)" :key="items.id" :class="{ 'is-active': index <= activeIndex }" class="flex-1 text-center text-color-white popup-detail-order-status-item">
         <div class="avatar-src popup-detail-order-status-icon m-auto">
           <MaterialIcon size="26" :name="items.icon"/>
         </div>
         <div class="mt-sm popup-detail-order-status-title">
           {{ items.name }}
+        </div>
+      </div>
+    </div>
+    <div v-else class="flex justify-between mt-md mb-md">
+      <div class="is-active flex-1 text-center text-color-white popup-detail-order-status-item">
+        <div class="avatar-src popup-detail-order-status-icon m-auto">
+          <MaterialIcon size="26" name="close"/>
+        </div>
+        <div class="mt-sm popup-detail-order-status-title">
+          {{ getDetailOrder.status.name }}
         </div>
       </div>
     </div>
@@ -109,13 +119,32 @@ watch(
       <div class="row" v-for="items in getDetailOrder?.productList">
         <CartItemTemplate2 v-bind="items" />
       </div>
-      <div class="flex justify-between text-size-normal mt-sm weight-medium">
+      <div class="flex flex-direction-column gap-xs mt-xs">
+      <div class="flex justify-between text-size-normal mt-sm weight-medium line-height1">
         Tong cong
         <div class="weight-semibold text-color-danger text-right mb-xs">
           {{ formatCurrency(getDetailOrder?.totalPrice) }}
         </div>
       </div>
-      <div class="flex gap-sm justify-end mt-xs">
+      <div class="flex justify-between text-color-gray5">
+        Tong don hang
+        <span class="text-line-through">
+          {{ formatCurrency(getDetailOrder?.totalPriceCurrent) }}
+        </span>
+      </div>
+      <div v-if="getDetailOrder?.usedPoints !== 0" class="flex justify-between text-color-gray5">
+        Diem thanh vien
+        <span>
+          -{{ formatCurrency(getDetailOrder?.usedPoints) }}
+        </span>
+      </div>
+      <div v-if="getDetailOrder?.membershipDiscountAmount !== 0" class="flex justify-between text-color-gray5">
+        Uu dai thanh vien
+        <span>
+          -{{ formatCurrency(getDetailOrder?.membershipDiscountAmount) }}
+        </span>
+      </div>
+      <div class="flex gap-sm justify-end">
         <Button v-if="getDetailOrder?.reward.points != 0 && getDetailOrder?.reward.awarded" color="secondary" :label="`+${getDetailOrder?.reward.points}`" icon="diamond_shine" :disabled="false" size="sm" />
         <v-chip v-if="getDetailOrder.paymentId" label color="gray">
           <img width="20" :src="getDetailOrder?.paymentId.image" alt="icon" class="mr-xs"/>
@@ -124,6 +153,10 @@ watch(
         <v-chip v-if="getDetailOrder.transaction" label :color="getDetailOrder.transaction.statusColor">
           {{ getDetailOrder.transaction.statusText }}
         </v-chip>
+        <v-chip v-else label>
+          Chua thanh toan
+        </v-chip>
+      </div>
       </div>
     </div>
     <div class="card-sm bg-white mt-sm flex gap-sm justify-between">
@@ -140,7 +173,7 @@ watch(
         </a>
       </div>
     </div>
-    <div class="text-center text-color-white mt-xs">
+    <div class="text-center mt-sm">
       Dat luc: {{ getDetailOrder?.createdAt }}
     </div>
   </template>

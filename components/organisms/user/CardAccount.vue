@@ -46,7 +46,7 @@ watchEffect(() => {
               </div>
             </div>
             <div class="flex gap-sm">
-              <Button @click.prevent="storeHistoryReward.handleTogglePopup(true)" color="secondary" :label="`${storeAccount.getDetailValue?.membership.point || 0}`" icon="diamond_shine" class="information-account-point" size="sm" />
+              <Button @click.prevent="storeHistoryReward.handleTogglePopup(true)" color="secondary" :label="`${storeAccount.getDetailValue?.membership.balancePoint || 0}`" icon="diamond_shine" class="information-account-point" size="sm" />
               <Button @click.prevent="storeAccount.handleTogglePopupBarcode(true)" :border="false" color="gray" icon="qr_code_scanner" size="sm"/>
             </div>
           </div>

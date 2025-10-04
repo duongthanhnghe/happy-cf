@@ -16,10 +16,12 @@ export interface User {
   fullname: string;
   email: string;
   password: string;
-  gender: "male" | "female";
+  gender?: "male" | "female" | "other";
   phone?: string;
   birthday?: Date;
   avatar?: string;
+  googleId?: string;
+  authProvider: 'local' | 'google' | 'facebook';
   active: boolean;
   role: number;
   membership: Membership;
@@ -46,8 +48,25 @@ const UserSchema = new Schema<User>(
   {
     fullname: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true },
-    gender: { type: String, enum: ["male", "female"], required: true },
+    password: { type: String, required: function() {
+      return this.authProvider !== 'google';
+    } },
+    authProvider: { 
+      type: String,
+      enum: ['local', 'google', 'facebook'],
+      default: 'local'
+    },
+    googleId: { 
+      type: String, 
+      sparse: true,
+      unique: true 
+    },
+    gender: { 
+      type: String, 
+      enum: ["male", "female", "other"], // ⭐ Thêm "other"
+      required: false, // ⭐ Không bắt buộc
+      default: undefined // ⭐ Hoặc default: "other"
+    },
     phone: { type: String },
     birthday: { type: Date },
     avatar: { type: String },
@@ -63,5 +82,6 @@ const UserSchema = new Schema<User>(
 );
 
 UserSchema.plugin(mongoosePaginate);
+
 
 export const UserModel = model("User", UserSchema, "users");

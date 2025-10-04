@@ -35,6 +35,32 @@ export const usersAPI = {
       throw err
     }
   },
+  googleLogin: async (googleToken: string) => {
+    try {
+      if (!googleToken) {
+        throw new Error("Thiếu token Google")
+      }
+
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.GOOGLE_LOGIN}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: googleToken }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error("Error during Google login:", err)
+      throw err
+    }
+  },
   Register: async (bodyData: UserRegister) => {
     try {
       if (!bodyData.email || !bodyData.password || !bodyData.fullname) {

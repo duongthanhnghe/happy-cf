@@ -181,16 +181,20 @@ onBeforeUnmount(() => {
 
         <div class="card-sm bg-white mt-ms">
           <div class="popup-cart-footer-item">
-            <Heading tag="div" size="md" weight="normal">Tong cong</Heading>
+            <Heading tag="div" size="md" weight="normal">Tong cong <span class="text-size-base text-color-green">(Tiet kiem: {{ formatCurrency(store.getTotalPriceSave) }})</span></Heading>
             <Heading tag="div" size="xl" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }}</Heading>
           </div>
 
           <div v-if="store.getTotalPriceSave != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
-          Ban tiet kiem duoc {{ formatCurrency(store.getTotalPriceSave) }} <span class="popup-cart-footer-item-current">{{ formatCurrency(store.getTotalPriceCurrent) }}</span>
+          Tong don hang <span class="popup-cart-footer-item-current">{{ formatCurrency(store.getTotalPriceCurrent) }}</span>
           </div>
 
           <div v-if="store.usedPointOrder.usedPoint != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
-          Point <span>{{ formatCurrency(store.usedPointOrder.usedPoint).replace('đ','') }}</span>
+          Point <span>-{{ formatCurrency(store.usedPointOrder.usedPoint).replace('đ','') }}</span>
+          </div>
+
+          <div v-if="store.totalDiscountRateMembership != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
+          Uu dai thanh vien <span>-{{ formatCurrency(store.totalDiscountRateMembership) }}</span>
           </div>
 
           <div v-if="store.getTotalPriceDiscount != 0 && storeAccount.getDetailValue?.id" class="popup-cart-footer-item popup-cart-footer-item-save">

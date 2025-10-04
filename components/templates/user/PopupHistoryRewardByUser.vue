@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore.ts'
+import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
 import { formatDateTime } from '@/utils/global'
-
+import { REWARD_HISTORY_TYPE } from '@/shared/constants/history-reward-type'
 const store = useHistoryRewardByUserStore();
 
 </script>
@@ -15,15 +15,19 @@ const store = useHistoryRewardByUserStore();
           mode="manual"
           @load="store.load"
         >
-          <div v-for="item in store.getItems" :key="item.id" class="mb-sm">
+          <div v-for="item in store.getItems" :key="item.orderId" class="mb-sm">
             <div class="bg-white card card-sm">
+              <div class="flex gap-xs mb-sm">
+                <v-chip label> {{ item.code }} </v-chip>
+                <v-chip label :color="REWARD_HISTORY_TYPE[item.historyType]?.color || 'grey'"> {{ REWARD_HISTORY_TYPE[item.historyType]?.name || '' }} </v-chip>
+              </div>
               <div class="flex justify-between align-center">
                 <span class="flex gap-sm align-center weight-semibold">
                   <Button tag="span" color="secondary" icon="diamond_shine" size="sm" />
-                  {{ item.reward.points }}
+                  {{ item.historyType === REWARD_HISTORY_TYPE.used.type ? '-':'+'  }} {{ item.points }}
                 </span>
                 <span>
-                  {{ formatDateTime(item.reward.awardedAt) }}
+                  {{ formatDateTime(item.createdAt) }}
                 </span>
               </div>
             </div>
