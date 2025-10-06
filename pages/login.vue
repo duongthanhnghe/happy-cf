@@ -9,12 +9,9 @@ import { useGoogleAuth } from '@/composables/user/useGoogleAuth'
 definePageMeta({
   layout: ROUTES.PUBLIC.LOGIN.layout,
 })
-  const config = useRuntimeConfig()
-
-// Debug: Check client ID
-console.log('Google Client ID:', config.public.GOOGLE_CLIENT_ID)
 
 const store = useUserAuthStore();
+const { googleButtonId, initializeGoogleSignIn, renderButton } = useGoogleAuth()
 
 const handleSubmitLogin = async (event: SubmitEventPromise) => {
   const result = await event
@@ -22,47 +19,39 @@ const handleSubmitLogin = async (event: SubmitEventPromise) => {
   store.submitLogin()
 }
 
-const { initializeGoogleSignIn, renderButton } = useGoogleAuth()
-
-const googleButtonId = 'google-signin-button'
-
 onMounted(() => {
- 
-  // Initialize Google Sign-In
   initializeGoogleSignIn()
-  
-  // Wait a bit for script to load, then render button
+
   setTimeout(() => {
     renderButton(googleButtonId)
   }, 500)
 })
 </script>
 <template>
-      <Heading class="mb-xl text-center" tag="div" color="primary" size="2xl">{{AUTH_TEXT_LOGIN}}</Heading>
+  <Heading class="mb-xl text-center" tag="div" color="primary" size="2xl">{{AUTH_TEXT_LOGIN}}</Heading>
 
-      <client-only>
-      <div class="d-flex justify-center my-4">
-      <!-- Google button sẽ render vào đây -->
-      <div :id="googleButtonId"></div>
-    </div>
-      </client-only>
+  <client-only>
+  <div class="auth-google">
+    <div :id="googleButtonId" class="auth-google-button"></div>
+    <Button icon="account_circle" color="gray" :shadow="true" :label="AUTH_TEXT_LOGIN_GOOGLE" class="w-full" />
+  </div>
+  </client-only>
 
-      <Button @click.prevent="store.handleGoogleLogin()" icon="account_circle" color="gray" :shadow="true" :label="AUTH_TEXT_LOGIN_GOOGLE" class="w-full" />
-      <div class="text-center text-size-xs text-color-gray5 mt-md mb-md line-height1">
-        {{ AUTH_TEXT_LOGIN_EMAIL }}
-      </div>
-      <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitLogin">
-        <LabelInput :label="AUTH_TEXT_USERNAME" required/>
-        <v-text-field v-model="store.formUserItem.email" :rules="store.emailRules" label="email@gmail.com" variant="outlined" required></v-text-field>
-        <LabelInput :label="AUTH_TEXT_PASSWORD" class="flex justify-between" required>
-          <slot>
-            <NuxtLink tabindex="-1" :to="{ name: 'forgot-password' }" class="text-size-xs text-color-gray5">{{AUTH_TEXT_FORGOT_PASSWORD}}?</NuxtLink>
-          </slot>
-        </LabelInput>
-        <v-text-field :append-icon="store.showPassword ? 'mdi-eye' : 'mdi-eye-off'" variant="outlined" :type="store.showPassword ? 'text' : 'password'" @click:append="store.showPassword = !store.showPassword" v-model="store.formUserItem.password" :rules="store.passwordRules" label="Nhap mat khau" required></v-text-field>
-        <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_LOGIN" class="w-full" />
-      </v-form>
-      <NuxtLink :to="{ name: 'register' }" class="block text-center text-size-xs text-color-gray5 mt-md line-height1">
-        {{ AUTH_TEXT_REGISTER_HINT }} <span class="text-color-black weight-semibold">{{AUTH_TEXT_REGISTER}}!</span>
-      </NuxtLink>
+  <div class="text-center text-size-xs text-color-gray5 mt-md mb-md line-height1">
+    {{ AUTH_TEXT_LOGIN_EMAIL }}
+  </div>
+  <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitLogin">
+    <LabelInput :label="AUTH_TEXT_USERNAME" required/>
+    <v-text-field v-model="store.formUserItem.email" :rules="store.emailRules" label="email@gmail.com" variant="outlined" required></v-text-field>
+    <LabelInput :label="AUTH_TEXT_PASSWORD" class="flex justify-between" required>
+      <slot>
+        <NuxtLink tabindex="-1" :to="{ name: 'forgot-password' }" class="text-size-xs text-color-gray5">{{AUTH_TEXT_FORGOT_PASSWORD}}?</NuxtLink>
+      </slot>
+    </LabelInput>
+    <v-text-field :append-icon="store.showPassword ? 'mdi-eye' : 'mdi-eye-off'" variant="outlined" :type="store.showPassword ? 'text' : 'password'" @click:append="store.showPassword = !store.showPassword" v-model="store.formUserItem.password" :rules="store.passwordRules" label="Nhap mat khau" required></v-text-field>
+    <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_LOGIN" class="w-full" />
+  </v-form>
+  <NuxtLink :to="{ name: 'register' }" class="block text-center text-size-xs text-color-gray5 mt-md line-height1">
+    {{ AUTH_TEXT_REGISTER_HINT }} <span class="text-color-black weight-semibold">{{AUTH_TEXT_REGISTER}}!</span>
+  </NuxtLink>
 </template>

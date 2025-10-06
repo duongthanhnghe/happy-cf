@@ -7,7 +7,7 @@ export interface User {
   email: string
   gender?: GenderType
   phone: string
-  birthday?: string | null
+  birthday?: string
   avatar: string
   active: boolean
   role: number

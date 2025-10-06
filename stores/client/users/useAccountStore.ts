@@ -1,4 +1,4 @@
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
 import { usersAPI } from "@/services/users.service";
@@ -9,7 +9,6 @@ import { ROUTES } from '@/shared/constants/routes';
 export const useAccountStore = defineStore("Account", () => {
 
   const router = useRouter()
-  // const token = ref<string | null>(process.client ? localStorage.getItem('token') : null)
   const token = useCookie<string | null>("token", { sameSite: "lax" });
   const isTogglePopupBarcode = ref<boolean>(false);
   const isTogglePopupMembershipInformation = ref<boolean>(false);
@@ -24,7 +23,6 @@ export const useAccountStore = defineStore("Account", () => {
     detailData.value = data.data;
   };
 
-  //popup barcode
   const handleTogglePopupBarcode = (value: boolean) => {
     if(isTogglePopupBarcode.value) return
     isTogglePopupBarcode.value = value;
@@ -35,23 +33,6 @@ export const useAccountStore = defineStore("Account", () => {
     isTogglePopupMembershipInformation.value = value;
   }
 
-  // const handleNextMembershipLevel = (currentPoint: number, membershipLevels: MembershipLevels[]) => {
-  //   const sortedLevels = [...membershipLevels].sort((a, b) => a.minPoint - b.minPoint)
-  //   const maxLevelPoint = membershipLevels.at(-1)?.minPoint as number
-
-  //   const currentLevel = sortedLevels
-  //     .filter(level => currentPoint >= level.minPoint)
-  //     .slice(-1)[0]
-
-  //   const currentIndex = sortedLevels.findIndex(l => l.id === currentLevel.id)
-  //   const nextLevel = currentPoint < maxLevelPoint ? sortedLevels[currentIndex + 1] : sortedLevels[currentIndex]
-
-  //   return {
-  //     currentLevel,
-  //     nextLevel
-  //   }
-  // }
-
   const handleNextMembershipLevel = (currentPoint: number, membershipLevels: MembershipLevels[]) => {
     if (!membershipLevels || membershipLevels.length === 0) {
       return null
@@ -59,11 +40,9 @@ export const useAccountStore = defineStore("Account", () => {
 
     const sortedLevels = [...membershipLevels].sort((a, b) => a.minPoint - b.minPoint)
     
-    // Tìm level hiện tại: level cao nhất mà user đạt được
-    let currentLevel = sortedLevels[0] // Default = Bronze (level thấp nhất)
+    let currentLevel = sortedLevels[0]
     let currentIndex = 0
 
-    // Duyệt ngược từ cao xuống thấp để tìm level phù hợp
     for (let i = sortedLevels.length - 1; i >= 0; i--) {
       if (currentPoint >= sortedLevels[i].minPoint) {
         currentLevel = sortedLevels[i]
@@ -72,10 +51,9 @@ export const useAccountStore = defineStore("Account", () => {
       }
     }
 
-    // Next level: level kế tiếp hoặc giữ nguyên nếu đã max
     const nextLevel = currentIndex < sortedLevels.length - 1
       ? sortedLevels[currentIndex + 1]
-      : currentLevel // Đã ở level cao nhất
+      : currentLevel
 
     return {
       currentLevel,
@@ -130,7 +108,7 @@ export const useAccountStore = defineStore("Account", () => {
     },
     {
       immediate: true,
-      watch: [token], // gọi lại khi token thay đổi
+      watch: [token],
     }
   )
 

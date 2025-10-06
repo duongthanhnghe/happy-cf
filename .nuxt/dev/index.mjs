@@ -1144,16 +1144,16 @@ _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"33376-+T91gIrST2ZnlfI3Tqo4FlVNlq0\"",
-    "mtime": "2025-10-04T09:10:58.849Z",
-    "size": 209782,
+    "etag": "\"33265-38cDorQDFjmvfOmwhbPYTUqg13U\"",
+    "mtime": "2025-10-06T03:59:02.687Z",
+    "size": 209509,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"c5b30-iZr33OqQYCpmcJw8PSgH/2esLIw\"",
-    "mtime": "2025-10-04T09:10:58.856Z",
-    "size": 809776,
+    "etag": "\"c564b-UmCLURUt+krqz8zFzh76oSM2B1w\"",
+    "mtime": "2025-10-06T03:59:02.689Z",
+    "size": 808523,
     "path": "index.mjs.map"
   }
 };
@@ -2277,11 +2277,8 @@ const UserSchema = new Schema(
     gender: {
       type: String,
       enum: ["male", "female", "other"],
-      // ⭐ Thêm "other"
       required: false,
-      // ⭐ Không bắt buộc
-      default: void 0
-      // ⭐ Hoặc default: "other"
+      default: "other"
     },
     phone: { type: String },
     birthday: { type: Date },
@@ -2538,8 +2535,8 @@ const googleLogin = async (req, res) => {
       user = await UserModel.create({
         fullname: name,
         email,
-        // password: "", // Google login => không cần password
-        // gender: "",
+        // password: "",
+        gender: "male",
         phone: "",
         birthday: (/* @__PURE__ */ new Date()).toISOString(),
         avatar: picture || process.env.IMAGE_AVATAR_DEFAULT,
@@ -2558,12 +2555,6 @@ const googleLogin = async (req, res) => {
           barcode: barcodePath || ""
         }
       });
-    } else {
-      if (!user.authProvider) {
-        user.authProvider = "google";
-        user.googleId = sub;
-        await user.save();
-      }
     }
     const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
       expiresIn: "12h"

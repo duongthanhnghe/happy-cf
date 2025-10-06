@@ -1,4 +1,3 @@
 export const apiConfig = {
   baseApiURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
-  provincesApiURL: import.meta.env.API_PROVINCE_URL || 'https://provinces.open-api.vn/api'
 }

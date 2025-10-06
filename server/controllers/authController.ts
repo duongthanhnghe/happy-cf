@@ -89,7 +89,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const googleLogin = async (req: Request, res: Response) => {
   try {
-    const { token } = req.body; // FE gửi Google ID Token về BE
+    const { token } = req.body;
 
     // Xác thực token từ Google
     const ticket = await client.verifyIdToken({
@@ -104,7 +104,6 @@ export const googleLogin = async (req: Request, res: Response) => {
 
     const { email, name, picture, sub } = payload;
 
-    // Kiểm tra user đã tồn tại chưa
     let user = await UserModel.findOne({ email });
     if (!user) {
       const barcode = Date.now().toString()
@@ -114,8 +113,8 @@ export const googleLogin = async (req: Request, res: Response) => {
       user = await UserModel.create({
         fullname: name,
         email,
-        // password: "", // Google login => không cần password
-        // gender: "",
+        // password: "",
+        gender: "male",
         phone: "",
         birthday: new Date().toISOString(),
         avatar: picture || process.env.IMAGE_AVATAR_DEFAULT,
@@ -134,16 +133,8 @@ export const googleLogin = async (req: Request, res: Response) => {
           barcode: barcodePath || ""
         }
       });
-    } else {
-      // Nếu user đã tồn tại nhưng chưa có authProvider
-      if (!user.authProvider) {
-        user.authProvider = 'google';
-        user.googleId = sub;
-        await user.save();
-      }
     }
 
-    // Tạo JWT token
     const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET!, {
       expiresIn: "12h",
     });

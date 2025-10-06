@@ -180,58 +180,32 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
       Loading(false);
   }
 
-//   const handleGoogleLogin = async (googleToken: string) => {
-//     console.log('Google callback response:', googleToken)
-//     try {
-//     const data = await usersAPI.googleLogin(googleToken)
-//     if (data.code === 0) {
-//       setCookie('token', data.data.token, 7)
-//         handleResetFormUserItem()
-//         const decoded = jwtDecode<MyJwtPayload>(data.data.token) 
-//         storeAccount.handleGetDetailAccount(decoded.id)
-//         setTimeout(function(){
-//           router.push({ path: ROUTES.PUBLIC.HOME.path })
-//         }, 500);
-//       console.log("Login success:", data.data.user)
-//     } 
-//   } catch (err: any) {
-//       showWarning(err.message);
-//       console.error('Error submitting form:', err)
-//       Loading(false);
-//     }
-// }
-const handleGoogleLogin = async (response: any) => {
-  try {
-    const googleToken = response?.credential
+  const handleGoogleLogin = async (response: any) => {
+    try {
+      const googleToken = response?.credential
 
-    if (!googleToken) {
-      throw new Error("Thiếu token Google")
+      if (!googleToken) {
+        throw new Error("Thiếu token Google")
+      }
+
+      const data = await usersAPI.googleLogin(googleToken)
+      if (data.code === 0) {
+        setCookie('token', data.data.token, 7)
+
+        const decoded = jwtDecode<MyJwtPayload>(data.data.token)
+        await storeAccount.handleGetDetailAccount(decoded.id)
+      
+        setTimeout(() => {
+          router.push({ path: ROUTES.PUBLIC.HOME.path })
+        }, 500)
+
+      }
+    } catch (err: any) {
+      showWarning(err.message)
+      console.error('Error submitting form:', err)
+      Loading(false)
     }
-
-    const data = await usersAPI.googleLogin(googleToken)
-    if (data.code === 0) {
-      setCookie('token', data.data.token, 7)
-      handleResetFormUserItem()
-
-      const decoded = jwtDecode<MyJwtPayload>(data.data.token)
-      // await storeAccount.handleGetDetailAccount(decoded.id)
-      console.log("Decoded JWT:", decoded);
-      console.log("iddddddd:", data.data.user.id);
-      console.log("data.data token:", data.data.token);
-      // await storeAccount.handleGetDetailAccount(data.data.user.id)
-
-      setTimeout(() => {
-        router.push({ path: ROUTES.PUBLIC.HOME.path })
-      }, 500)
-
-      console.log("Login success:", data.data.user)
-    }
-  } catch (err: any) {
-    showWarning(err.message)
-    console.error('Error submitting form:', err)
-    Loading(false)
   }
-}
 
   return {
     // state

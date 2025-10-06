@@ -1,13 +1,12 @@
 import { useUserAuthStore } from '@/stores/client/users/useUserAuthStore'
 
-
 export const useGoogleAuth = () => {
   const config = useRuntimeConfig()
+  const googleButtonId = 'google-signin-button'
   
   const initializeGoogleSignIn = () => {
     if (typeof window === 'undefined') return
 
-    // Load Google Identity Services script
     const script = document.createElement('script')
     script.src = 'https://accounts.google.com/gsi/client'
     script.async = true
@@ -28,9 +27,6 @@ export const useGoogleAuth = () => {
   }
 
   const handleCredentialResponse = (response: any) => {
-    console.log('Google credential response:', response)
-    // Response sẽ có response.credential (ID token)
-    
     if (response.credential) {
       const store = useUserAuthStore()
       store.handleGoogleLogin(response)
@@ -48,7 +44,6 @@ export const useGoogleAuth = () => {
         { 
           theme: 'outline', 
           size: 'large',
-          width: 300,
           text: 'signin_with',
           locale: 'vi'
         }
@@ -56,19 +51,20 @@ export const useGoogleAuth = () => {
     }
   }
 
-  const promptGoogleOneTap = () => {
-    if (typeof window === 'undefined') return
+  // const promptGoogleOneTap = () => {
+  //   if (typeof window === 'undefined') return
     
-    // @ts-ignore
-    if (window.google) {
-      // @ts-ignore
-      window.google.accounts.id.prompt()
-    }
-  }
+  //   // @ts-ignore
+  //   if (window.google) {
+  //     // @ts-ignore
+  //     window.google.accounts.id.prompt()
+  //   }
+  // }
 
   return {
+    googleButtonId,
     initializeGoogleSignIn,
     renderButton,
-    promptGoogleOneTap,
+    // promptGoogleOneTap,
   }
 }
