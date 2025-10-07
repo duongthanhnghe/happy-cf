@@ -27,9 +27,9 @@ const UserSchema = new Schema({
     },
     gender: {
         type: String,
-        enum: ["male", "female", "other"], // ⭐ Thêm "other"
-        required: false, // ⭐ Không bắt buộc
-        default: undefined // ⭐ Hoặc default: "other"
+        enum: ["male", "female", "other"],
+        required: false,
+        default: 'other'
     },
     phone: { type: String },
     birthday: { type: Date },

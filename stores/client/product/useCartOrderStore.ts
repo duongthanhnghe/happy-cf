@@ -13,7 +13,7 @@ import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
 import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, OptionDTO } from '@/server/types/dto/product.dto';
 import type { AddressDTO } from '@/server/types/dto/address.dto'
-import type { CreateOrderBody, cartItems } from '@/server/types/dto/order.dto'
+import type { CreateOrderBody, OrderDTO, cartItems } from '@/server/types/dto/order.dto'
 import { Base64 } from "js-base64";
 import { ROUTES } from '@/shared/constants/routes';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
@@ -458,6 +458,11 @@ export const useCartStore = defineStore("Cart", () => {
     try {
       const result = await ordersAPI.create(orderData,userId,point,newUsedPoint);
       if (result.code === 0 && result.data.id) {
+        if (paymentSelected.value === PAYMENT_STATUS.BANK) {
+          await handleSepayPayment(result.data);
+          return;
+        }
+        
         deleteCartAll()
         showConfirm("Đặt hàng thành công","Đơn hàng của bạn đang đuợc tiêp nhân và xử lý",'success','Theo doi don hang','Ve trang chu',() => handleSubmitOk(result.data.id),handleSubmitCancel)
         //  await sendOrderEmail('duongthanhnghe120796@gmail.com', orderData);
@@ -470,6 +475,21 @@ export const useCartStore = defineStore("Cart", () => {
     } catch (err: any) {
       showWarning(err.message);
       Loading(false);
+    }
+  };
+
+  const handleSepayPayment = async (order: OrderDTO) => {
+    try {
+      const response = await ordersAPI.payWithSepay(order);
+
+      if (response.code === 0 && response.data.paymentUrl) {
+        window.location.href = response.data.paymentUrl; // redirect sang trang thanh toán
+      } else {
+        showWarning(response.message || "Không tạo được link thanh toán Sepay");
+      }
+    } catch (err: any) {
+      console.error("Error in handleSepayPayment:", err);
+      showWarning(err.message || "Lỗi khi tạo link thanh toán");
     }
   };
 

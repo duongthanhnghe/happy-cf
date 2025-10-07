@@ -1141,22 +1141,7 @@ const plugins = [
 _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"33265-38cDorQDFjmvfOmwhbPYTUqg13U\"",
-    "mtime": "2025-10-06T03:59:02.687Z",
-    "size": 209509,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"c564b-UmCLURUt+krqz8zFzh76oSM2B1w\"",
-    "mtime": "2025-10-06T03:59:02.689Z",
-    "size": 808523,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -4380,6 +4365,72 @@ const ProductReviewSchema = new Schema(
 ProductReviewSchema.plugin(mongoosePaginate);
 const ProductReviewEntity = model("ProductReview", ProductReviewSchema, "product_reviews");
 
+const PaymentTransactionSchema = new Schema(
+  {
+    orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
+    amount: { type: Number, required: true },
+    method: { type: String, enum: ["cash", "bank_transfer"], required: true },
+    status: {
+      type: String,
+      enum: Object.values(PAYMENT_TRANSACTION_STATUS),
+      default: PAYMENT_TRANSACTION_STATUS.PENDING
+    }
+  },
+  { timestamps: true }
+);
+PaymentTransactionSchema.plugin(mongoosePaginate);
+const PaymentTransactionEntity = model("PaymentTransaction", PaymentTransactionSchema);
+
+const SEPAY_API_URL = process.env.SEPAY_API_URL || "https://sandbox.sepay.vn";
+const SEPAY_API_KEY = process.env.SEPAY_API_KEY || "";
+const createSepayPayment = async ({
+  amount,
+  description,
+  orderCode,
+  returnUrl,
+  cancelUrl,
+  callbackUrl
+}) => {
+  var _a;
+  try {
+    const response = await fetch(`${SEPAY_API_URL}/transaction/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": SEPAY_API_KEY
+      },
+      body: JSON.stringify({
+        amount,
+        description,
+        order_code: orderCode,
+        return_url: returnUrl,
+        cancel_url: cancelUrl,
+        callback_url: callbackUrl
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        code: 1,
+        message: (data == null ? void 0 : data.message) || "Failed to create payment link with Sepay",
+        data: { paymentUrl: "" }
+      };
+    }
+    return {
+      code: 0,
+      message: "Create Sepay payment link successfully",
+      data: { paymentUrl: ((_a = data == null ? void 0 : data.data) == null ? void 0 : _a.checkout_url) || "" }
+    };
+  } catch (error) {
+    console.error("Error creating Sepay payment:", error);
+    return {
+      code: 1,
+      message: (error == null ? void 0 : error.message) || "Unexpected error while creating Sepay payment",
+      data: { paymentUrl: "" }
+    };
+  }
+};
+
 const getAllOrder = async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
@@ -4705,6 +4756,72 @@ const checkPoint = async (req, res) => {
     return res.status(500).json({ success: false, message: "L\u1ED7i server" });
   }
 };
+const payWithSepay = async (req, res) => {
+  var _a;
+  try {
+    const { orderId } = req.body;
+    const order = await OrderEntity.findById(orderId).populate("paymentId");
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y \u0111\u01A1n h\xE0ng" });
+    }
+    if (order.transaction) {
+      return res.status(400).json({ code: 1, message: "\u0110\u01A1n h\xE0ng \u0111\xE3 thanh to\xE1n r\u1ED3i" });
+    }
+    const paymentData = await createSepayPayment({
+      amount: order.totalPriceCurrent,
+      description: `Thanh to\xE1n \u0111\u01A1n h\xE0ng ${order.code}`,
+      orderCode: order.code,
+      returnUrl: `${process.env.APP_URL}/order-success?orderId=${order._id}`,
+      cancelUrl: `${process.env.APP_URL}/order-failed?orderId=${order._id}`,
+      callbackUrl: `${process.env.API_URL}/api/orders/sepay-callback`
+    });
+    console.log("paymentData:", paymentData);
+    return res.json({
+      code: 0,
+      message: "T\u1EA1o li\xEAn k\u1EBFt thanh to\xE1n th\xE0nh c\xF4ng",
+      data: {
+        paymentUrl: (_a = paymentData.data) == null ? void 0 : _a.paymentUrl
+      }
+    });
+  } catch (err) {
+    console.error("L\u1ED7i payWithSepay:", err);
+    return res.status(500).json({ code: 1, message: err.message || "L\u1ED7i server" });
+  }
+};
+const sepayCallback = async (req, res) => {
+  try {
+    const { order_code, status, transaction_id, amount } = req.body;
+    const order = await OrderEntity.findOne({ code: order_code });
+    if (!order) return res.status(404).send("Order not found");
+    if (status === "success") {
+      const transaction = await PaymentTransactionEntity.create({
+        orderId: order._id,
+        amount,
+        method: "bank_transfer",
+        status: "success"
+      });
+      order.transaction = transaction._id;
+      const completedStatus = await OrderStatusEntity.findOne({ id: ORDER_STATUS.COMPLETED });
+      if (completedStatus) order.status = completedStatus._id;
+    } else {
+      const transaction = await PaymentTransactionEntity.create({
+        orderId: order._id,
+        transactionId: transaction_id,
+        amount,
+        method: "bank_transfer",
+        status: "failed"
+      });
+      order.transaction = transaction._id;
+      const cancelledStatus = await OrderStatusEntity.findOne({ id: ORDER_STATUS.CANCELLED });
+      if (cancelledStatus) order.status = cancelledStatus._id;
+    }
+    await order.save();
+    return res.status(200).send("OK");
+  } catch (err) {
+    console.error("Sepay callback error:", err);
+    return res.status(500).send("Internal Server Error");
+  }
+};
 
 const router$5 = Router();
 router$5.get("/", getAllOrder);
@@ -4713,6 +4830,8 @@ router$5.get("/payments", getAllPayment);
 router$5.get("/:id", getOrderById);
 router$5.post("/", createOrder);
 router$5.post("/check-point", checkPoint);
+router$5.post("/pay-with-sepay", payWithSepay);
+router$5.post("/sepay-callback", sepayCallback);
 router$5.delete("/:id", deleteOrder);
 router$5.get("/users/:userId/orders", getOrdersByUserId);
 router$5.get("/users/:userId/rewards", getRewardHistoryByUserId);
@@ -4722,22 +4841,6 @@ const orderManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineP
   __proto__: null,
   default: router$5
 }, Symbol.toStringTag, { value: 'Module' }));
-
-const PaymentTransactionSchema = new Schema(
-  {
-    orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
-    amount: { type: Number, required: true },
-    method: { type: String, enum: ["cash", "bank_transfer"], required: true },
-    status: {
-      type: String,
-      enum: Object.values(PAYMENT_TRANSACTION_STATUS),
-      default: PAYMENT_TRANSACTION_STATUS.PENDING
-    }
-  },
-  { timestamps: true }
-);
-PaymentTransactionSchema.plugin(mongoosePaginate);
-const PaymentTransactionEntity = model("PaymentTransaction", PaymentTransactionSchema);
 
 const createPaymentTransaction = async (req, res) => {
   try {

@@ -9,6 +9,8 @@ import type {
 } from '@server/types/dto/order.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
 
+const APP_URL = process.env.DOMAIN || "http://localhost:3000";
+
 export const ordersAPI = {
   getAll: async (
     page = 1,
@@ -263,4 +265,73 @@ export const ordersAPI = {
       }
     }
   },
+  payWithSepay: async (
+    order: OrderDTO,
+  ): Promise<ApiResponse<{ paymentUrl: string }>> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.PAY_WITH_SEPAY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId: order.id,
+            amount: order.totalPriceCurrent,
+            description: `Thanh toán đơn hàng ${order.code}`,
+            order_code: order.code,
+            return_url: `${APP_URL}/order-tracking/${order.id}`,
+            cancel_url: `${APP_URL}/order-failed/${order.id}`,
+            callback_url: `http://0.0.0.0:5000/api/orders/sepay-callback`,
+          }),
+        }
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        return {
+          code: 1,
+          message: errorData.message || "Failed to create Sepay payment",
+          data: { paymentUrl: "" },
+        }
+      }
+
+      const data: ApiResponse<{ paymentUrl: string }> = await response.json()
+      return data
+    } catch (err) {
+      console.error("Error creating Sepay payment:", err)
+      return {
+        code: 1,
+        message: "Unexpected error while creating Sepay payment",
+        data: { paymentUrl: "" },
+      }
+    }
+  },
+  // payWithSepay: async (orderId: string): Promise<ApiResponse<{ paymentUrl: string }>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.PAY_WITH_SEPAY}`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ orderId }),
+  //     })
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json()
+  //       return {
+  //         code: 1,
+  //         message: errorData.message || 'Tạo thanh toán Sepay thất bại',
+  //         data: undefined as any,
+  //       }
+  //     }
+
+  //     const data: ApiResponse<{ paymentUrl: string }> = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error('Error creating Sepay payment:', err)
+  //     return {
+  //       code: 1,
+  //       message: 'Lỗi không xác định khi tạo thanh toán Sepay',
+  //       data: undefined as any,
+  //     }
+  //   }
+  // },
 }

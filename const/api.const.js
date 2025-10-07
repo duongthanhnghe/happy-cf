@@ -51,6 +51,7 @@ export const API_ENDPOINTS = {
     LIST_BY_USER: (id) => `/orders/users/${id}/orders`,
     LIST_REWARDS_BY_USER: (id) => `/orders/users/${id}/rewards`,
     CHECK_POINT: "/orders/check-point",
+    PAY_WITH_SEPAY: '/orders/pay-with-sepay',
   },
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',

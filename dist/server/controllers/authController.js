@@ -97,7 +97,7 @@ export const googleLogin = async (req, res) => {
             user = await UserModel.create({
                 fullname: name,
                 email,
-                // password: "", // Google login => không cần password
+                // password: "",
                 gender: "male",
                 phone: "",
                 birthday: new Date().toISOString(),
