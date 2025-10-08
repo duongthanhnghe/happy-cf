@@ -79,6 +79,7 @@ watch(() => storeLocation.selectedDistrict, async (newVal) => {
   <PopupWishlist />
   <PopupProductReviewByUser />
 
+  check fix
   <div class="account-bg bg-gray2">
     <SectionAccount :showBarcode="false"/>
     <div v-if="store.getDetailValue?.id" class="container pt-ms">
