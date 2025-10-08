@@ -1,52 +1,52 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file:///Users/mac/happy-coffee/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file:///Users/ttcenter/happy-cf/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
 import path, { resolve, dirname, join } from 'node:path';
 import nodeCrypto, { randomBytes } from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { escapeHtml } from 'file:///Users/mac/happy-coffee/node_modules/@vue/shared/dist/shared.cjs.js';
-import express, { Router } from 'file:///Users/mac/happy-coffee/node_modules/express/index.js';
-import mongoose, { model, Schema, Types } from 'file:///Users/mac/happy-coffee/node_modules/mongoose/index.js';
-import bcrypt from 'file:///Users/mac/happy-coffee/node_modules/bcryptjs/index.js';
-import jwt from 'file:///Users/mac/happy-coffee/node_modules/jsonwebtoken/index.js';
-import bwipjs from 'file:///Users/mac/happy-coffee/node_modules/bwip-js/dist/bwip-js-node.mjs';
+import { escapeHtml } from 'file:///Users/ttcenter/happy-cf/node_modules/@vue/shared/dist/shared.cjs.js';
+import express, { Router } from 'file:///Users/ttcenter/happy-cf/node_modules/express/index.js';
+import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
+import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
+import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
+import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
 import fs, { promises } from 'node:fs';
-import nodemailer from 'file:///Users/mac/happy-coffee/node_modules/nodemailer/lib/nodemailer.js';
-import { OAuth2Client } from 'file:///Users/mac/happy-coffee/node_modules/google-auth-library/build/src/index.js';
-import multer from 'file:///Users/mac/happy-coffee/node_modules/multer/index.js';
-import { v2 } from 'file:///Users/mac/happy-coffee/node_modules/cloudinary/cloudinary.js';
-import mongoosePaginate from 'file:///Users/mac/happy-coffee/node_modules/mongoose-paginate-v2/dist/index.js';
-import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/mac/happy-coffee/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/mac/happy-coffee/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file:///Users/mac/happy-coffee/node_modules/vue/server-renderer/index.mjs';
-import destr, { destr as destr$1 } from 'file:///Users/mac/happy-coffee/node_modules/destr/dist/index.mjs';
-import { createHooks } from 'file:///Users/mac/happy-coffee/node_modules/hookable/dist/index.mjs';
-import { createFetch, Headers as Headers$1 } from 'file:///Users/mac/happy-coffee/node_modules/ofetch/dist/node.mjs';
-import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file:///Users/mac/happy-coffee/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file:///Users/mac/happy-coffee/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file:///Users/mac/happy-coffee/node_modules/unstorage/drivers/fs.mjs';
-import { digest } from 'file:///Users/mac/happy-coffee/node_modules/ohash/dist/index.mjs';
-import { klona } from 'file:///Users/mac/happy-coffee/node_modules/klona/dist/index.mjs';
-import defu, { defuFn } from 'file:///Users/mac/happy-coffee/node_modules/defu/dist/defu.mjs';
-import { snakeCase } from 'file:///Users/mac/happy-coffee/node_modules/scule/dist/index.mjs';
-import { getContext } from 'file:///Users/mac/happy-coffee/node_modules/unctx/dist/index.mjs';
-import { toRouteMatcher, createRouter } from 'file:///Users/mac/happy-coffee/node_modules/radix3/dist/index.mjs';
+import nodemailer from 'file:///Users/ttcenter/happy-cf/node_modules/nodemailer/lib/nodemailer.js';
+import { OAuth2Client } from 'file:///Users/ttcenter/happy-cf/node_modules/google-auth-library/build/src/index.js';
+import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
+import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
+import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/ttcenter/happy-cf/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/ttcenter/happy-cf/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file:///Users/ttcenter/happy-cf/node_modules/vue/server-renderer/index.mjs';
+import destr, { destr as destr$1 } from 'file:///Users/ttcenter/happy-cf/node_modules/destr/dist/index.mjs';
+import { createHooks } from 'file:///Users/ttcenter/happy-cf/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file:///Users/ttcenter/happy-cf/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file:///Users/ttcenter/happy-cf/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file:///Users/ttcenter/happy-cf/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file:///Users/ttcenter/happy-cf/node_modules/unstorage/drivers/fs.mjs';
+import { digest } from 'file:///Users/ttcenter/happy-cf/node_modules/ohash/dist/index.mjs';
+import { klona } from 'file:///Users/ttcenter/happy-cf/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file:///Users/ttcenter/happy-cf/node_modules/defu/dist/defu.mjs';
+import { snakeCase } from 'file:///Users/ttcenter/happy-cf/node_modules/scule/dist/index.mjs';
+import { getContext } from 'file:///Users/ttcenter/happy-cf/node_modules/unctx/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file:///Users/ttcenter/happy-cf/node_modules/radix3/dist/index.mjs';
 import { readFile } from 'node:fs/promises';
-import consola, { consola as consola$1 } from 'file:///Users/mac/happy-coffee/node_modules/consola/dist/index.mjs';
-import { ErrorParser } from 'file:///Users/mac/happy-coffee/node_modules/youch-core/build/index.js';
-import { Youch } from 'file:///Users/mac/happy-coffee/node_modules/nitropack/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file:///Users/mac/happy-coffee/node_modules/source-map/source-map.js';
+import consola, { consola as consola$1 } from 'file:///Users/ttcenter/happy-cf/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file:///Users/ttcenter/happy-cf/node_modules/youch-core/build/index.js';
+import { Youch } from 'file:///Users/ttcenter/happy-cf/node_modules/nitropack/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file:///Users/ttcenter/happy-cf/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { stringify, uneval } from 'file:///Users/mac/happy-coffee/node_modules/devalue/index.js';
-import { captureRawStackTrace, parseRawStackTrace } from 'file:///Users/mac/happy-coffee/node_modules/errx/dist/index.js';
-import { isVNode, toValue, isRef } from 'file:///Users/mac/happy-coffee/node_modules/vue/index.mjs';
+import { stringify, uneval } from 'file:///Users/ttcenter/happy-cf/node_modules/devalue/index.js';
+import { captureRawStackTrace, parseRawStackTrace } from 'file:///Users/ttcenter/happy-cf/node_modules/errx/dist/index.js';
+import { isVNode, toValue, isRef } from 'file:///Users/ttcenter/happy-cf/node_modules/vue/index.mjs';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1 } from 'file:///Users/mac/happy-coffee/node_modules/pathe/dist/index.mjs';
-import { createHead as createHead$1, propsToString, renderSSRHead } from 'file:///Users/mac/happy-coffee/node_modules/unhead/dist/server.mjs';
-import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file:///Users/mac/happy-coffee/node_modules/unhead/dist/plugins.mjs';
-import { walkResolver } from 'file:///Users/mac/happy-coffee/node_modules/unhead/dist/utils.mjs';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file:///Users/ttcenter/happy-cf/node_modules/pathe/dist/index.mjs';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'file:///Users/ttcenter/happy-cf/node_modules/unhead/dist/server.mjs';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file:///Users/ttcenter/happy-cf/node_modules/unhead/dist/plugins.mjs';
+import { walkResolver } from 'file:///Users/ttcenter/happy-cf/node_modules/unhead/dist/utils.mjs';
 
-const serverAssets = [{"baseName":"server","dir":"/Users/mac/happy-coffee/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"/Users/ttcenter/happy-cf/server/assets"}];
 
 const assets$1 = createStorage();
 
@@ -58,11 +58,11 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets$1);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/mac/happy-coffee","watchOptions":{"ignored":[null]}}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/mac/happy-coffee/server","watchOptions":{"ignored":[null]}}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/mac/happy-coffee/.nuxt"}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/mac/happy-coffee/.nuxt/cache"}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/Users/mac/happy-coffee/.data/kv"}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/ttcenter/happy-cf","watchOptions":{"ignored":[null]}}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/ttcenter/happy-cf/server","watchOptions":{"ignored":[null]}}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/ttcenter/happy-cf/.nuxt"}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/ttcenter/happy-cf/.nuxt/cache"}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/Users/ttcenter/happy-cf/.data/kv"}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -1042,13 +1042,13 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _Iy5esgeLoAxjrauMyKWVqYk1CX4hTYMbGYOo1jwFkv4 = (function(nitro) {
+const _MRDWUy9DsFcnizuzTLbV6XRfpVRJgrhF9AE4NuIF6A = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
 });
 
-const rootDir = "/Users/mac/happy-coffee";
+const rootDir = "/Users/ttcenter/happy-cf";
 
 const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"author","content":"Happy Coffee"},{"property":"og:site_name","content":"Happy Coffee"},{"property":"og:locale","content":"vi_VN"},{"http-equiv":"Cross-Origin-Opener-Policy","content":"same-origin-allow-popups"},{"http-equiv":"Cross-Origin-Embedder-Policy","content":"unsafe-none"}],"link":[{"rel":"stylesheet","href":"https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@100..700"}],"style":[],"script":[{"src":"https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js","defer":true},{"innerHTML":"\n            document.addEventListener(\"DOMContentLoaded\", function() { \n              const div = document.createElement(\"div\"); \n              div.id = \"loader\"; \n              div.className = \"loader\"; \n              div.innerHTML = '<div class=\"loader-icon\"></div>'; \n              document.body.insertBefore(div, document.body.firstChild); \n            });\n          ","type":"text/javascript"}],"noscript":[],"htmlAttrs":{"lang":"vi"}};
 
@@ -1067,7 +1067,7 @@ const devReducers = {
   URL: (data) => data instanceof URL ? data.toString() : void 0
 };
 const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4 = (nitroApp) => {
+const _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0 = (nitroApp) => {
   const handler = nitroApp.h3App.handler;
   nitroApp.h3App.handler = (event) => {
     return asyncContext.callAsync({ logs: [], event }, () => handler(event));
@@ -1137,8 +1137,8 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _Iy5esgeLoAxjrauMyKWVqYk1CX4hTYMbGYOo1jwFkv4,
-_93Qh8TLiNElUH4hzYVdd6cZcUacPe3q3b3pgOR4G4
+  _MRDWUy9DsFcnizuzTLbV6XRfpVRJgrhF9AE4NuIF6A,
+_6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
 const assets = {};
@@ -1166,7 +1166,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _Wr4LdB = eventHandler((event) => {
+const _uxO0JW = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -1301,8 +1301,8 @@ function publicAssetsURL(...path) {
 
 const APP_ROOT_OPEN_TAG = `<${appRootTag}${propsToString(appRootAttrs)}>`;
 const APP_ROOT_CLOSE_TAG = `</${appRootTag}>`;
-const getServerEntry = () => import('file:///Users/mac/happy-coffee/.nuxt//dist/server/server.mjs').then((r) => r.default || r);
-const getClientManifest = () => import('file:///Users/mac/happy-coffee/.nuxt//dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getServerEntry = () => import('file:///Users/ttcenter/happy-cf/.nuxt//dist/server/server.mjs').then((r) => r.default || r);
+const getClientManifest = () => import('file:///Users/ttcenter/happy-cf/.nuxt//dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
 const getSSRRenderer = lazyCachedFunction(async () => {
   const manifest = await getClientManifest();
   if (!manifest) {
@@ -1548,41 +1548,41 @@ async function getIslandContext(event) {
   return ctx;
 }
 
-const _lazy_rtUb5z = () => Promise.resolve().then(function () { return aboutRouter; });
-const _lazy_vhHHnZ = () => Promise.resolve().then(function () { return addressesRouter; });
-const _lazy_dO56oY = () => Promise.resolve().then(function () { return authRouter; });
-const _lazy_f3VTyF = () => Promise.resolve().then(function () { return bannerRouter; });
-const _lazy_E6ks5a = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
-const _lazy_pqgcrd = () => Promise.resolve().then(function () { return categoriesProductRouter; });
-const _lazy_NC4wll = () => Promise.resolve().then(function () { return fileManageRouter; });
-const _lazy_h7Ioq1 = () => Promise.resolve().then(function () { return locationRouter; });
-const _lazy_pDFBy2 = () => Promise.resolve().then(function () { return orderManageRouter; });
-const _lazy_vGiHBT = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
-const _lazy_FlpZsr = () => Promise.resolve().then(function () { return postsNewsRouter; });
-const _lazy_c4C7PP = () => Promise.resolve().then(function () { return productReviewRouter; });
-const _lazy_AMn0Ft = () => Promise.resolve().then(function () { return productRouter; });
-const _lazy_WjDJNS = () => Promise.resolve().then(function () { return settingRouter; });
-const _lazy_vHw4MT = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_3NIKmy = () => Promise.resolve().then(function () { return aboutRouter; });
+const _lazy_QlDtkN = () => Promise.resolve().then(function () { return addressesRouter; });
+const _lazy_HTaZFC = () => Promise.resolve().then(function () { return authRouter; });
+const _lazy_J3BD80 = () => Promise.resolve().then(function () { return bannerRouter; });
+const _lazy_xbyftj = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
+const _lazy_03kyyP = () => Promise.resolve().then(function () { return categoriesProductRouter; });
+const _lazy_kcsWMY = () => Promise.resolve().then(function () { return fileManageRouter; });
+const _lazy_uh3G2G = () => Promise.resolve().then(function () { return locationRouter; });
+const _lazy_BOeMdH = () => Promise.resolve().then(function () { return orderManageRouter; });
+const _lazy_ZfrFnr = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
+const _lazy_0S6jI0 = () => Promise.resolve().then(function () { return postsNewsRouter; });
+const _lazy_HpeBtz = () => Promise.resolve().then(function () { return productReviewRouter; });
+const _lazy_YB_F7y = () => Promise.resolve().then(function () { return productRouter; });
+const _lazy_yQgKmh = () => Promise.resolve().then(function () { return settingRouter; });
+const _lazy_wB4Btu = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
-  { route: '', handler: _Wr4LdB, lazy: false, middleware: true, method: undefined },
-  { route: '/aboutRouter', handler: _lazy_rtUb5z, lazy: true, middleware: false, method: undefined },
-  { route: '/addressesRouter', handler: _lazy_vhHHnZ, lazy: true, middleware: false, method: undefined },
-  { route: '/authRouter', handler: _lazy_dO56oY, lazy: true, middleware: false, method: undefined },
-  { route: '/bannerRouter', handler: _lazy_f3VTyF, lazy: true, middleware: false, method: undefined },
-  { route: '/categoriesNewsRouter', handler: _lazy_E6ks5a, lazy: true, middleware: false, method: undefined },
-  { route: '/categoriesProductRouter', handler: _lazy_pqgcrd, lazy: true, middleware: false, method: undefined },
-  { route: '/fileManageRouter', handler: _lazy_NC4wll, lazy: true, middleware: false, method: undefined },
-  { route: '/locationRouter', handler: _lazy_h7Ioq1, lazy: true, middleware: false, method: undefined },
-  { route: '/orderManageRouter', handler: _lazy_pDFBy2, lazy: true, middleware: false, method: undefined },
-  { route: '/paymentTransactionRoutes', handler: _lazy_vGiHBT, lazy: true, middleware: false, method: undefined },
-  { route: '/postsNewsRouter', handler: _lazy_FlpZsr, lazy: true, middleware: false, method: undefined },
-  { route: '/productReviewRouter', handler: _lazy_c4C7PP, lazy: true, middleware: false, method: undefined },
-  { route: '/productRouter', handler: _lazy_AMn0Ft, lazy: true, middleware: false, method: undefined },
-  { route: '/settingRouter', handler: _lazy_WjDJNS, lazy: true, middleware: false, method: undefined },
-  { route: '/__nuxt_error', handler: _lazy_vHw4MT, lazy: true, middleware: false, method: undefined },
+  { route: '', handler: _uxO0JW, lazy: false, middleware: true, method: undefined },
+  { route: '/aboutRouter', handler: _lazy_3NIKmy, lazy: true, middleware: false, method: undefined },
+  { route: '/addressesRouter', handler: _lazy_QlDtkN, lazy: true, middleware: false, method: undefined },
+  { route: '/authRouter', handler: _lazy_HTaZFC, lazy: true, middleware: false, method: undefined },
+  { route: '/bannerRouter', handler: _lazy_J3BD80, lazy: true, middleware: false, method: undefined },
+  { route: '/categoriesNewsRouter', handler: _lazy_xbyftj, lazy: true, middleware: false, method: undefined },
+  { route: '/categoriesProductRouter', handler: _lazy_03kyyP, lazy: true, middleware: false, method: undefined },
+  { route: '/fileManageRouter', handler: _lazy_kcsWMY, lazy: true, middleware: false, method: undefined },
+  { route: '/locationRouter', handler: _lazy_uh3G2G, lazy: true, middleware: false, method: undefined },
+  { route: '/orderManageRouter', handler: _lazy_BOeMdH, lazy: true, middleware: false, method: undefined },
+  { route: '/paymentTransactionRoutes', handler: _lazy_ZfrFnr, lazy: true, middleware: false, method: undefined },
+  { route: '/postsNewsRouter', handler: _lazy_0S6jI0, lazy: true, middleware: false, method: undefined },
+  { route: '/productReviewRouter', handler: _lazy_HpeBtz, lazy: true, middleware: false, method: undefined },
+  { route: '/productRouter', handler: _lazy_YB_F7y, lazy: true, middleware: false, method: undefined },
+  { route: '/settingRouter', handler: _lazy_yQgKmh, lazy: true, middleware: false, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_vHw4MT, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
