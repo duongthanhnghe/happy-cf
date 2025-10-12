@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import '@/styles/templates/cart/popup-cart.scss'
+import { useRoute } from 'vue-router'
 import { watch, onMounted, onBeforeUnmount } from 'vue'
 import type { SubmitEventPromise } from 'vuetify';
 import { formatCurrency } from '@/utils/global'
@@ -16,6 +17,7 @@ definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
 })
 
+const route = useRoute()
 const store = useCartStore();
 const storeAddress = useAddressesManageStore();
 const storeAccount = useAccountStore();
@@ -71,6 +73,11 @@ onBeforeUnmount(() => {
 <div class="bg-gray2">
   <div class="container pb-section">
     <BreadcrumbDefault />
+
+    <div v-if="route.query.orderId && route.query.amount && store.qrCodeUrl">
+      <img :src="store.qrCodeUrl" alt="123" />
+    </div>
+
     <v-form v-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
       <div>
         <div class="rd-lg overflow-hidden">
@@ -209,11 +216,13 @@ onBeforeUnmount(() => {
       </div>
     </v-form>
     <div v-else class="text-center">
-      <Heading weight="semibold" class="text-center">Gio hang</Heading>
-      <div class="mt-sm mb-sm">Khong co san pham trong gio hang</div>
-      <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }">
-        <Button tag="div" color="black" label="Dat hang ngay" />
-      </NuxtLink>
+      <template v-if="!store.qrCodeUrl">
+        <Heading weight="semibold" class="text-center">Gio hang</Heading>
+        <div class="mt-sm mb-sm">Khong co san pham trong gio hang</div>
+        <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }">
+          <Button tag="div" color="black" label="Dat hang ngay" />
+        </NuxtLink>
+      </template>
     </div>
   </div>
 </div>

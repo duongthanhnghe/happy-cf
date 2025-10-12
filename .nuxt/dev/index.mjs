@@ -669,7 +669,10 @@ const _inlineRuntimeConfig = {
     "siteDescription": "Mô tả website",
     "siteImage": "/assets/logo.png",
     "cloudinaryCloudName": "dl8wwezqp",
-    "GOOGLE_CLIENT_ID": "1036928626180-p62cm07r5mtp5gisv2jd433eskrismq6.apps.googleusercontent.com"
+    "GOOGLE_CLIENT_ID": "1036928626180-p62cm07r5mtp5gisv2jd433eskrismq6.apps.googleusercontent.com",
+    "sepayAccountNo": "04430890101",
+    "sepayBankId": "970423",
+    "sepayAccountName": "DUONG THANH NGHE"
   },
   "cloudinaryApiKey": "785428416695536",
   "cloudinaryApiSecret": "w2NE8N4tV-kouwXqO0QYZuF-YW8"
@@ -1141,7 +1144,22 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"33cf5-AFyElRo6+MahgdYYCaNYpPMOWUg\"",
+    "mtime": "2025-10-12T16:35:35.538Z",
+    "size": 212213,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"c80a6-YvCQng46/fV3Qe4CWcJCpayjJ2o\"",
+    "mtime": "2025-10-12T16:35:35.539Z",
+    "size": 819366,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -4381,54 +4399,9 @@ const PaymentTransactionSchema = new Schema(
 PaymentTransactionSchema.plugin(mongoosePaginate);
 const PaymentTransactionEntity = model("PaymentTransaction", PaymentTransactionSchema);
 
-const SEPAY_API_URL = process.env.SEPAY_API_URL || "https://sandbox.sepay.vn";
-const SEPAY_API_KEY = process.env.SEPAY_API_KEY || "";
-const createSepayPayment = async ({
-  amount,
-  description,
-  orderCode,
-  returnUrl,
-  cancelUrl,
-  callbackUrl
-}) => {
-  var _a;
-  try {
-    const response = await fetch(`${SEPAY_API_URL}/transaction/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": SEPAY_API_KEY
-      },
-      body: JSON.stringify({
-        amount,
-        description,
-        order_code: orderCode,
-        return_url: returnUrl,
-        cancel_url: cancelUrl,
-        callback_url: callbackUrl
-      })
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      return {
-        code: 1,
-        message: (data == null ? void 0 : data.message) || "Failed to create payment link with Sepay",
-        data: { paymentUrl: "" }
-      };
-    }
-    return {
-      code: 0,
-      message: "Create Sepay payment link successfully",
-      data: { paymentUrl: ((_a = data == null ? void 0 : data.data) == null ? void 0 : _a.checkout_url) || "" }
-    };
-  } catch (error) {
-    console.error("Error creating Sepay payment:", error);
-    return {
-      code: 1,
-      message: (error == null ? void 0 : error.message) || "Unexpected error while creating Sepay payment",
-      data: { paymentUrl: "" }
-    };
-  }
+const PAYMENT_METHOD_STATUS = {
+  BANK: "bank_transfer",
+  CASH: "cash"
 };
 
 const getAllOrder = async (req, res) => {
@@ -4756,69 +4729,56 @@ const checkPoint = async (req, res) => {
     return res.status(500).json({ success: false, message: "L\u1ED7i server" });
   }
 };
-const payWithSepay = async (req, res) => {
-  var _a;
-  try {
-    const { orderId } = req.body;
-    const order = await OrderEntity.findById(orderId).populate("paymentId");
-    if (!order) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y \u0111\u01A1n h\xE0ng" });
-    }
-    if (order.transaction) {
-      return res.status(400).json({ code: 1, message: "\u0110\u01A1n h\xE0ng \u0111\xE3 thanh to\xE1n r\u1ED3i" });
-    }
-    const paymentData = await createSepayPayment({
-      amount: order.totalPriceCurrent,
-      description: `Thanh to\xE1n \u0111\u01A1n h\xE0ng ${order.code}`,
-      orderCode: order.code,
-      returnUrl: `${process.env.APP_URL}/order-success?orderId=${order._id}`,
-      cancelUrl: `${process.env.APP_URL}/order-failed?orderId=${order._id}`,
-      callbackUrl: `${process.env.API_URL}/api/orders/sepay-callback`
-    });
-    console.log("paymentData:", paymentData);
-    return res.json({
-      code: 0,
-      message: "T\u1EA1o li\xEAn k\u1EBFt thanh to\xE1n th\xE0nh c\xF4ng",
-      data: {
-        paymentUrl: (_a = paymentData.data) == null ? void 0 : _a.paymentUrl
-      }
-    });
-  } catch (err) {
-    console.error("L\u1ED7i payWithSepay:", err);
-    return res.status(500).json({ code: 1, message: err.message || "L\u1ED7i server" });
-  }
-};
 const sepayCallback = async (req, res) => {
   try {
-    const { order_code, status, transaction_id, amount } = req.body;
-    const order = await OrderEntity.findOne({ code: order_code });
-    if (!order) return res.status(404).send("Order not found");
-    if (status === "success") {
-      const transaction = await PaymentTransactionEntity.create({
-        orderId: order._id,
-        amount,
-        method: "bank_transfer",
-        status: "success"
-      });
-      order.transaction = transaction._id;
-      const completedStatus = await OrderStatusEntity.findOne({ id: ORDER_STATUS.COMPLETED });
-      if (completedStatus) order.status = completedStatus._id;
-    } else {
-      const transaction = await PaymentTransactionEntity.create({
-        orderId: order._id,
-        transactionId: transaction_id,
-        amount,
-        method: "bank_transfer",
-        status: "failed"
-      });
-      order.transaction = transaction._id;
-      const cancelledStatus = await OrderStatusEntity.findOne({ id: ORDER_STATUS.CANCELLED });
-      if (cancelledStatus) order.status = cancelledStatus._id;
+    const authHeader = req.headers["authorization"];
+    const expectedApiKey = `Apikey ${process.env.SEPAY_WEBHOOK_API_KEY}`;
+    if (authHeader !== expectedApiKey) {
+      console.error("Invalid API Key in webhook");
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
+    const {
+      transferType,
+      // in | out
+      transferAmount,
+      // số tiền
+      transferContent,
+      // nội dung CK
+      referenceNumber
+      // mã giao dịch ngân hàng
+    } = req.body;
+    if (transferType !== "in") {
+      return res.status(200).json({ success: true });
+    }
+    const orderCodeMatch = transferContent.match(/ORDER\d+/);
+    if (!orderCodeMatch) {
+      console.error("\u274C Cannot parse order code");
+      return res.status(200).send("OK");
+    }
+    const orderCode = orderCodeMatch[0];
+    const order = await OrderEntity.findOne({ code: orderCode }).populate({ path: "transaction", model: "PaymentTransaction" });
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+    if (order.transaction && order.transaction.status === PAYMENT_TRANSACTION_STATUS.PAID) {
+      return res.status(200).json({ success: true, message: "Already processed" });
+    }
+    if (transferAmount < order.totalPrice) {
+      return res.status(200).json({ success: false, message: "Amount mismatch" });
+    }
+    console.log("\u2705 Payment successful");
+    const transaction = await PaymentTransactionEntity.create({
+      orderId: order._id,
+      transactionId: referenceNumber,
+      amount: transferAmount,
+      method: PAYMENT_METHOD_STATUS.BANK,
+      status: PAYMENT_TRANSACTION_STATUS.PAID
+    });
+    order.transaction = transaction._id;
     await order.save();
-    return res.status(200).send("OK");
+    return res.status(200).json({ success: true });
   } catch (err) {
-    console.error("Sepay callback error:", err);
+    console.error("\u{1F4A5} Webhook error:", err);
     return res.status(500).send("Internal Server Error");
   }
 };
@@ -4830,7 +4790,6 @@ router$5.get("/payments", getAllPayment);
 router$5.get("/:id", getOrderById);
 router$5.post("/", createOrder);
 router$5.post("/check-point", checkPoint);
-router$5.post("/pay-with-sepay", payWithSepay);
 router$5.post("/sepay-callback", sepayCallback);
 router$5.delete("/:id", deleteOrder);
 router$5.get("/users/:userId/orders", getOrdersByUserId);

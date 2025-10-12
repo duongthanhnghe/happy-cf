@@ -8,7 +8,8 @@ import { toOrderDTO, toOrderListDTO, toOrderStatusListDTO, toPaymentListDTO } fr
 import { ORDER_STATUS } from "../shared/constants/order-status";
 import { ProductReviewEntity } from "../models/ProductReviewEntity";
 import { PaymentTransactionEntity } from "../models/PaymentTransactionEntity";
-import { createSepayPayment} from '../services/sepay.service'
+import { PAYMENT_TRANSACTION_STATUS } from "../shared/constants/payment-transaction-status"
+import { PAYMENT_METHOD_STATUS } from "../shared/constants/payment-method-status"
 
 export const getAllOrder = async (req: Request, res: Response) => {
   try {
@@ -407,81 +408,86 @@ export const checkPoint = async (req: Request, res: Response) => {
   }
 };
 
-export const payWithSepay = async (req: Request, res: Response) => {
-  try {
-    const { orderId } = req.body
-
-    const order = await OrderEntity.findById(orderId).populate("paymentId")
-    if (!order) {
-      return res.status(404).json({ code: 1, message: "Không tìm thấy đơn hàng" })
-    }
-
-    // chỉ xử lý nếu chưa thanh toán
-    // if (order.transaction && order.transaction.status === "success") {
-    if (order.transaction) {
-      return res.status(400).json({ code: 1, message: "Đơn hàng đã thanh toán rồi" })
-    }
-
-    const paymentData = await createSepayPayment({
-      amount: order.totalPriceCurrent,
-      description: `Thanh toán đơn hàng ${order.code}`,
-      orderCode: order.code,
-      returnUrl: `${process.env.APP_URL}/order-success?orderId=${order._id}`,
-      cancelUrl: `${process.env.APP_URL}/order-failed?orderId=${order._id}`,
-      callbackUrl: `${process.env.API_URL}/api/orders/sepay-callback`,
-    });
-
-    console.log("paymentData:", paymentData)
-
-    return res.json({
-      code: 0,
-      message: "Tạo liên kết thanh toán thành công",
-      data: {
-        paymentUrl: paymentData.data?.paymentUrl,
-      }
-    })
-  } catch (err: any) {
-    console.error("Lỗi payWithSepay:", err)
-    return res.status(500).json({ code: 1, message: err.message || "Lỗi server" })
-  }
-}
 export const sepayCallback = async (req: Request, res: Response) => {
   try {
-    const { order_code, status, transaction_id, amount } = req.body;
 
-    const order = await OrderEntity.findOne({ code: order_code });
-    if (!order) return res.status(404).send("Order not found");
-
-    if (status === "success") {
-      const transaction = await PaymentTransactionEntity.create({
-        orderId: order._id,
-        amount,
-        method: "bank_transfer",
-        status: "success",
-      });
-      order.transaction = transaction._id as Types.ObjectId
-
-      const completedStatus = await OrderStatusEntity.findOne({ id: ORDER_STATUS.COMPLETED });
-      if (completedStatus) order.status = completedStatus._id;
-    } else {
-      const transaction = await PaymentTransactionEntity.create({
-        orderId: order._id,
-        transactionId: transaction_id,
-        amount,
-        method: "bank_transfer",
-        status: "failed",
-      });
-      order.transaction = transaction._id as Types.ObjectId;
-
-      const cancelledStatus = await OrderStatusEntity.findOne({ id: ORDER_STATUS.CANCELLED });
-      if (cancelledStatus) order.status = cancelledStatus._id;
+    const authHeader = req.headers["authorization"];
+    const expectedApiKey = `Apikey ${process.env.SEPAY_WEBHOOK_API_KEY}`;
+    if (authHeader !== expectedApiKey) {
+      console.error("Invalid API Key in webhook");
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
+    const { 
+      transferType,      // in | out
+      transferAmount,    // số tiền
+      transferContent,   // nội dung CK
+      referenceNumber,   // mã giao dịch ngân hàng
+    } = req.body;
+
+    if (transferType !== "in") {
+      return res.status(200).json({ success: true }); // Bỏ qua giao dịch ra
+    }
+
+    const orderCodeMatch = transferContent.match(/ORDER\d+/);
+    if (!orderCodeMatch) {
+      console.error("❌ Cannot parse order code");
+      return res.status(200).send("OK");
+    }
+
+    const orderCode = orderCodeMatch[0];
+    const order = await OrderEntity.findOne({ code: orderCode })
+      .populate({ path: "transaction", model: "PaymentTransaction" });
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Kiểm tra đã xử lý chưa
+    if (order.transaction && (order.transaction as any).status === PAYMENT_TRANSACTION_STATUS.PAID) {
+      return res.status(200).json({ success: true, message: "Already processed" });
+    }
+
+    // Kiểm tra số tiền
+    if (transferAmount < order.totalPrice) {
+      return res.status(200).json({ success: false, message: "Amount mismatch" });
+    }
+
+    console.log("✅ Payment successful");
+
+    // Tạo transaction
+    const transaction = await PaymentTransactionEntity.create({
+      orderId: order._id,
+      transactionId: referenceNumber,
+      amount: transferAmount,
+      method: PAYMENT_METHOD_STATUS.BANK,
+      status: PAYMENT_TRANSACTION_STATUS.PAID,
+    });
+
+    order.transaction = transaction._id as Types.ObjectId;
+
+    // Cập nhật status = COMPLETED
+    // const completedStatus = await OrderStatusEntity.findOne({ 
+    //   id: ORDER_STATUS.COMPLETED 
+    // });
+    
+    // if (completedStatus) {
+    //   order.status = completedStatus._id;
+      
+    //   // Cộng điểm
+    //   if (order.userId && !order.reward.awarded) {
+    //     await setPointAndUpgrade(order.userId.toString(), order.reward.points);
+    //     order.reward.awarded = true;
+    //     order.reward.awardedAt = new Date();
+    //   }
+    // }
+
     await order.save();
-    return res.status(200).send("OK");
+
+    return res.status(200).json({ success: true });
+    
   } catch (err) {
-    console.error("Sepay callback error:", err);
+    console.error("💥 Webhook error:", err);
     return res.status(500).send("Internal Server Error");
   }
 };
-

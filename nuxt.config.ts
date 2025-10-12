@@ -34,7 +34,10 @@ export default defineNuxtConfig({
       siteDescription: 'Mô tả website',
       siteImage: '/assets/logo.png',
       cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
-      GOOGLE_CLIENT_ID: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID
+      GOOGLE_CLIENT_ID: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
+      sepayAccountNo: process.env.SEPAY_ACCOUNT_NO,
+      sepayBankId: process.env.SEPAY_BANK_ID,
+      sepayAccountName: process.env.SEPAY_ACCOUNT_NAME,
     }
   },
   app: {

@@ -10,7 +10,7 @@ import {
   updateOrderStatus,
   getRewardHistoryByUserId,
   checkPoint,
-  payWithSepay,
+  // payWithSepay,
   sepayCallback,
 } from '../controllers/orderController.js'
 
@@ -22,7 +22,7 @@ router.get('/payments',          getAllPayment)
 router.get('/:id',       getOrderById)
 router.post('/',         createOrder)
 router.post("/check-point", checkPoint);
-router.post("/pay-with-sepay", payWithSepay);
+// router.post("/pay-with-sepay", payWithSepay);
 router.post("/sepay-callback", sepayCallback);
 router.delete('/:id',    deleteOrder)
 router.get('/users/:userId/orders', getOrdersByUserId)

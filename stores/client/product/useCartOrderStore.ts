@@ -414,7 +414,6 @@ export const useCartStore = defineStore("Cart", () => {
     handleTogglePopup(false);
   }
 
-  //submit dat hang
   const submitOrder = async () => {
     const confirm = await showConfirm('Xác nhận đặt hàng?')
     if (!confirm) return
@@ -459,17 +458,21 @@ export const useCartStore = defineStore("Cart", () => {
       const result = await ordersAPI.create(orderData,userId,point,newUsedPoint);
       if (result.code === 0 && result.data.id) {
         if (paymentSelected.value === PAYMENT_STATUS.BANK) {
-          await handleSepayPayment(result.data);
-          return;
+          showSuccess('Đặt hàng thành công, vui long thanh toan!')
+          router.push({
+            path: ROUTES.PUBLIC.PAYMENT.path,
+            query: {
+              orderId: result.data.id,
+              orderCode: result.data.code,
+              amount: result.data.totalPrice
+            }
+          })
+        } else {
+          showConfirm("Đặt hàng thành công","Đơn hàng của bạn đang đuợc tiêp nhân và xử lý",'success','Theo doi don hang','Ve trang chu',() => handleSubmitOk(result.data.id),handleSubmitCancel)
+          //  await sendOrderEmail('duongthanhnghe120796@gmail.com', orderData);
         }
-        
-        deleteCartAll()
-        showConfirm("Đặt hàng thành công","Đơn hàng của bạn đang đuợc tiêp nhân và xử lý",'success','Theo doi don hang','Ve trang chu',() => handleSubmitOk(result.data.id),handleSubmitCancel)
-        //  await sendOrderEmail('duongthanhnghe120796@gmail.com', orderData);
-        usedPointOrder.pointInput = 0,
-        usedPointOrder.usedPoint = 0,
-        usedPointOrder.checkBalancePoint = false
-        totalDiscountRateMembership.value = 0;
+
+        handleResetForm()
       }
       Loading(false);
     } catch (err: any) {
@@ -478,20 +481,15 @@ export const useCartStore = defineStore("Cart", () => {
     }
   };
 
-  const handleSepayPayment = async (order: OrderDTO) => {
-    try {
-      const response = await ordersAPI.payWithSepay(order);
+  const handleResetForm = () => {
+    deleteCartAll()
 
-      if (response.code === 0 && response.data.paymentUrl) {
-        window.location.href = response.data.paymentUrl; // redirect sang trang thanh toán
-      } else {
-        showWarning(response.message || "Không tạo được link thanh toán Sepay");
-      }
-    } catch (err: any) {
-      console.error("Error in handleSepayPayment:", err);
-      showWarning(err.message || "Lỗi khi tạo link thanh toán");
-    }
-  };
+    //point
+    usedPointOrder.pointInput = 0,
+    usedPointOrder.usedPoint = 0,
+    usedPointOrder.checkBalancePoint = false
+    totalDiscountRateMembership.value = 0;
+  }
 
   const handleCheckPoint = async () => {
     if(!storeAccount.getDetailValue?.id || usedPointOrder.pointInput == 0 || totalPriceDiscount.value === 0) {

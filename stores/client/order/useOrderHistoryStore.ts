@@ -4,10 +4,13 @@ import { ordersAPI } from "@/services/orders.service";
 import type { OrderDTO} from '@/server/types/dto/order.dto'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
+import { useRouter } from 'vue-router'
+import { ROUTES } from '@/shared/constants/routes';
 
 export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   const storeAccount = useAccountStore();
   const storeOrderStatus = useOrderStatusStore();
+  const router = useRouter()
 
   //state
   const dataList = ref<OrderDTO[]|null>(null)
@@ -62,6 +65,18 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
     checkPageDetail.value = value
   }
 
+  const handlePaymentOrder = (orderId: string, orderCode: string, amount: number) => {
+    isTogglePopupAdd.value = false
+    router.push({
+      path: ROUTES.PUBLIC.PAYMENT.path,
+      query: {
+        orderId,
+        orderCode,
+        amount,
+      }
+    })
+  }
+
   watch([filterStatusOrder], () => {
     items.value = null;
     getApiData()
@@ -99,6 +114,7 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
     loadItems,
     handleTogglePopupDetail,
     setCheckPageDetail,
+    handlePaymentOrder,
     //getters
     // getListOrders,
     getItems,

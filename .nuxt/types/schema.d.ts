@@ -97,6 +97,12 @@ declare module 'nuxt/schema' {
    cloudinaryCloudName: string,
 
    GOOGLE_CLIENT_ID: string,
+
+   sepayAccountNo: string,
+
+   sepayBankId: string,
+
+   sepayAccountName: string,
   }
 }
 declare module 'vue' {

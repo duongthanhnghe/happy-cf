@@ -22,7 +22,7 @@ const handleDetailPopup = (id:string) => {
 
 </script>
 <template>
-  <div class="card card-sm bg-white mb-sm" @click="handleDetailPopup(props.item?.id)">
+  <div class="card card-sm bg-white mb-sm" @click.self="handleDetailPopup(props.item?.id)">
     <div class="flex justify-between line-height1">
       <div class="flex gap-xs align-center weight-semibold">
         <Button size="xs" color="secondary" icon="package_2" :disable="true"/>
@@ -50,10 +50,13 @@ const handleDetailPopup = (id:string) => {
       </div>
     </div>
     <div class="flex justify-between align-center">
+      <div class="flex gap-xs">
       <v-chip label color="gray">
         <img width="20" :src="props.item?.paymentId.image" alt="icon" class="mr-xs"/>
         {{ props.item?.paymentId.name }}
       </v-chip>
+      <Button @click.stop.prevent="store.handlePaymentOrder(props.item?.id, props.item?.code, props.item?.totalPrice)" v-if="props.item?.transaction === null" size="sm" :border="false" label="Thanh toan"/>
+      </div>
       <v-chip label :color="props.item?.status.status">
         {{ props.item?.status.name }}
       </v-chip>
