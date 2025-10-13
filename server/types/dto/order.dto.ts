@@ -62,6 +62,7 @@ export interface OrderDTO {
   totalPrice: number;
   totalPriceSave: number;
   totalPriceCurrent: number;
+  shippingFee: number;
   status: OrderStatusDTO;
   userId: string | null;
   transaction: PaymentTransactionDTO | null;
@@ -87,3 +88,15 @@ export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "up
 }
 
 export type OrderPaginationDTO = PaginationDTO<OrderDTO>
+
+export interface ShippingFeeDTO {
+  // MONEY_TOTAL_OLD: number,
+  MONEY_TOTAL: number,
+  // MONEY_TOTAL_FEE: number,
+  // MONEY_FEE: number,
+  // MONEY_COLLECTION_FEE: number,
+  // MONEY_OTHER_FEE: number,
+  // MONEY_VAS: number,
+  // MONEY_VAT: number,
+  // KPI_HT: number,
+}

@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"33cf5-AFyElRo6+MahgdYYCaNYpPMOWUg\"",
-    "mtime": "2025-10-12T16:35:35.538Z",
-    "size": 212213,
+    "etag": "\"34837-v+5V62qTJKa+8Fs8QbkkX8vAjgI\"",
+    "mtime": "2025-10-13T17:11:27.731Z",
+    "size": 215095,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"c80a6-YvCQng46/fV3Qe4CWcJCpayjJ2o\"",
-    "mtime": "2025-10-12T16:35:35.539Z",
-    "size": 819366,
+    "etag": "\"ca9d5-Rvr3JJY4ajXD1VUM82MaUOK1Qmc\"",
+    "mtime": "2025-10-13T17:11:27.732Z",
+    "size": 829909,
     "path": "index.mjs.map"
   }
 };
@@ -4210,6 +4210,7 @@ const OrderSchema = new Schema(
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
+    shippingFee: { type: Number, required: true },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
@@ -4305,6 +4306,7 @@ function toOrderDTO(entity) {
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
+    shippingFee: entity.shippingFee,
     status: toOrderStatusDTO(entity.status),
     userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
     transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
@@ -4766,7 +4768,6 @@ const sepayCallback = async (req, res) => {
     if (transferAmount < order.totalPrice) {
       return res.status(200).json({ success: false, message: "Amount mismatch" });
     }
-    console.log("\u2705 Payment successful");
     const transaction = await PaymentTransactionEntity.create({
       orderId: order._id,
       transactionId: referenceNumber,
@@ -4782,6 +4783,109 @@ const sepayCallback = async (req, res) => {
     return res.status(500).send("Internal Server Error");
   }
 };
+const tokenCachePath = path.resolve("./storage/vtp_token_cache.json");
+const getViettelToken = async () => {
+  var _a;
+  try {
+    if (fs.existsSync(tokenCachePath)) {
+      const { token, expiresAt } = JSON.parse(fs.readFileSync(tokenCachePath, "utf-8"));
+      if (Date.now() < expiresAt) {
+        return token;
+      }
+    }
+    const response = await fetch("https://partner.viettelpost.vn/v2/user/Login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        USERNAME: process.env.VTP_USERNAME || "0365305920",
+        PASSWORD: process.env.VTP_PASSWORD || "Evaadam@120796"
+      })
+    });
+    const data = await response.json();
+    if (!((_a = data.data) == null ? void 0 : _a.token)) {
+      throw new Error("Kh\xF4ng l\u1EA5y \u0111\u01B0\u1EE3c token m\u1EDBi t\u1EEB Viettel Post");
+    }
+    const newToken = data.data.token;
+    fs.writeFileSync(
+      tokenCachePath,
+      JSON.stringify({
+        token: newToken,
+        expiresAt: Date.now() + 12 * 60 * 60 * 1e3
+      })
+    );
+    return newToken;
+  } catch (err) {
+    console.error("\u274C getViettelToken error:", err.message);
+    throw err;
+  }
+};
+const getShippingFee = async (req, res) => {
+  try {
+    const {
+      PRODUCT_WEIGHT,
+      PRODUCT_PRICE,
+      MONEY_COLLECTION,
+      SENDER_PROVINCE,
+      SENDER_DISTRICT,
+      RECEIVER_PROVINCE,
+      RECEIVER_DISTRICT
+    } = req.body;
+    if (!PRODUCT_WEIGHT || !SENDER_PROVINCE || !SENDER_DISTRICT || !RECEIVER_PROVINCE || !RECEIVER_DISTRICT) {
+      return res.status(400).json({
+        code: 1,
+        message: "Missing required fields",
+        data: null
+      });
+    }
+    const body = {
+      PRODUCT_WEIGHT: Number(PRODUCT_WEIGHT),
+      PRODUCT_PRICE: Number(PRODUCT_PRICE) || 0,
+      MONEY_COLLECTION: Number(MONEY_COLLECTION) || 0,
+      ORDER_SERVICE_ADD: "",
+      ORDER_SERVICE: "VCBO",
+      SENDER_PROVINCE: Number(SENDER_PROVINCE),
+      SENDER_DISTRICT: Number(SENDER_DISTRICT),
+      RECEIVER_PROVINCE: Number(RECEIVER_PROVINCE),
+      RECEIVER_DISTRICT: Number(RECEIVER_DISTRICT),
+      PRODUCT_TYPE: "HH",
+      NATIONAL_TYPE: 1,
+      PRODUCT_LENGTH: 0,
+      PRODUCT_WIDTH: 0,
+      PRODUCT_HEIGHT: 0
+    };
+    const token = await getViettelToken();
+    const response = await fetch("https://partner.viettelpost.vn/v2/order/getPrice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Token": token || ""
+      },
+      body: JSON.stringify(body)
+    });
+    const result = await response.json();
+    if (!response.ok || result.error || result.status !== 200) {
+      console.error("\u274C ViettelPost API Error:", result);
+      return res.status(400).json({
+        code: 1,
+        message: result.message || "Error fetching fee from Viettel Post",
+        data: result || null
+      });
+    }
+    return res.json({
+      code: 0,
+      message: "Success",
+      data: result.data
+    });
+  } catch (err) {
+    console.error("\u274C getShippingFee error:", err.message);
+    console.error("Stack trace:", err.stack);
+    res.status(500).json({
+      code: 1,
+      message: "Internal Server Error",
+      data: null
+    });
+  }
+};
 
 const router$5 = Router();
 router$5.get("/", getAllOrder);
@@ -4791,6 +4895,7 @@ router$5.get("/:id", getOrderById);
 router$5.post("/", createOrder);
 router$5.post("/check-point", checkPoint);
 router$5.post("/sepay-callback", sepayCallback);
+router$5.post("/shipping/fee", getShippingFee);
 router$5.delete("/:id", deleteOrder);
 router$5.get("/users/:userId/orders", getOrdersByUserId);
 router$5.get("/users/:userId/rewards", getRewardHistoryByUserId);

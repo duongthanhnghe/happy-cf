@@ -35,6 +35,7 @@ export interface Order {
   totalPrice: number;
   totalPriceSave: number;
   totalPriceCurrent: number;
+  shippingFee: number;
   // point?: number;
   status: Types.ObjectId;
   userId?: Types.ObjectId | null;
@@ -109,6 +110,7 @@ const OrderSchema = new Schema<Order>(
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
+    shippingFee: { type: Number, required: true },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },

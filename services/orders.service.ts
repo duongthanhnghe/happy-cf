@@ -265,45 +265,42 @@ export const ordersAPI = {
       }
     }
   },
-  // payWithSepay: async (
-  //   order: OrderDTO,
-  // ): Promise<ApiResponse<{ paymentUrl: string }>> => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.PAY_WITH_SEPAY}`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           orderId: order.id,
-  //           amount: order.totalPrice,
-  //           description: `Thanh toán đơn hàng: ${order.code}`,
-  //           order_code: order.code,
-  //           return_url: `${APP_URL}/order-tracking/${order.id}`,
-  //           cancel_url: `${APP_URL}/order-failed/${order.id}`,
-  //           callback_url: 'https://nohemi-gastroenteritic-curably.ngrok-free.dev/api/orders/sepay-callback',
-  //         }),
-  //       }
-  //     )
+  getFee: async (payload: {
+    PRODUCT_WEIGHT: number
+    PRODUCT_PRICE: number
+    MONEY_COLLECTION: number
+    SENDER_PROVINCE: number
+    SENDER_DISTRICT: number
+    RECEIVER_PROVINCE: number
+    RECEIVER_DISTRICT: number
+  }) => {
+    try {
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.SHIPPING_FEE}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
 
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       return {
-  //         code: 1,
-  //         message: errorData.message || "Failed to create Sepay payment",
-  //         data: { paymentUrl: "" },
-  //       }
-  //     }
+      if (!response.ok) {
+        const errText = await response.text()
+        return {
+          code: 1,
+          message: `Failed to get shipping fee: ${errText}`,
+          data: null
+        }
+      }
 
-  //     const data: ApiResponse<{ paymentUrl: string }> = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error("Error creating Sepay payment:", err)
-  //     return {
-  //       code: 1,
-  //       message: "Unexpected error while creating Sepay payment",
-  //       data: { paymentUrl: "" },
-  //     }
-  //   }
-  // },
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error("Error fetching shipping fee:", err)
+      return {
+        code: 1,
+        message: "Unexpected error while getting shipping fee",
+        data: null
+      }
+    }
+  }
 }

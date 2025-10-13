@@ -17,7 +17,7 @@ definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
 })
 
-const route = useRoute()
+
 const store = useCartStore();
 const storeAddress = useAddressesManageStore();
 const storeAccount = useAccountStore();
@@ -57,6 +57,14 @@ watch(() => storeLocation.selectedDistrict, async (newVal) => {
   }
 })
 
+watch(() => storeLocation.selectedWard, async (newVal) => {
+  if (newVal) {
+    await store.handleGetFee()
+  } else {
+    store.shippingFee = 0
+  }
+}, { immediate: true})
+
 onMounted(async () => {
   await storeLocation.fetchProvincesStore()
   if(storeAccount.getDetailValue?.id) await store.handleGetDefaultAddress()
@@ -73,10 +81,6 @@ onBeforeUnmount(() => {
 <div class="bg-gray2">
   <div class="container pb-section">
     <BreadcrumbDefault />
-
-    <div v-if="route.query.orderId && route.query.amount && store.qrCodeUrl">
-      <img :src="store.qrCodeUrl" alt="123" />
-    </div>
 
     <v-form v-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
       <div>
@@ -188,12 +192,16 @@ onBeforeUnmount(() => {
 
         <div class="card-sm bg-white mt-ms">
           <div class="popup-cart-footer-item">
-            <Heading tag="div" size="md" weight="normal">Tong cong <span class="text-size-base text-color-green">(Tiet kiem: {{ formatCurrency(store.getTotalPriceSave) }})</span></Heading>
+            <Heading tag="div" size="md" weight="normal">Thanh tien <span class="text-size-base text-color-green">(Tiet kiem: {{ formatCurrency(store.getTotalPriceSave) }})</span></Heading>
             <Heading tag="div" size="xl" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }}</Heading>
           </div>
 
           <div v-if="store.getTotalPriceSave != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
-          Tong don hang <span class="popup-cart-footer-item-current">{{ formatCurrency(store.getTotalPriceCurrent) }}</span>
+          Don hang <span>{{ formatCurrency(store.getTotalPriceCurrent) }}</span>
+          </div>
+
+          <div class="popup-cart-footer-item popup-cart-footer-item-save">
+          Phi van chuyen: <span>{{ formatCurrency(store.getShippingFee) }}</span>
           </div>
 
           <div v-if="store.usedPointOrder.usedPoint != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
@@ -201,7 +209,7 @@ onBeforeUnmount(() => {
           </div>
 
           <div v-if="store.totalDiscountRateMembership != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
-          Uu dai thanh vien <span>-{{ formatCurrency(store.totalDiscountRateMembership) }}</span>
+          Uu dai thanh vien <span>{{ formatCurrency(store.totalDiscountRateMembership) }}</span>
           </div>
 
           <div v-if="store.getTotalPriceDiscount != 0 && storeAccount.getDetailValue?.id" class="popup-cart-footer-item popup-cart-footer-item-save">
@@ -211,18 +219,18 @@ onBeforeUnmount(() => {
             </span>
           </div>
 
+          
+
           <Button type="submit" label="Dat hang" color="primary" class="mt-sm w-full" />
         </div>
       </div>
     </v-form>
     <div v-else class="text-center">
-      <template v-if="!store.qrCodeUrl">
-        <Heading weight="semibold" class="text-center">Gio hang</Heading>
-        <div class="mt-sm mb-sm">Khong co san pham trong gio hang</div>
-        <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }">
-          <Button tag="div" color="black" label="Dat hang ngay" />
-        </NuxtLink>
-      </template>
+      <Heading weight="semibold" class="text-center">Gio hang</Heading>
+      <div class="mt-sm mb-sm">Khong co san pham trong gio hang</div>
+      <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }">
+        <Button tag="div" color="black" label="Dat hang ngay" />
+      </NuxtLink>
     </div>
   </div>
 </div>

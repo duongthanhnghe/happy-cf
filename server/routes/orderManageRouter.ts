@@ -10,8 +10,8 @@ import {
   updateOrderStatus,
   getRewardHistoryByUserId,
   checkPoint,
-  // payWithSepay,
   sepayCallback,
+  getShippingFee,
 } from '../controllers/orderController.js'
 
 const router = Router()
@@ -22,8 +22,8 @@ router.get('/payments',          getAllPayment)
 router.get('/:id',       getOrderById)
 router.post('/',         createOrder)
 router.post("/check-point", checkPoint);
-// router.post("/pay-with-sepay", payWithSepay);
 router.post("/sepay-callback", sepayCallback);
+router.post("/shipping/fee", getShippingFee);
 router.delete('/:id',    deleteOrder)
 router.get('/users/:userId/orders', getOrdersByUserId)
 router.get('/users/:userId/rewards', getRewardHistoryByUserId)

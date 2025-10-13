@@ -13,7 +13,7 @@ import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
 import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, OptionDTO } from '@/server/types/dto/product.dto';
 import type { AddressDTO } from '@/server/types/dto/address.dto'
-import type { CreateOrderBody, OrderDTO, cartItems } from '@/server/types/dto/order.dto'
+import type { CreateOrderBody, ShippingFeeDTO, cartItems } from '@/server/types/dto/order.dto'
 import { Base64 } from "js-base64";
 import { ROUTES } from '@/shared/constants/routes';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
@@ -50,6 +50,7 @@ export const useCartStore = defineStore("Cart", () => {
   const totalPriceCurrent = ref(0);
   const totalPriceDiscount = ref(0);
   const totalPriceSave = ref(0);
+  const shippingFee = ref(0);
   const totalDiscountRateMembership = ref(0);
   const isTogglePopup = ref(false);
   const paymentSelected = ref(PAYMENT_STATUS.BANK);
@@ -284,14 +285,18 @@ export const useCartStore = defineStore("Cart", () => {
       return total + item.priceDiscounts * item.quantity;
     }, 0);
 
-    totalPriceDiscount.value = totalPriceDiscount.value - usedPointOrder.usedPoint
+    if(usedPointOrder.usedPoint && usedPointOrder.usedPoint !== 0) { //su dung diem
+      totalPriceDiscount.value = totalPriceDiscount.value - usedPointOrder.usedPoint
+    }
 
-    if(storeAccount.getDetailValue?.membership.discountRate !== 0){ //uu dai thanh vien
+    if(storeAccount.getDetailValue?.membership && storeAccount.getDetailValue?.membership.discountRate !== 0){ //uu dai thanh vien
       totalDiscountRateMembership.value = totalPriceCurrent.value * (storeAccount.getDetailValue?.membership.discountRate / 100)
       totalPriceDiscount.value = totalPriceDiscount.value - totalDiscountRateMembership.value
     } 
 
-    totalPriceSave.value = totalPriceCurrent.value - totalPriceDiscount.value
+    totalPriceDiscount.value = totalPriceDiscount.value + shippingFee.value //cong them PVC
+
+    totalPriceSave.value = totalPriceCurrent.value - totalPriceDiscount.value + shippingFee.value
     
   };
 
@@ -418,6 +423,11 @@ export const useCartStore = defineStore("Cart", () => {
     const confirm = await showConfirm('Xác nhận đặt hàng?')
     if (!confirm) return
 
+    if(shippingFee.value === 0) {
+      showWarning('Khong tinh duoc phi van chuyen')
+      return
+    }
+
     Loading(true);
 
     const newCartItems = cartListItem.value.map((item) => {
@@ -447,6 +457,7 @@ export const useCartStore = defineStore("Cart", () => {
       totalPrice: totalPriceDiscount.value,
       totalPriceSave: totalPriceSave.value,
       totalPriceCurrent: totalPriceCurrent.value,
+      shippingFee: shippingFee.value,
       status: ORDER_STATUS.PENDING,
       userId: userId,
       provinceCode: storeLocation.selectedProvince || 0,
@@ -480,6 +491,33 @@ export const useCartStore = defineStore("Cart", () => {
       Loading(false);
     }
   };
+
+  const handleGetFee = async () => {
+    Loading(true)
+    try {
+      const data = await ordersAPI.getFee({
+        PRODUCT_WEIGHT: 2000,
+        PRODUCT_PRICE: totalPriceDiscount.value,
+        MONEY_COLLECTION: totalPriceDiscount.value,
+        SENDER_PROVINCE: 1,
+        SENDER_DISTRICT: 12,
+        RECEIVER_PROVINCE: storeLocation.selectedProvince || 1,
+        RECEIVER_DISTRICT: storeLocation.selectedDistrict || 1,
+      })
+      if(data.code === 0){
+        shippingFee.value = data.data.MONEY_TOTAL
+        handleCalcTotalPriceCurrent()
+      } 
+      else {
+        shippingFee.value = 0
+        showWarning('Khong tinh duoc phi van chuyen')
+      }
+    } catch (err: any) {
+      alert(err.message)
+    } finally {
+      Loading(false)
+    }
+  }
 
   const handleResetForm = () => {
     deleteCartAll()
@@ -535,6 +573,7 @@ export const useCartStore = defineStore("Cart", () => {
   const getTotalPriceDiscount = computed(() => totalPriceDiscount.value);
   const getTotalPoint = computed(() => Math.round(totalPriceDiscount.value * 0.05));
   const getTotalPriceSave = computed(() => totalPriceSave.value);
+  const getShippingFee = computed(() => shippingFee.value);
   const getPaymentSelected = computed(() => paymentSelected.value);
   const getSelectedOptionsData = computed(() => selectedOptionsData.value);
   const getIdAddressChoose = computed(() => idAddressChoose.value);
@@ -552,6 +591,7 @@ export const useCartStore = defineStore("Cart", () => {
     idAddressChoose,
     usedPointOrder,
     totalDiscountRateMembership,
+    shippingFee,
     // actions
     addProductToCart,
     handleTogglePopup,
@@ -571,6 +611,7 @@ export const useCartStore = defineStore("Cart", () => {
     syncCartCookie,
     handleGetDefaultAddress,
     handleCheckPoint,
+    handleGetFee,
     // getters
     tempSelected,
     getCartCount,
@@ -584,5 +625,6 @@ export const useCartStore = defineStore("Cart", () => {
     getIdAddressChoose,
     getNameAddressChoose,
     getTotalPoint,
+    getShippingFee,
   };
 });

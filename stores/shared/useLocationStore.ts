@@ -81,6 +81,7 @@ export const useLocationStore = defineStore("LocationStore", () => {
     selectedWard.value = null
     districts.value = []
     wards.value = []
+    console.log('co qua dya>')
   }
 
   const getListProvinces = computed(() => provinces.value || [])

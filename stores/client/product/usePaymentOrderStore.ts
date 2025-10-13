@@ -21,12 +21,6 @@ export const usePaymentOrderStore = defineStore("OrderStore", () => {
       const qrUrl = generateQRCodeUrl(orderCode, amount);
       qrCodeUrl.value = qrUrl;
    
-      // const orderId = order.id
-      // const amount = order.totalPrice
-      // router.replace({
-      //   path: '/cart',
-      //   query: { orderId, amount }
-      // })
       setTimeout(() => {
         startPaymentCheck(orderId)
       }, 2000)
