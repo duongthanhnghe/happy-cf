@@ -6,16 +6,16 @@ import nodeCrypto, { randomBytes } from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/ttcenter/happy-cf/node_modules/@vue/shared/dist/shared.cjs.js';
 import express, { Router } from 'file:///Users/ttcenter/happy-cf/node_modules/express/index.js';
-import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
-import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
-import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
-import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
 import fs, { promises } from 'node:fs';
-import nodemailer from 'file:///Users/ttcenter/happy-cf/node_modules/nodemailer/lib/nodemailer.js';
-import { OAuth2Client } from 'file:///Users/ttcenter/happy-cf/node_modules/google-auth-library/build/src/index.js';
 import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
 import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
+import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
+import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
+import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
 import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
+import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
+import nodemailer from 'file:///Users/ttcenter/happy-cf/node_modules/nodemailer/lib/nodemailer.js';
+import { OAuth2Client } from 'file:///Users/ttcenter/happy-cf/node_modules/google-auth-library/build/src/index.js';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/ttcenter/happy-cf/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/ttcenter/happy-cf/node_modules/ufo/dist/index.mjs';
 import { renderToString } from 'file:///Users/ttcenter/happy-cf/node_modules/vue/server-renderer/index.mjs';
@@ -1144,22 +1144,7 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"34837-v+5V62qTJKa+8Fs8QbkkX8vAjgI\"",
-    "mtime": "2025-10-13T17:11:27.731Z",
-    "size": 215095,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"ca9d5-Rvr3JJY4ajXD1VUM82MaUOK1Qmc\"",
-    "mtime": "2025-10-13T17:11:27.732Z",
-    "size": 829909,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -1566,38 +1551,40 @@ async function getIslandContext(event) {
   return ctx;
 }
 
-const _lazy_3NIKmy = () => Promise.resolve().then(function () { return aboutRouter; });
-const _lazy_QlDtkN = () => Promise.resolve().then(function () { return addressesRouter; });
-const _lazy_HTaZFC = () => Promise.resolve().then(function () { return authRouter; });
-const _lazy_J3BD80 = () => Promise.resolve().then(function () { return bannerRouter; });
-const _lazy_xbyftj = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
-const _lazy_03kyyP = () => Promise.resolve().then(function () { return categoriesProductRouter; });
-const _lazy_kcsWMY = () => Promise.resolve().then(function () { return fileManageRouter; });
-const _lazy_uh3G2G = () => Promise.resolve().then(function () { return locationRouter; });
-const _lazy_BOeMdH = () => Promise.resolve().then(function () { return orderManageRouter; });
-const _lazy_ZfrFnr = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
-const _lazy_0S6jI0 = () => Promise.resolve().then(function () { return postsNewsRouter; });
-const _lazy_HpeBtz = () => Promise.resolve().then(function () { return productReviewRouter; });
-const _lazy_YB_F7y = () => Promise.resolve().then(function () { return productRouter; });
-const _lazy_yQgKmh = () => Promise.resolve().then(function () { return settingRouter; });
+const _lazy_sV2D5B = () => Promise.resolve().then(function () { return aboutRouter; });
+const _lazy_WZOimk = () => Promise.resolve().then(function () { return addressesRouter; });
+const _lazy_6thR5q = () => Promise.resolve().then(function () { return authRouter; });
+const _lazy_5GTSlq = () => Promise.resolve().then(function () { return bannerRouter; });
+const _lazy_ndfMJ7 = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
+const _lazy_5F7aiU = () => Promise.resolve().then(function () { return categoriesProductRouter; });
+const _lazy_dHW32q = () => Promise.resolve().then(function () { return fileManageRouter; });
+const _lazy_Snf5SD = () => Promise.resolve().then(function () { return index; });
+const _lazy_rcy2ED = () => Promise.resolve().then(function () { return locationRouter; });
+const _lazy_Ti7wbR = () => Promise.resolve().then(function () { return orderManageRouter; });
+const _lazy_KdF2MU = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
+const _lazy_soYMBM = () => Promise.resolve().then(function () { return postsNewsRouter; });
+const _lazy_AH2XbG = () => Promise.resolve().then(function () { return productReviewRouter; });
+const _lazy_FuVwdC = () => Promise.resolve().then(function () { return productRouter; });
+const _lazy__dgT0Y = () => Promise.resolve().then(function () { return settingRouter; });
 const _lazy_wB4Btu = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _uxO0JW, lazy: false, middleware: true, method: undefined },
-  { route: '/aboutRouter', handler: _lazy_3NIKmy, lazy: true, middleware: false, method: undefined },
-  { route: '/addressesRouter', handler: _lazy_QlDtkN, lazy: true, middleware: false, method: undefined },
-  { route: '/authRouter', handler: _lazy_HTaZFC, lazy: true, middleware: false, method: undefined },
-  { route: '/bannerRouter', handler: _lazy_J3BD80, lazy: true, middleware: false, method: undefined },
-  { route: '/categoriesNewsRouter', handler: _lazy_xbyftj, lazy: true, middleware: false, method: undefined },
-  { route: '/categoriesProductRouter', handler: _lazy_03kyyP, lazy: true, middleware: false, method: undefined },
-  { route: '/fileManageRouter', handler: _lazy_kcsWMY, lazy: true, middleware: false, method: undefined },
-  { route: '/locationRouter', handler: _lazy_uh3G2G, lazy: true, middleware: false, method: undefined },
-  { route: '/orderManageRouter', handler: _lazy_BOeMdH, lazy: true, middleware: false, method: undefined },
-  { route: '/paymentTransactionRoutes', handler: _lazy_ZfrFnr, lazy: true, middleware: false, method: undefined },
-  { route: '/postsNewsRouter', handler: _lazy_0S6jI0, lazy: true, middleware: false, method: undefined },
-  { route: '/productReviewRouter', handler: _lazy_HpeBtz, lazy: true, middleware: false, method: undefined },
-  { route: '/productRouter', handler: _lazy_YB_F7y, lazy: true, middleware: false, method: undefined },
-  { route: '/settingRouter', handler: _lazy_yQgKmh, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/aboutRouter', handler: _lazy_sV2D5B, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/addressesRouter', handler: _lazy_WZOimk, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/authRouter', handler: _lazy_6thR5q, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/bannerRouter', handler: _lazy_5GTSlq, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/categoriesNewsRouter', handler: _lazy_ndfMJ7, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/categoriesProductRouter', handler: _lazy_5F7aiU, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/fileManageRouter', handler: _lazy_dHW32q, lazy: true, middleware: false, method: undefined },
+  { route: '/v1', handler: _lazy_Snf5SD, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/locationRouter', handler: _lazy_rcy2ED, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/orderManageRouter', handler: _lazy_Ti7wbR, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/paymentTransactionRoutes', handler: _lazy_KdF2MU, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/postsNewsRouter', handler: _lazy_soYMBM, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/productReviewRouter', handler: _lazy_AH2XbG, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/productRouter', handler: _lazy_FuVwdC, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/settingRouter', handler: _lazy__dgT0Y, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_error', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined }
@@ -2069,18 +2056,18 @@ const toggleActive$6 = async (req, res) => {
   }
 };
 
-const router$d = Router();
-router$d.get("/", getAllAbout);
-router$d.get("/:id", getAboutById);
-router$d.post("/", createAbout);
-router$d.put("/:id", updateAbout);
-router$d.delete("/:id", deleteAbout);
-router$d.patch("/updateOrder/:id", updateOrder$3);
-router$d.patch("/toggleActive/:id", toggleActive$6);
+const router$e = Router();
+router$e.get("/", getAllAbout);
+router$e.get("/:id", getAboutById);
+router$e.post("/", createAbout);
+router$e.put("/:id", updateAbout);
+router$e.delete("/:id", deleteAbout);
+router$e.patch("/updateOrder/:id", updateOrder$3);
+router$e.patch("/toggleActive/:id", toggleActive$6);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$d
+  default: router$e
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const AddressSchema = new Schema(
@@ -2234,18 +2221,18 @@ const getDefaultAddressByUserId = async (req, res) => {
   }
 };
 
-const router$c = Router();
-router$c.get("/default/:userId", getDefaultAddressByUserId);
-router$c.get("/user/:userId", getAllAddress);
-router$c.get("/:id", getAddressById);
-router$c.post("/", createAddress);
-router$c.put("/:id", updateAddress);
-router$c.delete("/:id", deleteAddress);
-router$c.post("/:id/set-default", setAddressDefault);
+const router$d = Router();
+router$d.get("/default/:userId", getDefaultAddressByUserId);
+router$d.get("/user/:userId", getAllAddress);
+router$d.get("/:id", getAddressById);
+router$d.post("/", createAddress);
+router$d.put("/:id", updateAddress);
+router$d.delete("/:id", deleteAddress);
+router$d.post("/:id/set-default", setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$c
+  default: router$d
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const MembershipSchema = new Schema(
@@ -2921,7 +2908,6 @@ const deleteMembershipBenefit = async (req, res) => {
 
 const authenticate = (req, res, next) => {
   var _a;
-  console.log("Cookies received:", req.cookies);
   const token = (_a = req.cookies) == null ? void 0 : _a.token;
   if (!token) {
     return res.status(401).json({ message: "Thi\u1EBFu token" });
@@ -2935,33 +2921,33 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$b = express.Router();
-router$b.get("/users", getAllUsers);
-router$b.put("/users/me", authenticate, updateAccount);
-router$b.get("/users/:id", getUserById);
-router$b.patch("/users/toggleActive/:id", toggleActive$5);
-router$b.post("/register", register);
-router$b.post("/login", login);
-router$b.post("/google-login", googleLogin);
-router$b.post("/forgot-password", forgotPassword);
-router$b.post("/reset-password", resetPassword);
-router$b.post("/change-password", changePassword);
-router$b.post("/set-point", setPoint);
-router$b.delete("/:id", deleteUsers);
-router$b.get("/membership-level", getAllMembershipLevel);
-router$b.get("/membership-level/:id", getMembershipLevelById);
-router$b.put("/membership-level/:id", updateMembershipLevel);
-router$b.post("/search-keywords/log", logSearchKeyword);
-router$b.get("/search-keywords/list", getTopSearchKeyword);
-router$b.get("/membership-benefit", getAllMembershipBenefits);
-router$b.get("/membership-benefit/:id", getMembershipBenefitById);
-router$b.post("/membership-benefit", authenticate, createMembershipBenefit);
-router$b.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
-router$b.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
+const router$c = express.Router();
+router$c.get("/users", getAllUsers);
+router$c.put("/users/me", authenticate, updateAccount);
+router$c.get("/users/:id", getUserById);
+router$c.patch("/users/toggleActive/:id", toggleActive$5);
+router$c.post("/register", register);
+router$c.post("/login", login);
+router$c.post("/google-login", googleLogin);
+router$c.post("/forgot-password", forgotPassword);
+router$c.post("/reset-password", resetPassword);
+router$c.post("/change-password", changePassword);
+router$c.post("/set-point", setPoint);
+router$c.delete("/:id", deleteUsers);
+router$c.get("/membership-level", getAllMembershipLevel);
+router$c.get("/membership-level/:id", getMembershipLevelById);
+router$c.put("/membership-level/:id", updateMembershipLevel);
+router$c.post("/search-keywords/log", logSearchKeyword);
+router$c.get("/search-keywords/list", getTopSearchKeyword);
+router$c.get("/membership-benefit", getAllMembershipBenefits);
+router$c.get("/membership-benefit/:id", getMembershipBenefitById);
+router$c.post("/membership-benefit", authenticate, createMembershipBenefit);
+router$c.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
+router$c.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
 
 const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$b
+  default: router$c
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const BannerSchema = new Schema(
@@ -3094,18 +3080,18 @@ const toggleActive$4 = async (req, res) => {
   }
 };
 
-const router$a = Router();
-router$a.get("/", getAllBanners);
-router$a.get("/:id", getBannerById);
-router$a.post("/", createBanner);
-router$a.put("/:id", updateBanner);
-router$a.delete("/:id", deleteBanner);
-router$a.patch("/updateOrder/:id", updateOrder$2);
-router$a.patch("/toggleActive/:id", toggleActive$4);
+const router$b = Router();
+router$b.get("/", getAllBanners);
+router$b.get("/:id", getBannerById);
+router$b.post("/", createBanner);
+router$b.put("/:id", updateBanner);
+router$b.delete("/:id", deleteBanner);
+router$b.patch("/updateOrder/:id", updateOrder$2);
+router$b.patch("/toggleActive/:id", toggleActive$4);
 
 const bannerRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$a
+  default: router$b
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function generateSlug(text) {
@@ -3377,19 +3363,19 @@ const getCategoryBySlug = async (req, res) => {
   }
 };
 
-const router$9 = Router();
-router$9.get("/", getAllCategories$1);
-router$9.get("/slug/:slug", getCategoryBySlug);
-router$9.get("/:id", getCategoriesById$1);
-router$9.post("/", createCategories$1);
-router$9.put("/:id", updateCategories$1);
-router$9.delete("/:id", deleteCategories$1);
-router$9.patch("/toggleActive/:id", toggleActive$3);
-router$9.patch("/updateOrder/:id", updateOrder$1);
+const router$a = Router();
+router$a.get("/", getAllCategories$1);
+router$a.get("/slug/:slug", getCategoryBySlug);
+router$a.get("/:id", getCategoriesById$1);
+router$a.post("/", createCategories$1);
+router$a.put("/:id", updateCategories$1);
+router$a.delete("/:id", deleteCategories$1);
+router$a.patch("/toggleActive/:id", toggleActive$3);
+router$a.patch("/updateOrder/:id", updateOrder$1);
 
 const categoriesNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$9
+  default: router$a
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const VariantSchema = new Schema(
@@ -3430,6 +3416,7 @@ const ProductSchema = new Schema(
     listImage: { type: [ListImageSchema], default: [] },
     options: { type: [OptionSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
+    weight: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
     titleSEO: {
       type: String,
@@ -3521,6 +3508,7 @@ function toProductDTO(entity) {
     listImage: entity.listImage,
     options: entity.options.map(toOptionDTO),
     categoryId: entity.categoryId ? entity.categoryId.toString() : "",
+    weight: entity.weight,
     isActive: entity.isActive,
     createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
     updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || "",
@@ -3867,22 +3855,22 @@ const toggleActive$2 = async (req, res) => {
   }
 };
 
-const router$8 = Router();
-router$8.get("/tree", getAllCategoriesTree);
-router$8.get("/", getAllCategories);
-router$8.get("/slug/:slug", getCategoriesBySlug);
-router$8.get("/:id", getCategoriesById);
-router$8.get("/:id/children", getChildrenCategories);
-router$8.post("/", createCategories);
-router$8.put("/:id", updateCategories);
-router$8.delete("/:id", deleteCategories);
-router$8.get("/:id/products", getProductsByCategory);
-router$8.patch("/toggleActive/:id", toggleActive$2);
-router$8.patch("/updateOrder/:id", updateOrder);
+const router$9 = Router();
+router$9.get("/tree", getAllCategoriesTree);
+router$9.get("/", getAllCategories);
+router$9.get("/slug/:slug", getCategoriesBySlug);
+router$9.get("/:id", getCategoriesById);
+router$9.get("/:id/children", getChildrenCategories);
+router$9.post("/", createCategories);
+router$9.put("/:id", updateCategories);
+router$9.delete("/:id", deleteCategories);
+router$9.get("/:id/products", getProductsByCategory);
+router$9.patch("/toggleActive/:id", toggleActive$2);
+router$9.patch("/updateOrder/:id", updateOrder);
 
 const categoriesProductRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$8
+  default: router$9
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const uploadImageMulter = multer({ dest: "uploads/" });
@@ -4037,122 +4025,248 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const router$7 = express.Router();
-router$7.get("/images", getImages);
-router$7.get("/images/folders", getFolders);
-router$7.delete("/images/delete", deleteImage);
-router$7.get("/images/search", searchImage);
-router$7.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
+const router$8 = express.Router();
+router$8.get("/images", getImages);
+router$8.get("/images/folders", getFolders);
+router$8.delete("/images/delete", deleteImage);
+router$8.get("/images/search", searchImage);
+router$8.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
 
 const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$8
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const updateSettings = async (req, res) => {
+  try {
+    const filePath = path.join(process.cwd(), "./public/data/settings.json");
+    const oldData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const newData = { ...oldData, ...req.body || {} };
+    fs.writeFileSync(filePath, JSON.stringify(newData, null, 2), "utf8");
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: newData });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$7 = Router();
+router$7.put("/update", updateSettings);
+
+const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$7
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const getAllProvinces = async (_, res) => {
+const getAllPosts = async (req, res) => {
   try {
-    const response = await fetch("https://provinces.open-api.vn/api/?depth=1");
-    const data = await response.json();
-    return res.json({ code: 0, data });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch t\u1EC9nh/th\xE0nh", error: err.message });
-  }
-};
-const getDistrictsByProvince = async (req, res) => {
-  try {
-    const { provinceCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
-    const data = await response.json();
-    if (!data || !data.districts) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    const query = {};
+    if (limit === -1) {
+      limit = await PostNewsModel.countDocuments(query);
     }
-    return res.json({ code: 0, data: data.districts });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y qu\u1EADn/huy\u1EC7n", error: err.message });
-  }
-};
-const getWardsByDistrict = async (req, res) => {
-  try {
-    const { districtCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-    const data = await response.json();
-    if (!data || !data.wards) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
-    }
-    return res.json({ code: 0, data: data.wards });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y x\xE3/ph\u01B0\u1EDDng", error: err.message });
-  }
-};
-const getProvinceDetail = async (req, res) => {
-  try {
-    const { provinceCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=1`);
-    const data = await response.json();
-    if (!data || !data.name) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y t\u1EC9nh/th\xE0nh" });
-    }
-    return res.json({ code: 0, data });
-  } catch (err) {
-    return res.status(500).json({
-      code: 1,
-      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt t\u1EC9nh/th\xE0nh",
-      error: err.message
+    const skip = (page - 1) * limit;
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(),
+      PostNewsModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
     });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const getDistrictDetail = async (req, res) => {
+const getPostsById = async (req, res) => {
   try {
-    const { districtCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=1`);
-    const data = await response.json();
-    if (!data || !data.name) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
+    const post = await PostNewsModel.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
-    return res.json({ code: 0, data });
+    return res.json({ code: 0, data: toPostNewsDTO(post) });
   } catch (err) {
-    return res.status(500).json({
-      code: 1,
-      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt qu\u1EADn/huy\u1EC7n",
-      error: err.message
-    });
+    return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const getWardDetail = async (req, res) => {
-  const { wardCode } = req.params;
-  const districtCode = req.query.districtCode;
-  if (!districtCode) {
-    return res.status(400).json({
-      code: 1,
-      message: "Thi\u1EBFu districtCode khi t\xECm x\xE3/ph\u01B0\u1EDDng c\xF3 m\xE3 ng\u1EAFn"
-    });
-  }
+const getPostBySlug = async (req, res) => {
   try {
-    const resp = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-    const district = await resp.json();
-    if (resp.ok && district && Array.isArray(district.wards)) {
-      const ward = district.wards.find(
-        (w) => String(w.code) === String(wardCode)
-      );
-      if (ward) {
-        return res.json({ code: 0, data: ward });
-      }
+    const { slug } = req.params;
+    const post = await PostNewsModel.findOne({ slug });
+    if (!post) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
-    return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
+    return res.json({ code: 0, data: toPostNewsDTO(post) });
   } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt x\xE3/ph\u01B0\u1EDDng", error: err.message });
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createPosts = async (req, res) => {
+  try {
+    const newPost = new PostNewsModel(req.body);
+    await newPost.save();
+    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toPostNewsDTO(newPost) });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const updatePosts = async (req, res) => {
+  try {
+    const updated = await PostNewsModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toPostNewsDTO(updated) });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const deletePosts = async (req, res) => {
+  try {
+    const deleted = await PostNewsModel.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPostsLatest = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit, 10) || 5;
+    const posts = await PostNewsModel.find().sort({ createdAt: -1 }).limit(limit);
+    return res.json({ code: 0, data: toPostNewsListDTO(posts) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleActive$1 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await PostNewsModel.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "item kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.isActive = !item.isActive;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toPostNewsDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPostsByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+    const query = { categoryId };
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find({ ...query, isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getRelatedPostsBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const post = await PostNewsModel.findOne({ slug });
+    if (!post) {
+      return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const relatedPosts = await PostNewsModel.find({
+      categoryId: new mongoose.Types.ObjectId(post.categoryId),
+      slug: { $ne: slug },
+      isActive: true
+    }).limit(limit).sort({ createdAt: -1 });
+    return res.json({
+      code: 0,
+      data: relatedPosts.map(toPostNewsDTO),
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateView = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const post = await PostNewsModel.findOneAndUpdate(
+      { slug, isActive: true },
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+    if (!post) return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
+    return res.json({ code: 0, data: { views: post.views }, message: "C\u1EADp nh\u1EADt l\u01B0\u1EE3t xem th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAllPostsPagination = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    const search = req.query.search || "";
+    const query = { isActive: true };
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { summaryContent: { $regex: search, $options: "i" } }
+      ];
+    }
+    if (limit === -1) {
+      limit = await PostNewsModel.countDocuments(query);
+    }
+    const skip = (page - 1) * limit;
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
   }
 };
 
-const router$6 = express.Router();
-router$6.get("/provinces", getAllProvinces);
-router$6.get("/provinces/:provinceCode", getProvinceDetail);
-router$6.get("/districts/:provinceCode", getDistrictsByProvince);
-router$6.get("/district/:districtCode", getDistrictDetail);
-router$6.get("/wards/:districtCode", getWardsByDistrict);
-router$6.get("/ward/:wardCode", getWardDetail);
+const router$6 = Router();
+router$6.get("/category/:categoryId", getPostsByCategory);
+router$6.get("/", getAllPosts);
+router$6.get("/pagination", getAllPostsPagination);
+router$6.get("/slug/:slug", getPostBySlug);
+router$6.get("/related/:slug", getRelatedPostsBySlug);
+router$6.patch("/view/:slug", updateView);
+router$6.get("/latest", getPostsLatest);
+router$6.get("/:id", getPostsById);
+router$6.post("/", createPosts);
+router$6.put("/:id", updatePosts);
+router$6.delete("/:id", deletePosts);
+router$6.patch("/toggleActive/:id", toggleActive$1);
 
-const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$6
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -4906,592 +5020,6 @@ const orderManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineP
   default: router$5
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const createPaymentTransaction = async (req, res) => {
-  try {
-    const { orderId, amount, method } = req.body;
-    if (!orderId || !amount || !method) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu d\u1EEF li\u1EC7u b\u1EAFt bu\u1ED9c" });
-    }
-    const existingTransaction = await PaymentTransactionEntity.findOne({ orderId });
-    if (existingTransaction) {
-      return res.status(400).json({
-        code: 1,
-        message: "\u0110\u01A1n h\xE0ng n\xE0y \u0111\xE3 c\xF3 giao d\u1ECBch thanh to\xE1n"
-      });
-    }
-    const transaction = await PaymentTransactionEntity.create({
-      orderId,
-      amount,
-      method,
-      status: "pending"
-    });
-    await OrderEntity.findByIdAndUpdate(orderId, {
-      transaction: transaction._id
-    });
-    res.json({
-      code: 0,
-      data: transaction,
-      message: "T\u1EA1o giao d\u1ECBch th\xE0nh c\xF4ng"
-    });
-  } catch (err) {
-    res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updatePaymentTransactionStatus = async (req, res) => {
-  try {
-    const { transactionId, status } = req.body;
-    const transaction = await PaymentTransactionEntity.findByIdAndUpdate(
-      transactionId,
-      { status, updatedAt: /* @__PURE__ */ new Date() },
-      { new: true }
-    );
-    if (!transaction) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
-    }
-    res.json({ code: 0, data: transaction, message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng" });
-  } catch (err) {
-    res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPaymentTransactions = async (req, res) => {
-  try {
-    const { page = 1, limit = 10, status } = req.query;
-    const query = {};
-    if (status) query.status = status;
-    const result = await PaymentTransactionEntity.paginate(query, {
-      page: Number(page),
-      limit: Number(limit),
-      sort: { createdAt: -1 },
-      populate: "orderId"
-    });
-    res.json({
-      code: 0,
-      data: toPaymentTransactionListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      }
-    });
-  } catch (err) {
-    res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const deletePaymentTransaction = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const transaction = await PaymentTransactionEntity.findByIdAndDelete(id);
-    if (!transaction) return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
-    res.json({ code: 0, message: "X\xF3a giao d\u1ECBch th\xE0nh c\xF4ng" });
-  } catch (err) {
-    res.status(500).json({ code: 1, message: err.message });
-  }
-};
-
-const router$4 = Router();
-router$4.post("/", createPaymentTransaction);
-router$4.put("/status", updatePaymentTransactionStatus);
-router$4.get("/", getPaymentTransactions);
-router$4.delete("/:id", deletePaymentTransaction);
-
-const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$4
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const getAllPosts = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page, 10) || 1;
-    let limit = parseInt(req.query.limit, 10) || 10;
-    const query = {};
-    if (limit === -1) {
-      limit = await PostNewsModel.countDocuments(query);
-    }
-    const skip = (page - 1) * limit;
-    const [total, posts] = await Promise.all([
-      PostNewsModel.countDocuments(),
-      PostNewsModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit)
-    ]);
-    const totalPages = Math.ceil(total / limit);
-    return res.json({
-      code: 0,
-      data: toPostNewsListDTO(posts),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPostsById = async (req, res) => {
-  try {
-    const post = await PostNewsModel.findById(req.params.id);
-    if (!post) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, data: toPostNewsDTO(post) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPostBySlug = async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const post = await PostNewsModel.findOne({ slug });
-    if (!post) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, data: toPostNewsDTO(post) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const createPosts = async (req, res) => {
-  try {
-    const newPost = new PostNewsModel(req.body);
-    await newPost.save();
-    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toPostNewsDTO(newPost) });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const updatePosts = async (req, res) => {
-  try {
-    const updated = await PostNewsModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updated) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toPostNewsDTO(updated) });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const deletePosts = async (req, res) => {
-  try {
-    const deleted = await PostNewsModel.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPostsLatest = async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit, 10) || 5;
-    const posts = await PostNewsModel.find().sort({ createdAt: -1 }).limit(limit);
-    return res.json({ code: 0, data: toPostNewsListDTO(posts) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const toggleActive$1 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await PostNewsModel.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "item kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    item.isActive = !item.isActive;
-    await item.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
-      data: toPostNewsDTO(item)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPostsByCategory = async (req, res) => {
-  try {
-    const { categoryId } = req.params;
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const skip = (page - 1) * limit;
-    const query = { categoryId };
-    const [total, posts] = await Promise.all([
-      PostNewsModel.countDocuments(query),
-      PostNewsModel.find({ ...query, isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit)
-    ]);
-    const totalPages = Math.ceil(total / limit);
-    return res.json({
-      code: 0,
-      data: toPostNewsListDTO(posts),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getRelatedPostsBySlug = async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const post = await PostNewsModel.findOne({ slug });
-    if (!post) {
-      return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const relatedPosts = await PostNewsModel.find({
-      categoryId: new mongoose.Types.ObjectId(post.categoryId),
-      slug: { $ne: slug },
-      isActive: true
-    }).limit(limit).sort({ createdAt: -1 });
-    return res.json({
-      code: 0,
-      data: relatedPosts.map(toPostNewsDTO),
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updateView = async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const post = await PostNewsModel.findOneAndUpdate(
-      { slug, isActive: true },
-      { $inc: { views: 1 } },
-      { new: true }
-    );
-    if (!post) return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
-    return res.json({ code: 0, data: { views: post.views }, message: "C\u1EADp nh\u1EADt l\u01B0\u1EE3t xem th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getAllPostsPagination = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page, 10) || 1;
-    let limit = parseInt(req.query.limit, 10) || 10;
-    const search = req.query.search || "";
-    const query = { isActive: true };
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { summaryContent: { $regex: search, $options: "i" } }
-      ];
-    }
-    if (limit === -1) {
-      limit = await PostNewsModel.countDocuments(query);
-    }
-    const skip = (page - 1) * limit;
-    const [total, posts] = await Promise.all([
-      PostNewsModel.countDocuments(query),
-      PostNewsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
-    ]);
-    const totalPages = Math.ceil(total / limit);
-    return res.json({
-      code: 0,
-      data: toPostNewsListDTO(posts),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-
-const router$3 = Router();
-router$3.get("/category/:categoryId", getPostsByCategory);
-router$3.get("/", getAllPosts);
-router$3.get("/pagination", getAllPostsPagination);
-router$3.get("/slug/:slug", getPostBySlug);
-router$3.get("/related/:slug", getRelatedPostsBySlug);
-router$3.patch("/view/:slug", updateView);
-router$3.get("/latest", getPostsLatest);
-router$3.get("/:id", getPostsById);
-router$3.post("/", createPosts);
-router$3.put("/:id", updatePosts);
-router$3.delete("/:id", deletePosts);
-router$3.patch("/toggleActive/:id", toggleActive$1);
-
-const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$3
-}, Symbol.toStringTag, { value: 'Module' }));
-
-function toProductReviewDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    orderId: entity.orderId.toString(),
-    userId: typeof entity.userId === "object" && "fullname" in entity.userId ? toUserDTO(entity.userId) : entity.userId.toString(),
-    productId: typeof entity.productId === "object" && "productName" in entity.productId ? toProductDTO(entity.productId) : entity.productId.toString(),
-    rating: entity.rating,
-    comment: entity.comment || null,
-    images: entity.images || [],
-    status: entity.status,
-    statusText: ProductReviewStatusText[entity.status],
-    statusColor: ProductReviewStatusColor[entity.status],
-    createdAt: entity.createdAt.toISOString(),
-    updatedAt: entity.updatedAt.toISOString()
-  };
-}
-const toProductReviewListDTO = (entities) => entities.map(toProductReviewDTO);
-
-const getAllProductReviews = async (req, res) => {
-  try {
-    let { page = 1, limit = 10 } = req.query;
-    const numPage = Number(page);
-    let numLimit = Number(limit);
-    if (numLimit === -1) {
-      const reviews = await ProductReviewEntity.find({}).sort({ createdAt: -1 }).populate("userId").populate("productId");
-      return res.json({
-        code: 0,
-        data: toProductReviewListDTO(reviews),
-        pagination: {
-          page: 1,
-          limit: reviews.length,
-          totalPages: 1,
-          total: reviews.length
-        }
-      });
-    }
-    const options = {
-      page: numPage,
-      limit: numLimit,
-      sort: { createdAt: -1 },
-      populate: [
-        // { path: "orderId", model: "Order" },
-        { path: "userId", model: "User" },
-        { path: "productId", model: "Product" }
-      ]
-    };
-    const result = await ProductReviewEntity.paginate({}, options);
-    return res.json({
-      code: 0,
-      data: toProductReviewListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      }
-    });
-  } catch (error) {
-    return res.status(500).json({
-      code: 1,
-      message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1",
-      error
-    });
-  }
-};
-const getProductReviewById = async (req, res) => {
-  try {
-    const review = await ProductReviewEntity.findById(req.params.id).populate("orderId").populate("userId").populate("productId");
-    if (!review) {
-      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, data: toProductReviewDTO(review) });
-  } catch (error) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y \u0111\xE1nh gi\xE1", error });
-  }
-};
-const updateProductReviewStatus = async (req, res) => {
-  try {
-    const { id, status } = req.body;
-    if (!id || !status) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu id ho\u1EB7c status" });
-    }
-    const review = await ProductReviewEntity.findById(id);
-    if (!review) {
-      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    review.status = status;
-    await review.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng",
-      data: toProductReviewDTO(review)
-    });
-  } catch (error) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1", error });
-  }
-};
-const deleteProductReview = async (req, res) => {
-  try {
-    const deleted = await ProductReviewEntity.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "X\xF3a \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng" });
-  } catch (error) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i x\xF3a \u0111\xE1nh gi\xE1", error });
-  }
-};
-const submitProductReview = async (req, res) => {
-  try {
-    const { reviewId, rating, comment, images } = req.body;
-    if (!reviewId || !rating) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu reviewId ho\u1EB7c rating" });
-    }
-    const review = await ProductReviewEntity.findById(reviewId);
-    if (!review) {
-      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    review.rating = rating;
-    review.comment = comment || null;
-    review.images = images || [];
-    review.status = "approved";
-    await review.save();
-    return res.json({ code: 0, message: "G\u1EEDi \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng", data: toProductReviewDTO(review) });
-  } catch (error) {
-    console.error("L\u1ED7i submitProductReview:", error);
-    return res.status(500).json({ code: 1, message: "L\u1ED7i g\u1EEDi \u0111\xE1nh gi\xE1", error });
-  }
-};
-const getReviewsByUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const { status, page = 1, limit = 10 } = req.query;
-    if (!userId) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu userId" });
-    }
-    if (!status) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu status" });
-    }
-    const numPage = Number(page);
-    const numLimit = Number(limit);
-    const query = {
-      userId,
-      status
-      // Sử dụng status từ query string
-    };
-    if (numLimit === -1) {
-      const reviews = await ProductReviewEntity.find(query).populate("productId").sort({ createdAt: -1 });
-      return res.json({
-        code: 0,
-        data: toProductReviewListDTO(reviews),
-        pagination: {
-          page: 1,
-          limit: reviews.length,
-          totalPages: 1,
-          total: reviews.length
-        }
-      });
-    }
-    const options = {
-      page: numPage,
-      limit: numLimit,
-      sort: { createdAt: -1 },
-      populate: [
-        // { path: "orderId", model: "Order" },
-        { path: "productId", model: "Product" }
-      ]
-    };
-    const result = await ProductReviewEntity.paginate(query, options);
-    return res.json({
-      code: 0,
-      data: toProductReviewListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      }
-    });
-  } catch (error) {
-    console.error("L\u1ED7i getReviewsByUser:", error);
-    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1", error });
-  }
-};
-const getReviewsByProduct = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const { page = 1, limit = 10 } = req.query;
-    if (!productId) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu productId" });
-    }
-    const product = await ProductEntity.findById(productId);
-    if (!product) {
-      return res.status(404).json({ code: 1, message: "S\u1EA3n ph\u1EA9m kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const numPage = Number(page);
-    const numLimit = Number(limit);
-    const query = { productId: product._id, status: "approved" };
-    const summaryAgg = await ProductReviewEntity.aggregate([
-      { $match: query },
-      {
-        $group: {
-          _id: "$rating",
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-    const totalReviews = summaryAgg.reduce((acc, cur) => acc + cur.count, 0);
-    const sumRatings = summaryAgg.reduce(
-      (acc, cur) => acc + cur._id * cur.count,
-      0
-    );
-    const averageRating = totalReviews > 0 ? parseFloat((sumRatings / totalReviews).toFixed(1)) : 0;
-    const ratingsBreakdown = {};
-    for (let i = 1; i <= 5; i++) {
-      const found = summaryAgg.find((s) => s._id === i);
-      ratingsBreakdown[i] = found ? found.count : 0;
-    }
-    if (numLimit === -1) {
-      const reviews = await ProductReviewEntity.find(query).populate("userId").sort({ createdAt: -1 });
-      return res.json({
-        code: 0,
-        data: toProductReviewListDTO(reviews),
-        pagination: {
-          page: 1,
-          limit: reviews.length,
-          totalPages: 1,
-          total: reviews.length
-        },
-        summary: {
-          averageRating,
-          totalReviews,
-          ratingsBreakdown
-        }
-      });
-    }
-    const options = {
-      page: numPage,
-      limit: numLimit,
-      sort: { createdAt: -1 },
-      populate: [{ path: "userId", model: "User" }]
-    };
-    const result = await ProductReviewEntity.paginate(query, options);
-    return res.json({
-      code: 0,
-      data: toProductReviewListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      },
-      summary: {
-        averageRating,
-        totalReviews,
-        ratingsBreakdown
-      }
-    });
-  } catch (error) {
-    console.error("L\u1ED7i getReviewsByProduct:", error);
-    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1", error });
-  }
-};
-
-const router$2 = Router();
-router$2.get("/", getAllProductReviews);
-router$2.get("/:id", getProductReviewById);
-router$2.get("/user/:userId/reviews", getReviewsByUser);
-router$2.get("/product/:productId/reviews", getReviewsByProduct);
-router$2.put("/status", updateProductReviewStatus);
-router$2.put("/submit", submitProductReview);
-router$2.delete("/:id", deleteProductReview);
-
-const productReviewRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$2
-}, Symbol.toStringTag, { value: 'Module' }));
-
 const WishlistSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -5866,42 +5394,524 @@ const toggleActive = async (req, res) => {
   }
 };
 
-const router$1 = Router();
-router$1.get("/", getAllProduct);
-router$1.get("/promotion", getPromotionalProducts);
-router$1.get("/most-order", getMostOrderedProduct);
-router$1.get("/search", searchProducts);
-router$1.get("/related/:slug", getRelatedProducts);
-router$1.post("/", createProduct);
-router$1.get("/:id", getProductById);
-router$1.put("/:id", updateProduct);
-router$1.delete("/:id", deleteProduct);
-router$1.patch("/toggleActive/:id", toggleActive);
-router$1.get("/users/:userId/wishlist", getWishlistByUserId);
-router$1.post("/users/:userId/wishlist", addWishlistItem);
-router$1.delete("/users/:userId/wishlist/:productId", deleteWishlistItem);
+const router$4 = Router();
+router$4.get("/", getAllProduct);
+router$4.get("/promotion", getPromotionalProducts);
+router$4.get("/most-order", getMostOrderedProduct);
+router$4.get("/search", searchProducts);
+router$4.get("/related/:slug", getRelatedProducts);
+router$4.post("/", createProduct);
+router$4.get("/:id", getProductById);
+router$4.put("/:id", updateProduct);
+router$4.delete("/:id", deleteProduct);
+router$4.patch("/toggleActive/:id", toggleActive);
+router$4.get("/users/:userId/wishlist", getWishlistByUserId);
+router$4.post("/users/:userId/wishlist", addWishlistItem);
+router$4.delete("/users/:userId/wishlist/:productId", deleteWishlistItem);
 
 const productRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const createPaymentTransaction = async (req, res) => {
+  try {
+    const { orderId, amount, method } = req.body;
+    if (!orderId || !amount || !method) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu d\u1EEF li\u1EC7u b\u1EAFt bu\u1ED9c" });
+    }
+    const existingTransaction = await PaymentTransactionEntity.findOne({ orderId });
+    if (existingTransaction) {
+      return res.status(400).json({
+        code: 1,
+        message: "\u0110\u01A1n h\xE0ng n\xE0y \u0111\xE3 c\xF3 giao d\u1ECBch thanh to\xE1n"
+      });
+    }
+    const transaction = await PaymentTransactionEntity.create({
+      orderId,
+      amount,
+      method,
+      status: "pending"
+    });
+    await OrderEntity.findByIdAndUpdate(orderId, {
+      transaction: transaction._id
+    });
+    res.json({
+      code: 0,
+      data: transaction,
+      message: "T\u1EA1o giao d\u1ECBch th\xE0nh c\xF4ng"
+    });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updatePaymentTransactionStatus = async (req, res) => {
+  try {
+    const { transactionId, status } = req.body;
+    const transaction = await PaymentTransactionEntity.findByIdAndUpdate(
+      transactionId,
+      { status, updatedAt: /* @__PURE__ */ new Date() },
+      { new: true }
+    );
+    if (!transaction) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
+    }
+    res.json({ code: 0, data: transaction, message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng" });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPaymentTransactions = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status } = req.query;
+    const query = {};
+    if (status) query.status = status;
+    const result = await PaymentTransactionEntity.paginate(query, {
+      page: Number(page),
+      limit: Number(limit),
+      sort: { createdAt: -1 },
+      populate: "orderId"
+    });
+    res.json({
+      code: 0,
+      data: toPaymentTransactionListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deletePaymentTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const transaction = await PaymentTransactionEntity.findByIdAndDelete(id);
+    if (!transaction) return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
+    res.json({ code: 0, message: "X\xF3a giao d\u1ECBch th\xE0nh c\xF4ng" });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$3 = Router();
+router$3.post("/", createPaymentTransaction);
+router$3.put("/status", updatePaymentTransactionStatus);
+router$3.get("/", getPaymentTransactions);
+router$3.delete("/:id", deletePaymentTransaction);
+
+const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$3
+}, Symbol.toStringTag, { value: 'Module' }));
+
+function toProductReviewDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    orderId: entity.orderId.toString(),
+    userId: typeof entity.userId === "object" && "fullname" in entity.userId ? toUserDTO(entity.userId) : entity.userId.toString(),
+    productId: typeof entity.productId === "object" && "productName" in entity.productId ? toProductDTO(entity.productId) : entity.productId.toString(),
+    rating: entity.rating,
+    comment: entity.comment || null,
+    images: entity.images || [],
+    status: entity.status,
+    statusText: ProductReviewStatusText[entity.status],
+    statusColor: ProductReviewStatusColor[entity.status],
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString()
+  };
+}
+const toProductReviewListDTO = (entities) => entities.map(toProductReviewDTO);
+
+const getAllProductReviews = async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+    const numPage = Number(page);
+    let numLimit = Number(limit);
+    if (numLimit === -1) {
+      const reviews = await ProductReviewEntity.find({}).sort({ createdAt: -1 }).populate("userId").populate("productId");
+      return res.json({
+        code: 0,
+        data: toProductReviewListDTO(reviews),
+        pagination: {
+          page: 1,
+          limit: reviews.length,
+          totalPages: 1,
+          total: reviews.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        // { path: "orderId", model: "Order" },
+        { path: "userId", model: "User" },
+        { path: "productId", model: "Product" }
+      ]
+    };
+    const result = await ProductReviewEntity.paginate({}, options);
+    return res.json({
+      code: 0,
+      data: toProductReviewListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1",
+      error
+    });
+  }
+};
+const getProductReviewById = async (req, res) => {
+  try {
+    const review = await ProductReviewEntity.findById(req.params.id).populate("orderId").populate("userId").populate("productId");
+    if (!review) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toProductReviewDTO(review) });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y \u0111\xE1nh gi\xE1", error });
+  }
+};
+const updateProductReviewStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    if (!id || !status) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu id ho\u1EB7c status" });
+    }
+    const review = await ProductReviewEntity.findById(id);
+    if (!review) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    review.status = status;
+    await review.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng",
+      data: toProductReviewDTO(review)
+    });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1", error });
+  }
+};
+const deleteProductReview = async (req, res) => {
+  try {
+    const deleted = await ProductReviewEntity.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "X\xF3a \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng" });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i x\xF3a \u0111\xE1nh gi\xE1", error });
+  }
+};
+const submitProductReview = async (req, res) => {
+  try {
+    const { reviewId, rating, comment, images } = req.body;
+    if (!reviewId || !rating) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu reviewId ho\u1EB7c rating" });
+    }
+    const review = await ProductReviewEntity.findById(reviewId);
+    if (!review) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    review.rating = rating;
+    review.comment = comment || null;
+    review.images = images || [];
+    review.status = "approved";
+    await review.save();
+    return res.json({ code: 0, message: "G\u1EEDi \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng", data: toProductReviewDTO(review) });
+  } catch (error) {
+    console.error("L\u1ED7i submitProductReview:", error);
+    return res.status(500).json({ code: 1, message: "L\u1ED7i g\u1EEDi \u0111\xE1nh gi\xE1", error });
+  }
+};
+const getReviewsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { status, page = 1, limit = 10 } = req.query;
+    if (!userId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu userId" });
+    }
+    if (!status) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu status" });
+    }
+    const numPage = Number(page);
+    const numLimit = Number(limit);
+    const query = {
+      userId,
+      status
+      // Sử dụng status từ query string
+    };
+    if (numLimit === -1) {
+      const reviews = await ProductReviewEntity.find(query).populate("productId").sort({ createdAt: -1 });
+      return res.json({
+        code: 0,
+        data: toProductReviewListDTO(reviews),
+        pagination: {
+          page: 1,
+          limit: reviews.length,
+          totalPages: 1,
+          total: reviews.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        // { path: "orderId", model: "Order" },
+        { path: "productId", model: "Product" }
+      ]
+    };
+    const result = await ProductReviewEntity.paginate(query, options);
+    return res.json({
+      code: 0,
+      data: toProductReviewListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (error) {
+    console.error("L\u1ED7i getReviewsByUser:", error);
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1", error });
+  }
+};
+const getReviewsByProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+    if (!productId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu productId" });
+    }
+    const product = await ProductEntity.findById(productId);
+    if (!product) {
+      return res.status(404).json({ code: 1, message: "S\u1EA3n ph\u1EA9m kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const numPage = Number(page);
+    const numLimit = Number(limit);
+    const query = { productId: product._id, status: "approved" };
+    const summaryAgg = await ProductReviewEntity.aggregate([
+      { $match: query },
+      {
+        $group: {
+          _id: "$rating",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    const totalReviews = summaryAgg.reduce((acc, cur) => acc + cur.count, 0);
+    const sumRatings = summaryAgg.reduce(
+      (acc, cur) => acc + cur._id * cur.count,
+      0
+    );
+    const averageRating = totalReviews > 0 ? parseFloat((sumRatings / totalReviews).toFixed(1)) : 0;
+    const ratingsBreakdown = {};
+    for (let i = 1; i <= 5; i++) {
+      const found = summaryAgg.find((s) => s._id === i);
+      ratingsBreakdown[i] = found ? found.count : 0;
+    }
+    if (numLimit === -1) {
+      const reviews = await ProductReviewEntity.find(query).populate("userId").sort({ createdAt: -1 });
+      return res.json({
+        code: 0,
+        data: toProductReviewListDTO(reviews),
+        pagination: {
+          page: 1,
+          limit: reviews.length,
+          totalPages: 1,
+          total: reviews.length
+        },
+        summary: {
+          averageRating,
+          totalReviews,
+          ratingsBreakdown
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [{ path: "userId", model: "User" }]
+    };
+    const result = await ProductReviewEntity.paginate(query, options);
+    return res.json({
+      code: 0,
+      data: toProductReviewListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      },
+      summary: {
+        averageRating,
+        totalReviews,
+        ratingsBreakdown
+      }
+    });
+  } catch (error) {
+    console.error("L\u1ED7i getReviewsByProduct:", error);
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1", error });
+  }
+};
+
+const router$2 = Router();
+router$2.get("/", getAllProductReviews);
+router$2.get("/:id", getProductReviewById);
+router$2.get("/user/:userId/reviews", getReviewsByUser);
+router$2.get("/product/:productId/reviews", getReviewsByProduct);
+router$2.put("/status", updateProductReviewStatus);
+router$2.put("/submit", submitProductReview);
+router$2.delete("/:id", deleteProductReview);
+
+const productReviewRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const getAllProvinces = async (_, res) => {
+  try {
+    const response = await fetch("https://provinces.open-api.vn/api/?depth=1");
+    const data = await response.json();
+    return res.json({ code: 0, data });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch t\u1EC9nh/th\xE0nh", error: err.message });
+  }
+};
+const getDistrictsByProvince = async (req, res) => {
+  try {
+    const { provinceCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
+    const data = await response.json();
+    if (!data || !data.districts) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
+    }
+    return res.json({ code: 0, data: data.districts });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y qu\u1EADn/huy\u1EC7n", error: err.message });
+  }
+};
+const getWardsByDistrict = async (req, res) => {
+  try {
+    const { districtCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+    const data = await response.json();
+    if (!data || !data.wards) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
+    }
+    return res.json({ code: 0, data: data.wards });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y x\xE3/ph\u01B0\u1EDDng", error: err.message });
+  }
+};
+const getProvinceDetail = async (req, res) => {
+  try {
+    const { provinceCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=1`);
+    const data = await response.json();
+    if (!data || !data.name) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y t\u1EC9nh/th\xE0nh" });
+    }
+    return res.json({ code: 0, data });
+  } catch (err) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt t\u1EC9nh/th\xE0nh",
+      error: err.message
+    });
+  }
+};
+const getDistrictDetail = async (req, res) => {
+  try {
+    const { districtCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=1`);
+    const data = await response.json();
+    if (!data || !data.name) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
+    }
+    return res.json({ code: 0, data });
+  } catch (err) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt qu\u1EADn/huy\u1EC7n",
+      error: err.message
+    });
+  }
+};
+const getWardDetail = async (req, res) => {
+  const { wardCode } = req.params;
+  const districtCode = req.query.districtCode;
+  if (!districtCode) {
+    return res.status(400).json({
+      code: 1,
+      message: "Thi\u1EBFu districtCode khi t\xECm x\xE3/ph\u01B0\u1EDDng c\xF3 m\xE3 ng\u1EAFn"
+    });
+  }
+  try {
+    const resp = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+    const district = await resp.json();
+    if (resp.ok && district && Array.isArray(district.wards)) {
+      const ward = district.wards.find(
+        (w) => String(w.code) === String(wardCode)
+      );
+      if (ward) {
+        return res.json({ code: 0, data: ward });
+      }
+    }
+    return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt x\xE3/ph\u01B0\u1EDDng", error: err.message });
+  }
+};
+
+const router$1 = express.Router();
+router$1.get("/provinces", getAllProvinces);
+router$1.get("/provinces/:provinceCode", getProvinceDetail);
+router$1.get("/districts/:provinceCode", getDistrictsByProvince);
+router$1.get("/district/:districtCode", getDistrictDetail);
+router$1.get("/wards/:districtCode", getWardsByDistrict);
+router$1.get("/ward/:wardCode", getWardDetail);
+
+const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$1
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const updateSettings = async (req, res) => {
-  try {
-    const filePath = path.join(process.cwd(), "public/data/settings.json");
-    const oldData = JSON.parse(fs.readFileSync(filePath, "utf8"));
-    const newData = { ...oldData, ...req.body || {} };
-    fs.writeFileSync(filePath, JSON.stringify(newData, null, 2), "utf8");
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: newData });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-
 const router = Router();
-router.put("/update", updateSettings);
+router.use("/settings", router$7);
+router.use("/fileManage", router$8);
+router.use("/auth", router$c);
+router.use("/about", router$e);
+router.use("/banners", router$b);
+router.use("/categoriesNews", router$a);
+router.use("/newsPosts", router$6);
+router.use("/orders", router$5);
+router.use("/payment-transactions", router$3);
+router.use("/categories", router$9);
+router.use("/products", router$4);
+router.use("/addresses", router$d);
+router.use("/product-reviews", router$2);
+router.use("/location", router$1);
+router.use("/", router$4);
 
-const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const index = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router
 }, Symbol.toStringTag, { value: 'Module' }));

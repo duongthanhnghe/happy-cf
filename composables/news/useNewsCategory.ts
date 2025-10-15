@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { newsAPI } from "@/services/news.service";
-import type { CategoryNewsDTO } from '@/server/types/dto/news.dto'
+import { newsAPI } from "@/services/v1/news.service";
+import type { CategoryNewsDTO } from '@/server/types/dto/v1/news.dto'
 
 export const useNewsCategory = () => {
   

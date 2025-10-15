@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { ordersAPI } from "@/services/orders.service";
-import type { PaymentTransactionDTO } from '@/server/types/dto/payment-transaction.dto'
+import { ordersAPI } from "@/services/v1/orders.service";
+import type { PaymentTransactionDTO } from '@/server/types/dto/v1/payment-transaction.dto'
 
 export const usePaymentTransaction = () => {
   const listPaymentStatus = ref<PaymentTransactionDTO[]>([])

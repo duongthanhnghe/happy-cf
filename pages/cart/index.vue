@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import '@/styles/templates/cart/popup-cart.scss'
-import { useRoute } from 'vue-router'
 import { watch, onMounted, onBeforeUnmount } from 'vue'
 import type { SubmitEventPromise } from 'vuetify';
 import { formatCurrency } from '@/utils/global'
@@ -16,7 +15,6 @@ import { useLocationStore } from '@/stores/shared/useLocationStore';
 definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
 })
-
 
 const store = useCartStore();
 const storeAddress = useAddressesManageStore();
@@ -57,13 +55,17 @@ watch(() => storeLocation.selectedDistrict, async (newVal) => {
   }
 })
 
-watch(() => storeLocation.selectedWard, async (newVal) => {
-  if (newVal) {
-    await store.handleGetFee()
-  } else {
-    store.shippingFee = 0
-  }
-}, { immediate: true})
+watch(
+  [() => storeLocation.selectedWard, () => store.cartListItem],
+  async ([newWard, newCart]) => {
+    if (newWard && newCart.length > 0) {
+      await store.handleGetFee()
+    } else {
+      store.shippingFee = 0
+    }
+  },
+  { immediate: true, deep: true }
+)
 
 onMounted(async () => {
   await storeLocation.fetchProvincesStore()
@@ -205,11 +207,15 @@ onBeforeUnmount(() => {
           </div>
 
           <div v-if="store.usedPointOrder.usedPoint != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
-          Point <span>-{{ formatCurrency(store.usedPointOrder.usedPoint).replace('đ','') }}</span>
+          Point <span>-{{ formatCurrency(store.usedPointOrder.usedPoint) }}</span>
+          </div>
+
+          <div v-if="store.getOrderPriceDiscount != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
+          Giam don hang <span>-{{ formatCurrency(store.getOrderPriceDiscount) }}</span>
           </div>
 
           <div v-if="store.totalDiscountRateMembership != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
-          Uu dai thanh vien <span>{{ formatCurrency(store.totalDiscountRateMembership) }}</span>
+          Uu dai thanh vien <span>-{{ formatCurrency(store.totalDiscountRateMembership) }}</span>
           </div>
 
           <div v-if="store.getTotalPriceDiscount != 0 && storeAccount.getDetailValue?.id" class="popup-cart-footer-item popup-cart-footer-item-save">

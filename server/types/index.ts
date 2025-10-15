@@ -1,1 +1,1 @@
-export * from './dto/table-vuetify.dto.js'
+export * from './dto/v1/table-vuetify.dto.js'

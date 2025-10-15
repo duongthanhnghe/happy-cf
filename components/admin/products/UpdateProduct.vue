@@ -25,21 +25,26 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
         <LabelInput label="Ten san pham" required/>
         <v-text-field v-model="store.updateProductItem.productName" :counter="100" :rules="store.nullAndSpecialRules" label="Ten san pham" variant="outlined" required></v-text-field>
         <div class="row">
-          <div class="col-4">
+          <div class="col-6">
         <LabelInput label="Gia goc" required/>
         <v-text-field v-model="store.updateProductItem.price" :rules="store.nullRules" type="number" label="Gia goc" variant="outlined"></v-text-field>
           
           </div>
-          <div class="col-4">
+          <div class="col-6">
         <LabelInput label="Gia khuyen mai" required/>
         <v-text-field v-model="store.updateProductItem.priceDiscounts" :rules="store.productPriceDiscountUpdateRules" type="number" label="Gia khuyen mai" variant="outlined"></v-text-field>
           
           </div>
-          <div class="col-4">
-        <LabelInput label="So luong" required/>
-        <v-text-field v-model="store.updateProductItem.amount" :rules="store.nullRules" type="number" label="So luong" variant="outlined"></v-text-field>
-          
+          <div class="col-6">
+            <LabelInput label="So luong" required/>
+            <v-text-field v-model="store.updateProductItem.amount" :rules="store.nullRules" type="number" label="So luong" variant="outlined"></v-text-field>
           </div>
+
+          <div class="col-6">
+            <LabelInput label="Can nang (gram)" required/>
+            <v-text-field v-model="store.updateProductItem.weight" :rules="store.nullRules" type="number" label="Nhap can nang" variant="outlined"></v-text-field>
+          </div>
+
           <div class="col-12 flex gap-sm align-anchor">
             <div class="flex-1">
               <LabelInput label="Danh muc san pham" required/>

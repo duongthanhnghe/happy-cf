@@ -5,24 +5,26 @@ import { setCookie, getCookie, getCurrentDateTime, Loading } from "@/utils/globa
 import { showConfirm } from "@/utils/toast"
 import { useProductDetailStore } from "@/stores/client/product/useProductDetailStore";
 import { showWarning, showSuccess } from "@/utils/toast";
-import { ordersAPI } from "@/services/orders.service";
+import { ordersAPI } from "@/services/v1/orders.service";
 // import { sendOrderEmail } from '@/services/email-service';
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
-import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, OptionDTO } from '@/server/types/dto/product.dto';
-import type { AddressDTO } from '@/server/types/dto/address.dto'
-import type { CreateOrderBody, ShippingFeeDTO, cartItems } from '@/server/types/dto/order.dto'
+import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, OptionDTO } from '@/server/types/dto/v1/product.dto';
+import type { AddressDTO } from '@/server/types/dto/v1/address.dto'
+import type { CreateOrderBody, cartItems } from '@/server/types/dto/v1/order.dto'
 import { Base64 } from "js-base64";
 import { ROUTES } from '@/shared/constants/routes';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
+import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
   const storeAddress = useAddressesManageStore();
   const storeAccount = useAccountStore();
   const storeLocation = useLocationStore();
+  const storeSetting = useSettingStore();
 
   const router = useRouter()
   const timeCurrent = getCurrentDateTime('time');
@@ -49,6 +51,7 @@ export const useCartStore = defineStore("Cart", () => {
   const cartListItem = ref<CartDTO[]>([])
   const totalPriceCurrent = ref(0);
   const totalPriceDiscount = ref(0);
+  const orderPriceDiscount = ref(0);
   const totalPriceSave = ref(0);
   const shippingFee = ref(0);
   const totalDiscountRateMembership = ref(0);
@@ -285,6 +288,8 @@ export const useCartStore = defineStore("Cart", () => {
       return total + item.priceDiscounts * item.quantity;
     }, 0);
 
+    orderPriceDiscount.value = totalPriceDiscount.value;
+
     if(usedPointOrder.usedPoint && usedPointOrder.usedPoint !== 0) { //su dung diem
       totalPriceDiscount.value = totalPriceDiscount.value - usedPointOrder.usedPoint
     }
@@ -493,14 +498,19 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const handleGetFee = async () => {
-    Loading(true)
     try {
+      const productWeight = cartListItem.value.reduce((total, item) => {
+        return total + item.weight * item.quantity
+      }, 0)
+
+      if(!productWeight) return;
+
       const data = await ordersAPI.getFee({
-        PRODUCT_WEIGHT: 2000,
+        PRODUCT_WEIGHT: productWeight,
         PRODUCT_PRICE: totalPriceDiscount.value,
         MONEY_COLLECTION: totalPriceDiscount.value,
-        SENDER_PROVINCE: 1,
-        SENDER_DISTRICT: 12,
+        SENDER_PROVINCE: storeSetting.getSettings?.provinceCode || 1,
+        SENDER_DISTRICT: storeSetting.getSettings?.districtCode || 12,
         RECEIVER_PROVINCE: storeLocation.selectedProvince || 1,
         RECEIVER_DISTRICT: storeLocation.selectedDistrict || 1,
       })
@@ -513,9 +523,7 @@ export const useCartStore = defineStore("Cart", () => {
         showWarning('Khong tinh duoc phi van chuyen')
       }
     } catch (err: any) {
-      alert(err.message)
-    } finally {
-      Loading(false)
+      showWarning(err.message)
     }
   }
 
@@ -571,8 +579,9 @@ export const useCartStore = defineStore("Cart", () => {
   const getIsTogglePopup = computed(() => isTogglePopup.value);
   const getTotalPriceCurrent = computed(() => totalPriceCurrent.value);
   const getTotalPriceDiscount = computed(() => totalPriceDiscount.value);
-  const getTotalPoint = computed(() => Math.round(totalPriceDiscount.value * 0.05));
+  const getTotalPoint = computed(() => Math.round(totalPriceCurrent.value * 0.05));
   const getTotalPriceSave = computed(() => totalPriceSave.value);
+  const getOrderPriceDiscount = computed(() => totalPriceCurrent.value - orderPriceDiscount.value);
   const getShippingFee = computed(() => shippingFee.value);
   const getPaymentSelected = computed(() => paymentSelected.value);
   const getSelectedOptionsData = computed(() => selectedOptionsData.value);
@@ -592,6 +601,7 @@ export const useCartStore = defineStore("Cart", () => {
     usedPointOrder,
     totalDiscountRateMembership,
     shippingFee,
+    getOrderPriceDiscount,
     // actions
     addProductToCart,
     handleTogglePopup,

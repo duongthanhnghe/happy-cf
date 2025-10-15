@@ -1,4 +1,4 @@
-import type { ReviewStatus } from "@/server/types/dto/product-review.dto"
+import type { ReviewStatus } from "@/server/types/dto/v1/product-review.dto"
 
 export interface StatusItem {
   name: string;

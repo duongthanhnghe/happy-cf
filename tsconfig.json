@@ -15,6 +15,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
@@ -24,6 +25,7 @@
   "include": [
     ".nuxt",
     "env.d.ts",
+    "global.d.ts",
     "**/*.ts",
     "**/*.js",
     "**/*.vue","plugins/vuetify.ts"

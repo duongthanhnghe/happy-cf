@@ -12,7 +12,7 @@ import {
 import {
   useProductDetailStore
 } from '@/stores/client/product/useProductDetailStore'
-import type { CartDTO } from '@/server/types/dto/product.dto';
+import type { CartDTO } from '@/server/types/dto/v1/product.dto';
 
 const props = defineProps<{
   item: CartDTO
@@ -20,6 +20,18 @@ const props = defineProps<{
 
 const storeProduct = useProductDetailStore()
 const storeCart = useCartStore();
+
+const getOriginalPrice = (item: any) => {
+  if (item.finalPrice){
+    if (item.finalPrice !== item.finalPriceDiscounts){
+      return item.finalPrice
+    } else {
+      return ''
+    }
+  }
+  if (item.price && item.price !== item.priceDiscounts) return item.price
+  return ''
+}
 
 </script>
 <template>
@@ -51,7 +63,7 @@ const storeCart = useCartStore();
         </div>
         <div class="flex gap-xs">
           <span class="text-color-danger">{{ formatCurrency(item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts) }}</span>
-          <span class="text-color-gray5 text-line-through">{{ formatCurrency(item.price) }}</span>
+          <span class="text-color-gray5 text-line-through" v-if="getOriginalPrice(item) !== ''">{{ formatCurrency(getOriginalPrice(item)) }}</span>
         </div>
       </div>
       <div class="cart-template1-delete flex">

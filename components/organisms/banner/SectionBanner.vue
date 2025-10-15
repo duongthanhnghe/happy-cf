@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BannerDTO } from '@server/types/dto/banner.dto'
+import type { BannerDTO } from '@/server/types/dto/v1/banner.dto'
 import {
   Swiper,
   SwiperSlide

@@ -1,6 +1,6 @@
 import { ref, computed, reactive, watch } from "vue";
 import { defineStore } from "pinia";
-import type { ProductReviewPaginationDTO, SubmitProductReviewBody, ProductReviewDTO } from '@/server/types/dto/product-review.dto'
+import type { ProductReviewPaginationDTO, SubmitProductReviewBody, ProductReviewDTO } from '@/server/types/dto/v1/product-review.dto'
 import { useProductReviewByUser } from "@/composables/product-review/useProductReviewByUser";
 import { useProductReviewDetail } from "@/composables/product-review/useProductReviewDetail";
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
@@ -9,7 +9,7 @@ import {
   Loading
 } from '@/utils/global'
 import { showSuccess, showWarning } from "@/utils/toast";
-import { productReviewAPI } from "@/services/productReview.service";
+import { productReviewAPI } from "@/services/v1/productReview.service";
 
 export const useProductReviewByUserStore = defineStore("ProductReviewByUserStore", () => {
 

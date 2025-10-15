@@ -14,7 +14,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 import { ROUTES } from '@/shared/constants/routes';
-import type { ProductDTO } from '@server/types/dto/product.dto'
+import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
 import type { SwiperOptions } from 'swiper/types';
 
 const storeDisplay = useDisplayStore()

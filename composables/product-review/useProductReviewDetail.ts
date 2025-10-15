@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { productReviewAPI } from "@/services/productReview.service";
-import type { ProductReviewWithProductDTO } from '@/server/types/dto/product-review.dto';
+import { productReviewAPI } from "@/services/v1/productReview.service";
+import type { ProductReviewWithProductDTO } from '@/server/types/dto/v1/product-review.dto';
 
 export const useProductReviewDetail = () => {
   

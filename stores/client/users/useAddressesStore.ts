@@ -1,8 +1,8 @@
 import { ref, reactive, computed, watch, nextTick } from "vue";
 import { defineStore } from "pinia";
-import { addressesAPI } from "@/services/addresses.service";
+import { addressesAPI } from "@/services/v1/addresses.service";
 import { Loading } from '@/utils/global'
-import type { AddressDTO, CreateAddressBody } from '@/server/types/dto/address.dto'
+import type { AddressDTO, CreateAddressBody } from '@/server/types/dto/v1/address.dto'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { ADDRESS_TAG } from "@/shared/constants/address-tag";

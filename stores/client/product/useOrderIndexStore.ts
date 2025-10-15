@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { categoriesAPI } from "@/services/categories-product.service";
-import type { CategoryProductDTO, CategoryWithProductsDTO, ProductSortType } from '@/server/types/dto/product.dto'
+import { categoriesAPI } from "@/services/v1/categories-product.service";
+import type { CategoryProductDTO, CategoryWithProductsDTO, ProductSortType } from '@/server/types/dto/v1/product.dto'
 
 export const useOrderStore = defineStore('order', () => {
   

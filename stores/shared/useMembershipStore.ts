@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useMembershipList } from '@/composables/user/useMembershipList';
-import type { MembershipLevels } from '@/server/types/dto/user.dto'
+import type { MembershipLevels } from '@/server/types/dto/v1/user.dto'
 
 const TTL_MS = 10 * 24 * 60 * 60 * 1000; // 10 days
 

@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { categoriesAPI } from "@/services/categories-product.service";
-import type { CategoryProductDTO } from '@/server/types/dto/product.dto'
+import { categoriesAPI } from "@/services/v1/categories-product.service";
+import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { useState } from "nuxt/app";
 
 export const useProductCategoryDetail = () => {

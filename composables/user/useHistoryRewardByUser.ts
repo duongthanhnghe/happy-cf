@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { ordersAPI } from "@/services/orders.service";
-import type { RewardHistoryPaginationDTO } from "@/server/types/dto/reward-history.dto";
+import { ordersAPI } from "@/services/v1/orders.service";
+import type { RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-history.dto";
 
 export const useHistoryRewardByUser = () => {
   

@@ -1,9 +1,9 @@
 import { ref, reactive, computed, watch, watchEffect } from "vue";
 import { defineStore } from "pinia";
-import { productsAPI } from "@/services/product.service";
+import { productsAPI } from "@/services/v1/product.service";
 import { Loading } from '@/utils/global'
-import type { ProductDTO, CategoryProductDTO, CreateProductDTO, UpdateProductDTO, OptionDTO } from '@/server/types/dto/product.dto'
-import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
+import type { ProductDTO, CategoryProductDTO, CreateProductDTO, UpdateProductDTO, OptionDTO } from '@/server/types/dto/v1/product.dto'
+import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { useProductAll } from '@/composables/product/useProductAll'
 import { useProductCategory } from '@/composables/product/useProductCategory'
 import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree'
@@ -64,6 +64,7 @@ const defaultForm: CreateProductDTO = {
   listImage: [],
   options: [],
   categoryId: '',
+  weight: 0,
   isActive: false,
   // SEO
   titleSEO: '',

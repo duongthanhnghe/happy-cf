@@ -6,7 +6,7 @@ import { useNewsCategoryDetail } from '@/composables/news/useNewsCategoryDetail'
 import { usePostByCategory } from '@/composables/news/usePostByCategory'
 import { useCategoryNewsSEO } from '@/composables/seo/useCategoryNewsSEO'
 import { usePagination } from '@/utils/paginationHandle'
-import type { PostNewsDTO } from '@/server/types/dto/news.dto'
+import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 
 export const useCategoryMainStore = defineStore("CategoryMainNewsStore", () => {
   const { setCategoryNewsSEO } = useCategoryNewsSEO()

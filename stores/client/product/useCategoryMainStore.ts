@@ -7,7 +7,7 @@ import { useProductByCategory } from '@/composables/product/useProductByCategory
 import { useCategoryProductSEO } from '@/composables/seo/useCategoryProductSEO'
 import { usePagination } from '@/utils/paginationHandle'
 import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren'
-import type { ProductDTO, ProductSortType } from '@/server/types/dto/product.dto'
+import type { ProductDTO, ProductSortType } from '@/server/types/dto/v1/product.dto'
 
 export const useCategoryMainStore = defineStore("CategoryMainProductStore", () => {
   const { setCategoryProductSEO } = useCategoryProductSEO()

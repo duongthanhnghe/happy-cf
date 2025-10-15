@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { watch, onMounted, onBeforeUnmount } from 'vue'
 import type { SubmitEventPromise } from 'vuetify'
 import { useSettingUpdateStore } from '@/stores/admin/setting/useSettingUpdateStore';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { showWarning } from '@/utils/toast';
 import { ROUTES } from '@/shared/constants/routes';
+import { useLocationStore } from '@/stores/shared/useLocationStore';
+import { nullRules, emailRules } from '@/utils/validation';
 
 definePageMeta({
   layout: ROUTES.ADMIN.SETTINGS.layout,
@@ -11,7 +14,9 @@ definePageMeta({
 })
 
 const storeSettingUpdate = useSettingUpdateStore();
+const storeLocation = useLocationStore();
 const storeDisplay = useDisplayStore()
+
 const cardItemClass= 'card card-sm bg-white pb-0';
 
 const handleSubmitCreate = async (event: SubmitEventPromise) => {
@@ -23,6 +28,53 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
   }
   await storeSettingUpdate.updateSetting()
 }
+
+watch(() => storeLocation.selectedProvince, async (newVal) => {
+  if (storeLocation.isSetting) return
+  
+  if (newVal) {
+    await storeLocation.fetchDistrictsStore(newVal)
+    storeLocation.selectedDistrict = null
+    storeLocation.selectedWard = null
+  } else {
+    storeLocation.districts = []
+    storeLocation.wards = []
+  }
+})
+
+watch(() => storeLocation.selectedDistrict, async (newVal) => {
+  if (storeLocation.isSetting) return
+  
+  if (newVal) {
+    await storeLocation.fetchWardsStore(newVal)
+    storeLocation.selectedWard = null
+  } else {
+    storeLocation.wards = []
+  }
+})
+
+onMounted(async () => {
+  await storeLocation.fetchProvincesStore()
+  const { provinceCode, districtCode, wardCode } = storeSettingUpdate.formItem
+
+  if (provinceCode) {
+    storeLocation.selectedProvince = provinceCode
+    await storeLocation.fetchDistrictsStore(provinceCode)
+  }
+
+  if (districtCode) {
+    storeLocation.selectedDistrict = districtCode
+    await storeLocation.fetchWardsStore(districtCode)
+  }
+
+  if (wardCode) {
+    storeLocation.selectedWard = wardCode
+  }
+})
+
+onBeforeUnmount(() => {
+  storeLocation.resetLocation
+})
 
 </script>
 <template>
@@ -37,15 +89,15 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
         <div class="row row-xs">
           <div class="col-12 col-md-6 col-xxl-4">
             <LabelInput label="Ten cong ty" required/>
-            <v-text-field v-model="storeSettingUpdate.formItem.name" :rules="storeSettingUpdate.contentRules" label="Nhap ten cong ty" variant="outlined" required></v-text-field>
+            <v-text-field v-model="storeSettingUpdate.formItem.name" :rules="nullRules" label="Nhap ten cong ty" variant="outlined" required></v-text-field>
           </div>
           <div class="col-12 col-md-6 col-xxl-4">
             <LabelInput label="So dien thoai" required/>
-            <v-text-field v-model="storeSettingUpdate.formItem.phone" :rules="storeSettingUpdate.contentRules" type="number" label="Nhap so dien thoai" variant="outlined" required></v-text-field>
+            <v-text-field v-model="storeSettingUpdate.formItem.phone" :rules="nullRules" type="number" label="Nhap so dien thoai" variant="outlined" required></v-text-field>
           </div>
           <div class="col-12 col-md-6 col-xxl-4">
             <LabelInput label="Email" required/>
-            <v-text-field v-model="storeSettingUpdate.formItem.email" :rules="storeSettingUpdate.emailRules" label="Nhap email" variant="outlined" required></v-text-field>
+            <v-text-field v-model="storeSettingUpdate.formItem.email" :rules="emailRules" label="Nhap email" variant="outlined" required></v-text-field>
           </div>
           <div class="col-12 col-md-6 col-xxl-4">
             <LabelInput label="Dia chi" required/>
@@ -71,6 +123,46 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           </div>
         </div>
       </div>
+
+      <div :class="`${cardItemClass} mt-md`">
+        <Heading class="mb-sm" tag="div" weight="semibold" size="md">Kho hang</Heading>
+        <div class="flex gap-sm">
+          <div class="flex-1">
+          <LabelInput label="Thành phố" required/>
+          <v-autocomplete
+            v-model="storeLocation.selectedProvince"
+              :items="storeLocation.getListProvinces ?? []"
+              item-title="name"
+              item-value="code"
+              variant="outlined"
+              :rules="nullRules"
+            />
+          </div>
+          <div class="flex-1">
+          <LabelInput label="Quan huyen" required/>
+            <v-autocomplete
+            v-model="storeLocation.selectedDistrict"
+              :items="storeLocation.getListDistricts ?? []"
+              item-title="name"
+              item-value="code"
+              variant="outlined"
+              :rules="nullRules"
+            />
+          </div>
+          <div class="flex-1">
+          <LabelInput label="Phuong xa" required/>
+          <v-autocomplete
+            v-model="storeLocation.selectedWard"
+              :items="storeLocation.getListWards ?? []"
+              item-title="name"
+              item-value="code"
+              variant="outlined"
+              :rules="nullRules"
+            />
+          </div>
+        </div>
+      </div>
+
       <div class="flex justify-end mt-md">
         <Button type="submit" color="primary" :shadow="true" label="Luu cai dat" :class="storeDisplay.isMobileTable ? 'w-full':''" />
       </div>

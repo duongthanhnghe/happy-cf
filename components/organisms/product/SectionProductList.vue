@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { watch } from 'vue'
 import { useOrderStore } from '@/stores/client/product/useOrderIndexStore'
-import type { CategoryProductDTO } from '@server/types/dto/product.dto'
+import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { ROUTES } from '@/shared/constants/routes';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 

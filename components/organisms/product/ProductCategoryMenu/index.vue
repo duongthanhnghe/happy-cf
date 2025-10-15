@@ -2,7 +2,7 @@
 import './index.scss';
 import { watch } from 'vue'
 import { useProductCategoryMenu } from './useProductCategoryMenu';
-import type { CategoryProductDTO } from '@server/types/dto/product.dto'
+import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 
 const useHandle = useProductCategoryMenu();
 

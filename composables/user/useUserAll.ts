@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { usersAPI } from "@/services/users.service";
-import type { UserPaginationDTO } from '@/server/types/dto/user.dto';
+import { usersAPI } from "@/services/v1/users.service";
+import type { UserPaginationDTO } from '@/server/types/dto/v1/user.dto';
 
 export const useUserAll = () => {
   const listUserAll = ref<UserPaginationDTO>();

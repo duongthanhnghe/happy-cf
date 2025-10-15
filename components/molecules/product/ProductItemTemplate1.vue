@@ -23,7 +23,7 @@ import {
 import {
   useAccountStore
 } from '@/stores/client/users/useAccountStore';
-import type { ProductDTO } from '@/server/types/dto/product.dto';
+import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
 import { ROUTES } from '@/shared/constants/routes';
 
 const props = defineProps<{

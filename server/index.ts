@@ -1,95 +1,167 @@
-import { connectDB } from './db/db'
-import path from 'path'
+import express, { type Request, type Response, type NextFunction } from 'express'
 import cors from 'cors'
-import express from 'express'
+import cookieParser from 'cookie-parser'
+import path from 'path'
 import { fileURLToPath } from 'url'
 import * as dotenv from 'dotenv'
-import cookieParser from 'cookie-parser'
-import type { Request, Response, NextFunction } from 'express'
-import fileManageRoutes from './routes/fileManageRouter'
-import settingRoutes from './routes/settingRouter'
-import authRoutes from './routes/authRouter'
-import aboutRoutes from './routes/aboutRouter'
-import bannerRoutes from './routes/bannerRouter'
-import categoriesNewsRoutes from './routes/categoriesNewsRouter'
-import postsNewsRoutes from './routes/postsNewsRouter'
-import orderManageRoutes from './routes/orderManageRouter'
-import categoriesProductRoutes from './routes/categoriesProductRouter'
-import productRoutes from './routes/productRouter'
-import addressRoutes from './routes/addressesRouter'
-import paymentTransactionRoutes from './routes/paymentTransactionRoutes'
-import wishlistRoutes from './routes/productRouter'
-import productReviewRouter from "./routes/productReviewRouter";
-import locationRoutes from './routes/locationRouter'
 import { v2 as cloudinary } from 'cloudinary'
+import { connectDB } from './db/db'
 
-
+// Load env
 dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
+// Cloudinary config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
 const app = express()
-const PORT = Number(process.env.PORT)
+const PORT = Number(process.env.PORT) || 5001
 const HOST = process.env.HOST || '0.0.0.0'
 const barcodePath = fileURLToPath(new URL('./public/barcodes', import.meta.url))
 
+// --- Middleware ---
 app.use(cors({
-  // origin: process.env.DOMAIN,
-  origin: ["http://localhost:3000","http://localhost:5000","http://0.0.0.0:3000","http://192.168.1.113:3000"], 
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5000',
+    'http://0.0.0.0:3000',
+    'http://192.168.1.113:3000',
+  ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }))
-
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+app.use(cookieParser())
+app.use('/barcodes', express.static(barcodePath))
 
-app.use((req, res, next) => {
+// --- Logger (optional) ---
+app.use((req, _res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`)
-  console.log('Request body:', req.body)
   next()
 })
 
+// --- Database ---
 await connectDB()
-app.use(cookieParser())
-app.use('/barcodes', express.static(barcodePath))
-app.use('/api/settings', express.json(), settingRoutes)
-app.use('/api/fileManage', express.json(), fileManageRoutes)
-app.use('/api/auth', express.json(), authRoutes)
-app.use('/api/about', express.json(), aboutRoutes)
-app.use('/api/banners', express.json(), bannerRoutes)
-app.use('/api/categoriesNews', express.json(), categoriesNewsRoutes)
-app.use('/api/newsPosts', express.json(), postsNewsRoutes)
-app.use('/api/orders', express.json(), orderManageRoutes)
-app.use('/api/payment-transactions', express.json(), paymentTransactionRoutes)
-app.use('/api/categories', express.json(), categoriesProductRoutes)
-app.use('/api/products', express.json(), productRoutes)
-app.use('/api/addresses', express.json(), addressRoutes)
-app.use("/api/product-reviews", productReviewRouter);
-app.use('/api/location', express.json(), locationRoutes)
-app.use('/api', express.json(), wishlistRoutes)
 
-// Error handler
-app.use((err:unknown, _req: Request, res:Response, _next: NextFunction) => {
+import v1Routes from './routes/v1/index'
+
+app.use('/api/v1', v1Routes)
+
+// --- Error handler ---
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Server error:', err)
   res.status(500).json({
     success: false,
     message: err instanceof Error ? err.message : 'Internal Server Error',
-    error: process.env.NODE_ENV === 'development' && err instanceof Error
-          ? err.stack
-          : undefined
+    error:
+      process.env.NODE_ENV === 'development' && err instanceof Error
+        ? err.stack
+        : undefined,
   })
 })
 
-// Start server
-app.listen(PORT, HOST, (err) => {
-  if (err) {
-    console.error('Failed to start server:', err)
-    process.exit(1)
-  }
-  console.log(`Server running at http://${HOST}:${PORT}/api`)
+// --- Start server ---
+app.listen(PORT, HOST, () => {
+  console.log(`✅ Server running at http://${HOST}:${PORT}/api/v1`)
 })
+
+// import { connectDB } from './db/db'
+// import path from 'path'
+// import cors from 'cors'
+// import express from 'express'
+// import { fileURLToPath } from 'url'
+// import * as dotenv from 'dotenv'
+// import cookieParser from 'cookie-parser'
+// import type { Request, Response, NextFunction } from 'express'
+// import fileManageRoutes from './routes/fileManageRouter'
+// import settingRoutes from './routes/settingRouter'
+// import authRoutes from './routes/authRouter'
+// import aboutRoutes from './routes/aboutRouter'
+// import bannerRoutes from './routes/bannerRouter'
+// import categoriesNewsRoutes from './routes/categoriesNewsRouter'
+// import postsNewsRoutes from './routes/postsNewsRouter'
+// import orderManageRoutes from './routes/orderManageRouter'
+// import categoriesProductRoutes from './routes/categoriesProductRouter'
+// import productRoutes from './routes/productRouter'
+// import addressRoutes from './routes/addressesRouter'
+// import paymentTransactionRoutes from './routes/paymentTransactionRoutes'
+// import wishlistRoutes from './routes/productRouter'
+// import productReviewRouter from "./routes/productReviewRouter";
+// import locationRoutes from './routes/locationRouter'
+// import { v2 as cloudinary } from 'cloudinary'
+
+
+// dotenv.config({ path: path.resolve(process.cwd(), '.env') })
+
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET
+// })
+
+// const app = express()
+// const PORT = Number(process.env.PORT)
+// const HOST = process.env.HOST || '0.0.0.0'
+// const barcodePath = fileURLToPath(new URL('./public/barcodes', import.meta.url))
+
+// app.use(cors({
+//   // origin: process.env.DOMAIN,
+//   origin: ["http://localhost:3000","http://localhost:5000","http://0.0.0.0:3000","http://192.168.1.113:3000"], 
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+// }))
+
+// app.use(express.json({ limit: '50mb' }))
+// app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+
+// app.use((req, res, next) => {
+//   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`)
+//   console.log('Request body:', req.body)
+//   next()
+// })
+
+// await connectDB()
+// app.use(cookieParser())
+// app.use('/barcodes', express.static(barcodePath))
+// app.use('/api/settings', express.json(), settingRoutes)
+// app.use('/api/fileManage', express.json(), fileManageRoutes)
+// app.use('/api/auth', express.json(), authRoutes)
+// app.use('/api/about', express.json(), aboutRoutes)
+// app.use('/api/banners', express.json(), bannerRoutes)
+// app.use('/api/categoriesNews', express.json(), categoriesNewsRoutes)
+// app.use('/api/newsPosts', express.json(), postsNewsRoutes)
+// app.use('/api/orders', express.json(), orderManageRoutes)
+// app.use('/api/payment-transactions', express.json(), paymentTransactionRoutes)
+// app.use('/api/categories', express.json(), categoriesProductRoutes)
+// app.use('/api/products', express.json(), productRoutes)
+// app.use('/api/addresses', express.json(), addressRoutes)
+// app.use("/api/product-reviews", productReviewRouter);
+// app.use('/api/location', express.json(), locationRoutes)
+// app.use('/api', express.json(), wishlistRoutes)
+
+// // Error handler
+// app.use((err:unknown, _req: Request, res:Response, _next: NextFunction) => {
+//   console.error('Server error:', err)
+//   res.status(500).json({
+//     success: false,
+//     message: err instanceof Error ? err.message : 'Internal Server Error',
+//     error: process.env.NODE_ENV === 'development' && err instanceof Error
+//           ? err.stack
+//           : undefined
+//   })
+// })
+
+// // Start server
+// app.listen(PORT, HOST, (err) => {
+//   if (err) {
+//     console.error('Failed to start server:', err)
+//     process.exit(1)
+//   }
+//   console.log(`Server running at http://${HOST}:${PORT}/api`)
+// })

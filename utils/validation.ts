@@ -13,6 +13,17 @@ function phoneRule(value: string) {
   return regex.test(value) || 'Số điện thoại phải có ít nhất 10 số'
 }
 
+function emailRequiredRule(value: string) {
+  return !!value || 'Email không được để trống'
+}
+
+function emailFormatRule(value: string) {
+  if (!value) return true
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailPattern.test(value) || 'Email không hợp lệ'
+}
+
 export const nullRules = [requiredRule]
 export const nullAndSpecialRules = [requiredRule, noSpecialCharRule]
 export const phoneRules = [requiredRule, phoneRule]
+export const emailRules = [emailRequiredRule, emailFormatRule]

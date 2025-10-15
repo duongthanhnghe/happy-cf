@@ -1,11 +1,11 @@
 import { ref, reactive, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { aboutAPI } from "@/services/about.service";
+import { aboutAPI } from "@/services/v1/about.service";
 import {
   Loading
 } from '@/utils/global'
-import type { AboutDTO, CreateAboutBody } from '@server/types/dto/about.dto'
-import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
+import type { AboutDTO, CreateAboutBody } from '@/server/types/dto/v1/about.dto'
+import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useFileSelectContextStore } from "@/stores/admin/file-manage/useFileSelectContextStore"

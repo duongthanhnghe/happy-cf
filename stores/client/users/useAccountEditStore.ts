@@ -1,11 +1,11 @@
 import { ref, reactive, computed} from "vue";
 import { defineStore } from "pinia";
-import { apiConfig } from '@/config/api.config'
-import { usersAPI } from "@/services/users.service";
+import { apiConfig } from '@/services/config/api.config'
+import { usersAPI } from "@/services/v1/users.service";
 import {
   Loading
 } from '@/utils/global'
-import type { UserEdit, ChangePassword } from '@/server/types/dto/user.dto'
+import type { UserEdit, ChangePassword } from '@/server/types/dto/v1/user.dto'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { showWarning, showSuccess } from "@/utils/toast";
 

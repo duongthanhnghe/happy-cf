@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { ref, watch, shallowRef } from 'vue'
-import type { FileManageFolder } from "@/server/types/dto/file-manage.dto"
+import type { FileManageFolder } from "@/server/types/dto/v1/file-manage.dto"
 
   const storeFileManage = useFileManageFolderStore()
 

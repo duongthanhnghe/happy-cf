@@ -1,4 +1,4 @@
-import type { HistoryTypeItem, HistoryType } from '@/server/types/dto/reward-history.dto'
+import type { HistoryTypeItem, HistoryType } from '@/server/types/dto/v1/reward-history.dto'
 
 export const REWARD_HISTORY_TYPE: Record<HistoryType, HistoryTypeItem> = {
   earned: {

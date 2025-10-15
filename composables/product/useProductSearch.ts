@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { productsAPI } from "@/services/product.service";
-import type { ProductPaginationDTO } from '@/server/types/dto/product.dto';
+import { productsAPI } from "@/services/v1/product.service";
+import type { ProductPaginationDTO } from '@/server/types/dto/v1/product.dto';
 
 export const useProductSearch = () => {
   

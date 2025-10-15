@@ -1,9 +1,9 @@
 import { ref, reactive, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { categoriesAPI } from "@/services/categories-product.service";
+import { categoriesAPI } from "@/services/v1/categories-product.service";
 import { Loading } from '@/utils/global'
-import type { CategoryProductDTO, CreateCategoryProductDTO, UpdateCategoryProductDTO } from '@/server/types/dto/product.dto'
-import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
+import type { CategoryProductDTO, CreateCategoryProductDTO, UpdateCategoryProductDTO } from '@/server/types/dto/v1/product.dto'
+import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { showSuccess, showWarning, showConfirm } from "@/utils/toast";
 import { useProductCategory } from '@/composables/product/useProductCategory'
 import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree'

@@ -1,11 +1,11 @@
-import type { OrderDTO, OrderPaginationDTO } from '@/server/types/dto/order.dto'
-import type { PaymentMethod } from '@/server/types/dto/payment-transaction.dto'
-import type { TableOpt, TableHeaders, FilterTime } from '@/server/types/dto/table-vuetify.dto'
-import type { PaymentTransactionStatus } from "@/server/types/dto/payment-transaction.dto"
+import type { OrderDTO, OrderPaginationDTO } from '@/server/types/dto/v1/order.dto'
+import type { PaymentMethod } from '@/server/types/dto/v1/payment-transaction.dto'
+import type { TableOpt, TableHeaders, FilterTime } from '@/server/types/dto/v1/table-vuetify.dto'
+import type { PaymentTransactionStatus } from "@/server/types/dto/v1/payment-transaction.dto"
 import { ref, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { ordersAPI } from "@/services/orders.service";
-import { paymentTransactionsAPI } from "@/services/payment-transaction.service";
+import { ordersAPI } from "@/services/v1/orders.service";
+import { paymentTransactionsAPI } from "@/services/v1/payment-transaction.service";
 import { Loading } from '@/utils/global'
 import { useOrderStatus } from "@/composables/order/useOrderStatus";
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";

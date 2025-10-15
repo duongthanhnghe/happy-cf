@@ -2,7 +2,7 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useHistoryRewardByUser } from "@/composables/user/useHistoryRewardByUser";
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
-import type { RewardHistoryPaginationDTO } from "@/server/types/dto/reward-history.dto";
+import type { RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-history.dto";
 
 export const useHistoryRewardByUserStore = defineStore("HistoryRewardByUserStore", () => {
 

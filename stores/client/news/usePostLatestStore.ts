@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useNewsLatest } from '@/composables/news/useNewsLatest'
-import type { PostNewsDTO } from '@server/types/dto/news.dto'
+import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 
 const TTL_MS = 10 * 60 * 1000
 

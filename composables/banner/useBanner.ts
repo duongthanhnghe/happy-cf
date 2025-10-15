@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { bannersAPI } from "@/services/banner.service";
-import type { BannerDTO } from '@server/types/dto/banner.dto'
+import { bannersAPI } from "@/services/v1/banner.service";
+import type { BannerDTO } from '@/server/types/dto/v1/banner.dto'
 
 export const useBanner = () => {
   const listBanner = ref<BannerDTO[] | []>([])

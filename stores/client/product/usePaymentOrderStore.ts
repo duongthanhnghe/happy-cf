@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
 import { showWarning, showSuccess } from "@/utils/toast";
-import { ordersAPI } from "@/services/orders.service";
+import { ordersAPI } from "@/services/v1/orders.service";
 import { ROUTES } from '@/shared/constants/routes';
 import { PAYMENT_TRANSACTION_STATUS } from "@/shared/constants/payment-transaction-status";
 

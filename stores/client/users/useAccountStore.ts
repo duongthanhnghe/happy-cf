@@ -1,9 +1,9 @@
 import { ref, computed } from "vue";
 import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
-import { usersAPI } from "@/services/users.service";
+import { usersAPI } from "@/services/v1/users.service";
 import { jwtDecode } from 'jwt-decode'
-import type { User, MyJwtPayload, InformationMembershipLevels, MembershipLevels } from '@/server/types/dto/user.dto'
+import type { User, MyJwtPayload, InformationMembershipLevels, MembershipLevels } from '@/server/types/dto/v1/user.dto'
 import { ROUTES } from '@/shared/constants/routes';
 
 export const useAccountStore = defineStore("Account", () => {

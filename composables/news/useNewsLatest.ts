@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import type { PostNewsDTO } from '@/server/types/dto/news.dto'
-import { newsAPI } from "@/services/news.service";
+import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
+import { newsAPI } from "@/services/v1/news.service";
 export const useNewsLatest = () => {
 
   const dataListNewsLatest = ref<PostNewsDTO[]>([]);

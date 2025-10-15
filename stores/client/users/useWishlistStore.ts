@@ -1,7 +1,7 @@
 import { ref, reactive, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { productsAPI } from "@/services/product.service";
-import type { WishlistItem } from '@/server/types/dto/product.dto'
+import { productsAPI } from "@/services/v1/product.service";
+import type { WishlistItem } from '@/server/types/dto/v1/product.dto'
 import {
   useAccountStore
 } from '@/stores/client/users/useAccountStore';

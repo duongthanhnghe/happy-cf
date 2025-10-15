@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { fileManageAPI } from "@/services/file-manage.service";
+import { fileManageAPI } from "@/services/v1/file-manage.service";
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 
 interface Props {

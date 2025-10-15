@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
-import { productsAPI } from "@/services/product.service";
-import { ordersAPI } from "@/services/orders.service";
-import type { OrderDTO, OrderMappingNew } from '@/server/types/dto/order.dto'
+import { productsAPI } from "@/services/v1/product.service";
+import { ordersAPI } from "@/services/v1/orders.service";
+import type { OrderDTO, OrderMappingNew } from '@/server/types/dto/v1/order.dto'
 
 export const useOrderDetail = () => {
   

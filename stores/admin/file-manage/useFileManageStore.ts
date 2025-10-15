@@ -1,11 +1,11 @@
 import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { fileManageAPI } from "@/services/file-manage.service";
+import { fileManageAPI } from "@/services/v1/file-manage.service";
 import {
   Loading
 } from '@/utils/global'
 import { showSuccess, showWarning } from "@/utils/toast";
-import type { FileManageImage, FileManageFolder } from "@/server/types/dto/file-manage.dto"
+import type { FileManageImage, FileManageFolder } from "@/server/types/dto/v1/file-manage.dto"
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 
 export const useFileManageFolderStore = defineStore("FileManageFolder", () => {

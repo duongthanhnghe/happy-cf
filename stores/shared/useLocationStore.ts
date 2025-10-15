@@ -1,7 +1,7 @@
 import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { useLocation } from "@/composables/product/useLocation";
-import type { ProvinceDTO, DistrictDTO, WardDTO } from '@/server/types/dto/location.dto'
+import type { ProvinceDTO, DistrictDTO, WardDTO } from '@/server/types/dto/v1/location.dto'
 
 const TTL_MS = 10 * 24 * 60 * 60 * 1000; // 10 ngày
 
@@ -81,7 +81,6 @@ export const useLocationStore = defineStore("LocationStore", () => {
     selectedWard.value = null
     districts.value = []
     wards.value = []
-    console.log('co qua dya>')
   }
 
   const getListProvinces = computed(() => provinces.value || [])
@@ -106,11 +105,5 @@ export const useLocationStore = defineStore("LocationStore", () => {
     getListProvinces,
     getListDistricts,
     getListWards,
-  }
-}, {
-  persist: {
-    key: 'LocationPinia',
-    storage: typeof window !== 'undefined' ? localStorage : undefined,
-    paths: ['provinces', 'lastFetched'],
   }
 })

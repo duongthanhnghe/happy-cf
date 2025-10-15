@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useOrderStatus } from '@/composables/order/useOrderStatus';
-import type { OrderStatusDTO } from '@/server/types/dto/order.dto'
+import type { OrderStatusDTO } from '@/server/types/dto/v1/order.dto'
 
 const TTL_MS = 10 * 24 * 60 * 60 * 1000; // 10 days
 

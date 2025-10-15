@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { addressesAPI } from "@/services/addresses.service";
-import type { AddressDTO } from '@/server/types/dto/address.dto';
+import { addressesAPI } from "@/services/v1/addresses.service";
+import type { AddressDTO } from '@/server/types/dto/v1/address.dto';
 
 export const useAddressAll = () => {
   const listData = ref<AddressDTO[]|null>(null);

@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import type { CategoryProductDTO } from '@server/types/dto/product.dto'
+import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree';
 
 const TTL_MS = 10 * 60 * 1000

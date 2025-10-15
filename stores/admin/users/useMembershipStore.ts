@@ -1,11 +1,11 @@
 import { ref, computed, watch, reactive, shallowRef } from "vue";
 import { defineStore } from "pinia";
-import { usersAPI } from "@/services/users.service";
+import { usersAPI } from "@/services/v1/users.service";
 import {
   Loading
 } from '@/utils/global'
-import type { User } from '@/server/types/dto/user.dto'
-import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
+import type { User } from '@/server/types/dto/v1/user.dto'
+import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import {showConfirm, showSuccess, showWarning} from '@/utils/toast'
 import { USER_ROLES } from '@/shared/constants/user-roles'
 import { useUserDetail } from '@/composables/user/useUserDetail'
@@ -13,7 +13,7 @@ import { useUserAll } from '@/composables/user/useUserAll'
 import { useMembershipList } from '@/composables/user/useMembershipList'
 import { useMembershipBenefitList } from '@/composables/user/useMembershipBenefitList'
 import { useMembershipLevelDetail } from '@/composables/user/useMembershipLevelDetail'
-import type { MembershipLevels, UpdateMembershipLevels } from '@/server/types/dto/user.dto'
+import type { MembershipLevels, UpdateMembershipLevels } from '@/server/types/dto/v1/user.dto'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 
 export const useMembershipStore = defineStore("MembershipStore", () => {

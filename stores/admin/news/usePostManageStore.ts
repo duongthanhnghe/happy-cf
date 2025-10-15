@@ -1,9 +1,9 @@
 import { ref, reactive, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { newsAPI } from "@/services/news.service";
+import { newsAPI } from "@/services/v1/news.service";
 import { Loading} from '@/utils/global'
-import type { PostNewsDTO, CreatePostNewsDTO, UpdatePostNewsDTO } from '@/server/types/dto/news.dto'
-import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
+import type { PostNewsDTO, CreatePostNewsDTO, UpdatePostNewsDTO } from '@/server/types/dto/v1/news.dto'
+import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useNewsCategory } from '@/composables/news/useNewsCategory'
 import { usePostDetail } from '@/composables/news/usePostDetail'

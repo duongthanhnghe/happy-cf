@@ -1,11 +1,11 @@
 import { ref, reactive, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { bannersAPI } from "@/services/banner.service";
+import { bannersAPI } from "@/services/v1/banner.service";
 import {
   Loading
 } from '@/utils/global'
-import type { BannerDTO, CreateBannerBody } from '@server/types/dto/banner.dto'
-import type { TableOpt, TableHeaders } from '@/server/types/dto/table-vuetify.dto'
+import type { BannerDTO, CreateBannerBody } from '@/server/types/dto/v1/banner.dto'
+import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";

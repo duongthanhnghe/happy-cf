@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useBanner } from '@/composables/banner/useBanner';
-import type { BannerDTO } from '@server/types/dto/banner.dto'
+import type { BannerDTO } from '@/server/types/dto/v1/banner.dto'
 
 const TTL_MS = 10 * 60 * 1000
 

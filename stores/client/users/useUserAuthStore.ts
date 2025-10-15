@@ -1,6 +1,6 @@
 import { ref, reactive } from "vue";
 import { defineStore } from "pinia";
-import { usersAPI } from "@/services/users.service";
+import { usersAPI } from "@/services/v1/users.service";
 import {
   Loading
 } from '@/utils/global'
@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { jwtDecode } from 'jwt-decode'
 import { showWarning, showSuccess } from "@/utils/toast";
-import type { UserRegister, ResetPassword, MyJwtPayload } from '@/server/types/dto/user.dto'
+import type { UserRegister, ResetPassword, MyJwtPayload } from '@/server/types/dto/v1/user.dto'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { setCookie } from '@/utils/global'

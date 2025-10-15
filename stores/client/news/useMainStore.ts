@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { ROUTES } from '@/shared/constants/routes'
 import { usePostAllPagination } from '@/composables/news/usePostAllPagination'
 import { usePagination } from '@/utils/paginationHandle'
-import type { PostNewsDTO } from '@/server/types/dto/news.dto'
+import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 import { Loading} from '@/utils/global'
 
 export const useMainStore = defineStore("NewsMainNewsStore", () => {

@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
-import { productsAPI } from "@/services/product.service";
-import type { ProductDTO } from '@/server/types/dto/product.dto';
+import { productsAPI } from "@/services/v1/product.service";
+import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
 
 export const useProductMostOrder = () => {
   const listProductMostOrder = ref<ProductDTO[]>([]);

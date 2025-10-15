@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PostNewsDTO } from '@server/types/dto/news.dto'
+import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 
 const props = withDefaults(defineProps<{
   items?: PostNewsDTO[]

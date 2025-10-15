@@ -1,9 +1,9 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { usersAPI } from "@/services/users.service";
+import { usersAPI } from "@/services/v1/users.service";
 import { showWarning } from "@/utils/toast";
-import type { ProductPaginationDTO } from '@/server/types/dto/product.dto'
-import type { SearchKeywordDTO } from '@/server/types/dto/search-keyword.dto'
+import type { ProductPaginationDTO } from '@/server/types/dto/v1/product.dto'
+import type { SearchKeywordDTO } from '@/server/types/dto/v1/search-keyword.dto'
 import { useProductSearch } from "@/composables/product/useProductSearch";
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 

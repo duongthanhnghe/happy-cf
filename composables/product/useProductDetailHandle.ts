@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import type { Ref } from "vue";
-import type { ProductDTO } from '@/server/types/dto/product.dto';
-import type { ProductReviewPaginationDTO } from '@/server/types/dto/product-review.dto';
+import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
+import type { ProductReviewPaginationDTO } from '@/server/types/dto/v1/product-review.dto';
 import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
 
 export const useProductDetailHandle = (

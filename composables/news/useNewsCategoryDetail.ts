@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { useState } from "nuxt/app";
-import { newsAPI } from "@/services/news.service";
-import type { CategoryNewsDTO } from '@/server/types/dto/news.dto';
+import { newsAPI } from "@/services/v1/news.service";
+import type { CategoryNewsDTO } from '@/server/types/dto/v1/news.dto';
 
 export const useNewsCategoryDetail = () => {
   // const detailData = ref<CategoryNewsDTO|null>(null);

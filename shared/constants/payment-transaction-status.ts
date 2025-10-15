@@ -1,4 +1,4 @@
-import type { PaymentTransactionStatus } from "@/server/types/dto/payment-transaction.dto"
+import type { PaymentTransactionStatus } from "@/server/types/dto/v1/payment-transaction.dto"
 
 export interface StatusItem {
   name: string;

@@ -10,7 +10,7 @@ import { usePagination } from '@/utils/paginationHandle'
 import { Loading} from '@/utils/global'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { showSuccess } from "@/utils/toast";
-import type { ProductDTO, CartDTO, SelectedOptionDTO } from "@/server/types/dto/product.dto";
+import type { ProductDTO, CartDTO, SelectedOptionDTO } from "@/server/types/dto/v1/product.dto";
 
 export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   const { getDetailProduct, fetchDetailProduct } = useProductDetail()
