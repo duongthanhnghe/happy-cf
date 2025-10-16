@@ -35,32 +35,32 @@ export const categoriesAPI = {
       throw err
     }
   },
-  create: async (bodyData: CreateCategoryProductDTO) => {
-    try {
-      if (!bodyData.categoryName || !bodyData.image) {
-        throw new Error('Missing required fields: categoryName, image')
-      }
+  // create: async (bodyData: CreateCategoryProductDTO) => {
+  //   try {
+  //     if (!bodyData.categoryName || !bodyData.image) {
+  //       throw new Error('Missing required fields: categoryName, image')
+  //     }
 
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.CREATE}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bodyData)
-      })
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.CREATE}`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(bodyData)
+  //     })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json()
+  //       throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+  //     }
 
-      const data = await response.json()
-      return data
-    } catch (err) {
-      console.error('Error creating category:', err)
-      throw err
-    }
-  },
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error('Error creating category:', err)
+  //     throw err
+  //   }
+  // },
   getDetail: async (id: string) => {
     try {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.GET_BY_ID(id)}`)
@@ -87,47 +87,47 @@ export const categoriesAPI = {
       throw err
     }
   },
-  update: async (id: string, bodyData: UpdateCategoryProductDTO) => {
-    try {
+  // update: async (id: string, bodyData: UpdateCategoryProductDTO) => {
+  //   try {
 
-      const payload = {
-        ...bodyData,
-        _id: bodyData.id,
-      };
+  //     const payload = {
+  //       ...bodyData,
+  //       _id: bodyData.id,
+  //     };
 
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.UPDATE(id)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.UPDATE(id)}`, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(payload)
+  //     })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json()
+  //       throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+  //     }
 
-      return await response.json()
-    } catch (err) {
-      console.error(`Error updating category with ID ${id}:`, err)
-      throw err
-    }
-  },
-  delete: async (id:string) => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.DELETE(id)}`, {
-        method: 'DELETE',
-      })
+  //     return await response.json()
+  //   } catch (err) {
+  //     console.error(`Error updating category with ID ${id}:`, err)
+  //     throw err
+  //   }
+  // },
+  // delete: async (id:string) => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.DELETE(id)}`, {
+  //       method: 'DELETE',
+  //     })
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`)
+  //     }
 
-      return await response.json()
-    } catch (err) {
-      console.error(`Error deleting category with ID ${id}:`, err)
-      throw err
-    }
-  },
+  //     return await response.json()
+  //   } catch (err) {
+  //     console.error(`Error deleting category with ID ${id}:`, err)
+  //     throw err
+  //   }
+  // },
   getListByCategory: async (
     id: string,
     page: number,
@@ -161,58 +161,58 @@ export const categoriesAPI = {
       throw err
     }
   },
-  updateOrder: async (id: string, newOrder: number): Promise<ApiResponse<CategoryProductDTO>> => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.UPDATE_ORDER(id)}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order: newOrder })
-      })
+  // updateOrder: async (id: string, newOrder: number): Promise<ApiResponse<CategoryProductDTO>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.UPDATE_ORDER(id)}`, {
+  //       method: 'PATCH',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ order: newOrder })
+  //     })
 
-      if (!response.ok) { 
-        const errorData = await response.json()
-        return {
-          code: 1,
-          message: errorData.message || 'Failed to update order',
-          data: undefined as any
-        }
-      }
+  //     if (!response.ok) { 
+  //       const errorData = await response.json()
+  //       return {
+  //         code: 1,
+  //         message: errorData.message || 'Failed to update order',
+  //         data: undefined as any
+  //       }
+  //     }
 
-      const data: ApiResponse<CategoryProductDTO> = await response.json()
-      return data
-    } catch (err) {
-      console.error(`Error updating order for category ID ${id}:`, err)
-      return {
-        code: 1,
-        message: 'Unexpected error while updating order',
-        data: undefined as any
-      }
-    }
-  },
-  toggleActive: async (id: string): Promise<ApiResponse<CategoryProductDTO>> => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.TOGGLE_ACTIVE(id)}`, {
-        method: 'PATCH',
-      })
+  //     const data: ApiResponse<CategoryProductDTO> = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error(`Error updating order for category ID ${id}:`, err)
+  //     return {
+  //       code: 1,
+  //       message: 'Unexpected error while updating order',
+  //       data: undefined as any
+  //     }
+  //   }
+  // },
+  // toggleActive: async (id: string): Promise<ApiResponse<CategoryProductDTO>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.TOGGLE_ACTIVE(id)}`, {
+  //       method: 'PATCH',
+  //     })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        return {
-          code: 1,
-          message: errorData.message || 'Failed to toggle active status',
-          data: undefined as any
-        }
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json()
+  //       return {
+  //         code: 1,
+  //         message: errorData.message || 'Failed to toggle active status',
+  //         data: undefined as any
+  //       }
+  //     }
 
-      const data: ApiResponse<CategoryProductDTO> = await response.json()
-      return data
-    } catch (err) {
-      console.error(`Error toggling active status for category product ID ${id}:`, err)
-      return {
-        code: 1,
-        message: 'Unexpected error while toggling active status',
-        data: undefined as any
-      }
-    }
-  },
+  //     const data: ApiResponse<CategoryProductDTO> = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error(`Error toggling active status for category product ID ${id}:`, err)
+  //     return {
+  //       code: 1,
+  //       message: 'Unexpected error while toggling active status',
+  //       data: undefined as any
+  //     }
+  //   }
+  // },
 }

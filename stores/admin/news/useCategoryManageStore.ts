@@ -1,9 +1,9 @@
 import { ref, reactive, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { newsAPI } from "@/services/v1/news.service";
+import { newsAPI } from "@/services/v1/admin/news.service";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 import {
-  Loading, generateSlug
+  Loading
 } from '@/utils/global'
 import type { CategoryNewsDTO, CreateCategoryNewsDTO, UpdateCategoryNewsDTO } from '@/server/types/dto/v1/news.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'

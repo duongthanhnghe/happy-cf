@@ -13,65 +13,65 @@ import { PAYMENT_METHOD_STATUS } from "../../shared/constants/payment-method-sta
 import path from "path";
 import fs from "fs";
 
-const VIETTEL_POST_API = "https://partner.viettelpost.vn/v2"
+// const VIETTEL_POST_API = "https://partner.viettelpost.vn/v2"
 
-export const getAllOrder = async (req: Request, res: Response) => {
-  try {
-    let { page = 1, limit = 10 } = req.query;
+// export const getAllOrder = async (req: Request, res: Response) => {
+//   try {
+//     let { page = 1, limit = 10 } = req.query;
 
-    const numPage = Number(page);
-    let numLimit = Number(limit);
+//     const numPage = Number(page);
+//     let numLimit = Number(limit);
 
-    if (numLimit === -1) {
-      const orders = await OrderEntity.find({})
-        .sort({ createdAt: -1 })
-        .populate("paymentId")
-        .populate("status")
-        .populate("userId")
-        .populate({ path: "transaction", model: "PaymentTransaction" })
+//     if (numLimit === -1) {
+//       const orders = await OrderEntity.find({})
+//         .sort({ createdAt: -1 })
+//         .populate("paymentId")
+//         .populate("status")
+//         .populate("userId")
+//         .populate({ path: "transaction", model: "PaymentTransaction" })
 
-      return res.json({
-        code: 0,
-        data: toOrderListDTO(orders),
-        pagination: {
-          page: 1,
-          limit: orders.length,
-          totalPages: 1,
-          total: orders.length
-        }
-      });
-    }
+//       return res.json({
+//         code: 0,
+//         data: toOrderListDTO(orders),
+//         pagination: {
+//           page: 1,
+//           limit: orders.length,
+//           totalPages: 1,
+//           total: orders.length
+//         }
+//       });
+//     }
 
-    const options = {
-      page: numPage,
-      limit: numLimit,
-      sort: { createdAt: -1 },
-      populate: [
-        { path: "paymentId", model: "Payment" },
-        { path: "status", model: "OrderStatus" },
-        { path: "userId", model: "User" },
-        { path: "transaction", model: "PaymentTransaction" }
-      ]
-    };
+//     const options = {
+//       page: numPage,
+//       limit: numLimit,
+//       sort: { createdAt: -1 },
+//       populate: [
+//         { path: "paymentId", model: "Payment" },
+//         { path: "status", model: "OrderStatus" },
+//         { path: "userId", model: "User" },
+//         { path: "transaction", model: "PaymentTransaction" }
+//       ]
+//     };
 
-    const result = await OrderEntity.paginate({}, options);
+//     const result = await OrderEntity.paginate({}, options);
 
-    return res.json({
-      code: 0,
-      data: toOrderListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      }
-    });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ code: 1, message: "Lỗi lấy danh sách order", error });
-  }
-};
+//     return res.json({
+//       code: 0,
+//       data: toOrderListDTO(result.docs),
+//       pagination: {
+//         page: result.page,
+//         limit: result.limit,
+//         totalPages: result.totalPages,
+//         total: result.totalDocs
+//       }
+//     });
+//   } catch (error) {
+//     return res
+//       .status(500)
+//       .json({ code: 1, message: "Lỗi lấy danh sách order", error });
+//   }
+// };
 
 export const getOrderById = async (req: Request, res: Response) => {
   try {
@@ -150,17 +150,17 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 }
 
-export const deleteOrder = async (req: Request, res: Response) => {
-  try {
-    const deleted = await OrderEntity.findByIdAndDelete(req.params.id)
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Order không tồn tại" })
-    }
-    return res.json({ code: 0, message: "Xoá thành công" })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
+// export const deleteOrder = async (req: Request, res: Response) => {
+//   try {
+//     const deleted = await OrderEntity.findByIdAndDelete(req.params.id)
+//     if (!deleted) {
+//       return res.status(404).json({ code: 1, message: "Order không tồn tại" })
+//     }
+//     return res.json({ code: 0, message: "Xoá thành công" })
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }
 
 export const getOrdersByUserId = async (req: Request, res: Response) => {
   try {
@@ -171,131 +171,131 @@ export const getOrdersByUserId = async (req: Request, res: Response) => {
   }
 }
 
-export const updateOrderStatus = async (req: Request, res: Response) => {
-  try {
-    const { orderId, statusId } = req.body
+// export const updateOrderStatus = async (req: Request, res: Response) => {
+//   try {
+//     const { orderId, statusId } = req.body
 
-    if (!orderId || !statusId) {
-      return res.status(400).json({ code: 1, message: "Thiếu orderId hoặc statusId" })
-    }
+//     if (!orderId || !statusId) {
+//       return res.status(400).json({ code: 1, message: "Thiếu orderId hoặc statusId" })
+//     }
 
-    const status = await OrderStatusEntity.findById(statusId)
-    if (!status) {
-      return res.status(404).json({ code: 1, message: "Status không tồn tại" })
-    }
+//     const status = await OrderStatusEntity.findById(statusId)
+//     if (!status) {
+//       return res.status(404).json({ code: 1, message: "Status không tồn tại" })
+//     }
 
-    const order = await OrderEntity.findById(orderId)
-    if (!order) {
-      return res.status(404).json({ code: 1, message: "Order không tồn tại" })
-    }
+//     const order = await OrderEntity.findById(orderId)
+//     if (!order) {
+//       return res.status(404).json({ code: 1, message: "Order không tồn tại" })
+//     }
 
-    if (order.status?.toString() === ORDER_STATUS.COMPLETED || order.status?.toString() === ORDER_STATUS.CANCELLED) {
-      return res.status(400).json({
-        code: 1,
-        message: "Đơn hàng đã hoàn tất hoặc đã hủy, không thể thay đổi trạng thái nữa"
-      })
-    }
+//     if (order.status?.toString() === ORDER_STATUS.COMPLETED || order.status?.toString() === ORDER_STATUS.CANCELLED) {
+//       return res.status(400).json({
+//         code: 1,
+//         message: "Đơn hàng đã hoàn tất hoặc đã hủy, không thể thay đổi trạng thái nữa"
+//       })
+//     }
 
-    order.status = statusId
+//     order.status = statusId
 
-    // Nếu status = COMPLETED → tạo danh sách đánh giá
-    if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
-      const existingReviews = await ProductReviewEntity.find({ orderId: orderId });
+//     // Nếu status = COMPLETED → tạo danh sách đánh giá
+//     if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
+//       const existingReviews = await ProductReviewEntity.find({ orderId: orderId });
 
-      if (existingReviews.length === 0) {
+//       if (existingReviews.length === 0) {
 
-        const reviews = order.cartItems.map((item: any) => ({
-          orderId: orderId,
-          userId: order.userId,
-          productId: item.idProduct,
-          rating: 0,
-          comment: null,
-          images: [],
-          status: "pending",
-        }));
+//         const reviews = order.cartItems.map((item: any) => ({
+//           orderId: orderId,
+//           userId: order.userId,
+//           productId: item.idProduct,
+//           rating: 0,
+//           comment: null,
+//           images: [],
+//           status: "pending",
+//         }));
 
-        await ProductReviewEntity.insertMany(reviews);
-      }
-    }
+//         await ProductReviewEntity.insertMany(reviews);
+//       }
+//     }
 
-    // Nếu status = done → cộng điểm cho user (nếu chưa cộng)
-    if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
-      await setPointAndUpgrade(order.userId.toString(), order.reward.points)
-      order.reward.awarded = true
-      order.reward.awardedAt = new Date()
-      await order.save()
-    }
+//     // Nếu status = done → cộng điểm cho user (nếu chưa cộng)
+//     if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
+//       await setPointAndUpgrade(order.userId.toString(), order.reward.points)
+//       order.reward.awarded = true
+//       order.reward.awardedAt = new Date()
+//       await order.save()
+//     }
 
-    if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
-      if (!order.pointsRefunded) {
-        const user = await UserModel.findById(order.userId);
-        if (user) {
-          user.membership.balancePoint += order.usedPoints;
-          await user.save();
+//     if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
+//       if (!order.pointsRefunded) {
+//         const user = await UserModel.findById(order.userId);
+//         if (user) {
+//           user.membership.balancePoint += order.usedPoints;
+//           await user.save();
 
-          order.pointsRefunded = true; // đánh dấu đã hoàn rồi
-        }
-      }
-    }
+//           order.pointsRefunded = true; // đánh dấu đã hoàn rồi
+//         }
+//       }
+//     }
 
-    await order.save()
+//     await order.save()
 
-    return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) })
-  } catch (err: any) {
-    console.error("Lỗi updateOrderStatus:", err)
-    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" })
-  }
-}
+//     return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) })
+//   } catch (err: any) {
+//     console.error("Lỗi updateOrderStatus:", err)
+//     return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" })
+//   }
+// }
 
-export const getAllStatus = async (_: Request, res: Response) => {
-  try {
-    const status = await OrderStatusEntity.find().sort({ index: 1 })
-    return res.json({ code: 0, data: toOrderStatusListDTO(status) })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
+// export const getAllStatus = async (_: Request, res: Response) => {
+//   try {
+//     const status = await OrderStatusEntity.find().sort({ index: 1 })
+//     return res.json({ code: 0, data: toOrderStatusListDTO(status) })
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }
 
-export const getAllPayment = async (_: Request, res: Response) => {
-  try {
-    const payments = await PaymentEntity.find()
-    return res.json({ code: 0, data: toPaymentListDTO(payments) })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
+// export const getAllPayment = async (_: Request, res: Response) => {
+//   try {
+//     const payments = await PaymentEntity.find()
+//     return res.json({ code: 0, data: toPaymentListDTO(payments) })
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }
 
-export const setPointAndUpgrade = async (userId: string, point: number) => {
-  const user = await UserModel.findById(userId)
-  if (!user) return null
+// export const setPointAndUpgrade = async (userId: string, point: number) => {
+//   const user = await UserModel.findById(userId)
+//   if (!user) return null
 
-  const levels = await MembershipLevelModel.find()
-  const newPoint = (user.membership?.point || 0) + point
-  const newBalancePoint = (user.membership?.balancePoint || 0) + point
+//   const levels = await MembershipLevelModel.find()
+//   const newPoint = (user.membership?.point || 0) + point
+//   const newBalancePoint = (user.membership?.balancePoint || 0) + point
 
-  const newLevel = levels
-    .filter((level) => newPoint >= level.minPoint)
-    .sort((a, b) => b.minPoint - a.minPoint)[0]
+//   const newLevel = levels
+//     .filter((level) => newPoint >= level.minPoint)
+//     .sort((a, b) => b.minPoint - a.minPoint)[0]
 
-  const levelChanged = newLevel && user.membership?.level !== newLevel.name
+//   const levelChanged = newLevel && user.membership?.level !== newLevel.name
 
-  if (newLevel){
-    user.membership.level = newLevel.name as MembershipLevel
-    user.membership.discountRate = newLevel.discountRate ?? 0
-  } 
-  user.membership.point = newPoint
-  user.membership.balancePoint = newBalancePoint
+//   if (newLevel){
+//     user.membership.level = newLevel.name as MembershipLevel
+//     user.membership.discountRate = newLevel.discountRate ?? 0
+//   } 
+//   user.membership.point = newPoint
+//   user.membership.balancePoint = newBalancePoint
 
-  await user.save()
+//   await user.save()
 
-  return {
-    level: user.membership.level,
-    point: user.membership.point,
-    balancePoint: user.membership.balancePoint,
-    discountRate: user.membership.discountRate,
-    levelChanged,
-  }
-}
+//   return {
+//     level: user.membership.level,
+//     point: user.membership.point,
+//     balancePoint: user.membership.balancePoint,
+//     discountRate: user.membership.discountRate,
+//     levelChanged,
+//   }
+// }
 
 export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
   try {
@@ -371,7 +371,6 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-
 
 export const checkPoint = async (req: Request, res: Response) => {
   try {

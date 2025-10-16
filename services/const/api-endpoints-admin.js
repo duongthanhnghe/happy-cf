@@ -15,7 +15,7 @@ export const API_ENDPOINTS_ADMIN = {
     LIST: '/categories',
     LIST_TREE: '/categories/tree',
     GET_BY_ID: (id) => `/categories/${id}`,
-    // GET_CHILDREN: (id) => `/categories/${id}/children`,
+    GET_CHILDREN: (id) => `/categories/${id}/children`,
     CREATE: '/categories',
     UPDATE: (id) => `/categories/${id}`,
     DELETE: (id) => `/categories/${id}`,
@@ -36,6 +36,7 @@ export const API_ENDPOINTS_ADMIN = {
     DELETE: (id) => `/orders/${id}`,
     LIST_STATUS: '/orders/status',
     UPDATE_STATUS: '/orders/status',
+    LIST_PAYMENTS: '/orders/payments',
     CHECK_POINT: "/orders/check-point",
   },
   CATEGORIES_NEWS: {
@@ -49,7 +50,7 @@ export const API_ENDPOINTS_ADMIN = {
   },
   NEWS_POSTS: {
     LIST: '/newsPosts',
-    LIST_PAGINATION: '/newsPosts/pagination',
+    // LIST_PAGINATION: '/newsPosts/pagination',
     GET_BY_ID: (id) => `/newsPosts/${id}`,
     CREATE: '/newsPosts',
     UPDATE: (id) => `/newsPosts/${id}`,

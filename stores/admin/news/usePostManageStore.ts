@@ -1,24 +1,24 @@
 import { ref, reactive, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { newsAPI } from "@/services/v1/news.service";
+import { newsAPI } from "@/services/v1/admin/news.service";
 import { Loading} from '@/utils/global'
-import type { PostNewsDTO, CreatePostNewsDTO, UpdatePostNewsDTO } from '@/server/types/dto/v1/news.dto'
+import type { PostNewsDTO, CreatePostNewsDTO } from '@/server/types/dto/v1/news.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
-import { useNewsCategory } from '@/composables/news/useNewsCategory'
-import { usePostDetail } from '@/composables/news/usePostDetail'
-import { usePostAll } from '@/composables/news/usePostAll'
+import { useAdminNewsCategory } from '@/composables/news/useAdminNewsCategory'
+import { useAdminPostDetail } from '@/composables/news/useAdminPostDetail'
+import { useAdminPostAll } from '@/composables/news/useAdminPostAll'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useFileSelectContextStore } from "@/stores/admin/file-manage/useFileSelectContextStore"
 import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
-import { nullRules, nullAndSpecialRules } from '@/utils/validation'
+import { nullRules } from '@/utils/validation'
 import { useSeoWatchers } from "@/utils/seoHandle";
 
 export const usePostManageStore = defineStore("PostManage", () => {
-const { getListCategoryApi, fetchCategoryList } = useNewsCategory()
-const { getDetailPostApi, fetchDetailPost } = usePostDetail()
-const { getListPostApi, fetchPostList } = usePostAll()
+const { getListCategoryApi, fetchCategoryList } = useAdminNewsCategory()
+const { getDetailPostApi, fetchDetailPost } = useAdminPostDetail()
+const { getListPostApi, fetchPostList } = useAdminPostAll()
 const storeFileManage = useFileManageFolderStore()
 const contextStore = useFileSelectContextStore()
 

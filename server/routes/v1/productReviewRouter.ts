@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
-  getAllProductReviews,
+  // getAllProductReviews,
   getProductReviewById,
-  updateProductReviewStatus,
-  deleteProductReview,
+  // updateProductReviewStatus,
+  // deleteProductReview,
   submitProductReview,
   getReviewsByUser,
   getReviewsByProduct,
@@ -11,12 +11,12 @@ import {
 
 const router = Router();
 
-router.get("/", getAllProductReviews);
+// router.get("/", getAllProductReviews);
 router.get("/:id", getProductReviewById);
 router.get("/user/:userId/reviews", getReviewsByUser); 
 router.get("/product/:productId/reviews", getReviewsByProduct); 
-router.put("/status", updateProductReviewStatus);
+// router.put("/status", updateProductReviewStatus);
 router.put("/submit", submitProductReview); 
-router.delete("/:id", deleteProductReview);
+// router.delete("/:id", deleteProductReview);
 
 export default router;

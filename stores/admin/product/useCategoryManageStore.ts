@@ -1,13 +1,13 @@
 import { ref, reactive, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { categoriesAPI } from "@/services/v1/categories-product.service";
+import { categoriesAPI } from "@/services/v1/admin/categories-product.service";
 import { Loading } from '@/utils/global'
 import type { CategoryProductDTO, CreateCategoryProductDTO, UpdateCategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { showSuccess, showWarning, showConfirm } from "@/utils/toast";
-import { useProductCategory } from '@/composables/product/useProductCategory'
-import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree'
-import { useProductCategoryDetail } from '@/composables/product/useProductCategoryDetail'
+import { useAdminProductCategory } from '@/composables/product/useAdminProductCategory'
+import { useAdminProductCategoryTree } from '@/composables/product/useAdminProductCategoryTree'
+import { useAdminProductCategoryDetail } from '@/composables/product/useAdminProductCategoryDetail'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
@@ -17,11 +17,10 @@ import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 
 export const useCategoryManageStore = defineStore("CategoryManage", () => {
 
-  const { getListCategoryAll, fetchCategoryList } = useProductCategory()
-  const { getListCategoryAllTree, fetchCategoryListTree } = useProductCategoryTree()
-  const { getProductCategoryDetail, fetchProductCategoryDetail } = useProductCategoryDetail()
+  const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
+  const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
+  const { getProductCategoryDetail, fetchProductCategoryDetail } = useAdminProductCategoryDetail()
   const storeFileManage = useFileManageFolderStore();
-
 
   const defaultForm: CreateCategoryProductDTO = {
     categoryName: '',
@@ -205,7 +204,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     Loading(true);
     try {
       const newCategory = {...updateCategoryItem}
-      console.log(newCategory)
+     
       const data = await categoriesAPI.update(newCategory.id, newCategory)
       if(data.code === 0){
         showSuccess(data.message)

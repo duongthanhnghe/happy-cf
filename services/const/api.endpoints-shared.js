@@ -1,8 +1,8 @@
 export const API_ENDPOINTS_SHARED = {
-  ORDERS: {
-    LIST_STATUS: '/orders/status',
-    LIST_PAYMENTS: '/orders/payments',
-  },
+  // ORDERS: {
+  //   LIST_STATUS: '/orders/status',
+  //   LIST_PAYMENTS: '/orders/payments',
+  // },
   USERS: {
     LIST_MEMBERSHIP_LEVEL: '/auth/membership-level',
     GET_MEMBERSHIP_LEVEL_BY_ID: (id) => `/auth/membership-level/${id}`,

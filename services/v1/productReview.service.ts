@@ -4,31 +4,31 @@ import type { ProductReviewPaginationDTO, ProductReviewDTO, SubmitProductReviewB
 import type { ApiResponse } from '@server/types/common/api-response';
 
 export const productReviewAPI = {
-  getAll: async (
-    page = 1,
-    limit = 10
-  ): Promise<ProductReviewPaginationDTO> => {
-    try {
-      const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.LIST}?page=${page}&limit=${limit}`
-      );
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      console.error("Error fetching product reviews:", err);
-      return {
-        code: 1,
-        message: "Failed to fetch orders",
-        data: [],
-        pagination: {
-          total: 0,
-          totalPages: 0,
-          page: 1,
-          limit,
-        },
-      }
-    }
-  },
+  // getAll: async (
+  //   page = 1,
+  //   limit = 10
+  // ): Promise<ProductReviewPaginationDTO> => {
+  //   try {
+  //     const response = await fetch(
+  //       `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.LIST}?page=${page}&limit=${limit}`
+  //     );
+  //     const data = await response.json();
+  //     return data;
+  //   } catch (err) {
+  //     console.error("Error fetching product reviews:", err);
+  //     return {
+  //       code: 1,
+  //       message: "Failed to fetch orders",
+  //       data: [],
+  //       pagination: {
+  //         total: 0,
+  //         totalPages: 0,
+  //         page: 1,
+  //         limit,
+  //       },
+  //     }
+  //   }
+  // },
 
   getById: async (id: string): Promise<ApiResponse<ProductReviewWithProductDTO>> => {
     try {
@@ -48,68 +48,67 @@ export const productReviewAPI = {
     }
   },
 
+  // updateStatus: async (id: string, status: string): Promise<ApiResponse<ProductReviewDTO>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.UPDATE_STATUS}`, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({id,status}),
+  //     });
 
-  updateStatus: async (id: string, status: string): Promise<ApiResponse<ProductReviewDTO>> => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.UPDATE_STATUS}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id,status}),
-      });
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       return {
+  //         code: 1,
+  //         message: errorData.message || 'Failed to update product review status',
+  //         data: undefined as any,
+  //       };
+  //     }
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        return {
-          code: 1,
-          message: errorData.message || 'Failed to update product review status',
-          data: undefined as any,
-        };
-      }
+  //     const data: ApiResponse<ProductReviewDTO> = await response.json();
+  //     return data;
+  //   } catch (err) {
+  //     console.error('Error updating product review status:', err);
+  //     return {
+  //       code: 1,
+  //       message: 'Unexpected error while updating product review status',
+  //       data: undefined as any,
+  //     };
+  //   }
+  // },
 
-      const data: ApiResponse<ProductReviewDTO> = await response.json();
-      return data;
-    } catch (err) {
-      console.error('Error updating product review status:', err);
-      return {
-        code: 1,
-        message: 'Unexpected error while updating product review status',
-        data: undefined as any,
-      };
-    }
-  },
+  // /**
+  //  * Xóa một đánh giá sản phẩm theo ID
+  //  */
+  // delete: async (id: string): Promise<ApiResponse<null>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.DELETE(id)}`, {
+  //       method: 'DELETE',
+  //     });
 
-  /**
-   * Xóa một đánh giá sản phẩm theo ID
-   */
-  delete: async (id: string): Promise<ApiResponse<null>> => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.DELETE(id)}`, {
-        method: 'DELETE',
-      });
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       return {
+  //         code: 1,
+  //         message: errorData.message || `Failed to delete product review with ID ${id}`,
+  //         data: null,
+  //       };
+  //     }
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        return {
-          code: 1,
-          message: errorData.message || `Failed to delete product review with ID ${id}`,
-          data: null,
-        };
-      }
-
-      return {
-        code: 0,
-        message: 'Product review deleted successfully',
-        data: null,
-      };
-    } catch (err) {
-      console.error(`Error deleting product review with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: `Unexpected error while deleting product review with ID ${id}`,
-        data: null,
-      };
-    }
-  },
+  //     return {
+  //       code: 0,
+  //       message: 'Product review deleted successfully',
+  //       data: null,
+  //     };
+  //   } catch (err) {
+  //     console.error(`Error deleting product review with ID ${id}:`, err);
+  //     return {
+  //       code: 1,
+  //       message: `Unexpected error while deleting product review with ID ${id}`,
+  //       data: null,
+  //     };
+  //   }
+  // },
 
   submitReview: async (bodyData: SubmitProductReviewBody): Promise<ApiResponse<ProductReviewDTO>> => {
     try {
@@ -158,6 +157,17 @@ export const productReviewAPI = {
           page: 1,
           limit,
         },
+        summary: {
+          averageRating: 0,
+          totalReviews: 0,
+          ratingsBreakdown: {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+          },
+        }
       }
     }
   },
@@ -189,6 +199,17 @@ export const productReviewAPI = {
           page,
           limit,
         },
+        summary: {
+          averageRating: 0,
+          totalReviews: 0,
+          ratingsBreakdown: {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+          },
+        }
       };
     }
   },

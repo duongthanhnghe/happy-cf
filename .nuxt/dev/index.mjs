@@ -7,12 +7,12 @@ import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/ttcenter/happy-cf/node_modules/@vue/shared/dist/shared.cjs.js';
 import express, { Router } from 'file:///Users/ttcenter/happy-cf/node_modules/express/index.js';
 import fs, { promises } from 'node:fs';
+import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
+import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
 import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
 import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
 import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
 import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
-import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
-import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
 import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
 import nodemailer from 'file:///Users/ttcenter/happy-cf/node_modules/nodemailer/lib/nodemailer.js';
 import { OAuth2Client } from 'file:///Users/ttcenter/happy-cf/node_modules/google-auth-library/build/src/index.js';
@@ -1551,40 +1551,58 @@ async function getIslandContext(event) {
   return ctx;
 }
 
-const _lazy_sV2D5B = () => Promise.resolve().then(function () { return aboutRouter; });
 const _lazy_WZOimk = () => Promise.resolve().then(function () { return addressesRouter; });
+const _lazy_tuVKNW = () => Promise.resolve().then(function () { return aboutRouter; });
+const _lazy_wad1E_ = () => Promise.resolve().then(function () { return bannerRouter$1; });
+const _lazy_TqIHqT = () => Promise.resolve().then(function () { return categoriesNewsRouter$1; });
+const _lazy_rYJmrv = () => Promise.resolve().then(function () { return categoriesProductRouter$1; });
+const _lazy_ZkwUyZ = () => Promise.resolve().then(function () { return index$2; });
+const _lazy_uLsZkj = () => Promise.resolve().then(function () { return orderManageRouter$1; });
+const _lazy_xiyN0M = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
+const _lazy_keFZb5 = () => Promise.resolve().then(function () { return postsNewsRouter$1; });
+const _lazy_H3u2OJ = () => Promise.resolve().then(function () { return productReviewRouter$1; });
+const _lazy_AInuxj = () => Promise.resolve().then(function () { return productRouter$1; });
+const _lazy_NI8dax = () => Promise.resolve().then(function () { return settingRouter; });
 const _lazy_6thR5q = () => Promise.resolve().then(function () { return authRouter; });
 const _lazy_5GTSlq = () => Promise.resolve().then(function () { return bannerRouter; });
 const _lazy_ndfMJ7 = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
 const _lazy_5F7aiU = () => Promise.resolve().then(function () { return categoriesProductRouter; });
-const _lazy_dHW32q = () => Promise.resolve().then(function () { return fileManageRouter; });
 const _lazy_Snf5SD = () => Promise.resolve().then(function () { return index; });
-const _lazy_rcy2ED = () => Promise.resolve().then(function () { return locationRouter; });
 const _lazy_Ti7wbR = () => Promise.resolve().then(function () { return orderManageRouter; });
-const _lazy_KdF2MU = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
 const _lazy_soYMBM = () => Promise.resolve().then(function () { return postsNewsRouter; });
 const _lazy_AH2XbG = () => Promise.resolve().then(function () { return productReviewRouter; });
 const _lazy_FuVwdC = () => Promise.resolve().then(function () { return productRouter; });
-const _lazy__dgT0Y = () => Promise.resolve().then(function () { return settingRouter; });
+const _lazy_yozqhu = () => Promise.resolve().then(function () { return fileManageRouter; });
+const _lazy_qiGXOx = () => Promise.resolve().then(function () { return index$1; });
+const _lazy_QCha66 = () => Promise.resolve().then(function () { return locationRouter; });
 const _lazy_wB4Btu = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _uxO0JW, lazy: false, middleware: true, method: undefined },
-  { route: '/v1/aboutRouter', handler: _lazy_sV2D5B, lazy: true, middleware: false, method: undefined },
   { route: '/v1/addressesRouter', handler: _lazy_WZOimk, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/aboutRouter', handler: _lazy_tuVKNW, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/bannerRouter', handler: _lazy_wad1E_, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/categoriesNewsRouter', handler: _lazy_TqIHqT, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/categoriesProductRouter', handler: _lazy_rYJmrv, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin', handler: _lazy_ZkwUyZ, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/orderManageRouter', handler: _lazy_uLsZkj, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/paymentTransactionRoutes', handler: _lazy_xiyN0M, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/postsNewsRouter', handler: _lazy_keFZb5, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/productReviewRouter', handler: _lazy_H3u2OJ, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/productRouter', handler: _lazy_AInuxj, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/settingRouter', handler: _lazy_NI8dax, lazy: true, middleware: false, method: undefined },
   { route: '/v1/authRouter', handler: _lazy_6thR5q, lazy: true, middleware: false, method: undefined },
   { route: '/v1/bannerRouter', handler: _lazy_5GTSlq, lazy: true, middleware: false, method: undefined },
   { route: '/v1/categoriesNewsRouter', handler: _lazy_ndfMJ7, lazy: true, middleware: false, method: undefined },
   { route: '/v1/categoriesProductRouter', handler: _lazy_5F7aiU, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/fileManageRouter', handler: _lazy_dHW32q, lazy: true, middleware: false, method: undefined },
   { route: '/v1', handler: _lazy_Snf5SD, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/locationRouter', handler: _lazy_rcy2ED, lazy: true, middleware: false, method: undefined },
   { route: '/v1/orderManageRouter', handler: _lazy_Ti7wbR, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/paymentTransactionRoutes', handler: _lazy_KdF2MU, lazy: true, middleware: false, method: undefined },
   { route: '/v1/postsNewsRouter', handler: _lazy_soYMBM, lazy: true, middleware: false, method: undefined },
   { route: '/v1/productReviewRouter', handler: _lazy_AH2XbG, lazy: true, middleware: false, method: undefined },
   { route: '/v1/productRouter', handler: _lazy_FuVwdC, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/settingRouter', handler: _lazy__dgT0Y, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/shared/fileManageRouter', handler: _lazy_yozqhu, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/shared', handler: _lazy_qiGXOx, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/shared/locationRouter', handler: _lazy_QCha66, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_error', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined }
@@ -1915,161 +1933,6 @@ const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: styles
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const ListImageSchema$1 = new Schema(
-  {
-    id: { type: String, required: true },
-    src: { type: String, required: true }
-  },
-  { _id: false }
-);
-const AboutSchema = new Schema(
-  {
-    title: { type: String, required: true },
-    summaryContent: { type: String },
-    description: { type: String },
-    image: { type: String, required: true },
-    listImage: { type: [ListImageSchema$1], default: [] },
-    order: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true }
-  },
-  { timestamps: true }
-);
-const AboutEntity = model("About", AboutSchema, "about");
-
-function toAboutDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    title: entity.title,
-    description: entity.description,
-    summaryContent: entity.summaryContent,
-    image: entity.image,
-    listImage: entity.listImage,
-    order: entity.order,
-    isActive: entity.isActive,
-    createdAt: entity.createdAt.toISOString(),
-    updatedAt: entity.updatedAt.toISOString()
-  };
-}
-const toAboutListDTO = (about) => {
-  return about.map(toAboutDTO);
-};
-
-const getAllAbout = async (_, res) => {
-  try {
-    const items = await AboutEntity.find().sort({ order: 1 });
-    return res.json({ code: 0, data: toAboutListDTO(items) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getAboutById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await AboutEntity.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "About kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, data: toAboutDTO(item) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const createAbout = async (req, res) => {
-  try {
-    const { title, image } = req.body;
-    if (!title || !image) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu title ho\u1EB7c image" });
-    }
-    const lastItem = await AboutEntity.findOne().sort({ order: -1 });
-    const maxOrder = lastItem ? lastItem.order : 0;
-    const newItem = new AboutEntity({
-      ...req.body,
-      order: maxOrder + 1
-    });
-    await newItem.save();
-    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toAboutDTO(newItem) });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const updateAbout = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updated = await AboutEntity.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updated) {
-      return res.status(404).json({ code: 1, message: "About kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toAboutDTO(updated) });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const deleteAbout = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = await AboutEntity.findByIdAndDelete(id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "About kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updateOrder$3 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { order } = req.body;
-    const currentItem = await AboutEntity.findById(id);
-    if (!currentItem) {
-      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const existingItem = await AboutEntity.findOne({ order });
-    if (existingItem) {
-      const oldOrder = currentItem.order;
-      existingItem.order = oldOrder;
-      await existingItem.save();
-    }
-    currentItem.order = order;
-    await currentItem.save();
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const toggleActive$6 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await AboutEntity.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "about kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    item.isActive = !item.isActive;
-    await item.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
-      data: toAboutDTO(item)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-
-const router$e = Router();
-router$e.get("/", getAllAbout);
-router$e.get("/:id", getAboutById);
-router$e.post("/", createAbout);
-router$e.put("/:id", updateAbout);
-router$e.delete("/:id", deleteAbout);
-router$e.patch("/updateOrder/:id", updateOrder$3);
-router$e.patch("/toggleActive/:id", toggleActive$6);
-
-const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$e
-}, Symbol.toStringTag, { value: 'Module' }));
-
 const AddressSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -2221,18 +2084,1068 @@ const getDefaultAddressByUserId = async (req, res) => {
   }
 };
 
-const router$d = Router();
-router$d.get("/default/:userId", getDefaultAddressByUserId);
-router$d.get("/user/:userId", getAllAddress);
-router$d.get("/:id", getAddressById);
-router$d.post("/", createAddress);
-router$d.put("/:id", updateAddress);
-router$d.delete("/:id", deleteAddress);
-router$d.post("/:id/set-default", setAddressDefault);
+const router$n = Router();
+router$n.get("/default/:userId", getDefaultAddressByUserId);
+router$n.get("/user/:userId", getAllAddress);
+router$n.get("/:id", getAddressById);
+router$n.post("/", createAddress);
+router$n.put("/:id", updateAddress);
+router$n.delete("/:id", deleteAddress);
+router$n.post("/:id/set-default", setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$d
+  default: router$n
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const ListImageSchema$1 = new Schema(
+  {
+    id: { type: String, required: true },
+    src: { type: String, required: true }
+  },
+  { _id: false }
+);
+const AboutSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    summaryContent: { type: String },
+    description: { type: String },
+    image: { type: String, required: true },
+    listImage: { type: [ListImageSchema$1], default: [] },
+    order: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true }
+  },
+  { timestamps: true }
+);
+const AboutEntity = model("About", AboutSchema, "about");
+
+function toAboutDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    title: entity.title,
+    description: entity.description,
+    summaryContent: entity.summaryContent,
+    image: entity.image,
+    listImage: entity.listImage,
+    order: entity.order,
+    isActive: entity.isActive,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString()
+  };
+}
+const toAboutListDTO = (about) => {
+  return about.map(toAboutDTO);
+};
+
+const getAllAbout = async (_, res) => {
+  try {
+    const items = await AboutEntity.find().sort({ order: 1 });
+    return res.json({ code: 0, data: toAboutListDTO(items) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAboutById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await AboutEntity.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "About kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toAboutDTO(item) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createAbout = async (req, res) => {
+  try {
+    const { title, image } = req.body;
+    if (!title || !image) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu title ho\u1EB7c image" });
+    }
+    const lastItem = await AboutEntity.findOne().sort({ order: -1 });
+    const maxOrder = lastItem ? lastItem.order : 0;
+    const newItem = new AboutEntity({
+      ...req.body,
+      order: maxOrder + 1
+    });
+    await newItem.save();
+    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toAboutDTO(newItem) });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const updateAbout = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await AboutEntity.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ code: 1, message: "About kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toAboutDTO(updated) });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const deleteAbout = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await AboutEntity.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "About kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateOrder$3 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order } = req.body;
+    const currentItem = await AboutEntity.findById(id);
+    if (!currentItem) {
+      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const existingItem = await AboutEntity.findOne({ order });
+    if (existingItem) {
+      const oldOrder = currentItem.order;
+      existingItem.order = oldOrder;
+      await existingItem.save();
+    }
+    currentItem.order = order;
+    await currentItem.save();
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleActive$7 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await AboutEntity.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "about kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.isActive = !item.isActive;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toAboutDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$m = Router();
+router$m.get("/", getAllAbout);
+router$m.get("/:id", getAboutById);
+router$m.post("/", createAbout);
+router$m.put("/:id", updateAbout);
+router$m.delete("/:id", deleteAbout);
+router$m.patch("/updateOrder/:id", updateOrder$3);
+router$m.patch("/toggleActive/:id", toggleActive$7);
+
+const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$m
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const BannerSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String },
+    image: { type: String, required: true },
+    order: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true }
+  },
+  { timestamps: true }
+);
+const BannerEntity = model("Banner", BannerSchema, "banners");
+
+function toBannerDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    title: entity.title,
+    description: entity.description,
+    image: entity.image,
+    order: entity.order,
+    isActive: entity.isActive,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString()
+  };
+}
+const toBannerListDTO = (banners) => {
+  return banners.map(toBannerDTO);
+};
+
+const getAllBanners$1 = async (_, res) => {
+  try {
+    const banners = await BannerEntity.find().sort({ order: 1 });
+    return res.json({ code: 0, data: toBannerListDTO(banners) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getBannerById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const banner = await BannerEntity.findById(id);
+    if (!banner) {
+      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toBannerDTO(banner) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createBanner = async (req, res) => {
+  try {
+    const { title, description, image, isActive } = req.body;
+    if (!title || !image) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu title ho\u1EB7c image" });
+    }
+    const lastItem = await BannerEntity.findOne().sort({ order: -1 });
+    const maxOrder = lastItem ? lastItem.order : 0;
+    const newItem = new BannerEntity({
+      ...req.body,
+      order: maxOrder + 1
+    });
+    await newItem.save();
+    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toBannerDTO(newItem) });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const updateBanner = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await BannerEntity.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toBannerDTO(updated) });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const deleteBanner = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await BannerEntity.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateOrder$2 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order } = req.body;
+    const currentItem = await BannerEntity.findById(id);
+    if (!currentItem) {
+      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const existingItem = await BannerEntity.findOne({ order });
+    if (existingItem) {
+      const oldOrder = currentItem.order;
+      existingItem.order = oldOrder;
+      await existingItem.save();
+    }
+    currentItem.order = order;
+    await currentItem.save();
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleActive$6 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await BannerEntity.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.isActive = !item.isActive;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toBannerDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$l = Router();
+router$l.get("/", getAllBanners$1);
+router$l.get("/:id", getBannerById);
+router$l.post("/", createBanner);
+router$l.put("/:id", updateBanner);
+router$l.delete("/:id", deleteBanner);
+router$l.patch("/updateOrder/:id", updateOrder$2);
+router$l.patch("/toggleActive/:id", toggleActive$6);
+
+const bannerRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$l
+}, Symbol.toStringTag, { value: 'Module' }));
+
+function generateSlug(text) {
+  return text.toLowerCase().replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, "a").replace(/[èéẹẻẽêềếệểễ]/g, "e").replace(/[ìíịỉĩ]/g, "i").replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, "o").replace(/[ùúụủũưừứựửữ]/g, "u").replace(/[ỳýỵỷỹ]/g, "y").replace(/đ/g, "d").replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+}
+
+const PostNewsSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String },
+    image: { type: String, required: true },
+    summaryContent: { type: String },
+    isActive: { type: Boolean, default: true },
+    categoryId: { type: Types.ObjectId, ref: "CategoryNews", required: true },
+    views: { type: Number, default: 0 },
+    author: { type: String },
+    titleSEO: {
+      type: String,
+      trim: true
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
+  },
+  { timestamps: true }
+);
+PostNewsSchema.index({ slug: 1 }, { unique: true });
+PostNewsSchema.index({ isActive: 1, createdAt: -1 });
+PostNewsSchema.index({ categoryId: 1, isActive: 1 });
+PostNewsSchema.pre("save", function(next) {
+  if (!this.slug && this.titleSEO) {
+    this.slug = generateSlug(this.titleSEO);
+  }
+  next();
+});
+const PostNewsModel = model("Post", PostNewsSchema, "posts");
+const CategoryNewsSchema = new Schema(
+  {
+    categoryName: { type: String, required: true },
+    description: { type: String },
+    image: { type: String },
+    summaryContent: { type: String },
+    order: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true },
+    titleSEO: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
+  },
+  { timestamps: true }
+);
+CategoryNewsSchema.index({ slug: 1 }, { unique: true });
+CategoryNewsSchema.index({ isActive: 1, order: 1 });
+CategoryNewsSchema.pre("save", function(next) {
+  if (!this.slug && this.titleSEO) {
+    this.slug = generateSlug(this.titleSEO);
+  }
+  next();
+});
+const CategoryNewsModel = model("CategoryNews", CategoryNewsSchema, "post_categories");
+
+function toPostNewsDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    title: entity.title,
+    summaryContent: entity.summaryContent,
+    description: entity.description,
+    image: entity.image,
+    isActive: entity.isActive,
+    categoryId: entity.categoryId.toString(),
+    views: entity.views,
+    author: entity.author,
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString()
+  };
+}
+const toPostNewsListDTO = (items) => {
+  return items.map(toPostNewsDTO);
+};
+function toCategoryNewsDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    categoryName: entity.categoryName,
+    summaryContent: entity.summaryContent,
+    description: entity.description,
+    image: entity.image,
+    order: entity.order,
+    isActive: entity.isActive,
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString()
+  };
+}
+const toCategoryNewsListDTO = (items) => {
+  return items.map(toCategoryNewsDTO);
+};
+
+const getAllCategories$3 = async (_, res) => {
+  try {
+    const categories = await CategoryNewsModel.find().sort({ order: 1 });
+    return res.json({
+      code: 0,
+      data: toCategoryNewsListDTO(categories)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getCategoriesById$3 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = await CategoryNewsModel.findById(id);
+    if (!category) {
+      return res.status(404).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({
+      code: 0,
+      data: toCategoryNewsDTO(category)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createCategories$1 = async (req, res) => {
+  try {
+    const { categoryName } = req.body;
+    if (!categoryName) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu categoryName" });
+    }
+    const lastItem = await CategoryNewsModel.findOne().sort({ order: -1 });
+    const maxOrder = lastItem ? lastItem.order : 0;
+    const newItem = new CategoryNewsModel({
+      ...req.body,
+      order: maxOrder + 1
+    });
+    await newItem.save();
+    return res.status(201).json({
+      code: 0,
+      message: "T\u1EA1o th\xE0nh c\xF4ng",
+      data: toCategoryNewsDTO(newItem)
+    });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const updateCategories$1 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await CategoryNewsModel.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng",
+      data: toCategoryNewsDTO(updated)
+    });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const deleteCategories$1 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const newsCount = await PostNewsModel.countDocuments({ categoryId: id });
+    if (newsCount > 0) {
+      return res.status(400).json({
+        code: 1,
+        message: "Kh\xF4ng th\u1EC3 xo\xE1, v\u1EABn c\xF2n b\xE0i vi\u1EBFt thu\u1ED9c nh\xF3m n\xE0y"
+      });
+    }
+    const deleted = await CategoryNewsModel.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateOrder$1 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order } = req.body;
+    const currentItem = await CategoryNewsModel.findById(id);
+    if (!currentItem) {
+      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const existingItem = await CategoryNewsModel.findOne({ order });
+    if (existingItem) {
+      const oldOrder = currentItem.order;
+      existingItem.order = oldOrder;
+      await existingItem.save();
+    }
+    currentItem.order = order;
+    await currentItem.save();
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleActive$5 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await CategoryNewsModel.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "category kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.isActive = !item.isActive;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toCategoryNewsDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$k = Router();
+router$k.get("/", getAllCategories$3);
+router$k.get("/:id", getCategoriesById$3);
+router$k.post("/", createCategories$1);
+router$k.put("/:id", updateCategories$1);
+router$k.delete("/:id", deleteCategories$1);
+router$k.patch("/toggleActive/:id", toggleActive$5);
+router$k.patch("/updateOrder/:id", updateOrder$1);
+
+const categoriesNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$k
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const VariantSchema = new Schema(
+  {
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    priceModifier: { type: Number, default: null },
+    inStock: { type: Boolean, default: true }
+  },
+  { _id: false }
+);
+const OptionSchema = new Schema(
+  {
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    required: { type: Boolean, default: false },
+    variants: { type: [VariantSchema], default: [] }
+  },
+  { _id: false }
+);
+const ListImageSchema = new Schema(
+  {
+    id: { type: String, required: true },
+    src: { type: String, required: true }
+  },
+  { _id: false }
+);
+const ProductSchema = new Schema(
+  {
+    productName: { type: String, required: true, trim: true },
+    description: { type: String },
+    summaryContent: { type: String },
+    price: { type: Number, default: null },
+    priceDiscounts: { type: Number, default: null },
+    amount: { type: Number, default: null },
+    amountOrder: { type: Number, default: 0 },
+    image: { type: String, required: true },
+    listImage: { type: [ListImageSchema], default: [] },
+    options: { type: [OptionSchema], default: [] },
+    categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
+    weight: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true },
+    titleSEO: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
+  },
+  { timestamps: true }
+);
+const CategoryProductSchema = new Schema(
+  {
+    categoryName: { type: String, required: true, trim: true },
+    description: { type: String },
+    image: { type: String, required: true },
+    order: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true },
+    parentId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", default: null },
+    titleSEO: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    descriptionSEO: {
+      type: String,
+      maxlength: 160,
+      trim: true
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
+    },
+    keywords: {
+      type: [String],
+      default: []
+    }
+  },
+  { timestamps: true }
+);
+const ProductEntity = model("Product", ProductSchema, "products");
+const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");
+
+function toVariantDTO(entity) {
+  return {
+    id: entity.id,
+    name: entity.name,
+    priceModifier: entity.priceModifier,
+    inStock: entity.inStock
+  };
+}
+function toOptionDTO(entity) {
+  return {
+    id: entity.id,
+    name: entity.name,
+    required: entity.required,
+    variants: entity.variants.map(toVariantDTO)
+  };
+}
+function toProductDTO(entity) {
+  var _a, _b, _c;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    productName: entity.productName,
+    description: entity.description || "",
+    summaryContent: entity.summaryContent || "",
+    price: entity.price,
+    priceDiscounts: entity.priceDiscounts,
+    amount: entity.amount,
+    amountOrder: entity.amountOrder,
+    image: entity.image,
+    listImage: entity.listImage,
+    options: entity.options.map(toOptionDTO),
+    categoryId: entity.categoryId ? entity.categoryId.toString() : "",
+    weight: entity.weight,
+    isActive: entity.isActive,
+    createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
+    updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || "",
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords
+  };
+}
+const toProductListDTO = (list) => list.map(toProductDTO);
+function toCategoryProductDTO(entity) {
+  var _a, _b, _c;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    categoryName: entity.categoryName,
+    description: entity.description || "",
+    image: entity.image,
+    order: entity.order,
+    isActive: entity.isActive,
+    parentId: entity.parentId ? entity.parentId.toString() : "",
+    // SEO
+    titleSEO: entity.titleSEO,
+    descriptionSEO: entity.descriptionSEO,
+    slug: entity.slug,
+    keywords: entity.keywords,
+    createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
+    updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || ""
+  };
+}
+const toCategoryProductListDTO = (list) => list.map(toCategoryProductDTO);
+
+function buildCategoryTree$1(list) {
+  const map = /* @__PURE__ */ new Map();
+  list.forEach((cat) => {
+    map.set(cat.id, { ...cat, children: [] });
+  });
+  const tree = [];
+  map.forEach((cat) => {
+    if (cat.parentId) {
+      const parent = map.get(cat.parentId);
+      if (parent) {
+        parent.children.push(cat);
+      } else {
+        tree.push(cat);
+      }
+    } else {
+      tree.push(cat);
+    }
+  });
+  return tree;
+}
+const getAllCategoriesTree$1 = async (_, res) => {
+  try {
+    const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
+    const dtoList = toCategoryProductListDTO(categories);
+    const tree = buildCategoryTree$1(dtoList);
+    return res.json({ code: 0, data: tree });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAllCategories$2 = async (_, res) => {
+  try {
+    const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
+    return res.json({ code: 0, data: toCategoryProductListDTO(categories) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getCategoriesById$2 = async (req, res) => {
+  try {
+    if (!Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    const category = await CategoryProductEntity.findById(req.params.id).lean();
+    if (!category) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toCategoryProductDTO(category) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createCategories = async (req, res) => {
+  try {
+    const { categoryName, image, parentId } = req.body;
+    if (!categoryName || !image) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu categoryName ho\u1EB7c image" });
+    }
+    if (parentId && !Types.ObjectId.isValid(parentId)) {
+      return res.status(400).json({ code: 1, message: "parentId kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    if (parentId) {
+      const parent = await CategoryProductEntity.findById(parentId);
+      if (!parent) {
+        return res.status(400).json({ code: 1, message: "Danh m\u1EE5c cha kh\xF4ng t\u1ED3n t\u1EA1i" });
+      }
+    }
+    const existed = await CategoryProductEntity.findOne({ categoryName });
+    if (existed) {
+      return res.status(400).json({ code: 1, message: "Danh m\u1EE5c \u0111\xE3 t\u1ED3n t\u1EA1i" });
+    }
+    const lastItem = await CategoryProductEntity.findOne().sort({ order: -1 });
+    const maxOrder = lastItem ? lastItem.order : 0;
+    const newItem = new CategoryProductEntity({
+      ...req.body,
+      parentId: parentId || null,
+      order: maxOrder + 1
+    });
+    await newItem.save();
+    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toCategoryProductDTO(newItem) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateCategories = async (req, res) => {
+  try {
+    if (!Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    if (req.body.parentId === "") {
+      delete req.body.parentId;
+    }
+    const { parentId } = req.body;
+    if (parentId && !Types.ObjectId.isValid(parentId)) {
+      return res.status(400).json({ code: 1, message: "parentId kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    if (parentId) {
+      const parent = await CategoryProductEntity.findById(parentId);
+      if (!parent) {
+        return res.status(400).json({ code: 1, message: "Danh m\u1EE5c cha kh\xF4ng t\u1ED3n t\u1EA1i" });
+      }
+    }
+    const updatedCategory = await CategoryProductEntity.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    ).lean();
+    if (!updatedCategory) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toCategoryProductDTO(updatedCategory) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deleteCategories = async (req, res) => {
+  try {
+    if (!Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    const categoryId = new Types.ObjectId(req.params.id);
+    const hasChildren = await CategoryProductEntity.exists({ parentId: categoryId });
+    if (hasChildren) {
+      return res.json({
+        code: 1,
+        message: "Kh\xF4ng th\u1EC3 x\xF3a danh m\u1EE5c v\xEC v\u1EABn c\xF2n danh m\u1EE5c con"
+      });
+    }
+    const hasProducts = await ProductEntity.exists({ categoryId });
+    if (hasProducts) {
+      return res.json({
+        code: 1,
+        message: "Kh\xF4ng th\u1EC3 x\xF3a danh m\u1EE5c v\xEC v\u1EABn c\xF2n s\u1EA3n ph\u1EA9m trong danh m\u1EE5c n\xE0y"
+      });
+    }
+    const deletedCategory = await CategoryProductEntity.findByIdAndDelete(categoryId);
+    if (!deletedCategory) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order } = req.body;
+    const currentItem = await CategoryProductEntity.findById(id);
+    if (!currentItem) {
+      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const existingItem = await CategoryProductEntity.findOne({ order });
+    if (existingItem) {
+      const oldOrder = currentItem.order;
+      existingItem.order = oldOrder;
+      await existingItem.save();
+    }
+    currentItem.order = order;
+    await currentItem.save();
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleActive$4 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await CategoryProductEntity.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.isActive = !item.isActive;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toCategoryProductDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$j = Router();
+router$j.get("/tree", getAllCategoriesTree$1);
+router$j.get("/", getAllCategories$2);
+router$j.get("/:id", getCategoriesById$2);
+router$j.post("/", createCategories);
+router$j.put("/:id", updateCategories);
+router$j.delete("/:id", deleteCategories);
+router$j.patch("/toggleActive/:id", toggleActive$4);
+router$j.patch("/updateOrder/:id", updateOrder);
+
+const categoriesProductRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$j
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const updateSettings = async (req, res) => {
+  try {
+    const filePath = path.join(process.cwd(), "./public/data/settings.json");
+    const oldData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const newData = { ...oldData, ...req.body || {} };
+    fs.writeFileSync(filePath, JSON.stringify(newData, null, 2), "utf8");
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: newData });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$i = Router();
+router$i.put("/update", updateSettings);
+
+const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$i
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const getAllPosts$1 = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    const query = {};
+    if (limit === -1) {
+      limit = await PostNewsModel.countDocuments(query);
+    }
+    const skip = (page - 1) * limit;
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(),
+      PostNewsModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPostsById$1 = async (req, res) => {
+  try {
+    const post = await PostNewsModel.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toPostNewsDTO(post) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createPosts$1 = async (req, res) => {
+  try {
+    const newPost = new PostNewsModel(req.body);
+    await newPost.save();
+    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toPostNewsDTO(newPost) });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const updatePosts$1 = async (req, res) => {
+  try {
+    const updated = await PostNewsModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toPostNewsDTO(updated) });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const deletePosts$1 = async (req, res) => {
+  try {
+    const deleted = await PostNewsModel.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleActive$3 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await PostNewsModel.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "item kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.isActive = !item.isActive;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toPostNewsDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$h = Router();
+router$h.get("/", getAllPosts$1);
+router$h.get("/:id", getPostsById$1);
+router$h.post("/", createPosts$1);
+router$h.put("/:id", updatePosts$1);
+router$h.delete("/:id", deletePosts$1);
+router$h.patch("/toggleActive/:id", toggleActive$3);
+
+const postsNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$h
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const MembershipSchema = new Schema(
@@ -2286,6 +3199,80 @@ const UserSchema = new Schema(
 UserSchema.plugin(mongoosePaginate);
 const UserModel = model("User", UserSchema, "users");
 
+const SelectedOptionsPushSchema = new Schema(
+  {
+    optionName: { type: String, required: true },
+    variantName: { type: String, required: true },
+    variantPrice: { type: Number, required: true }
+  },
+  { _id: false }
+);
+const CartItemsSchema = new Schema(
+  {
+    idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    priceDiscounts: { type: Number, required: true },
+    quantity: { type: Number, required: true },
+    note: { type: String },
+    selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
+    finalPriceDiscounts: { type: Number }
+  },
+  { _id: false }
+);
+const PaymentSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    description: { type: String },
+    image: { type: String },
+    method: { type: String }
+  },
+  { timestamps: true }
+);
+const OrderStatusSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    status: { type: String, required: true },
+    icon: { type: String },
+    index: { type: Number }
+  },
+  { timestamps: true }
+);
+const OrderSchema = new Schema(
+  {
+    code: { type: String, required: true },
+    time: { type: String, required: true },
+    address: { type: String, required: true },
+    provinceCode: { type: Number, required: true },
+    districtCode: { type: Number, required: true },
+    wardCode: { type: Number, required: true },
+    fullname: { type: String, required: true },
+    phone: { type: String, required: true },
+    note: { type: String },
+    paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
+    cartItems: { type: [CartItemsSchema], required: true },
+    totalPrice: { type: Number, required: true },
+    totalPriceSave: { type: Number, required: true },
+    totalPriceCurrent: { type: Number, required: true },
+    shippingFee: { type: Number, required: true },
+    status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
+    reward: {
+      points: { type: Number, default: 0 },
+      awarded: { type: Boolean, default: false },
+      awardedAt: { type: Date, default: null }
+    },
+    usedPoints: { type: Number, default: 0 },
+    pointsRefunded: { type: Boolean, default: false },
+    membershipDiscountRate: { type: Number, default: 0 },
+    membershipDiscountAmount: { type: Number, default: 0 }
+  },
+  { timestamps: true }
+);
+OrderSchema.plugin(mongoosePaginate);
+const PaymentEntity = model("Payment", PaymentSchema, "payments");
+const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
+const OrderEntity = model("Order", OrderSchema, "orders");
+
 const MembershipBenefitSchema = new Schema(
   {
     name: { type: String, required: true, unique: true },
@@ -2317,6 +3304,578 @@ const MembershipLevelModel = model(
   "membership_levels"
 );
 
+const PAYMENT_TRANSACTION_STATUS = {
+  PENDING: "pending",
+  PAID: "paid",
+  FAILED: "failed",
+  REFUNDED: "refunded"
+};
+const PaymentTransactionStatusText = {
+  [PAYMENT_TRANSACTION_STATUS.PENDING]: "Ch\u1EDD thanh to\xE1n",
+  [PAYMENT_TRANSACTION_STATUS.PAID]: "\u0110\xE3 thanh to\xE1n",
+  [PAYMENT_TRANSACTION_STATUS.FAILED]: "Thanh to\xE1n th\u1EA5t b\u1EA1i",
+  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "\u0110\xE3 ho\xE0n ti\u1EC1n"
+};
+const PaymentTransactionStatusColor = {
+  [PAYMENT_TRANSACTION_STATUS.PENDING]: "orange",
+  [PAYMENT_TRANSACTION_STATUS.PAID]: "green",
+  [PAYMENT_TRANSACTION_STATUS.FAILED]: "red",
+  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "blue"
+};
+
+function toPaymentTransactionDTO(entity) {
+  var _a, _b, _c, _d;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    orderId: ((_b = entity.orderId) == null ? void 0 : _b.toString()) || "",
+    amount: entity.amount,
+    method: entity.method,
+    status: entity.status,
+    statusText: PaymentTransactionStatusText[entity.status],
+    statusColor: PaymentTransactionStatusColor[entity.status],
+    createdAt: ((_c = entity.createdAt) == null ? void 0 : _c.toISOString()) || "",
+    updatedAt: ((_d = entity.updatedAt) == null ? void 0 : _d.toISOString()) || ""
+  };
+}
+const toPaymentTransactionListDTO = (list) => list.map(toPaymentTransactionDTO);
+
+function toPaymentDTO(entity) {
+  var _a;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    name: entity.name,
+    description: entity.description || "",
+    image: entity.image || "",
+    method: entity.method || null
+  };
+}
+const toPaymentListDTO = (payments) => payments.map(toPaymentDTO);
+function toOrderStatusDTO(entity) {
+  var _a;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    name: entity.name,
+    status: entity.status,
+    icon: entity.icon || "",
+    index: entity.index
+  };
+}
+const toOrderStatusListDTO = (list) => list.map(toOrderStatusDTO);
+function toOrderDTO(entity) {
+  var _a, _b, _c, _d, _e;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    code: entity.code,
+    time: entity.time,
+    address: entity.address,
+    fullname: entity.fullname,
+    provinceCode: entity.provinceCode,
+    districtCode: entity.districtCode,
+    wardCode: entity.wardCode,
+    phone: entity.phone,
+    note: entity.note || "",
+    paymentId: toPaymentDTO(entity.paymentId),
+    cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map(toCartItemDTO) : [],
+    totalPrice: entity.totalPrice,
+    totalPriceSave: entity.totalPriceSave,
+    totalPriceCurrent: entity.totalPriceCurrent,
+    shippingFee: entity.shippingFee,
+    status: toOrderStatusDTO(entity.status),
+    userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
+    transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
+    reward: entity.reward ? {
+      points: (_b = entity.reward.points) != null ? _b : 0,
+      awarded: (_c = entity.reward.awarded) != null ? _c : false,
+      awardedAt: entity.reward.awardedAt ? new Date(entity.reward.awardedAt).toISOString() : null
+    } : {
+      points: 0,
+      awarded: false,
+      awardedAt: null
+    },
+    usedPoints: entity.usedPoints,
+    pointsRefunded: entity.pointsRefunded,
+    membershipDiscountRate: entity.membershipDiscountRate,
+    membershipDiscountAmount: entity.membershipDiscountAmount,
+    createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
+    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || ""
+  };
+}
+const toOrderListDTO = (orders) => orders.map(toOrderDTO);
+function toCartItemDTO(entity) {
+  return {
+    idProduct: entity.idProduct ? new Types.ObjectId(entity.idProduct) : new Types.ObjectId(),
+    priceDiscounts: entity.priceDiscounts,
+    quantity: entity.quantity,
+    note: entity.note || "",
+    selectedOptionsPush: Array.isArray(entity.selectedOptionsPush) ? entity.selectedOptionsPush.map(toSelectedOptionDTO) : [],
+    finalPriceDiscounts: entity.finalPriceDiscounts
+  };
+}
+function toSelectedOptionDTO(entity) {
+  return {
+    optionName: entity.optionName,
+    variantName: entity.variantName,
+    variantPrice: entity.variantPrice
+  };
+}
+
+const ORDER_STATUS = {
+  PENDING: "68a93304c9f7de47a9f3a7e2",
+  CONFIRMED: "68a93304c9f7de47a9f3a7e3",
+  DELIVERING: "68a93304c9f7de47a9f3a7e4",
+  COMPLETED: "68a93304c9f7de47a9f3a7e5",
+  CANCELLED: "68a93304c9f7de47a9f3a7e6"
+};
+
+const PRODUCT_REVIEW_STATUS = {
+  PENDING: "pending",
+  APPROVED: "approved",
+  REJECTED: "rejected"
+};
+const ProductReviewStatusText = {
+  [PRODUCT_REVIEW_STATUS.PENDING]: "Ch\u01B0a \u0111\xE1nh gi\xE1",
+  [PRODUCT_REVIEW_STATUS.APPROVED]: "\u0110\xE3 \u0111\xE1nh gi\xE1",
+  [PRODUCT_REVIEW_STATUS.REJECTED]: "\u0110\xE3 b\u1ECB \u1EA9n"
+};
+const ProductReviewStatusColor = {
+  [PRODUCT_REVIEW_STATUS.PENDING]: "orange",
+  [PRODUCT_REVIEW_STATUS.APPROVED]: "green",
+  [PRODUCT_REVIEW_STATUS.REJECTED]: "red"
+};
+
+const ProductReviewSchema = new Schema(
+  {
+    orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    rating: { type: Number, required: true, min: 0, max: 5 },
+    comment: { type: String, default: "" },
+    images: { type: [String], default: [] },
+    status: { type: String, enum: Object.values(PRODUCT_REVIEW_STATUS), default: PRODUCT_REVIEW_STATUS.PENDING }
+  },
+  { timestamps: true }
+);
+ProductReviewSchema.plugin(mongoosePaginate);
+const ProductReviewEntity = model("ProductReview", ProductReviewSchema, "product_reviews");
+
+const getAllOrder = async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+    const numPage = Number(page);
+    let numLimit = Number(limit);
+    if (numLimit === -1) {
+      const orders = await OrderEntity.find({}).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
+      return res.json({
+        code: 0,
+        data: toOrderListDTO(orders),
+        pagination: {
+          page: 1,
+          limit: orders.length,
+          totalPages: 1,
+          total: orders.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        { path: "paymentId", model: "Payment" },
+        { path: "status", model: "OrderStatus" },
+        { path: "userId", model: "User" },
+        { path: "transaction", model: "PaymentTransaction" }
+      ]
+    };
+    const result = await OrderEntity.paginate({}, options);
+    return res.json({
+      code: 0,
+      data: toOrderListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch order", error });
+  }
+};
+const getOrderById$1 = async (req, res) => {
+  try {
+    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toOrderDTO(order) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deleteOrder = async (req, res) => {
+  try {
+    const deleted = await OrderEntity.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateOrderStatus = async (req, res) => {
+  var _a, _b;
+  try {
+    const { orderId, statusId } = req.body;
+    if (!orderId || !statusId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu orderId ho\u1EB7c statusId" });
+    }
+    const status = await OrderStatusEntity.findById(statusId);
+    if (!status) {
+      return res.status(404).json({ code: 1, message: "Status kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const order = await OrderEntity.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    if (((_a = order.status) == null ? void 0 : _a.toString()) === ORDER_STATUS.COMPLETED || ((_b = order.status) == null ? void 0 : _b.toString()) === ORDER_STATUS.CANCELLED) {
+      return res.status(400).json({
+        code: 1,
+        message: "\u0110\u01A1n h\xE0ng \u0111\xE3 ho\xE0n t\u1EA5t ho\u1EB7c \u0111\xE3 h\u1EE7y, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i tr\u1EA1ng th\xE1i n\u1EEFa"
+      });
+    }
+    order.status = statusId;
+    if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
+      const existingReviews = await ProductReviewEntity.find({ orderId });
+      if (existingReviews.length === 0) {
+        const reviews = order.cartItems.map((item) => ({
+          orderId,
+          userId: order.userId,
+          productId: item.idProduct,
+          rating: 0,
+          comment: null,
+          images: [],
+          status: "pending"
+        }));
+        await ProductReviewEntity.insertMany(reviews);
+      }
+    }
+    if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
+      await setPointAndUpgrade(order.userId.toString(), order.reward.points);
+      order.reward.awarded = true;
+      order.reward.awardedAt = /* @__PURE__ */ new Date();
+      await order.save();
+    }
+    if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
+      if (!order.pointsRefunded) {
+        const user = await UserModel.findById(order.userId);
+        if (user) {
+          user.membership.balancePoint += order.usedPoints;
+          await user.save();
+          order.pointsRefunded = true;
+        }
+      }
+    }
+    await order.save();
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
+  } catch (err) {
+    console.error("L\u1ED7i updateOrderStatus:", err);
+    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
+  }
+};
+const getAllStatus = async (_, res) => {
+  try {
+    const status = await OrderStatusEntity.find().sort({ index: 1 });
+    return res.json({ code: 0, data: toOrderStatusListDTO(status) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAllPayment = async (_, res) => {
+  try {
+    const payments = await PaymentEntity.find();
+    return res.json({ code: 0, data: toPaymentListDTO(payments) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const setPointAndUpgrade = async (userId, point) => {
+  var _a, _b, _c, _d;
+  const user = await UserModel.findById(userId);
+  if (!user) return null;
+  const levels = await MembershipLevelModel.find();
+  const newPoint = (((_a = user.membership) == null ? void 0 : _a.point) || 0) + point;
+  const newBalancePoint = (((_b = user.membership) == null ? void 0 : _b.balancePoint) || 0) + point;
+  const newLevel = levels.filter((level) => newPoint >= level.minPoint).sort((a, b) => b.minPoint - a.minPoint)[0];
+  const levelChanged = newLevel && ((_c = user.membership) == null ? void 0 : _c.level) !== newLevel.name;
+  if (newLevel) {
+    user.membership.level = newLevel.name;
+    user.membership.discountRate = (_d = newLevel.discountRate) != null ? _d : 0;
+  }
+  user.membership.point = newPoint;
+  user.membership.balancePoint = newBalancePoint;
+  await user.save();
+  return {
+    level: user.membership.level,
+    point: user.membership.point,
+    balancePoint: user.membership.balancePoint,
+    discountRate: user.membership.discountRate,
+    levelChanged
+  };
+};
+
+const router$g = Router();
+router$g.get("/", getAllOrder);
+router$g.get("/status", getAllStatus);
+router$g.get("/payments", getAllPayment);
+router$g.get("/:id", getOrderById$1);
+router$g.delete("/:id", deleteOrder);
+router$g.put("/status", updateOrderStatus);
+
+const orderManageRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$g
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const getAllProduct = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    const query = {};
+    if (limit === -1) {
+      limit = await ProductEntity.countDocuments(query);
+    }
+    const skip = (page - 1) * limit;
+    const [total, products] = await Promise.all([
+      ProductEntity.countDocuments(query),
+      ProductEntity.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toProductListDTO(products),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    console.error("Get all product error:", err);
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getProductById$1 = async (req, res) => {
+  try {
+    let product;
+    if (/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
+      product = await ProductEntity.findById(req.params.id);
+    } else {
+      product = await ProductEntity.findOne({ slug: req.params.id });
+    }
+    if (!product) {
+      return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toProductDTO(product) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createProduct = async (req, res) => {
+  try {
+    const data = req.body;
+    if (!(data == null ? void 0 : data.productName) || !(data == null ? void 0 : data.image) || !(data == null ? void 0 : data.categoryId) || !(data == null ? void 0 : data.price)) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu d\u1EEF li\u1EC7u" });
+    }
+    const categoryExists = await CategoryProductEntity.findById(data.categoryId);
+    if (!categoryExists) {
+      return res.status(400).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const newProduct = await ProductEntity.create({
+      ...data,
+      categoryId: new mongoose.Types.ObjectId(data.categoryId)
+    });
+    return res.status(201).json({
+      code: 0,
+      message: "T\u1EA1o th\xE0nh c\xF4ng",
+      data: toProductDTO(newProduct)
+    });
+  } catch (err) {
+    console.error("Create product error:", err);
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    if (data.categoryId) {
+      data.categoryId = new mongoose.Types.ObjectId(data.categoryId);
+    }
+    const updated = await ProductEntity.findByIdAndUpdate(id, data, { new: true });
+    if (!updated) {
+      return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng",
+      data: toProductDTO(updated)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deleteProduct = async (req, res) => {
+  try {
+    const deleted = await ProductEntity.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleActive$2 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await ProductEntity.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "product kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.isActive = !item.isActive;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toProductDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$f = Router();
+router$f.get("/", getAllProduct);
+router$f.post("/", createProduct);
+router$f.get("/:id", getProductById$1);
+router$f.put("/:id", updateProduct);
+router$f.delete("/:id", deleteProduct);
+router$f.patch("/toggleActive/:id", toggleActive$2);
+
+const productRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$f
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const PaymentTransactionSchema = new Schema(
+  {
+    orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
+    amount: { type: Number, required: true },
+    method: { type: String, enum: ["cash", "bank_transfer"], required: true },
+    status: {
+      type: String,
+      enum: Object.values(PAYMENT_TRANSACTION_STATUS),
+      default: PAYMENT_TRANSACTION_STATUS.PENDING
+    }
+  },
+  { timestamps: true }
+);
+PaymentTransactionSchema.plugin(mongoosePaginate);
+const PaymentTransactionEntity = model("PaymentTransaction", PaymentTransactionSchema);
+
+const createPaymentTransaction = async (req, res) => {
+  try {
+    const { orderId, amount, method } = req.body;
+    if (!orderId || !amount || !method) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu d\u1EEF li\u1EC7u b\u1EAFt bu\u1ED9c" });
+    }
+    const existingTransaction = await PaymentTransactionEntity.findOne({ orderId });
+    if (existingTransaction) {
+      return res.status(400).json({
+        code: 1,
+        message: "\u0110\u01A1n h\xE0ng n\xE0y \u0111\xE3 c\xF3 giao d\u1ECBch thanh to\xE1n"
+      });
+    }
+    const transaction = await PaymentTransactionEntity.create({
+      orderId,
+      amount,
+      method,
+      status: "pending"
+    });
+    await OrderEntity.findByIdAndUpdate(orderId, {
+      transaction: transaction._id
+    });
+    res.json({
+      code: 0,
+      data: transaction,
+      message: "T\u1EA1o giao d\u1ECBch th\xE0nh c\xF4ng"
+    });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updatePaymentTransactionStatus = async (req, res) => {
+  try {
+    const { transactionId, status } = req.body;
+    const transaction = await PaymentTransactionEntity.findByIdAndUpdate(
+      transactionId,
+      { status, updatedAt: /* @__PURE__ */ new Date() },
+      { new: true }
+    );
+    if (!transaction) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
+    }
+    res.json({ code: 0, data: transaction, message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng" });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPaymentTransactions = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status } = req.query;
+    const query = {};
+    if (status) query.status = status;
+    const result = await PaymentTransactionEntity.paginate(query, {
+      page: Number(page),
+      limit: Number(limit),
+      sort: { createdAt: -1 },
+      populate: "orderId"
+    });
+    res.json({
+      code: 0,
+      data: toPaymentTransactionListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deletePaymentTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const transaction = await PaymentTransactionEntity.findByIdAndDelete(id);
+    if (!transaction) return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
+    res.json({ code: 0, message: "X\xF3a giao d\u1ECBch th\xE0nh c\xF4ng" });
+  } catch (err) {
+    res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$e = Router();
+router$e.post("/", createPaymentTransaction);
+router$e.put("/status", updatePaymentTransactionStatus);
+router$e.get("/", getPaymentTransactions);
+router$e.delete("/:id", deletePaymentTransaction);
+
+const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$e
+}, Symbol.toStringTag, { value: 'Module' }));
+
 function toUserDTO(entity) {
   var _a, _b, _c, _d, _e, _f;
   return {
@@ -2347,6 +3906,145 @@ function toUserDTO(entity) {
 const toUserListDTO = (users) => {
   return users.map(toUserDTO);
 };
+
+function toProductReviewDTO(entity) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+  return {
+    id: entity._id.toString(),
+    orderId: ((_b = (_a = entity.orderId) == null ? void 0 : _a.toString) == null ? void 0 : _b.call(_a)) || "",
+    userId: entity.userId && typeof entity.userId === "object" && "fullname" in entity.userId ? toUserDTO(entity.userId) : ((_d = (_c = entity.userId) == null ? void 0 : _c.toString) == null ? void 0 : _d.call(_c)) || "",
+    productId: entity.productId && typeof entity.productId === "object" && "productName" in entity.productId ? toProductDTO(entity.productId) : ((_f = (_e = entity.productId) == null ? void 0 : _e.toString) == null ? void 0 : _f.call(_e)) || "",
+    rating: entity.rating,
+    comment: entity.comment || null,
+    images: entity.images || [],
+    status: entity.status,
+    statusText: ProductReviewStatusText[entity.status],
+    statusColor: ProductReviewStatusColor[entity.status],
+    createdAt: ((_h = (_g = entity.createdAt) == null ? void 0 : _g.toISOString) == null ? void 0 : _h.call(_g)) || "",
+    updatedAt: ((_j = (_i = entity.updatedAt) == null ? void 0 : _i.toISOString) == null ? void 0 : _j.call(_i)) || ""
+  };
+}
+const toProductReviewListDTO = (entities) => entities.map(toProductReviewDTO);
+
+const getAllProductReviews = async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+    const numPage = Number(page);
+    let numLimit = Number(limit);
+    if (numLimit === -1) {
+      const reviews = await ProductReviewEntity.find({}).sort({ createdAt: -1 }).populate("userId").populate("productId");
+      return res.json({
+        code: 0,
+        data: toProductReviewListDTO(reviews),
+        pagination: {
+          page: 1,
+          limit: reviews.length,
+          totalPages: 1,
+          total: reviews.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        // { path: "orderId", model: "Order" },
+        { path: "userId", model: "User" },
+        { path: "productId", model: "Product" }
+      ]
+    };
+    const result = await ProductReviewEntity.paginate({}, options);
+    return res.json({
+      code: 0,
+      data: toProductReviewListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (error) {
+    console.error("\u{1F525} L\u1ED7i chi ti\u1EBFt getAllProductReviews:", error);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1",
+      error
+    });
+  }
+};
+const getProductReviewById$1 = async (req, res) => {
+  try {
+    const review = await ProductReviewEntity.findById(req.params.id).populate("orderId").populate("userId").populate("productId");
+    if (!review) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toProductReviewDTO(review) });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y \u0111\xE1nh gi\xE1", error });
+  }
+};
+const updateProductReviewStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    if (!id || !status) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu id ho\u1EB7c status" });
+    }
+    const review = await ProductReviewEntity.findById(id);
+    if (!review) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    review.status = status;
+    await review.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng",
+      data: toProductReviewDTO(review)
+    });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1", error });
+  }
+};
+const deleteProductReview = async (req, res) => {
+  try {
+    const deleted = await ProductReviewEntity.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "X\xF3a \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng" });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i x\xF3a \u0111\xE1nh gi\xE1", error });
+  }
+};
+
+const router$d = Router();
+router$d.get("/", getAllProductReviews);
+router$d.get("/:id", getProductReviewById$1);
+router$d.put("/status", updateProductReviewStatus);
+router$d.delete("/:id", deleteProductReview);
+
+const productReviewRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$d
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const router$c = Router();
+router$c.use("/settings", router$i);
+router$c.use("/about", router$m);
+router$c.use("/banners", router$l);
+router$c.use("/categoriesNews", router$k);
+router$c.use("/newsPosts", router$h);
+router$c.use("/orders", router$g);
+router$c.use("/payment-transactions", router$e);
+router$c.use("/categories", router$j);
+router$c.use("/products", router$f);
+router$c.use("/product-reviews", router$d);
+
+const index$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$c
+}, Symbol.toStringTag, { value: 'Module' }));
 
 async function generateBarcode(code, filename) {
   const filepath = path.join(process.cwd(), "public", "barcodes", filename);
@@ -2819,7 +4517,7 @@ const logSearchKeyword = async (req, res) => {
     return res.status(500).json({ code: 1, message: "Internal server error" });
   }
 };
-const toggleActive$5 = async (req, res) => {
+const toggleActive$1 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await UserModel.findById(id);
@@ -2921,316 +4619,55 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$c = express.Router();
-router$c.get("/users", getAllUsers);
-router$c.put("/users/me", authenticate, updateAccount);
-router$c.get("/users/:id", getUserById);
-router$c.patch("/users/toggleActive/:id", toggleActive$5);
-router$c.post("/register", register);
-router$c.post("/login", login);
-router$c.post("/google-login", googleLogin);
-router$c.post("/forgot-password", forgotPassword);
-router$c.post("/reset-password", resetPassword);
-router$c.post("/change-password", changePassword);
-router$c.post("/set-point", setPoint);
-router$c.delete("/:id", deleteUsers);
-router$c.get("/membership-level", getAllMembershipLevel);
-router$c.get("/membership-level/:id", getMembershipLevelById);
-router$c.put("/membership-level/:id", updateMembershipLevel);
-router$c.post("/search-keywords/log", logSearchKeyword);
-router$c.get("/search-keywords/list", getTopSearchKeyword);
-router$c.get("/membership-benefit", getAllMembershipBenefits);
-router$c.get("/membership-benefit/:id", getMembershipBenefitById);
-router$c.post("/membership-benefit", authenticate, createMembershipBenefit);
-router$c.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
-router$c.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
+const router$b = express.Router();
+router$b.get("/users", getAllUsers);
+router$b.put("/users/me", authenticate, updateAccount);
+router$b.get("/users/:id", getUserById);
+router$b.patch("/users/toggleActive/:id", toggleActive$1);
+router$b.post("/register", register);
+router$b.post("/login", login);
+router$b.post("/google-login", googleLogin);
+router$b.post("/forgot-password", forgotPassword);
+router$b.post("/reset-password", resetPassword);
+router$b.post("/change-password", changePassword);
+router$b.post("/set-point", setPoint);
+router$b.delete("/:id", deleteUsers);
+router$b.get("/membership-level", getAllMembershipLevel);
+router$b.get("/membership-level/:id", getMembershipLevelById);
+router$b.put("/membership-level/:id", updateMembershipLevel);
+router$b.post("/search-keywords/log", logSearchKeyword);
+router$b.get("/search-keywords/list", getTopSearchKeyword);
+router$b.get("/membership-benefit", getAllMembershipBenefits);
+router$b.get("/membership-benefit/:id", getMembershipBenefitById);
+router$b.post("/membership-benefit", authenticate, createMembershipBenefit);
+router$b.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
+router$b.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
 
 const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$c
+  default: router$b
 }, Symbol.toStringTag, { value: 'Module' }));
-
-const BannerSchema = new Schema(
-  {
-    title: { type: String, required: true },
-    description: { type: String },
-    image: { type: String, required: true },
-    order: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true }
-  },
-  { timestamps: true }
-);
-const BannerEntity = model("Banner", BannerSchema, "banners");
-
-function toBannerDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    title: entity.title,
-    description: entity.description,
-    image: entity.image,
-    order: entity.order,
-    isActive: entity.isActive,
-    createdAt: entity.createdAt.toISOString(),
-    updatedAt: entity.updatedAt.toISOString()
-  };
-}
-const toBannerListDTO = (banners) => {
-  return banners.map(toBannerDTO);
-};
 
 const getAllBanners = async (_, res) => {
   try {
-    const banners = await BannerEntity.find().sort({ order: 1 });
+    const banners = await BannerEntity.find({ isActive: true }).sort({ order: 1 });
     return res.json({ code: 0, data: toBannerListDTO(banners) });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const getBannerById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const banner = await BannerEntity.findById(id);
-    if (!banner) {
-      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, data: toBannerDTO(banner) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const createBanner = async (req, res) => {
-  try {
-    const { title, description, image, isActive } = req.body;
-    if (!title || !image) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu title ho\u1EB7c image" });
-    }
-    const lastItem = await BannerEntity.findOne().sort({ order: -1 });
-    const maxOrder = lastItem ? lastItem.order : 0;
-    const newItem = new BannerEntity({
-      ...req.body,
-      order: maxOrder + 1
-    });
-    await newItem.save();
-    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toBannerDTO(newItem) });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const updateBanner = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updated = await BannerEntity.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updated) {
-      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toBannerDTO(updated) });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const deleteBanner = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = await BannerEntity.findByIdAndDelete(id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updateOrder$2 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { order } = req.body;
-    const currentItem = await BannerEntity.findById(id);
-    if (!currentItem) {
-      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const existingItem = await BannerEntity.findOne({ order });
-    if (existingItem) {
-      const oldOrder = currentItem.order;
-      existingItem.order = oldOrder;
-      await existingItem.save();
-    }
-    currentItem.order = order;
-    await currentItem.save();
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const toggleActive$4 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await BannerEntity.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    item.isActive = !item.isActive;
-    await item.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
-      data: toBannerDTO(item)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 
-const router$b = Router();
-router$b.get("/", getAllBanners);
-router$b.get("/:id", getBannerById);
-router$b.post("/", createBanner);
-router$b.put("/:id", updateBanner);
-router$b.delete("/:id", deleteBanner);
-router$b.patch("/updateOrder/:id", updateOrder$2);
-router$b.patch("/toggleActive/:id", toggleActive$4);
+const router$a = Router();
+router$a.get("/", getAllBanners);
 
 const bannerRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$b
+  default: router$a
 }, Symbol.toStringTag, { value: 'Module' }));
-
-function generateSlug(text) {
-  return text.toLowerCase().replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, "a").replace(/[èéẹẻẽêềếệểễ]/g, "e").replace(/[ìíịỉĩ]/g, "i").replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, "o").replace(/[ùúụủũưừứựửữ]/g, "u").replace(/[ỳýỵỷỹ]/g, "y").replace(/đ/g, "d").replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
-}
-
-const PostNewsSchema = new Schema(
-  {
-    title: { type: String, required: true },
-    description: { type: String },
-    image: { type: String, required: true },
-    summaryContent: { type: String },
-    isActive: { type: Boolean, default: true },
-    categoryId: { type: Types.ObjectId, ref: "CategoryNews", required: true },
-    views: { type: Number, default: 0 },
-    author: { type: String },
-    titleSEO: {
-      type: String,
-      trim: true
-    },
-    descriptionSEO: {
-      type: String,
-      maxlength: 160,
-      trim: true
-    },
-    slug: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
-    },
-    keywords: {
-      type: [String],
-      default: []
-    }
-  },
-  { timestamps: true }
-);
-PostNewsSchema.index({ slug: 1 }, { unique: true });
-PostNewsSchema.index({ isActive: 1, createdAt: -1 });
-PostNewsSchema.index({ categoryId: 1, isActive: 1 });
-PostNewsSchema.pre("save", function(next) {
-  if (!this.slug && this.titleSEO) {
-    this.slug = generateSlug(this.titleSEO);
-  }
-  next();
-});
-const PostNewsModel = model("Post", PostNewsSchema, "posts");
-const CategoryNewsSchema = new Schema(
-  {
-    categoryName: { type: String, required: true },
-    description: { type: String },
-    image: { type: String },
-    summaryContent: { type: String },
-    order: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true },
-    titleSEO: {
-      type: String,
-      trim: true,
-      required: true
-    },
-    descriptionSEO: {
-      type: String,
-      maxlength: 160,
-      trim: true
-    },
-    slug: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
-    },
-    keywords: {
-      type: [String],
-      default: []
-    }
-  },
-  { timestamps: true }
-);
-CategoryNewsSchema.index({ slug: 1 }, { unique: true });
-CategoryNewsSchema.index({ isActive: 1, order: 1 });
-CategoryNewsSchema.pre("save", function(next) {
-  if (!this.slug && this.titleSEO) {
-    this.slug = generateSlug(this.titleSEO);
-  }
-  next();
-});
-const CategoryNewsModel = model("CategoryNews", CategoryNewsSchema, "post_categories");
-
-function toPostNewsDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    title: entity.title,
-    summaryContent: entity.summaryContent,
-    description: entity.description,
-    image: entity.image,
-    isActive: entity.isActive,
-    categoryId: entity.categoryId.toString(),
-    views: entity.views,
-    author: entity.author,
-    // SEO
-    titleSEO: entity.titleSEO,
-    descriptionSEO: entity.descriptionSEO,
-    slug: entity.slug,
-    keywords: entity.keywords,
-    createdAt: entity.createdAt.toISOString(),
-    updatedAt: entity.updatedAt.toISOString()
-  };
-}
-const toPostNewsListDTO = (items) => {
-  return items.map(toPostNewsDTO);
-};
-function toCategoryNewsDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    categoryName: entity.categoryName,
-    summaryContent: entity.summaryContent,
-    description: entity.description,
-    image: entity.image,
-    order: entity.order,
-    isActive: entity.isActive,
-    // SEO
-    titleSEO: entity.titleSEO,
-    descriptionSEO: entity.descriptionSEO,
-    slug: entity.slug,
-    keywords: entity.keywords,
-    createdAt: entity.createdAt.toISOString(),
-    updatedAt: entity.updatedAt.toISOString()
-  };
-}
-const toCategoryNewsListDTO = (items) => {
-  return items.map(toCategoryNewsDTO);
-};
 
 const getAllCategories$1 = async (_, res) => {
   try {
-    const categories = await CategoryNewsModel.find().sort({ order: 1 });
+    const categories = await CategoryNewsModel.find({ isActive: true }).sort({ order: 1 });
     return res.json({
       code: 0,
       data: toCategoryNewsListDTO(categories)
@@ -3254,102 +4691,6 @@ const getCategoriesById$1 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const createCategories$1 = async (req, res) => {
-  try {
-    const { categoryName } = req.body;
-    if (!categoryName) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu categoryName" });
-    }
-    const lastItem = await CategoryNewsModel.findOne().sort({ order: -1 });
-    const maxOrder = lastItem ? lastItem.order : 0;
-    const newItem = new CategoryNewsModel({
-      ...req.body,
-      order: maxOrder + 1
-    });
-    await newItem.save();
-    return res.status(201).json({
-      code: 0,
-      message: "T\u1EA1o th\xE0nh c\xF4ng",
-      data: toCategoryNewsDTO(newItem)
-    });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const updateCategories$1 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updated = await CategoryNewsModel.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updated) {
-      return res.status(404).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng",
-      data: toCategoryNewsDTO(updated)
-    });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const deleteCategories$1 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const newsCount = await PostNewsModel.countDocuments({ categoryId: id });
-    if (newsCount > 0) {
-      return res.status(400).json({
-        code: 1,
-        message: "Kh\xF4ng th\u1EC3 xo\xE1, v\u1EABn c\xF2n b\xE0i vi\u1EBFt thu\u1ED9c nh\xF3m n\xE0y"
-      });
-    }
-    const deleted = await CategoryNewsModel.findByIdAndDelete(id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updateOrder$1 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { order } = req.body;
-    const currentItem = await CategoryNewsModel.findById(id);
-    if (!currentItem) {
-      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const existingItem = await CategoryNewsModel.findOne({ order });
-    if (existingItem) {
-      const oldOrder = currentItem.order;
-      existingItem.order = oldOrder;
-      await existingItem.save();
-    }
-    currentItem.order = order;
-    await currentItem.save();
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const toggleActive$3 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await CategoryNewsModel.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "category kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    item.isActive = !item.isActive;
-    await item.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
-      data: toCategoryNewsDTO(item)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 const getCategoryBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -3363,183 +4704,15 @@ const getCategoryBySlug = async (req, res) => {
   }
 };
 
-const router$a = Router();
-router$a.get("/", getAllCategories$1);
-router$a.get("/slug/:slug", getCategoryBySlug);
-router$a.get("/:id", getCategoriesById$1);
-router$a.post("/", createCategories$1);
-router$a.put("/:id", updateCategories$1);
-router$a.delete("/:id", deleteCategories$1);
-router$a.patch("/toggleActive/:id", toggleActive$3);
-router$a.patch("/updateOrder/:id", updateOrder$1);
+const router$9 = Router();
+router$9.get("/", getAllCategories$1);
+router$9.get("/slug/:slug", getCategoryBySlug);
+router$9.get("/:id", getCategoriesById$1);
 
 const categoriesNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$a
+  default: router$9
 }, Symbol.toStringTag, { value: 'Module' }));
-
-const VariantSchema = new Schema(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    priceModifier: { type: Number, default: null },
-    inStock: { type: Boolean, default: true }
-  },
-  { _id: false }
-);
-const OptionSchema = new Schema(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    required: { type: Boolean, default: false },
-    variants: { type: [VariantSchema], default: [] }
-  },
-  { _id: false }
-);
-const ListImageSchema = new Schema(
-  {
-    id: { type: String, required: true },
-    src: { type: String, required: true }
-  },
-  { _id: false }
-);
-const ProductSchema = new Schema(
-  {
-    productName: { type: String, required: true, trim: true },
-    description: { type: String },
-    summaryContent: { type: String },
-    price: { type: Number, default: null },
-    priceDiscounts: { type: Number, default: null },
-    amount: { type: Number, default: null },
-    amountOrder: { type: Number, default: 0 },
-    image: { type: String, required: true },
-    listImage: { type: [ListImageSchema], default: [] },
-    options: { type: [OptionSchema], default: [] },
-    categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
-    weight: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true },
-    titleSEO: {
-      type: String,
-      trim: true,
-      required: true
-    },
-    descriptionSEO: {
-      type: String,
-      maxlength: 160,
-      trim: true
-    },
-    slug: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
-    },
-    keywords: {
-      type: [String],
-      default: []
-    }
-  },
-  { timestamps: true }
-);
-const CategoryProductSchema = new Schema(
-  {
-    categoryName: { type: String, required: true, trim: true },
-    description: { type: String },
-    image: { type: String, required: true },
-    order: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true },
-    parentId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", default: null },
-    titleSEO: {
-      type: String,
-      trim: true,
-      required: true
-    },
-    descriptionSEO: {
-      type: String,
-      maxlength: 160,
-      trim: true
-    },
-    slug: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-      match: [/^[a-z0-9-]+$/, "Slug ch\u1EC9 \u0111\u01B0\u1EE3c ch\u1EE9a ch\u1EEF th\u01B0\u1EDDng, s\u1ED1 v\xE0 d\u1EA5u g\u1EA1ch ngang"]
-    },
-    keywords: {
-      type: [String],
-      default: []
-    }
-  },
-  { timestamps: true }
-);
-const ProductEntity = model("Product", ProductSchema, "products");
-const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");
-
-function toVariantDTO(entity) {
-  return {
-    id: entity.id,
-    name: entity.name,
-    priceModifier: entity.priceModifier,
-    inStock: entity.inStock
-  };
-}
-function toOptionDTO(entity) {
-  return {
-    id: entity.id,
-    name: entity.name,
-    required: entity.required,
-    variants: entity.variants.map(toVariantDTO)
-  };
-}
-function toProductDTO(entity) {
-  var _a, _b, _c;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    productName: entity.productName,
-    description: entity.description || "",
-    summaryContent: entity.summaryContent || "",
-    price: entity.price,
-    priceDiscounts: entity.priceDiscounts,
-    amount: entity.amount,
-    amountOrder: entity.amountOrder,
-    image: entity.image,
-    listImage: entity.listImage,
-    options: entity.options.map(toOptionDTO),
-    categoryId: entity.categoryId ? entity.categoryId.toString() : "",
-    weight: entity.weight,
-    isActive: entity.isActive,
-    createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
-    updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || "",
-    // SEO
-    titleSEO: entity.titleSEO,
-    descriptionSEO: entity.descriptionSEO,
-    slug: entity.slug,
-    keywords: entity.keywords
-  };
-}
-const toProductListDTO = (list) => list.map(toProductDTO);
-function toCategoryProductDTO(entity) {
-  var _a, _b, _c;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    categoryName: entity.categoryName,
-    description: entity.description || "",
-    image: entity.image,
-    order: entity.order,
-    isActive: entity.isActive,
-    parentId: entity.parentId ? entity.parentId.toString() : "",
-    // SEO
-    titleSEO: entity.titleSEO,
-    descriptionSEO: entity.descriptionSEO,
-    slug: entity.slug,
-    keywords: entity.keywords,
-    createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
-    updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || ""
-  };
-}
-const toCategoryProductListDTO = (list) => list.map(toCategoryProductDTO);
 
 function buildCategoryTree(list) {
   const map = /* @__PURE__ */ new Map();
@@ -3563,7 +4736,7 @@ function buildCategoryTree(list) {
 }
 const getAllCategoriesTree = async (_, res) => {
   try {
-    const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
+    const categories = await CategoryProductEntity.find({ isActive: true }).lean().sort({ order: 1 });
     const dtoList = toCategoryProductListDTO(categories);
     const tree = buildCategoryTree(dtoList);
     return res.json({ code: 0, data: tree });
@@ -3573,7 +4746,7 @@ const getAllCategoriesTree = async (_, res) => {
 };
 const getAllCategories = async (_, res) => {
   try {
-    const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
+    const categories = await CategoryProductEntity.find({ isActive: true }).lean().sort({ order: 1 });
     return res.json({ code: 0, data: toCategoryProductListDTO(categories) });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
@@ -3626,95 +4799,6 @@ const getChildrenCategories = async (req, res) => {
       data: toCategoryProductListDTO(children),
       message: "Success"
     });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const createCategories = async (req, res) => {
-  try {
-    const { categoryName, image, parentId } = req.body;
-    if (!categoryName || !image) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu categoryName ho\u1EB7c image" });
-    }
-    if (parentId && !Types.ObjectId.isValid(parentId)) {
-      return res.status(400).json({ code: 1, message: "parentId kh\xF4ng h\u1EE3p l\u1EC7" });
-    }
-    if (parentId) {
-      const parent = await CategoryProductEntity.findById(parentId);
-      if (!parent) {
-        return res.status(400).json({ code: 1, message: "Danh m\u1EE5c cha kh\xF4ng t\u1ED3n t\u1EA1i" });
-      }
-    }
-    const existed = await CategoryProductEntity.findOne({ categoryName });
-    if (existed) {
-      return res.status(400).json({ code: 1, message: "Danh m\u1EE5c \u0111\xE3 t\u1ED3n t\u1EA1i" });
-    }
-    const lastItem = await CategoryProductEntity.findOne().sort({ order: -1 });
-    const maxOrder = lastItem ? lastItem.order : 0;
-    const newItem = new CategoryProductEntity({
-      ...req.body,
-      parentId: parentId || null,
-      order: maxOrder + 1
-    });
-    await newItem.save();
-    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toCategoryProductDTO(newItem) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updateCategories = async (req, res) => {
-  try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
-    }
-    const { parentId } = req.body;
-    if (parentId && !Types.ObjectId.isValid(parentId)) {
-      return res.status(400).json({ code: 1, message: "parentId kh\xF4ng h\u1EE3p l\u1EC7" });
-    }
-    if (parentId) {
-      const parent = await CategoryProductEntity.findById(parentId);
-      if (!parent) {
-        return res.status(400).json({ code: 1, message: "Danh m\u1EE5c cha kh\xF4ng t\u1ED3n t\u1EA1i" });
-      }
-    }
-    const updatedCategory = await CategoryProductEntity.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    ).lean();
-    if (!updatedCategory) {
-      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toCategoryProductDTO(updatedCategory) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const deleteCategories = async (req, res) => {
-  try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
-    }
-    const categoryId = new Types.ObjectId(req.params.id);
-    const hasChildren = await CategoryProductEntity.exists({ parentId: categoryId });
-    if (hasChildren) {
-      return res.json({
-        code: 1,
-        message: "Kh\xF4ng th\u1EC3 x\xF3a danh m\u1EE5c v\xEC v\u1EABn c\xF2n danh m\u1EE5c con"
-      });
-    }
-    const hasProducts = await ProductEntity.exists({ categoryId });
-    if (hasProducts) {
-      return res.json({
-        code: 1,
-        message: "Kh\xF4ng th\u1EC3 x\xF3a danh m\u1EE5c v\xEC v\u1EABn c\xF2n s\u1EA3n ph\u1EA9m trong danh m\u1EE5c n\xE0y"
-      });
-    }
-    const deletedCategory = await CategoryProductEntity.findByIdAndDelete(categoryId);
-    if (!deletedCategory) {
-      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -3815,62 +4899,18 @@ const getProductsByCategory = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const updateOrder = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { order } = req.body;
-    const currentItem = await CategoryProductEntity.findById(id);
-    if (!currentItem) {
-      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const existingItem = await CategoryProductEntity.findOne({ order });
-    if (existingItem) {
-      const oldOrder = currentItem.order;
-      existingItem.order = oldOrder;
-      await existingItem.save();
-    }
-    currentItem.order = order;
-    await currentItem.save();
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const toggleActive$2 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await CategoryProductEntity.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "Banner kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    item.isActive = !item.isActive;
-    await item.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
-      data: toCategoryProductDTO(item)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 
-const router$9 = Router();
-router$9.get("/tree", getAllCategoriesTree);
-router$9.get("/", getAllCategories);
-router$9.get("/slug/:slug", getCategoriesBySlug);
-router$9.get("/:id", getCategoriesById);
-router$9.get("/:id/children", getChildrenCategories);
-router$9.post("/", createCategories);
-router$9.put("/:id", updateCategories);
-router$9.delete("/:id", deleteCategories);
-router$9.get("/:id/products", getProductsByCategory);
-router$9.patch("/toggleActive/:id", toggleActive$2);
-router$9.patch("/updateOrder/:id", updateOrder);
+const router$8 = Router();
+router$8.get("/tree", getAllCategoriesTree);
+router$8.get("/", getAllCategories);
+router$8.get("/slug/:slug", getCategoriesBySlug);
+router$8.get("/:id", getCategoriesById);
+router$8.get("/:id/children", getChildrenCategories);
+router$8.get("/:id/products", getProductsByCategory);
 
 const categoriesProductRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$9
+  default: router$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const uploadImageMulter = multer({ dest: "uploads/" });
@@ -4025,36 +5065,133 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const router$8 = express.Router();
-router$8.get("/images", getImages);
-router$8.get("/images/folders", getFolders);
-router$8.delete("/images/delete", deleteImage);
-router$8.get("/images/search", searchImage);
-router$8.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
+const router$7 = express.Router();
+router$7.get("/images", getImages);
+router$7.get("/images/folders", getFolders);
+router$7.delete("/images/delete", deleteImage);
+router$7.get("/images/search", searchImage);
+router$7.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
 
 const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$8
+  default: router$7
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const updateSettings = async (req, res) => {
+const getAllProvinces = async (_, res) => {
   try {
-    const filePath = path.join(process.cwd(), "./public/data/settings.json");
-    const oldData = JSON.parse(fs.readFileSync(filePath, "utf8"));
-    const newData = { ...oldData, ...req.body || {} };
-    fs.writeFileSync(filePath, JSON.stringify(newData, null, 2), "utf8");
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: newData });
+    const response = await fetch("https://provinces.open-api.vn/api/?depth=1");
+    const data = await response.json();
+    return res.json({ code: 0, data });
   } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch t\u1EC9nh/th\xE0nh", error: err.message });
+  }
+};
+const getDistrictsByProvince = async (req, res) => {
+  try {
+    const { provinceCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
+    const data = await response.json();
+    if (!data || !data.districts) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
+    }
+    return res.json({ code: 0, data: data.districts });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y qu\u1EADn/huy\u1EC7n", error: err.message });
+  }
+};
+const getWardsByDistrict = async (req, res) => {
+  try {
+    const { districtCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+    const data = await response.json();
+    if (!data || !data.wards) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
+    }
+    return res.json({ code: 0, data: data.wards });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y x\xE3/ph\u01B0\u1EDDng", error: err.message });
+  }
+};
+const getProvinceDetail = async (req, res) => {
+  try {
+    const { provinceCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=1`);
+    const data = await response.json();
+    if (!data || !data.name) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y t\u1EC9nh/th\xE0nh" });
+    }
+    return res.json({ code: 0, data });
+  } catch (err) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt t\u1EC9nh/th\xE0nh",
+      error: err.message
+    });
+  }
+};
+const getDistrictDetail = async (req, res) => {
+  try {
+    const { districtCode } = req.params;
+    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=1`);
+    const data = await response.json();
+    if (!data || !data.name) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
+    }
+    return res.json({ code: 0, data });
+  } catch (err) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt qu\u1EADn/huy\u1EC7n",
+      error: err.message
+    });
+  }
+};
+const getWardDetail = async (req, res) => {
+  const { wardCode } = req.params;
+  const districtCode = req.query.districtCode;
+  if (!districtCode) {
+    return res.status(400).json({
+      code: 1,
+      message: "Thi\u1EBFu districtCode khi t\xECm x\xE3/ph\u01B0\u1EDDng c\xF3 m\xE3 ng\u1EAFn"
+    });
+  }
+  try {
+    const resp = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+    const district = await resp.json();
+    if (resp.ok && district && Array.isArray(district.wards)) {
+      const ward = district.wards.find(
+        (w) => String(w.code) === String(wardCode)
+      );
+      if (ward) {
+        return res.json({ code: 0, data: ward });
+      }
+    }
+    return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt x\xE3/ph\u01B0\u1EDDng", error: err.message });
   }
 };
 
-const router$7 = Router();
-router$7.put("/update", updateSettings);
+const router$6 = express.Router();
+router$6.get("/provinces", getAllProvinces);
+router$6.get("/provinces/:provinceCode", getProvinceDetail);
+router$6.get("/districts/:provinceCode", getDistrictsByProvince);
+router$6.get("/district/:districtCode", getDistrictDetail);
+router$6.get("/wards/:districtCode", getWardsByDistrict);
+router$6.get("/ward/:wardCode", getWardDetail);
 
-const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$7
+  default: router$6
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const router$5 = Router();
+router$5.use("/fileManage", router$7);
+router$5.use("/location", router$6);
+
+const index$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$5
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllPosts = async (req, res) => {
@@ -4144,7 +5281,7 @@ const getPostsLatest = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$1 = async (req, res) => {
+const toggleActive = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await PostNewsModel.findById(id);
@@ -4252,318 +5389,30 @@ const getAllPostsPagination = async (req, res) => {
   }
 };
 
-const router$6 = Router();
-router$6.get("/category/:categoryId", getPostsByCategory);
-router$6.get("/", getAllPosts);
-router$6.get("/pagination", getAllPostsPagination);
-router$6.get("/slug/:slug", getPostBySlug);
-router$6.get("/related/:slug", getRelatedPostsBySlug);
-router$6.patch("/view/:slug", updateView);
-router$6.get("/latest", getPostsLatest);
-router$6.get("/:id", getPostsById);
-router$6.post("/", createPosts);
-router$6.put("/:id", updatePosts);
-router$6.delete("/:id", deletePosts);
-router$6.patch("/toggleActive/:id", toggleActive$1);
+const router$4 = Router();
+router$4.get("/category/:categoryId", getPostsByCategory);
+router$4.get("/", getAllPosts);
+router$4.get("/pagination", getAllPostsPagination);
+router$4.get("/slug/:slug", getPostBySlug);
+router$4.get("/related/:slug", getRelatedPostsBySlug);
+router$4.patch("/view/:slug", updateView);
+router$4.get("/latest", getPostsLatest);
+router$4.get("/:id", getPostsById);
+router$4.post("/", createPosts);
+router$4.put("/:id", updatePosts);
+router$4.delete("/:id", deletePosts);
+router$4.patch("/toggleActive/:id", toggleActive);
 
 const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$6
+  default: router$4
 }, Symbol.toStringTag, { value: 'Module' }));
-
-const SelectedOptionsPushSchema = new Schema(
-  {
-    optionName: { type: String, required: true },
-    variantName: { type: String, required: true },
-    variantPrice: { type: Number, required: true }
-  },
-  { _id: false }
-);
-const CartItemsSchema = new Schema(
-  {
-    idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-    priceDiscounts: { type: Number, required: true },
-    quantity: { type: Number, required: true },
-    note: { type: String },
-    selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
-    finalPriceDiscounts: { type: Number }
-  },
-  { _id: false }
-);
-const PaymentSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    description: { type: String },
-    image: { type: String },
-    method: { type: String }
-  },
-  { timestamps: true }
-);
-const OrderStatusSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    status: { type: String, required: true },
-    icon: { type: String },
-    index: { type: Number }
-  },
-  { timestamps: true }
-);
-const OrderSchema = new Schema(
-  {
-    code: { type: String, required: true },
-    time: { type: String, required: true },
-    address: { type: String, required: true },
-    provinceCode: { type: Number, required: true },
-    districtCode: { type: Number, required: true },
-    wardCode: { type: Number, required: true },
-    fullname: { type: String, required: true },
-    phone: { type: String, required: true },
-    note: { type: String },
-    paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
-    cartItems: { type: [CartItemsSchema], required: true },
-    totalPrice: { type: Number, required: true },
-    totalPriceSave: { type: Number, required: true },
-    totalPriceCurrent: { type: Number, required: true },
-    shippingFee: { type: Number, required: true },
-    status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
-    transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
-    reward: {
-      points: { type: Number, default: 0 },
-      awarded: { type: Boolean, default: false },
-      awardedAt: { type: Date, default: null }
-    },
-    usedPoints: { type: Number, default: 0 },
-    pointsRefunded: { type: Boolean, default: false },
-    membershipDiscountRate: { type: Number, default: 0 },
-    membershipDiscountAmount: { type: Number, default: 0 }
-  },
-  { timestamps: true }
-);
-OrderSchema.plugin(mongoosePaginate);
-const PaymentEntity = model("Payment", PaymentSchema, "payments");
-const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
-const OrderEntity = model("Order", OrderSchema, "orders");
-
-const PAYMENT_TRANSACTION_STATUS = {
-  PENDING: "pending",
-  PAID: "paid",
-  FAILED: "failed",
-  REFUNDED: "refunded"
-};
-const PaymentTransactionStatusText = {
-  [PAYMENT_TRANSACTION_STATUS.PENDING]: "Ch\u1EDD thanh to\xE1n",
-  [PAYMENT_TRANSACTION_STATUS.PAID]: "\u0110\xE3 thanh to\xE1n",
-  [PAYMENT_TRANSACTION_STATUS.FAILED]: "Thanh to\xE1n th\u1EA5t b\u1EA1i",
-  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "\u0110\xE3 ho\xE0n ti\u1EC1n"
-};
-const PaymentTransactionStatusColor = {
-  [PAYMENT_TRANSACTION_STATUS.PENDING]: "orange",
-  [PAYMENT_TRANSACTION_STATUS.PAID]: "green",
-  [PAYMENT_TRANSACTION_STATUS.FAILED]: "red",
-  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "blue"
-};
-
-function toPaymentTransactionDTO(entity) {
-  var _a, _b, _c, _d;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    orderId: ((_b = entity.orderId) == null ? void 0 : _b.toString()) || "",
-    amount: entity.amount,
-    method: entity.method,
-    status: entity.status,
-    statusText: PaymentTransactionStatusText[entity.status],
-    statusColor: PaymentTransactionStatusColor[entity.status],
-    createdAt: ((_c = entity.createdAt) == null ? void 0 : _c.toISOString()) || "",
-    updatedAt: ((_d = entity.updatedAt) == null ? void 0 : _d.toISOString()) || ""
-  };
-}
-const toPaymentTransactionListDTO = (list) => list.map(toPaymentTransactionDTO);
-
-function toPaymentDTO(entity) {
-  var _a;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    name: entity.name,
-    description: entity.description || "",
-    image: entity.image || "",
-    method: entity.method || null
-  };
-}
-const toPaymentListDTO = (payments) => payments.map(toPaymentDTO);
-function toOrderStatusDTO(entity) {
-  var _a;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    name: entity.name,
-    status: entity.status,
-    icon: entity.icon || "",
-    index: entity.index
-  };
-}
-const toOrderStatusListDTO = (list) => list.map(toOrderStatusDTO);
-function toOrderDTO(entity) {
-  var _a, _b, _c, _d, _e;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    code: entity.code,
-    time: entity.time,
-    address: entity.address,
-    fullname: entity.fullname,
-    provinceCode: entity.provinceCode,
-    districtCode: entity.districtCode,
-    wardCode: entity.wardCode,
-    phone: entity.phone,
-    note: entity.note || "",
-    paymentId: toPaymentDTO(entity.paymentId),
-    cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map(toCartItemDTO) : [],
-    totalPrice: entity.totalPrice,
-    totalPriceSave: entity.totalPriceSave,
-    totalPriceCurrent: entity.totalPriceCurrent,
-    shippingFee: entity.shippingFee,
-    status: toOrderStatusDTO(entity.status),
-    userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
-    transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
-    reward: entity.reward ? {
-      points: (_b = entity.reward.points) != null ? _b : 0,
-      awarded: (_c = entity.reward.awarded) != null ? _c : false,
-      awardedAt: entity.reward.awardedAt ? new Date(entity.reward.awardedAt).toISOString() : null
-    } : {
-      points: 0,
-      awarded: false,
-      awardedAt: null
-    },
-    usedPoints: entity.usedPoints,
-    pointsRefunded: entity.pointsRefunded,
-    membershipDiscountRate: entity.membershipDiscountRate,
-    membershipDiscountAmount: entity.membershipDiscountAmount,
-    createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
-    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || ""
-  };
-}
-const toOrderListDTO = (orders) => orders.map(toOrderDTO);
-function toCartItemDTO(entity) {
-  return {
-    idProduct: entity.idProduct ? new Types.ObjectId(entity.idProduct) : new Types.ObjectId(),
-    priceDiscounts: entity.priceDiscounts,
-    quantity: entity.quantity,
-    note: entity.note || "",
-    selectedOptionsPush: Array.isArray(entity.selectedOptionsPush) ? entity.selectedOptionsPush.map(toSelectedOptionDTO) : [],
-    finalPriceDiscounts: entity.finalPriceDiscounts
-  };
-}
-function toSelectedOptionDTO(entity) {
-  return {
-    optionName: entity.optionName,
-    variantName: entity.variantName,
-    variantPrice: entity.variantPrice
-  };
-}
-
-const ORDER_STATUS = {
-  PENDING: "68a93304c9f7de47a9f3a7e2",
-  CONFIRMED: "68a93304c9f7de47a9f3a7e3",
-  DELIVERING: "68a93304c9f7de47a9f3a7e4",
-  COMPLETED: "68a93304c9f7de47a9f3a7e5",
-  CANCELLED: "68a93304c9f7de47a9f3a7e6"
-};
-
-const PRODUCT_REVIEW_STATUS = {
-  PENDING: "pending",
-  APPROVED: "approved",
-  REJECTED: "rejected"
-};
-const ProductReviewStatusText = {
-  [PRODUCT_REVIEW_STATUS.PENDING]: "Ch\u01B0a \u0111\xE1nh gi\xE1",
-  [PRODUCT_REVIEW_STATUS.APPROVED]: "\u0110\xE3 \u0111\xE1nh gi\xE1",
-  [PRODUCT_REVIEW_STATUS.REJECTED]: "\u0110\xE3 b\u1ECB \u1EA9n"
-};
-const ProductReviewStatusColor = {
-  [PRODUCT_REVIEW_STATUS.PENDING]: "orange",
-  [PRODUCT_REVIEW_STATUS.APPROVED]: "green",
-  [PRODUCT_REVIEW_STATUS.REJECTED]: "red"
-};
-
-const ProductReviewSchema = new Schema(
-  {
-    orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-    rating: { type: Number, required: true, min: 0, max: 5 },
-    comment: { type: String, default: "" },
-    images: { type: [String], default: [] },
-    status: { type: String, enum: Object.values(PRODUCT_REVIEW_STATUS), default: PRODUCT_REVIEW_STATUS.PENDING }
-  },
-  { timestamps: true }
-);
-ProductReviewSchema.plugin(mongoosePaginate);
-const ProductReviewEntity = model("ProductReview", ProductReviewSchema, "product_reviews");
-
-const PaymentTransactionSchema = new Schema(
-  {
-    orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
-    amount: { type: Number, required: true },
-    method: { type: String, enum: ["cash", "bank_transfer"], required: true },
-    status: {
-      type: String,
-      enum: Object.values(PAYMENT_TRANSACTION_STATUS),
-      default: PAYMENT_TRANSACTION_STATUS.PENDING
-    }
-  },
-  { timestamps: true }
-);
-PaymentTransactionSchema.plugin(mongoosePaginate);
-const PaymentTransactionEntity = model("PaymentTransaction", PaymentTransactionSchema);
 
 const PAYMENT_METHOD_STATUS = {
   BANK: "bank_transfer",
   CASH: "cash"
 };
 
-const getAllOrder = async (req, res) => {
-  try {
-    let { page = 1, limit = 10 } = req.query;
-    const numPage = Number(page);
-    let numLimit = Number(limit);
-    if (numLimit === -1) {
-      const orders = await OrderEntity.find({}).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
-      return res.json({
-        code: 0,
-        data: toOrderListDTO(orders),
-        pagination: {
-          page: 1,
-          limit: orders.length,
-          totalPages: 1,
-          total: orders.length
-        }
-      });
-    }
-    const options = {
-      page: numPage,
-      limit: numLimit,
-      sort: { createdAt: -1 },
-      populate: [
-        { path: "paymentId", model: "Payment" },
-        { path: "status", model: "OrderStatus" },
-        { path: "userId", model: "User" },
-        { path: "transaction", model: "PaymentTransaction" }
-      ]
-    };
-    const result = await OrderEntity.paginate({}, options);
-    return res.json({
-      code: 0,
-      data: toOrderListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      }
-    });
-  } catch (error) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch order", error });
-  }
-};
 const getOrderById = async (req, res) => {
   try {
     const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
@@ -4625,17 +5474,6 @@ const createOrder = async (req, res) => {
     return res.status(500).json({ code: 2, message: "L\u1ED7i server" });
   }
 };
-const deleteOrder = async (req, res) => {
-  try {
-    const deleted = await OrderEntity.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 const getOrdersByUserId = async (req, res) => {
   try {
     const orders = await OrderEntity.find({ userId: req.params.userId }).populate("paymentId").populate("status").sort({ createdAt: -1 });
@@ -4643,106 +5481,6 @@ const getOrdersByUserId = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
-};
-const updateOrderStatus = async (req, res) => {
-  var _a, _b;
-  try {
-    const { orderId, statusId } = req.body;
-    if (!orderId || !statusId) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu orderId ho\u1EB7c statusId" });
-    }
-    const status = await OrderStatusEntity.findById(statusId);
-    if (!status) {
-      return res.status(404).json({ code: 1, message: "Status kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const order = await OrderEntity.findById(orderId);
-    if (!order) {
-      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    if (((_a = order.status) == null ? void 0 : _a.toString()) === ORDER_STATUS.COMPLETED || ((_b = order.status) == null ? void 0 : _b.toString()) === ORDER_STATUS.CANCELLED) {
-      return res.status(400).json({
-        code: 1,
-        message: "\u0110\u01A1n h\xE0ng \u0111\xE3 ho\xE0n t\u1EA5t ho\u1EB7c \u0111\xE3 h\u1EE7y, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i tr\u1EA1ng th\xE1i n\u1EEFa"
-      });
-    }
-    order.status = statusId;
-    if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
-      const existingReviews = await ProductReviewEntity.find({ orderId });
-      if (existingReviews.length === 0) {
-        const reviews = order.cartItems.map((item) => ({
-          orderId,
-          userId: order.userId,
-          productId: item.idProduct,
-          rating: 0,
-          comment: null,
-          images: [],
-          status: "pending"
-        }));
-        await ProductReviewEntity.insertMany(reviews);
-      }
-    }
-    if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
-      await setPointAndUpgrade(order.userId.toString(), order.reward.points);
-      order.reward.awarded = true;
-      order.reward.awardedAt = /* @__PURE__ */ new Date();
-      await order.save();
-    }
-    if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
-      if (!order.pointsRefunded) {
-        const user = await UserModel.findById(order.userId);
-        if (user) {
-          user.membership.balancePoint += order.usedPoints;
-          await user.save();
-          order.pointsRefunded = true;
-        }
-      }
-    }
-    await order.save();
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
-  } catch (err) {
-    console.error("L\u1ED7i updateOrderStatus:", err);
-    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
-  }
-};
-const getAllStatus = async (_, res) => {
-  try {
-    const status = await OrderStatusEntity.find().sort({ index: 1 });
-    return res.json({ code: 0, data: toOrderStatusListDTO(status) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getAllPayment = async (_, res) => {
-  try {
-    const payments = await PaymentEntity.find();
-    return res.json({ code: 0, data: toPaymentListDTO(payments) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const setPointAndUpgrade = async (userId, point) => {
-  var _a, _b, _c, _d;
-  const user = await UserModel.findById(userId);
-  if (!user) return null;
-  const levels = await MembershipLevelModel.find();
-  const newPoint = (((_a = user.membership) == null ? void 0 : _a.point) || 0) + point;
-  const newBalancePoint = (((_b = user.membership) == null ? void 0 : _b.balancePoint) || 0) + point;
-  const newLevel = levels.filter((level) => newPoint >= level.minPoint).sort((a, b) => b.minPoint - a.minPoint)[0];
-  const levelChanged = newLevel && ((_c = user.membership) == null ? void 0 : _c.level) !== newLevel.name;
-  if (newLevel) {
-    user.membership.level = newLevel.name;
-    user.membership.discountRate = (_d = newLevel.discountRate) != null ? _d : 0;
-  }
-  user.membership.point = newPoint;
-  user.membership.balancePoint = newBalancePoint;
-  await user.save();
-  return {
-    level: user.membership.level,
-    point: user.membership.point,
-    balancePoint: user.membership.balancePoint,
-    discountRate: user.membership.discountRate,
-    levelChanged
-  };
 };
 const getRewardHistoryByUserId = async (req, res) => {
   try {
@@ -5001,23 +5739,18 @@ const getShippingFee = async (req, res) => {
   }
 };
 
-const router$5 = Router();
-router$5.get("/", getAllOrder);
-router$5.get("/status", getAllStatus);
-router$5.get("/payments", getAllPayment);
-router$5.get("/:id", getOrderById);
-router$5.post("/", createOrder);
-router$5.post("/check-point", checkPoint);
-router$5.post("/sepay-callback", sepayCallback);
-router$5.post("/shipping/fee", getShippingFee);
-router$5.delete("/:id", deleteOrder);
-router$5.get("/users/:userId/orders", getOrdersByUserId);
-router$5.get("/users/:userId/rewards", getRewardHistoryByUserId);
-router$5.put("/status", updateOrderStatus);
+const router$3 = Router();
+router$3.get("/:id", getOrderById);
+router$3.post("/", createOrder);
+router$3.post("/check-point", checkPoint);
+router$3.post("/sepay-callback", sepayCallback);
+router$3.post("/shipping/fee", getShippingFee);
+router$3.get("/users/:userId/orders", getOrdersByUserId);
+router$3.get("/users/:userId/rewards", getRewardHistoryByUserId);
 
 const orderManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$5
+  default: router$3
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const WishlistSchema = new Schema(
@@ -5030,31 +5763,6 @@ const WishlistSchema = new Schema(
 );
 const WishlistModel = model("Wishlist", WishlistSchema, "wishlists");
 
-const getAllProduct = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page, 10) || 1;
-    let limit = parseInt(req.query.limit, 10) || 10;
-    const query = {};
-    if (limit === -1) {
-      limit = await ProductEntity.countDocuments(query);
-    }
-    const skip = (page - 1) * limit;
-    const [total, products] = await Promise.all([
-      ProductEntity.countDocuments(query),
-      ProductEntity.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
-    ]);
-    const totalPages = Math.ceil(total / limit);
-    return res.json({
-      code: 0,
-      data: toProductListDTO(products),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
-    });
-  } catch (err) {
-    console.error("Get all product error:", err);
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 const getProductById = async (req, res) => {
   try {
     let product;
@@ -5067,61 +5775,6 @@ const getProductById = async (req, res) => {
       return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
     return res.json({ code: 0, data: toProductDTO(product) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const createProduct = async (req, res) => {
-  try {
-    const data = req.body;
-    if (!(data == null ? void 0 : data.productName) || !(data == null ? void 0 : data.image) || !(data == null ? void 0 : data.categoryId) || !(data == null ? void 0 : data.price)) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu d\u1EEF li\u1EC7u" });
-    }
-    const categoryExists = await CategoryProductEntity.findById(data.categoryId);
-    if (!categoryExists) {
-      return res.status(400).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const newProduct = await ProductEntity.create({
-      ...data,
-      categoryId: new mongoose.Types.ObjectId(data.categoryId)
-    });
-    return res.status(201).json({
-      code: 0,
-      message: "T\u1EA1o th\xE0nh c\xF4ng",
-      data: toProductDTO(newProduct)
-    });
-  } catch (err) {
-    console.error("Create product error:", err);
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updateProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const data = req.body;
-    if (data.categoryId) {
-      data.categoryId = new mongoose.Types.ObjectId(data.categoryId);
-    }
-    const updated = await ProductEntity.findByIdAndUpdate(id, data, { new: true });
-    if (!updated) {
-      return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng",
-      data: toProductDTO(updated)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const deleteProduct = async (req, res) => {
-  try {
-    const deleted = await ProductEntity.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -5375,204 +6028,22 @@ const searchProducts = async (req, res) => {
     });
   }
 };
-const toggleActive = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await ProductEntity.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "product kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    item.isActive = !item.isActive;
-    await item.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
-      data: toProductDTO(item)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 
-const router$4 = Router();
-router$4.get("/", getAllProduct);
-router$4.get("/promotion", getPromotionalProducts);
-router$4.get("/most-order", getMostOrderedProduct);
-router$4.get("/search", searchProducts);
-router$4.get("/related/:slug", getRelatedProducts);
-router$4.post("/", createProduct);
-router$4.get("/:id", getProductById);
-router$4.put("/:id", updateProduct);
-router$4.delete("/:id", deleteProduct);
-router$4.patch("/toggleActive/:id", toggleActive);
-router$4.get("/users/:userId/wishlist", getWishlistByUserId);
-router$4.post("/users/:userId/wishlist", addWishlistItem);
-router$4.delete("/users/:userId/wishlist/:productId", deleteWishlistItem);
+const router$2 = Router();
+router$2.get("/promotion", getPromotionalProducts);
+router$2.get("/most-order", getMostOrderedProduct);
+router$2.get("/search", searchProducts);
+router$2.get("/related/:slug", getRelatedProducts);
+router$2.get("/:id", getProductById);
+router$2.get("/users/:userId/wishlist", getWishlistByUserId);
+router$2.post("/users/:userId/wishlist", addWishlistItem);
+router$2.delete("/users/:userId/wishlist/:productId", deleteWishlistItem);
 
 const productRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$4
+  default: router$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const createPaymentTransaction = async (req, res) => {
-  try {
-    const { orderId, amount, method } = req.body;
-    if (!orderId || !amount || !method) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu d\u1EEF li\u1EC7u b\u1EAFt bu\u1ED9c" });
-    }
-    const existingTransaction = await PaymentTransactionEntity.findOne({ orderId });
-    if (existingTransaction) {
-      return res.status(400).json({
-        code: 1,
-        message: "\u0110\u01A1n h\xE0ng n\xE0y \u0111\xE3 c\xF3 giao d\u1ECBch thanh to\xE1n"
-      });
-    }
-    const transaction = await PaymentTransactionEntity.create({
-      orderId,
-      amount,
-      method,
-      status: "pending"
-    });
-    await OrderEntity.findByIdAndUpdate(orderId, {
-      transaction: transaction._id
-    });
-    res.json({
-      code: 0,
-      data: transaction,
-      message: "T\u1EA1o giao d\u1ECBch th\xE0nh c\xF4ng"
-    });
-  } catch (err) {
-    res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updatePaymentTransactionStatus = async (req, res) => {
-  try {
-    const { transactionId, status } = req.body;
-    const transaction = await PaymentTransactionEntity.findByIdAndUpdate(
-      transactionId,
-      { status, updatedAt: /* @__PURE__ */ new Date() },
-      { new: true }
-    );
-    if (!transaction) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
-    }
-    res.json({ code: 0, data: transaction, message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng" });
-  } catch (err) {
-    res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPaymentTransactions = async (req, res) => {
-  try {
-    const { page = 1, limit = 10, status } = req.query;
-    const query = {};
-    if (status) query.status = status;
-    const result = await PaymentTransactionEntity.paginate(query, {
-      page: Number(page),
-      limit: Number(limit),
-      sort: { createdAt: -1 },
-      populate: "orderId"
-    });
-    res.json({
-      code: 0,
-      data: toPaymentTransactionListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      }
-    });
-  } catch (err) {
-    res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const deletePaymentTransaction = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const transaction = await PaymentTransactionEntity.findByIdAndDelete(id);
-    if (!transaction) return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y giao d\u1ECBch" });
-    res.json({ code: 0, message: "X\xF3a giao d\u1ECBch th\xE0nh c\xF4ng" });
-  } catch (err) {
-    res.status(500).json({ code: 1, message: err.message });
-  }
-};
-
-const router$3 = Router();
-router$3.post("/", createPaymentTransaction);
-router$3.put("/status", updatePaymentTransactionStatus);
-router$3.get("/", getPaymentTransactions);
-router$3.delete("/:id", deletePaymentTransaction);
-
-const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$3
-}, Symbol.toStringTag, { value: 'Module' }));
-
-function toProductReviewDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    orderId: entity.orderId.toString(),
-    userId: typeof entity.userId === "object" && "fullname" in entity.userId ? toUserDTO(entity.userId) : entity.userId.toString(),
-    productId: typeof entity.productId === "object" && "productName" in entity.productId ? toProductDTO(entity.productId) : entity.productId.toString(),
-    rating: entity.rating,
-    comment: entity.comment || null,
-    images: entity.images || [],
-    status: entity.status,
-    statusText: ProductReviewStatusText[entity.status],
-    statusColor: ProductReviewStatusColor[entity.status],
-    createdAt: entity.createdAt.toISOString(),
-    updatedAt: entity.updatedAt.toISOString()
-  };
-}
-const toProductReviewListDTO = (entities) => entities.map(toProductReviewDTO);
-
-const getAllProductReviews = async (req, res) => {
-  try {
-    let { page = 1, limit = 10 } = req.query;
-    const numPage = Number(page);
-    let numLimit = Number(limit);
-    if (numLimit === -1) {
-      const reviews = await ProductReviewEntity.find({}).sort({ createdAt: -1 }).populate("userId").populate("productId");
-      return res.json({
-        code: 0,
-        data: toProductReviewListDTO(reviews),
-        pagination: {
-          page: 1,
-          limit: reviews.length,
-          totalPages: 1,
-          total: reviews.length
-        }
-      });
-    }
-    const options = {
-      page: numPage,
-      limit: numLimit,
-      sort: { createdAt: -1 },
-      populate: [
-        // { path: "orderId", model: "Order" },
-        { path: "userId", model: "User" },
-        { path: "productId", model: "Product" }
-      ]
-    };
-    const result = await ProductReviewEntity.paginate({}, options);
-    return res.json({
-      code: 0,
-      data: toProductReviewListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      }
-    });
-  } catch (error) {
-    return res.status(500).json({
-      code: 1,
-      message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1",
-      error
-    });
-  }
-};
 const getProductReviewById = async (req, res) => {
   try {
     const review = await ProductReviewEntity.findById(req.params.id).populate("orderId").populate("userId").populate("productId");
@@ -5582,38 +6053,6 @@ const getProductReviewById = async (req, res) => {
     return res.json({ code: 0, data: toProductReviewDTO(review) });
   } catch (error) {
     return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y \u0111\xE1nh gi\xE1", error });
-  }
-};
-const updateProductReviewStatus = async (req, res) => {
-  try {
-    const { id, status } = req.body;
-    if (!id || !status) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu id ho\u1EB7c status" });
-    }
-    const review = await ProductReviewEntity.findById(id);
-    if (!review) {
-      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    review.status = status;
-    await review.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng",
-      data: toProductReviewDTO(review)
-    });
-  } catch (error) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i \u0111\xE1nh gi\xE1", error });
-  }
-};
-const deleteProductReview = async (req, res) => {
-  try {
-    const deleted = await ProductReviewEntity.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "\u0110\xE1nh gi\xE1 kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "X\xF3a \u0111\xE1nh gi\xE1 th\xE0nh c\xF4ng" });
-  } catch (error) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i x\xF3a \u0111\xE1nh gi\xE1", error });
   }
 };
 const submitProductReview = async (req, res) => {
@@ -5772,144 +6211,30 @@ const getReviewsByProduct = async (req, res) => {
   }
 };
 
-const router$2 = Router();
-router$2.get("/", getAllProductReviews);
-router$2.get("/:id", getProductReviewById);
-router$2.get("/user/:userId/reviews", getReviewsByUser);
-router$2.get("/product/:productId/reviews", getReviewsByProduct);
-router$2.put("/status", updateProductReviewStatus);
-router$2.put("/submit", submitProductReview);
-router$2.delete("/:id", deleteProductReview);
+const router$1 = Router();
+router$1.get("/:id", getProductReviewById);
+router$1.get("/user/:userId/reviews", getReviewsByUser);
+router$1.get("/product/:productId/reviews", getReviewsByProduct);
+router$1.put("/submit", submitProductReview);
 
 const productReviewRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$2
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const getAllProvinces = async (_, res) => {
-  try {
-    const response = await fetch("https://provinces.open-api.vn/api/?depth=1");
-    const data = await response.json();
-    return res.json({ code: 0, data });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch t\u1EC9nh/th\xE0nh", error: err.message });
-  }
-};
-const getDistrictsByProvince = async (req, res) => {
-  try {
-    const { provinceCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
-    const data = await response.json();
-    if (!data || !data.districts) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
-    }
-    return res.json({ code: 0, data: data.districts });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y qu\u1EADn/huy\u1EC7n", error: err.message });
-  }
-};
-const getWardsByDistrict = async (req, res) => {
-  try {
-    const { districtCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-    const data = await response.json();
-    if (!data || !data.wards) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
-    }
-    return res.json({ code: 0, data: data.wards });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y x\xE3/ph\u01B0\u1EDDng", error: err.message });
-  }
-};
-const getProvinceDetail = async (req, res) => {
-  try {
-    const { provinceCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=1`);
-    const data = await response.json();
-    if (!data || !data.name) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y t\u1EC9nh/th\xE0nh" });
-    }
-    return res.json({ code: 0, data });
-  } catch (err) {
-    return res.status(500).json({
-      code: 1,
-      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt t\u1EC9nh/th\xE0nh",
-      error: err.message
-    });
-  }
-};
-const getDistrictDetail = async (req, res) => {
-  try {
-    const { districtCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=1`);
-    const data = await response.json();
-    if (!data || !data.name) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
-    }
-    return res.json({ code: 0, data });
-  } catch (err) {
-    return res.status(500).json({
-      code: 1,
-      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt qu\u1EADn/huy\u1EC7n",
-      error: err.message
-    });
-  }
-};
-const getWardDetail = async (req, res) => {
-  const { wardCode } = req.params;
-  const districtCode = req.query.districtCode;
-  if (!districtCode) {
-    return res.status(400).json({
-      code: 1,
-      message: "Thi\u1EBFu districtCode khi t\xECm x\xE3/ph\u01B0\u1EDDng c\xF3 m\xE3 ng\u1EAFn"
-    });
-  }
-  try {
-    const resp = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-    const district = await resp.json();
-    if (resp.ok && district && Array.isArray(district.wards)) {
-      const ward = district.wards.find(
-        (w) => String(w.code) === String(wardCode)
-      );
-      if (ward) {
-        return res.json({ code: 0, data: ward });
-      }
-    }
-    return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt x\xE3/ph\u01B0\u1EDDng", error: err.message });
-  }
-};
-
-const router$1 = express.Router();
-router$1.get("/provinces", getAllProvinces);
-router$1.get("/provinces/:provinceCode", getProvinceDetail);
-router$1.get("/districts/:provinceCode", getDistrictsByProvince);
-router$1.get("/district/:districtCode", getDistrictDetail);
-router$1.get("/wards/:districtCode", getWardsByDistrict);
-router$1.get("/ward/:wardCode", getWardDetail);
-
-const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$1
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const router = Router();
-router.use("/settings", router$7);
-router.use("/fileManage", router$8);
-router.use("/auth", router$c);
-router.use("/about", router$e);
-router.use("/banners", router$b);
-router.use("/categoriesNews", router$a);
-router.use("/newsPosts", router$6);
-router.use("/orders", router$5);
-router.use("/payment-transactions", router$3);
-router.use("/categories", router$9);
-router.use("/products", router$4);
-router.use("/addresses", router$d);
-router.use("/product-reviews", router$2);
-router.use("/location", router$1);
-router.use("/", router$4);
+router.use("/admin", router$c);
+router.use("/", router$5);
+router.use("/auth", router$b);
+router.use("/banners", router$a);
+router.use("/categoriesNews", router$9);
+router.use("/newsPosts", router$4);
+router.use("/orders", router$3);
+router.use("/categories", router$8);
+router.use("/products", router$2);
+router.use("/addresses", router$n);
+router.use("/product-reviews", router$1);
+router.use("/", router$2);
 
 const index = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { watch, onBeforeUnmount} from 'vue'
-import {
-  useBannerManageStore
-} from '@/stores/admin/banner/useBannerManageStore'
+import { useBannerManageStore } from '@/stores/admin/banner/useBannerManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';

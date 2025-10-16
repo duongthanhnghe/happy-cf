@@ -3,11 +3,41 @@ import type { Serialize, Simplify } from "nitropack/types";
 declare module "nitropack/types" {
   type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T
   interface InternalApi {
-    '/v1/aboutRouter': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/aboutRouter').default>>>>
-    }
     '/v1/addressesRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/addressesRouter').default>>>>
+    }
+    '/v1/admin/aboutRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/aboutRouter').default>>>>
+    }
+    '/v1/admin/bannerRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/bannerRouter').default>>>>
+    }
+    '/v1/admin/categoriesNewsRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/categoriesNewsRouter').default>>>>
+    }
+    '/v1/admin/categoriesProductRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/categoriesProductRouter').default>>>>
+    }
+    '/v1/admin': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/index').default>>>>
+    }
+    '/v1/admin/orderManageRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/orderManageRouter').default>>>>
+    }
+    '/v1/admin/paymentTransactionRoutes': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/paymentTransactionRoutes').default>>>>
+    }
+    '/v1/admin/postsNewsRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/postsNewsRouter').default>>>>
+    }
+    '/v1/admin/productReviewRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/productReviewRouter').default>>>>
+    }
+    '/v1/admin/productRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/productRouter').default>>>>
+    }
+    '/v1/admin/settingRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/settingRouter').default>>>>
     }
     '/v1/authRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/authRouter').default>>>>
@@ -21,20 +51,11 @@ declare module "nitropack/types" {
     '/v1/categoriesProductRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/categoriesProductRouter').default>>>>
     }
-    '/v1/fileManageRouter': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/fileManageRouter').default>>>>
-    }
     '/v1': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/index').default>>>>
     }
-    '/v1/locationRouter': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/locationRouter').default>>>>
-    }
     '/v1/orderManageRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/orderManageRouter').default>>>>
-    }
-    '/v1/paymentTransactionRoutes': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/paymentTransactionRoutes').default>>>>
     }
     '/v1/postsNewsRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/postsNewsRouter').default>>>>
@@ -45,8 +66,14 @@ declare module "nitropack/types" {
     '/v1/productRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/productRouter').default>>>>
     }
-    '/v1/settingRouter': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/settingRouter').default>>>>
+    '/v1/shared/fileManageRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/shared/fileManageRouter').default>>>>
+    }
+    '/v1/shared': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/shared/index').default>>>>
+    }
+    '/v1/shared/locationRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/shared/locationRouter').default>>>>
     }
     '/__nuxt_error': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/nuxt/dist/core/runtime/nitro/handlers/renderer').default>>>>

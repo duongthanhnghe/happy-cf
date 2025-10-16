@@ -1,13 +1,13 @@
 import { ref, reactive, computed, watch, watchEffect } from "vue";
 import { defineStore } from "pinia";
-import { productsAPI } from "@/services/v1/product.service";
+import { productsAPI } from "@/services/v1/admin/product.service";
 import { Loading } from '@/utils/global'
 import type { ProductDTO, CategoryProductDTO, CreateProductDTO, UpdateProductDTO, OptionDTO } from '@/server/types/dto/v1/product.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
-import { useProductAll } from '@/composables/product/useProductAll'
-import { useProductCategory } from '@/composables/product/useProductCategory'
-import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree'
-import { useProductDetail } from '@/composables/product/useProductDetail'
+import { useAdminProductAll } from '@/composables/product/useAdminProductAll'
+import { useAdminProductCategory } from '@/composables/product/useAdminProductCategory'
+import { useAdminProductCategoryTree } from '@/composables/product/useAdminProductCategoryTree'
+import { useAdminProductDetail } from '@/composables/product/useAdminProductDetail'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
@@ -15,13 +15,11 @@ import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 import { useSeoWatchers } from "@/utils/seoHandle";
 import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 
-
 export const useProductManageStore = defineStore("ProductManage", () => {
-
-const { getListProductAll, fetchListProductAll } = useProductAll()
-const { getListCategoryAll, fetchCategoryList } = useProductCategory()
-const { getListCategoryAllTree, fetchCategoryListTree } = useProductCategoryTree()
-const { getDetailProduct, fetchDetailProduct } = useProductDetail()
+const { getListProductAll, fetchListProductAll } = useAdminProductAll()
+const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
+const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
+const { getDetailProduct, fetchDetailProduct } = useAdminProductDetail()
 const storeFileManage = useFileManageFolderStore();
 
 //state global  

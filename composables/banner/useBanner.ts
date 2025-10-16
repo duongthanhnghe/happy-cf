@@ -17,7 +17,7 @@ export const useBanner = () => {
     }
   }
 
-  const getListBanner = computed(() => listBanner.value?.filter(banner => banner.isActive));
+  const getListBanner = computed(() => listBanner.value);
 
   return {
     listBanner,

@@ -1,7 +1,7 @@
 import { watch, reactive } from "vue"
 import { defineStore } from "pinia"
 import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
-import { settingAPI } from "@/services/v1/setting.service";
+import { settingAPI } from "@/services/v1/admin/setting.service";
 import { Loading} from '@/utils/global'
 import { showSuccess, showWarning } from "@/utils/toast";
 import { useLocationStore } from '@/stores/shared/useLocationStore';

@@ -1,0 +1,1 @@
+{"version":3,"file":"settingRouter.js","sourceRoot":"","sources":["../../../../../server/routes/v1/admin/settingRouter.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,SAAS,CAAA;AAChC,OAAO,EACL,cAAc,GACf,MAAM,iDAAiD,CAAA;AAExD,MAAM,MAAM,GAAG,MAAM,EAAE,CAAA;AAEvB,MAAM,CAAC,GAAG,CAAC,SAAS,EAAE,cAAc,CAAC,CAAA;AAErC,eAAe,MAAM,CAAA"}

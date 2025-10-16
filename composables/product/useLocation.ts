@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { locationAPI } from "@/services/v1/location.service";
+import { locationAPI } from "@/services/v1/shared/location.service";
 import type { ProvinceDTO, DistrictDTO, WardDTO } from '@/server/types/dto/v1/location.dto'
 
 export const useLocation = () => {

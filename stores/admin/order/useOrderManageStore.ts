@@ -4,8 +4,8 @@ import type { TableOpt, TableHeaders, FilterTime } from '@/server/types/dto/v1/t
 import type { PaymentTransactionStatus } from "@/server/types/dto/v1/payment-transaction.dto"
 import { ref, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { ordersAPI } from "@/services/v1/orders.service";
-import { paymentTransactionsAPI } from "@/services/v1/payment-transaction.service";
+import { ordersAPI } from "@/services/v1/admin/orders.service";
+import { paymentTransactionsAPI } from "@/services/v1/admin/payment-transaction.service";
 import { Loading } from '@/utils/global'
 import { useOrderStatus } from "@/composables/order/useOrderStatus";
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";

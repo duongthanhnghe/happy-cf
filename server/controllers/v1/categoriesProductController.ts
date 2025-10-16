@@ -36,7 +36,7 @@ function buildCategoryTree(list: CategoryProductDTO[]): (CategoryProductDTO & { 
 
 export const getAllCategoriesTree = async (_: Request, res: Response) => {
   try {
-    const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
+    const categories = await CategoryProductEntity.find({isActive: true}).lean().sort({ order: 1 });
     const dtoList = toCategoryProductListDTO(categories);
 
     const tree = buildCategoryTree(dtoList);
@@ -49,7 +49,7 @@ export const getAllCategoriesTree = async (_: Request, res: Response) => {
 
 export const getAllCategories = async (_: Request, res: Response) => {
   try {
-    const categories = await CategoryProductEntity.find().lean().sort({ order: 1 })
+    const categories = await CategoryProductEntity.find({isActive: true}).lean().sort({ order: 1 })
     return res.json({ code: 0, data: toCategoryProductListDTO(categories) })
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message });
@@ -128,114 +128,114 @@ export const getChildrenCategories = async (
   }
 };
 
-export const createCategories = async (req: Request<{}, {}, CreateCategoryProductBody>, res: Response) => {
-  try {
-    const { categoryName, image, parentId } = req.body;
-    if (!categoryName || !image) {
-      return res.status(400).json({ code: 1, message: "Thiếu categoryName hoặc image" });
-    }
+// export const createCategories = async (req: Request<{}, {}, CreateCategoryProductBody>, res: Response) => {
+//   try {
+//     const { categoryName, image, parentId } = req.body;
+//     if (!categoryName || !image) {
+//       return res.status(400).json({ code: 1, message: "Thiếu categoryName hoặc image" });
+//     }
 
-    if (parentId && !Types.ObjectId.isValid(parentId)) {
-      return res.status(400).json({ code: 1, message: "parentId không hợp lệ" });
-    }
+//     if (parentId && !Types.ObjectId.isValid(parentId)) {
+//       return res.status(400).json({ code: 1, message: "parentId không hợp lệ" });
+//     }
 
-    if (parentId) {
-      const parent = await CategoryProductEntity.findById(parentId);
-      if (!parent) {
-        return res.status(400).json({ code: 1, message: "Danh mục cha không tồn tại" });
-      }
-    }
+//     if (parentId) {
+//       const parent = await CategoryProductEntity.findById(parentId);
+//       if (!parent) {
+//         return res.status(400).json({ code: 1, message: "Danh mục cha không tồn tại" });
+//       }
+//     }
 
-    const existed = await CategoryProductEntity.findOne({ categoryName });
-    if (existed) {
-      return res.status(400).json({ code: 1, message: "Danh mục đã tồn tại" });
-    }
+//     const existed = await CategoryProductEntity.findOne({ categoryName });
+//     if (existed) {
+//       return res.status(400).json({ code: 1, message: "Danh mục đã tồn tại" });
+//     }
 
-    const lastItem = await CategoryProductEntity.findOne().sort({ order: -1 })
-    const maxOrder = lastItem ? lastItem.order : 0
+//     const lastItem = await CategoryProductEntity.findOne().sort({ order: -1 })
+//     const maxOrder = lastItem ? lastItem.order : 0
 
-    const newItem = new CategoryProductEntity({
-      ...req.body,
-      parentId: parentId || null,
-      order: maxOrder + 1,
-    })
-    await newItem.save()
+//     const newItem = new CategoryProductEntity({
+//       ...req.body,
+//       parentId: parentId || null,
+//       order: maxOrder + 1,
+//     })
+//     await newItem.save()
 
-    return res.status(201).json({ code: 0, message: "Tạo thành công", data: toCategoryProductDTO(newItem) });
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
+//     return res.status(201).json({ code: 0, message: "Tạo thành công", data: toCategoryProductDTO(newItem) });
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
 
-export const updateCategories = async (req: Request<{ id: string }, {}, Partial<UpdateCategoryProductBody>>, res: Response) => {
-  try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
-    }
+// export const updateCategories = async (req: Request<{ id: string }, {}, Partial<UpdateCategoryProductBody>>, res: Response) => {
+//   try {
+//     if (!Types.ObjectId.isValid(req.params.id)) {
+//       return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
+//     }
 
-    const { parentId } = req.body;
+//     const { parentId } = req.body;
 
-    if (parentId && !Types.ObjectId.isValid(parentId)) {
-      return res.status(400).json({ code: 1, message: "parentId không hợp lệ" });
-    }
+//     if (parentId && !Types.ObjectId.isValid(parentId)) {
+//       return res.status(400).json({ code: 1, message: "parentId không hợp lệ" });
+//     }
 
-    if (parentId) {
-      const parent = await CategoryProductEntity.findById(parentId);
-      if (!parent) {
-        return res.status(400).json({ code: 1, message: "Danh mục cha không tồn tại" });
-      }
-    }
+//     if (parentId) {
+//       const parent = await CategoryProductEntity.findById(parentId);
+//       if (!parent) {
+//         return res.status(400).json({ code: 1, message: "Danh mục cha không tồn tại" });
+//       }
+//     }
 
-    const updatedCategory = await CategoryProductEntity.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    ).lean();
+//     const updatedCategory = await CategoryProductEntity.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true }
+//     ).lean();
 
-    if (!updatedCategory) {
-      return res.status(404).json({ code: 1, message: "Danh mục không tồn tại" });
-    }
+//     if (!updatedCategory) {
+//       return res.status(404).json({ code: 1, message: "Danh mục không tồn tại" });
+//     }
 
-    return res.json({ code: 0, message: "Cập nhật thành công", data: toCategoryProductDTO(updatedCategory) });
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
+//     return res.json({ code: 0, message: "Cập nhật thành công", data: toCategoryProductDTO(updatedCategory) });
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
 
-export const deleteCategories = async (req: Request<{ id: string }>, res: Response) => {
-  try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
-    }
+// export const deleteCategories = async (req: Request<{ id: string }>, res: Response) => {
+//   try {
+//     if (!Types.ObjectId.isValid(req.params.id)) {
+//       return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
+//     }
 
-    const categoryId = new Types.ObjectId(req.params.id);
+//     const categoryId = new Types.ObjectId(req.params.id);
 
-    const hasChildren = await CategoryProductEntity.exists({ parentId: categoryId });
-    if (hasChildren) {
-      return res.json({
-        code: 1,
-        message: "Không thể xóa danh mục vì vẫn còn danh mục con"
-      });
-    }
+//     const hasChildren = await CategoryProductEntity.exists({ parentId: categoryId });
+//     if (hasChildren) {
+//       return res.json({
+//         code: 1,
+//         message: "Không thể xóa danh mục vì vẫn còn danh mục con"
+//       });
+//     }
 
-    const hasProducts = await ProductEntity.exists({ categoryId });
-    if (hasProducts) {
-      return res.json({
-        code: 1,
-        message: "Không thể xóa danh mục vì vẫn còn sản phẩm trong danh mục này"
-      });
-    }
+//     const hasProducts = await ProductEntity.exists({ categoryId });
+//     if (hasProducts) {
+//       return res.json({
+//         code: 1,
+//         message: "Không thể xóa danh mục vì vẫn còn sản phẩm trong danh mục này"
+//       });
+//     }
 
-    const deletedCategory = await CategoryProductEntity.findByIdAndDelete(categoryId);
-    if (!deletedCategory) {
-      return res.status(404).json({ code: 1, message: "Danh mục không tồn tại" });
-    }
+//     const deletedCategory = await CategoryProductEntity.findByIdAndDelete(categoryId);
+//     if (!deletedCategory) {
+//       return res.status(404).json({ code: 1, message: "Danh mục không tồn tại" });
+//     }
 
-    return res.json({ code: 0, message: "Xoá thành công" });
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
+//     return res.json({ code: 0, message: "Xoá thành công" });
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
 
 export const getProductsByCategory = async (
   req: Request<{ id: string }>,
@@ -357,52 +357,51 @@ export const getProductsByCategory = async (
   }
 };
 
+// export const updateOrder = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params
+//     const { order } = req.body
 
-export const updateOrder = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const { order } = req.body
+//     const currentItem = await CategoryProductEntity.findById(id)
+//     if (!currentItem) {
+//       return res.status(404).json({ code: 1, message: "Item không tồn tại" })
+//     }
 
-    const currentItem = await CategoryProductEntity.findById(id)
-    if (!currentItem) {
-      return res.status(404).json({ code: 1, message: "Item không tồn tại" })
-    }
+//     const existingItem = await CategoryProductEntity.findOne({ order: order })
 
-    const existingItem = await CategoryProductEntity.findOne({ order: order })
+//     if (existingItem) {
+//       const oldOrder = currentItem.order
+//       existingItem.order = oldOrder
+//       await existingItem.save()
+//     }
 
-    if (existingItem) {
-      const oldOrder = currentItem.order
-      existingItem.order = oldOrder
-      await existingItem.save()
-    }
+//     currentItem.order = order
+//     await currentItem.save()
 
-    currentItem.order = order
-    await currentItem.save()
+//     return res.json({ code: 0, message: "Cập nhật thành công" })
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }
 
-    return res.json({ code: 0, message: "Cập nhật thành công" })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
+// export const toggleActive = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params
 
-export const toggleActive = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
+//     const item = await CategoryProductEntity.findById(id)
+//     if (!item) {
+//       return res.status(404).json({ code: 1, message: "Banner không tồn tại" })
+//     }
 
-    const item = await CategoryProductEntity.findById(id)
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "Banner không tồn tại" })
-    }
+//     item.isActive = !item.isActive
+//     await item.save()
 
-    item.isActive = !item.isActive
-    await item.save()
-
-    return res.json({
-      code: 0,
-      message: "Cập nhật trạng thái thành công",
-      data: toCategoryProductDTO(item)
-    })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
+//     return res.json({
+//       code: 0,
+//       message: "Cập nhật trạng thái thành công",
+//       data: toCategoryProductDTO(item)
+//     })
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }

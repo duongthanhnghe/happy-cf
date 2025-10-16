@@ -1,6 +1,6 @@
 import { ref, reactive, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { aboutAPI } from "@/services/v1/about.service";
+import { aboutAPI } from "@/services/v1/admin/about.service";
 import {
   Loading
 } from '@/utils/global'

@@ -4,12 +4,12 @@ import { ref, watch, computed } from "vue";
 import { defineStore } from "pinia";
 import { Loading } from '@/utils/global'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
-import { useProductReviewAll } from "@/composables/product-review/useProductReviewAll";
-import { productReviewAPI } from "@/services/v1/productReview.service";
+import { useAdminProductReviewAll } from "@/composables/product-review/useAdminProductReviewAll";
+import { productReviewAPI } from "@/services/v1/admin/productReview.service";
 
 export const useProductReviewManageStore = defineStore("ProductReviewManageStore", () => {
 
-  const { getListReview, fetchListReviewAll } = useProductReviewAll();
+  const { getListReview, fetchListReviewAll } = useAdminProductReviewAll();
 
   const dataList = ref<ProductReviewPaginationDTO>()
   const headers = ref<TableHeaders[]>([
