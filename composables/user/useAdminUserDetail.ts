@@ -1,13 +1,13 @@
 import { ref, computed } from "vue";
-import { authAPI } from "@/services/v1/auth.service";
+import { usersAPI } from "@/services/v1/admin/users.service";
 import type { User } from '@/server/types/dto/v1/user.dto';
 
-export const useUserDetail = () => {
+export const useAdminUserDetail = () => {
   const detailUser = ref<User|null>(null);
 
   const fetchDetailUser = async (id: string) => {
     try {
-      const data = await authAPI.getDetailAccount(id)
+      const data = await usersAPI.getDetailAccount(id)
       if(data.code === 0) detailUser.value = data.data;
     } catch (err) {
       console.error('Error user detail', err)
@@ -17,7 +17,6 @@ export const useUserDetail = () => {
   const getDetailUserApi = computed(() => detailUser.value);
 
   return {
-    detailUser,
     fetchDetailUser,
     getDetailUserApi
   }

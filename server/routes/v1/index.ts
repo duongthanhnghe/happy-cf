@@ -6,6 +6,7 @@ import sharedRoutes from "./shared/index"
 // import settingRoutes from './admin/settingRouter'
 // import fileManageRoutes from './shared/fileManageRouter'
 import authRoutes from './authRouter'
+import usersRoutes from './usersRouter'
 // import aboutRoutes from './aboutRouter'
 import bannerRoutes from './bannerRouter'
 import categoriesNewsRoutes from './categoriesNewsRouter'
@@ -27,6 +28,8 @@ router.use("/", sharedRoutes)
 // router.use('/settings', settingRoutes)
 // router.use('/fileManage', fileManageRoutes)
 router.use('/auth', authRoutes)
+router.use('/users', usersRoutes)
+
 // router.use('/about', aboutRoutes)
 router.use('/banners', bannerRoutes)
 router.use('/categoriesNews', categoriesNewsRoutes)

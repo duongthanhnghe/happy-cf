@@ -4,6 +4,7 @@ import settingRoutes from './settingRouter'
 // import fileManageRoutes from './fileManageRouter'
 // import authRoutes from './authRouter'
 import aboutRoutes from './aboutRouter'
+import usersRouter from './usersRouter'
 import bannerRoutes from './bannerRouter'
 import categoriesNewsRoutes from './categoriesNewsRouter'
 import postsNewsRoutes from './postsNewsRouter'
@@ -22,6 +23,7 @@ router.use('/settings', settingRoutes)
 // router.use('/fileManage', fileManageRoutes)
 // router.use('/auth', authRoutes)
 router.use('/about', aboutRoutes)
+router.use('/users', usersRouter)
 router.use('/banners', bannerRoutes)
 router.use('/categoriesNews', categoriesNewsRoutes)
 router.use('/newsPosts', postsNewsRoutes)

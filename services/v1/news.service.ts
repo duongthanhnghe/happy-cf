@@ -399,7 +399,6 @@ export const newsAPI = {
     }
   },
 
-  //client
   getAllPostsPagination: async (
     page: number|string,
     limit: number,

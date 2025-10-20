@@ -39,6 +39,9 @@ declare module "nitropack/types" {
     '/v1/admin/settingRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/settingRouter').default>>>>
     }
+    '/v1/admin/usersRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/usersRouter').default>>>>
+    }
     '/v1/authRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/authRouter').default>>>>
     }
@@ -74,6 +77,9 @@ declare module "nitropack/types" {
     }
     '/v1/shared/locationRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/shared/locationRouter').default>>>>
+    }
+    '/v1/usersRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/usersRouter').default>>>>
     }
     '/__nuxt_error': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/nuxt/dist/core/runtime/nitro/handlers/renderer').default>>>>

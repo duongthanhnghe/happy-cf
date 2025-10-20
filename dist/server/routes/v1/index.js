@@ -4,6 +4,7 @@ import sharedRoutes from "./shared/index.js";
 // import settingRoutes from './admin/settingRouter.js'
 // import fileManageRoutes from './shared/fileManageRouter.js'
 import authRoutes from './authRouter.js';
+import usersRoutes from './usersRouter.js';
 // import aboutRoutes from './aboutRouter.js'
 import bannerRoutes from './bannerRouter.js';
 import categoriesNewsRoutes from './categoriesNewsRouter.js';
@@ -22,6 +23,7 @@ router.use("/", sharedRoutes);
 // router.use('/settings', settingRoutes)
 // router.use('/fileManage', fileManageRoutes)
 router.use('/auth', authRoutes);
+router.use('/users', usersRoutes);
 // router.use('/about', aboutRoutes)
 router.use('/banners', bannerRoutes);
 router.use('/categoriesNews', categoriesNewsRoutes);

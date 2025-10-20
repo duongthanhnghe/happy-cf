@@ -8,8 +8,8 @@ import {
 import type { CategoryNewsDTO, CreateCategoryNewsDTO, UpdateCategoryNewsDTO } from '@/server/types/dto/v1/news.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
-import { useNewsCategory } from '@/composables/news/useNewsCategory'
-import { useNewsCategoryDetail } from '@/composables/news/useNewsCategoryDetail'
+import { useAdminNewsCategory } from '@/composables/news/useAdminNewsCategory'
+import { useAdminNewsCategoryDetail } from '@/composables/news/useAdminNewsCategoryDetail'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
@@ -17,8 +17,8 @@ import { useSeoWatchers } from "@/utils/seoHandle";
 
 export const useCategoryManageStore = defineStore("CategoryNewsManage", () => {
 
-const { getListCategoryApi, fetchCategoryList } = useNewsCategory()
-const { getDetailNewsCategoryApi, fetchDetailNewsCategory } = useNewsCategoryDetail()
+const { getListCategoryApi, fetchCategoryList } = useAdminNewsCategory()
+const { getDetailNewsCategoryApi, fetchDetailNewsCategory } = useAdminNewsCategoryDetail()
 const storeFileManage = useFileManageFolderStore();
   
 //state global  

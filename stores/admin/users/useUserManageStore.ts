@@ -1,22 +1,20 @@
 import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { usersAPI } from "@/services/v1/users.service";
-import {
-  Loading
-} from '@/utils/global'
+import { usersAPI } from "@/services/v1/admin/users.service";
+import { Loading } from '@/utils/global'
 import type { User } from '@/server/types/dto/v1/user.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import {showConfirm, showSuccess, showWarning} from '@/utils/toast'
 import { USER_ROLES } from '@/shared/constants/user-roles'
-import { useUserDetail } from '@/composables/user/useUserDetail'
-import { useUserAll } from '@/composables/user/useUserAll'
+import { useAdminUserDetail } from '@/composables/user/useAdminUserDetail'
+import { useAdminUserAll } from '@/composables/user/useAdminUserAll'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 
 
 export const useUserManageStore = defineStore("UserManage", () => {
 
-  const { getDetailUserApi, fetchDetailUser } = useUserDetail()
-  const { getListUserAllApi, fetchListUserAll } = useUserAll()
+  const { getDetailUserApi, fetchDetailUser } = useAdminUserDetail()
+  const { getListUserAllApi, fetchListUserAll } = useAdminUserAll()
 
   const dataList = ref<User[]>([]);
 

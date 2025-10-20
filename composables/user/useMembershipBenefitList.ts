@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { usersAPI } from "@/services/v1/users.service";
+import { usersAPI } from "@/services/v1/admin/users.service";
 import type { MembershipBenefitDTO } from '@/server/types/dto/v1/user.dto'
 
 export const useMembershipBenefitList = () => {

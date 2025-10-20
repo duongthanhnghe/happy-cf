@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { watch, watchEffect } from 'vue';
 import '@/styles/organisms/user/section-account.scss'
-import {
-  useAccountStore
-} from '@/stores/client/users/useAccountStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { useMembershipStore } from '@/stores/shared/useMembershipStore'
 import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'

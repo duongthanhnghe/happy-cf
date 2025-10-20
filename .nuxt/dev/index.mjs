@@ -9,10 +9,10 @@ import express, { Router } from 'file:///Users/ttcenter/happy-cf/node_modules/ex
 import fs, { promises } from 'node:fs';
 import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
 import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
+import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
 import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
 import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
 import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
-import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
 import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
 import nodemailer from 'file:///Users/ttcenter/happy-cf/node_modules/nodemailer/lib/nodemailer.js';
 import { OAuth2Client } from 'file:///Users/ttcenter/happy-cf/node_modules/google-auth-library/build/src/index.js';
@@ -1144,7 +1144,22 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"37fc1-l3zRBedju19uHHnCP2cxFuuiEHs\"",
+    "mtime": "2025-10-18T05:44:03.964Z",
+    "size": 229313,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"d481e-9moiLVsyIKxC0qdSKJSYhYPozGQ\"",
+    "mtime": "2025-10-18T05:44:03.965Z",
+    "size": 870430,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -1563,6 +1578,7 @@ const _lazy_keFZb5 = () => Promise.resolve().then(function () { return postsNews
 const _lazy_H3u2OJ = () => Promise.resolve().then(function () { return productReviewRouter$1; });
 const _lazy_AInuxj = () => Promise.resolve().then(function () { return productRouter$1; });
 const _lazy_NI8dax = () => Promise.resolve().then(function () { return settingRouter; });
+const _lazy_iadr18 = () => Promise.resolve().then(function () { return usersRouter$1; });
 const _lazy_6thR5q = () => Promise.resolve().then(function () { return authRouter; });
 const _lazy_5GTSlq = () => Promise.resolve().then(function () { return bannerRouter; });
 const _lazy_ndfMJ7 = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
@@ -1575,6 +1591,7 @@ const _lazy_FuVwdC = () => Promise.resolve().then(function () { return productRo
 const _lazy_yozqhu = () => Promise.resolve().then(function () { return fileManageRouter; });
 const _lazy_qiGXOx = () => Promise.resolve().then(function () { return index$1; });
 const _lazy_QCha66 = () => Promise.resolve().then(function () { return locationRouter; });
+const _lazy_T3AZC3 = () => Promise.resolve().then(function () { return usersRouter; });
 const _lazy_wB4Btu = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
@@ -1591,6 +1608,7 @@ const handlers = [
   { route: '/v1/admin/productReviewRouter', handler: _lazy_H3u2OJ, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/productRouter', handler: _lazy_AInuxj, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/settingRouter', handler: _lazy_NI8dax, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/usersRouter', handler: _lazy_iadr18, lazy: true, middleware: false, method: undefined },
   { route: '/v1/authRouter', handler: _lazy_6thR5q, lazy: true, middleware: false, method: undefined },
   { route: '/v1/bannerRouter', handler: _lazy_5GTSlq, lazy: true, middleware: false, method: undefined },
   { route: '/v1/categoriesNewsRouter', handler: _lazy_ndfMJ7, lazy: true, middleware: false, method: undefined },
@@ -1603,6 +1621,7 @@ const handlers = [
   { route: '/v1/shared/fileManageRouter', handler: _lazy_yozqhu, lazy: true, middleware: false, method: undefined },
   { route: '/v1/shared', handler: _lazy_qiGXOx, lazy: true, middleware: false, method: undefined },
   { route: '/v1/shared/locationRouter', handler: _lazy_QCha66, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/usersRouter', handler: _lazy_T3AZC3, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_error', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined }
@@ -2084,18 +2103,18 @@ const getDefaultAddressByUserId = async (req, res) => {
   }
 };
 
-const router$n = Router();
-router$n.get("/default/:userId", getDefaultAddressByUserId);
-router$n.get("/user/:userId", getAllAddress);
-router$n.get("/:id", getAddressById);
-router$n.post("/", createAddress);
-router$n.put("/:id", updateAddress);
-router$n.delete("/:id", deleteAddress);
-router$n.post("/:id/set-default", setAddressDefault);
+const router$p = Router();
+router$p.get("/default/:userId", getDefaultAddressByUserId);
+router$p.get("/user/:userId", getAllAddress);
+router$p.get("/:id", getAddressById);
+router$p.post("/", createAddress);
+router$p.put("/:id", updateAddress);
+router$p.delete("/:id", deleteAddress);
+router$p.post("/:id/set-default", setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$n
+  default: router$p
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ListImageSchema$1 = new Schema(
@@ -2239,18 +2258,18 @@ const toggleActive$7 = async (req, res) => {
   }
 };
 
-const router$m = Router();
-router$m.get("/", getAllAbout);
-router$m.get("/:id", getAboutById);
-router$m.post("/", createAbout);
-router$m.put("/:id", updateAbout);
-router$m.delete("/:id", deleteAbout);
-router$m.patch("/updateOrder/:id", updateOrder$3);
-router$m.patch("/toggleActive/:id", toggleActive$7);
+const router$o = Router();
+router$o.get("/", getAllAbout);
+router$o.get("/:id", getAboutById);
+router$o.post("/", createAbout);
+router$o.put("/:id", updateAbout);
+router$o.delete("/:id", deleteAbout);
+router$o.patch("/updateOrder/:id", updateOrder$3);
+router$o.patch("/toggleActive/:id", toggleActive$7);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$m
+  default: router$o
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const BannerSchema = new Schema(
@@ -2383,18 +2402,18 @@ const toggleActive$6 = async (req, res) => {
   }
 };
 
-const router$l = Router();
-router$l.get("/", getAllBanners$1);
-router$l.get("/:id", getBannerById);
-router$l.post("/", createBanner);
-router$l.put("/:id", updateBanner);
-router$l.delete("/:id", deleteBanner);
-router$l.patch("/updateOrder/:id", updateOrder$2);
-router$l.patch("/toggleActive/:id", toggleActive$6);
+const router$n = Router();
+router$n.get("/", getAllBanners$1);
+router$n.get("/:id", getBannerById);
+router$n.post("/", createBanner);
+router$n.put("/:id", updateBanner);
+router$n.delete("/:id", deleteBanner);
+router$n.patch("/updateOrder/:id", updateOrder$2);
+router$n.patch("/toggleActive/:id", toggleActive$6);
 
 const bannerRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$l
+  default: router$n
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function generateSlug(text) {
@@ -2654,18 +2673,18 @@ const toggleActive$5 = async (req, res) => {
   }
 };
 
-const router$k = Router();
-router$k.get("/", getAllCategories$3);
-router$k.get("/:id", getCategoriesById$3);
-router$k.post("/", createCategories$1);
-router$k.put("/:id", updateCategories$1);
-router$k.delete("/:id", deleteCategories$1);
-router$k.patch("/toggleActive/:id", toggleActive$5);
-router$k.patch("/updateOrder/:id", updateOrder$1);
+const router$m = Router();
+router$m.get("/", getAllCategories$3);
+router$m.get("/:id", getCategoriesById$3);
+router$m.post("/", createCategories$1);
+router$m.put("/:id", updateCategories$1);
+router$m.delete("/:id", deleteCategories$1);
+router$m.patch("/toggleActive/:id", toggleActive$5);
+router$m.patch("/updateOrder/:id", updateOrder$1);
 
 const categoriesNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$k
+  default: router$m
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const VariantSchema = new Schema(
@@ -3015,19 +3034,19 @@ const toggleActive$4 = async (req, res) => {
   }
 };
 
-const router$j = Router();
-router$j.get("/tree", getAllCategoriesTree$1);
-router$j.get("/", getAllCategories$2);
-router$j.get("/:id", getCategoriesById$2);
-router$j.post("/", createCategories);
-router$j.put("/:id", updateCategories);
-router$j.delete("/:id", deleteCategories);
-router$j.patch("/toggleActive/:id", toggleActive$4);
-router$j.patch("/updateOrder/:id", updateOrder);
+const router$l = Router();
+router$l.get("/tree", getAllCategoriesTree$1);
+router$l.get("/", getAllCategories$2);
+router$l.get("/:id", getCategoriesById$2);
+router$l.post("/", createCategories);
+router$l.put("/:id", updateCategories);
+router$l.delete("/:id", deleteCategories);
+router$l.patch("/toggleActive/:id", toggleActive$4);
+router$l.patch("/updateOrder/:id", updateOrder);
 
 const categoriesProductRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$j
+  default: router$l
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const updateSettings = async (req, res) => {
@@ -3042,12 +3061,401 @@ const updateSettings = async (req, res) => {
   }
 };
 
-const router$i = Router();
-router$i.put("/update", updateSettings);
+const router$k = Router();
+router$k.put("/update", updateSettings);
 
 const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$i
+  default: router$k
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const MembershipSchema = new Schema(
+  {
+    level: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], required: true },
+    point: { type: Number, default: 0 },
+    balancePoint: { type: Number, default: 0 },
+    discountRate: { type: Number, default: 0 },
+    joinedAt: { type: Date, default: Date.now },
+    barcode: { type: String },
+    code: { type: Number }
+  },
+  { _id: false }
+);
+const UserSchema = new Schema(
+  {
+    fullname: { type: String, required: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    password: { type: String, required: function() {
+      return this.authProvider !== "google";
+    } },
+    authProvider: {
+      type: String,
+      enum: ["local", "google", "facebook"],
+      default: "local"
+    },
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      required: false,
+      default: "other"
+    },
+    phone: { type: String },
+    birthday: { type: Date },
+    avatar: { type: String },
+    active: { type: Boolean, default: true },
+    role: { type: Number, default: 0 },
+    membership: { type: MembershipSchema, required: true },
+    resetToken: { type: String },
+    resetTokenExpire: { type: Date },
+    createdAt: { type: Date },
+    updatedAt: { type: Date }
+  },
+  { timestamps: true }
+);
+UserSchema.plugin(mongoosePaginate);
+const UserModel = model("User", UserSchema, "users");
+
+const MembershipBenefitSchema = new Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    description: { type: String },
+    icon: { type: String }
+  },
+  { timestamps: true }
+);
+const MembershipBenefitModel = model(
+  "MembershipBenefit",
+  MembershipBenefitSchema,
+  "membership_benefits"
+);
+
+const MembershipLevelSchema = new Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    minPoint: { type: Number, required: true },
+    icon: { type: String },
+    image: { type: String },
+    discountRate: { type: Number },
+    benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
+  },
+  { timestamps: false }
+);
+const MembershipLevelModel = model(
+  "MembershipLevel",
+  MembershipLevelSchema,
+  "membership_levels"
+);
+
+function toUserDTO(entity) {
+  var _a, _b, _c, _d, _e, _f;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    fullname: entity.fullname,
+    email: entity.email,
+    gender: entity.gender || void 0,
+    phone: entity.phone || "",
+    birthday: ((_b = entity.birthday) == null ? void 0 : _b.toString()) || null,
+    avatar: entity.avatar || "",
+    googleId: entity.googleId,
+    authProvider: entity.authProvider,
+    active: entity.active,
+    role: entity.role,
+    membership: {
+      level: entity.membership.level,
+      point: entity.membership.point,
+      balancePoint: entity.membership.balancePoint,
+      discountRate: entity.membership.discountRate,
+      joinedAt: (_c = entity.membership.joinedAt) == null ? void 0 : _c.toString(),
+      barcode: entity.membership.barcode || "",
+      code: (_d = entity.membership.code) != null ? _d : 0
+    },
+    createdAt: ((_e = entity.createdAt) == null ? void 0 : _e.toISOString()) || "",
+    updatedAt: ((_f = entity.updatedAt) == null ? void 0 : _f.toISOString()) || ""
+  };
+}
+const toUserListDTO = (users) => {
+  return users.map(toUserDTO);
+};
+
+function toMembershipBenefitDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    name: entity.name,
+    description: entity.description,
+    icon: entity.icon,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString()
+  };
+}
+const toMembershipBenefitListDTO = (items) => {
+  return items.map(toMembershipBenefitDTO);
+};
+
+function toMembershipLevelDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    name: entity.name,
+    minPoint: entity.minPoint,
+    icon: entity.icon,
+    image: entity.image,
+    discountRate: entity.discountRate,
+    benefits: Array.isArray(entity.benefits) ? toMembershipBenefitListDTO(entity.benefits) : []
+  };
+}
+const toMembershipLevelListDTO = (items) => {
+  return items.map(toMembershipLevelDTO);
+};
+
+const deleteUsers = async (req, res) => {
+  const { id } = req.params;
+  await UserModel.findByIdAndDelete(id);
+  res.json({ code: 200, message: "Delete success" });
+};
+const getAllUsers = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const role = req.query.role ? parseInt(req.query.role) : void 0;
+    const filter = {};
+    if (role !== void 0) {
+      filter.role = role;
+    }
+    if (limit === -1) {
+      const users = await UserModel.find(filter).sort({ createdAt: -1 });
+      return res.status(200).json({
+        code: 0,
+        data: toUserListDTO(users),
+        pagination: {
+          total: users.length,
+          totalPages: 1,
+          page: 1,
+          limit: users.length
+        }
+      });
+    }
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 }
+    };
+    const result = await UserModel.paginate(filter, options);
+    return res.status(200).json({
+      code: 0,
+      data: toUserListDTO(result.docs),
+      pagination: {
+        total: result.totalDocs,
+        totalPages: result.totalPages,
+        page: result.page,
+        limit: result.limit
+      }
+    });
+  } catch (error) {
+    console.error("getAllUsers error:", error);
+    return res.status(500).json({
+      code: 500,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+const getUserById$1 = async (req, res) => {
+  const { id } = req.params;
+  const user = await UserModel.findById(id);
+  if (!user) return res.status(404).json({ code: 404, message: "Not found" });
+  res.json({ code: 0, data: toUserDTO(user) });
+};
+const getAllMembershipLevel = async (_, res) => {
+  try {
+    const data = await MembershipLevelModel.find().populate("benefits");
+    return res.status(200).json({
+      code: 0,
+      data: toMembershipLevelListDTO(data)
+    });
+  } catch (error) {
+    console.error("getAllMembershipLevel error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+const getMembershipLevelById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const level = await MembershipLevelModel.findById(id).populate("benefits");
+    if (!level) {
+      return res.status(404).json({
+        code: 1,
+        message: "Membership level kh\xF4ng t\u1ED3n t\u1EA1i"
+      });
+    }
+    return res.json({
+      code: 0,
+      data: toMembershipLevelDTO(level)
+    });
+  } catch (error) {
+    console.error("getMembershipLevelById error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+const updateMembershipLevel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    const updated = await MembershipLevelModel.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    ).populate("benefits");
+    if (!updated) {
+      return res.status(404).json({
+        code: 1,
+        message: "Membership level not found"
+      });
+    }
+    return res.json({
+      code: 0,
+      message: "Membership level updated successfully",
+      data: updated
+    });
+  } catch (error) {
+    console.error("updateMembershipLevel error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+const toggleActive$3 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await UserModel.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "User kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.active = !item.active;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toUserDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createMembershipBenefit = async (req, res) => {
+  try {
+    const { name, description, icon } = req.body;
+    const existing = await MembershipBenefitModel.findOne({ name });
+    if (existing) {
+      return res.status(400).json({ code: 1, message: "Benefit \u0111\xE3 t\u1ED3n t\u1EA1i" });
+    }
+    const benefit = await MembershipBenefitModel.create({ name, description, icon });
+    return res.status(201).json({
+      code: 0,
+      message: "T\u1EA1o benefit th\xE0nh c\xF4ng",
+      data: toMembershipBenefitDTO(benefit)
+    });
+  } catch (err) {
+    console.error("createMembershipBenefit error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+const getAllMembershipBenefits = async (_, res) => {
+  try {
+    const benefits = await MembershipBenefitModel.find().sort({ createdAt: -1 });
+    return res.json({
+      code: 0,
+      data: toMembershipBenefitListDTO(benefits)
+    });
+  } catch (err) {
+    console.error("getAllMembershipBenefits error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+const getMembershipBenefitById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const benefit = await MembershipBenefitModel.findById(id);
+    if (!benefit) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
+    return res.json({ code: 0, data: toMembershipBenefitDTO(benefit) });
+  } catch (err) {
+    console.error("getMembershipBenefitById error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+const updateMembershipBenefit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    const benefit = await MembershipBenefitModel.findByIdAndUpdate(id, updateData, { new: true });
+    if (!benefit) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt benefit th\xE0nh c\xF4ng",
+      data: toMembershipBenefitDTO(benefit)
+    });
+  } catch (err) {
+    console.error("updateMembershipBenefit error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+const deleteMembershipBenefit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await MembershipBenefitModel.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
+    return res.json({ code: 0, message: "X\xF3a benefit th\xE0nh c\xF4ng" });
+  } catch (err) {
+    console.error("deleteMembershipBenefit error:", err);
+    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+  }
+};
+
+const authenticate = (req, res, next) => {
+  var _a;
+  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  if (!token) {
+    return res.status(401).json({ message: "Thi\u1EBFu token" });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Token kh\xF4ng h\u1EE3p l\u1EC7" });
+  }
+};
+
+const router$j = express.Router();
+router$j.get("/membership-level", getAllMembershipLevel);
+router$j.get("/membership-level/:id", getMembershipLevelById);
+router$j.put("/membership-level/:id", updateMembershipLevel);
+router$j.get("/membership-benefit", getAllMembershipBenefits);
+router$j.get("/membership-benefit/:id", getMembershipBenefitById);
+router$j.post("/membership-benefit", authenticate, createMembershipBenefit);
+router$j.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
+router$j.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
+router$j.get("/", getAllUsers);
+router$j.get("/:id", getUserById$1);
+router$j.patch("/toggleActive/:id", toggleActive$3);
+router$j.delete("/:id", deleteUsers);
+
+const usersRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$j
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllPosts$1 = async (req, res) => {
@@ -3116,7 +3524,7 @@ const deletePosts$1 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$3 = async (req, res) => {
+const toggleActive$2 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await PostNewsModel.findById(id);
@@ -3135,69 +3543,18 @@ const toggleActive$3 = async (req, res) => {
   }
 };
 
-const router$h = Router();
-router$h.get("/", getAllPosts$1);
-router$h.get("/:id", getPostsById$1);
-router$h.post("/", createPosts$1);
-router$h.put("/:id", updatePosts$1);
-router$h.delete("/:id", deletePosts$1);
-router$h.patch("/toggleActive/:id", toggleActive$3);
+const router$i = Router();
+router$i.get("/", getAllPosts$1);
+router$i.get("/:id", getPostsById$1);
+router$i.post("/", createPosts$1);
+router$i.put("/:id", updatePosts$1);
+router$i.delete("/:id", deletePosts$1);
+router$i.patch("/toggleActive/:id", toggleActive$2);
 
 const postsNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$h
+  default: router$i
 }, Symbol.toStringTag, { value: 'Module' }));
-
-const MembershipSchema = new Schema(
-  {
-    level: { type: String, enum: ["Bronze", "Silver", "Gold", "Platinum"], required: true },
-    point: { type: Number, default: 0 },
-    balancePoint: { type: Number, default: 0 },
-    discountRate: { type: Number, default: 0 },
-    joinedAt: { type: Date, default: Date.now },
-    barcode: { type: String },
-    code: { type: Number }
-  },
-  { _id: false }
-);
-const UserSchema = new Schema(
-  {
-    fullname: { type: String, required: true },
-    email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: function() {
-      return this.authProvider !== "google";
-    } },
-    authProvider: {
-      type: String,
-      enum: ["local", "google", "facebook"],
-      default: "local"
-    },
-    googleId: {
-      type: String,
-      sparse: true,
-      unique: true
-    },
-    gender: {
-      type: String,
-      enum: ["male", "female", "other"],
-      required: false,
-      default: "other"
-    },
-    phone: { type: String },
-    birthday: { type: Date },
-    avatar: { type: String },
-    active: { type: Boolean, default: true },
-    role: { type: Number, default: 0 },
-    membership: { type: MembershipSchema, required: true },
-    resetToken: { type: String },
-    resetTokenExpire: { type: Date },
-    createdAt: { type: Date },
-    updatedAt: { type: Date }
-  },
-  { timestamps: true }
-);
-UserSchema.plugin(mongoosePaginate);
-const UserModel = model("User", UserSchema, "users");
 
 const SelectedOptionsPushSchema = new Schema(
   {
@@ -3272,37 +3629,6 @@ OrderSchema.plugin(mongoosePaginate);
 const PaymentEntity = model("Payment", PaymentSchema, "payments");
 const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
 const OrderEntity = model("Order", OrderSchema, "orders");
-
-const MembershipBenefitSchema = new Schema(
-  {
-    name: { type: String, required: true, unique: true },
-    description: { type: String },
-    icon: { type: String }
-  },
-  { timestamps: true }
-);
-const MembershipBenefitModel = model(
-  "MembershipBenefit",
-  MembershipBenefitSchema,
-  "membership_benefits"
-);
-
-const MembershipLevelSchema = new Schema(
-  {
-    name: { type: String, required: true, unique: true },
-    minPoint: { type: Number, required: true },
-    icon: { type: String },
-    image: { type: String },
-    discountRate: { type: Number },
-    benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
-  },
-  { timestamps: false }
-);
-const MembershipLevelModel = model(
-  "MembershipLevel",
-  MembershipLevelSchema,
-  "membership_levels"
-);
 
 const PAYMENT_TRANSACTION_STATUS = {
   PENDING: "pending",
@@ -3625,17 +3951,17 @@ const setPointAndUpgrade = async (userId, point) => {
   };
 };
 
-const router$g = Router();
-router$g.get("/", getAllOrder);
-router$g.get("/status", getAllStatus);
-router$g.get("/payments", getAllPayment);
-router$g.get("/:id", getOrderById$1);
-router$g.delete("/:id", deleteOrder);
-router$g.put("/status", updateOrderStatus);
+const router$h = Router();
+router$h.get("/", getAllOrder);
+router$h.get("/status", getAllStatus);
+router$h.get("/payments", getAllPayment);
+router$h.get("/:id", getOrderById$1);
+router$h.delete("/:id", deleteOrder);
+router$h.put("/status", updateOrderStatus);
 
 const orderManageRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$g
+  default: router$h
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllProduct = async (req, res) => {
@@ -3734,7 +4060,7 @@ const deleteProduct = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$2 = async (req, res) => {
+const toggleActive$1 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await ProductEntity.findById(id);
@@ -3753,17 +4079,17 @@ const toggleActive$2 = async (req, res) => {
   }
 };
 
-const router$f = Router();
-router$f.get("/", getAllProduct);
-router$f.post("/", createProduct);
-router$f.get("/:id", getProductById$1);
-router$f.put("/:id", updateProduct);
-router$f.delete("/:id", deleteProduct);
-router$f.patch("/toggleActive/:id", toggleActive$2);
+const router$g = Router();
+router$g.get("/", getAllProduct);
+router$g.post("/", createProduct);
+router$g.get("/:id", getProductById$1);
+router$g.put("/:id", updateProduct);
+router$g.delete("/:id", deleteProduct);
+router$g.patch("/toggleActive/:id", toggleActive$1);
 
 const productRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$f
+  default: router$g
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const PaymentTransactionSchema = new Schema(
@@ -3865,47 +4191,16 @@ const deletePaymentTransaction = async (req, res) => {
   }
 };
 
-const router$e = Router();
-router$e.post("/", createPaymentTransaction);
-router$e.put("/status", updatePaymentTransactionStatus);
-router$e.get("/", getPaymentTransactions);
-router$e.delete("/:id", deletePaymentTransaction);
+const router$f = Router();
+router$f.post("/", createPaymentTransaction);
+router$f.put("/status", updatePaymentTransactionStatus);
+router$f.get("/", getPaymentTransactions);
+router$f.delete("/:id", deletePaymentTransaction);
 
 const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$e
+  default: router$f
 }, Symbol.toStringTag, { value: 'Module' }));
-
-function toUserDTO(entity) {
-  var _a, _b, _c, _d, _e, _f;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    fullname: entity.fullname,
-    email: entity.email,
-    gender: entity.gender || void 0,
-    phone: entity.phone || "",
-    birthday: ((_b = entity.birthday) == null ? void 0 : _b.toString()) || null,
-    avatar: entity.avatar || "",
-    googleId: entity.googleId,
-    authProvider: entity.authProvider,
-    active: entity.active,
-    role: entity.role,
-    membership: {
-      level: entity.membership.level,
-      point: entity.membership.point,
-      balancePoint: entity.membership.balancePoint,
-      discountRate: entity.membership.discountRate,
-      joinedAt: (_c = entity.membership.joinedAt) == null ? void 0 : _c.toString(),
-      barcode: entity.membership.barcode || "",
-      code: (_d = entity.membership.code) != null ? _d : 0
-    },
-    createdAt: ((_e = entity.createdAt) == null ? void 0 : _e.toISOString()) || "",
-    updatedAt: ((_f = entity.updatedAt) == null ? void 0 : _f.toISOString()) || ""
-  };
-}
-const toUserListDTO = (users) => {
-  return users.map(toUserDTO);
-};
 
 function toProductReviewDTO(entity) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
@@ -4018,32 +4313,33 @@ const deleteProductReview = async (req, res) => {
   }
 };
 
-const router$d = Router();
-router$d.get("/", getAllProductReviews);
-router$d.get("/:id", getProductReviewById$1);
-router$d.put("/status", updateProductReviewStatus);
-router$d.delete("/:id", deleteProductReview);
+const router$e = Router();
+router$e.get("/", getAllProductReviews);
+router$e.get("/:id", getProductReviewById$1);
+router$e.put("/status", updateProductReviewStatus);
+router$e.delete("/:id", deleteProductReview);
 
 const productReviewRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$d
+  default: router$e
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const router$c = Router();
-router$c.use("/settings", router$i);
-router$c.use("/about", router$m);
-router$c.use("/banners", router$l);
-router$c.use("/categoriesNews", router$k);
-router$c.use("/newsPosts", router$h);
-router$c.use("/orders", router$g);
-router$c.use("/payment-transactions", router$e);
-router$c.use("/categories", router$j);
-router$c.use("/products", router$f);
-router$c.use("/product-reviews", router$d);
+const router$d = Router();
+router$d.use("/settings", router$k);
+router$d.use("/about", router$o);
+router$d.use("/users", router$j);
+router$d.use("/banners", router$n);
+router$d.use("/categoriesNews", router$m);
+router$d.use("/newsPosts", router$i);
+router$d.use("/orders", router$h);
+router$d.use("/payment-transactions", router$f);
+router$d.use("/categories", router$l);
+router$d.use("/products", router$g);
+router$d.use("/product-reviews", router$e);
 
 const index$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$c
+  default: router$d
 }, Symbol.toStringTag, { value: 'Module' }));
 
 async function generateBarcode(code, filename) {
@@ -4084,60 +4380,6 @@ const sendResetPasswordEmail = async (to, resetLink) => {
     `
   };
   await transporter.sendMail(mailOptions);
-};
-
-const SearchKeywordSchema = new Schema(
-  {
-    keyword: { type: String, required: true, trim: true, index: true },
-    totalCount: { type: Number, default: 0 },
-    lastSearchTime: { type: Date, default: Date.now }
-  },
-  {
-    timestamps: { createdAt: true, updatedAt: false }
-  }
-);
-const SearchKeywordModel = model("SearchKeyword", SearchKeywordSchema, "search_keywords");
-
-function toSearchKeywordDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    keyword: entity.keyword,
-    totalCount: entity.totalCount,
-    lastSearchTime: entity.lastSearchTime,
-    createdAt: entity.createdAt.toISOString()
-  };
-}
-const toSearchKeywordListDTO = (keywords) => {
-  return keywords.map(toSearchKeywordDTO);
-};
-
-function toMembershipBenefitDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    name: entity.name,
-    description: entity.description,
-    icon: entity.icon,
-    createdAt: entity.createdAt.toISOString(),
-    updatedAt: entity.updatedAt.toISOString()
-  };
-}
-const toMembershipBenefitListDTO = (items) => {
-  return items.map(toMembershipBenefitDTO);
-};
-
-function toMembershipLevelDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    name: entity.name,
-    minPoint: entity.minPoint,
-    icon: entity.icon,
-    image: entity.image,
-    discountRate: entity.discountRate,
-    benefits: Array.isArray(entity.benefits) ? toMembershipBenefitListDTO(entity.benefits) : []
-  };
-}
-const toMembershipLevelListDTO = (items) => {
-  return items.map(toMembershipLevelDTO);
 };
 
 const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
@@ -4335,58 +4577,6 @@ const updateAccount = async (req, res) => {
   }
   res.json({ code: 200, message: "Update success", data: toUserDTO(updated) });
 };
-const deleteUsers = async (req, res) => {
-  const { id } = req.params;
-  await UserModel.findByIdAndDelete(id);
-  res.json({ code: 200, message: "Delete success" });
-};
-const getAllUsers = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const role = req.query.role ? parseInt(req.query.role) : void 0;
-    const filter = {};
-    if (role !== void 0) {
-      filter.role = role;
-    }
-    if (limit === -1) {
-      const users = await UserModel.find(filter).sort({ createdAt: -1 });
-      return res.status(200).json({
-        code: 0,
-        data: toUserListDTO(users),
-        pagination: {
-          total: users.length,
-          totalPages: 1,
-          page: 1,
-          limit: users.length
-        }
-      });
-    }
-    const options = {
-      page,
-      limit,
-      sort: { createdAt: -1 }
-    };
-    const result = await UserModel.paginate(filter, options);
-    return res.status(200).json({
-      code: 0,
-      data: toUserListDTO(result.docs),
-      pagination: {
-        total: result.totalDocs,
-        totalPages: result.totalPages,
-        page: result.page,
-        limit: result.limit
-      }
-    });
-  } catch (error) {
-    console.error("getAllUsers error:", error);
-    return res.status(500).json({
-      code: 500,
-      message: "Internal server error",
-      error: error.message
-    });
-  }
-};
 const getUserById = async (req, res) => {
   const { id } = req.params;
   const user = await UserModel.findById(id);
@@ -4403,249 +4593,20 @@ const changePassword = async (req, res) => {
   await user.save();
   res.json({ code: 200, message: "Password updated" });
 };
-const getAllMembershipLevel = async (_, res) => {
-  try {
-    const data = await MembershipLevelModel.find().populate("benefits");
-    return res.status(200).json({
-      code: 0,
-      data: toMembershipLevelListDTO(data)
-    });
-  } catch (error) {
-    console.error("getAllMembershipLevel error:", error);
-    return res.status(500).json({
-      code: 1,
-      message: "Internal server error",
-      error: error.message
-    });
-  }
-};
-const getMembershipLevelById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const level = await MembershipLevelModel.findById(id).populate("benefits");
-    if (!level) {
-      return res.status(404).json({
-        code: 1,
-        message: "Membership level kh\xF4ng t\u1ED3n t\u1EA1i"
-      });
-    }
-    return res.json({
-      code: 0,
-      data: toMembershipLevelDTO(level)
-    });
-  } catch (error) {
-    console.error("getMembershipLevelById error:", error);
-    return res.status(500).json({
-      code: 1,
-      message: "Internal server error",
-      error: error.message
-    });
-  }
-};
-const updateMembershipLevel = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = req.body;
-    const updated = await MembershipLevelModel.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true }
-    ).populate("benefits");
-    if (!updated) {
-      return res.status(404).json({
-        code: 1,
-        message: "Membership level not found"
-      });
-    }
-    return res.json({
-      code: 0,
-      message: "Membership level updated successfully",
-      data: updated
-    });
-  } catch (error) {
-    console.error("updateMembershipLevel error:", error);
-    return res.status(500).json({
-      code: 1,
-      message: "Internal server error",
-      error: error.message
-    });
-  }
-};
-const setPoint = async (req, res) => {
-  const { userId, point } = req.body;
-  const user = await UserModel.findById(userId);
-  if (!user) return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y ng\u01B0\u1EDDi d\xF9ng" });
-  user.membership.point = point;
-  user.membership.balancePoint = point;
-  await user.save();
-  res.json({ code: 0, message: "T\xEDch \u0111i\u1EC3m th\xE0nh c\xF4ng", data: toUserDTO(user) });
-};
-const getTopSearchKeyword = async (req, res) => {
-  try {
-    const limit = Number(req.query.limit) || 10;
-    const keywords = await SearchKeywordModel.find().sort({ totalCount: -1 }).limit(limit);
-    return res.json({
-      code: 0,
-      data: toSearchKeywordListDTO(keywords)
-    });
-  } catch (error) {
-    console.error("getTopSearchKeyword error:", error);
-    return res.status(500).json({ code: 1, message: "Internal server error" });
-  }
-};
-const logSearchKeyword = async (req, res) => {
-  var _a;
-  try {
-    const keyword = (_a = req.body.keyword) == null ? void 0 : _a.trim().toLowerCase();
-    if (!keyword) return res.status(400).json({ code: 1, message: "Keyword required" });
-    const now = /* @__PURE__ */ new Date();
-    const existing = await SearchKeywordModel.findOne({ keyword });
-    if (existing) {
-      existing.totalCount += 1;
-      existing.lastSearchTime = now;
-      await existing.save();
-    } else {
-      await SearchKeywordModel.create({
-        keyword,
-        totalCount: 1,
-        lastSearchTime: now
-      });
-    }
-    return res.status(200).json({ code: 0, message: "OK" });
-  } catch (error) {
-    console.error("logSearchKeyword error:", error);
-    return res.status(500).json({ code: 1, message: "Internal server error" });
-  }
-};
-const toggleActive$1 = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await UserModel.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "User kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    item.active = !item.active;
-    await item.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
-      data: toUserDTO(item)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const createMembershipBenefit = async (req, res) => {
-  try {
-    const { name, description, icon } = req.body;
-    const existing = await MembershipBenefitModel.findOne({ name });
-    if (existing) {
-      return res.status(400).json({ code: 1, message: "Benefit \u0111\xE3 t\u1ED3n t\u1EA1i" });
-    }
-    const benefit = await MembershipBenefitModel.create({ name, description, icon });
-    return res.status(201).json({
-      code: 0,
-      message: "T\u1EA1o benefit th\xE0nh c\xF4ng",
-      data: toMembershipBenefitDTO(benefit)
-    });
-  } catch (err) {
-    console.error("createMembershipBenefit error:", err);
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
-  }
-};
-const getAllMembershipBenefits = async (_, res) => {
-  try {
-    const benefits = await MembershipBenefitModel.find().sort({ createdAt: -1 });
-    return res.json({
-      code: 0,
-      data: toMembershipBenefitListDTO(benefits)
-    });
-  } catch (err) {
-    console.error("getAllMembershipBenefits error:", err);
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
-  }
-};
-const getMembershipBenefitById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const benefit = await MembershipBenefitModel.findById(id);
-    if (!benefit) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
-    return res.json({ code: 0, data: toMembershipBenefitDTO(benefit) });
-  } catch (err) {
-    console.error("getMembershipBenefitById error:", err);
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
-  }
-};
-const updateMembershipBenefit = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = req.body;
-    const benefit = await MembershipBenefitModel.findByIdAndUpdate(id, updateData, { new: true });
-    if (!benefit) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt benefit th\xE0nh c\xF4ng",
-      data: toMembershipBenefitDTO(benefit)
-    });
-  } catch (err) {
-    console.error("updateMembershipBenefit error:", err);
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
-  }
-};
-const deleteMembershipBenefit = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = await MembershipBenefitModel.findByIdAndDelete(id);
-    if (!deleted) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
-    return res.json({ code: 0, message: "X\xF3a benefit th\xE0nh c\xF4ng" });
-  } catch (err) {
-    console.error("deleteMembershipBenefit error:", err);
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
-  }
-};
 
-const authenticate = (req, res, next) => {
-  var _a;
-  const token = (_a = req.cookies) == null ? void 0 : _a.token;
-  if (!token) {
-    return res.status(401).json({ message: "Thi\u1EBFu token" });
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: "Token kh\xF4ng h\u1EE3p l\u1EC7" });
-  }
-};
-
-const router$b = express.Router();
-router$b.get("/users", getAllUsers);
-router$b.put("/users/me", authenticate, updateAccount);
-router$b.get("/users/:id", getUserById);
-router$b.patch("/users/toggleActive/:id", toggleActive$1);
-router$b.post("/register", register);
-router$b.post("/login", login);
-router$b.post("/google-login", googleLogin);
-router$b.post("/forgot-password", forgotPassword);
-router$b.post("/reset-password", resetPassword);
-router$b.post("/change-password", changePassword);
-router$b.post("/set-point", setPoint);
-router$b.delete("/:id", deleteUsers);
-router$b.get("/membership-level", getAllMembershipLevel);
-router$b.get("/membership-level/:id", getMembershipLevelById);
-router$b.put("/membership-level/:id", updateMembershipLevel);
-router$b.post("/search-keywords/log", logSearchKeyword);
-router$b.get("/search-keywords/list", getTopSearchKeyword);
-router$b.get("/membership-benefit", getAllMembershipBenefits);
-router$b.get("/membership-benefit/:id", getMembershipBenefitById);
-router$b.post("/membership-benefit", authenticate, createMembershipBenefit);
-router$b.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
-router$b.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
+const router$c = express.Router();
+router$c.put("/users/me", authenticate, updateAccount);
+router$c.get("/users/:id", getUserById);
+router$c.post("/register", register);
+router$c.post("/login", login);
+router$c.post("/google-login", googleLogin);
+router$c.post("/forgot-password", forgotPassword);
+router$c.post("/reset-password", resetPassword);
+router$c.post("/change-password", changePassword);
 
 const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$b
+  default: router$c
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllBanners = async (_, res) => {
@@ -4657,12 +4618,12 @@ const getAllBanners = async (_, res) => {
   }
 };
 
-const router$a = Router();
-router$a.get("/", getAllBanners);
+const router$b = Router();
+router$b.get("/", getAllBanners);
 
 const bannerRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$a
+  default: router$b
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllCategories$1 = async (_, res) => {
@@ -4704,14 +4665,14 @@ const getCategoryBySlug = async (req, res) => {
   }
 };
 
-const router$9 = Router();
-router$9.get("/", getAllCategories$1);
-router$9.get("/slug/:slug", getCategoryBySlug);
-router$9.get("/:id", getCategoriesById$1);
+const router$a = Router();
+router$a.get("/", getAllCategories$1);
+router$a.get("/slug/:slug", getCategoryBySlug);
+router$a.get("/:id", getCategoriesById$1);
 
 const categoriesNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$9
+  default: router$a
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function buildCategoryTree(list) {
@@ -4900,17 +4861,17 @@ const getProductsByCategory = async (req, res) => {
   }
 };
 
-const router$8 = Router();
-router$8.get("/tree", getAllCategoriesTree);
-router$8.get("/", getAllCategories);
-router$8.get("/slug/:slug", getCategoriesBySlug);
-router$8.get("/:id", getCategoriesById);
-router$8.get("/:id/children", getChildrenCategories);
-router$8.get("/:id/products", getProductsByCategory);
+const router$9 = Router();
+router$9.get("/tree", getAllCategoriesTree);
+router$9.get("/", getAllCategories);
+router$9.get("/slug/:slug", getCategoriesBySlug);
+router$9.get("/:id", getCategoriesById);
+router$9.get("/:id/children", getChildrenCategories);
+router$9.get("/:id/products", getProductsByCategory);
 
 const categoriesProductRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$8
+  default: router$9
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const uploadImageMulter = multer({ dest: "uploads/" });
@@ -5065,16 +5026,16 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const router$7 = express.Router();
-router$7.get("/images", getImages);
-router$7.get("/images/folders", getFolders);
-router$7.delete("/images/delete", deleteImage);
-router$7.get("/images/search", searchImage);
-router$7.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
+const router$8 = express.Router();
+router$8.get("/images", getImages);
+router$8.get("/images/folders", getFolders);
+router$8.delete("/images/delete", deleteImage);
+router$8.get("/images/search", searchImage);
+router$8.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
 
 const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$7
+  default: router$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllProvinces = async (_, res) => {
@@ -5172,24 +5133,96 @@ const getWardDetail = async (req, res) => {
   }
 };
 
-const router$6 = express.Router();
-router$6.get("/provinces", getAllProvinces);
-router$6.get("/provinces/:provinceCode", getProvinceDetail);
-router$6.get("/districts/:provinceCode", getDistrictsByProvince);
-router$6.get("/district/:districtCode", getDistrictDetail);
-router$6.get("/wards/:districtCode", getWardsByDistrict);
-router$6.get("/ward/:wardCode", getWardDetail);
+const router$7 = express.Router();
+router$7.get("/provinces", getAllProvinces);
+router$7.get("/provinces/:provinceCode", getProvinceDetail);
+router$7.get("/districts/:provinceCode", getDistrictsByProvince);
+router$7.get("/district/:districtCode", getDistrictDetail);
+router$7.get("/wards/:districtCode", getWardsByDistrict);
+router$7.get("/ward/:wardCode", getWardDetail);
 
 const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$7
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const router$6 = Router();
+router$6.use("/fileManage", router$8);
+router$6.use("/location", router$7);
+
+const index$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const router$5 = Router();
-router$5.use("/fileManage", router$7);
-router$5.use("/location", router$6);
+const SearchKeywordSchema = new Schema(
+  {
+    keyword: { type: String, required: true, trim: true, index: true },
+    totalCount: { type: Number, default: 0 },
+    lastSearchTime: { type: Date, default: Date.now }
+  },
+  {
+    timestamps: { createdAt: true, updatedAt: false }
+  }
+);
+const SearchKeywordModel = model("SearchKeyword", SearchKeywordSchema, "search_keywords");
 
-const index$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+function toSearchKeywordDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    keyword: entity.keyword,
+    totalCount: entity.totalCount,
+    lastSearchTime: entity.lastSearchTime,
+    createdAt: entity.createdAt.toISOString()
+  };
+}
+const toSearchKeywordListDTO = (keywords) => {
+  return keywords.map(toSearchKeywordDTO);
+};
+
+const getTopSearchKeyword = async (req, res) => {
+  try {
+    const limit = Number(req.query.limit) || 10;
+    const keywords = await SearchKeywordModel.find().sort({ totalCount: -1 }).limit(limit);
+    return res.json({
+      code: 0,
+      data: toSearchKeywordListDTO(keywords)
+    });
+  } catch (error) {
+    console.error("getTopSearchKeyword error:", error);
+    return res.status(500).json({ code: 1, message: "Internal server error" });
+  }
+};
+const logSearchKeyword = async (req, res) => {
+  var _a;
+  try {
+    const keyword = (_a = req.body.keyword) == null ? void 0 : _a.trim().toLowerCase();
+    if (!keyword) return res.status(400).json({ code: 1, message: "Keyword required" });
+    const now = /* @__PURE__ */ new Date();
+    const existing = await SearchKeywordModel.findOne({ keyword });
+    if (existing) {
+      existing.totalCount += 1;
+      existing.lastSearchTime = now;
+      await existing.save();
+    } else {
+      await SearchKeywordModel.create({
+        keyword,
+        totalCount: 1,
+        lastSearchTime: now
+      });
+    }
+    return res.status(200).json({ code: 0, message: "OK" });
+  } catch (error) {
+    console.error("logSearchKeyword error:", error);
+    return res.status(500).json({ code: 1, message: "Internal server error" });
+  }
+};
+
+const router$5 = express.Router();
+router$5.post("/search-keywords/log", logSearchKeyword);
+router$5.get("/search-keywords/list", getTopSearchKeyword);
+
+const usersRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$5
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6223,16 +6256,17 @@ const productReviewRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defin
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const router = Router();
-router.use("/admin", router$c);
-router.use("/", router$5);
-router.use("/auth", router$b);
-router.use("/banners", router$a);
-router.use("/categoriesNews", router$9);
+router.use("/admin", router$d);
+router.use("/", router$6);
+router.use("/auth", router$c);
+router.use("/users", router$5);
+router.use("/banners", router$b);
+router.use("/categoriesNews", router$a);
 router.use("/newsPosts", router$4);
 router.use("/orders", router$3);
-router.use("/categories", router$8);
+router.use("/categories", router$9);
 router.use("/products", router$2);
-router.use("/addresses", router$n);
+router.use("/addresses", router$p);
 router.use("/product-reviews", router$1);
 router.use("/", router$2);
 

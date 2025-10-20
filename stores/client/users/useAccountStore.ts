@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
-import { usersAPI } from "@/services/v1/users.service";
+import { authAPI } from "@/services/v1/auth.service";
 import { jwtDecode } from 'jwt-decode'
 import type { User, MyJwtPayload, InformationMembershipLevels, MembershipLevels } from '@/server/types/dto/v1/user.dto'
 import { ROUTES } from '@/shared/constants/routes';
@@ -19,7 +19,7 @@ export const useAccountStore = defineStore("Account", () => {
 
   const handleGetDetailAccount = async (userId: string) => {
     if(!userId) return
-    const data = await usersAPI.getDetailAccount(userId)
+    const data = await authAPI.getDetailAccount(userId)
     detailData.value = data.data;
   };
 
@@ -96,7 +96,7 @@ export const useAccountStore = defineStore("Account", () => {
         userId.value = decoded.id
         if (!userId.value) return null
 
-        const data = await usersAPI.getDetailAccount(userId.value)
+        const data = await authAPI.getDetailAccount(userId.value)
         detailData.value = data.data
         return data.data
       } catch (err) {

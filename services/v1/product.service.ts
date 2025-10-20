@@ -134,7 +134,6 @@ export const productsAPI = {
     }
   },
 
-  // Wishlist theo user
   getWishlistByUserId: async (userId: string): Promise<ApiResponse<WishlistItem[]>> => {
     try {
       const res = await fetch(
@@ -152,7 +151,6 @@ export const productsAPI = {
     }
   },
 
-  // Lấy top sản phẩm được order nhiều nhất
   getMostOrdered: async (limit: number): Promise<ApiResponse<ProductDTO[]>> => {
     try {
       const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_MOST_ORDER(limit)}`)
@@ -205,7 +203,6 @@ export const productsAPI = {
     }
   },
 
-  // Thêm wishlist item
   addToWishlist: async (userId: string, productId: string): Promise<ApiResponse<WishlistItem>> => {
     try {
       const res = await fetch(
@@ -228,7 +225,6 @@ export const productsAPI = {
     }
   },
 
-  // Xóa wishlist item
   removeFromWishlist: async (userId: string, productId: string): Promise<ApiResponse<null>> => {
     try {
       const res = await fetch(

@@ -1,14 +1,4 @@
 export const API_ENDPOINTS_SHARED = {
-  // ORDERS: {
-  //   LIST_STATUS: '/orders/status',
-  //   LIST_PAYMENTS: '/orders/payments',
-  // },
-  USERS: {
-    LIST_MEMBERSHIP_LEVEL: '/auth/membership-level',
-    GET_MEMBERSHIP_LEVEL_BY_ID: (id) => `/auth/membership-level/${id}`,
-    LIST_MEMBERSHIP_BENEFIT: '/auth/membership-benefit',
-    GET_MEMBERSHIP_BENEFIT_BY_ID: (id) => `/auth/membership-benefit/${id}`,
-  },
   FILE_MANAGE: {
     UPLOAD: '/fileManage/images/upload',
     GET_IMAGES: (folder, limit) => `/fileManage/images?folder=${folder}&max_results=${limit}`,

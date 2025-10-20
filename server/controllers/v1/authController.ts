@@ -246,67 +246,67 @@ export const updateAccount = async (req: any, res: Response) => {
   res.json({ code: 200, message: "Update success", data: toUserDTO(updated!) });
 };
 
-export const deleteUsers = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  await UserModel.findByIdAndDelete(id);
-  res.json({ code: 200, message: "Delete success" });
-};
+// export const deleteUsers = async (req: Request, res: Response) => {
+//   const { id } = req.params;
+//   await UserModel.findByIdAndDelete(id);
+//   res.json({ code: 200, message: "Delete success" });
+// };
 
-export const getAllUsers = async (req: Request, res: Response) => {
-  try {
+// export const getAllUsers = async (req: Request, res: Response) => {
+//   try {
    
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const role = req.query.role ? parseInt(req.query.role as string) : undefined;
+//     const page = parseInt(req.query.page as string) || 1;
+//     const limit = parseInt(req.query.limit as string) || 10;
+//     const role = req.query.role ? parseInt(req.query.role as string) : undefined;
 
-    const filter: any = {};
-    if (role !== undefined) {
-      filter.role = role;
-    }
+//     const filter: any = {};
+//     if (role !== undefined) {
+//       filter.role = role;
+//     }
 
-    if (limit === -1) {
+//     if (limit === -1) {
     
-      const users = await UserModel.find(filter).sort({ createdAt: -1 });
+//       const users = await UserModel.find(filter).sort({ createdAt: -1 });
 
-      return res.status(200).json({
-        code: 0,
-        data: toUserListDTO(users),
-        pagination: {
-          total: users.length,
-          totalPages: 1,
-          page: 1,
-          limit: users.length,
-        },
-      });
-    }
+//       return res.status(200).json({
+//         code: 0,
+//         data: toUserListDTO(users),
+//         pagination: {
+//           total: users.length,
+//           totalPages: 1,
+//           page: 1,
+//           limit: users.length,
+//         },
+//       });
+//     }
 
-    const options = {
-      page,
-      limit,
-      sort: { createdAt: -1 },
-    };
+//     const options = {
+//       page,
+//       limit,
+//       sort: { createdAt: -1 },
+//     };
 
-    const result = await (UserModel as any).paginate(filter, options);
-    return res.status(200).json({
-      code: 0,
-      data: toUserListDTO(result.docs),
-      pagination: {
-        total: result.totalDocs,
-        totalPages: result.totalPages,
-        page: result.page,
-        limit: result.limit,
-      },
-    });
-  } catch (error: any) {
-    console.error("getAllUsers error:", error);
+//     const result = await (UserModel as any).paginate(filter, options);
+//     return res.status(200).json({
+//       code: 0,
+//       data: toUserListDTO(result.docs),
+//       pagination: {
+//         total: result.totalDocs,
+//         totalPages: result.totalPages,
+//         page: result.page,
+//         limit: result.limit,
+//       },
+//     });
+//   } catch (error: any) {
+//     console.error("getAllUsers error:", error);
 
-    return res.status(500).json({
-      code: 500,
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-};
+//     return res.status(500).json({
+//       code: 500,
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// };
 
 export const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -328,243 +328,243 @@ export const changePassword = async (req: Request, res: Response) => {
   res.json({ code: 200, message: "Password updated" });
 };
 
-export const getAllMembershipLevel = async (_: Request, res: Response) => {
-  try {
-    const data = await MembershipLevelModel.find().populate("benefits")
-    return res.status(200).json({
-      code: 0,
-      data: toMembershipLevelListDTO(data),
-    })
-  } catch (error: any) {
-    console.error("getAllMembershipLevel error:", error)
+// export const getAllMembershipLevel = async (_: Request, res: Response) => {
+//   try {
+//     const data = await MembershipLevelModel.find().populate("benefits")
+//     return res.status(200).json({
+//       code: 0,
+//       data: toMembershipLevelListDTO(data),
+//     })
+//   } catch (error: any) {
+//     console.error("getAllMembershipLevel error:", error)
 
-    return res.status(500).json({
-      code: 1,
-      message: "Internal server error",
-      error: error.message,
-    })
-  }
-}
+//     return res.status(500).json({
+//       code: 1,
+//       message: "Internal server error",
+//       error: error.message,
+//     })
+//   }
+// }
 
-export const getMembershipLevelById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
+// export const getMembershipLevelById = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params;
 
-    const level = await MembershipLevelModel.findById(id).populate("benefits");
+//     const level = await MembershipLevelModel.findById(id).populate("benefits");
 
-    if (!level) {
-      return res.status(404).json({
-        code: 1,
-        message: "Membership level không tồn tại",
-      });
-    }
+//     if (!level) {
+//       return res.status(404).json({
+//         code: 1,
+//         message: "Membership level không tồn tại",
+//       });
+//     }
 
-    return res.json({
-      code: 0,
-      data: toMembershipLevelDTO(level),
-    });
-  } catch (error: any) {
-    console.error("getMembershipLevelById error:", error);
-    return res.status(500).json({
-      code: 1,
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-};
+//     return res.json({
+//       code: 0,
+//       data: toMembershipLevelDTO(level),
+//     });
+//   } catch (error: any) {
+//     console.error("getMembershipLevelById error:", error);
+//     return res.status(500).json({
+//       code: 1,
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// };
 
-export const updateMembershipLevel = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const updateData = req.body
+// export const updateMembershipLevel = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params
+//     const updateData = req.body
 
-    const updated = await MembershipLevelModel.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true }
-    ).populate('benefits')
+//     const updated = await MembershipLevelModel.findByIdAndUpdate(
+//       id,
+//       updateData,
+//       { new: true }
+//     ).populate('benefits')
 
-    if (!updated) {
-      return res.status(404).json({
-        code: 1,
-        message: 'Membership level not found',
-      })
-    }
+//     if (!updated) {
+//       return res.status(404).json({
+//         code: 1,
+//         message: 'Membership level not found',
+//       })
+//     }
 
-    return res.json({
-      code: 0,
-      message: 'Membership level updated successfully',
-      data: updated,
-    })
-  } catch (error: any) {
-    console.error('updateMembershipLevel error:', error)
-    return res.status(500).json({
-      code: 1,
-      message: 'Internal server error',
-      error: error.message,
-    })
-  }
-}
+//     return res.json({
+//       code: 0,
+//       message: 'Membership level updated successfully',
+//       data: updated,
+//     })
+//   } catch (error: any) {
+//     console.error('updateMembershipLevel error:', error)
+//     return res.status(500).json({
+//       code: 1,
+//       message: 'Internal server error',
+//       error: error.message,
+//     })
+//   }
+// }
 
-export const setPoint = async (req: Request, res: Response) => {
-  const { userId, point } = req.body;
-  const user = await UserModel.findById(userId);
-  if (!user) return res.status(404).json({ code: 1, message: "Không tìm thấy người dùng" });
+// export const setPoint = async (req: Request, res: Response) => {
+//   const { userId, point } = req.body;
+//   const user = await UserModel.findById(userId);
+//   if (!user) return res.status(404).json({ code: 1, message: "Không tìm thấy người dùng" });
 
-  user.membership.point = point;
-  user.membership.balancePoint = point;
+//   user.membership.point = point;
+//   user.membership.balancePoint = point;
   
-  await user.save();
-  res.json({ code: 0, message: "Tích điểm thành công", data: toUserDTO(user) });
-};
+//   await user.save();
+//   res.json({ code: 0, message: "Tích điểm thành công", data: toUserDTO(user) });
+// };
 
-export const getTopSearchKeyword = async (req: Request, res: Response) => {
-  try {
-    const limit = Number(req.query.limit) || 10
+// export const getTopSearchKeyword = async (req: Request, res: Response) => {
+//   try {
+//     const limit = Number(req.query.limit) || 10
 
-    const keywords = await SearchKeywordModel.find()
-      .sort({ totalCount: -1 })
-      .limit(limit)
+//     const keywords = await SearchKeywordModel.find()
+//       .sort({ totalCount: -1 })
+//       .limit(limit)
 
-    return res.json({
-      code: 0,
-      data: toSearchKeywordListDTO(keywords),
-    })
-  } catch (error) {
-    console.error("getTopSearchKeyword error:", error)
-    return res.status(500).json({ code: 1, message: "Internal server error" })
-  }
-}
+//     return res.json({
+//       code: 0,
+//       data: toSearchKeywordListDTO(keywords),
+//     })
+//   } catch (error) {
+//     console.error("getTopSearchKeyword error:", error)
+//     return res.status(500).json({ code: 1, message: "Internal server error" })
+//   }
+// }
 
-export const logSearchKeyword = async (
-  req: Request<{}, {}, { keyword: string }>,
-  res: Response
-) => {
-  try {
-    const keyword = req.body.keyword?.trim().toLowerCase()
-    if (!keyword) return res.status(400).json({ code: 1, message: "Keyword required" })
+// export const logSearchKeyword = async (
+//   req: Request<{}, {}, { keyword: string }>,
+//   res: Response
+// ) => {
+//   try {
+//     const keyword = req.body.keyword?.trim().toLowerCase()
+//     if (!keyword) return res.status(400).json({ code: 1, message: "Keyword required" })
 
-    const now = new Date()
+//     const now = new Date()
 
-    const existing = await SearchKeywordModel.findOne({ keyword })
+//     const existing = await SearchKeywordModel.findOne({ keyword })
 
-    if (existing) {
-      existing.totalCount += 1
-      existing.lastSearchTime = now
-      await existing.save()
-    } else {
-      await SearchKeywordModel.create({
-        keyword,
-        totalCount: 1,
-        lastSearchTime: now,
-      })
-    }
+//     if (existing) {
+//       existing.totalCount += 1
+//       existing.lastSearchTime = now
+//       await existing.save()
+//     } else {
+//       await SearchKeywordModel.create({
+//         keyword,
+//         totalCount: 1,
+//         lastSearchTime: now,
+//       })
+//     }
 
-    return res.status(200).json({ code: 0, message: "OK" })
-  } catch (error) {
-    console.error("logSearchKeyword error:", error)
-    return res.status(500).json({ code: 1, message: "Internal server error" })
-  }
-}
+//     return res.status(200).json({ code: 0, message: "OK" })
+//   } catch (error) {
+//     console.error("logSearchKeyword error:", error)
+//     return res.status(500).json({ code: 1, message: "Internal server error" })
+//   }
+// }
 
-export const toggleActive = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
+// export const toggleActive = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params
 
-    const item = await UserModel.findById(id)
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "User không tồn tại" })
-    }
+//     const item = await UserModel.findById(id)
+//     if (!item) {
+//       return res.status(404).json({ code: 1, message: "User không tồn tại" })
+//     }
 
-    item.active = !item.active
-    await item.save()
+//     item.active = !item.active
+//     await item.save()
 
-    return res.json({
-      code: 0,
-      message: "Cập nhật trạng thái thành công",
-      data: toUserDTO(item)
-    })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
+//     return res.json({
+//       code: 0,
+//       message: "Cập nhật trạng thái thành công",
+//       data: toUserDTO(item)
+//     })
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }
 
-//benefits
-export const createMembershipBenefit = async (req: Request, res: Response) => {
-  try {
-    const { name, description, icon } = req.body
+// //benefits
+// export const createMembershipBenefit = async (req: Request, res: Response) => {
+//   try {
+//     const { name, description, icon } = req.body
 
-    const existing = await MembershipBenefitModel.findOne({ name })
-    if (existing) {
-      return res.status(400).json({ code: 1, message: "Benefit đã tồn tại" })
-    }
+//     const existing = await MembershipBenefitModel.findOne({ name })
+//     if (existing) {
+//       return res.status(400).json({ code: 1, message: "Benefit đã tồn tại" })
+//     }
 
-    const benefit = await MembershipBenefitModel.create({ name, description, icon })
-    return res.status(201).json({
-      code: 0,
-      message: "Tạo benefit thành công",
-      data: toMembershipBenefitDTO(benefit),
-    })
-  } catch (err: any) {
-    console.error("createMembershipBenefit error:", err)
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-  }
-}
+//     const benefit = await MembershipBenefitModel.create({ name, description, icon })
+//     return res.status(201).json({
+//       code: 0,
+//       message: "Tạo benefit thành công",
+//       data: toMembershipBenefitDTO(benefit),
+//     })
+//   } catch (err: any) {
+//     console.error("createMembershipBenefit error:", err)
+//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
+//   }
+// }
 
-export const getAllMembershipBenefits = async (_: Request, res: Response) => {
-  try {
-    const benefits = await MembershipBenefitModel.find().sort({ createdAt: -1 })
-    return res.json({
-      code: 0,
-      data: toMembershipBenefitListDTO(benefits),
-    })
-  } catch (err: any) {
-    console.error("getAllMembershipBenefits error:", err)
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-  }
-}
+// export const getAllMembershipBenefits = async (_: Request, res: Response) => {
+//   try {
+//     const benefits = await MembershipBenefitModel.find().sort({ createdAt: -1 })
+//     return res.json({
+//       code: 0,
+//       data: toMembershipBenefitListDTO(benefits),
+//     })
+//   } catch (err: any) {
+//     console.error("getAllMembershipBenefits error:", err)
+//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
+//   }
+// }
 
-export const getMembershipBenefitById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const benefit = await MembershipBenefitModel.findById(id)
-    if (!benefit) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
+// export const getMembershipBenefitById = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params
+//     const benefit = await MembershipBenefitModel.findById(id)
+//     if (!benefit) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
 
-    return res.json({ code: 0, data: toMembershipBenefitDTO(benefit) })
-  } catch (err: any) {
-    console.error("getMembershipBenefitById error:", err)
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-  }
-}
+//     return res.json({ code: 0, data: toMembershipBenefitDTO(benefit) })
+//   } catch (err: any) {
+//     console.error("getMembershipBenefitById error:", err)
+//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
+//   }
+// }
 
-export const updateMembershipBenefit = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const updateData = req.body
+// export const updateMembershipBenefit = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params
+//     const updateData = req.body
 
-    const benefit = await MembershipBenefitModel.findByIdAndUpdate(id, updateData, { new: true })
-    if (!benefit) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
+//     const benefit = await MembershipBenefitModel.findByIdAndUpdate(id, updateData, { new: true })
+//     if (!benefit) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
 
-    return res.json({
-      code: 0,
-      message: "Cập nhật benefit thành công",
-      data: toMembershipBenefitDTO(benefit),
-    })
-  } catch (err: any) {
-    console.error("updateMembershipBenefit error:", err)
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-  }
-}
+//     return res.json({
+//       code: 0,
+//       message: "Cập nhật benefit thành công",
+//       data: toMembershipBenefitDTO(benefit),
+//     })
+//   } catch (err: any) {
+//     console.error("updateMembershipBenefit error:", err)
+//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
+//   }
+// }
 
-export const deleteMembershipBenefit = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const deleted = await MembershipBenefitModel.findByIdAndDelete(id)
-    if (!deleted) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
+// export const deleteMembershipBenefit = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params
+//     const deleted = await MembershipBenefitModel.findByIdAndDelete(id)
+//     if (!deleted) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
 
-    return res.json({ code: 0, message: "Xóa benefit thành công" })
-  } catch (err: any) {
-    console.error("deleteMembershipBenefit error:", err)
-    return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-  }
-}
+//     return res.json({ code: 0, message: "Xóa benefit thành công" })
+//   } catch (err: any) {
+//     console.error("deleteMembershipBenefit error:", err)
+//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
+//   }
+// }

@@ -3,6 +3,7 @@ import settingRoutes from './settingRouter.js';
 // import fileManageRoutes from './fileManageRouter.js'
 // import authRoutes from './authRouter.js'
 import aboutRoutes from './aboutRouter.js';
+import usersRouter from './usersRouter.js';
 import bannerRoutes from './bannerRouter.js';
 import categoriesNewsRoutes from './categoriesNewsRouter.js';
 import postsNewsRoutes from './postsNewsRouter.js';
@@ -19,6 +20,7 @@ router.use('/settings', settingRoutes);
 // router.use('/fileManage', fileManageRoutes)
 // router.use('/auth', authRoutes)
 router.use('/about', aboutRoutes);
+router.use('/users', usersRouter);
 router.use('/banners', bannerRoutes);
 router.use('/categoriesNews', categoriesNewsRoutes);
 router.use('/newsPosts', postsNewsRoutes);

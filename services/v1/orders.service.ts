@@ -12,38 +12,38 @@ import type { ApiResponse } from '@server/types/common/api-response'
 const APP_URL = process.env.DOMAIN || "http://localhost:3000";
 
 export const ordersAPI = {
-  getAll: async (
-    page = 1,
-    limit = 10,
-    search = ""
-  ): Promise<OrderPaginationDTO> => {
-    try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-      })
-      if (search) params.append("search", search)
+  // getAll: async (
+  //   page = 1,
+  //   limit = 10,
+  //   search = ""
+  // ): Promise<OrderPaginationDTO> => {
+  //   try {
+  //     const params = new URLSearchParams({
+  //       page: page.toString(),
+  //       limit: limit.toString(),
+  //     })
+  //     if (search) params.append("search", search)
 
-      const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST}?${params}`
-      )
-      const data = await response.json()
-      return data
-    } catch (err) {
-      console.error("Error:", err)
-      return {
-        code: 1,
-        message: "Failed to fetch orders",
-        data: [],
-        pagination: {
-          total: 0,
-          totalPages: 0,
-          page: 1,
-          limit,
-        },
-      }
-    }
-  },
+  //     const response = await fetch(
+  //       `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST}?${params}`
+  //     )
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error("Error:", err)
+  //     return {
+  //       code: 1,
+  //       message: "Failed to fetch orders",
+  //       data: [],
+  //       pagination: {
+  //         total: 0,
+  //         totalPages: 0,
+  //         page: 1,
+  //         limit,
+  //       },
+  //     }
+  //   }
+  // },
 
   create: async (
     bodyData: CreateOrderBody,
@@ -101,23 +101,23 @@ export const ordersAPI = {
     }
   },
 
-  delete: async (id: string) => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.DELETE(id)}`, {
-        method: 'DELETE',
-      })
+  // delete: async (id: string) => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.DELETE(id)}`, {
+  //       method: 'DELETE',
+  //     })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json()
+  //       throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+  //     }
 
-      return await response.json()
-    } catch (err) {
-      console.error(`Error deleting order with ID ${id}:`, err)
-      throw err
-    }
-  },
+  //     return await response.json()
+  //   } catch (err) {
+  //     console.error(`Error deleting order with ID ${id}:`, err)
+  //     throw err
+  //   }
+  // },
 
   getByUserId: async (userId: string): Promise<ApiResponse<OrderDTO[]>> => {
     try {
@@ -134,63 +134,63 @@ export const ordersAPI = {
     }
   },
 
-  getAllStatus: async (): Promise<ApiResponse<OrderStatusDTO[]>> => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_STATUS}`)
-      const data = await response.json()
-      return data
-    } catch (err) {
-      console.error('Error:', err)
-      return {
-        code: 1,
-        message: 'Failed to fetch order status',
-        data: [],
-      }
-    }
-  },
+  // getAllStatus: async (): Promise<ApiResponse<OrderStatusDTO[]>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_STATUS}`)
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error('Error:', err)
+  //     return {
+  //       code: 1,
+  //       message: 'Failed to fetch order status',
+  //       data: [],
+  //     }
+  //   }
+  // },
 
-  getAllPayment: async (): Promise<ApiResponse<PaymentDTO[]>> => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_PAYMENTS}`)
-      const data = await response.json()
-      return data
-    } catch (err) {
-      console.error('Error:', err)
-      return {
-        code: 1,
-        message: 'Failed to fetch payments',
-        data: [],
-      }
-    }
-  },
-  updateStatusOrder: async (orderId: string, statusId: string): Promise<ApiResponse<OrderDTO>> => {
-    try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.UPDATE_STATUS}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, statusId }),
-      })
+  // getAllPayment: async (): Promise<ApiResponse<PaymentDTO[]>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_PAYMENTS}`)
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error('Error:', err)
+  //     return {
+  //       code: 1,
+  //       message: 'Failed to fetch payments',
+  //       data: [],
+  //     }
+  //   }
+  // },
+  // updateStatusOrder: async (orderId: string, statusId: string): Promise<ApiResponse<OrderDTO>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.UPDATE_STATUS}`, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ orderId, statusId }),
+  //     })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        return {
-          code: 1,
-          message: errorData.message || 'Failed to update order status',
-          data: undefined as any,
-        }
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json()
+  //       return {
+  //         code: 1,
+  //         message: errorData.message || 'Failed to update order status',
+  //         data: undefined as any,
+  //       }
+  //     }
 
-      const data: ApiResponse<OrderDTO> = await response.json()
-      return data
-    } catch (err) {
-      console.error(`Error updating status for order ${orderId}:`, err)
-      return {
-        code: 1,
-        message: 'Unexpected error while updating order status',
-        data: undefined as any,
-      }
-    }
-  },
+  //     const data: ApiResponse<OrderDTO> = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error(`Error updating status for order ${orderId}:`, err)
+  //     return {
+  //       code: 1,
+  //       message: 'Unexpected error while updating order status',
+  //       data: undefined as any,
+  //     }
+  //   }
+  // },
   
   getRewardHistoryByUserId: async (
     userId: string,

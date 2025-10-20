@@ -1,7 +1,7 @@
 import { ref, reactive, computed} from "vue";
 import { defineStore } from "pinia";
 import { apiConfig } from '@/services/config/api.config'
-import { usersAPI } from "@/services/v1/users.service";
+import { authAPI } from "@/services/v1/auth.service";
 import {
   Loading
 } from '@/utils/global'
@@ -10,9 +10,9 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { showWarning, showSuccess } from "@/utils/toast";
 
 export const useAccountEditStore = defineStore("useAccountEdit", () => {
-  
   const accountStore = useAccountStore()
 
+  const token = useCookie<string | null>("token", { sameSite: "lax" });
   const isTogglePopupUpdate = ref<boolean>(false);
   const formUserItem = reactive<UserEdit>({
     avatar: '',
@@ -61,7 +61,7 @@ export const useAccountEditStore = defineStore("useAccountEdit", () => {
     Loading(true);
     try {
       const newCategory = {...formUserItem}
-      const data = await usersAPI.updateAccount(newCategory)
+      const data = await authAPI.updateAccount(newCategory, token.value)
       if(data.code === 200){
         showSuccess('Cap nhat thanh cong')
         isTogglePopupUpdate.value = false;
@@ -90,7 +90,7 @@ export const useAccountEditStore = defineStore("useAccountEdit", () => {
           newPassword: newPassword.value
         }
 
-        const data = await usersAPI.ChangePassword(dataReset)
+        const data = await authAPI.ChangePassword(dataReset)
         if(data.code === 0){
           showWarning('Vui long nhap mat khau day du!');
         }

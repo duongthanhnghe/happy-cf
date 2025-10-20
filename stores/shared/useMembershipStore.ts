@@ -5,7 +5,13 @@ import type { MembershipLevels } from '@/server/types/dto/v1/user.dto'
 
 const TTL_MS = 10 * 24 * 60 * 60 * 1000; // 10 days
 
-export const useMembershipStore = defineStore("MembershipStore", () => {
+const storeName =
+  typeof window !== "undefined" &&
+  window.location.pathname.startsWith("/admin")
+    ? "MembershipStoreAdmin"
+    : "MembershipStore";
+
+export const useMembershipStore = defineStore(storeName, () => {
   const { getMembershipList, fetchMembershipList } = useMembershipList();
 
   const dataList = ref<MembershipLevels[]>([])
@@ -37,7 +43,9 @@ export const useMembershipStore = defineStore("MembershipStore", () => {
   };
 }, {
   persist: {
-    key: 'MembershipPinia',
+    key: process.client && window?.location?.pathname.startsWith('/admin')
+    ? 'MembershipPiniaAdmin'
+    : 'MembershipPiniaClient',
     storage: typeof window !== 'undefined' ? localStorage : undefined,
     paths: ['dataList','lastFetched'],
   }

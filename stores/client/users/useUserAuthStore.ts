@@ -1,6 +1,6 @@
 import { ref, reactive } from "vue";
 import { defineStore } from "pinia";
-import { usersAPI } from "@/services/v1/users.service";
+import { authAPI } from "@/services/v1/auth.service";
 import {
   Loading
 } from '@/utils/global'
@@ -79,7 +79,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         password: formUserItem.password,
       }
     
-      const data = await usersAPI.Login(dataLogin)
+      const data = await authAPI.Login(dataLogin)
       if (data.code === 0 && data.data.token) {
         setCookie('token', data.data.token, 7)
         handleResetFormUserItem()
@@ -110,7 +110,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         gender: formUserItem.gender,
       }
 
-      const data = await usersAPI.Register(dataRegister)
+      const data = await authAPI.Register(dataRegister)
       if(data.code === 0){
         showSuccess(data.message);
         handleResetFormUserItem()
@@ -130,7 +130,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
   async function submitForgotPassword() {
     Loading(true);
     try {
-      const data = await usersAPI.ForgotPassword(emailForgot.value)
+      const data = await authAPI.ForgotPassword(emailForgot.value)
       if(data.code === 0){
         showSuccess(data.message)
         emailForgot.value = ''
@@ -160,7 +160,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
           newPassword: newPassword.value
         }
 
-        const data = await usersAPI.ResetPassword(dataReset)
+        const data = await authAPI.ResetPassword(dataReset)
         if(data.code === 0){
           showSuccess(data.message);
           newPassword.value = ''
@@ -188,7 +188,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         throw new Error("Thiếu token Google")
       }
 
-      const data = await usersAPI.googleLogin(googleToken)
+      const data = await authAPI.googleLogin(googleToken)
       if (data.code === 0) {
         setCookie('token', data.data.token, 7)
 
