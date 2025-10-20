@@ -127,10 +127,10 @@ const uploadImage = async (event: Event, folderName: string) => {
       // if (res.success) getApiList(folder)
     }
     if (res.success) {
-      showSuccess('Upload thanh cong')
       setTimeout(() => {
+        showSuccess('Upload thanh cong')
         getApiList(folder)
-      }, 1500);
+      }, 2000);
       file.value = null
     } else {
       showWarning('Upload thất bại!')

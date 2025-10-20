@@ -206,12 +206,12 @@ onBeforeUnmount(() => {
           Phi van chuyen: <span>{{ formatCurrency(store.getShippingFee) }}</span>
           </div>
 
-          <div v-if="store.usedPointOrder.usedPoint != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
-          Point <span>-{{ formatCurrency(store.usedPointOrder.usedPoint) }}</span>
-          </div>
-
           <div v-if="store.getOrderPriceDiscount != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
           Giam don hang <span>-{{ formatCurrency(store.getOrderPriceDiscount) }}</span>
+          </div>
+
+          <div v-if="store.usedPointOrder.usedPoint != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
+          Point <span>-{{ formatCurrency(store.usedPointOrder.usedPoint) }}</span>
           </div>
 
           <div v-if="store.totalDiscountRateMembership != 0" class="popup-cart-footer-item popup-cart-footer-item-save">

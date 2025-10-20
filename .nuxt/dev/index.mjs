@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"37fc1-l3zRBedju19uHHnCP2cxFuuiEHs\"",
-    "mtime": "2025-10-18T05:44:03.964Z",
-    "size": 229313,
+    "etag": "\"38000-RfAMqcDuDDB7oVttiUcZbNRx5KY\"",
+    "mtime": "2025-10-20T06:11:31.828Z",
+    "size": 229376,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"d481e-9moiLVsyIKxC0qdSKJSYhYPozGQ\"",
-    "mtime": "2025-10-18T05:44:03.965Z",
-    "size": 870430,
+    "etag": "\"d48c4-ifkQGhJOuqRzz0kVwliPQN8+Ygg\"",
+    "mtime": "2025-10-20T06:11:31.830Z",
+    "size": 870596,
     "path": "index.mjs.map"
   }
 };
@@ -3609,6 +3609,7 @@ const OrderSchema = new Schema(
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
+    totalDiscountOrder: { type: Number, required: true },
     shippingFee: { type: Number, required: true },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
@@ -3705,6 +3706,7 @@ function toOrderDTO(entity) {
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
+    totalDiscountOrder: entity.totalDiscountOrder,
     shippingFee: entity.shippingFee,
     status: toOrderStatusDTO(entity.status),
     userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,

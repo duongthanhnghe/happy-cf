@@ -62,6 +62,7 @@ export interface OrderDTO {
   totalPrice: number;
   totalPriceSave: number;
   totalPriceCurrent: number;
+  totalDiscountOrder: number;
   shippingFee: number;
   status: OrderStatusDTO;
   userId: string | null;

@@ -22,9 +22,9 @@ const handleDetailPopup = (id:string) => {
 
 </script>
 <template>
-  <div class="card card-sm bg-white mb-sm" @click.self="handleDetailPopup(props.item?.id)">
+  <div class="card card-sm bg-white mb-sm">
     <div class="flex justify-between line-height1">
-      <div class="flex gap-xs align-center weight-semibold">
+      <div class="flex gap-xs align-center weight-semibold" @click="handleDetailPopup(props.item?.id)">
         <Button size="xs" color="secondary" icon="package_2" :disable="true"/>
         {{ props.item?.code }}
       </div>

@@ -121,16 +121,28 @@ watch(
       </div>
       <div class="flex flex-direction-column gap-xs mt-xs">
       <div class="flex justify-between text-size-normal mt-sm weight-medium line-height1">
-        Tong cong
+        <div class="flex align-center gap-xs">
+          Tong cong
+          <span v-if="getDetailOrder?.totalPriceSave && getDetailOrder?.totalPriceSave !== 0" class="text-size-base text-color-green">(Tiet kiem: {{ formatCurrency(getDetailOrder?.totalPriceSave) }})</span>
+        </div>
         <div class="weight-semibold text-color-danger text-right mb-xs">
           {{ formatCurrency(getDetailOrder?.totalPrice) }}
         </div>
       </div>
       <div class="flex justify-between text-color-gray5">
-        Tong don hang
-        <span class="text-line-through">
+        Don hang
+        <span>
           {{ formatCurrency(getDetailOrder?.totalPriceCurrent) }}
         </span>
+      </div>
+      <div v-if="getDetailOrder?.shippingFee" class="flex justify-between text-color-gray5">
+        Phi van chuyen
+        <span>
+          {{ formatCurrency(getDetailOrder?.shippingFee) }}
+        </span>
+      </div>
+      <div v-if="getDetailOrder?.totalDiscountOrder && getDetailOrder?.totalDiscountOrder != 0" class="flex justify-between text-color-gray5">
+        Giam don hang <span>-{{ formatCurrency(getDetailOrder?.totalDiscountOrder) }}</span>
       </div>
       <div v-if="getDetailOrder?.usedPoints !== 0" class="flex justify-between text-color-gray5">
         Diem thanh vien

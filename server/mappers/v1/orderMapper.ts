@@ -54,6 +54,7 @@ export function toOrderDTO(entity: Order): OrderDTO {
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
+    totalDiscountOrder: entity.totalDiscountOrder,
     shippingFee: entity.shippingFee,
     status:toOrderStatusDTO(entity.status as any),
     userId: entity.userId

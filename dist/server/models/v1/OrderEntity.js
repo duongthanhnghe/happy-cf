@@ -40,6 +40,7 @@ const OrderSchema = new Schema({
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
+    totalDiscountOrder: { type: Number, required: true },
     shippingFee: { type: Number, required: true },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },

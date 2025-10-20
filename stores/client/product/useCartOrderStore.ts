@@ -462,6 +462,7 @@ export const useCartStore = defineStore("Cart", () => {
       totalPrice: totalPriceDiscount.value,
       totalPriceSave: totalPriceSave.value,
       totalPriceCurrent: totalPriceCurrent.value,
+      totalDiscountOrder: totalPriceCurrent.value - orderPriceDiscount.value,
       shippingFee: shippingFee.value,
       status: ORDER_STATUS.PENDING,
       userId: userId,
