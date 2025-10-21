@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"38ba2-wewYdKipp1c0xVpeD2qHR5u5eh0\"",
-    "mtime": "2025-10-21T05:56:03.824Z",
-    "size": 232354,
+    "etag": "\"38e4e-/eeq7cFn3x6dY8ho0m6P9slbzxw\"",
+    "mtime": "2025-10-21T06:23:10.619Z",
+    "size": 233038,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"d7957-IbU8aB4yF21q4ysyYceDEFV3UT8\"",
-    "mtime": "2025-10-21T05:56:03.826Z",
-    "size": 883031,
+    "etag": "\"d8403-evdNRGOq0nxU2SjNwFcVTm1BXgY\"",
+    "mtime": "2025-10-21T06:23:10.620Z",
+    "size": 885763,
     "path": "index.mjs.map"
   }
 };
@@ -4508,7 +4508,7 @@ const login = async (req, res) => {
     if (!user) return res.status(400).json({ code: 2, message: "Email khong dung, vui long nhap lai!" });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ code: 1, message: "Mat khau khong dung, vui long nhap lai!" });
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
+    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "12h" });
     res.cookie("token", token, {
       httpOnly: true,
       // FE không đọc trực tiếp

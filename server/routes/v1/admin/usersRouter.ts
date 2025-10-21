@@ -14,7 +14,7 @@ import {
   getMembershipBenefitById,
   getRewardHistory,
 } from '../../../controllers/v1/admin/usersController'
-import { authenticate } from '../../../middlewares/authenticate'
+import { authenticateAdmin } from '../../../middlewares/authenticateAdmin'
 
 const router = express.Router()
 

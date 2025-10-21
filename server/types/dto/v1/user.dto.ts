@@ -62,6 +62,7 @@ export type UserWithResetToken = User & TokenReset
 export interface MyJwtPayload extends JwtPayload {
   id: string;
   email: string;
+  role: number;
 }
 
 export interface MembershipBenefitDTO {
