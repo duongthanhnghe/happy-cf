@@ -4,6 +4,8 @@ import { MembershipBenefitModel } from "../../../models/v1/MembershipBenefitEnti
 import { toUserDTO, toUserListDTO } from "../../../mappers/v1/userMapper.js";
 import { toMembershipLevelListDTO, toMembershipLevelDTO } from "../../../mappers/v1/membershipLevelMapper.js";
 import { toMembershipBenefitDTO, toMembershipBenefitListDTO } from "../../../mappers/v1/MembershipBenefitMapper.js";
+import { OrderEntity } from "../../../models/v1/OrderEntity.js";
+import { toOrderDTO } from "../../../mappers/v1/orderMapper.js";
 // const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
 // export const register = async (req: Request, res: Response) => {
 //   try {
@@ -470,14 +472,113 @@ export const updateMembershipBenefit = async (req, res) => {
 export const deleteMembershipBenefit = async (req, res) => {
     try {
         const { id } = req.params;
-        const deleted = await MembershipBenefitModel.findByIdAndDelete(id);
-        if (!deleted)
+        const benefit = await MembershipBenefitModel.findById(id);
+        if (!benefit) {
             return res.status(404).json({ code: 1, message: "Benefit không tồn tại" });
+        }
+        const levelUsing = await MembershipLevelModel.findOne({ benefits: id });
+        if (levelUsing) {
+            return res.status(400).json({
+                code: 1,
+                message: `Không thể xóa Benefit vì đang được sử dụng trong cấp độ thành viên "${levelUsing.name}"`,
+            });
+        }
+        await MembershipBenefitModel.findByIdAndDelete(id);
         return res.json({ code: 0, message: "Xóa benefit thành công" });
     }
     catch (err) {
         console.error("deleteMembershipBenefit error:", err);
         return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
+    }
+};
+export const getRewardHistory = async (req, res) => {
+    try {
+        let { page = 1, limit = 20, userId } = req.query;
+        const numPage = Number(page);
+        const numLimit = Number(limit);
+        // Điều kiện lọc
+        const query = {
+            $or: [
+                { "reward.points": { $gt: 0 } },
+                { usedPoints: { $gt: 0 } },
+                { pointsRefunded: true },
+            ],
+        };
+        if (userId) {
+            query.userId = userId;
+        }
+        // Truy vấn có phân trang
+        const result = await OrderEntity.paginate(query, {
+            page: numPage,
+            limit: numLimit,
+            sort: { createdAt: -1 },
+            populate: [
+                { path: "userId", model: "User", select: "fullname email phone membership.balancePoint" },
+                { path: "paymentId", model: "Payment" },
+                { path: "status", model: "OrderStatus" },
+                { path: "transaction", model: "PaymentTransaction" },
+            ],
+        });
+        // Xử lý dữ liệu lịch sử
+        const history = result.docs.map((order) => {
+            var _a;
+            let historyType = "";
+            let points = 0;
+            if (order.usedPoints > 0 && order.pointsRefunded) {
+                historyType = "refunded"; // hoàn điểm
+                points = order.usedPoints;
+            }
+            else if (order.usedPoints > 0) {
+                historyType = "used"; // dùng điểm
+                points = order.usedPoints;
+            }
+            else if (order.reward.points > 0 && order.reward.awarded) {
+                historyType = "earned"; // đã cộng điểm
+                points = order.reward.points;
+            }
+            else if (order.reward.points > 0 && !order.reward.awarded) {
+                historyType = "pending_reward"; // chờ cộng điểm
+                points = order.reward.points;
+            }
+            else {
+                historyType = "none";
+            }
+            return {
+                orderId: order._id,
+                code: order.code,
+                createdAt: order.createdAt,
+                user: order.userId
+                    ? {
+                        id: order.userId._id,
+                        fullname: order.userId.fullname,
+                        email: order.userId.email,
+                        phone: order.userId.phone,
+                        currentPoint: ((_a = order.userId.membership) === null || _a === void 0 ? void 0 : _a.balancePoint) || 0,
+                    }
+                    : null,
+                historyType,
+                points,
+                order: toOrderDTO(order),
+            };
+        });
+        return res.json({
+            code: 0,
+            message: "Lấy lịch sử tích điểm thành công",
+            data: history,
+            pagination: {
+                page: result.page,
+                limit: result.limit,
+                totalPages: result.totalPages,
+                total: result.totalDocs,
+            },
+        });
+    }
+    catch (err) {
+        console.error("💥 getAllRewardHistoryForAdmin error:", err);
+        return res.status(500).json({
+            code: 1,
+            message: "Lỗi server khi lấy lịch sử tích điểm",
+        });
     }
 };
 //# sourceMappingURL=usersController.js.map

@@ -90,6 +90,7 @@ export const API_ENDPOINTS_ADMIN = {
     GET_MEMBERSHIP_BENEFIT_BY_ID: (id) => `/users/membership-benefit/${id}`,
     UPDATE_MEMBERSHIP_BENEFIT: (id) => `/users/membership-benefit/${id}`,
     DELETE_MEMBERSHIP_BENEFIT: (id) => `/users/membership-benefit/${id}`,
+    REWARD_HISTORY: '/users/reward-history',
   },
   PAYMENT_TRANSACTIONS: {
     CREATE: '/payment-transactions',

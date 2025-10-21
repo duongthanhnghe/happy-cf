@@ -1,7 +1,8 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
-import type { User, UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword, MembershipBenefitDTO } from '@/server/types/dto/v1/user.dto.js'
+import type { User, UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword, MembershipBenefitDTO, CreateMembershipBenefit, UpdateMembershipBenefit } from '@/server/types/dto/v1/user.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
+import type { PaginationDTO } from '@server/types/common/pagination.dto'
 
 export const usersAPI = {
   getDetailAccount: async (id: string) => {
@@ -155,7 +156,7 @@ export const usersAPI = {
       }
     }
   },
-  createMembershipBenefit: async (payload: { name: string; description?: string; icon?: string }): Promise<ApiResponse<MembershipBenefitDTO>> => {
+  createMembershipBenefit: async (payload: CreateMembershipBenefit): Promise<ApiResponse<CreateMembershipBenefit>> => {
     try {
       const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.CREATE_MEMBERSHIP_BENEFIT}`, {
         method: 'POST',
@@ -216,17 +217,82 @@ export const usersAPI = {
   },
   deleteMembershipBenefit: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.DELETE_MEMBERSHIP_BENEFIT(id)}`, {
-        method: 'DELETE',
-      })
-      if (!res.ok) {
-        const errData = await res.json()
-        throw new Error(errData.message || `HTTP error! status: ${res.status}`)
+      const res = await fetch(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.DELETE_MEMBERSHIP_BENEFIT(id)}`,
+        { method: 'DELETE' }
+      )
+
+      const data = await res.json()
+
+      if (data.code !== 0) {
+        return {
+          code: data.code,
+          message: data.message || 'Không thể xóa benefit',
+          data: null,
+        }
       }
-      return await res.json()
-    } catch (err) {
+
+      return {
+        code: 0,
+        message: data.message || 'Xóa benefit thành công',
+        data: null,
+      }
+    } catch (err: any) {
       console.error(`Error deleting benefit ${id}:`, err)
-      throw err
+      return {
+        code: 1,
+        message: err.message || 'Lỗi kết nối đến máy chủ',
+        data: null,
+      }
+    }
+  },
+  getAllRewardHistory: async (
+    page = 1,
+    limit = 20,
+    userId?: string
+  ): Promise<PaginationDTO<any>> => {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      })
+
+      if (userId) params.append('userId', userId)
+
+      const response = await fetch(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params}`
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        return {
+          code: 1,
+          message: errorData.message || 'Failed to fetch reward history for admin',
+          data: [],
+          pagination: {
+            page,
+            limit,
+            total: 0,
+            totalPages: 0,
+          },
+        }
+      }
+
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error('Error fetching admin reward history:', err)
+      return {
+        code: 1,
+        message: 'Unexpected error while fetching reward history for admin',
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0,
+        },
+      }
     }
   },
 }

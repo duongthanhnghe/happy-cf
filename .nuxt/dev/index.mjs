@@ -9,10 +9,10 @@ import express, { Router } from 'file:///Users/ttcenter/happy-cf/node_modules/ex
 import fs, { promises } from 'node:fs';
 import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
 import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
-import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
 import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
 import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
 import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
+import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
 import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
 import nodemailer from 'file:///Users/ttcenter/happy-cf/node_modules/nodemailer/lib/nodemailer.js';
 import { OAuth2Client } from 'file:///Users/ttcenter/happy-cf/node_modules/google-auth-library/build/src/index.js';
@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"38000-RfAMqcDuDDB7oVttiUcZbNRx5KY\"",
-    "mtime": "2025-10-20T06:11:31.828Z",
-    "size": 229376,
+    "etag": "\"38ba2-wewYdKipp1c0xVpeD2qHR5u5eh0\"",
+    "mtime": "2025-10-21T05:56:03.824Z",
+    "size": 232354,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"d48c4-ifkQGhJOuqRzz0kVwliPQN8+Ygg\"",
-    "mtime": "2025-10-20T06:11:31.830Z",
-    "size": 870596,
+    "etag": "\"d7957-IbU8aB4yF21q4ysyYceDEFV3UT8\"",
+    "mtime": "2025-10-21T05:56:03.826Z",
+    "size": 883031,
     "path": "index.mjs.map"
   }
 };
@@ -3211,6 +3211,197 @@ const toMembershipLevelListDTO = (items) => {
   return items.map(toMembershipLevelDTO);
 };
 
+const SelectedOptionsPushSchema = new Schema(
+  {
+    optionName: { type: String, required: true },
+    variantName: { type: String, required: true },
+    variantPrice: { type: Number, required: true }
+  },
+  { _id: false }
+);
+const CartItemsSchema = new Schema(
+  {
+    idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    priceDiscounts: { type: Number, required: true },
+    quantity: { type: Number, required: true },
+    note: { type: String },
+    selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
+    finalPriceDiscounts: { type: Number }
+  },
+  { _id: false }
+);
+const PaymentSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    description: { type: String },
+    image: { type: String },
+    method: { type: String }
+  },
+  { timestamps: true }
+);
+const OrderStatusSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    status: { type: String, required: true },
+    icon: { type: String },
+    index: { type: Number }
+  },
+  { timestamps: true }
+);
+const OrderSchema = new Schema(
+  {
+    code: { type: String, required: true },
+    time: { type: String, required: true },
+    address: { type: String, required: true },
+    provinceCode: { type: Number, required: true },
+    districtCode: { type: Number, required: true },
+    wardCode: { type: Number, required: true },
+    fullname: { type: String, required: true },
+    phone: { type: String, required: true },
+    note: { type: String },
+    paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
+    cartItems: { type: [CartItemsSchema], required: true },
+    totalPrice: { type: Number, required: true },
+    totalPriceSave: { type: Number, required: true },
+    totalPriceCurrent: { type: Number, required: true },
+    totalDiscountOrder: { type: Number, required: true },
+    shippingFee: { type: Number, required: true },
+    status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
+    reward: {
+      points: { type: Number, default: 0 },
+      awarded: { type: Boolean, default: false },
+      awardedAt: { type: Date, default: null }
+    },
+    usedPoints: { type: Number, default: 0 },
+    pointsRefunded: { type: Boolean, default: false },
+    membershipDiscountRate: { type: Number, default: 0 },
+    membershipDiscountAmount: { type: Number, default: 0 }
+  },
+  { timestamps: true }
+);
+OrderSchema.plugin(mongoosePaginate);
+const PaymentEntity = model("Payment", PaymentSchema, "payments");
+const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
+const OrderEntity = model("Order", OrderSchema, "orders");
+
+const PAYMENT_TRANSACTION_STATUS = {
+  PENDING: "pending",
+  PAID: "paid",
+  FAILED: "failed",
+  REFUNDED: "refunded"
+};
+const PaymentTransactionStatusText = {
+  [PAYMENT_TRANSACTION_STATUS.PENDING]: "Ch\u1EDD thanh to\xE1n",
+  [PAYMENT_TRANSACTION_STATUS.PAID]: "\u0110\xE3 thanh to\xE1n",
+  [PAYMENT_TRANSACTION_STATUS.FAILED]: "Thanh to\xE1n th\u1EA5t b\u1EA1i",
+  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "\u0110\xE3 ho\xE0n ti\u1EC1n"
+};
+const PaymentTransactionStatusColor = {
+  [PAYMENT_TRANSACTION_STATUS.PENDING]: "orange",
+  [PAYMENT_TRANSACTION_STATUS.PAID]: "green",
+  [PAYMENT_TRANSACTION_STATUS.FAILED]: "red",
+  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "blue"
+};
+
+function toPaymentTransactionDTO(entity) {
+  var _a, _b, _c, _d;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    orderId: ((_b = entity.orderId) == null ? void 0 : _b.toString()) || "",
+    amount: entity.amount,
+    method: entity.method,
+    status: entity.status,
+    statusText: PaymentTransactionStatusText[entity.status],
+    statusColor: PaymentTransactionStatusColor[entity.status],
+    createdAt: ((_c = entity.createdAt) == null ? void 0 : _c.toISOString()) || "",
+    updatedAt: ((_d = entity.updatedAt) == null ? void 0 : _d.toISOString()) || ""
+  };
+}
+const toPaymentTransactionListDTO = (list) => list.map(toPaymentTransactionDTO);
+
+function toPaymentDTO(entity) {
+  var _a;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    name: entity.name,
+    description: entity.description || "",
+    image: entity.image || "",
+    method: entity.method || null
+  };
+}
+const toPaymentListDTO = (payments) => payments.map(toPaymentDTO);
+function toOrderStatusDTO(entity) {
+  var _a;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    name: entity.name,
+    status: entity.status,
+    icon: entity.icon || "",
+    index: entity.index
+  };
+}
+const toOrderStatusListDTO = (list) => list.map(toOrderStatusDTO);
+function toOrderDTO(entity) {
+  var _a, _b, _c, _d, _e;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    code: entity.code,
+    time: entity.time,
+    address: entity.address,
+    fullname: entity.fullname,
+    provinceCode: entity.provinceCode,
+    districtCode: entity.districtCode,
+    wardCode: entity.wardCode,
+    phone: entity.phone,
+    note: entity.note || "",
+    paymentId: toPaymentDTO(entity.paymentId),
+    cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map(toCartItemDTO) : [],
+    totalPrice: entity.totalPrice,
+    totalPriceSave: entity.totalPriceSave,
+    totalPriceCurrent: entity.totalPriceCurrent,
+    totalDiscountOrder: entity.totalDiscountOrder,
+    shippingFee: entity.shippingFee,
+    status: toOrderStatusDTO(entity.status),
+    userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
+    transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
+    reward: entity.reward ? {
+      points: (_b = entity.reward.points) != null ? _b : 0,
+      awarded: (_c = entity.reward.awarded) != null ? _c : false,
+      awardedAt: entity.reward.awardedAt ? new Date(entity.reward.awardedAt).toISOString() : null
+    } : {
+      points: 0,
+      awarded: false,
+      awardedAt: null
+    },
+    usedPoints: entity.usedPoints,
+    pointsRefunded: entity.pointsRefunded,
+    membershipDiscountRate: entity.membershipDiscountRate,
+    membershipDiscountAmount: entity.membershipDiscountAmount,
+    createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
+    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || ""
+  };
+}
+const toOrderListDTO = (orders) => orders.map(toOrderDTO);
+function toCartItemDTO(entity) {
+  return {
+    idProduct: entity.idProduct ? new Types.ObjectId(entity.idProduct) : new Types.ObjectId(),
+    priceDiscounts: entity.priceDiscounts,
+    quantity: entity.quantity,
+    note: entity.note || "",
+    selectedOptionsPush: Array.isArray(entity.selectedOptionsPush) ? entity.selectedOptionsPush.map(toSelectedOptionDTO) : [],
+    finalPriceDiscounts: entity.finalPriceDiscounts
+  };
+}
+function toSelectedOptionDTO(entity) {
+  return {
+    optionName: entity.optionName,
+    variantName: entity.variantName,
+    variantPrice: entity.variantPrice
+  };
+}
+
 const deleteUsers = async (req, res) => {
   const { id } = req.params;
   await UserModel.findByIdAndDelete(id);
@@ -3415,39 +3606,115 @@ const updateMembershipBenefit = async (req, res) => {
 const deleteMembershipBenefit = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await MembershipBenefitModel.findByIdAndDelete(id);
-    if (!deleted) return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
+    const benefit = await MembershipBenefitModel.findById(id);
+    if (!benefit) {
+      return res.status(404).json({ code: 1, message: "Benefit kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const levelUsing = await MembershipLevelModel.findOne({ benefits: id });
+    if (levelUsing) {
+      return res.status(400).json({
+        code: 1,
+        message: `Kh\xF4ng th\u1EC3 x\xF3a Benefit v\xEC \u0111ang \u0111\u01B0\u1EE3c s\u1EED d\u1EE5ng trong c\u1EA5p \u0111\u1ED9 th\xE0nh vi\xEAn "${levelUsing.name}"`
+      });
+    }
+    await MembershipBenefitModel.findByIdAndDelete(id);
     return res.json({ code: 0, message: "X\xF3a benefit th\xE0nh c\xF4ng" });
   } catch (err) {
     console.error("deleteMembershipBenefit error:", err);
     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message });
   }
 };
-
-const authenticate = (req, res, next) => {
-  var _a;
-  const token = (_a = req.cookies) == null ? void 0 : _a.token;
-  if (!token) {
-    return res.status(401).json({ message: "Thi\u1EBFu token" });
-  }
+const getRewardHistory = async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    req.user = decoded;
-    next();
+    let { page = 1, limit = 20, userId } = req.query;
+    const numPage = Number(page);
+    const numLimit = Number(limit);
+    const query = {
+      $or: [
+        { "reward.points": { $gt: 0 } },
+        { usedPoints: { $gt: 0 } },
+        { pointsRefunded: true }
+      ]
+    };
+    if (userId) {
+      query.userId = userId;
+    }
+    const result = await OrderEntity.paginate(query, {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        { path: "userId", model: "User", select: "fullname email phone membership.balancePoint" },
+        { path: "paymentId", model: "Payment" },
+        { path: "status", model: "OrderStatus" },
+        { path: "transaction", model: "PaymentTransaction" }
+      ]
+    });
+    const history = result.docs.map((order) => {
+      var _a;
+      let historyType = "";
+      let points = 0;
+      if (order.usedPoints > 0 && order.pointsRefunded) {
+        historyType = "refunded";
+        points = order.usedPoints;
+      } else if (order.usedPoints > 0) {
+        historyType = "used";
+        points = order.usedPoints;
+      } else if (order.reward.points > 0 && order.reward.awarded) {
+        historyType = "earned";
+        points = order.reward.points;
+      } else if (order.reward.points > 0 && !order.reward.awarded) {
+        historyType = "pending_reward";
+        points = order.reward.points;
+      } else {
+        historyType = "none";
+      }
+      return {
+        orderId: order._id,
+        code: order.code,
+        createdAt: order.createdAt,
+        user: order.userId ? {
+          id: order.userId._id,
+          fullname: order.userId.fullname,
+          email: order.userId.email,
+          phone: order.userId.phone,
+          currentPoint: ((_a = order.userId.membership) == null ? void 0 : _a.balancePoint) || 0
+        } : null,
+        historyType,
+        points,
+        order: toOrderDTO(order)
+      };
+    });
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y l\u1ECBch s\u1EED t\xEDch \u0111i\u1EC3m th\xE0nh c\xF4ng",
+      data: history,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
   } catch (err) {
-    return res.status(401).json({ message: "Token kh\xF4ng h\u1EE3p l\u1EC7" });
+    console.error("\u{1F4A5} getAllRewardHistoryForAdmin error:", err);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i server khi l\u1EA5y l\u1ECBch s\u1EED t\xEDch \u0111i\u1EC3m"
+    });
   }
 };
 
 const router$j = express.Router();
+router$j.get("/reward-history", getRewardHistory);
 router$j.get("/membership-level", getAllMembershipLevel);
 router$j.get("/membership-level/:id", getMembershipLevelById);
 router$j.put("/membership-level/:id", updateMembershipLevel);
 router$j.get("/membership-benefit", getAllMembershipBenefits);
 router$j.get("/membership-benefit/:id", getMembershipBenefitById);
-router$j.post("/membership-benefit", authenticate, createMembershipBenefit);
-router$j.put("/membership-benefit/:id", authenticate, updateMembershipBenefit);
-router$j.delete("/membership-benefit/:id", authenticate, deleteMembershipBenefit);
+router$j.post("/membership-benefit", createMembershipBenefit);
+router$j.put("/membership-benefit/:id", updateMembershipBenefit);
+router$j.delete("/membership-benefit/:id", deleteMembershipBenefit);
 router$j.get("/", getAllUsers);
 router$j.get("/:id", getUserById$1);
 router$j.patch("/toggleActive/:id", toggleActive$3);
@@ -3555,197 +3822,6 @@ const postsNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineP
   __proto__: null,
   default: router$i
 }, Symbol.toStringTag, { value: 'Module' }));
-
-const SelectedOptionsPushSchema = new Schema(
-  {
-    optionName: { type: String, required: true },
-    variantName: { type: String, required: true },
-    variantPrice: { type: Number, required: true }
-  },
-  { _id: false }
-);
-const CartItemsSchema = new Schema(
-  {
-    idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-    priceDiscounts: { type: Number, required: true },
-    quantity: { type: Number, required: true },
-    note: { type: String },
-    selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
-    finalPriceDiscounts: { type: Number }
-  },
-  { _id: false }
-);
-const PaymentSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    description: { type: String },
-    image: { type: String },
-    method: { type: String }
-  },
-  { timestamps: true }
-);
-const OrderStatusSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    status: { type: String, required: true },
-    icon: { type: String },
-    index: { type: Number }
-  },
-  { timestamps: true }
-);
-const OrderSchema = new Schema(
-  {
-    code: { type: String, required: true },
-    time: { type: String, required: true },
-    address: { type: String, required: true },
-    provinceCode: { type: Number, required: true },
-    districtCode: { type: Number, required: true },
-    wardCode: { type: Number, required: true },
-    fullname: { type: String, required: true },
-    phone: { type: String, required: true },
-    note: { type: String },
-    paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
-    cartItems: { type: [CartItemsSchema], required: true },
-    totalPrice: { type: Number, required: true },
-    totalPriceSave: { type: Number, required: true },
-    totalPriceCurrent: { type: Number, required: true },
-    totalDiscountOrder: { type: Number, required: true },
-    shippingFee: { type: Number, required: true },
-    status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
-    transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
-    reward: {
-      points: { type: Number, default: 0 },
-      awarded: { type: Boolean, default: false },
-      awardedAt: { type: Date, default: null }
-    },
-    usedPoints: { type: Number, default: 0 },
-    pointsRefunded: { type: Boolean, default: false },
-    membershipDiscountRate: { type: Number, default: 0 },
-    membershipDiscountAmount: { type: Number, default: 0 }
-  },
-  { timestamps: true }
-);
-OrderSchema.plugin(mongoosePaginate);
-const PaymentEntity = model("Payment", PaymentSchema, "payments");
-const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
-const OrderEntity = model("Order", OrderSchema, "orders");
-
-const PAYMENT_TRANSACTION_STATUS = {
-  PENDING: "pending",
-  PAID: "paid",
-  FAILED: "failed",
-  REFUNDED: "refunded"
-};
-const PaymentTransactionStatusText = {
-  [PAYMENT_TRANSACTION_STATUS.PENDING]: "Ch\u1EDD thanh to\xE1n",
-  [PAYMENT_TRANSACTION_STATUS.PAID]: "\u0110\xE3 thanh to\xE1n",
-  [PAYMENT_TRANSACTION_STATUS.FAILED]: "Thanh to\xE1n th\u1EA5t b\u1EA1i",
-  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "\u0110\xE3 ho\xE0n ti\u1EC1n"
-};
-const PaymentTransactionStatusColor = {
-  [PAYMENT_TRANSACTION_STATUS.PENDING]: "orange",
-  [PAYMENT_TRANSACTION_STATUS.PAID]: "green",
-  [PAYMENT_TRANSACTION_STATUS.FAILED]: "red",
-  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "blue"
-};
-
-function toPaymentTransactionDTO(entity) {
-  var _a, _b, _c, _d;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    orderId: ((_b = entity.orderId) == null ? void 0 : _b.toString()) || "",
-    amount: entity.amount,
-    method: entity.method,
-    status: entity.status,
-    statusText: PaymentTransactionStatusText[entity.status],
-    statusColor: PaymentTransactionStatusColor[entity.status],
-    createdAt: ((_c = entity.createdAt) == null ? void 0 : _c.toISOString()) || "",
-    updatedAt: ((_d = entity.updatedAt) == null ? void 0 : _d.toISOString()) || ""
-  };
-}
-const toPaymentTransactionListDTO = (list) => list.map(toPaymentTransactionDTO);
-
-function toPaymentDTO(entity) {
-  var _a;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    name: entity.name,
-    description: entity.description || "",
-    image: entity.image || "",
-    method: entity.method || null
-  };
-}
-const toPaymentListDTO = (payments) => payments.map(toPaymentDTO);
-function toOrderStatusDTO(entity) {
-  var _a;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    name: entity.name,
-    status: entity.status,
-    icon: entity.icon || "",
-    index: entity.index
-  };
-}
-const toOrderStatusListDTO = (list) => list.map(toOrderStatusDTO);
-function toOrderDTO(entity) {
-  var _a, _b, _c, _d, _e;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    code: entity.code,
-    time: entity.time,
-    address: entity.address,
-    fullname: entity.fullname,
-    provinceCode: entity.provinceCode,
-    districtCode: entity.districtCode,
-    wardCode: entity.wardCode,
-    phone: entity.phone,
-    note: entity.note || "",
-    paymentId: toPaymentDTO(entity.paymentId),
-    cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map(toCartItemDTO) : [],
-    totalPrice: entity.totalPrice,
-    totalPriceSave: entity.totalPriceSave,
-    totalPriceCurrent: entity.totalPriceCurrent,
-    totalDiscountOrder: entity.totalDiscountOrder,
-    shippingFee: entity.shippingFee,
-    status: toOrderStatusDTO(entity.status),
-    userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
-    transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
-    reward: entity.reward ? {
-      points: (_b = entity.reward.points) != null ? _b : 0,
-      awarded: (_c = entity.reward.awarded) != null ? _c : false,
-      awardedAt: entity.reward.awardedAt ? new Date(entity.reward.awardedAt).toISOString() : null
-    } : {
-      points: 0,
-      awarded: false,
-      awardedAt: null
-    },
-    usedPoints: entity.usedPoints,
-    pointsRefunded: entity.pointsRefunded,
-    membershipDiscountRate: entity.membershipDiscountRate,
-    membershipDiscountAmount: entity.membershipDiscountAmount,
-    createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
-    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || ""
-  };
-}
-const toOrderListDTO = (orders) => orders.map(toOrderDTO);
-function toCartItemDTO(entity) {
-  return {
-    idProduct: entity.idProduct ? new Types.ObjectId(entity.idProduct) : new Types.ObjectId(),
-    priceDiscounts: entity.priceDiscounts,
-    quantity: entity.quantity,
-    note: entity.note || "",
-    selectedOptionsPush: Array.isArray(entity.selectedOptionsPush) ? entity.selectedOptionsPush.map(toSelectedOptionDTO) : [],
-    finalPriceDiscounts: entity.finalPriceDiscounts
-  };
-}
-function toSelectedOptionDTO(entity) {
-  return {
-    optionName: entity.optionName,
-    variantName: entity.variantName,
-    variantPrice: entity.variantPrice
-  };
-}
 
 const ORDER_STATUS = {
   PENDING: "68a93304c9f7de47a9f3a7e2",
@@ -4594,6 +4670,21 @@ const changePassword = async (req, res) => {
   user.password = await bcrypt.hash(newPassword, 10);
   await user.save();
   res.json({ code: 200, message: "Password updated" });
+};
+
+const authenticate = (req, res, next) => {
+  var _a;
+  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  if (!token) {
+    return res.status(401).json({ message: "Thi\u1EBFu token" });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Token kh\xF4ng h\u1EE3p l\u1EC7" });
+  }
 };
 
 const router$c = express.Router();

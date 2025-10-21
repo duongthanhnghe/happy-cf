@@ -25,8 +25,10 @@ interface _GlobalComponents {
     'CreateVariantProduct': typeof import("../components/admin/products/CreateVariantProduct.vue")['default']
     'UpdateCategoryProduct': typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']
     'UpdateProduct': typeof import("../components/admin/products/UpdateProduct.vue")['default']
+    'CreateMembershipBenefit': typeof import("../components/admin/users/CreateMembershipBenefit.vue")['default']
     'DetailAccount': typeof import("../components/admin/users/DetailAccount.vue")['default']
     'UpdateMembership': typeof import("../components/admin/users/UpdateMembership.vue")['default']
+    'UpdateMembershipBenefit': typeof import("../components/admin/users/UpdateMembershipBenefit.vue")['default']
     'AvatarEdit': typeof import("../components/atoms/AvatarEdit.vue")['default']
     'BreadcrumbDefault': typeof import("../components/atoms/BreadcrumbDefault.vue")['default']
     'Button': typeof import("../components/atoms/Button.vue")['default']
@@ -130,8 +132,10 @@ interface _GlobalComponents {
     'LazyCreateVariantProduct': LazyComponent<typeof import("../components/admin/products/CreateVariantProduct.vue")['default']>
     'LazyUpdateCategoryProduct': LazyComponent<typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']>
     'LazyUpdateProduct': LazyComponent<typeof import("../components/admin/products/UpdateProduct.vue")['default']>
+    'LazyCreateMembershipBenefit': LazyComponent<typeof import("../components/admin/users/CreateMembershipBenefit.vue")['default']>
     'LazyDetailAccount': LazyComponent<typeof import("../components/admin/users/DetailAccount.vue")['default']>
     'LazyUpdateMembership': LazyComponent<typeof import("../components/admin/users/UpdateMembership.vue")['default']>
+    'LazyUpdateMembershipBenefit': LazyComponent<typeof import("../components/admin/users/UpdateMembershipBenefit.vue")['default']>
     'LazyAvatarEdit': LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
     'LazyBreadcrumbDefault': LazyComponent<typeof import("../components/atoms/BreadcrumbDefault.vue")['default']>
     'LazyButton': LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
@@ -241,8 +245,10 @@ export const CreateProduct: typeof import("../components/admin/products/CreatePr
 export const CreateVariantProduct: typeof import("../components/admin/products/CreateVariantProduct.vue")['default']
 export const UpdateCategoryProduct: typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']
 export const UpdateProduct: typeof import("../components/admin/products/UpdateProduct.vue")['default']
+export const CreateMembershipBenefit: typeof import("../components/admin/users/CreateMembershipBenefit.vue")['default']
 export const DetailAccount: typeof import("../components/admin/users/DetailAccount.vue")['default']
 export const UpdateMembership: typeof import("../components/admin/users/UpdateMembership.vue")['default']
+export const UpdateMembershipBenefit: typeof import("../components/admin/users/UpdateMembershipBenefit.vue")['default']
 export const AvatarEdit: typeof import("../components/atoms/AvatarEdit.vue")['default']
 export const BreadcrumbDefault: typeof import("../components/atoms/BreadcrumbDefault.vue")['default']
 export const Button: typeof import("../components/atoms/Button.vue")['default']
@@ -346,8 +352,10 @@ export const LazyCreateProduct: LazyComponent<typeof import("../components/admin
 export const LazyCreateVariantProduct: LazyComponent<typeof import("../components/admin/products/CreateVariantProduct.vue")['default']>
 export const LazyUpdateCategoryProduct: LazyComponent<typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']>
 export const LazyUpdateProduct: LazyComponent<typeof import("../components/admin/products/UpdateProduct.vue")['default']>
+export const LazyCreateMembershipBenefit: LazyComponent<typeof import("../components/admin/users/CreateMembershipBenefit.vue")['default']>
 export const LazyDetailAccount: LazyComponent<typeof import("../components/admin/users/DetailAccount.vue")['default']>
 export const LazyUpdateMembership: LazyComponent<typeof import("../components/admin/users/UpdateMembership.vue")['default']>
+export const LazyUpdateMembershipBenefit: LazyComponent<typeof import("../components/admin/users/UpdateMembershipBenefit.vue")['default']>
 export const LazyAvatarEdit: LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
 export const LazyBreadcrumbDefault: LazyComponent<typeof import("../components/atoms/BreadcrumbDefault.vue")['default']>
 export const LazyButton: LazyComponent<typeof import("../components/atoms/Button.vue")['default']>

@@ -73,6 +73,16 @@ export interface MembershipBenefitDTO {
   updatedAt: string;
 }
 
+export interface CreateMembershipBenefit {
+  name: string
+  description?: string
+  icon?: string
+}
+
+export interface UpdateMembershipBenefit extends Partial<CreateMembershipBenefit> {
+  id: string
+}
+
 export interface MembershipLevels {
   id: string
   name: string
