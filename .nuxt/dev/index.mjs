@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"38e4e-/eeq7cFn3x6dY8ho0m6P9slbzxw\"",
-    "mtime": "2025-10-21T06:23:10.619Z",
-    "size": 233038,
+    "etag": "\"38bd9-VnYrYyGun9tGUulSejHru2BFS+c\"",
+    "mtime": "2025-10-21T06:31:50.069Z",
+    "size": 232409,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"d8403-evdNRGOq0nxU2SjNwFcVTm1BXgY\"",
-    "mtime": "2025-10-21T06:23:10.620Z",
-    "size": 885763,
+    "etag": "\"d795e-rvcJaCXWNDRzDGxj1u4iuomMYHM\"",
+    "mtime": "2025-10-21T06:31:50.080Z",
+    "size": 883038,
     "path": "index.mjs.map"
   }
 };
@@ -4564,7 +4564,7 @@ const googleLogin = async (req, res) => {
         }
       });
     }
-    const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+    const jwtToken = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: "12h"
     });
     res.cookie("token", jwtToken, {
