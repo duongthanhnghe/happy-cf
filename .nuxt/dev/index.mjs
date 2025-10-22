@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"39190-iH3hEeU0mnyLlJd4tOSs/le2sx8\"",
-    "mtime": "2025-10-22T02:58:11.122Z",
-    "size": 233872,
+    "etag": "\"38890-u8h58SShFCa7Tvc3HbgOSlCYNJc\"",
+    "mtime": "2025-10-22T03:45:17.801Z",
+    "size": 231568,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"d9248-qG1qXpVAS58Sr3DqE2vEd7Moxk4\"",
-    "mtime": "2025-10-22T02:58:11.122Z",
-    "size": 889416,
+    "etag": "\"d6d6b-EBFM59JJ2ukqrgjI1jfoU9JQP+E\"",
+    "mtime": "2025-10-22T03:45:17.803Z",
+    "size": 879979,
     "path": "index.mjs.map"
   }
 };
@@ -2103,14 +2103,29 @@ const getDefaultAddressByUserId = async (req, res) => {
   }
 };
 
+const authenticate = (req, res, next) => {
+  var _a;
+  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  if (!token) {
+    return res.status(401).json({ message: "Thi\u1EBFu token" });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Token kh\xF4ng h\u1EE3p l\u1EC7" });
+  }
+};
+
 const router$p = Router();
-router$p.get("/default/:userId", getDefaultAddressByUserId);
-router$p.get("/user/:userId", getAllAddress);
-router$p.get("/:id", getAddressById);
-router$p.post("/", createAddress);
-router$p.put("/:id", updateAddress);
-router$p.delete("/:id", deleteAddress);
-router$p.post("/:id/set-default", setAddressDefault);
+router$p.get("/default/:userId", authenticate, getDefaultAddressByUserId);
+router$p.get("/user/:userId", authenticate, getAllAddress);
+router$p.get("/:id", authenticate, getAddressById);
+router$p.post("/", authenticate, createAddress);
+router$p.put("/:id", authenticate, updateAddress);
+router$p.delete("/:id", authenticate, deleteAddress);
+router$p.post("/:id/set-default", authenticate, setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -2239,7 +2254,7 @@ const updateOrder$3 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$7 = async (req, res) => {
+const toggleActive$6 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await AboutEntity.findById(id);
@@ -2281,7 +2296,7 @@ router$o.post("/", authenticateAdmin, createAbout);
 router$o.put("/:id", authenticateAdmin, updateAbout);
 router$o.delete("/:id", authenticateAdmin, deleteAbout);
 router$o.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
-router$o.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
+router$o.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -2399,7 +2414,7 @@ const updateOrder$2 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$6 = async (req, res) => {
+const toggleActive$5 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await BannerEntity.findById(id);
@@ -2425,7 +2440,7 @@ router$n.post("/", authenticateAdmin, createBanner);
 router$n.put("/:id", authenticateAdmin, updateBanner);
 router$n.delete("/:id", authenticateAdmin, deleteBanner);
 router$n.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
-router$n.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
+router$n.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
 
 const bannerRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -2670,7 +2685,7 @@ const updateOrder$1 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$5 = async (req, res) => {
+const toggleActive$4 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await CategoryNewsModel.findById(id);
@@ -2695,7 +2710,7 @@ router$m.get("/:id", getCategoriesById$3);
 router$m.post("/", authenticateAdmin, createCategories$1);
 router$m.put("/:id", authenticateAdmin, updateCategories$1);
 router$m.delete("/:id", authenticateAdmin, deleteCategories$1);
-router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
+router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
 router$m.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
 
 const categoriesNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
@@ -3031,7 +3046,7 @@ const updateOrder = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$4 = async (req, res) => {
+const toggleActive$3 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await CategoryProductEntity.findById(id);
@@ -3057,7 +3072,7 @@ router$l.get("/:id", getCategoriesById$2);
 router$l.post("/", authenticateAdmin, createCategories);
 router$l.put("/:id", authenticateAdmin, updateCategories);
 router$l.delete("/:id", authenticateAdmin, deleteCategories);
-router$l.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
+router$l.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
 router$l.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
 
 const categoriesProductRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
@@ -3544,7 +3559,7 @@ const updateMembershipLevel = async (req, res) => {
     });
   }
 };
-const toggleActive$3 = async (req, res) => {
+const toggleActive$2 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await UserModel.findById(id);
@@ -3733,7 +3748,7 @@ router$j.put("/membership-benefit/:id", authenticateAdmin, updateMembershipBenef
 router$j.delete("/membership-benefit/:id", authenticateAdmin, deleteMembershipBenefit);
 router$j.get("/", authenticateAdmin, getAllUsers);
 router$j.get("/:id", getUserById$1);
-router$j.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
+router$j.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
 router$j.delete("/:id", authenticateAdmin, deleteUsers);
 
 const usersRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
@@ -3741,7 +3756,7 @@ const usersRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePrope
   default: router$j
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const getAllPosts$1 = async (req, res) => {
+const getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     let limit = parseInt(req.query.limit, 10) || 10;
@@ -3776,7 +3791,7 @@ const getPostsById$1 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const createPosts$1 = async (req, res) => {
+const createPosts = async (req, res) => {
   try {
     const newPost = new PostNewsModel(req.body);
     await newPost.save();
@@ -3785,7 +3800,7 @@ const createPosts$1 = async (req, res) => {
     return res.status(400).json({ code: 1, message: err.message });
   }
 };
-const updatePosts$1 = async (req, res) => {
+const updatePosts = async (req, res) => {
   try {
     const updated = await PostNewsModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updated) {
@@ -3796,7 +3811,7 @@ const updatePosts$1 = async (req, res) => {
     return res.status(400).json({ code: 1, message: err.message });
   }
 };
-const deletePosts$1 = async (req, res) => {
+const deletePosts = async (req, res) => {
   try {
     const deleted = await PostNewsModel.findByIdAndDelete(req.params.id);
     if (!deleted) {
@@ -3807,7 +3822,7 @@ const deletePosts$1 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$2 = async (req, res) => {
+const toggleActive$1 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await PostNewsModel.findById(id);
@@ -3827,12 +3842,12 @@ const toggleActive$2 = async (req, res) => {
 };
 
 const router$i = Router();
-router$i.get("/", authenticateAdmin, getAllPosts$1);
+router$i.get("/", authenticateAdmin, getAllPosts);
 router$i.get("/:id", getPostsById$1);
-router$i.post("/", authenticateAdmin, createPosts$1);
-router$i.put("/:id", authenticateAdmin, updatePosts$1);
-router$i.delete("/:id", authenticateAdmin, deletePosts$1);
-router$i.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
+router$i.post("/", authenticateAdmin, createPosts);
+router$i.put("/:id", authenticateAdmin, updatePosts);
+router$i.delete("/:id", authenticateAdmin, deletePosts);
+router$i.patch("/toggleActive/:id", authenticateAdmin, toggleActive$1);
 
 const postsNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -4154,7 +4169,7 @@ const deleteProduct = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$1 = async (req, res) => {
+const toggleActive = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await ProductEntity.findById(id);
@@ -4179,7 +4194,7 @@ router$g.post("/", authenticateAdmin, createProduct);
 router$g.get("/:id", getProductById$1);
 router$g.put("/:id", authenticateAdmin, updateProduct);
 router$g.delete("/:id", authenticateAdmin, deleteProduct);
-router$g.patch("/toggleActive/:id", authenticateAdmin, toggleActive$1);
+router$g.patch("/toggleActive/:id", authenticateAdmin, toggleActive);
 
 const productRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -4688,30 +4703,15 @@ const changePassword = async (req, res) => {
   res.json({ code: 200, message: "Password updated" });
 };
 
-const authenticate = (req, res, next) => {
-  var _a;
-  const token = (_a = req.cookies) == null ? void 0 : _a.token;
-  if (!token) {
-    return res.status(401).json({ message: "Thi\u1EBFu token" });
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: "Token kh\xF4ng h\u1EE3p l\u1EC7" });
-  }
-};
-
 const router$c = express.Router();
 router$c.put("/users/me", authenticate, updateAccount);
-router$c.get("/users/:id", getUserById);
+router$c.get("/users/:id", authenticate, getUserById);
 router$c.post("/register", register);
 router$c.post("/login", login);
 router$c.post("/google-login", googleLogin);
 router$c.post("/forgot-password", forgotPassword);
 router$c.post("/reset-password", resetPassword);
-router$c.post("/change-password", changePassword);
+router$c.post("/change-password", authenticate, changePassword);
 
 const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -5136,11 +5136,11 @@ const uploadImage = async (req, res) => {
 };
 
 const router$8 = express.Router();
-router$8.get("/images", getImages);
-router$8.get("/images/folders", getFolders);
-router$8.delete("/images/delete", deleteImage);
-router$8.get("/images/search", searchImage);
-router$8.post("/images/upload", uploadImageMulter.single("file"), uploadImage);
+router$8.get("/images", authenticate, getImages);
+router$8.get("/images/folders", authenticateAdmin, getFolders);
+router$8.delete("/images/delete", authenticate, deleteImage);
+router$8.get("/images/search", authenticate, searchImage);
+router$8.post("/images/upload", authenticate, uploadImageMulter.single("file"), uploadImage);
 
 const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -5336,30 +5336,6 @@ const usersRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   default: router$5
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const getAllPosts = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page, 10) || 1;
-    let limit = parseInt(req.query.limit, 10) || 10;
-    const query = {};
-    if (limit === -1) {
-      limit = await PostNewsModel.countDocuments(query);
-    }
-    const skip = (page - 1) * limit;
-    const [total, posts] = await Promise.all([
-      PostNewsModel.countDocuments(),
-      PostNewsModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit)
-    ]);
-    const totalPages = Math.ceil(total / limit);
-    return res.json({
-      code: 0,
-      data: toPostNewsListDTO(posts),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 const getPostsById = async (req, res) => {
   try {
     const post = await PostNewsModel.findById(req.params.id);
@@ -5383,60 +5359,11 @@ const getPostBySlug = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const createPosts = async (req, res) => {
-  try {
-    const newPost = new PostNewsModel(req.body);
-    await newPost.save();
-    return res.status(201).json({ code: 0, message: "T\u1EA1o th\xE0nh c\xF4ng", data: toPostNewsDTO(newPost) });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const updatePosts = async (req, res) => {
-  try {
-    const updated = await PostNewsModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updated) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng", data: toPostNewsDTO(updated) });
-  } catch (err) {
-    return res.status(400).json({ code: 1, message: err.message });
-  }
-};
-const deletePosts = async (req, res) => {
-  try {
-    const deleted = await PostNewsModel.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 const getPostsLatest = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit, 10) || 5;
     const posts = await PostNewsModel.find().sort({ createdAt: -1 }).limit(limit);
     return res.json({ code: 0, data: toPostNewsListDTO(posts) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const toggleActive = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const item = await PostNewsModel.findById(id);
-    if (!item) {
-      return res.status(404).json({ code: 1, message: "item kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    item.isActive = !item.isActive;
-    await item.save();
-    return res.json({
-      code: 0,
-      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
-      data: toPostNewsDTO(item)
-    });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -5533,17 +5460,12 @@ const getAllPostsPagination = async (req, res) => {
 
 const router$4 = Router();
 router$4.get("/category/:categoryId", getPostsByCategory);
-router$4.get("/", getAllPosts);
 router$4.get("/pagination", getAllPostsPagination);
 router$4.get("/slug/:slug", getPostBySlug);
 router$4.get("/related/:slug", getRelatedPostsBySlug);
 router$4.patch("/view/:slug", updateView);
 router$4.get("/latest", getPostsLatest);
 router$4.get("/:id", getPostsById);
-router$4.post("/", createPosts);
-router$4.put("/:id", updatePosts);
-router$4.delete("/:id", deletePosts);
-router$4.patch("/toggleActive/:id", toggleActive);
 
 const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -5884,11 +5806,11 @@ const getShippingFee = async (req, res) => {
 const router$3 = Router();
 router$3.get("/:id", getOrderById);
 router$3.post("/", createOrder);
-router$3.post("/check-point", checkPoint);
+router$3.post("/check-point", authenticate, checkPoint);
 router$3.post("/sepay-callback", sepayCallback);
 router$3.post("/shipping/fee", getShippingFee);
-router$3.get("/users/:userId/orders", getOrdersByUserId);
-router$3.get("/users/:userId/rewards", getRewardHistoryByUserId);
+router$3.get("/users/:userId/orders", authenticate, getOrdersByUserId);
+router$3.get("/users/:userId/rewards", authenticate, getRewardHistoryByUserId);
 
 const orderManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -6177,9 +6099,9 @@ router$2.get("/most-order", getMostOrderedProduct);
 router$2.get("/search", searchProducts);
 router$2.get("/related/:slug", getRelatedProducts);
 router$2.get("/:id", getProductById);
-router$2.get("/users/:userId/wishlist", getWishlistByUserId);
-router$2.post("/users/:userId/wishlist", addWishlistItem);
-router$2.delete("/users/:userId/wishlist/:productId", deleteWishlistItem);
+router$2.get("/users/:userId/wishlist", authenticate, getWishlistByUserId);
+router$2.post("/users/:userId/wishlist", authenticate, addWishlistItem);
+router$2.delete("/users/:userId/wishlist/:productId", authenticate, deleteWishlistItem);
 
 const productRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -6355,9 +6277,9 @@ const getReviewsByProduct = async (req, res) => {
 
 const router$1 = Router();
 router$1.get("/:id", getProductReviewById);
-router$1.get("/user/:userId/reviews", getReviewsByUser);
+router$1.get("/user/:userId/reviews", authenticate, getReviewsByUser);
 router$1.get("/product/:productId/reviews", getReviewsByProduct);
-router$1.put("/submit", submitProductReview);
+router$1.put("/submit", authenticate, submitProductReview);
 
 const productReviewRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

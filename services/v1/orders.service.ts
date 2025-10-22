@@ -71,7 +71,9 @@ export const ordersAPI = {
 
   getByUserId: async (userId: string): Promise<ApiResponse<OrderDTO[]>> => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_BY_USER(userId)}`)
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_BY_USER(userId)}`,{
+        credentials: 'include',
+      })
       const data = await response.json()
       return data
     } catch (err) {
@@ -96,7 +98,9 @@ export const ordersAPI = {
       })
 
       const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_REWARDS_BY_USER(userId)}?${params}`
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_REWARDS_BY_USER(userId)}?${params}`,{
+          credentials: 'include',
+        }
       )
 
       if (!response.ok) {
@@ -142,6 +146,7 @@ export const ordersAPI = {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: 'include',
           body: JSON.stringify({ userId, usedPoint, orderTotal }),
         }
       )

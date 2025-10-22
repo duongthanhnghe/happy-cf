@@ -137,7 +137,9 @@ export const productsAPI = {
   getWishlistByUserId: async (userId: string): Promise<ApiResponse<WishlistItem[]>> => {
     try {
       const res = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_USER_WISHLIST(userId)}`
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_USER_WISHLIST(userId)}`, {
+          credentials: 'include',
+        }
       )
       const data = await res.json()
       return data
@@ -210,6 +212,7 @@ export const productsAPI = {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ productId }),
         }
       )
@@ -229,7 +232,10 @@ export const productsAPI = {
     try {
       const res = await fetch(
         `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.DELETE_WISHLIST(userId, productId)}`,
-        { method: 'DELETE' }
+        {
+          method: 'DELETE',
+          credentials: 'include',
+        }
       )
       const data = await res.json()
       return data

@@ -12,6 +12,7 @@ import type { UserRegister, ResetPassword, MyJwtPayload } from '@/server/types/d
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { setCookie } from '@/utils/global'
+import { USER_ROLES } from "@/shared/constants/user-roles";
 
 export const useUserAuthStore = defineStore("UserAuth", () => {
 
@@ -84,10 +85,12 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         setCookie('token', data.data.token, 7)
         handleResetFormUserItem()
         const decoded = jwtDecode<MyJwtPayload>(data.data.token) 
-        storeAccount.handleGetDetailAccount(decoded.id)
-        setTimeout(function(){
-          router.push({ path: ROUTES.PUBLIC.HOME.path })
-        }, 500);
+        await storeAccount.handleGetDetailAccount(decoded.id)
+        setTimeout(() => {
+          if(data.data.user.role === USER_ROLES.ADMIN) router.push({ path: ROUTES.ADMIN.SETTINGS.path })
+          else router.push({ path: ROUTES.PUBLIC.HOME.path })
+        }, 500)
+
       } else {
         showWarning(data.message);
       }
@@ -194,9 +197,9 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
 
         const decoded = jwtDecode<MyJwtPayload>(data.data.token)
         await storeAccount.handleGetDetailAccount(decoded.id)
-      
         setTimeout(() => {
-          router.push({ path: ROUTES.PUBLIC.HOME.path })
+          if(data.data.user.role === USER_ROLES.ADMIN) router.push({ path: ROUTES.ADMIN.SETTINGS.path })
+          else router.push({ path: ROUTES.PUBLIC.HOME.path })
         }, 500)
 
       }

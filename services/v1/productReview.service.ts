@@ -115,6 +115,7 @@ export const productReviewAPI = {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.SUBMIT}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify(bodyData),
       });
 
@@ -142,7 +143,9 @@ export const productReviewAPI = {
   getReviewsByUser: async (userId: string, status: string, page: number = 1,
     limit: number = 10): Promise<ProductReviewPaginationDTO> => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.GET_BY_USER_PENDING(userId)}?status=${status}&page=${page}&limit=${limit}`);
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCT_REVIEWS.GET_BY_USER_PENDING(userId)}?status=${status}&page=${page}&limit=${limit}`,{
+        credentials: 'include',
+      });
       const data = await response.json();
       return data;
     } catch (err) {

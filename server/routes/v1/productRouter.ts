@@ -14,6 +14,7 @@ import {
   searchProducts,
   getRelatedProducts,
 } from '../../controllers/v1/productController'
+import { authenticate } from '../../middlewares/authenticate'
 
 const router = Router()
 
@@ -27,8 +28,8 @@ router.get('/:id',       getProductById)
 // router.put('/:id',       updateProduct)
 // router.delete('/:id',    deleteProduct)
 // router.patch('/toggleActive/:id', toggleActive)
-router.get('/users/:userId/wishlist', getWishlistByUserId)
-router.post('/users/:userId/wishlist', addWishlistItem)
-router.delete('/users/:userId/wishlist/:productId', deleteWishlistItem)
+router.get('/users/:userId/wishlist', authenticate, getWishlistByUserId)
+router.post('/users/:userId/wishlist', authenticate, addWishlistItem)
+router.delete('/users/:userId/wishlist/:productId', authenticate, deleteWishlistItem)
 
 export default router

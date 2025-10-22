@@ -13,6 +13,7 @@ import {
   sepayCallback,
   getShippingFee,
 } from '../../controllers/v1/orderController'
+import { authenticate } from '../../middlewares/authenticate'
 
 const router = Router()
 
@@ -21,12 +22,12 @@ const router = Router()
 // router.get('/payments',          getAllPayment)
 router.get('/:id',       getOrderById)
 router.post('/',         createOrder)
-router.post("/check-point", checkPoint);
+router.post("/check-point", authenticate, checkPoint);
 router.post("/sepay-callback", sepayCallback);
 router.post("/shipping/fee", getShippingFee);
 // router.delete('/:id',    deleteOrder)
-router.get('/users/:userId/orders', getOrdersByUserId)
-router.get('/users/:userId/rewards', getRewardHistoryByUserId)
+router.get('/users/:userId/orders', authenticate, getOrdersByUserId)
+router.get('/users/:userId/rewards', authenticate, getRewardHistoryByUserId)
 // router.put('/status',               updateOrderStatus)
 
 

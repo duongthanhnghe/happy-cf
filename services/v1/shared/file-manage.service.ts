@@ -9,7 +9,9 @@ export const fileManageAPI = {
         url += `&next_cursor=${next_cursor}`
       }
 
-      const response = await fetch(url)
+      const response = await fetch(url,{
+        credentials: 'include',
+      })
       const data = await response.json()
       return data
     } catch (err) {
@@ -19,7 +21,9 @@ export const fileManageAPI = {
 
   getFolders: async () => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.GET_FOLDERS()}`)
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.GET_FOLDERS()}`,{
+        credentials: 'include',
+      })
       const data = await response.json()
       return data
     } catch (err) {
@@ -31,7 +35,8 @@ export const fileManageAPI = {
     try {
       const encodedId = encodeURIComponent(publicId)
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.DELETE_IMAGE(encodedId)}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include',
       })
       const data = await response.json()
       return data
@@ -47,7 +52,9 @@ export const fileManageAPI = {
       if (folder) params.append('folder', folder)
 
       const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.SEARCH_IMAGE()}?${params.toString()}`
+        `${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.SEARCH_IMAGE()}?${params.toString()}`,{
+          credentials: 'include',
+        }
       )
 
       if (!response.ok) {
@@ -70,6 +77,7 @@ export const fileManageAPI = {
 
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD}`, {
         method: 'POST',
+        credentials: 'include',
         body: formData
       })
 
@@ -90,6 +98,7 @@ export const fileManageAPI = {
 
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD}`, {
         method: 'POST',
+        credentials: 'include',
         body: formData
       })
 

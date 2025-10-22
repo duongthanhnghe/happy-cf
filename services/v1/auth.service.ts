@@ -122,6 +122,7 @@ export const authAPI = {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.CHANGE_PASSWORD}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ userId, oldPassword, newPassword })
       })
 
@@ -134,7 +135,9 @@ export const authAPI = {
   },
   getDetailAccount: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.GET_BY_ID(id)}`)
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.GET_BY_ID(id)}`,{
+        credentials: 'include',
+      })
       if (!response.ok) {
         throw new Error(`Failed to fetch user with ID ${id}`)
       }
@@ -150,7 +153,7 @@ export const authAPI = {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        // Authorization: `Bearer ${token}`
       },
       credentials: 'include',
       body: JSON.stringify(payload)

@@ -6,7 +6,9 @@ export const addressesAPI = {
   getAll: async (userId: string) => {
     try {
       const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.LIST}/${userId}`
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.LIST}/${userId}`, {
+          credentials: 'include',
+        }
       )
       const data = await response.json()
       return data
@@ -26,6 +28,7 @@ export const addressesAPI = {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -43,7 +46,9 @@ export const addressesAPI = {
   },
   getDetail: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID(id)}`)
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID(id)}`,{
+        credentials: 'include',
+      })
       if (!response.ok) {
         throw new Error(`Failed to fetch category with ID ${id}`)
       }
@@ -59,6 +64,7 @@ export const addressesAPI = {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.UPDATE(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -77,6 +83,7 @@ export const addressesAPI = {
     try {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.DELETE(id)}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -95,6 +102,7 @@ export const addressesAPI = {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.SET_DEFAULT(id)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -112,7 +120,9 @@ export const addressesAPI = {
   },
   getDefaultAddressByUserId: async (userId: string) => {
     try {
-      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID_DEFAULT(userId)}`)
+      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID_DEFAULT(userId)}`,{
+        credentials: 'include',
+      })
 
       if (!res.ok) {
         throw new Error('Không thể lấy địa chỉ mặc định')
