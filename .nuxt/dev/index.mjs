@@ -1147,15 +1147,15 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"38890-u8h58SShFCa7Tvc3HbgOSlCYNJc\"",
-    "mtime": "2025-10-22T03:45:17.801Z",
+    "etag": "\"38890-asqURFhGADlQ6sluEc6xyhGPLVE\"",
+    "mtime": "2025-10-22T03:45:19.269Z",
     "size": 231568,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
     "etag": "\"d6d6b-EBFM59JJ2ukqrgjI1jfoU9JQP+E\"",
-    "mtime": "2025-10-22T03:45:17.803Z",
+    "mtime": "2025-10-22T03:45:19.270Z",
     "size": 879979,
     "path": "index.mjs.map"
   }
@@ -4705,7 +4705,7 @@ const changePassword = async (req, res) => {
 
 const router$c = express.Router();
 router$c.put("/users/me", authenticate, updateAccount);
-router$c.get("/users/:id", authenticate, getUserById);
+router$c.get("/users/:id", getUserById);
 router$c.post("/register", register);
 router$c.post("/login", login);
 router$c.post("/google-login", googleLogin);

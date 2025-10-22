@@ -136,6 +136,7 @@ export const authAPI = {
   getDetailAccount: async (id: string) => {
     try {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.GET_BY_ID(id)}`,{
+        method: 'GET',
         credentials: 'include',
       })
       if (!response.ok) {

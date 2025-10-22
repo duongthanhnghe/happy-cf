@@ -22,7 +22,7 @@ const router = express.Router();
 // User routes
 // router.get('/users', getAllUsers)
 router.put('/users/me', authenticate, updateAccount);
-router.get('/users/:id', authenticate, getUserById);
+router.get('/users/:id', getUserById);
 // router.patch('/users/toggleActive/:id', toggleActive)
 router.post('/register', register);
 router.post('/login', login);

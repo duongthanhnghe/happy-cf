@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, watchEffect, onMounted } from "vue";
 import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
 import { authAPI } from "@/services/v1/auth.service";
@@ -9,7 +9,8 @@ import { ROUTES } from '@/shared/constants/routes';
 export const useAccountStore = defineStore("Account", () => {
 
   const router = useRouter()
-  const token = useCookie<string | null>("token", { sameSite: "lax" });
+  // const token = useCookie<string | null>("token", { sameSite: "lax" });
+  const token = useCookie<string | null>("token");
   const isTogglePopupBarcode = ref<boolean>(false);
   const isTogglePopupMembershipInformation = ref<boolean>(false);
   const informationMembershipLevel = ref<InformationMembershipLevels|null>(null);
@@ -111,6 +112,29 @@ export const useAccountStore = defineStore("Account", () => {
       watch: [token],
     }
   )
+
+  // onMounted(() => {
+  //   watchEffect(async () => {
+  //     if (!token.value) return;
+
+  //     try {
+  //       const decoded = jwtDecode<MyJwtPayload>(token.value);
+  //       if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+  //         handleLogout();
+  //         return;
+  //       }
+
+  //       userId.value = decoded.id;
+  //       const data = await authAPI.getDetailAccount(userId.value);
+  //       detailData.value = data.data;
+  //     } catch (err) {
+  //       console.error("Token decode error:", err);
+  //     } finally {
+  //       loading.value = false;
+  //     }
+  //   });
+  // });
+
 
   //getters
   const getDetailValue = computed(() => detailData.value)
