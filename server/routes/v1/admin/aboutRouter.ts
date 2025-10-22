@@ -8,15 +8,16 @@ import {
   updateOrder,
   toggleActive,
 } from '../../../controllers/v1/admin/aboutController'
+import { authenticateAdmin } from '../../../middlewares/authenticateAdmin'
 
 const router = Router()
 
-router.get('/',          getAllAbout)
+router.get('/',          authenticateAdmin, getAllAbout)
 router.get('/:id',       getAboutById)
-router.post('/',         createAbout)
-router.put('/:id',       updateAbout)
-router.delete('/:id',    deleteAbout)
-router.patch('/updateOrder/:id', updateOrder)
-router.patch('/toggleActive/:id', toggleActive)
+router.post('/',         authenticateAdmin, createAbout)
+router.put('/:id',       authenticateAdmin, updateAbout)
+router.delete('/:id',    authenticateAdmin, deleteAbout)
+router.patch('/updateOrder/:id', authenticateAdmin, updateOrder)
+router.patch('/toggleActive/:id', authenticateAdmin, toggleActive)
 
 export default router

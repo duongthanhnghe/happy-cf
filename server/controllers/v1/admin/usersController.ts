@@ -591,7 +591,6 @@ export const getRewardHistory = async (req: Request, res: Response) => {
     const numPage = Number(page);
     const numLimit = Number(limit);
 
-    // Điều kiện lọc
     const query: any = {
       $or: [
         { "reward.points": { $gt: 0 } },
@@ -604,7 +603,6 @@ export const getRewardHistory = async (req: Request, res: Response) => {
       query.userId = userId;
     }
 
-    // Truy vấn có phân trang
     const result = await OrderEntity.paginate(query, {
       page: numPage,
       limit: numLimit,

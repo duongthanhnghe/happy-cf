@@ -12,19 +12,20 @@ import {
   getAllCategoriesTree,
   // getChildrenCategories,
 } from '../../../controllers/v1/admin/categoriesProductController'
+import { authenticateAdmin } from '../../../middlewares/authenticateAdmin'
 
 const router = Router()
 
-router.get('/tree',          getAllCategoriesTree)
-router.get('/',          getAllCategories)
+router.get('/tree',         authenticateAdmin, getAllCategoriesTree)
+router.get('/',         authenticateAdmin, getAllCategories)
 // router.get('/slug/:slug',    getCategoriesBySlug)
 router.get('/:id',       getCategoriesById)
 // router.get("/:id/children", getChildrenCategories);
-router.post('/',         createCategories)
-router.put('/:id',       updateCategories)
-router.delete('/:id',    deleteCategories)
+router.post('/',        authenticateAdmin, createCategories)
+router.put('/:id',      authenticateAdmin, updateCategories)
+router.delete('/:id',   authenticateAdmin, deleteCategories)
 // router.get('/:id/products', getProductsByCategory)
-router.patch('/toggleActive/:id', toggleActive)
-router.patch('/updateOrder/:id',  updateOrder)
+router.patch('/toggleActive/:id',authenticateAdmin, toggleActive)
+router.patch('/updateOrder/:id',  authenticateAdmin, updateOrder)
 
 export default router

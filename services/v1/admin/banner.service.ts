@@ -6,7 +6,9 @@ import type { ApiResponse } from '@server/types/common/api-response'
 export const bannersAPI = {
   getAll: async (): Promise<ApiResponse<BannerDTO[]>> => {
   try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.LIST}`)
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.LIST}`,{
+        credentials: 'include',
+      })
       const data = await response.json()
       return data;
     } catch (err) {
@@ -33,6 +35,7 @@ export const bannersAPI = {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -74,6 +77,7 @@ export const bannersAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.UPDATE(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
     
@@ -101,6 +105,7 @@ export const bannersAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.DELETE(id)}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -119,6 +124,7 @@ export const bannersAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.UPDATE_ORDER(id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ order: newOrder })
       })
 
@@ -146,6 +152,7 @@ export const bannersAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
+        credentials: 'include',
       })
 
       if (!response.ok) {

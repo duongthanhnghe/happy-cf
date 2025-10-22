@@ -21,7 +21,9 @@ export const usersAPI = {
   getAllUsers: async (page: number = 1, limit: number = 10, role: number = 1) => {
     try {
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST}?page=${page}&limit=${limit}&role=${role}`
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST}?page=${page}&limit=${limit}&role=${role}`, {
+          credentials: 'include',
+        }
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -47,6 +49,7 @@ export const usersAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.DELETE(id)}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -84,13 +87,12 @@ export const usersAPI = {
   },
   updateMembershipLevel: async (id: string, payload: any) => {
     try {
-      const token = localStorage.getItem('token')
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_LEVEL(id)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify(payload),
       })
 
@@ -134,6 +136,7 @@ export const usersAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -164,6 +167,7 @@ export const usersAPI = {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
+        credentials: 'include',
       })
       if (!res.ok) {
         const errData = await res.json()
@@ -195,7 +199,7 @@ export const usersAPI = {
       throw err
     }
   },
-  updateMembershipBenefit: async (id: string, payload: { name?: string; description?: string; icon?: string }): Promise<ApiResponse<MembershipBenefitDTO>> => {
+  updateMembershipBenefit: async (id: string, payload: UpdateMembershipBenefit ): Promise<ApiResponse<UpdateMembershipBenefit>> => {
     try {
       const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_BENEFIT(id)}`, {
         method: 'PUT',
@@ -219,7 +223,10 @@ export const usersAPI = {
     try {
       const res = await fetch(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.DELETE_MEMBERSHIP_BENEFIT(id)}`,
-        { method: 'DELETE' }
+        {
+          method: 'DELETE',
+          credentials: 'include',
+         }
       )
 
       const data = await res.json()
@@ -260,7 +267,9 @@ export const usersAPI = {
       if (userId) params.append('userId', userId)
 
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params}`
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params}`, {
+          credentials: 'include',
+        }
       )
 
       if (!response.ok) {

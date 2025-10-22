@@ -10,10 +10,11 @@ import type {
 import type { ApiResponse } from '@/server/types/common/api-response'
 
 export const productsAPI = {
-  // Lấy toàn bộ sản phẩm
   getAll: async (page: number, limit: number): Promise<ProductPaginationDTO> => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.LIST_ALL}?page=${page}&limit=${limit}`)
+      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.LIST_ALL}?page=${page}&limit=${limit}`, {
+        credentials: 'include',
+      })
       const data = await res.json()
       return data
     } catch (err: any) {
@@ -32,7 +33,6 @@ export const productsAPI = {
     }
   },
 
-  // Tạo mới sản phẩm
   create: async (bodyData: CreateProductDTO): Promise<ApiResponse<ProductDTO>> => {
     try {
       if (!bodyData.productName || !bodyData.image || !bodyData.categoryId || !bodyData.price || !bodyData.priceDiscounts) {
@@ -46,6 +46,7 @@ export const productsAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.CREATE}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -61,7 +62,6 @@ export const productsAPI = {
     }
   },
 
-  // Chi tiết sản phẩm
   getDetail: async (id: string): Promise<ApiResponse<ProductDTO>> => {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.GET_BY_ID(id)}`)
@@ -77,12 +77,12 @@ export const productsAPI = {
     }
   },
 
-  // Cập nhật sản phẩm
   update: async (id: string, bodyData: UpdateProductDTO): Promise<ApiResponse<ProductDTO>> => {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.UPDATE(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -98,11 +98,11 @@ export const productsAPI = {
     }
   },
 
-  // Xóa sản phẩm
   delete: async (id: string): Promise<ApiResponse<null>> => {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.DELETE(id)}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       const data = await response.json()
@@ -250,6 +250,7 @@ export const productsAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
+        credentials: 'include',
       })
 
       if (!response.ok) {

@@ -10,7 +10,9 @@ export const productReviewAPI = {
   ): Promise<ProductReviewPaginationDTO> => {
     try {
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.LIST}?page=${page}&limit=${limit}`
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.LIST}?page=${page}&limit=${limit}`, {
+          credentials: 'include',
+        }
       );
       const data = await response.json();
       return data;
@@ -64,6 +66,7 @@ export const productReviewAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.UPDATE_STATUS}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({id,status}),
       });
 
@@ -88,13 +91,11 @@ export const productReviewAPI = {
     }
   },
 
-  /**
-   * Xóa một đánh giá sản phẩm theo ID
-   */
   delete: async (id: string): Promise<ApiResponse<null>> => {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.DELETE(id)}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
 
       if (!response.ok) {

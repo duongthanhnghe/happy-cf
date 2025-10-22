@@ -23,7 +23,9 @@ export const ordersAPI = {
       if (search) params.append("search", search)
 
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST}?${params}`
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST}?${params}`, {
+          credentials: 'include',
+        }
       )
       const data = await response.json()
       return data
@@ -103,6 +105,7 @@ export const ordersAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.DELETE(id)}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -166,6 +169,7 @@ export const ordersAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.UPDATE_STATUS}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ orderId, statusId }),
       })
 

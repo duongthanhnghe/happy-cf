@@ -7,6 +7,7 @@ export const settingAPI = {
       const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.SETTINGS.UPDATE}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify(newData),
       });
 

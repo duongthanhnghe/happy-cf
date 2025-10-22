@@ -7,7 +7,9 @@ import type { ApiResponse } from '@server/types/common/api-response'
 export const categoriesAPI = {
   getAll: async () => {
   try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.LIST}`)
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.LIST}`, {
+        credentials: 'include',
+      })
       const data = await response.json()
       return data;
     } catch (err) {
@@ -16,7 +18,9 @@ export const categoriesAPI = {
   },
   getAllTree: async () => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.LIST_TREE}`);
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.LIST_TREE}`, {
+        credentials: 'include',
+      });
       const data = await response.json();
       return data;
     } catch (err) {
@@ -46,6 +50,7 @@ export const categoriesAPI = {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -98,6 +103,7 @@ export const categoriesAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.UPDATE(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload)
       })
 
@@ -116,6 +122,7 @@ export const categoriesAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.DELETE(id)}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -166,6 +173,7 @@ export const categoriesAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.UPDATE_ORDER(id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ order: newOrder })
       })
 
@@ -193,6 +201,7 @@ export const categoriesAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
+        credentials: 'include',
       })
 
       if (!response.ok) {

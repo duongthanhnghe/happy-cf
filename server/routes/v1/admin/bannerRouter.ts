@@ -8,15 +8,16 @@ import {
   updateOrder,
   toggleActive,
 } from '../../../controllers/v1/admin/bannerController'
+import { authenticateAdmin } from '../../../middlewares/authenticateAdmin'
 
 const router = Router()
 
-router.get('/',          getAllBanners)
+router.get('/',          authenticateAdmin, getAllBanners)
 router.get('/:id',       getBannerById)
-router.post('/',         createBanner)
-router.put('/:id',       updateBanner)
-router.delete('/:id',    deleteBanner)
-router.patch('/updateOrder/:id', updateOrder)
-router.patch('/toggleActive/:id', toggleActive)
+router.post('/',         authenticateAdmin, createBanner)
+router.put('/:id',       authenticateAdmin, updateBanner)
+router.delete('/:id',    authenticateAdmin, deleteBanner)
+router.patch('/updateOrder/:id', authenticateAdmin, updateOrder)
+router.patch('/toggleActive/:id', authenticateAdmin, toggleActive)
 
 export default router

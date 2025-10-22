@@ -4,13 +4,14 @@ import { getAllProductReviews, getProductReviewById, updateProductReviewStatus, 
 // getReviewsByUser,
 // getReviewsByProduct,
  } from '../../../controllers/v1/admin/productReviewController.js';
+import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
-router.get("/", getAllProductReviews);
+router.get("/", authenticateAdmin, getAllProductReviews);
 router.get("/:id", getProductReviewById);
 // router.get("/user/:userId/reviews", getReviewsByUser); 
 // router.get("/product/:productId/reviews", getReviewsByProduct); 
-router.put("/status", updateProductReviewStatus);
+router.put("/status", authenticateAdmin, updateProductReviewStatus);
 // router.put("/submit", submitProductReview); 
-router.delete("/:id", deleteProductReview);
+router.delete("/:id", authenticateAdmin, deleteProductReview);
 export default router;
 //# sourceMappingURL=productReviewRouter.js.map

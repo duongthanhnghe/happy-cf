@@ -9,8 +9,9 @@ updateOrderStatus,
 // sepayCallback,
 // getShippingFee,
  } from '../../../controllers/v1/admin/orderController.js';
+import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
-router.get('/', getAllOrder);
+router.get('/', authenticateAdmin, getAllOrder);
 router.get('/status', getAllStatus);
 router.get('/payments', getAllPayment);
 router.get('/:id', getOrderById);
@@ -18,9 +19,9 @@ router.get('/:id', getOrderById);
 // router.post("/check-point", checkPoint);
 // router.post("/sepay-callback", sepayCallback);
 // router.post("/shipping/fee", getShippingFee);
-router.delete('/:id', deleteOrder);
+router.delete('/:id', authenticateAdmin, deleteOrder);
 // router.get('/users/:userId/orders', getOrdersByUserId)
 // router.get('/users/:userId/rewards', getRewardHistoryByUserId)
-router.put('/status', updateOrderStatus);
+router.put('/status', authenticateAdmin, updateOrderStatus);
 export default router;
 //# sourceMappingURL=orderManageRouter.js.map

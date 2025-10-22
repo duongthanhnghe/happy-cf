@@ -7,12 +7,12 @@ import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/ttcenter/happy-cf/node_modules/@vue/shared/dist/shared.cjs.js';
 import express, { Router } from 'file:///Users/ttcenter/happy-cf/node_modules/express/index.js';
 import fs, { promises } from 'node:fs';
+import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
 import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
 import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
 import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
 import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
 import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
-import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
 import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
 import nodemailer from 'file:///Users/ttcenter/happy-cf/node_modules/nodemailer/lib/nodemailer.js';
 import { OAuth2Client } from 'file:///Users/ttcenter/happy-cf/node_modules/google-auth-library/build/src/index.js';
@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"38bd9-VnYrYyGun9tGUulSejHru2BFS+c\"",
-    "mtime": "2025-10-21T06:31:50.069Z",
-    "size": 232409,
+    "etag": "\"39190-iH3hEeU0mnyLlJd4tOSs/le2sx8\"",
+    "mtime": "2025-10-22T02:58:11.122Z",
+    "size": 233872,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"d795e-rvcJaCXWNDRzDGxj1u4iuomMYHM\"",
-    "mtime": "2025-10-21T06:31:50.080Z",
-    "size": 883038,
+    "etag": "\"d9248-qG1qXpVAS58Sr3DqE2vEd7Moxk4\"",
+    "mtime": "2025-10-22T02:58:11.122Z",
+    "size": 889416,
     "path": "index.mjs.map"
   }
 };
@@ -2258,14 +2258,30 @@ const toggleActive$7 = async (req, res) => {
   }
 };
 
+const authenticateAdmin = (req, res, next) => {
+  var _a;
+  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  if (!token) return res.status(401).json({ code: 1, message: "Thi\u1EBFu token" });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
+    if (decoded.role !== 2) {
+      return res.status(403).json({ code: 1, message: "B\u1EA1n kh\xF4ng c\xF3 quy\u1EC1n truy c\u1EADp (Admin only)" });
+    }
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(401).json({ code: 1, message: "Token kh\xF4ng h\u1EE3p l\u1EC7 ho\u1EB7c \u0111\xE3 h\u1EBFt h\u1EA1n" });
+  }
+};
+
 const router$o = Router();
-router$o.get("/", getAllAbout);
+router$o.get("/", authenticateAdmin, getAllAbout);
 router$o.get("/:id", getAboutById);
-router$o.post("/", createAbout);
-router$o.put("/:id", updateAbout);
-router$o.delete("/:id", deleteAbout);
-router$o.patch("/updateOrder/:id", updateOrder$3);
-router$o.patch("/toggleActive/:id", toggleActive$7);
+router$o.post("/", authenticateAdmin, createAbout);
+router$o.put("/:id", authenticateAdmin, updateAbout);
+router$o.delete("/:id", authenticateAdmin, deleteAbout);
+router$o.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
+router$o.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -2403,13 +2419,13 @@ const toggleActive$6 = async (req, res) => {
 };
 
 const router$n = Router();
-router$n.get("/", getAllBanners$1);
+router$n.get("/", authenticateAdmin, getAllBanners$1);
 router$n.get("/:id", getBannerById);
-router$n.post("/", createBanner);
-router$n.put("/:id", updateBanner);
-router$n.delete("/:id", deleteBanner);
-router$n.patch("/updateOrder/:id", updateOrder$2);
-router$n.patch("/toggleActive/:id", toggleActive$6);
+router$n.post("/", authenticateAdmin, createBanner);
+router$n.put("/:id", authenticateAdmin, updateBanner);
+router$n.delete("/:id", authenticateAdmin, deleteBanner);
+router$n.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
+router$n.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
 
 const bannerRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -2674,13 +2690,13 @@ const toggleActive$5 = async (req, res) => {
 };
 
 const router$m = Router();
-router$m.get("/", getAllCategories$3);
+router$m.get("/", authenticateAdmin, getAllCategories$3);
 router$m.get("/:id", getCategoriesById$3);
-router$m.post("/", createCategories$1);
-router$m.put("/:id", updateCategories$1);
-router$m.delete("/:id", deleteCategories$1);
-router$m.patch("/toggleActive/:id", toggleActive$5);
-router$m.patch("/updateOrder/:id", updateOrder$1);
+router$m.post("/", authenticateAdmin, createCategories$1);
+router$m.put("/:id", authenticateAdmin, updateCategories$1);
+router$m.delete("/:id", authenticateAdmin, deleteCategories$1);
+router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
+router$m.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
 
 const categoriesNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -3035,14 +3051,14 @@ const toggleActive$4 = async (req, res) => {
 };
 
 const router$l = Router();
-router$l.get("/tree", getAllCategoriesTree$1);
-router$l.get("/", getAllCategories$2);
+router$l.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
+router$l.get("/", authenticateAdmin, getAllCategories$2);
 router$l.get("/:id", getCategoriesById$2);
-router$l.post("/", createCategories);
-router$l.put("/:id", updateCategories);
-router$l.delete("/:id", deleteCategories);
-router$l.patch("/toggleActive/:id", toggleActive$4);
-router$l.patch("/updateOrder/:id", updateOrder);
+router$l.post("/", authenticateAdmin, createCategories);
+router$l.put("/:id", authenticateAdmin, updateCategories);
+router$l.delete("/:id", authenticateAdmin, deleteCategories);
+router$l.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
+router$l.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
 
 const categoriesProductRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -3062,7 +3078,7 @@ const updateSettings = async (req, res) => {
 };
 
 const router$k = Router();
-router$k.put("/update", updateSettings);
+router$k.put("/update", authenticateAdmin, updateSettings);
 
 const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -3706,19 +3722,19 @@ const getRewardHistory = async (req, res) => {
 };
 
 const router$j = express.Router();
-router$j.get("/reward-history", getRewardHistory);
+router$j.get("/reward-history", authenticateAdmin, getRewardHistory);
 router$j.get("/membership-level", getAllMembershipLevel);
 router$j.get("/membership-level/:id", getMembershipLevelById);
-router$j.put("/membership-level/:id", updateMembershipLevel);
+router$j.put("/membership-level/:id", authenticateAdmin, updateMembershipLevel);
 router$j.get("/membership-benefit", getAllMembershipBenefits);
 router$j.get("/membership-benefit/:id", getMembershipBenefitById);
-router$j.post("/membership-benefit", createMembershipBenefit);
-router$j.put("/membership-benefit/:id", updateMembershipBenefit);
-router$j.delete("/membership-benefit/:id", deleteMembershipBenefit);
-router$j.get("/", getAllUsers);
+router$j.post("/membership-benefit", authenticateAdmin, createMembershipBenefit);
+router$j.put("/membership-benefit/:id", authenticateAdmin, updateMembershipBenefit);
+router$j.delete("/membership-benefit/:id", authenticateAdmin, deleteMembershipBenefit);
+router$j.get("/", authenticateAdmin, getAllUsers);
 router$j.get("/:id", getUserById$1);
-router$j.patch("/toggleActive/:id", toggleActive$3);
-router$j.delete("/:id", deleteUsers);
+router$j.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
+router$j.delete("/:id", authenticateAdmin, deleteUsers);
 
 const usersRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -3811,12 +3827,12 @@ const toggleActive$2 = async (req, res) => {
 };
 
 const router$i = Router();
-router$i.get("/", getAllPosts$1);
+router$i.get("/", authenticateAdmin, getAllPosts$1);
 router$i.get("/:id", getPostsById$1);
-router$i.post("/", createPosts$1);
-router$i.put("/:id", updatePosts$1);
-router$i.delete("/:id", deletePosts$1);
-router$i.patch("/toggleActive/:id", toggleActive$2);
+router$i.post("/", authenticateAdmin, createPosts$1);
+router$i.put("/:id", authenticateAdmin, updatePosts$1);
+router$i.delete("/:id", authenticateAdmin, deletePosts$1);
+router$i.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
 
 const postsNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -4030,12 +4046,12 @@ const setPointAndUpgrade = async (userId, point) => {
 };
 
 const router$h = Router();
-router$h.get("/", getAllOrder);
+router$h.get("/", authenticateAdmin, getAllOrder);
 router$h.get("/status", getAllStatus);
 router$h.get("/payments", getAllPayment);
 router$h.get("/:id", getOrderById$1);
-router$h.delete("/:id", deleteOrder);
-router$h.put("/status", updateOrderStatus);
+router$h.delete("/:id", authenticateAdmin, deleteOrder);
+router$h.put("/status", authenticateAdmin, updateOrderStatus);
 
 const orderManageRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -4158,12 +4174,12 @@ const toggleActive$1 = async (req, res) => {
 };
 
 const router$g = Router();
-router$g.get("/", getAllProduct);
-router$g.post("/", createProduct);
+router$g.get("/", authenticateAdmin, getAllProduct);
+router$g.post("/", authenticateAdmin, createProduct);
 router$g.get("/:id", getProductById$1);
-router$g.put("/:id", updateProduct);
-router$g.delete("/:id", deleteProduct);
-router$g.patch("/toggleActive/:id", toggleActive$1);
+router$g.put("/:id", authenticateAdmin, updateProduct);
+router$g.delete("/:id", authenticateAdmin, deleteProduct);
+router$g.patch("/toggleActive/:id", authenticateAdmin, toggleActive$1);
 
 const productRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -4392,10 +4408,10 @@ const deleteProductReview = async (req, res) => {
 };
 
 const router$e = Router();
-router$e.get("/", getAllProductReviews);
+router$e.get("/", authenticateAdmin, getAllProductReviews);
 router$e.get("/:id", getProductReviewById$1);
-router$e.put("/status", updateProductReviewStatus);
-router$e.delete("/:id", deleteProductReview);
+router$e.put("/status", authenticateAdmin, updateProductReviewStatus);
+router$e.delete("/:id", authenticateAdmin, deleteProductReview);
 
 const productReviewRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

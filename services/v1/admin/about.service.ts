@@ -6,7 +6,9 @@ import type { ApiResponse } from '@server/types/common/api-response'
 export const aboutAPI = {
   getAll: async (): Promise<ApiResponse<AboutDTO[]>> => {
   try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.LIST}`)
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.LIST}`,{
+        credentials: 'include',
+      })
       const data = await response.json()
       return data;
     } catch (err) {
@@ -33,6 +35,7 @@ export const aboutAPI = {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -74,6 +77,7 @@ export const aboutAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.UPDATE(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
     
@@ -101,6 +105,7 @@ export const aboutAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.DELETE(id)}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -119,6 +124,7 @@ export const aboutAPI = {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.UPDATE_ORDER(id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ order: newOrder })
       })
 
@@ -146,6 +152,7 @@ export const aboutAPI = {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
+        credentials: 'include',
       })
 
       if (!response.ok) {
