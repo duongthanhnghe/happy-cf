@@ -105,4 +105,13 @@ export const API_ENDPOINTS_ADMIN = {
     DELETE: (id) => `/product-reviews/${id}`,
     UPDATE_STATUS: '/product-reviews/status',
   },
+  VOUCHERS: {
+    LIST: "/voucher",
+    GET_BY_ID: (id) => `/voucher/${id}`,
+    CREATE: "/voucher",
+    UPDATE: (id) => `/voucher/${id}`,
+    DELETE: (id) => `/voucher/${id}`,
+    TOGGLE_ACTIVE: (id) => `/voucher/${id}/toggle-active`,
+    APPLY: "/voucher/apply",
+  },
 }

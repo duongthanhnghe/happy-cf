@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"38890-asqURFhGADlQ6sluEc6xyhGPLVE\"",
-    "mtime": "2025-10-22T03:45:19.269Z",
-    "size": 231568,
+    "etag": "\"3bc23-z/jPmePS+a6hOLgqeRNS6f4oIsA\"",
+    "mtime": "2025-10-23T17:38:35.226Z",
+    "size": 244771,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"d6d6b-EBFM59JJ2ukqrgjI1jfoU9JQP+E\"",
-    "mtime": "2025-10-22T03:45:19.270Z",
-    "size": 879979,
+    "etag": "\"e425a-Z3biErqboPeFSnWs1sPREUSmcWM\"",
+    "mtime": "2025-10-23T17:38:35.227Z",
+    "size": 934490,
     "path": "index.mjs.map"
   }
 };
@@ -1579,6 +1579,7 @@ const _lazy_H3u2OJ = () => Promise.resolve().then(function () { return productRe
 const _lazy_AInuxj = () => Promise.resolve().then(function () { return productRouter$1; });
 const _lazy_NI8dax = () => Promise.resolve().then(function () { return settingRouter; });
 const _lazy_iadr18 = () => Promise.resolve().then(function () { return usersRouter$1; });
+const _lazy_5UO9M7 = () => Promise.resolve().then(function () { return voucherRouter; });
 const _lazy_6thR5q = () => Promise.resolve().then(function () { return authRouter; });
 const _lazy_5GTSlq = () => Promise.resolve().then(function () { return bannerRouter; });
 const _lazy_ndfMJ7 = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
@@ -1609,6 +1610,7 @@ const handlers = [
   { route: '/v1/admin/productRouter', handler: _lazy_AInuxj, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/settingRouter', handler: _lazy_NI8dax, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/usersRouter', handler: _lazy_iadr18, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/voucherRouter', handler: _lazy_5UO9M7, lazy: true, middleware: false, method: undefined },
   { route: '/v1/authRouter', handler: _lazy_6thR5q, lazy: true, middleware: false, method: undefined },
   { route: '/v1/bannerRouter', handler: _lazy_5GTSlq, lazy: true, middleware: false, method: undefined },
   { route: '/v1/categoriesNewsRouter', handler: _lazy_ndfMJ7, lazy: true, middleware: false, method: undefined },
@@ -2118,18 +2120,18 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$p = Router();
-router$p.get("/default/:userId", authenticate, getDefaultAddressByUserId);
-router$p.get("/user/:userId", authenticate, getAllAddress);
-router$p.get("/:id", authenticate, getAddressById);
-router$p.post("/", authenticate, createAddress);
-router$p.put("/:id", authenticate, updateAddress);
-router$p.delete("/:id", authenticate, deleteAddress);
-router$p.post("/:id/set-default", authenticate, setAddressDefault);
+const router$q = Router();
+router$q.get("/default/:userId", authenticate, getDefaultAddressByUserId);
+router$q.get("/user/:userId", authenticate, getAllAddress);
+router$q.get("/:id", authenticate, getAddressById);
+router$q.post("/", authenticate, createAddress);
+router$q.put("/:id", authenticate, updateAddress);
+router$q.delete("/:id", authenticate, deleteAddress);
+router$q.post("/:id/set-default", authenticate, setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$p
+  default: router$q
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ListImageSchema$1 = new Schema(
@@ -2289,18 +2291,18 @@ const authenticateAdmin = (req, res, next) => {
   }
 };
 
-const router$o = Router();
-router$o.get("/", authenticateAdmin, getAllAbout);
-router$o.get("/:id", getAboutById);
-router$o.post("/", authenticateAdmin, createAbout);
-router$o.put("/:id", authenticateAdmin, updateAbout);
-router$o.delete("/:id", authenticateAdmin, deleteAbout);
-router$o.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
-router$o.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
+const router$p = Router();
+router$p.get("/", authenticateAdmin, getAllAbout);
+router$p.get("/:id", getAboutById);
+router$p.post("/", authenticateAdmin, createAbout);
+router$p.put("/:id", authenticateAdmin, updateAbout);
+router$p.delete("/:id", authenticateAdmin, deleteAbout);
+router$p.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
+router$p.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$o
+  default: router$p
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const BannerSchema = new Schema(
@@ -2433,18 +2435,18 @@ const toggleActive$5 = async (req, res) => {
   }
 };
 
-const router$n = Router();
-router$n.get("/", authenticateAdmin, getAllBanners$1);
-router$n.get("/:id", getBannerById);
-router$n.post("/", authenticateAdmin, createBanner);
-router$n.put("/:id", authenticateAdmin, updateBanner);
-router$n.delete("/:id", authenticateAdmin, deleteBanner);
-router$n.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
-router$n.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
+const router$o = Router();
+router$o.get("/", authenticateAdmin, getAllBanners$1);
+router$o.get("/:id", getBannerById);
+router$o.post("/", authenticateAdmin, createBanner);
+router$o.put("/:id", authenticateAdmin, updateBanner);
+router$o.delete("/:id", authenticateAdmin, deleteBanner);
+router$o.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
+router$o.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
 
 const bannerRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$n
+  default: router$o
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function generateSlug(text) {
@@ -2704,18 +2706,18 @@ const toggleActive$4 = async (req, res) => {
   }
 };
 
-const router$m = Router();
-router$m.get("/", authenticateAdmin, getAllCategories$3);
-router$m.get("/:id", getCategoriesById$3);
-router$m.post("/", authenticateAdmin, createCategories$1);
-router$m.put("/:id", authenticateAdmin, updateCategories$1);
-router$m.delete("/:id", authenticateAdmin, deleteCategories$1);
-router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
-router$m.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
+const router$n = Router();
+router$n.get("/", authenticateAdmin, getAllCategories$3);
+router$n.get("/:id", getCategoriesById$3);
+router$n.post("/", authenticateAdmin, createCategories$1);
+router$n.put("/:id", authenticateAdmin, updateCategories$1);
+router$n.delete("/:id", authenticateAdmin, deleteCategories$1);
+router$n.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
+router$n.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
 
 const categoriesNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$m
+  default: router$n
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const VariantSchema = new Schema(
@@ -3065,19 +3067,19 @@ const toggleActive$3 = async (req, res) => {
   }
 };
 
-const router$l = Router();
-router$l.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
-router$l.get("/", authenticateAdmin, getAllCategories$2);
-router$l.get("/:id", getCategoriesById$2);
-router$l.post("/", authenticateAdmin, createCategories);
-router$l.put("/:id", authenticateAdmin, updateCategories);
-router$l.delete("/:id", authenticateAdmin, deleteCategories);
-router$l.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
-router$l.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
+const router$m = Router();
+router$m.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
+router$m.get("/", authenticateAdmin, getAllCategories$2);
+router$m.get("/:id", getCategoriesById$2);
+router$m.post("/", authenticateAdmin, createCategories);
+router$m.put("/:id", authenticateAdmin, updateCategories);
+router$m.delete("/:id", authenticateAdmin, deleteCategories);
+router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
+router$m.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
 
 const categoriesProductRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$l
+  default: router$m
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const updateSettings = async (req, res) => {
@@ -3092,12 +3094,12 @@ const updateSettings = async (req, res) => {
   }
 };
 
-const router$k = Router();
-router$k.put("/update", authenticateAdmin, updateSettings);
+const router$l = Router();
+router$l.put("/update", authenticateAdmin, updateSettings);
 
 const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$k
+  default: router$l
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const MembershipSchema = new Schema(
@@ -3736,24 +3738,24 @@ const getRewardHistory = async (req, res) => {
   }
 };
 
-const router$j = express.Router();
-router$j.get("/reward-history", authenticateAdmin, getRewardHistory);
-router$j.get("/membership-level", getAllMembershipLevel);
-router$j.get("/membership-level/:id", getMembershipLevelById);
-router$j.put("/membership-level/:id", authenticateAdmin, updateMembershipLevel);
-router$j.get("/membership-benefit", getAllMembershipBenefits);
-router$j.get("/membership-benefit/:id", getMembershipBenefitById);
-router$j.post("/membership-benefit", authenticateAdmin, createMembershipBenefit);
-router$j.put("/membership-benefit/:id", authenticateAdmin, updateMembershipBenefit);
-router$j.delete("/membership-benefit/:id", authenticateAdmin, deleteMembershipBenefit);
-router$j.get("/", authenticateAdmin, getAllUsers);
-router$j.get("/:id", getUserById$1);
-router$j.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
-router$j.delete("/:id", authenticateAdmin, deleteUsers);
+const router$k = express.Router();
+router$k.get("/reward-history", authenticateAdmin, getRewardHistory);
+router$k.get("/membership-level", getAllMembershipLevel);
+router$k.get("/membership-level/:id", getMembershipLevelById);
+router$k.put("/membership-level/:id", authenticateAdmin, updateMembershipLevel);
+router$k.get("/membership-benefit", getAllMembershipBenefits);
+router$k.get("/membership-benefit/:id", getMembershipBenefitById);
+router$k.post("/membership-benefit", authenticateAdmin, createMembershipBenefit);
+router$k.put("/membership-benefit/:id", authenticateAdmin, updateMembershipBenefit);
+router$k.delete("/membership-benefit/:id", authenticateAdmin, deleteMembershipBenefit);
+router$k.get("/", authenticateAdmin, getAllUsers);
+router$k.get("/:id", getUserById$1);
+router$k.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
+router$k.delete("/:id", authenticateAdmin, deleteUsers);
 
 const usersRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$j
+  default: router$k
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllPosts = async (req, res) => {
@@ -3841,17 +3843,17 @@ const toggleActive$1 = async (req, res) => {
   }
 };
 
-const router$i = Router();
-router$i.get("/", authenticateAdmin, getAllPosts);
-router$i.get("/:id", getPostsById$1);
-router$i.post("/", authenticateAdmin, createPosts);
-router$i.put("/:id", authenticateAdmin, updatePosts);
-router$i.delete("/:id", authenticateAdmin, deletePosts);
-router$i.patch("/toggleActive/:id", authenticateAdmin, toggleActive$1);
+const router$j = Router();
+router$j.get("/", authenticateAdmin, getAllPosts);
+router$j.get("/:id", getPostsById$1);
+router$j.post("/", authenticateAdmin, createPosts);
+router$j.put("/:id", authenticateAdmin, updatePosts);
+router$j.delete("/:id", authenticateAdmin, deletePosts);
+router$j.patch("/toggleActive/:id", authenticateAdmin, toggleActive$1);
 
 const postsNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$i
+  default: router$j
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ORDER_STATUS = {
@@ -4060,17 +4062,17 @@ const setPointAndUpgrade = async (userId, point) => {
   };
 };
 
-const router$h = Router();
-router$h.get("/", authenticateAdmin, getAllOrder);
-router$h.get("/status", getAllStatus);
-router$h.get("/payments", getAllPayment);
-router$h.get("/:id", getOrderById$1);
-router$h.delete("/:id", authenticateAdmin, deleteOrder);
-router$h.put("/status", authenticateAdmin, updateOrderStatus);
+const router$i = Router();
+router$i.get("/", authenticateAdmin, getAllOrder);
+router$i.get("/status", getAllStatus);
+router$i.get("/payments", getAllPayment);
+router$i.get("/:id", getOrderById$1);
+router$i.delete("/:id", authenticateAdmin, deleteOrder);
+router$i.put("/status", authenticateAdmin, updateOrderStatus);
 
 const orderManageRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$h
+  default: router$i
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllProduct = async (req, res) => {
@@ -4188,17 +4190,17 @@ const toggleActive = async (req, res) => {
   }
 };
 
-const router$g = Router();
-router$g.get("/", authenticateAdmin, getAllProduct);
-router$g.post("/", authenticateAdmin, createProduct);
-router$g.get("/:id", getProductById$1);
-router$g.put("/:id", authenticateAdmin, updateProduct);
-router$g.delete("/:id", authenticateAdmin, deleteProduct);
-router$g.patch("/toggleActive/:id", authenticateAdmin, toggleActive);
+const router$h = Router();
+router$h.get("/", authenticateAdmin, getAllProduct);
+router$h.post("/", authenticateAdmin, createProduct);
+router$h.get("/:id", getProductById$1);
+router$h.put("/:id", authenticateAdmin, updateProduct);
+router$h.delete("/:id", authenticateAdmin, deleteProduct);
+router$h.patch("/toggleActive/:id", authenticateAdmin, toggleActive);
 
 const productRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$g
+  default: router$h
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const PaymentTransactionSchema = new Schema(
@@ -4300,15 +4302,15 @@ const deletePaymentTransaction = async (req, res) => {
   }
 };
 
-const router$f = Router();
-router$f.post("/", createPaymentTransaction);
-router$f.put("/status", updatePaymentTransactionStatus);
-router$f.get("/", getPaymentTransactions);
-router$f.delete("/:id", deletePaymentTransaction);
+const router$g = Router();
+router$g.post("/", createPaymentTransaction);
+router$g.put("/status", updatePaymentTransactionStatus);
+router$g.get("/", getPaymentTransactions);
+router$g.delete("/:id", deletePaymentTransaction);
 
 const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$f
+  default: router$g
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function toProductReviewDTO(entity) {
@@ -4422,29 +4424,365 @@ const deleteProductReview = async (req, res) => {
   }
 };
 
-const router$e = Router();
-router$e.get("/", authenticateAdmin, getAllProductReviews);
-router$e.get("/:id", getProductReviewById$1);
-router$e.put("/status", authenticateAdmin, updateProductReviewStatus);
-router$e.delete("/:id", authenticateAdmin, deleteProductReview);
+const router$f = Router();
+router$f.get("/", authenticateAdmin, getAllProductReviews);
+router$f.get("/:id", getProductReviewById$1);
+router$f.put("/status", authenticateAdmin, updateProductReviewStatus);
+router$f.delete("/:id", authenticateAdmin, deleteProductReview);
 
 const productReviewRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$f
+}, Symbol.toStringTag, { value: 'Module' }));
+
+var VOUCHER_TYPE = /* @__PURE__ */ ((VOUCHER_TYPE2) => {
+  VOUCHER_TYPE2["PERCENTAGE"] = "percentage";
+  VOUCHER_TYPE2["FIXED"] = "fixed";
+  VOUCHER_TYPE2["FREESHIP"] = "freeship";
+  VOUCHER_TYPE2["PRODUCT"] = "product";
+  VOUCHER_TYPE2["TIMED"] = "timed";
+  return VOUCHER_TYPE2;
+})(VOUCHER_TYPE || {});
+const VOUCHER_TYPE_LIST = Object.values(VOUCHER_TYPE);
+
+const VoucherSchema = new Schema(
+  {
+    code: { type: String, required: true, unique: true },
+    // Mã voucher
+    name: { type: String, required: true },
+    description: { type: String },
+    type: {
+      type: String,
+      required: true,
+      enum: VOUCHER_TYPE_LIST
+    },
+    value: { type: Number, default: 0 },
+    maxDiscount: { type: Number },
+    minOrderValue: { type: Number, default: 0 },
+    maxShippingDiscount: { type: Number },
+    usageLimit: { type: Number, default: 0 },
+    usedCount: { type: Number, default: 0 },
+    limitPerUser: { type: Number, default: 0 },
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
+    applicableProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],
+    applicableCategories: [{ type: Schema.Types.ObjectId, ref: "CategoryProduct" }],
+    stackable: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true }
+  },
+  { timestamps: true }
+);
+VoucherSchema.plugin(mongoosePaginate);
+const VoucherEntity = model("Voucher", VoucherSchema, "vouchers");
+
+function toVoucherDTO(entity) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
+  return {
+    id: entity._id.toString(),
+    code: entity.code,
+    name: entity.name,
+    description: entity.description,
+    type: entity.type,
+    value: entity.value,
+    maxDiscount: entity.maxDiscount,
+    minOrderValue: (_a = entity.minOrderValue) != null ? _a : 0,
+    maxShippingDiscount: (_b = entity.maxShippingDiscount) != null ? _b : void 0,
+    usageLimit: (_c = entity.usageLimit) != null ? _c : 0,
+    usedCount: (_d = entity.usedCount) != null ? _d : 0,
+    limitPerUser: (_e = entity.limitPerUser) != null ? _e : 0,
+    startDate: (_f = entity.startDate) == null ? void 0 : _f.toISOString(),
+    endDate: (_g = entity.endDate) == null ? void 0 : _g.toISOString(),
+    applicableProducts: (_i = (_h = entity.applicableProducts) == null ? void 0 : _h.map((p) => p.toString())) != null ? _i : [],
+    applicableCategories: (_k = (_j = entity.applicableCategories) == null ? void 0 : _j.map((c) => c.toString())) != null ? _k : [],
+    stackable: (_l = entity.stackable) != null ? _l : false,
+    isActive: (_m = entity.isActive) != null ? _m : true,
+    createdAt: ((_n = entity.createdAt) == null ? void 0 : _n.toISOString()) || ""
+  };
+}
+
+const getAllVouchers = async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+    const numPage = Number(page);
+    const numLimit = Number(limit);
+    if (numLimit === -1) {
+      const vouchers = await VoucherEntity.find().sort({ createdAt: -1 });
+      return res.json({
+        code: 0,
+        data: vouchers.map(toVoucherDTO),
+        pagination: {
+          page: 1,
+          limit: vouchers.length,
+          totalPages: 1,
+          total: vouchers.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 }
+    };
+    const result = await VoucherEntity.paginate({}, options);
+    return res.json({
+      code: 0,
+      data: result.docs.map(toVoucherDTO),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+        total: result.totalDocs
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch voucher", error: err.message });
+  }
+};
+const getVoucherById = async (req, res) => {
+  try {
+    const voucher = await VoucherEntity.findById(req.params.id);
+    if (!voucher) {
+      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toVoucherDTO(voucher) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createVoucher = async (req, res) => {
+  try {
+    const exists = await VoucherEntity.findOne({ code: req.body.code });
+    if (exists) {
+      return res.status(400).json({ code: 1, message: "M\xE3 voucher \u0111\xE3 t\u1ED3n t\u1EA1i" });
+    }
+    const voucher = new VoucherEntity(req.body);
+    await voucher.save();
+    return res.json({
+      code: 0,
+      message: "T\u1EA1o voucher th\xE0nh c\xF4ng",
+      data: toVoucherDTO(voucher)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateVoucher = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    const voucher = await VoucherEntity.findById(id);
+    if (!voucher) {
+      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const now = /* @__PURE__ */ new Date();
+    if (voucher.endDate < now) {
+      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt h\u1EA1n, kh\xF4ng th\u1EC3 c\u1EADp nh\u1EADt" });
+    }
+    if (voucher.usedCount > 0 || voucher.startDate <= now && voucher.endDate >= now) {
+      const allowedFields = ["isActive", "name", "description"];
+      const filteredData = Object.keys(updateData).filter((k) => allowedFields.includes(k)).reduce((obj, key) => {
+        obj[key] = updateData[key];
+        return obj;
+      }, {});
+      const updated2 = await VoucherEntity.findByIdAndUpdate(id, filteredData, { new: true });
+      return res.json({
+        code: 0,
+        message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng",
+        data: toVoucherDTO(updated2)
+      });
+    }
+    const updated = await VoucherEntity.findByIdAndUpdate(id, updateData, { new: true });
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt voucher th\xE0nh c\xF4ng",
+      data: toVoucherDTO(updated)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deleteVoucher = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const voucher = await VoucherEntity.findById(id);
+    if (!voucher) {
+      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const now = /* @__PURE__ */ new Date();
+    if (voucher.usedCount > 0 || voucher.startDate <= now) {
+      voucher.isActive = false;
+      await voucher.save();
+      return res.json({
+        code: 0,
+        message: "Voucher \u0111\xE3 \u0111\u01B0\u1EE3c s\u1EED d\u1EE5ng ho\u1EB7c \u0111ang ho\u1EA1t \u0111\u1ED9ng \u2014 chuy\u1EC3n sang tr\u1EA1ng th\xE1i v\xF4 hi\u1EC7u h\xF3a"
+      });
+    }
+    await VoucherEntity.findByIdAndDelete(id);
+    return res.json({ code: 0, message: "X\xF3a voucher th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleActiveVoucher = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const voucher = await VoucherEntity.findById(id);
+    if (!voucher) {
+      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const now = /* @__PURE__ */ new Date();
+    if (voucher.endDate < now) {
+      return res.status(400).json({
+        code: 1,
+        message: "Voucher \u0111\xE3 h\u1EBFt h\u1EA1n, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i tr\u1EA1ng th\xE1i"
+      });
+    }
+    voucher.isActive = !voucher.isActive;
+    await voucher.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i ho\u1EA1t \u0111\u1ED9ng th\xE0nh c\xF4ng",
+      data: toVoucherDTO(voucher)
+    });
+  } catch (err) {
+    return res.status(500).json({
+      code: 1,
+      message: err.message || "L\u1ED7i khi c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i voucher"
+    });
+  }
+};
+const applyVoucher = async (req, res) => {
+  var _a;
+  try {
+    const { code, orderTotal, productIds, orderCreatedAt } = req.body;
+    if (!code || !orderTotal) {
+      return res.status(400).json({
+        code: 1,
+        message: "Thi\u1EBFu m\xE3 voucher ho\u1EB7c gi\xE1 tr\u1ECB \u0111\u01A1n h\xE0ng"
+      });
+    }
+    const voucher = await VoucherEntity.findOne({ code, isActive: true });
+    if (!voucher) {
+      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const now = /* @__PURE__ */ new Date();
+    if (voucher.startDate > now || voucher.endDate < now) {
+      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt h\u1EA1n" });
+    }
+    if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit) {
+      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng" });
+    }
+    if (voucher.minOrderValue && orderTotal < voucher.minOrderValue) {
+      return res.status(400).json({
+        code: 1,
+        message: `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${voucher.minOrderValue.toLocaleString()}\u0111 \u0111\u1EC3 \xE1p d\u1EE5ng voucher`
+      });
+    }
+    let discount = 0;
+    let message = "\xC1p d\u1EE5ng voucher th\xE0nh c\xF4ng";
+    switch (voucher.type) {
+      // 1️⃣ Giảm phần trăm tổng đơn
+      case "percentage":
+        discount = Math.min(
+          orderTotal * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
+        break;
+      // 2️⃣ Giảm số tiền cố định
+      case "fixed":
+        discount = Math.min(voucher.value, orderTotal);
+        break;
+      // 3️⃣ Miễn phí vận chuyển (tối đa X VNĐ)
+      case "freeship":
+        if (!voucher.maxShippingDiscount || voucher.maxShippingDiscount <= 0) {
+          return res.status(400).json({
+            code: 1,
+            message: "Voucher freeship ch\u01B0a c\xF3 c\u1EA5u h\xECnh m\u1EE9c gi\u1EA3m ph\xED v\u1EADn chuy\u1EC3n t\u1ED1i \u0111a"
+          });
+        }
+        discount = Math.min(voucher.maxShippingDiscount, orderTotal);
+        message = `\xC1p d\u1EE5ng mi\u1EC5n ph\xED v\u1EADn chuy\u1EC3n (t\u1ED1i \u0111a ${voucher.maxShippingDiscount.toLocaleString()}\u0111)`;
+        break;
+      // 4️⃣ Giảm giá theo sản phẩm cụ thể
+      case "product":
+        if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
+          return res.status(400).json({ code: 1, message: "Thi\u1EBFu danh s\xE1ch s\u1EA3n ph\u1EA9m trong \u0111\u01A1n h\xE0ng" });
+        }
+        const applicable = ((_a = voucher.applicableProducts) == null ? void 0 : _a.map((p) => p.toString())) || [];
+        const matched = productIds.filter((id) => applicable.includes(id.toString()));
+        if (matched.length === 0) {
+          return res.status(400).json({
+            code: 1,
+            message: "Voucher n\xE0y ch\u1EC9 \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m c\u1EE5 th\u1EC3"
+          });
+        }
+        discount = Math.min(voucher.value * matched.length, orderTotal);
+        message = `Gi\u1EA3m gi\xE1 cho ${matched.length} s\u1EA3n ph\u1EA9m \xE1p d\u1EE5ng`;
+        break;
+      // 5️⃣ Giảm giá trong khung giờ/khung thời gian đặc biệt
+      case "timed":
+        if (!orderCreatedAt) {
+          return res.status(400).json({
+            code: 1,
+            message: "Thi\u1EBFu th\u1EDDi gian t\u1EA1o \u0111\u01A1n \u0111\u1EC3 ki\u1EC3m tra voucher th\u1EDDi gian"
+          });
+        }
+        const createdAt = new Date(orderCreatedAt);
+        if (createdAt < voucher.startDate || createdAt > voucher.endDate) {
+          return res.status(400).json({
+            code: 1,
+            message: "Voucher ch\u1EC9 \xE1p d\u1EE5ng trong khung th\u1EDDi gian nh\u1EA5t \u0111\u1ECBnh"
+          });
+        }
+        discount = Math.min(orderTotal * voucher.value / 100, voucher.maxDiscount || Infinity);
+        message = "\xC1p d\u1EE5ng voucher khung th\u1EDDi gian";
+        break;
+      default:
+        return res.status(400).json({ code: 1, message: "Lo\u1EA1i voucher kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    return res.json({
+      code: 0,
+      message,
+      data: {
+        code: voucher.code,
+        type: voucher.type,
+        discount,
+        stackable: voucher.stackable,
+        expiresAt: voucher.endDate
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$e = Router();
+router$e.get("/", getAllVouchers);
+router$e.get("/:id", getVoucherById);
+router$e.post("/", createVoucher);
+router$e.put("/:id", updateVoucher);
+router$e.delete("/:id", deleteVoucher);
+router$e.patch("/:id/toggle-active", toggleActiveVoucher);
+router$e.post("/apply", applyVoucher);
+
+const voucherRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$e
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const router$d = Router();
-router$d.use("/settings", router$k);
-router$d.use("/about", router$o);
-router$d.use("/users", router$j);
-router$d.use("/banners", router$n);
-router$d.use("/categoriesNews", router$m);
-router$d.use("/newsPosts", router$i);
-router$d.use("/orders", router$h);
-router$d.use("/payment-transactions", router$f);
-router$d.use("/categories", router$l);
-router$d.use("/products", router$g);
-router$d.use("/product-reviews", router$e);
+router$d.use("/settings", router$l);
+router$d.use("/about", router$p);
+router$d.use("/users", router$k);
+router$d.use("/banners", router$o);
+router$d.use("/categoriesNews", router$n);
+router$d.use("/newsPosts", router$j);
+router$d.use("/orders", router$i);
+router$d.use("/payment-transactions", router$g);
+router$d.use("/categories", router$m);
+router$d.use("/products", router$h);
+router$d.use("/product-reviews", router$f);
+router$d.use("/voucher", router$e);
 
 const index$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -6297,7 +6635,7 @@ router.use("/newsPosts", router$4);
 router.use("/orders", router$3);
 router.use("/categories", router$9);
 router.use("/products", router$2);
-router.use("/addresses", router$p);
+router.use("/addresses", router$q);
 router.use("/product-reviews", router$1);
 router.use("/", router$2);
 

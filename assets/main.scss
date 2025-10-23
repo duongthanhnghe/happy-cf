@@ -618,6 +618,10 @@ body .bg {
   z-index: 1;
 }
 
+.white-space {
+  white-space: nowrap;
+}
+
 .line-height1 {
   line-height: 1;
 }
@@ -1513,6 +1517,12 @@ opacity: 0 !important;
       font-size: $fz-base !important;
           top: 11px !important;
     }
+
+.v-text-field__prefix, .v-text-field__suffix {
+  min-height: $space-xl !important;
+      padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}    
 
 .v-selection-control__input .mdi-radiobox-marked::before {
   color: $cl-primary;

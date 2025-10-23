@@ -69,59 +69,6 @@ export const getOrderById = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// export const createOrder = async (req: Request, res: Response) => {
-//   try {
-//     const { data, userId, point, usedPoint } = req.body
-//     if (!data?.fullname || !data?.phone || !data?.paymentId || !data?.cartItems) {
-//       return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" })
-//     }
-//     let membershipDiscountRate = 0
-//     let membershipDiscountAmount = 0
-//     if (userId) {
-//       const user = await UserModel.findById(userId)
-//       if (user) {
-//         membershipDiscountRate = user.membership.discountRate || 0
-//         if (membershipDiscountRate > 0) {
-//           membershipDiscountAmount = Math.floor(data.totalPriceCurrent * (membershipDiscountRate / 100))
-//           // cập nhật lại totalPriceDiscount trước khi tính tiếp
-//           data.totalPriceDiscount = data.totalPriceCurrent - membershipDiscountAmount
-//         }
-//       }
-//     }
-//     let deductedPoints = 0;
-//     // ✅ Nếu có user và muốn dùng điểm
-//     if (userId && usedPoint && usedPoint > 0) {
-//       const user = await UserModel.findById(userId);
-//       if (!user) {
-//         return res.status(404).json({ code: 1, message: "Không tìm thấy user" });
-//       }
-//       if (user.membership.balancePoint < usedPoint) {
-//         return res.status(400).json({ code: 1, message: "Điểm tích lũy không đủ" });
-//       }
-//       // ✅ Trừ điểm từ balancePoint trong DB
-//       user.membership.balancePoint -= usedPoint;
-//       await user.save();
-//       deductedPoints = usedPoint;
-//     }
-//     const newOrder = await OrderEntity.create({
-//       ...data,
-//       userId,
-//       reward: { points: point || 0, awarded: false, awardedAt: null },
-//       usedPoints: deductedPoints,
-//       pointsRefunded: false,
-//       membershipDiscountRate,
-//       membershipDiscountAmount,
-//     })
-//     return res.status(201).json({
-//       code: 0,
-//       message: "Đặt hàng thành công",
-//       data: toOrderDTO(newOrder),
-//     })
-//   } catch (err: any) {
-//     console.error("Lỗi createOrder:", err)
-//     return res.status(500).json({ code: 2, message: "Lỗi server" })
-//   }
-// }
 export const deleteOrder = async (req, res) => {
     try {
         const deleted = await OrderEntity.findByIdAndDelete(req.params.id);
@@ -134,14 +81,6 @@ export const deleteOrder = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// export const getOrdersByUserId = async (req: Request, res: Response) => {
-//   try {
-//     const orders = await OrderEntity.find({ userId: req.params.userId }).populate("paymentId").populate("status").sort({ createdAt: -1 });
-//     return res.json({ code: 0, data: orders.map(toOrderDTO) })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
 export const updateOrderStatus = async (req, res) => {
     var _a, _b;
     try {

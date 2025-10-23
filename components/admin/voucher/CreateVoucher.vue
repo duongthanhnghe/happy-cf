@@ -1,0 +1,222 @@
+<script lang="ts" setup>
+import { useVoucherManageStore } from '@/stores/admin/voucher/useVoucherManageStore'
+import type { SubmitEventPromise } from 'vuetify'
+import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
+import { useVoucherForm } from '@/composables/voucher/useVoucherForm'
+
+const store = useVoucherManageStore()
+const { type, showValue, showMaxDiscount, showMaxShippingDiscount, showProduct, validateVoucher } = useVoucherForm(store.formItem)
+
+const handleSubmitCreate = async (event: SubmitEventPromise) => {
+  const result = await event
+  if (!result.valid) return
+
+  if (validateVoucher() !== true) return
+
+  await store.submitCreate()
+}
+
+</script>
+
+<template>
+  <Popup
+    popupId="popup-create-voucher"
+    v-model="store.isTogglePopupAdd"
+    popupHeading="Thêm voucher"
+    align="right"
+  >
+    <template #body>
+      <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+        <div class="portal-popup-footer">
+          <Button type="submit" color="primary" label="Lưu voucher" class="w-full" />
+        </div>
+
+        <!-- Mã voucher -->
+        <LabelInput label="Mã voucher" required />
+        <v-text-field
+          v-model="store.formItem.code"
+          :rules="store.nullAndSpecialRules"
+          label="Nhập mã voucher"
+          variant="outlined"
+          required
+        />
+
+        <!-- Tên -->
+        <LabelInput label="Tên voucher" required />
+        <v-text-field
+          v-model="store.formItem.name"
+          :rules="store.nullRules"
+          label="Tên voucher"
+          variant="outlined"
+          required
+        />
+
+        <!-- Mô tả -->
+        <LabelInput label="Mô tả" />
+        <v-textarea
+          v-model="store.formItem.description"
+          :counter="300"
+          label="Mô tả voucher"
+          variant="outlined"
+        />
+
+        <!-- Ngày bắt đầu/kết thúc -->
+        <div class="flex gap-sm">
+          <div class="flex-1">
+          <LabelInput label="Ngày bắt đầu" required />
+          <v-text-field
+            v-model="store.formItem.startDate"
+            type="date"
+            label="Ngày bắt đầu"
+            variant="outlined"
+            required
+          />
+          </div>
+          <div class="flex-1">
+          <LabelInput label="Ngày kết thúc" required />
+          <v-text-field
+            v-model="store.formItem.endDate"
+            type="date"
+            label="Ngày kết thúc"
+            variant="outlined"
+            required
+          />
+          </div>
+        </div>
+
+        <div class="flex gap-sm">
+          <div class="flex-1">
+          
+        <!-- Lượt sử dụng -->
+        <LabelInput label="Số lượng / Lượt dùng tối đa" />
+        <v-text-field
+          v-model.number="store.formItem.usageLimit"
+          type="number"
+          label="Số lượt sử dụng tối đa"
+          variant="outlined"
+        />
+          </div>
+          <div class="flex-1">
+
+        <!-- Giới hạn mỗi người -->
+        <LabelInput label="Giới hạn mỗi người dùng" />
+        <v-text-field
+          v-model.number="store.formItem.limitPerUser"
+          type="number"
+          label="Giới hạn mỗi user"
+          variant="outlined"
+        />
+          </div>
+        </div>
+
+
+        <!-- Trạng thái -->
+        <v-switch
+          v-model="store.formItem.isActive"
+          class="mt-0"
+          :label="`Trạng thái: ${store.formItem.isActive ? 'Kích hoạt' : 'Tạm dừng'}`"
+          inset
+        />
+
+        <!-- Loại voucher -->
+        <LabelInput label="Loại voucher" required />
+        <v-select
+          v-model="store.formItem.type"
+          :items="Object.entries(VOUCHER_TYPE).map(([key, val]) => ({
+            title: val.name,
+            value: val.type,
+          }))"
+          item-title="title"
+          item-value="value"
+          label="Chọn loại voucher"
+          variant="outlined"
+          required
+        />
+
+        <div class="card card-sm bg-gray2 pb-0 mb-md">
+
+          <!-- Giá trị giảm -->
+          <div :class="{ _hidden: !showValue }">
+            <LabelInput
+              :label="type === 'percentage' ? 'Giá trị giảm (%)' : 'Giá trị giảm (VNĐ)'"
+            />
+
+            <v-text-field
+              v-model.number="store.formItem.value"
+              type="number"
+              :label="type === 'percentage' ? 'Nhập phần trăm giảm (VD: 10 = 10%)' : 'Nhập số tiền giảm (VD: 50000 = 50.000đ)'"
+              :suffix="type === 'percentage' ? '%' : '₫'"
+              variant="outlined"
+              min="0"
+            />
+          </div>
+
+          <!-- Giảm tối đa nếu phần trăm -->
+          <div :class="{ _hidden: !showMaxDiscount }">
+            <LabelInput label="Giảm tối đa (nếu phần trăm)" />
+            <v-text-field
+              v-model.number="store.formItem.maxDiscount"
+              type="number"
+              label="Giảm tối đa"
+              variant="outlined"
+            />
+          </div>
+
+          <!-- Đơn hàng tối thiểu -->
+            <LabelInput label="Đơn hàng tối thiểu" />
+            <v-text-field
+              v-model.number="store.formItem.minOrderValue"
+              type="number"
+              label="Đơn hàng tối thiểu"
+              variant="outlined"
+            />
+
+          <!-- Giảm phí vận chuyển tối đa -->
+          <div :class="{ _hidden: !showMaxShippingDiscount }">
+            <LabelInput label="Giảm phí vận chuyển tối đa (nếu freeship)" />
+            <v-text-field
+              v-model.number="store.formItem.maxShippingDiscount"
+              type="number"
+              label="Tối đa phí vận chuyển giảm"
+              variant="outlined"
+            />
+          </div>
+
+          <!-- Sản phẩm / danh mục áp dụng -->
+          <div :class="{ _hidden: !showProduct }">
+            <!-- <LabelInput label="Sản phẩm áp dụng (IDs)" />
+            <v-text-field
+              v-model="store.formItem.applicableProducts"
+              label="Nhập danh sách ID sản phẩm, cách nhau bằng dấu phẩy"
+              variant="outlined"
+            />
+            -->
+
+            <div class="flex gap-sm align-anchor">
+            <div class="flex-1">
+              <LabelInput label="Danh mục áp dụng (IDs)" />
+              <VTreeChoose :label="store.selectedCategoryName">
+                <v-treeview
+                  :items="store.treeItems"
+                  item-value="id"
+                  item-title="categoryName"
+                  selectable
+                  return-object
+                  select-strategy="leaf"
+                  v-model:selected="store.selectedCategory"
+                  open-all
+                  density="compact"
+                >
+                </v-treeview>
+              </VTreeChoose>
+            </div>
+          </div>
+
+          </div>
+
+        </div>
+
+      </v-form>
+    </template>
+  </Popup>
+</template>

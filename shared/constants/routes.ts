@@ -118,6 +118,13 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       middleware: ['admin-role'],
       layout: 'admin-layout',
     },
+    VOUCHER: {
+      path: '/admin/voucher',
+      label: 'Voucher',
+      icon: 'store',
+      middleware: ['admin-role'],
+      layout: 'admin-layout',
+    },
   },
   PUBLIC: {
     HOME: {

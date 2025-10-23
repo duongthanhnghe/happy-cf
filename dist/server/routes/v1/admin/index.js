@@ -14,6 +14,7 @@ import productRoutes from './productRouter.js';
 import paymentTransactionRoutes from './paymentTransactionRoutes.js';
 // import wishlistRoutes from './productRouter.js'
 import productReviewRouter from './productReviewRouter.js';
+import voucherRouter from './voucherRouter.js';
 // import locationRoutes from './locationRouter.js'
 const router = Router();
 router.use('/settings', settingRoutes);
@@ -30,6 +31,7 @@ router.use('/categories', categoriesProductRoutes);
 router.use('/products', productRoutes);
 // router.use('/addresses', addressRoutes)
 router.use('/product-reviews', productReviewRouter);
+router.use('/voucher', voucherRouter);
 // router.use('/location', locationRoutes)
 // router.use('/', wishlistRoutes)
 export default router;
