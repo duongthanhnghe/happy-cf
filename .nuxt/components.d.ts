@@ -63,6 +63,7 @@ interface _GlobalComponents {
     'ProductReviewItemTemplate1': typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']
     'ProductItemTemplate1': typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']
     'ProductItemWishlistTemplate': typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']
+    'VoucherItemTemplate1': typeof import("../components/molecules/voucher/VoucherItemTemplate1.vue")['default']
     'SectionBanner': typeof import("../components/organisms/banner/SectionBanner.vue")['default']
     'Footer': typeof import("../components/organisms/layout/Footer.vue")['default']
     'Header': typeof import("../components/organisms/layout/Header.vue")['default']
@@ -172,6 +173,7 @@ interface _GlobalComponents {
     'LazyProductReviewItemTemplate1': LazyComponent<typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']>
     'LazyProductItemTemplate1': LazyComponent<typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']>
     'LazyProductItemWishlistTemplate': LazyComponent<typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']>
+    'LazyVoucherItemTemplate1': LazyComponent<typeof import("../components/molecules/voucher/VoucherItemTemplate1.vue")['default']>
     'LazySectionBanner': LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
     'LazyFooter': LazyComponent<typeof import("../components/organisms/layout/Footer.vue")['default']>
     'LazyHeader': LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
@@ -287,6 +289,7 @@ export const PaymentItemTemplate1: typeof import("../components/molecules/order/
 export const ProductReviewItemTemplate1: typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']
 export const ProductItemTemplate1: typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']
 export const ProductItemWishlistTemplate: typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']
+export const VoucherItemTemplate1: typeof import("../components/molecules/voucher/VoucherItemTemplate1.vue")['default']
 export const SectionBanner: typeof import("../components/organisms/banner/SectionBanner.vue")['default']
 export const Footer: typeof import("../components/organisms/layout/Footer.vue")['default']
 export const Header: typeof import("../components/organisms/layout/Header.vue")['default']
@@ -396,6 +399,7 @@ export const LazyPaymentItemTemplate1: LazyComponent<typeof import("../component
 export const LazyProductReviewItemTemplate1: LazyComponent<typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']>
 export const LazyProductItemTemplate1: LazyComponent<typeof import("../components/molecules/product/ProductItemTemplate1.vue")['default']>
 export const LazyProductItemWishlistTemplate: LazyComponent<typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']>
+export const LazyVoucherItemTemplate1: LazyComponent<typeof import("../components/molecules/voucher/VoucherItemTemplate1.vue")['default']>
 export const LazySectionBanner: LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
 export const LazyFooter: LazyComponent<typeof import("../components/organisms/layout/Footer.vue")['default']>
 export const LazyHeader: LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>

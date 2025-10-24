@@ -93,6 +93,7 @@ import {
   VBreadcrumbsItem,
   VBreadcrumbsDivider,
   VAutocomplete,
+  VCheckbox,
 } from 'vuetify/components'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -108,6 +109,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       VRadio,
       VRadioGroup,
       VSelect,
+      VCheckbox,
       
       // Display components
       VChip,

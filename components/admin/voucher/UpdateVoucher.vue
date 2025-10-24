@@ -91,24 +91,26 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           <div class="flex-1">
           
         <!-- Lượt sử dụng -->
-        <LabelInput label="Số lượng / Lượt dùng tối đa" />
+        <LabelInput label="Số lượng / Lượt dùng tối đa" required/>
         <v-text-field
           v-model.number="store.updateItem.usageLimit"
           type="number"
           label="Số lượt sử dụng tối đa"
           variant="outlined"
+          required
           :disabled="!store.checkEdit"
         />
           </div>
           <div class="flex-1">
 
         <!-- Giới hạn mỗi người -->
-        <LabelInput label="Giới hạn mỗi người dùng" />
+        <LabelInput label="Giới hạn mỗi người dùng" required/>
         <v-text-field
           v-model.number="store.updateItem.limitPerUser"
           type="number"
           label="Giới hạn mỗi user"
           variant="outlined"
+          required
           :disabled="!store.checkEdit"
         />
           </div>
@@ -143,15 +145,15 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           <!-- Giá trị giảm -->
           <div :class="{ _hidden: !showValue }">
             <LabelInput
-              :label="type === 'percentage' ? 'Giá trị giảm (%)' : 'Giá trị giảm (VNĐ)'"
+              :label="type === 'percentage' || type === 'product' ? 'Giá trị giảm (%)' : 'Giá trị giảm (VNĐ)'"
               :disabled="!store.checkEdit"
             />
 
             <v-text-field
               v-model.number="store.updateItem.value"
               type="number"
-              :label="type === 'percentage' ? 'Nhập phần trăm giảm (VD: 10 = 10%)' : 'Nhập số tiền giảm (VD: 50000 = 50.000đ)'"
-              :suffix="type === 'percentage' ? '%' : '₫'"
+              :label="type === 'percentage' || type === 'product' ? 'Nhập phần trăm giảm (VD: 10 = 10%)' : 'Nhập số tiền giảm (VD: 50000 = 50.000đ)'"
+              :suffix="type === 'percentage' || type === 'product' ? '%' : '₫'"
               variant="outlined"
               min="0"
               :disabled="!store.checkEdit"

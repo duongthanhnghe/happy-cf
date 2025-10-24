@@ -27,6 +27,10 @@ export function useVoucherForm(formItem: CreateVoucherBody) {
 
     switch (t) {
       case VOUCHER_TYPE.percentage.type:
+        if (!value) {
+          return showWarning('Giá trị giảm (%) khong duoc qua 100%!');
+        }
+
         if (!value || !maxDiscount || !minOrderValue) {
           return showWarning('Vui lòng nhập đủ: Giá trị giảm (%), Giảm tối đa và Đơn hàng tối thiểu!');
         }
@@ -45,6 +49,14 @@ export function useVoucherForm(formItem: CreateVoucherBody) {
         break;
 
       case VOUCHER_TYPE.product.type:
+        if (value > 100) {
+          return showWarning('Giá trị giảm (%) khong duoc qua 100%!');
+        }
+
+        if (!value || !maxDiscount || !minOrderValue) {
+          return showWarning('Vui lòng nhập đủ: Giá trị giảm (%), Giảm tối đa và Đơn hàng tối thiểu!');
+        }
+
         if (!applicableCategories || applicableCategories.length === 0) {
           return showWarning('Vui lòng chọn ít nhất 1 danh mục áp dụng!');
         }

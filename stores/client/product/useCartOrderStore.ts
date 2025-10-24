@@ -18,6 +18,8 @@ import { Base64 } from "js-base64";
 import { ROUTES } from '@/shared/constants/routes';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
+import { vouchersAPI } from "@/services/v1/admin/voucher.service";
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
@@ -25,6 +27,7 @@ export const useCartStore = defineStore("Cart", () => {
   const storeAccount = useAccountStore();
   const storeLocation = useLocationStore();
   const storeSetting = useSettingStore();
+  const { fetchAvailableVouchers, allVouchers } = useAvailableVouchersForOrder();
 
   const router = useRouter()
   const timeCurrent = getCurrentDateTime('time');
@@ -65,6 +68,8 @@ export const useCartStore = defineStore("Cart", () => {
     usedPoint: 0,
     checkBalancePoint: false
   });
+  const discountVoucher = ref(0);
+  const discountVoucherFreeship = ref(0);
 
   const addNormalProduct = (product: ProductDTO) => {
     const existingProduct = cartListItem.value?.find(
@@ -303,6 +308,22 @@ export const useCartStore = defineStore("Cart", () => {
 
     totalPriceSave.value = totalPriceCurrent.value - totalPriceDiscount.value + shippingFee.value
     
+    //handle show voucher
+    const userId = storeAccount.getDetailValue?.id
+    const categoryIds = [
+      ...new Set(cartListItem.value.map(item => item.categoryId))
+    ]
+
+    if (userId && categoryIds && totalPriceDiscount.value) {
+      
+      setTimeout(function(){
+        fetchAvailableVouchers({
+          userId,
+          categoryIds,
+          orderTotal: totalPriceDiscount.value
+        })
+      }, 500);
+    }
   };
 
   const deleteCart = async (productKey: string) => {
@@ -538,6 +559,43 @@ export const useCartStore = defineStore("Cart", () => {
     totalDiscountRateMembership.value = 0;
   }
 
+  const applyVoucher = async (code: string, isFreeship: boolean) => {
+    const userId = storeAccount.getDetailValue?.id;
+    const orderTotal = totalPriceDiscount.value; // ✅ đúng key theo API định nghĩa
+    const products = cartListItem.value.map(item => ({
+      productId: item.id,
+      categoryId: item.categoryId,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+    const orderCreatedAt = new Date().toISOString(); // hoặc lấy từ order hiện tại nếu có
+  
+    try {
+      const res = await vouchersAPI.apply({
+        code,
+        orderTotal,
+        products,
+        orderCreatedAt,
+        userId,
+      });
+
+      if (res.code === 0) {
+        const appliedVoucher = res.data;
+        if(isFreeship) {
+          discountVoucherFreeship.value = Math.round((appliedVoucher.discount)/ 1000) * 1000;
+          if(discountVoucherFreeship.value > shippingFee.value) discountVoucherFreeship.value = shippingFee.value;
+        }
+        else discountVoucher.value = Math.round((appliedVoucher.discount) / 1000) * 1000;
+        // console.log("Voucher applied successfully:", appliedVoucher);
+        showSuccess(res.message ?? "áp dụng voucher successfully");
+      } else {
+        showWarning(res.message ?? "Không thể áp dụng voucher");
+      }
+    } catch (err) {
+      console.error("Error applying voucher:", err);
+    }
+  };
+
   const handleCheckPoint = async () => {
     if(!storeAccount.getDetailValue?.id || usedPointOrder.pointInput == 0 || totalPriceDiscount.value === 0) {
       showWarning('Vui long kiem tra lai thong tin!')
@@ -603,6 +661,8 @@ export const useCartStore = defineStore("Cart", () => {
     totalDiscountRateMembership,
     shippingFee,
     getOrderPriceDiscount,
+    discountVoucherFreeship,
+    discountVoucher,
     // actions
     addProductToCart,
     handleTogglePopup,
@@ -623,6 +683,7 @@ export const useCartStore = defineStore("Cart", () => {
     handleGetDefaultAddress,
     handleCheckPoint,
     handleGetFee,
+    applyVoucher,
     // getters
     tempSelected,
     getCartCount,
@@ -637,5 +698,6 @@ export const useCartStore = defineStore("Cart", () => {
     getNameAddressChoose,
     getTotalPoint,
     getShippingFee,
+    allVouchers,
   };
 });

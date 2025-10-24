@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"3bc23-z/jPmePS+a6hOLgqeRNS6f4oIsA\"",
-    "mtime": "2025-10-23T17:38:35.226Z",
-    "size": 244771,
+    "etag": "\"3c914-uTuu1UzAxDSEE9+mvVshRwtkc0M\"",
+    "mtime": "2025-10-24T17:13:15.868Z",
+    "size": 248084,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"e425a-Z3biErqboPeFSnWs1sPREUSmcWM\"",
-    "mtime": "2025-10-23T17:38:35.227Z",
-    "size": 934490,
+    "etag": "\"e77c4-QK+HOBx4KEag5ETQ1XjruVyjxLw\"",
+    "mtime": "2025-10-24T17:13:15.870Z",
+    "size": 948164,
     "path": "index.mjs.map"
   }
 };
@@ -4500,6 +4500,31 @@ function toVoucherDTO(entity) {
   };
 }
 
+const VoucherUsageSchema = new Schema(
+  {
+    voucherId: {
+      type: Types.ObjectId,
+      ref: "Voucher",
+      required: true
+    },
+    userId: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    orderId: {
+      type: Types.ObjectId,
+      ref: "Order"
+    },
+    usedAt: {
+      type: Date,
+      default: Date.now
+    }
+  },
+  { timestamps: true }
+);
+const VoucherUsageEntity = model("VoucherUsage", VoucherUsageSchema);
+
 const getAllVouchers = async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
@@ -4652,94 +4677,109 @@ const toggleActiveVoucher = async (req, res) => {
   }
 };
 const applyVoucher = async (req, res) => {
-  var _a;
+  var _a, _b;
   try {
-    const { code, orderTotal, productIds, orderCreatedAt } = req.body;
-    if (!code || !orderTotal) {
-      return res.status(400).json({
-        code: 1,
-        message: "Thi\u1EBFu m\xE3 voucher ho\u1EB7c gi\xE1 tr\u1ECB \u0111\u01A1n h\xE0ng"
-      });
-    }
+    const {
+      code,
+      orderTotal,
+      products = [],
+      // [{ productId, categoryId, price, quantity }]
+      orderCreatedAt,
+      userId
+    } = req.body;
+    if (!code || !orderTotal)
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu m\xE3 voucher ho\u1EB7c gi\xE1 tr\u1ECB \u0111\u01A1n h\xE0ng" });
+    if (!userId)
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\xF4ng tin ng\u01B0\u1EDDi d\xF9ng" });
     const voucher = await VoucherEntity.findOne({ code, isActive: true });
-    if (!voucher) {
-      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
+    if (!voucher)
+      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i ho\u1EB7c kh\xF4ng ho\u1EA1t \u0111\u1ED9ng" });
     const now = /* @__PURE__ */ new Date();
-    if (voucher.startDate > now || voucher.endDate < now) {
+    if (voucher.startDate > now)
+      return res.status(400).json({ code: 1, message: "Ch\u01B0a \u0111\u1EBFn th\u1EDDi gian \xE1p d\u1EE5ng voucher" });
+    if (voucher.endDate < now)
       return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt h\u1EA1n" });
-    }
-    if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit) {
+    if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit)
       return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng" });
-    }
-    if (voucher.minOrderValue && orderTotal < voucher.minOrderValue) {
+    const userUsedCount = await VoucherUsageEntity.countDocuments({
+      voucherId: voucher._id,
+      userId
+    });
+    if (voucher.limitPerUser > 0 && userUsedCount >= voucher.limitPerUser)
+      return res.status(400).json({ code: 1, message: "B\u1EA1n \u0111\xE3 d\xF9ng h\u1EBFt l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y" });
+    if (voucher.minOrderValue && orderTotal < voucher.minOrderValue)
       return res.status(400).json({
         code: 1,
-        message: `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${voucher.minOrderValue.toLocaleString()}\u0111 \u0111\u1EC3 \xE1p d\u1EE5ng voucher`
+        message: `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${voucher.minOrderValue.toLocaleString()}\u0111`
       });
+    let applicableProducts = [];
+    if (voucher.type === "product") {
+      const applicableProductIds = ((_a = voucher.applicableProducts) != null ? _a : []).map(String);
+      const applicableCategoryIds = ((_b = voucher.applicableCategories) != null ? _b : []).map(String);
+      applicableProducts = products.filter((p) => {
+        var _a2, _b2;
+        const pid = (_a2 = p.productId) == null ? void 0 : _a2.toString();
+        const cid = (_b2 = p.categoryId) == null ? void 0 : _b2.toString();
+        return applicableProductIds.includes(pid) || applicableCategoryIds.includes(cid);
+      });
+      if (applicableProducts.length === 0) {
+        return res.status(400).json({
+          code: 1,
+          message: "Voucher kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m n\xE0o trong \u0111\u01A1n h\xE0ng"
+        });
+      }
+    } else {
+      applicableProducts = products;
     }
+    const subtotalApplicable = applicableProducts.reduce(
+      (sum, p) => sum + p.price * p.quantity,
+      0
+    );
+    console.log("subtotalApplicable");
+    console.log(subtotalApplicable);
     let discount = 0;
     let message = "\xC1p d\u1EE5ng voucher th\xE0nh c\xF4ng";
     switch (voucher.type) {
-      // 1️⃣ Giảm phần trăm tổng đơn
       case "percentage":
         discount = Math.min(
-          orderTotal * voucher.value / 100,
+          subtotalApplicable * voucher.value / 100,
           voucher.maxDiscount || Infinity
         );
         break;
-      // 2️⃣ Giảm số tiền cố định
       case "fixed":
-        discount = Math.min(voucher.value, orderTotal);
+        discount = Math.min(voucher.value, subtotalApplicable);
         break;
-      // 3️⃣ Miễn phí vận chuyển (tối đa X VNĐ)
       case "freeship":
-        if (!voucher.maxShippingDiscount || voucher.maxShippingDiscount <= 0) {
+        if (!voucher.maxShippingDiscount)
           return res.status(400).json({
             code: 1,
-            message: "Voucher freeship ch\u01B0a c\xF3 c\u1EA5u h\xECnh m\u1EE9c gi\u1EA3m ph\xED v\u1EADn chuy\u1EC3n t\u1ED1i \u0111a"
+            message: "Voucher freeship ch\u01B0a c\u1EA5u h\xECnh m\u1EE9c gi\u1EA3m ph\xED t\u1ED1i \u0111a"
           });
-        }
         discount = Math.min(voucher.maxShippingDiscount, orderTotal);
         message = `\xC1p d\u1EE5ng mi\u1EC5n ph\xED v\u1EADn chuy\u1EC3n (t\u1ED1i \u0111a ${voucher.maxShippingDiscount.toLocaleString()}\u0111)`;
         break;
-      // 4️⃣ Giảm giá theo sản phẩm cụ thể
       case "product":
-        if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
-          return res.status(400).json({ code: 1, message: "Thi\u1EBFu danh s\xE1ch s\u1EA3n ph\u1EA9m trong \u0111\u01A1n h\xE0ng" });
-        }
-        const applicable = ((_a = voucher.applicableProducts) == null ? void 0 : _a.map((p) => p.toString())) || [];
-        const matched = productIds.filter((id) => applicable.includes(id.toString()));
-        if (matched.length === 0) {
-          return res.status(400).json({
-            code: 1,
-            message: "Voucher n\xE0y ch\u1EC9 \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m c\u1EE5 th\u1EC3"
-          });
-        }
-        discount = Math.min(voucher.value * matched.length, orderTotal);
-        message = `Gi\u1EA3m gi\xE1 cho ${matched.length} s\u1EA3n ph\u1EA9m \xE1p d\u1EE5ng`;
+        discount = Math.min(
+          subtotalApplicable * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
         break;
-      // 5️⃣ Giảm giá trong khung giờ/khung thời gian đặc biệt
       case "timed":
-        if (!orderCreatedAt) {
-          return res.status(400).json({
-            code: 1,
-            message: "Thi\u1EBFu th\u1EDDi gian t\u1EA1o \u0111\u01A1n \u0111\u1EC3 ki\u1EC3m tra voucher th\u1EDDi gian"
-          });
-        }
+        if (!orderCreatedAt)
+          return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\u1EDDi gian t\u1EA1o \u0111\u01A1n h\xE0ng" });
         const createdAt = new Date(orderCreatedAt);
-        if (createdAt < voucher.startDate || createdAt > voucher.endDate) {
-          return res.status(400).json({
-            code: 1,
-            message: "Voucher ch\u1EC9 \xE1p d\u1EE5ng trong khung th\u1EDDi gian nh\u1EA5t \u0111\u1ECBnh"
-          });
-        }
-        discount = Math.min(orderTotal * voucher.value / 100, voucher.maxDiscount || Infinity);
+        if (createdAt < voucher.startDate || createdAt > voucher.endDate)
+          return res.status(400).json({ code: 1, message: "Voucher kh\xF4ng h\u1EE3p l\u1EC7 \u1EDF th\u1EDDi \u0111i\u1EC3m n\xE0y" });
+        discount = Math.min(
+          subtotalApplicable * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
         message = "\xC1p d\u1EE5ng voucher khung th\u1EDDi gian";
         break;
       default:
         return res.status(400).json({ code: 1, message: "Lo\u1EA1i voucher kh\xF4ng h\u1EE3p l\u1EC7" });
     }
+    discount = Math.round(discount * 100) / 100;
     return res.json({
       code: 0,
       message,
@@ -4747,9 +4787,64 @@ const applyVoucher = async (req, res) => {
         code: voucher.code,
         type: voucher.type,
         discount,
+        applicableProducts,
         stackable: voucher.stackable,
         expiresAt: voucher.endDate
       }
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAvailableVouchersForOrder = async (req, res) => {
+  var _a;
+  try {
+    const { orderTotal = 0, categoryIds = [], userId } = req.body;
+    const now = /* @__PURE__ */ new Date();
+    const vouchers = await VoucherEntity.find({
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now }
+    }).sort({ createdAt: -1 });
+    const result = [];
+    for (const v of vouchers) {
+      const userUsedCount = userId ? await VoucherUsageEntity.countDocuments({
+        voucherId: v._id,
+        userId
+      }) : 0;
+      let isDisabled = false;
+      let disabledReason = null;
+      if (v.usageLimit > 0 && v.usedCount >= v.usageLimit) {
+        isDisabled = true;
+        disabledReason = "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng";
+      } else if (v.limitPerUser > 0 && userUsedCount >= v.limitPerUser) {
+        isDisabled = true;
+        disabledReason = "B\u1EA1n \u0111\xE3 s\u1EED d\u1EE5ng h\u1EBFt s\u1ED1 l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y";
+      } else if (orderTotal < (v.minOrderValue || 0)) {
+        isDisabled = true;
+        disabledReason = `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${(_a = v.minOrderValue) == null ? void 0 : _a.toLocaleString()}\u0111`;
+      } else if (v.type === "product") {
+        const hasApplicableCategories = Array.isArray(v.applicableCategories) && Array.isArray(categoryIds) && categoryIds.some(
+          (cid) => {
+            var _a2;
+            return ((_a2 = v.applicableCategories) != null ? _a2 : []).map(String).includes(cid.toString());
+          }
+        );
+        if (!hasApplicableCategories) {
+          isDisabled = true;
+          disabledReason = "Kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m ho\u1EB7c danh m\u1EE5c trong \u0111\u01A1n h\xE0ng";
+        }
+      }
+      result.push({
+        ...v.toObject(),
+        isDisabled,
+        disabledReason
+      });
+    }
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y danh s\xE1ch voucher th\xE0nh c\xF4ng",
+      data: result
     });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
@@ -4764,6 +4859,7 @@ router$e.put("/:id", updateVoucher);
 router$e.delete("/:id", deleteVoucher);
 router$e.patch("/:id/toggle-active", toggleActiveVoucher);
 router$e.post("/apply", applyVoucher);
+router$e.post("/available", getAvailableVouchersForOrder);
 
 const voucherRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

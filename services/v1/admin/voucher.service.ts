@@ -5,6 +5,7 @@ import type {
   CreateVoucherBody,
   VoucherPaginationDTO,
   ApplyVoucherResponse,
+  VoucherAvailableDTO,
 } from '@/server/types/dto/v1/voucher.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
 
@@ -141,8 +142,9 @@ export const vouchersAPI = {
     payload: {
       code: string
       orderTotal: number
-      productIds?: string[]
+      products?: string[]
       orderCreatedAt?: string
+      userId: string
     }
   ): Promise<ApiResponse<ApplyVoucherResponse>> => {
     try {
@@ -163,4 +165,33 @@ export const vouchersAPI = {
       throw err
     }
   },
+
+  getAvailableForOrder: async (body: {
+    orderTotal: number
+    categoryIds?: string[]
+    userId?: string
+  }): Promise<ApiResponse<VoucherAvailableDTO[]>> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.AVAILABLE}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(body),
+        }
+      )
+
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error('Error fetching available vouchers for order:', err)
+      return {
+        code: 1,
+        message: 'Không thể lấy danh sách voucher khả dụng',
+        data: [],
+      } as ApiResponse<VoucherAvailableDTO[]>
+    }
+  },
+
 }

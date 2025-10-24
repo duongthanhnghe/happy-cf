@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import '@/styles/templates/cart/popup-cart.scss'
-import { watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import type { SubmitEventPromise } from 'vuetify';
 import { formatCurrency } from '@/utils/global'
 import { showWarning } from '@/utils/toast'
@@ -11,6 +11,7 @@ import { ROUTES } from '@/shared/constants/routes';
 import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
 import { nullRules, phoneRules } from '@/utils/validation'
 import { useLocationStore } from '@/stores/shared/useLocationStore';
+import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 
 definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
@@ -22,6 +23,9 @@ const storeAccount = useAccountStore();
 const storePaymentStatus = usePaymentStatusStore();
 const storeLocation = useLocationStore();
 
+const selectedFreeships = ref<string| null>(null);
+const selectedVoucher = ref<string | null>(null);
+
 const submitOrder = async (event: SubmitEventPromise) => {
   const results = await event
   if (!results.valid) {
@@ -30,6 +34,35 @@ const submitOrder = async (event: SubmitEventPromise) => {
   }
   store.submitOrder()
 }
+
+const removeVoucher = (isFreeship: boolean) => {
+  if(isFreeship){
+    selectedFreeships.value = null;
+    store.discountVoucherFreeship = 0;
+  } else {
+    selectedVoucher.value = null;
+    store.discountVoucher = 0;
+  }
+}
+
+watch(() => store.shippingFee, async (newVal) => {
+  if (newVal && selectedFreeships.value) {
+    await store.applyVoucher(selectedFreeships.value, true)
+  }
+})
+
+watch(
+  [selectedVoucher, selectedFreeships],
+  ([newVoucher, newFreeship], [oldVoucher, oldFreeship]) => {
+    if (newVoucher && newVoucher !== oldVoucher) {
+      store.applyVoucher(newVoucher, false);
+    }
+
+    if (newFreeship && newFreeship !== oldFreeship) {
+      store.applyVoucher(newFreeship, true);
+    }
+  }
+);
 
 watch(() => storeLocation.selectedProvince, async (newVal) => {
   if (storeLocation.isSetting) return
@@ -192,10 +225,36 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
+      <!-- Voucher Freeship -->
+        <div v-if="selectedVoucher || selectedFreeships" class="flex align-center gap-xs">
+          Xoá mã giảm giá: 
+          <Button v-if="selectedVoucher" color="secondary" size="md" class="pl-sm pr-sm" @click.prevent="removeVoucher(false);" :label="selectedVoucher">
+            <MaterialIcon class="ml-xs" name="close"/>
+          </Button>
+          <Button v-if="selectedFreeships" color="secondary" size="md" class="pl-sm pr-sm" @click.prevent="removeVoucher(true);" :label="selectedFreeships">
+            <MaterialIcon name="close"/>
+          </Button>
+        </div>
+
+      <div class="flex gap-sm" v-if="store.allVouchers?.length">
+        <VoucherItemTemplate1
+          v-for="(voucher, index) in store.allVouchers.filter(v => v.type === VOUCHER_TYPE.freeship.type)"
+          :key="'freeship-' + index"
+          :item="voucher"
+          v-model="selectedFreeships"
+        />
+        <VoucherItemTemplate1
+          v-for="(voucher, index) in store.allVouchers.filter(v => v.type !== VOUCHER_TYPE.freeship.type)"
+          :key="'other-' + index"
+          :item="voucher"
+          v-model="selectedVoucher"
+        />
+      </div>
+
         <div class="card-sm bg-white mt-ms">
           <div class="popup-cart-footer-item">
             <Heading tag="div" size="md" weight="normal">Thanh tien <span class="text-size-base text-color-green">(Tiet kiem: {{ formatCurrency(store.getTotalPriceSave) }})</span></Heading>
-            <Heading tag="div" size="xl" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }}</Heading>
+            <Heading tag="div" size="xl" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }} </Heading>
           </div>
 
           <div v-if="store.getTotalPriceSave != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
@@ -204,6 +263,14 @@ onBeforeUnmount(() => {
 
           <div class="popup-cart-footer-item popup-cart-footer-item-save">
           Phi van chuyen: <span>{{ formatCurrency(store.getShippingFee) }}</span>
+          </div>
+
+          <div v-if="store.discountVoucherFreeship" class="popup-cart-footer-item popup-cart-footer-item-save">
+          Voucher phi van chuyen: <span>-{{ formatCurrency(store.discountVoucherFreeship) }}</span>
+          </div>
+
+          <div v-if="store.discountVoucher" class="popup-cart-footer-item popup-cart-footer-item-save">
+          Voucher giảm giá: <span>-{{ formatCurrency(store.discountVoucher) }}</span>
           </div>
 
           <div v-if="store.getOrderPriceDiscount != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
@@ -224,8 +291,6 @@ onBeforeUnmount(() => {
               +{{ formatCurrency(store.getTotalPoint).replace('đ','') }}
             </span>
           </div>
-
-          
 
           <Button type="submit" label="Dat hang" color="primary" class="mt-sm w-full" />
         </div>

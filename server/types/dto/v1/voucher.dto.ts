@@ -56,4 +56,10 @@ export interface ApplyVoucherResponse {
   message: string;
 }
 
+export interface VoucherAvailableDTO extends VoucherDTO {
+  isDisabled: boolean;
+  disabledReason?: string;
+}
+
 export type VoucherPaginationDTO = PaginationDTO<VoucherDTO>
+

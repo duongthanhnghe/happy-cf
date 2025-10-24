@@ -113,5 +113,6 @@ export const API_ENDPOINTS_ADMIN = {
     DELETE: (id) => `/voucher/${id}`,
     TOGGLE_ACTIVE: (id) => `/voucher/${id}/toggle-active`,
     APPLY: "/voucher/apply",
+    AVAILABLE: '/voucher/available',
   },
 }
