@@ -94,15 +94,15 @@ const openPopupAdd = () => {
       </template>
 
       <template #item.maxShippingDiscount="{ item }">
-        <template v-if="item.type === 'freeship'">
+        <template v-if="item.type === VOUCHER_TYPE.freeship.type">
           {{ formatCurrency(item.maxShippingDiscount ? item.maxShippingDiscount : '-') }}
         </template>
       </template>
 
       <!-- Giá trị giảm (value) -->
     <template #item.value="{ item }">
-      <template v-if="item.type !== 'freeship'"> <!-- Hiển thị nếu không phải freeship -->
-        <template v-if="item.type === 'percentage'">
+      <template v-if="item.type !== VOUCHER_TYPE.freeship.type"> <!-- Hiển thị nếu không phải freeship -->
+        <template v-if="item.type === VOUCHER_TYPE.percentage.type || item.type === VOUCHER_TYPE.product.type">
           <v-chip label color="gray" small>{{ item.value }}%</v-chip>
         </template>
         <template v-else>
@@ -113,7 +113,7 @@ const openPopupAdd = () => {
 
       <!-- Giảm tối đa (maxDiscount) -->
       <template #item.maxDiscount="{ item }">
-        <template v-if="item.type === 'percentage'"> <!-- Chỉ hiển thị nếu là percentage -->
+        <template v-if="item.type === VOUCHER_TYPE.percentage.type"> <!-- Chỉ hiển thị nếu là percentage -->
           {{ item.maxDiscount ? formatCurrency(item.maxDiscount) : '-' }}
         </template>
       </template>

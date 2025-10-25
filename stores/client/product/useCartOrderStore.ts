@@ -20,6 +20,7 @@ import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
 import { vouchersAPI } from "@/services/v1/admin/voucher.service";
+import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
@@ -70,6 +71,7 @@ export const useCartStore = defineStore("Cart", () => {
   });
   const discountVoucher = ref(0);
   const discountVoucherFreeship = ref(0);
+  const messageVoucher = ref('');
 
   const addNormalProduct = (product: ProductDTO) => {
     const existingProduct = cartListItem.value?.find(
@@ -561,15 +563,18 @@ export const useCartStore = defineStore("Cart", () => {
 
   const applyVoucher = async (code: string, isFreeship: boolean) => {
     const userId = storeAccount.getDetailValue?.id;
-    const orderTotal = totalPriceDiscount.value; // ✅ đúng key theo API định nghĩa
+    const orderTotal = totalPriceDiscount.value;
     const products = cartListItem.value.map(item => ({
       productId: item.id,
+      productName: item.productName,
       categoryId: item.categoryId,
-      price: item.price,
+      price: item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts,
       quantity: item.quantity,
     }));
-    const orderCreatedAt = new Date().toISOString(); // hoặc lấy từ order hiện tại nếu có
-  
+    const orderCreatedAt = new Date().toISOString();
+
+    if(!userId) return showWarning("Không thể áp dụng voucher");
+
     try {
       const res = await vouchersAPI.apply({
         code,
@@ -582,12 +587,14 @@ export const useCartStore = defineStore("Cart", () => {
       if (res.code === 0) {
         const appliedVoucher = res.data;
         if(isFreeship) {
-          discountVoucherFreeship.value = Math.round((appliedVoucher.discount)/ 1000) * 1000;
+          discountVoucherFreeship.value = appliedVoucher.discount;
           if(discountVoucherFreeship.value > shippingFee.value) discountVoucherFreeship.value = shippingFee.value;
         }
-        else discountVoucher.value = Math.round((appliedVoucher.discount) / 1000) * 1000;
-        // console.log("Voucher applied successfully:", appliedVoucher);
-        showSuccess(res.message ?? "áp dụng voucher successfully");
+        else {
+          discountVoucher.value = appliedVoucher.discount;
+          if(appliedVoucher.type === VOUCHER_TYPE.product.type) messageVoucher.value = res.message || '';
+        }
+        showSuccess("Áp dụng voucher thành công");
       } else {
         showWarning(res.message ?? "Không thể áp dụng voucher");
       }
@@ -663,6 +670,7 @@ export const useCartStore = defineStore("Cart", () => {
     getOrderPriceDiscount,
     discountVoucherFreeship,
     discountVoucher,
+    messageVoucher,
     // actions
     addProductToCart,
     handleTogglePopup,

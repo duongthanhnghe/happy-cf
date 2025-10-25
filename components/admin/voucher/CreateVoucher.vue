@@ -139,14 +139,14 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           <!-- Giá trị giảm -->
           <div :class="{ _hidden: !showValue }">
             <LabelInput
-              :label="type === 'percentage' || type === 'product' ? 'Giá trị giảm (%)' : 'Giá trị giảm (VNĐ)'"
+              :label="type === VOUCHER_TYPE.percentage.type || type === VOUCHER_TYPE.product.type ? 'Giá trị giảm (%)' : 'Giá trị giảm (VNĐ)'"
             />
 
             <v-text-field
               v-model.number="store.formItem.value"
               type="number"
-              :label="type === 'percentage' || type === 'product' ? 'Nhập phần trăm giảm (VD: 10 = 10%)' : 'Nhập số tiền giảm (VD: 50000 = 50.000đ)'"
-              :suffix="type === 'percentage' || type === 'product' ? '%' : '₫'"
+              :label="type === VOUCHER_TYPE.percentage.type || type === VOUCHER_TYPE.product.type ? 'Nhập phần trăm giảm (VD: 10 = 10%)' : 'Nhập số tiền giảm (VD: 50000 = 50.000đ)'"
+              :suffix="type === VOUCHER_TYPE.percentage.type || type === VOUCHER_TYPE.product.type ? '%' : '₫'"
               variant="outlined"
               min="0"
             />
@@ -185,14 +185,6 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 
           <!-- Sản phẩm / danh mục áp dụng -->
           <div :class="{ _hidden: !showProduct }">
-            <!-- <LabelInput label="Sản phẩm áp dụng (IDs)" />
-            <v-text-field
-              v-model="store.formItem.applicableProducts"
-              label="Nhập danh sách ID sản phẩm, cách nhau bằng dấu phẩy"
-              variant="outlined"
-            />
-            -->
-
             <div class="flex gap-sm align-anchor">
             <div class="flex-1">
               <LabelInput label="Danh mục áp dụng (IDs)" />

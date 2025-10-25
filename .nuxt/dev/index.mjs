@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"3c914-uTuu1UzAxDSEE9+mvVshRwtkc0M\"",
-    "mtime": "2025-10-24T17:13:15.868Z",
-    "size": 248084,
+    "etag": "\"3cb53-sZNhJjWs6HJL0fMM18jckj34ppc\"",
+    "mtime": "2025-10-25T04:44:53.317Z",
+    "size": 248659,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"e77c4-QK+HOBx4KEag5ETQ1XjruVyjxLw\"",
-    "mtime": "2025-10-24T17:13:15.870Z",
-    "size": 948164,
+    "etag": "\"e7fca-AcniD0IIo6Ee4eL3TAoeY+GxB5g\"",
+    "mtime": "2025-10-25T04:44:53.320Z",
+    "size": 950218,
     "path": "index.mjs.map"
   }
 };
@@ -4683,7 +4683,6 @@ const applyVoucher = async (req, res) => {
       code,
       orderTotal,
       products = [],
-      // [{ productId, categoryId, price, quantity }]
       orderCreatedAt,
       userId
     } = req.body;
@@ -4714,6 +4713,9 @@ const applyVoucher = async (req, res) => {
       });
     let applicableProducts = [];
     if (voucher.type === "product") {
+      if (voucher.value < 0 || voucher.value > 100) {
+        return res.status(400).json({ code: 1, message: "Gi\xE1 tr\u1ECB gi\u1EA3m (%) kh\xF4ng h\u1EE3p l\u1EC7" });
+      }
       const applicableProductIds = ((_a = voucher.applicableProducts) != null ? _a : []).map(String);
       const applicableCategoryIds = ((_b = voucher.applicableCategories) != null ? _b : []).map(String);
       applicableProducts = products.filter((p) => {
@@ -4735,8 +4737,6 @@ const applyVoucher = async (req, res) => {
       (sum, p) => sum + p.price * p.quantity,
       0
     );
-    console.log("subtotalApplicable");
-    console.log(subtotalApplicable);
     let discount = 0;
     let message = "\xC1p d\u1EE5ng voucher th\xE0nh c\xF4ng";
     switch (voucher.type) {
@@ -4763,6 +4763,12 @@ const applyVoucher = async (req, res) => {
           subtotalApplicable * voucher.value / 100,
           voucher.maxDiscount || Infinity
         );
+        const productNames = applicableProducts.map((p) => p.productName);
+        if (productNames.length === 1) {
+          message = `M\xE3 gi\u1EA3m gi\xE1 ${voucher.code} ch\u1EC9 \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho s\u1EA3n ph\u1EA9m ${productNames[0]}`;
+        } else {
+          message = `M\xE3 gi\u1EA3m gi\xE1 ${voucher.code} ch\u1EC9 \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho ${productNames.length} s\u1EA3n ph\u1EA9m: ${productNames.map((name) => `<div>- ${name}</div>`).join("")}`;
+        }
         break;
       case "timed":
         if (!orderCreatedAt)
@@ -4779,7 +4785,7 @@ const applyVoucher = async (req, res) => {
       default:
         return res.status(400).json({ code: 1, message: "Lo\u1EA1i voucher kh\xF4ng h\u1EE3p l\u1EC7" });
     }
-    discount = Math.round(discount * 100) / 100;
+    discount = Math.round(discount * 1e3) / 1e3;
     return res.json({
       code: 0,
       message,

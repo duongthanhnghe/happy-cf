@@ -662,6 +662,11 @@ body .bg {
   }
 }
 
+.disable {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .flex {
   display: flex;
   &-1 {

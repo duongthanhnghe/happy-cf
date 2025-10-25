@@ -49,9 +49,18 @@ export interface CreateVoucherBody {
   isActive?: boolean;
 }
 
+export interface ApplyVoucherProduct {
+  productId: string;
+  productName: string;
+  categoryId: string;
+  price: number;
+  quantity: number;
+}
+
 export interface ApplyVoucherResponse {
   code: string;
   discount: number; // Số tiền giảm
+  products: ApplyVoucherProduct[]; // Danh sách sản phẩm được áp dụng giảm
   type: VOUCHER_TYPE;
   message: string;
 }

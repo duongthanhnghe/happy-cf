@@ -288,8 +288,7 @@ export const applyVoucher123 = async (req, res) => {
 export const applyVoucher = async (req, res) => {
     var _a, _b;
     try {
-        const { code, orderTotal, products = [], // [{ productId, categoryId, price, quantity }]
-        orderCreatedAt, userId, } = req.body;
+        const { code, orderTotal, products = [], orderCreatedAt, userId, } = req.body;
         if (!code || !orderTotal)
             return res.status(400).json({ code: 1, message: "Thiếu mã voucher hoặc giá trị đơn hàng" });
         if (!userId)
@@ -321,6 +320,9 @@ export const applyVoucher = async (req, res) => {
         // 4️⃣ Lọc sản phẩm hợp lệ theo danh mục hoặc danh sách sản phẩm
         let applicableProducts = [];
         if (voucher.type === "product") {
+            if (voucher.value < 0 || voucher.value > 100) {
+                return res.status(400).json({ code: 1, message: "Giá trị giảm (%) không hợp lệ" });
+            }
             const applicableProductIds = ((_a = voucher.applicableProducts) !== null && _a !== void 0 ? _a : []).map(String);
             const applicableCategoryIds = ((_b = voucher.applicableCategories) !== null && _b !== void 0 ? _b : []).map(String);
             applicableProducts = products.filter((p) => {
@@ -343,8 +345,6 @@ export const applyVoucher = async (req, res) => {
         }
         // 5️⃣ Tính giảm giá
         const subtotalApplicable = applicableProducts.reduce((sum, p) => sum + p.price * p.quantity, 0);
-        console.log("subtotalApplicable");
-        console.log(subtotalApplicable);
         let discount = 0;
         let message = "Áp dụng voucher thành công";
         switch (voucher.type) {
@@ -364,8 +364,16 @@ export const applyVoucher = async (req, res) => {
                 message = `Áp dụng miễn phí vận chuyển (tối đa ${voucher.maxShippingDiscount.toLocaleString()}đ)`;
                 break;
             case "product":
-                // discount = Math.min(voucher.value, subtotalApplicable);
                 discount = Math.min((subtotalApplicable * voucher.value) / 100, voucher.maxDiscount || Infinity);
+                const productNames = applicableProducts.map((p) => p.productName);
+                if (productNames.length === 1) {
+                    message = `Mã giảm giá ${voucher.code} chỉ áp dụng giảm ${voucher.value}% cho sản phẩm ${productNames[0]}`;
+                }
+                else {
+                    message = `Mã giảm giá ${voucher.code} chỉ áp dụng giảm ${voucher.value}% cho ${productNames.length} sản phẩm: ${productNames
+                        .map(name => `<div>- ${name}</div>`)
+                        .join("")}`;
+                }
                 break;
             case "timed":
                 if (!orderCreatedAt)
@@ -380,7 +388,7 @@ export const applyVoucher = async (req, res) => {
                 return res.status(400).json({ code: 1, message: "Loại voucher không hợp lệ" });
         }
         // Làm tròn 2 chữ số
-        discount = Math.round(discount * 100) / 100;
+        discount = Math.round(discount * 1000) / 1000;
         // ✅ Trả kết quả
         return res.json({
             code: 0,

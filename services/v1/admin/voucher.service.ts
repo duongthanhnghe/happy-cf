@@ -4,6 +4,7 @@ import type {
   VoucherDTO,
   CreateVoucherBody,
   VoucherPaginationDTO,
+  ApplyVoucherProduct,
   ApplyVoucherResponse,
   VoucherAvailableDTO,
 } from '@/server/types/dto/v1/voucher.dto'
@@ -142,7 +143,7 @@ export const vouchersAPI = {
     payload: {
       code: string
       orderTotal: number
-      products?: string[]
+      products?: ApplyVoucherProduct[]
       orderCreatedAt?: string
       userId: string
     }

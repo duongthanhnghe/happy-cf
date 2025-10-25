@@ -338,7 +338,7 @@ export const applyVoucher = async (req: Request, res: Response) => {
     const {
       code,
       orderTotal,
-      products = [], // [{ productId, categoryId, price, quantity }]
+      products = [],
       orderCreatedAt,
       userId,
     } = req.body;
@@ -383,6 +383,10 @@ export const applyVoucher = async (req: Request, res: Response) => {
     let applicableProducts: any[] = [];
 
     if (voucher.type === "product") {
+      if(voucher.value < 0 || voucher.value > 100) {
+        return res.status(400).json({ code: 1, message: "Giá trị giảm (%) không hợp lệ" });
+      }
+
       const applicableProductIds = (voucher.applicableProducts ?? []).map(String);
       const applicableCategoryIds = (voucher.applicableCategories ?? []).map(String);
 
@@ -411,9 +415,6 @@ export const applyVoucher = async (req: Request, res: Response) => {
       (sum, p) => sum + p.price * p.quantity,
       0
     );
-
-    console.log("subtotalApplicable")
-    console.log(subtotalApplicable)
 
     let discount = 0;
     let message = "Áp dụng voucher thành công";
@@ -445,6 +446,16 @@ export const applyVoucher = async (req: Request, res: Response) => {
           (subtotalApplicable * voucher.value) / 100,
           voucher.maxDiscount || Infinity
         );
+
+        const productNames = applicableProducts.map((p: any) => p.productName);
+        if (productNames.length === 1) {
+          message = `Mã giảm giá ${voucher.code} chỉ áp dụng giảm ${voucher.value}% cho sản phẩm ${productNames[0]}`;
+        } else {
+          message = `Mã giảm giá ${voucher.code} chỉ áp dụng giảm ${voucher.value}% cho ${productNames.length} sản phẩm: ${productNames
+          .map(name => `<div>- ${name}</div>`)
+          .join("")}`;
+        }
+
         break;
 
       case "timed":
@@ -465,7 +476,7 @@ export const applyVoucher = async (req: Request, res: Response) => {
     }
 
     // Làm tròn 2 chữ số
-    discount = Math.round(discount * 100) / 100;
+    discount = Math.round(discount * 1000) / 1000;
 
     // ✅ Trả kết quả
     return res.json({
@@ -484,7 +495,6 @@ export const applyVoucher = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-
 
 
 export const getAvailableVouchersForOrder = async (req: Request, res: Response) => {
