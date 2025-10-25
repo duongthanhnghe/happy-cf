@@ -51,7 +51,7 @@ export interface CreateVoucherBody {
 
 export interface ApplyVoucherProduct {
   productId: string;
-  productName: string;
+  name: string;
   categoryId: string;
   price: number;
   quantity: number;
@@ -60,9 +60,11 @@ export interface ApplyVoucherProduct {
 export interface ApplyVoucherResponse {
   code: string;
   discount: number; // Số tiền giảm
-  products: ApplyVoucherProduct[]; // Danh sách sản phẩm được áp dụng giảm
+  applicableProducts: ApplyVoucherProduct[]; // Danh sách sản phẩm được áp dụng giảm
   type: VOUCHER_TYPE;
-  message: string;
+  expiresAt?: string;
+  stackable: boolean;
+  message?: string;
 }
 
 export interface VoucherAvailableDTO extends VoucherDTO {

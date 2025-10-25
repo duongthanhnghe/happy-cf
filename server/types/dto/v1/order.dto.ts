@@ -2,6 +2,7 @@ import type { ProductDTO } from './product.dto';
 import type { PaymentTransactionDTO, PaymentMethod } from './payment-transaction.dto';
 import { Types } from "mongoose";
 import type { PaginationDTO } from '../../common/pagination.dto'
+import type { ApplyVoucherResponse } from './voucher.dto';
 
 export interface ProductInOrder extends cartItems {
   data: ProductDTO
@@ -74,8 +75,9 @@ export interface OrderDTO {
   };
   usedPoints: number;
   pointsRefunded: boolean
-  membershipDiscountRate: number,
-  membershipDiscountAmount: number,
+  membershipDiscountRate: number;
+  membershipDiscountAmount: number;
+  voucherUsage: ApplyVoucherResponse[];
   createdAt: string;
   updatedAt: string;
 }

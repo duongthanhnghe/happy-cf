@@ -82,6 +82,24 @@ export function toOrderDTO(entity: Order): OrderDTO {
     membershipDiscountAmount: entity.membershipDiscountAmount,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
+    voucherUsage: Array.isArray(entity.voucherUsage)
+      ? entity.voucherUsage.map(v => ({
+          code: v.code,
+          type: v.type,
+          discount: v.discount ?? 0,
+          expiresAt: v.expiresAt ? new Date(v.expiresAt).toISOString() : undefined,
+          stackable: v.stackable ?? false,
+          applicableProducts: Array.isArray(v.applicableProducts)
+            ? v.applicableProducts.map(p => ({
+                productId: p.productId ? p.productId.toString() : "",
+                name: p.name,
+                categoryId: p.categoryId ? p.categoryId.toString() : "",
+                price: p.price ?? 0,
+                quantity: p.quantity ?? 0,
+              }))
+            : [],
+        }))
+      : []
   };
 }
 

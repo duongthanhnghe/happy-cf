@@ -199,140 +199,6 @@ export const toggleActiveVoucher = async (req: Request, res: Response) => {
   }
 }
 
-// 📍 Áp dụng voucher để tính giảm giá
-export const applyVoucher123 = async (req: Request, res: Response) => {
-  try {
-    const { code, orderTotal, categoryIds = [], orderCreatedAt, userId } = req.body
-
-    if (!code || !orderTotal) {
-      return res.status(400).json({ code: 1, message: "Thiếu mã voucher hoặc giá trị đơn hàng" })
-    }
-
-    if (!userId) {
-      return res.status(400).json({ code: 1, message: "Thiếu thông tin người dùng" })
-    }
-
-    const voucher = await VoucherEntity.findOne({ code, isActive: true })
-    if (!voucher) {
-      return res.status(404).json({ code: 1, message: "Voucher không tồn tại" })
-    }
-
-    const now = new Date()
-
-    // 1️⃣ Kiểm tra thời gian hợp lệ
-    if (voucher.startDate > now) {
-      return res.status(400).json({ code: 1, message: "Chưa đến thời gian áp dụng voucher" })
-    }
-    if (voucher.endDate < now) {
-      return res.status(400).json({ code: 1, message: "Voucher đã hết hạn" })
-    }
-
-    // 2️⃣ Kiểm tra lượt tổng
-    if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit) {
-      return res.status(400).json({ code: 1, message: "Voucher đã hết lượt sử dụng" })
-    }
-
-    // 3️⃣ Kiểm tra lượt user
-    const userUsedCount = await VoucherUsageEntity.countDocuments({
-      voucherId: voucher._id,
-      userId
-    })
-    if (voucher.limitPerUser > 0 && userUsedCount >= voucher.limitPerUser) {
-      return res.status(400).json({ code: 1, message: "Bạn đã sử dụng hết số lượt của voucher này" })
-    }
-
-    // 4️⃣ Kiểm tra giá trị đơn tối thiểu
-    if (voucher.minOrderValue && orderTotal < voucher.minOrderValue) {
-      return res.status(400).json({
-        code: 1,
-        message: `Đơn hàng chưa đạt giá trị tối thiểu ${voucher.minOrderValue.toLocaleString()}đ để áp dụng voucher`
-      })
-    }
-
-    // 5️⃣ Kiểm tra sản phẩm/danh mục áp dụng
-    if (voucher.type === "product") {
-      // const applicableProducts = (voucher.applicableProducts ?? []).map(p => p.toString())
-      const applicableCategories = (voucher.applicableCategories ?? []).map(c => c.toString())
-
-      // const hasApplicableProduct = productIds.some((id: string) =>
-      //   applicableProducts.includes(id.toString())
-      // )
-      const hasApplicableCategory = categoryIds.some((id: string) =>
-        applicableCategories.includes(id.toString())
-      )
-
-      if (!hasApplicableCategory) {
-        return res.status(400).json({
-          code: 1,
-          message: "Voucher không áp dụng cho sản phẩm hoặc danh mục trong đơn hàng"
-        })
-      }
-    }
-
-    // 6️⃣ Tính giảm giá
-    let discount = 0
-    let message = "Áp dụng voucher thành công"
-
-    switch (voucher.type) {
-      case "percentage":
-        discount = Math.min(
-          (orderTotal * voucher.value) / 100,
-          voucher.maxDiscount || Infinity
-        )
-        break
-
-      case "fixed":
-        discount = Math.min(voucher.value, orderTotal)
-        break
-
-      case "freeship":
-        if (!voucher.maxShippingDiscount || voucher.maxShippingDiscount <= 0) {
-          return res.status(400).json({
-            code: 1,
-            message: "Voucher freeship chưa có cấu hình mức giảm phí vận chuyển tối đa"
-          })
-        }
-        discount = Math.min(voucher.maxShippingDiscount, orderTotal)
-        message = `Áp dụng miễn phí vận chuyển (tối đa ${voucher.maxShippingDiscount.toLocaleString()}đ)`
-        break
-
-      case "product":
-        discount = Math.min(voucher.value, orderTotal)
-        break
-
-      case "timed":
-        if (!orderCreatedAt) {
-          return res.status(400).json({ code: 1, message: "Thiếu thời gian tạo đơn hàng" })
-        }
-        const createdAt = new Date(orderCreatedAt)
-        if (createdAt < voucher.startDate || createdAt > voucher.endDate) {
-          return res.status(400).json({ code: 1, message: "Voucher không còn hiệu lực tại thời điểm này" })
-        }
-        discount = Math.min((orderTotal * voucher.value) / 100, voucher.maxDiscount || Infinity)
-        message = "Áp dụng voucher khung thời gian"
-        break
-
-      default:
-        return res.status(400).json({ code: 1, message: "Loại voucher không hợp lệ" })
-    }
-
-    // ✅ Trả kết quả
-    return res.json({
-      code: 0,
-      message,
-      data: {
-        code: voucher.code,
-        type: voucher.type,
-        discount,
-        stackable: voucher.stackable,
-        expiresAt: voucher.endDate,
-      }
-    })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
-
 export const applyVoucher = async (req: Request, res: Response) => {
   try {
     const {
@@ -447,11 +313,11 @@ export const applyVoucher = async (req: Request, res: Response) => {
           voucher.maxDiscount || Infinity
         );
 
-        const productNames = applicableProducts.map((p: any) => p.productName);
+        const productNames = applicableProducts.map((p: any) => p.name);
         if (productNames.length === 1) {
-          message = `Mã giảm giá ${voucher.code} chỉ áp dụng giảm ${voucher.value}% cho sản phẩm ${productNames[0]}`;
+          message = `Mã giảm giá <b>${voucher.code}</b> áp dụng giảm ${voucher.value}% cho sản phẩm: ${productNames[0]}`;
         } else {
-          message = `Mã giảm giá ${voucher.code} chỉ áp dụng giảm ${voucher.value}% cho ${productNames.length} sản phẩm: ${productNames
+          message = `Mã giảm giá <b>${voucher.code}</b> áp dụng giảm ${voucher.value}% cho ${productNames.length} sản phẩm: ${productNames
           .map(name => `<div>- ${name}</div>`)
           .join("")}`;
         }
@@ -543,12 +409,6 @@ export const getAvailableVouchersForOrder = async (req: Request, res: Response) 
 
       // 🔹 4. Không áp dụng cho sản phẩm trong đơn hàng
       else if (v.type === "product") {
-        // const hasApplicableProducts =
-        //   Array.isArray(v.applicableProducts) &&
-        //   productIds.some((id: string) =>
-        //     v.applicableProducts.map(String).includes(id.toString())
-        //   )
-
         const hasApplicableCategories =
           Array.isArray(v.applicableCategories) &&
           Array.isArray(categoryIds) &&
@@ -561,7 +421,6 @@ export const getAvailableVouchersForOrder = async (req: Request, res: Response) 
           disabledReason = "Không áp dụng cho sản phẩm hoặc danh mục trong đơn hàng"
         }
       }
-
 
       result.push({
         ...v.toObject(),

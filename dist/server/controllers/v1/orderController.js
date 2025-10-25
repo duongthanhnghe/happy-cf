@@ -21,6 +21,7 @@ export const getOrderById = async (req, res) => {
 export const createOrder = async (req, res) => {
     try {
         const { data, userId, point, usedPoint } = req.body;
+        console.log(req.body);
         if (!(data === null || data === void 0 ? void 0 : data.fullname) || !(data === null || data === void 0 ? void 0 : data.phone) || !(data === null || data === void 0 ? void 0 : data.paymentId) || !(data === null || data === void 0 ? void 0 : data.cartItems)) {
             return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" });
         }

@@ -70,6 +70,30 @@ export function toOrderDTO(entity) {
         membershipDiscountAmount: entity.membershipDiscountAmount,
         createdAt: ((_d = entity.createdAt) === null || _d === void 0 ? void 0 : _d.toISOString()) || "",
         updatedAt: ((_e = entity.updatedAt) === null || _e === void 0 ? void 0 : _e.toISOString()) || "",
+        voucherUsage: Array.isArray(entity.voucherUsage)
+            ? entity.voucherUsage.map(v => {
+                var _a, _b;
+                return ({
+                    code: v.code,
+                    type: v.type,
+                    discount: (_a = v.discount) !== null && _a !== void 0 ? _a : 0,
+                    expiresAt: v.expiresAt ? new Date(v.expiresAt).toISOString() : undefined,
+                    stackable: (_b = v.stackable) !== null && _b !== void 0 ? _b : false,
+                    applicableProducts: Array.isArray(v.applicableProducts)
+                        ? v.applicableProducts.map(p => {
+                            var _a, _b;
+                            return ({
+                                productId: p.productId ? p.productId.toString() : "",
+                                name: p.name,
+                                categoryId: p.categoryId ? p.categoryId.toString() : "",
+                                price: (_a = p.price) !== null && _a !== void 0 ? _a : 0,
+                                quantity: (_b = p.quantity) !== null && _b !== void 0 ? _b : 0,
+                            });
+                        })
+                        : [],
+                });
+            })
+            : []
     };
 }
 export const toOrderListDTO = (orders) => orders.map(toOrderDTO);

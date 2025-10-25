@@ -1,4 +1,43 @@
 import { Schema, model, Types } from "mongoose"
+import { VOUCHER_TYPE, VOUCHER_TYPE_LIST } from '../../shared/constants/voucher-type'
+
+export interface VoucherUsageOrder {
+  code: string;
+  type: VOUCHER_TYPE;
+  discount: number;
+  applicableProducts?: {
+    productId: Types.ObjectId;
+    name: string;
+    categoryId?: Types.ObjectId;
+    price: number;
+    quantity: number;
+  }[];
+  expiresAt?: Date;
+  stackable: boolean;
+}
+
+export const VoucherUsageOrderSchema = new Schema({
+  code: { type: String, required: true },
+  type: { 
+    type: String, 
+    enum: VOUCHER_TYPE_LIST,
+    required: true 
+  },
+  discount: { type: Number, default: 0 }, 
+
+  applicableProducts: [
+    {
+      productId: { type: Schema.Types.ObjectId, ref: 'Product' },
+      name: { type: String },
+      categoryId: { type: Schema.Types.ObjectId, ref: 'CategoryProduct' },
+      price: { type: Number },
+      quantity: { type: Number },
+    },
+  ],
+
+  expiresAt: { type: Date },
+  stackable: { type: Boolean, default: false },
+}, { _id: false });
 
 const VoucherUsageSchema = new Schema(
   {

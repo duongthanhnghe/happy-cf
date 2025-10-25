@@ -12,6 +12,7 @@ import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
 import { nullRules, phoneRules } from '@/utils/validation'
 import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
+import { useEventBus } from "@/composables/voucher/useEventBus";
 
 definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
@@ -22,6 +23,7 @@ const storeAddress = useAddressesManageStore();
 const storeAccount = useAccountStore();
 const storePaymentStatus = usePaymentStatusStore();
 const storeLocation = useLocationStore();
+const eventBus = useEventBus();
 
 const selectedFreeship = ref<string| null>(null);
 const selectedVoucher = ref<string | null>(null);
@@ -35,32 +37,37 @@ const submitOrder = async (event: SubmitEventPromise) => {
   store.submitOrder()
 }
 
-const removeVoucher = (isFreeship: boolean) => {
-  if(isFreeship){
+const removeVoucher = (code: string, type: any) => {
+  if(type === VOUCHER_TYPE.freeship.type){
     selectedFreeship.value = null;
     store.discountVoucherFreeship = 0;
+    store.activeFreeshipVoucher = null;
   } else {
     selectedVoucher.value = null;
     store.discountVoucher = 0;
     store.messageVoucher = '';
   }
+
+  store.voucherUsage = store.voucherUsage.filter(v => v.code !== code);
+  store.handleCalcTotalPriceCurrent();
 }
 
-watch(() => store.shippingFee, async (newVal) => {
-  if (newVal && selectedFreeship.value) {
-    await store.applyVoucher(selectedFreeship.value, true)
-  }
-})
+const handleVoucherReset = (data: {resetFreeship: boolean;resetVoucher: boolean;}) => {
+  if (data.resetFreeship) selectedFreeship.value = null;
+  if (data.resetVoucher) selectedVoucher.value = null;
+};
 
-watch(
+watch( // chon voucher
   [selectedVoucher, selectedFreeship],
   ([newVoucher, newFreeship], [oldVoucher, oldFreeship]) => {
     if (newVoucher && newVoucher !== oldVoucher) {
       store.messageVoucher = '';
+      if(oldVoucher) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldVoucher);
       store.applyVoucher(newVoucher, false);
     }
 
     if (newFreeship && newFreeship !== oldFreeship) {
+      if(oldFreeship) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldFreeship);
       store.applyVoucher(newFreeship, true);
     }
   }
@@ -106,6 +113,7 @@ onMounted(async () => {
   await storeLocation.fetchProvincesStore()
   if(storeAccount.getDetailValue?.id) await store.handleGetDefaultAddress()
   if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
+  eventBus.on('voucher:reset', handleVoucherReset);
 })
 
 onBeforeUnmount(() => {
@@ -114,7 +122,10 @@ onBeforeUnmount(() => {
   store.discountVoucher = 0;
   store.discountVoucherFreeship = 0;
   store.messageVoucher = '';
+  store.voucherUsage = [];
+  store.activeFreeshipVoucher = null;
   storeLocation.resetLocation
+  eventBus.off('voucher:reset', handleVoucherReset);
 })
 
 </script>
@@ -232,39 +243,51 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
+        {{ selectedFreeship }}
+
         <!-- Voucher Freeship -->
         <div v-if="storeAccount.getDetailValue?.id && store.allVouchers?.length" class="card-sm bg-white mt-ms mb-ms">
-          <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
-            Voucher giảm giá
-          </Heading>
-          <div v-if="selectedVoucher || selectedFreeship" class="flex align-center gap-xs">
-            Xoá mã giảm giá: 
-            <Button v-if="selectedVoucher" color="secondary" size="md" class="pl-sm pr-sm" @click.prevent="removeVoucher(false);" :label="selectedVoucher">
-              <MaterialIcon class="ml-xs" name="close"/>
-            </Button>
-            <Button v-if="selectedFreeship" color="secondary" size="md" class="pl-sm pr-sm" @click.prevent="removeVoucher(true);" :label="selectedFreeship">
-              <MaterialIcon class="ml-xs" name="close"/>
-            </Button>
+          <div class="flex justify-between mb-sm">
+            <Heading tag="div" size="md" weight="semibold" class="black">
+              Voucher giảm giá
+            </Heading>
+            <div v-if="selectedVoucher || selectedFreeship" class="flex align-center gap-xs">
+              Xoá mã: 
+
+              <template v-if="store.voucherUsage.length > 0">
+                <Button
+                  v-for="(voucherUsage, index) in store.voucherUsage"
+                  color="secondary" size="sm" class="pl-sm pr-sm" @click.prevent="removeVoucher(voucherUsage.code, voucherUsage.type);" :label="voucherUsage.code">
+                  <MaterialIcon class="ml-xs" name="close"/>
+                </Button>
+              </template>
+            </div>
           </div>
+          
 
           <div v-if="store.messageVoucher" v-html="store.messageVoucher" class="text-color-green">
           </div>
 
-          <div class="flex gap-sm overflow-auto" v-if="store.allVouchers?.length">
-            <VoucherItemTemplate1
-              v-for="(voucher, index) in store.allVouchers.filter(v => v.type === VOUCHER_TYPE.freeship.type)"
-              :key="'freeship-' + index"
-              :item="voucher"
-              action
-              v-model="selectedFreeship"
-            />
-            <VoucherItemTemplate1
-              v-for="(voucher, index) in store.allVouchers.filter(v => v.type !== VOUCHER_TYPE.freeship.type)"
-              :key="'other-' + index"
-              :item="voucher"
-              action
-              v-model="selectedVoucher"
-            />
+          <div class="position-relative">
+            <div class="shape-loading" v-if="store.loadingAllVouchers">
+              <v-progress-circular indeterminate ></v-progress-circular>
+            </div>
+            <div class="flex gap-sm overflow-auto" v-if="store.allVouchers?.length">
+              <VoucherItemTemplate1
+                v-for="(voucher, index) in store.allVouchers.filter(v => v.type === VOUCHER_TYPE.freeship.type)"
+                :key="'freeship-' + index"
+                :item="voucher"
+                action
+                v-model="selectedFreeship"
+              />
+              <VoucherItemTemplate1
+                v-for="(voucher, index) in store.allVouchers.filter(v => v.type !== VOUCHER_TYPE.freeship.type)"
+                :key="'other-' + index"
+                :item="voucher"
+                action
+                v-model="selectedVoucher"
+              />
+            </div>
           </div>
         </div>
 

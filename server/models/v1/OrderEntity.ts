@@ -3,6 +3,9 @@ import type { selectedOptionsPush, cartItems } from "../../types/dto/v1/order.dt
 import mongoosePaginate from "mongoose-paginate-v2";
 import type { PaginateModel } from "mongoose";
 import type { PaymentMethod } from "../../types/dto/v1/payment-transaction.dto"
+import { VoucherUsageOrderSchema } from "./VoucherUsageEntity";
+import type { VoucherUsageOrder } from "./VoucherUsageEntity";
+
 export interface Payment {
   _id: Types.ObjectId;
   name: string;
@@ -50,6 +53,7 @@ export interface Order {
   pointsRefunded: boolean;
   membershipDiscountRate: number;
   membershipDiscountAmount: number;
+  voucherUsage: VoucherUsageOrder[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -125,6 +129,7 @@ const OrderSchema = new Schema<Order>(
     pointsRefunded: { type: Boolean, default: false },
     membershipDiscountRate: { type: Number, default: 0 },
     membershipDiscountAmount: { type: Number, default: 0 },
+    voucherUsage: [VoucherUsageOrderSchema],
   },
   { timestamps: true }
 );

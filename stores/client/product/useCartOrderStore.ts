@@ -1,4 +1,4 @@
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, nextTick } from "vue";
 import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
 import { setCookie, getCookie, getCurrentDateTime, Loading } from "@/utils/global";
@@ -21,6 +21,8 @@ import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
 import { vouchersAPI } from "@/services/v1/admin/voucher.service";
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
+import type { ApplyVoucherResponse, ApplyVoucherProduct } from "@/server/types/dto/v1/voucher.dto"; 
+import { useEventBus } from "@/composables/voucher/useEventBus";
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
@@ -29,6 +31,7 @@ export const useCartStore = defineStore("Cart", () => {
   const storeLocation = useLocationStore();
   const storeSetting = useSettingStore();
   const { fetchAvailableVouchers, allVouchers } = useAvailableVouchersForOrder();
+  const eventBus = useEventBus();
 
   const router = useRouter()
   const timeCurrent = getCurrentDateTime('time');
@@ -72,6 +75,10 @@ export const useCartStore = defineStore("Cart", () => {
   const discountVoucher = ref(0);
   const discountVoucherFreeship = ref(0);
   const messageVoucher = ref('');
+  const voucherUsage = ref<ApplyVoucherResponse[]>([])
+  const loadingAllVouchers = ref(false);
+  const isCalculating = ref(false);
+  const activeFreeshipVoucher = ref<string | null>(null);
 
   const addNormalProduct = (product: ProductDTO) => {
     const existingProduct = cartListItem.value?.find(
@@ -281,6 +288,10 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const handleCalcTotalPriceCurrent = () => {
+    if (isCalculating.value) return;
+    
+    isCalculating.value = true;
+
     totalPriceCurrent.value = cartListItem.value.reduce((total, item) => {
       if (item.selectedOptionsPush && item.finalPrice) {
         return total + item.finalPrice * item.quantity;
@@ -306,26 +317,71 @@ export const useCartStore = defineStore("Cart", () => {
       totalPriceDiscount.value = totalPriceDiscount.value - totalDiscountRateMembership.value
     } 
 
-    totalPriceDiscount.value = totalPriceDiscount.value + shippingFee.value //cong them PVC
+    totalPriceDiscount.value = totalPriceDiscount.value + shippingFee.value - discountVoucher.value - discountVoucherFreeship.value
 
     totalPriceSave.value = totalPriceCurrent.value - totalPriceDiscount.value + shippingFee.value
     
-    //handle show voucher
+    //list voucher
     const userId = storeAccount.getDetailValue?.id
     const categoryIds = [
       ...new Set(cartListItem.value.map(item => item.categoryId))
     ]
-
-    if (userId && categoryIds && totalPriceDiscount.value) {
-      
-      setTimeout(function(){
-        fetchAvailableVouchers({
-          userId,
-          categoryIds,
-          orderTotal: totalPriceDiscount.value
-        })
-      }, 500);
+    
+    if (userId && categoryIds && totalPriceCurrent.value) {
+      listVoucher(userId, categoryIds);
     }
+
+    isCalculating.value = false;
+  };
+
+  const listVoucher = async (userId: string, categoryIds: string[]) => {
+    loadingAllVouchers.value = true;
+    
+    await new Promise(resolve => setTimeout(resolve, 500)); // Debounce để tránh gọi quá nhiều
+    
+    await fetchAvailableVouchers({ // hien thi listVoucher
+      userId,
+      categoryIds,
+      orderTotal: totalPriceCurrent.value
+    })
+    
+    const invalidVouchers = voucherUsage.value.filter(v => { // lay danh sach voucher kh hop le trong listVoucher
+      const found = allVouchers.value.find(av => av.code === v.code);
+      return !found || found.isDisabled === true;
+    });
+
+    if (invalidVouchers.length > 0) { // xu ly remove voucher khong hop le
+     
+      let hasInvalidFreeship = false;
+      let hasInvalidVoucher = false;
+
+      invalidVouchers.forEach(iv => {
+        if (iv.type === VOUCHER_TYPE.freeship.type) {
+          discountVoucherFreeship.value = 0;
+          activeFreeshipVoucher.value = null;
+          hasInvalidFreeship = true;
+        } else {
+          discountVoucher.value = 0;
+          messageVoucher.value = '';
+          hasInvalidVoucher = true;
+        }
+      });
+
+      voucherUsage.value = voucherUsage.value.filter(v => {
+        const found = allVouchers.value.find(av => av.code === v.code);
+        return found && found.isDisabled === false;
+      });
+
+      eventBus.emit('voucher:reset', {
+        resetFreeship: hasInvalidFreeship,
+        resetVoucher: hasInvalidVoucher,
+      });
+      
+      showWarning("Voucher đã bị gỡ bỏ vì không còn hợp lệ.");
+      // totalPriceDiscount.value = totalPriceDiscount.value + discountVoucher.value + discountVoucherFreeship.value;
+    }
+
+    loadingAllVouchers.value = false;
   };
 
   const deleteCart = async (productKey: string) => {
@@ -473,6 +529,14 @@ export const useCartStore = defineStore("Cart", () => {
     const point = storeAccount.getDetailValue?.id ? Math.round(totalPriceDiscount.value * 0.05) : 0
     const newUsedPoint = usedPointOrder.checkBalancePoint ? usedPointOrder.usedPoint : 0
 
+    const newVoucherUsage = voucherUsage.value.map(v => {
+      const updated = { ...v }
+      if (v.type === "freeship") {
+        updated.discount = discountVoucherFreeship.value
+      }
+      return updated
+    })
+
     const orderData: CreateOrderBody = {
       code: 'ORDER' + Date.now(),
       time: informationOrder.time,
@@ -492,6 +556,7 @@ export const useCartStore = defineStore("Cart", () => {
       provinceCode: storeLocation.selectedProvince || 0,
       districtCode: storeLocation.selectedDistrict || 0,
       wardCode: storeLocation.selectedWard || 0,
+      voucherUsage: newVoucherUsage
     };
 
     try {
@@ -540,6 +605,9 @@ export const useCartStore = defineStore("Cart", () => {
       })
       if(data.code === 0){
         shippingFee.value = data.data.MONEY_TOTAL
+
+        if (activeFreeshipVoucher.value) await reapplyFreeshippVoucher() // xu ly reapply voucher freeship khi thay doi PVC
+
         handleCalcTotalPriceCurrent()
       } 
       else {
@@ -564,9 +632,9 @@ export const useCartStore = defineStore("Cart", () => {
   const applyVoucher = async (code: string, isFreeship: boolean) => {
     const userId = storeAccount.getDetailValue?.id;
     const orderTotal = totalPriceDiscount.value;
-    const products = cartListItem.value.map(item => ({
+    const products: ApplyVoucherProduct[] = cartListItem.value.map(item => ({
       productId: item.id,
-      productName: item.productName,
+      name: item.productName,
       categoryId: item.categoryId,
       price: item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts,
       quantity: item.quantity,
@@ -574,6 +642,12 @@ export const useCartStore = defineStore("Cart", () => {
     const orderCreatedAt = new Date().toISOString();
 
     if(!userId) return showWarning("Không thể áp dụng voucher");
+
+    const existingVoucher = voucherUsage.value.find(v => v.code === code);
+    if (existingVoucher) {
+      console.log('Voucher đã được áp dụng:', code);
+      return;
+    }
 
     try {
       const res = await vouchersAPI.apply({
@@ -587,20 +661,49 @@ export const useCartStore = defineStore("Cart", () => {
       if (res.code === 0) {
         const appliedVoucher = res.data;
         if(isFreeship) {
+          discountVoucherFreeship.value = 0;
+
           discountVoucherFreeship.value = appliedVoucher.discount;
           if(discountVoucherFreeship.value > shippingFee.value) discountVoucherFreeship.value = shippingFee.value;
+
+          activeFreeshipVoucher.value = code;
         }
         else {
           discountVoucher.value = appliedVoucher.discount;
           if(appliedVoucher.type === VOUCHER_TYPE.product.type) messageVoucher.value = res.message || '';
         }
+
+        voucherUsage.value.push(appliedVoucher);
         showSuccess("Áp dụng voucher thành công");
+        handleCalcTotalPriceCurrent()
       } else {
         showWarning(res.message ?? "Không thể áp dụng voucher");
       }
     } catch (err) {
       console.error("Error applying voucher:", err);
     }
+  };
+
+  const reapplyFreeshippVoucher = async () => {
+    if (!activeFreeshipVoucher.value || shippingFee.value <= 0) return;
+    
+    voucherUsage.value = voucherUsage.value.filter(
+      v => v.code !== activeFreeshipVoucher.value
+    );
+    
+    discountVoucherFreeship.value = 0;
+    
+    await applyVoucher(activeFreeshipVoucher.value, true);
+
+    if(discountVoucherFreeship.value === 0) {
+      eventBus.emit('voucher:reset', {
+        resetFreeship: true,
+        resetVoucher: false,
+      });
+      activeFreeshipVoucher.value = null;
+      showWarning("Voucher freeship không còn hợp lệ với đơn hàng hiện tại.");
+    } 
+
   };
 
   const handleCheckPoint = async () => {
@@ -653,7 +756,6 @@ export const useCartStore = defineStore("Cart", () => {
   const getSelectedOptionsData = computed(() => selectedOptionsData.value);
   const getIdAddressChoose = computed(() => idAddressChoose.value);
   const getNameAddressChoose = computed(() => informationOrder.address);
-
   return {
     // state
     cartCount,
@@ -671,6 +773,10 @@ export const useCartStore = defineStore("Cart", () => {
     discountVoucherFreeship,
     discountVoucher,
     messageVoucher,
+    voucherUsage,
+    loadingAllVouchers,
+    activeFreeshipVoucher,
+    reapplyFreeshippVoucher,
     // actions
     addProductToCart,
     handleTogglePopup,
@@ -692,6 +798,7 @@ export const useCartStore = defineStore("Cart", () => {
     handleCheckPoint,
     handleGetFee,
     applyVoucher,
+    handleCalcTotalPriceCurrent,
     // getters
     tempSelected,
     getCartCount,

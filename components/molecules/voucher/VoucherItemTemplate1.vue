@@ -26,6 +26,7 @@ const toggleSelection = () => {
 <template>
   <label>
     <div 
+      :id="`voucher-item-${item.code}`"
       class="voucher-item card card-sm bg-gray2 flex"
       :class="{
         'cursor-pointer': action,

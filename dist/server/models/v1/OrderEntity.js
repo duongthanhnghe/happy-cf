@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
+import { VoucherUsageOrderSchema } from "./VoucherUsageEntity.js";
 const SelectedOptionsPushSchema = new Schema({
     optionName: { type: String, required: true },
     variantName: { type: String, required: true },
@@ -54,6 +55,7 @@ const OrderSchema = new Schema({
     pointsRefunded: { type: Boolean, default: false },
     membershipDiscountRate: { type: Number, default: 0 },
     membershipDiscountAmount: { type: Number, default: 0 },
+    voucherUsage: [VoucherUsageOrderSchema],
 }, { timestamps: true });
 OrderSchema.plugin(mongoosePaginate);
 export const PaymentEntity = model("Payment", PaymentSchema, "payments");

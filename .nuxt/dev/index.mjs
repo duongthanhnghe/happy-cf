@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"3cb53-sZNhJjWs6HJL0fMM18jckj34ppc\"",
-    "mtime": "2025-10-25T04:44:53.317Z",
-    "size": 248659,
+    "etag": "\"3d109-4NupIIDAT5YvWFAVpehYBd0faFc\"",
+    "mtime": "2025-10-25T10:26:01.936Z",
+    "size": 250121,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"e7fca-AcniD0IIo6Ee4eL3TAoeY+GxB5g\"",
-    "mtime": "2025-10-25T04:44:53.320Z",
-    "size": 950218,
+    "etag": "\"e97bc-oryaeez/tp+cuA1ZMkAgUpR/+3Q\"",
+    "mtime": "2025-10-25T10:26:01.937Z",
+    "size": 956348,
     "path": "index.mjs.map"
   }
 };
@@ -3244,6 +3244,61 @@ const toMembershipLevelListDTO = (items) => {
   return items.map(toMembershipLevelDTO);
 };
 
+var VOUCHER_TYPE = /* @__PURE__ */ ((VOUCHER_TYPE2) => {
+  VOUCHER_TYPE2["PERCENTAGE"] = "percentage";
+  VOUCHER_TYPE2["FIXED"] = "fixed";
+  VOUCHER_TYPE2["FREESHIP"] = "freeship";
+  VOUCHER_TYPE2["PRODUCT"] = "product";
+  VOUCHER_TYPE2["TIMED"] = "timed";
+  return VOUCHER_TYPE2;
+})(VOUCHER_TYPE || {});
+const VOUCHER_TYPE_LIST = Object.values(VOUCHER_TYPE);
+
+const VoucherUsageOrderSchema = new Schema({
+  code: { type: String, required: true },
+  type: {
+    type: String,
+    enum: VOUCHER_TYPE_LIST,
+    required: true
+  },
+  discount: { type: Number, default: 0 },
+  applicableProducts: [
+    {
+      productId: { type: Schema.Types.ObjectId, ref: "Product" },
+      name: { type: String },
+      categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct" },
+      price: { type: Number },
+      quantity: { type: Number }
+    }
+  ],
+  expiresAt: { type: Date },
+  stackable: { type: Boolean, default: false }
+}, { _id: false });
+const VoucherUsageSchema = new Schema(
+  {
+    voucherId: {
+      type: Types.ObjectId,
+      ref: "Voucher",
+      required: true
+    },
+    userId: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    orderId: {
+      type: Types.ObjectId,
+      ref: "Order"
+    },
+    usedAt: {
+      type: Date,
+      default: Date.now
+    }
+  },
+  { timestamps: true }
+);
+const VoucherUsageEntity = model("VoucherUsage", VoucherUsageSchema);
+
 const SelectedOptionsPushSchema = new Schema(
   {
     optionName: { type: String, required: true },
@@ -3310,7 +3365,8 @@ const OrderSchema = new Schema(
     usedPoints: { type: Number, default: 0 },
     pointsRefunded: { type: Boolean, default: false },
     membershipDiscountRate: { type: Number, default: 0 },
-    membershipDiscountAmount: { type: Number, default: 0 }
+    membershipDiscountAmount: { type: Number, default: 0 },
+    voucherUsage: [VoucherUsageOrderSchema]
   },
   { timestamps: true }
 );
@@ -3413,7 +3469,27 @@ function toOrderDTO(entity) {
     membershipDiscountRate: entity.membershipDiscountRate,
     membershipDiscountAmount: entity.membershipDiscountAmount,
     createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
-    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || ""
+    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || "",
+    voucherUsage: Array.isArray(entity.voucherUsage) ? entity.voucherUsage.map((v) => {
+      var _a2, _b2;
+      return {
+        code: v.code,
+        type: v.type,
+        discount: (_a2 = v.discount) != null ? _a2 : 0,
+        expiresAt: v.expiresAt ? new Date(v.expiresAt).toISOString() : void 0,
+        stackable: (_b2 = v.stackable) != null ? _b2 : false,
+        applicableProducts: Array.isArray(v.applicableProducts) ? v.applicableProducts.map((p) => {
+          var _a3, _b3;
+          return {
+            productId: p.productId ? p.productId.toString() : "",
+            name: p.name,
+            categoryId: p.categoryId ? p.categoryId.toString() : "",
+            price: (_a3 = p.price) != null ? _a3 : 0,
+            quantity: (_b3 = p.quantity) != null ? _b3 : 0
+          };
+        }) : []
+      };
+    }) : []
   };
 }
 const toOrderListDTO = (orders) => orders.map(toOrderDTO);
@@ -4435,16 +4511,6 @@ const productReviewRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.def
   default: router$f
 }, Symbol.toStringTag, { value: 'Module' }));
 
-var VOUCHER_TYPE = /* @__PURE__ */ ((VOUCHER_TYPE2) => {
-  VOUCHER_TYPE2["PERCENTAGE"] = "percentage";
-  VOUCHER_TYPE2["FIXED"] = "fixed";
-  VOUCHER_TYPE2["FREESHIP"] = "freeship";
-  VOUCHER_TYPE2["PRODUCT"] = "product";
-  VOUCHER_TYPE2["TIMED"] = "timed";
-  return VOUCHER_TYPE2;
-})(VOUCHER_TYPE || {});
-const VOUCHER_TYPE_LIST = Object.values(VOUCHER_TYPE);
-
 const VoucherSchema = new Schema(
   {
     code: { type: String, required: true, unique: true },
@@ -4499,31 +4565,6 @@ function toVoucherDTO(entity) {
     createdAt: ((_n = entity.createdAt) == null ? void 0 : _n.toISOString()) || ""
   };
 }
-
-const VoucherUsageSchema = new Schema(
-  {
-    voucherId: {
-      type: Types.ObjectId,
-      ref: "Voucher",
-      required: true
-    },
-    userId: {
-      type: Types.ObjectId,
-      ref: "User",
-      required: true
-    },
-    orderId: {
-      type: Types.ObjectId,
-      ref: "Order"
-    },
-    usedAt: {
-      type: Date,
-      default: Date.now
-    }
-  },
-  { timestamps: true }
-);
-const VoucherUsageEntity = model("VoucherUsage", VoucherUsageSchema);
 
 const getAllVouchers = async (req, res) => {
   try {
@@ -4763,11 +4804,11 @@ const applyVoucher = async (req, res) => {
           subtotalApplicable * voucher.value / 100,
           voucher.maxDiscount || Infinity
         );
-        const productNames = applicableProducts.map((p) => p.productName);
+        const productNames = applicableProducts.map((p) => p.name);
         if (productNames.length === 1) {
-          message = `M\xE3 gi\u1EA3m gi\xE1 ${voucher.code} ch\u1EC9 \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho s\u1EA3n ph\u1EA9m ${productNames[0]}`;
+          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho s\u1EA3n ph\u1EA9m: ${productNames[0]}`;
         } else {
-          message = `M\xE3 gi\u1EA3m gi\xE1 ${voucher.code} ch\u1EC9 \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho ${productNames.length} s\u1EA3n ph\u1EA9m: ${productNames.map((name) => `<div>- ${name}</div>`).join("")}`;
+          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho ${productNames.length} s\u1EA3n ph\u1EA9m: ${productNames.map((name) => `<div>- ${name}</div>`).join("")}`;
         }
         break;
       case "timed":
@@ -5931,6 +5972,7 @@ const getOrderById = async (req, res) => {
 const createOrder = async (req, res) => {
   try {
     const { data, userId, point, usedPoint } = req.body;
+    console.log(req.body);
     if (!(data == null ? void 0 : data.fullname) || !(data == null ? void 0 : data.phone) || !(data == null ? void 0 : data.paymentId) || !(data == null ? void 0 : data.cartItems)) {
       return res.status(400).json({ code: 1, message: "D\u1EEF li\u1EC7u \u0111\u01A1n h\xE0ng kh\xF4ng h\u1EE3p l\u1EC7" });
     }
