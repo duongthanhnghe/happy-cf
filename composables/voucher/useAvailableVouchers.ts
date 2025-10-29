@@ -1,6 +1,7 @@
 import { ref, computed } from "vue";
 import { vouchersAPI } from "@/services/v1/voucher.service";
 import type { VoucherAvailableDTO } from "@/server/types/dto/v1/voucher.dto";
+import { VOUCHER_TYPE } from "@/shared/constants/voucher-type";
 
 export const useAvailableVouchersForOrder = () => {
   const vouchers = ref<VoucherAvailableDTO[]>([]);
@@ -37,8 +38,11 @@ export const useAvailableVouchersForOrder = () => {
 
   const allVouchers = computed(() => vouchers.value);
 
+  const getVoucherProduct = computed(() => vouchers.value?.filter((item) => item.type !== VOUCHER_TYPE.freeship.type && item.disabledReason === null))
+
   return {
     fetchAvailableVouchers,
     allVouchers,
+    getVoucherProduct,
   };
 };

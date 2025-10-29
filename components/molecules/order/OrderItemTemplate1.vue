@@ -7,6 +7,7 @@ import {
   useOrderHistoryStore
 } from '@/stores/client/order/useOrderHistoryStore'
 import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { ORDER_STATUS } from '@/shared/constants/order-status';
 
 const storeSetting = useSettingStore();
 const store = useOrderHistoryStore();
@@ -24,7 +25,7 @@ const handleDetailPopup = (id:string) => {
 <template>
   <div class="card card-sm bg-white mb-sm">
     <div class="flex justify-between line-height1">
-      <div class="flex gap-xs align-center weight-semibold" @click="handleDetailPopup(props.item?.id)">
+      <div class="flex gap-xs align-center weight-semibold cursor-pointer" @click="handleDetailPopup(props.item?.id)">
         <Button size="xs" color="secondary" icon="package_2" :disable="true"/>
         {{ props.item?.code }}
       </div>
@@ -55,10 +56,11 @@ const handleDetailPopup = (id:string) => {
         <img width="20" :src="props.item?.paymentId.image" alt="icon" class="mr-xs"/>
         {{ props.item?.paymentId.name }}
       </v-chip>
-      <Button @click.stop.prevent="store.handlePaymentOrder(props.item?.id, props.item?.code, props.item?.totalPrice)" v-if="props.item?.transaction === null" size="sm" :border="false" label="Thanh toan"/>
+      <Button v-if="props.item?.transaction === null && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handlePaymentOrder(props.item?.id, props.item?.code, props.item?.totalPrice)"  size="sm" :border="false" label="Thanh toan"/>
       </div>
       <v-chip label :color="props.item?.status.status">
         {{ props.item?.status.name }}
+        
       </v-chip>
     </div>
   </div>

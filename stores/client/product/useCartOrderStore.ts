@@ -660,7 +660,7 @@ export const useCartStore = defineStore("Cart", () => {
     totalDiscountRateMembership.value = 0;
   }
 
-  const applyVoucher = async (code: string, isFreeship: boolean) => {
+  const applyVoucher = async (code: string) => {
     const userId = storeAccount.getDetailValue?.id;
     const orderTotal = totalPriceDiscount.value;
     const products: ApplyVoucherProduct[] = cartListItem.value.map(item => ({
@@ -691,7 +691,8 @@ export const useCartStore = defineStore("Cart", () => {
 
       if (res.code === 0) {
         const appliedVoucher = res.data;
-        if(isFreeship) {
+        // if(isFreeship) {
+        if(appliedVoucher.type === VOUCHER_TYPE.freeship.type) {
           discountVoucherFreeship.value = 0;
 
           discountVoucherFreeship.value = appliedVoucher.discount;
@@ -724,7 +725,7 @@ export const useCartStore = defineStore("Cart", () => {
     
     discountVoucherFreeship.value = 0;
     
-    await applyVoucher(activeFreeshipVoucher.value, true);
+    await applyVoucher(activeFreeshipVoucher.value);
 
     if(discountVoucherFreeship.value === 0) {
       eventBus.emit('voucher:reset', {

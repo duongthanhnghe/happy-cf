@@ -27,6 +27,7 @@ const eventBus = useEventBus();
 
 const selectedFreeship = ref<string| null>(null);
 const selectedVoucher = ref<string | null>(null);
+const voucherCode = ref<string>('');
 
 const submitOrder = async (event: SubmitEventPromise) => {
   const results = await event
@@ -57,18 +58,38 @@ const handleVoucherReset = (data: {resetFreeship: boolean;resetVoucher: boolean;
   if (data.resetVoucher) selectedVoucher.value = null;
 };
 
+const handleApplyVoucherInput = async () => {
+  if (!voucherCode.value) return;
+
+  await store.applyVoucher(voucherCode.value);
+
+  // Nếu voucher áp dụng thành công, tìm trong danh sách allVouchers để auto checked
+  const appliedVoucher = store.voucherUsage.find(v => v.code === voucherCode.value);
+  if (appliedVoucher) {
+    if (appliedVoucher.type === VOUCHER_TYPE.freeship.type) {
+      selectedFreeship.value = appliedVoucher.code; // ✅ auto checked freeship
+    } else {
+      selectedVoucher.value = appliedVoucher.code; // ✅ auto checked voucher thường
+    }
+  }
+
+  // Reset input sau khi áp dụng
+  voucherCode.value = '';
+};
+
+
 watch( // chon voucher
   [selectedVoucher, selectedFreeship],
   ([newVoucher, newFreeship], [oldVoucher, oldFreeship]) => {
     if (newVoucher && newVoucher !== oldVoucher) {
       store.messageVoucher = '';
       if(oldVoucher) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldVoucher);
-      store.applyVoucher(newVoucher, false);
+      store.applyVoucher(newVoucher);
     }
 
     if (newFreeship && newFreeship !== oldFreeship) {
       if(oldFreeship) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldFreeship);
-      store.applyVoucher(newFreeship, true);
+      store.applyVoucher(newFreeship);
     }
   }
 );
@@ -236,13 +257,12 @@ onBeforeUnmount(() => {
           <v-textarea class="mb-0" :rows="5" v-model="store.informationOrder.note" variant="outlined" />
         </div>
 
-
         <div v-if="storeAccount.getDetailValue?.id" class="card-sm bg-white mt-ms mb-ms pb-0">
           <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
             Su dung diem <span>(Ban dang co {{ storeAccount.getDetailValue.membership.balancePoint }})</span>
           </Heading>
           <div class="flex gap-sm">
-            <v-text-field type="number" v-model="store.usedPointOrder.pointInput" variant="outlined" />
+            <v-text-field type="number" placeholder="Nhập số điểm" v-model="store.usedPointOrder.pointInput" variant="outlined" />
             <Button @click.prevent="store.handleCheckPoint()" color="black" label="Ap dung" :disabled="store.usedPointOrder.pointInput == 0" />
           </div>
         </div>
@@ -290,6 +310,11 @@ onBeforeUnmount(() => {
                 v-model="selectedVoucher"
               />
             </div>
+          </div>
+
+           <div class="flex gap-sm mt-md">
+            <v-text-field type="text" placeholder="Nhập mã voucher" v-model="voucherCode" variant="outlined" hide-details/>
+            <Button @click.prevent="handleApplyVoucherInput()" color="black" label="Ap dung" :disabled="!voucherCode" />
           </div>
         </div>
 

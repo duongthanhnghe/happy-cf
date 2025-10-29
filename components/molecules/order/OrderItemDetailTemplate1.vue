@@ -66,6 +66,10 @@ watch(
   { immediate: true }
 )
 
+const totalDiscountVoucher = computed(() => {
+  return getDetailOrder.value?.voucherUsage?.reduce((total, voucher) => total + (voucher.discount || 0), 0)
+})
+
 </script>
 <template>
   <template v-if="getDetailOrder">
@@ -146,14 +150,20 @@ watch(
       </div>
       <div v-if="getDetailOrder?.usedPoints !== 0" class="flex justify-between text-color-gray5">
         Diem thanh vien
-        <span>
-          -{{ formatCurrency(getDetailOrder?.usedPoints) }}
+        <span class="flex align-center gap-xs">
+          <v-chip v-if="getDetailOrder?.pointsRefunded" size="small" label color="secondary">Đã hoàn</v-chip>  -{{ formatCurrency(getDetailOrder?.usedPoints) }}
         </span>
       </div>
       <div v-if="getDetailOrder?.membershipDiscountAmount !== 0" class="flex justify-between text-color-gray5">
         Uu dai thanh vien
         <span>
           -{{ formatCurrency(getDetailOrder?.membershipDiscountAmount) }}
+        </span>
+      </div>
+      <div v-if="totalDiscountVoucher !== 0" class="flex justify-between text-color-gray5">
+        Mã giảm giá
+        <span class="flex align-center gap-xs">
+          <v-chip v-if="getDetailOrder?.voucherRefunded" size="small" label color="secondary">Đã hoàn</v-chip> -{{ formatCurrency(totalDiscountVoucher) }} 
         </span>
       </div>
       <div class="flex gap-sm justify-end">

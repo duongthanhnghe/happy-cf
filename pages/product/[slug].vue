@@ -1,25 +1,54 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue"
+import { ref, watch, onMounted } from "vue"
 import { ROUTES } from '@/shared/constants/routes'
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { formatCurrency } from '@/utils/global';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
+import { useAccountStore } from "@/stores/client/users/useAccountStore";
+
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.DETAIL.middleware ?? { middleware: ['product-detail'] },
 })
 
 const store = useProductDetailStore()
+const storeAccount = useAccountStore()
 const storeCart = useCartStore();
 const valueChangePage = ref<boolean|null>(null)
+const { fetchAvailableVouchers, getVoucherProduct } = useAvailableVouchersForOrder();
 
 watch(valueChangePage, (newVal) => {
   if(newVal !== null) store.handleChangePage(newVal)
   valueChangePage.value = null
 })
+
+onMounted(async () => {
+  const userId = storeAccount.getDetailValue.id;
+  const categoryIds = store.getDetail?.categoryId ? [store.getDetail?.categoryId] : [];
+  const orderTotal = store.getDetail?.priceDiscounts;
+
+  if(categoryIds && orderTotal){
+    await fetchAvailableVouchers({
+      userId,
+      categoryIds,
+      orderTotal
+    })
+  }
+})
+    
 </script>
 
 <template>
   <div>
+
+    <div class="flex gap-sm overflow-auto" v-if="getVoucherProduct?.length">
+      <VoucherItemTemplate1
+        v-for="voucher in getVoucherProduct"
+        :key="voucher.code"
+        :item="voucher"
+      />
+    </div>
+
     <div class="container pt-section pb-section" v-if="store.getDetail">
       percentDiscount: {{ store.percentDiscount }}
       getTotalReview: {{ store.getSummaryReview?.averageRating }}
