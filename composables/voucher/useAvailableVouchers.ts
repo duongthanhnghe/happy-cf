@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { vouchersAPI } from "@/services/v1/admin/voucher.service";
+import { vouchersAPI } from "@/services/v1/voucher.service";
 import type { VoucherAvailableDTO } from "@/server/types/dto/v1/voucher.dto";
 
 export const useAvailableVouchersForOrder = () => {
@@ -17,7 +17,7 @@ export const useAvailableVouchersForOrder = () => {
   }) => {
     loading.value = true;
     try {
-      const res = await vouchersAPI.getAvailableForOrder({
+      const res = await vouchersAPI.getAvailable({
         orderTotal,
         categoryIds,
         userId,
@@ -35,22 +35,10 @@ export const useAvailableVouchersForOrder = () => {
     }
   };
 
-  const availableVouchers = computed(() =>
-    vouchers.value.filter((v) => !v.isDisabled)
-  );
-
-  const disabledVouchers = computed(() =>
-    vouchers.value.filter((v) => v.isDisabled)
-  );
-
   const allVouchers = computed(() => vouchers.value);
 
   return {
-    // vouchers,
-    // loading,
     fetchAvailableVouchers,
-    availableVouchers,
-    disabledVouchers,
     allVouchers,
   };
 };

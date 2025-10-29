@@ -16,6 +16,7 @@ import paymentTransactionRoutes from './paymentTransactionRoutes'
 // import wishlistRoutes from './productRouter'
 import productReviewRouter from './productReviewRouter'
 import voucherRouter from './voucherRouter'
+import voucherUsageRouter from './voucherUsageRouter'
 // import locationRoutes from './locationRouter'
 
 const router = Router()
@@ -35,6 +36,7 @@ router.use('/products', productRoutes)
 // router.use('/addresses', addressRoutes)
 router.use('/product-reviews', productReviewRouter)
 router.use('/voucher', voucherRouter)
+router.use('/voucher-usage', voucherUsageRouter)
 // router.use('/location', locationRoutes)
 // router.use('/', wishlistRoutes)
 

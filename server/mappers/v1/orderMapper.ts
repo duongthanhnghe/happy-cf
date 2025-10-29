@@ -82,6 +82,7 @@ export function toOrderDTO(entity: Order): OrderDTO {
     membershipDiscountAmount: entity.membershipDiscountAmount,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
+    voucherRefunded: entity.voucherRefunded,
     voucherUsage: Array.isArray(entity.voucherUsage)
       ? entity.voucherUsage.map(v => ({
           code: v.code,

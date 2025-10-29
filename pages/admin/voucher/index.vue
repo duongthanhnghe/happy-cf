@@ -1,12 +1,13 @@
 <script lang="ts" setup>
+import { onBeforeUnmount } from "vue";
 import { useVoucherManageStore } from '@/stores/admin/voucher/useVoucherManageStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDateTime, formatCurrency } from '@/utils/global';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 
 definePageMeta({
-  layout: ROUTES.ADMIN.VOUCHER.layout,
-  middleware: ROUTES.ADMIN.VOUCHER.middleware,
+  layout: ROUTES.ADMIN.VOUCHER.children?.LIST.layout,
+  middleware: ROUTES.ADMIN.VOUCHER.children?.LIST.middleware,
 });
 
 const store = useVoucherManageStore();
@@ -15,12 +16,17 @@ const openPopupAdd = () => {
   store.handleResetForm();
   store.handleTogglePopupAdd(true);
 };
+
+onBeforeUnmount(() => {
+  store.resetFilter()
+  store.serverItems = []
+})
 </script>
 
 <template>
   <HeaderAdmin>
     <template #left>
-      <v-text-field v-model="store.code" density="compact" placeholder="Tìm mã..." variant="outlined" hide-details></v-text-field>
+      <v-text-field v-model="store.code" density="compact" placeholder="Tìm mã..." variant="outlined" hide-details clearable></v-text-field>
       <v-select
         v-model="store.filterType"
         label="Loại voucher"
@@ -34,6 +40,8 @@ const openPopupAdd = () => {
         variant="outlined"
         hide-details
       />
+      <DateFilter v-model:fromDay="store.fromDay" v-model:toDay="store.toDay" />
+      <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
     </template>
 
     <template #right>
@@ -55,7 +63,6 @@ const openPopupAdd = () => {
       item-value="code"
       @update:options="options => {
         store.currentTableOptions = options;
-        store.loadItems(options);
       }">
 
       <template #item.index="{ index }">

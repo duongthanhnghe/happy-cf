@@ -12,6 +12,10 @@ import { PAYMENT_TRANSACTION_STATUS } from "../../../shared/constants/payment-tr
 import { PAYMENT_METHOD_STATUS } from "../../../shared/constants/payment-method-status"
 import path from "path";
 import fs from "fs";
+import { VoucherEntity } from "../../../models/v1/VoucherEntity";
+import { VoucherUsageEntity } from "../../../models/v1/VoucherUsageEntity";
+import type { Order } from "../../../models/v1/OrderEntity";
+import mongoose from "mongoose";
 
 const VIETTEL_POST_API = "https://partner.viettelpost.vn/v2"
 
@@ -97,6 +101,93 @@ export const deleteOrder = async (req: Request, res: Response) => {
   }
 }
 
+// export const rollbackVoucherUsage = async (order: Order) => {
+//   if (!order?.userId || !Array.isArray(order.voucherUsage)) return;
+//   if (order.voucherRefunded) return;
+
+//   for (const vu of order.voucherUsage) {
+//     try {
+//       const voucher = await VoucherEntity.findOne({ code: vu.code });
+//       if (!voucher) continue;
+
+//       // ✅ rollback log
+//       await VoucherUsageEntity.updateMany(
+//         { userId: order.userId, orderId: order._id, code: vu.code },
+//         { $set: { reverted: true, revertedAt: new Date() } }
+//       );
+
+//       // ✅ rollback usedCount tổng
+//       if (voucher.usedCount > 0) voucher.usedCount -= 1;
+
+//       // ✅ rollback limitPerUser
+//       if (voucher.limitPerUser > 0) {
+//         await VoucherEntity.updateOne(
+//           { code: vu.code, "usedBy.userId": new mongoose.Types.ObjectId(order.userId) },
+//           { $inc: { "usedBy.$.count": -1, usedCount: -1 } }
+//         );
+//       } else {
+//         await VoucherEntity.updateOne(
+//           { code: vu.code },
+//           { $inc: { usedCount: -1 } }
+//         );
+//       }
+
+//       await voucher.save();
+//       console.log(`✅ Rollback voucher ${vu.code} thành công`);
+//     } catch (err) {
+//       console.error(`❌ Lỗi rollback voucher ${vu.code}:`, err);
+//     }
+//   }
+
+//   order.voucherRefunded = true;
+//   // await order.save();
+//   await OrderEntity.findByIdAndUpdate(order._id, { voucherRefunded: true });
+// };
+
+export const rollbackVoucherUsage = async (order: any) => {
+  if (!order?.userId || !Array.isArray(order.voucherUsage)) return;
+  if (order.voucherRefunded) return;
+
+  for (const vu of order.voucherUsage) {
+    try {
+      const voucher = await VoucherEntity.findOne({ code: vu.code });
+      if (!voucher) continue;
+
+      // ✅ rollback log
+      await VoucherUsageEntity.updateMany(
+        { userId: order.userId, orderId: order._id, code: vu.code },
+        { $set: { reverted: true, revertedAt: new Date() } }
+      );
+
+      const userObjId = new mongoose.Types.ObjectId(order.userId);
+
+      // ✅ rollback usedBy.count nếu user có trong usedBy
+      const exists = await VoucherEntity.exists({
+        code: vu.code,
+        "usedBy.userId": userObjId,
+      });
+
+      if (exists && voucher.limitPerUser > 0) {
+        await VoucherEntity.updateOne(
+          { code: vu.code, "usedBy.userId": userObjId },
+          { $inc: { "usedBy.$.count": -1, usedCount: -1 } }
+        );
+      } else {
+        // rollback usedCount tổng
+        await VoucherEntity.updateOne(
+          { code: vu.code },
+          { $inc: { usedCount: -1 } }
+        );
+      }
+
+      console.log(`✅ Rollback voucher ${vu.code} thành công`);
+    } catch (err) {
+      console.error(`❌ Lỗi rollback voucher ${vu.code}:`, err);
+    }
+  }
+
+  await OrderEntity.findByIdAndUpdate(order._id, { voucherRefunded: true });
+};
 
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
@@ -153,8 +244,8 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
       await order.save()
     }
 
-    if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
-      if (!order.pointsRefunded) {
+    if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
+      if (!order.pointsRefunded && order.usedPoints > 0) {
         const user = await UserModel.findById(order.userId);
         if (user) {
           user.membership.balancePoint += order.usedPoints;
@@ -163,6 +254,9 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
           order.pointsRefunded = true; // đánh dấu đã hoàn rồi
         }
       }
+
+      await rollbackVoucherUsage(order)
+
     }
 
     await order.save()

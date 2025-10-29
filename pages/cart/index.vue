@@ -243,10 +243,8 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        {{ selectedFreeship }}
-
         <!-- Voucher Freeship -->
-        <div v-if="storeAccount.getDetailValue?.id && store.allVouchers?.length" class="card-sm bg-white mt-ms mb-ms">
+        <div v-if="store.allVouchers?.length" class="card-sm bg-white mt-ms mb-ms">
           <div class="flex justify-between mb-sm">
             <Heading tag="div" size="md" weight="semibold" class="black">
               Voucher giảm giá

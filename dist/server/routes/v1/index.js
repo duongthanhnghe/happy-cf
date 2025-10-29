@@ -16,6 +16,7 @@ import addressRoutes from './addressesRouter.js';
 // import paymentTransactionRoutes from './admin/paymentTransactionRoutes.js'
 import wishlistRoutes from './productRouter.js';
 import productReviewRouter from './productReviewRouter.js';
+import voucherRouter from './voucherRouter.js';
 // import locationRoutes from './shared/locationRouter.js'
 const router = Router();
 router.use("/admin", adminRoutes);
@@ -34,6 +35,7 @@ router.use('/categories', categoriesProductRoutes);
 router.use('/products', productRoutes);
 router.use('/addresses', addressRoutes);
 router.use('/product-reviews', productReviewRouter);
+router.use('/voucher', voucherRouter);
 // router.use('/location', locationRoutes)
 router.use('/', wishlistRoutes);
 export default router;

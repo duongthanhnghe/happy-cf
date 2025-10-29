@@ -6,6 +6,8 @@ import { PAYMENT_TRANSACTION_STATUS } from "../../shared/constants/payment-trans
 import { PAYMENT_METHOD_STATUS } from "../../shared/constants/payment-method-status.js";
 import path from "path";
 import fs from "fs";
+import { VoucherEntity } from "../../models/v1/VoucherEntity.js";
+import { VoucherUsageEntity } from "../../models/v1/VoucherUsageEntity.js";
 export const getOrderById = async (req, res) => {
     try {
         const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
@@ -19,9 +21,9 @@ export const getOrderById = async (req, res) => {
     }
 };
 export const createOrder = async (req, res) => {
+    var _a;
     try {
         const { data, userId, point, usedPoint } = req.body;
-        console.log(req.body);
         if (!(data === null || data === void 0 ? void 0 : data.fullname) || !(data === null || data === void 0 ? void 0 : data.phone) || !(data === null || data === void 0 ? void 0 : data.paymentId) || !(data === null || data === void 0 ? void 0 : data.cartItems)) {
             return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" });
         }
@@ -62,6 +64,55 @@ export const createOrder = async (req, res) => {
             membershipDiscountRate,
             membershipDiscountAmount,
         });
+        //tao log voucher
+        if (Array.isArray(data.voucherUsage) && data.voucherUsage.length > 0 && userId) {
+            for (const v of data.voucherUsage) {
+                const voucher = await VoucherEntity.findOne({ code: v.code });
+                if (!voucher)
+                    continue;
+                await VoucherUsageEntity.create({
+                    voucherId: voucher._id,
+                    userId: userId || null,
+                    orderId: newOrder._id,
+                    code: v.code,
+                    type: v.type,
+                    discount: v.discount || 0,
+                    applicableProducts: v.applicableProducts || [],
+                    expiresAt: v.expiresAt,
+                    stackable: v.stackable,
+                    meta: {
+                        ip: req.ip,
+                        userAgent: req.headers["user-agent"] || "",
+                    },
+                });
+                // Cập nhật lượt dùng
+                voucher.usedCount = (voucher.usedCount || 0) + 1;
+                // Kiểm tra xem user đã sử dụng voucher này chưa
+                const exists = (_a = voucher.usedBy) === null || _a === void 0 ? void 0 : _a.some((u) => { var _a; return ((_a = u.userId) === null || _a === void 0 ? void 0 : _a.toString()) === userId.toString(); });
+                if (exists) {
+                    await VoucherEntity.updateOne({ code: v.code }, {
+                        $inc: {
+                            usedCount: 1,
+                            "usedBy.$[u].count": 1,
+                        },
+                    }, {
+                        arrayFilters: [{ "u.userId": userId }],
+                    });
+                }
+                else {
+                    // Nếu chưa có user trong usedBy → thêm mới
+                    await VoucherEntity.updateOne({ code: v.code }, {
+                        $inc: { usedCount: 1 },
+                        $push: { usedBy: { userId, count: 1 } },
+                    });
+                }
+                // disable voucher luon neu hết lượt
+                if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit) {
+                    voucher.isActive = false;
+                }
+                await voucher.save();
+            }
+        }
         return res.status(201).json({
             code: 0,
             message: "Đặt hàng thành công",

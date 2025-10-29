@@ -45,6 +45,9 @@ declare module "nitropack/types" {
     '/v1/admin/voucherRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/voucherRouter').default>>>>
     }
+    '/v1/admin/voucherUsageRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/voucherUsageRouter').default>>>>
+    }
     '/v1/authRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/authRouter').default>>>>
     }
@@ -83,6 +86,9 @@ declare module "nitropack/types" {
     }
     '/v1/usersRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/usersRouter').default>>>>
+    }
+    '/v1/voucherRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/voucherRouter').default>>>>
     }
     '/__nuxt_error': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/nuxt/dist/core/runtime/nitro/handlers/renderer').default>>>>

@@ -28,6 +28,10 @@ export interface VoucherDTO {
   isActive: boolean;
 
   createdAt?: string;
+  usedBy: {
+  userId: string
+  count: number
+}[]
 }
 
 export interface CreateVoucherBody {

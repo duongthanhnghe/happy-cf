@@ -28,7 +28,16 @@ export function toVoucherDTO(entity: Voucher): VoucherDTO {
     stackable: entity.stackable ?? false,
     isActive: entity.isActive ?? true,
 
+    usedBy: entity.usedBy?.map(toUsedBy) ?? [],
+
     createdAt: entity.createdAt?.toISOString() || "",
+  };
+}
+
+export function toUsedBy(entity: any): any {
+  return {
+    userId: entity.userId,
+    count: entity.count,
   };
 }
 

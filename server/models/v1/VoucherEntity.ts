@@ -20,6 +20,11 @@ export interface Voucher {
   usedCount: number;            // Số lượt đã dùng
   limitPerUser: number;         // Giới hạn mỗi user (0 = không giới hạn)
 
+  usedBy: {
+    userId: Types.ObjectId;
+    count: number;
+  }[];
+
   startDate: Date;
   endDate: Date;
 
@@ -28,6 +33,40 @@ export interface Voucher {
 
   stackable: boolean;           // Có cộng dồn được không
   isActive: boolean;            // Còn hiệu lực không
+
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface VoucherUsage extends Document {
+  _id: Types.ObjectId;
+  voucherId: Types.ObjectId;
+  userId: Types.ObjectId;
+  orderId?: Types.ObjectId | null;
+
+  code: string;
+  type: VOUCHER_TYPE;
+  discount: number;
+
+  applicableProducts?: {
+    productId: Types.ObjectId;
+    name: string;
+    categoryId?: Types.ObjectId;
+    price: number;
+    quantity: number;
+  }[];
+
+  expiresAt?: Date | null;
+  stackable: boolean;
+
+  usedAt: Date;
+  reverted: boolean;
+  revertedAt?: Date | null;
+
+  meta?: {
+    ip?: string;
+    userAgent?: string;
+  };
 
   createdAt?: Date;
   updatedAt?: Date;
@@ -54,6 +93,13 @@ const VoucherSchema = new Schema(
     usageLimit: { type: Number, default: 0 },
     usedCount: { type: Number, default: 0 },
     limitPerUser: { type: Number, default: 0 },
+
+     usedBy: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
+        count: { type: Number, default: 0 },
+      },
+    ],
 
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },

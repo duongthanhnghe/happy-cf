@@ -1,5 +1,5 @@
 export function toVoucherDTO(entity) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
     return {
         id: entity._id.toString(),
         code: entity.code,
@@ -19,7 +19,14 @@ export function toVoucherDTO(entity) {
         applicableCategories: (_l = (_k = entity.applicableCategories) === null || _k === void 0 ? void 0 : _k.map((c) => c.toString())) !== null && _l !== void 0 ? _l : [],
         stackable: (_m = entity.stackable) !== null && _m !== void 0 ? _m : false,
         isActive: (_o = entity.isActive) !== null && _o !== void 0 ? _o : true,
-        createdAt: ((_p = entity.createdAt) === null || _p === void 0 ? void 0 : _p.toISOString()) || "",
+        usedBy: (_q = (_p = entity.usedBy) === null || _p === void 0 ? void 0 : _p.map(toUsedBy)) !== null && _q !== void 0 ? _q : [],
+        createdAt: ((_r = entity.createdAt) === null || _r === void 0 ? void 0 : _r.toISOString()) || "",
+    };
+}
+export function toUsedBy(entity) {
+    return {
+        userId: entity.userId,
+        count: entity.count,
     };
 }
 export const toVoucherListDTO = (vouchers) => {

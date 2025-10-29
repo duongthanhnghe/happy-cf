@@ -56,6 +56,7 @@ const OrderSchema = new Schema({
     membershipDiscountRate: { type: Number, default: 0 },
     membershipDiscountAmount: { type: Number, default: 0 },
     voucherUsage: [VoucherUsageOrderSchema],
+    voucherRefunded: { type: Boolean, default: false },
 }, { timestamps: true });
 OrderSchema.plugin(mongoosePaginate);
 export const PaymentEntity = model("Payment", PaymentSchema, "payments");

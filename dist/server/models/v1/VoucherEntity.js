@@ -17,6 +17,12 @@ const VoucherSchema = new Schema({
     usageLimit: { type: Number, default: 0 },
     usedCount: { type: Number, default: 0 },
     limitPerUser: { type: Number, default: 0 },
+    usedBy: [
+        {
+            userId: { type: Schema.Types.ObjectId, ref: "User" },
+            count: { type: Number, default: 0 },
+        },
+    ],
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     applicableProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],

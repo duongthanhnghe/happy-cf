@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"3d109-4NupIIDAT5YvWFAVpehYBd0faFc\"",
-    "mtime": "2025-10-25T10:26:01.936Z",
-    "size": 250121,
+    "etag": "\"3eb11-5+mdhmjGhBJjVC12ZAp77oNk/c0\"",
+    "mtime": "2025-10-29T03:54:22.802Z",
+    "size": 256785,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"e97bc-oryaeez/tp+cuA1ZMkAgUpR/+3Q\"",
-    "mtime": "2025-10-25T10:26:01.937Z",
-    "size": 956348,
+    "etag": "\"ef875-ZQbDrFeA6x352oBVBP+TDlgtLYU\"",
+    "mtime": "2025-10-29T03:54:22.803Z",
+    "size": 981109,
     "path": "index.mjs.map"
   }
 };
@@ -1579,7 +1579,8 @@ const _lazy_H3u2OJ = () => Promise.resolve().then(function () { return productRe
 const _lazy_AInuxj = () => Promise.resolve().then(function () { return productRouter$1; });
 const _lazy_NI8dax = () => Promise.resolve().then(function () { return settingRouter; });
 const _lazy_iadr18 = () => Promise.resolve().then(function () { return usersRouter$1; });
-const _lazy_5UO9M7 = () => Promise.resolve().then(function () { return voucherRouter; });
+const _lazy_5UO9M7 = () => Promise.resolve().then(function () { return voucherRouter$1; });
+const _lazy_yscScW = () => Promise.resolve().then(function () { return voucherUsageRouter; });
 const _lazy_6thR5q = () => Promise.resolve().then(function () { return authRouter; });
 const _lazy_5GTSlq = () => Promise.resolve().then(function () { return bannerRouter; });
 const _lazy_ndfMJ7 = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
@@ -1593,6 +1594,7 @@ const _lazy_yozqhu = () => Promise.resolve().then(function () { return fileManag
 const _lazy_qiGXOx = () => Promise.resolve().then(function () { return index$1; });
 const _lazy_QCha66 = () => Promise.resolve().then(function () { return locationRouter; });
 const _lazy_T3AZC3 = () => Promise.resolve().then(function () { return usersRouter; });
+const _lazy__E1hgC = () => Promise.resolve().then(function () { return voucherRouter; });
 const _lazy_wB4Btu = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
@@ -1611,6 +1613,7 @@ const handlers = [
   { route: '/v1/admin/settingRouter', handler: _lazy_NI8dax, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/usersRouter', handler: _lazy_iadr18, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/voucherRouter', handler: _lazy_5UO9M7, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/voucherUsageRouter', handler: _lazy_yscScW, lazy: true, middleware: false, method: undefined },
   { route: '/v1/authRouter', handler: _lazy_6thR5q, lazy: true, middleware: false, method: undefined },
   { route: '/v1/bannerRouter', handler: _lazy_5GTSlq, lazy: true, middleware: false, method: undefined },
   { route: '/v1/categoriesNewsRouter', handler: _lazy_ndfMJ7, lazy: true, middleware: false, method: undefined },
@@ -1624,6 +1627,7 @@ const handlers = [
   { route: '/v1/shared', handler: _lazy_qiGXOx, lazy: true, middleware: false, method: undefined },
   { route: '/v1/shared/locationRouter', handler: _lazy_QCha66, lazy: true, middleware: false, method: undefined },
   { route: '/v1/usersRouter', handler: _lazy_T3AZC3, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/voucherRouter', handler: _lazy__E1hgC, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_error', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined }
@@ -2120,18 +2124,18 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$q = Router();
-router$q.get("/default/:userId", authenticate, getDefaultAddressByUserId);
-router$q.get("/user/:userId", authenticate, getAllAddress);
-router$q.get("/:id", authenticate, getAddressById);
-router$q.post("/", authenticate, createAddress);
-router$q.put("/:id", authenticate, updateAddress);
-router$q.delete("/:id", authenticate, deleteAddress);
-router$q.post("/:id/set-default", authenticate, setAddressDefault);
+const router$s = Router();
+router$s.get("/default/:userId", authenticate, getDefaultAddressByUserId);
+router$s.get("/user/:userId", authenticate, getAllAddress);
+router$s.get("/:id", authenticate, getAddressById);
+router$s.post("/", authenticate, createAddress);
+router$s.put("/:id", authenticate, updateAddress);
+router$s.delete("/:id", authenticate, deleteAddress);
+router$s.post("/:id/set-default", authenticate, setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$q
+  default: router$s
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ListImageSchema$1 = new Schema(
@@ -2291,18 +2295,18 @@ const authenticateAdmin = (req, res, next) => {
   }
 };
 
-const router$p = Router();
-router$p.get("/", authenticateAdmin, getAllAbout);
-router$p.get("/:id", getAboutById);
-router$p.post("/", authenticateAdmin, createAbout);
-router$p.put("/:id", authenticateAdmin, updateAbout);
-router$p.delete("/:id", authenticateAdmin, deleteAbout);
-router$p.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
-router$p.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
+const router$r = Router();
+router$r.get("/", authenticateAdmin, getAllAbout);
+router$r.get("/:id", getAboutById);
+router$r.post("/", authenticateAdmin, createAbout);
+router$r.put("/:id", authenticateAdmin, updateAbout);
+router$r.delete("/:id", authenticateAdmin, deleteAbout);
+router$r.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
+router$r.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$p
+  default: router$r
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const BannerSchema = new Schema(
@@ -2435,18 +2439,18 @@ const toggleActive$5 = async (req, res) => {
   }
 };
 
-const router$o = Router();
-router$o.get("/", authenticateAdmin, getAllBanners$1);
-router$o.get("/:id", getBannerById);
-router$o.post("/", authenticateAdmin, createBanner);
-router$o.put("/:id", authenticateAdmin, updateBanner);
-router$o.delete("/:id", authenticateAdmin, deleteBanner);
-router$o.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
-router$o.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
+const router$q = Router();
+router$q.get("/", authenticateAdmin, getAllBanners$1);
+router$q.get("/:id", getBannerById);
+router$q.post("/", authenticateAdmin, createBanner);
+router$q.put("/:id", authenticateAdmin, updateBanner);
+router$q.delete("/:id", authenticateAdmin, deleteBanner);
+router$q.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
+router$q.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
 
 const bannerRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$o
+  default: router$q
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function generateSlug(text) {
@@ -2706,18 +2710,18 @@ const toggleActive$4 = async (req, res) => {
   }
 };
 
-const router$n = Router();
-router$n.get("/", authenticateAdmin, getAllCategories$3);
-router$n.get("/:id", getCategoriesById$3);
-router$n.post("/", authenticateAdmin, createCategories$1);
-router$n.put("/:id", authenticateAdmin, updateCategories$1);
-router$n.delete("/:id", authenticateAdmin, deleteCategories$1);
-router$n.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
-router$n.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
+const router$p = Router();
+router$p.get("/", authenticateAdmin, getAllCategories$3);
+router$p.get("/:id", getCategoriesById$3);
+router$p.post("/", authenticateAdmin, createCategories$1);
+router$p.put("/:id", authenticateAdmin, updateCategories$1);
+router$p.delete("/:id", authenticateAdmin, deleteCategories$1);
+router$p.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
+router$p.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
 
 const categoriesNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$n
+  default: router$p
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const VariantSchema = new Schema(
@@ -3067,19 +3071,19 @@ const toggleActive$3 = async (req, res) => {
   }
 };
 
-const router$m = Router();
-router$m.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
-router$m.get("/", authenticateAdmin, getAllCategories$2);
-router$m.get("/:id", getCategoriesById$2);
-router$m.post("/", authenticateAdmin, createCategories);
-router$m.put("/:id", authenticateAdmin, updateCategories);
-router$m.delete("/:id", authenticateAdmin, deleteCategories);
-router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
-router$m.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
+const router$o = Router();
+router$o.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
+router$o.get("/", authenticateAdmin, getAllCategories$2);
+router$o.get("/:id", getCategoriesById$2);
+router$o.post("/", authenticateAdmin, createCategories);
+router$o.put("/:id", authenticateAdmin, updateCategories);
+router$o.delete("/:id", authenticateAdmin, deleteCategories);
+router$o.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
+router$o.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
 
 const categoriesProductRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$m
+  default: router$o
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const updateSettings = async (req, res) => {
@@ -3094,12 +3098,12 @@ const updateSettings = async (req, res) => {
   }
 };
 
-const router$l = Router();
-router$l.put("/update", authenticateAdmin, updateSettings);
+const router$n = Router();
+router$n.put("/update", authenticateAdmin, updateSettings);
 
 const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$l
+  default: router$n
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const MembershipSchema = new Schema(
@@ -3290,10 +3294,34 @@ const VoucherUsageSchema = new Schema(
       type: Types.ObjectId,
       ref: "Order"
     },
-    usedAt: {
-      type: Date,
-      default: Date.now
-    }
+    code: { type: String, required: true },
+    type: { type: String, enum: VOUCHER_TYPE_LIST, required: true },
+    discount: { type: Number, default: 0 },
+    // 💡 Lưu danh sách sản phẩm hoặc danh mục mà voucher này đã áp dụng
+    applicableProducts: [
+      {
+        productId: { type: Schema.Types.ObjectId, ref: "Product" },
+        name: String,
+        categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct" },
+        price: Number,
+        quantity: Number
+      }
+    ],
+    // 💡 Ngày voucher hết hạn (để biết voucher còn hiệu lực không lúc áp dụng)
+    expiresAt: { type: Date },
+    // 💡 Cho biết voucher có thể cộng dồn không
+    stackable: { type: Boolean, default: false },
+    // 💡 Thời gian dùng voucher
+    usedAt: { type: Date, default: Date.now },
+    // 💡 Ghi chú chi tiết
+    meta: {
+      ip: String,
+      // IP người dùng lúc đặt hàng
+      userAgent: String
+      // trình duyệt
+    },
+    reverted: { type: Boolean, default: false },
+    revertedAt: { type: Date }
   },
   { timestamps: true }
 );
@@ -3366,7 +3394,8 @@ const OrderSchema = new Schema(
     pointsRefunded: { type: Boolean, default: false },
     membershipDiscountRate: { type: Number, default: 0 },
     membershipDiscountAmount: { type: Number, default: 0 },
-    voucherUsage: [VoucherUsageOrderSchema]
+    voucherUsage: [VoucherUsageOrderSchema],
+    voucherRefunded: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
@@ -3470,6 +3499,7 @@ function toOrderDTO(entity) {
     membershipDiscountAmount: entity.membershipDiscountAmount,
     createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
     updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || "",
+    voucherRefunded: entity.voucherRefunded,
     voucherUsage: Array.isArray(entity.voucherUsage) ? entity.voucherUsage.map((v) => {
       var _a2, _b2;
       return {
@@ -3814,24 +3844,24 @@ const getRewardHistory = async (req, res) => {
   }
 };
 
-const router$k = express.Router();
-router$k.get("/reward-history", authenticateAdmin, getRewardHistory);
-router$k.get("/membership-level", getAllMembershipLevel);
-router$k.get("/membership-level/:id", getMembershipLevelById);
-router$k.put("/membership-level/:id", authenticateAdmin, updateMembershipLevel);
-router$k.get("/membership-benefit", getAllMembershipBenefits);
-router$k.get("/membership-benefit/:id", getMembershipBenefitById);
-router$k.post("/membership-benefit", authenticateAdmin, createMembershipBenefit);
-router$k.put("/membership-benefit/:id", authenticateAdmin, updateMembershipBenefit);
-router$k.delete("/membership-benefit/:id", authenticateAdmin, deleteMembershipBenefit);
-router$k.get("/", authenticateAdmin, getAllUsers);
-router$k.get("/:id", getUserById$1);
-router$k.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
-router$k.delete("/:id", authenticateAdmin, deleteUsers);
+const router$m = express.Router();
+router$m.get("/reward-history", authenticateAdmin, getRewardHistory);
+router$m.get("/membership-level", getAllMembershipLevel);
+router$m.get("/membership-level/:id", getMembershipLevelById);
+router$m.put("/membership-level/:id", authenticateAdmin, updateMembershipLevel);
+router$m.get("/membership-benefit", getAllMembershipBenefits);
+router$m.get("/membership-benefit/:id", getMembershipBenefitById);
+router$m.post("/membership-benefit", authenticateAdmin, createMembershipBenefit);
+router$m.put("/membership-benefit/:id", authenticateAdmin, updateMembershipBenefit);
+router$m.delete("/membership-benefit/:id", authenticateAdmin, deleteMembershipBenefit);
+router$m.get("/", authenticateAdmin, getAllUsers);
+router$m.get("/:id", getUserById$1);
+router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
+router$m.delete("/:id", authenticateAdmin, deleteUsers);
 
 const usersRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$k
+  default: router$m
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllPosts = async (req, res) => {
@@ -3919,17 +3949,17 @@ const toggleActive$1 = async (req, res) => {
   }
 };
 
-const router$j = Router();
-router$j.get("/", authenticateAdmin, getAllPosts);
-router$j.get("/:id", getPostsById$1);
-router$j.post("/", authenticateAdmin, createPosts);
-router$j.put("/:id", authenticateAdmin, updatePosts);
-router$j.delete("/:id", authenticateAdmin, deletePosts);
-router$j.patch("/toggleActive/:id", authenticateAdmin, toggleActive$1);
+const router$l = Router();
+router$l.get("/", authenticateAdmin, getAllPosts);
+router$l.get("/:id", getPostsById$1);
+router$l.post("/", authenticateAdmin, createPosts);
+router$l.put("/:id", authenticateAdmin, updatePosts);
+router$l.delete("/:id", authenticateAdmin, deletePosts);
+router$l.patch("/toggleActive/:id", authenticateAdmin, toggleActive$1);
 
 const postsNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$j
+  default: router$l
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ORDER_STATUS = {
@@ -3970,6 +4000,42 @@ const ProductReviewSchema = new Schema(
 );
 ProductReviewSchema.plugin(mongoosePaginate);
 const ProductReviewEntity = model("ProductReview", ProductReviewSchema, "product_reviews");
+
+const VoucherSchema = new Schema(
+  {
+    code: { type: String, required: true, unique: true },
+    // Mã voucher
+    name: { type: String, required: true },
+    description: { type: String },
+    type: {
+      type: String,
+      required: true,
+      enum: VOUCHER_TYPE_LIST
+    },
+    value: { type: Number, default: 0 },
+    maxDiscount: { type: Number },
+    minOrderValue: { type: Number, default: 0 },
+    maxShippingDiscount: { type: Number },
+    usageLimit: { type: Number, default: 0 },
+    usedCount: { type: Number, default: 0 },
+    limitPerUser: { type: Number, default: 0 },
+    usedBy: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
+        count: { type: Number, default: 0 }
+      }
+    ],
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
+    applicableProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],
+    applicableCategories: [{ type: Schema.Types.ObjectId, ref: "CategoryProduct" }],
+    stackable: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true }
+  },
+  { timestamps: true }
+);
+VoucherSchema.plugin(mongoosePaginate);
+const VoucherEntity = model("Voucher", VoucherSchema, "vouchers");
 
 const getAllOrder = async (req, res) => {
   try {
@@ -4037,6 +4103,40 @@ const deleteOrder = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const rollbackVoucherUsage = async (order) => {
+  if (!(order == null ? void 0 : order.userId) || !Array.isArray(order.voucherUsage)) return;
+  if (order.voucherRefunded) return;
+  for (const vu of order.voucherUsage) {
+    try {
+      const voucher = await VoucherEntity.findOne({ code: vu.code });
+      if (!voucher) continue;
+      await VoucherUsageEntity.updateMany(
+        { userId: order.userId, orderId: order._id, code: vu.code },
+        { $set: { reverted: true, revertedAt: /* @__PURE__ */ new Date() } }
+      );
+      const userObjId = new mongoose.Types.ObjectId(order.userId);
+      const exists = await VoucherEntity.exists({
+        code: vu.code,
+        "usedBy.userId": userObjId
+      });
+      if (exists && voucher.limitPerUser > 0) {
+        await VoucherEntity.updateOne(
+          { code: vu.code, "usedBy.userId": userObjId },
+          { $inc: { "usedBy.$.count": -1, usedCount: -1 } }
+        );
+      } else {
+        await VoucherEntity.updateOne(
+          { code: vu.code },
+          { $inc: { usedCount: -1 } }
+        );
+      }
+      console.log(`\u2705 Rollback voucher ${vu.code} th\xE0nh c\xF4ng`);
+    } catch (err) {
+      console.error(`\u274C L\u1ED7i rollback voucher ${vu.code}:`, err);
+    }
+  }
+  await OrderEntity.findByIdAndUpdate(order._id, { voucherRefunded: true });
+};
 const updateOrderStatus = async (req, res) => {
   var _a, _b;
   try {
@@ -4080,8 +4180,8 @@ const updateOrderStatus = async (req, res) => {
       order.reward.awardedAt = /* @__PURE__ */ new Date();
       await order.save();
     }
-    if (status.id === ORDER_STATUS.CANCELLED && order.userId && order.usedPoints > 0) {
-      if (!order.pointsRefunded) {
+    if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
+      if (!order.pointsRefunded && order.usedPoints > 0) {
         const user = await UserModel.findById(order.userId);
         if (user) {
           user.membership.balancePoint += order.usedPoints;
@@ -4089,6 +4189,7 @@ const updateOrderStatus = async (req, res) => {
           order.pointsRefunded = true;
         }
       }
+      await rollbackVoucherUsage(order);
     }
     await order.save();
     return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
@@ -4138,17 +4239,17 @@ const setPointAndUpgrade = async (userId, point) => {
   };
 };
 
-const router$i = Router();
-router$i.get("/", authenticateAdmin, getAllOrder);
-router$i.get("/status", getAllStatus);
-router$i.get("/payments", getAllPayment);
-router$i.get("/:id", getOrderById$1);
-router$i.delete("/:id", authenticateAdmin, deleteOrder);
-router$i.put("/status", authenticateAdmin, updateOrderStatus);
+const router$k = Router();
+router$k.get("/", authenticateAdmin, getAllOrder);
+router$k.get("/status", getAllStatus);
+router$k.get("/payments", getAllPayment);
+router$k.get("/:id", getOrderById$1);
+router$k.delete("/:id", authenticateAdmin, deleteOrder);
+router$k.put("/status", authenticateAdmin, updateOrderStatus);
 
 const orderManageRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$i
+  default: router$k
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllProduct = async (req, res) => {
@@ -4266,17 +4367,17 @@ const toggleActive = async (req, res) => {
   }
 };
 
-const router$h = Router();
-router$h.get("/", authenticateAdmin, getAllProduct);
-router$h.post("/", authenticateAdmin, createProduct);
-router$h.get("/:id", getProductById$1);
-router$h.put("/:id", authenticateAdmin, updateProduct);
-router$h.delete("/:id", authenticateAdmin, deleteProduct);
-router$h.patch("/toggleActive/:id", authenticateAdmin, toggleActive);
+const router$j = Router();
+router$j.get("/", authenticateAdmin, getAllProduct);
+router$j.post("/", authenticateAdmin, createProduct);
+router$j.get("/:id", getProductById$1);
+router$j.put("/:id", authenticateAdmin, updateProduct);
+router$j.delete("/:id", authenticateAdmin, deleteProduct);
+router$j.patch("/toggleActive/:id", authenticateAdmin, toggleActive);
 
 const productRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$h
+  default: router$j
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const PaymentTransactionSchema = new Schema(
@@ -4378,15 +4479,15 @@ const deletePaymentTransaction = async (req, res) => {
   }
 };
 
-const router$g = Router();
-router$g.post("/", createPaymentTransaction);
-router$g.put("/status", updatePaymentTransactionStatus);
-router$g.get("/", getPaymentTransactions);
-router$g.delete("/:id", deletePaymentTransaction);
+const router$i = Router();
+router$i.post("/", createPaymentTransaction);
+router$i.put("/status", updatePaymentTransactionStatus);
+router$i.get("/", getPaymentTransactions);
+router$i.delete("/:id", deletePaymentTransaction);
 
 const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$g
+  default: router$i
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function toProductReviewDTO(entity) {
@@ -4500,49 +4601,19 @@ const deleteProductReview = async (req, res) => {
   }
 };
 
-const router$f = Router();
-router$f.get("/", authenticateAdmin, getAllProductReviews);
-router$f.get("/:id", getProductReviewById$1);
-router$f.put("/status", authenticateAdmin, updateProductReviewStatus);
-router$f.delete("/:id", authenticateAdmin, deleteProductReview);
+const router$h = Router();
+router$h.get("/", authenticateAdmin, getAllProductReviews);
+router$h.get("/:id", getProductReviewById$1);
+router$h.put("/status", authenticateAdmin, updateProductReviewStatus);
+router$h.delete("/:id", authenticateAdmin, deleteProductReview);
 
 const productReviewRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$f
+  default: router$h
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const VoucherSchema = new Schema(
-  {
-    code: { type: String, required: true, unique: true },
-    // Mã voucher
-    name: { type: String, required: true },
-    description: { type: String },
-    type: {
-      type: String,
-      required: true,
-      enum: VOUCHER_TYPE_LIST
-    },
-    value: { type: Number, default: 0 },
-    maxDiscount: { type: Number },
-    minOrderValue: { type: Number, default: 0 },
-    maxShippingDiscount: { type: Number },
-    usageLimit: { type: Number, default: 0 },
-    usedCount: { type: Number, default: 0 },
-    limitPerUser: { type: Number, default: 0 },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
-    applicableProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],
-    applicableCategories: [{ type: Schema.Types.ObjectId, ref: "CategoryProduct" }],
-    stackable: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: true }
-  },
-  { timestamps: true }
-);
-VoucherSchema.plugin(mongoosePaginate);
-const VoucherEntity = model("Voucher", VoucherSchema, "vouchers");
-
 function toVoucherDTO(entity) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
   return {
     id: entity._id.toString(),
     code: entity.code,
@@ -4562,7 +4633,14 @@ function toVoucherDTO(entity) {
     applicableCategories: (_k = (_j = entity.applicableCategories) == null ? void 0 : _j.map((c) => c.toString())) != null ? _k : [],
     stackable: (_l = entity.stackable) != null ? _l : false,
     isActive: (_m = entity.isActive) != null ? _m : true,
-    createdAt: ((_n = entity.createdAt) == null ? void 0 : _n.toISOString()) || ""
+    usedBy: (_o = (_n = entity.usedBy) == null ? void 0 : _n.map(toUsedBy)) != null ? _o : [],
+    createdAt: ((_p = entity.createdAt) == null ? void 0 : _p.toISOString()) || ""
+  };
+}
+function toUsedBy(entity) {
+  return {
+    userId: entity.userId,
+    count: entity.count
   };
 }
 
@@ -4717,219 +4795,77 @@ const toggleActiveVoucher = async (req, res) => {
     });
   }
 };
-const applyVoucher = async (req, res) => {
-  var _a, _b;
-  try {
-    const {
-      code,
-      orderTotal,
-      products = [],
-      orderCreatedAt,
-      userId
-    } = req.body;
-    if (!code || !orderTotal)
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu m\xE3 voucher ho\u1EB7c gi\xE1 tr\u1ECB \u0111\u01A1n h\xE0ng" });
-    if (!userId)
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\xF4ng tin ng\u01B0\u1EDDi d\xF9ng" });
-    const voucher = await VoucherEntity.findOne({ code, isActive: true });
-    if (!voucher)
-      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i ho\u1EB7c kh\xF4ng ho\u1EA1t \u0111\u1ED9ng" });
-    const now = /* @__PURE__ */ new Date();
-    if (voucher.startDate > now)
-      return res.status(400).json({ code: 1, message: "Ch\u01B0a \u0111\u1EBFn th\u1EDDi gian \xE1p d\u1EE5ng voucher" });
-    if (voucher.endDate < now)
-      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt h\u1EA1n" });
-    if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit)
-      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng" });
-    const userUsedCount = await VoucherUsageEntity.countDocuments({
-      voucherId: voucher._id,
-      userId
-    });
-    if (voucher.limitPerUser > 0 && userUsedCount >= voucher.limitPerUser)
-      return res.status(400).json({ code: 1, message: "B\u1EA1n \u0111\xE3 d\xF9ng h\u1EBFt l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y" });
-    if (voucher.minOrderValue && orderTotal < voucher.minOrderValue)
-      return res.status(400).json({
-        code: 1,
-        message: `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${voucher.minOrderValue.toLocaleString()}\u0111`
-      });
-    let applicableProducts = [];
-    if (voucher.type === "product") {
-      if (voucher.value < 0 || voucher.value > 100) {
-        return res.status(400).json({ code: 1, message: "Gi\xE1 tr\u1ECB gi\u1EA3m (%) kh\xF4ng h\u1EE3p l\u1EC7" });
-      }
-      const applicableProductIds = ((_a = voucher.applicableProducts) != null ? _a : []).map(String);
-      const applicableCategoryIds = ((_b = voucher.applicableCategories) != null ? _b : []).map(String);
-      applicableProducts = products.filter((p) => {
-        var _a2, _b2;
-        const pid = (_a2 = p.productId) == null ? void 0 : _a2.toString();
-        const cid = (_b2 = p.categoryId) == null ? void 0 : _b2.toString();
-        return applicableProductIds.includes(pid) || applicableCategoryIds.includes(cid);
-      });
-      if (applicableProducts.length === 0) {
-        return res.status(400).json({
-          code: 1,
-          message: "Voucher kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m n\xE0o trong \u0111\u01A1n h\xE0ng"
-        });
-      }
-    } else {
-      applicableProducts = products;
-    }
-    const subtotalApplicable = applicableProducts.reduce(
-      (sum, p) => sum + p.price * p.quantity,
-      0
-    );
-    let discount = 0;
-    let message = "\xC1p d\u1EE5ng voucher th\xE0nh c\xF4ng";
-    switch (voucher.type) {
-      case "percentage":
-        discount = Math.min(
-          subtotalApplicable * voucher.value / 100,
-          voucher.maxDiscount || Infinity
-        );
-        break;
-      case "fixed":
-        discount = Math.min(voucher.value, subtotalApplicable);
-        break;
-      case "freeship":
-        if (!voucher.maxShippingDiscount)
-          return res.status(400).json({
-            code: 1,
-            message: "Voucher freeship ch\u01B0a c\u1EA5u h\xECnh m\u1EE9c gi\u1EA3m ph\xED t\u1ED1i \u0111a"
-          });
-        discount = Math.min(voucher.maxShippingDiscount, orderTotal);
-        message = `\xC1p d\u1EE5ng mi\u1EC5n ph\xED v\u1EADn chuy\u1EC3n (t\u1ED1i \u0111a ${voucher.maxShippingDiscount.toLocaleString()}\u0111)`;
-        break;
-      case "product":
-        discount = Math.min(
-          subtotalApplicable * voucher.value / 100,
-          voucher.maxDiscount || Infinity
-        );
-        const productNames = applicableProducts.map((p) => p.name);
-        if (productNames.length === 1) {
-          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho s\u1EA3n ph\u1EA9m: ${productNames[0]}`;
-        } else {
-          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho ${productNames.length} s\u1EA3n ph\u1EA9m: ${productNames.map((name) => `<div>- ${name}</div>`).join("")}`;
-        }
-        break;
-      case "timed":
-        if (!orderCreatedAt)
-          return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\u1EDDi gian t\u1EA1o \u0111\u01A1n h\xE0ng" });
-        const createdAt = new Date(orderCreatedAt);
-        if (createdAt < voucher.startDate || createdAt > voucher.endDate)
-          return res.status(400).json({ code: 1, message: "Voucher kh\xF4ng h\u1EE3p l\u1EC7 \u1EDF th\u1EDDi \u0111i\u1EC3m n\xE0y" });
-        discount = Math.min(
-          subtotalApplicable * voucher.value / 100,
-          voucher.maxDiscount || Infinity
-        );
-        message = "\xC1p d\u1EE5ng voucher khung th\u1EDDi gian";
-        break;
-      default:
-        return res.status(400).json({ code: 1, message: "Lo\u1EA1i voucher kh\xF4ng h\u1EE3p l\u1EC7" });
-    }
-    discount = Math.round(discount * 1e3) / 1e3;
-    return res.json({
-      code: 0,
-      message,
-      data: {
-        code: voucher.code,
-        type: voucher.type,
-        discount,
-        applicableProducts,
-        stackable: voucher.stackable,
-        expiresAt: voucher.endDate
-      }
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getAvailableVouchersForOrder = async (req, res) => {
-  var _a;
-  try {
-    const { orderTotal = 0, categoryIds = [], userId } = req.body;
-    const now = /* @__PURE__ */ new Date();
-    const vouchers = await VoucherEntity.find({
-      isActive: true,
-      startDate: { $lte: now },
-      endDate: { $gte: now }
-    }).sort({ createdAt: -1 });
-    const result = [];
-    for (const v of vouchers) {
-      const userUsedCount = userId ? await VoucherUsageEntity.countDocuments({
-        voucherId: v._id,
-        userId
-      }) : 0;
-      let isDisabled = false;
-      let disabledReason = null;
-      if (v.usageLimit > 0 && v.usedCount >= v.usageLimit) {
-        isDisabled = true;
-        disabledReason = "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng";
-      } else if (v.limitPerUser > 0 && userUsedCount >= v.limitPerUser) {
-        isDisabled = true;
-        disabledReason = "B\u1EA1n \u0111\xE3 s\u1EED d\u1EE5ng h\u1EBFt s\u1ED1 l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y";
-      } else if (orderTotal < (v.minOrderValue || 0)) {
-        isDisabled = true;
-        disabledReason = `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${(_a = v.minOrderValue) == null ? void 0 : _a.toLocaleString()}\u0111`;
-      } else if (v.type === "product") {
-        const hasApplicableCategories = Array.isArray(v.applicableCategories) && Array.isArray(categoryIds) && categoryIds.some(
-          (cid) => {
-            var _a2;
-            return ((_a2 = v.applicableCategories) != null ? _a2 : []).map(String).includes(cid.toString());
-          }
-        );
-        if (!hasApplicableCategories) {
-          isDisabled = true;
-          disabledReason = "Kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m ho\u1EB7c danh m\u1EE5c trong \u0111\u01A1n h\xE0ng";
-        }
-      }
-      result.push({
-        ...v.toObject(),
-        isDisabled,
-        disabledReason
-      });
-    }
-    return res.json({
-      code: 0,
-      message: "L\u1EA5y danh s\xE1ch voucher th\xE0nh c\xF4ng",
-      data: result
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 
-const router$e = Router();
-router$e.get("/", getAllVouchers);
-router$e.get("/:id", getVoucherById);
-router$e.post("/", createVoucher);
-router$e.put("/:id", updateVoucher);
-router$e.delete("/:id", deleteVoucher);
-router$e.patch("/:id/toggle-active", toggleActiveVoucher);
-router$e.post("/apply", applyVoucher);
-router$e.post("/available", getAvailableVouchersForOrder);
+const router$g = Router();
+router$g.get("/", getAllVouchers);
+router$g.get("/:id", getVoucherById);
+router$g.post("/", createVoucher);
+router$g.put("/:id", updateVoucher);
+router$g.delete("/:id", deleteVoucher);
+router$g.patch("/:id/toggle-active", toggleActiveVoucher);
 
-const voucherRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const voucherRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$e
+  default: router$g
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const router$d = Router();
-router$d.use("/settings", router$l);
-router$d.use("/about", router$p);
-router$d.use("/users", router$k);
-router$d.use("/banners", router$o);
-router$d.use("/categoriesNews", router$n);
-router$d.use("/newsPosts", router$j);
-router$d.use("/orders", router$i);
-router$d.use("/payment-transactions", router$g);
-router$d.use("/categories", router$m);
-router$d.use("/products", router$h);
-router$d.use("/product-reviews", router$f);
-router$d.use("/voucher", router$e);
+const getAllVoucherUsage = async (req, res) => {
+  try {
+    let { page = 1, limit = 10, userId, code, orderId, reverted } = req.query;
+    const numPage = Number(page);
+    const numLimit = Number(limit);
+    const filter = {};
+    if (userId) filter.userId = new mongoose.Types.ObjectId(userId);
+    if (code) filter.code = code;
+    if (orderId) filter.orderId = new mongoose.Types.ObjectId(orderId);
+    if (reverted !== void 0) filter.reverted = reverted === "true";
+    const skip = (numPage - 1) * numLimit;
+    const [list, total] = await Promise.all([
+      VoucherUsageEntity.find(filter).populate("voucherId", "code name type value").populate("userId", "fullname phone").sort({ createdAt: -1 }).skip(skip).limit(numLimit),
+      VoucherUsageEntity.countDocuments(filter)
+    ]);
+    return res.json({
+      code: 0,
+      data: list,
+      pagination: {
+        page: numPage,
+        limit: numLimit,
+        totalPages: Math.ceil(total / numLimit),
+        total
+      }
+    });
+  } catch (err) {
+    console.error("\u274C L\u1ED7i getAllVoucherUsage:", err);
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch VoucherUsage", error: err.message });
+  }
+};
+
+const router$f = Router();
+router$f.get("/", getAllVoucherUsage);
+
+const voucherUsageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$f
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const router$e = Router();
+router$e.use("/settings", router$n);
+router$e.use("/about", router$r);
+router$e.use("/users", router$m);
+router$e.use("/banners", router$q);
+router$e.use("/categoriesNews", router$p);
+router$e.use("/newsPosts", router$l);
+router$e.use("/orders", router$k);
+router$e.use("/payment-transactions", router$i);
+router$e.use("/categories", router$o);
+router$e.use("/products", router$j);
+router$e.use("/product-reviews", router$h);
+router$e.use("/voucher", router$g);
+router$e.use("/voucher-usage", router$f);
 
 const index$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$d
+  default: router$e
 }, Symbol.toStringTag, { value: 'Module' }));
 
 async function generateBarcode(code, filename) {
@@ -5184,19 +5120,19 @@ const changePassword = async (req, res) => {
   res.json({ code: 200, message: "Password updated" });
 };
 
-const router$c = express.Router();
-router$c.put("/users/me", authenticate, updateAccount);
-router$c.get("/users/:id", getUserById);
-router$c.post("/register", register);
-router$c.post("/login", login);
-router$c.post("/google-login", googleLogin);
-router$c.post("/forgot-password", forgotPassword);
-router$c.post("/reset-password", resetPassword);
-router$c.post("/change-password", authenticate, changePassword);
+const router$d = express.Router();
+router$d.put("/users/me", authenticate, updateAccount);
+router$d.get("/users/:id", getUserById);
+router$d.post("/register", register);
+router$d.post("/login", login);
+router$d.post("/google-login", googleLogin);
+router$d.post("/forgot-password", forgotPassword);
+router$d.post("/reset-password", resetPassword);
+router$d.post("/change-password", authenticate, changePassword);
 
 const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$c
+  default: router$d
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllBanners = async (_, res) => {
@@ -5208,12 +5144,12 @@ const getAllBanners = async (_, res) => {
   }
 };
 
-const router$b = Router();
-router$b.get("/", getAllBanners);
+const router$c = Router();
+router$c.get("/", getAllBanners);
 
 const bannerRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$b
+  default: router$c
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllCategories$1 = async (_, res) => {
@@ -5255,14 +5191,14 @@ const getCategoryBySlug = async (req, res) => {
   }
 };
 
-const router$a = Router();
-router$a.get("/", getAllCategories$1);
-router$a.get("/slug/:slug", getCategoryBySlug);
-router$a.get("/:id", getCategoriesById$1);
+const router$b = Router();
+router$b.get("/", getAllCategories$1);
+router$b.get("/slug/:slug", getCategoryBySlug);
+router$b.get("/:id", getCategoriesById$1);
 
 const categoriesNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$a
+  default: router$b
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function buildCategoryTree(list) {
@@ -5451,17 +5387,17 @@ const getProductsByCategory = async (req, res) => {
   }
 };
 
-const router$9 = Router();
-router$9.get("/tree", getAllCategoriesTree);
-router$9.get("/", getAllCategories);
-router$9.get("/slug/:slug", getCategoriesBySlug);
-router$9.get("/:id", getCategoriesById);
-router$9.get("/:id/children", getChildrenCategories);
-router$9.get("/:id/products", getProductsByCategory);
+const router$a = Router();
+router$a.get("/tree", getAllCategoriesTree);
+router$a.get("/", getAllCategories);
+router$a.get("/slug/:slug", getCategoriesBySlug);
+router$a.get("/:id", getCategoriesById);
+router$a.get("/:id/children", getChildrenCategories);
+router$a.get("/:id/products", getProductsByCategory);
 
 const categoriesProductRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$9
+  default: router$a
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const uploadImageMulter = multer({ dest: "uploads/" });
@@ -5616,16 +5552,16 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const router$8 = express.Router();
-router$8.get("/images", authenticate, getImages);
-router$8.get("/images/folders", authenticateAdmin, getFolders);
-router$8.delete("/images/delete", authenticate, deleteImage);
-router$8.get("/images/search", authenticate, searchImage);
-router$8.post("/images/upload", authenticate, uploadImageMulter.single("file"), uploadImage);
+const router$9 = express.Router();
+router$9.get("/images", authenticate, getImages);
+router$9.get("/images/folders", authenticateAdmin, getFolders);
+router$9.delete("/images/delete", authenticate, deleteImage);
+router$9.get("/images/search", authenticate, searchImage);
+router$9.post("/images/upload", authenticate, uploadImageMulter.single("file"), uploadImage);
 
 const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$8
+  default: router$9
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllProvinces = async (_, res) => {
@@ -5723,26 +5659,26 @@ const getWardDetail = async (req, res) => {
   }
 };
 
-const router$7 = express.Router();
-router$7.get("/provinces", getAllProvinces);
-router$7.get("/provinces/:provinceCode", getProvinceDetail);
-router$7.get("/districts/:provinceCode", getDistrictsByProvince);
-router$7.get("/district/:districtCode", getDistrictDetail);
-router$7.get("/wards/:districtCode", getWardsByDistrict);
-router$7.get("/ward/:wardCode", getWardDetail);
+const router$8 = express.Router();
+router$8.get("/provinces", getAllProvinces);
+router$8.get("/provinces/:provinceCode", getProvinceDetail);
+router$8.get("/districts/:provinceCode", getDistrictsByProvince);
+router$8.get("/district/:districtCode", getDistrictDetail);
+router$8.get("/wards/:districtCode", getWardsByDistrict);
+router$8.get("/ward/:wardCode", getWardDetail);
 
 const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$7
+  default: router$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const router$6 = Router();
-router$6.use("/fileManage", router$8);
-router$6.use("/location", router$7);
+const router$7 = Router();
+router$7.use("/fileManage", router$9);
+router$7.use("/location", router$8);
 
 const index$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$6
+  default: router$7
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const SearchKeywordSchema = new Schema(
@@ -5808,13 +5744,13 @@ const logSearchKeyword = async (req, res) => {
   }
 };
 
-const router$5 = express.Router();
-router$5.post("/search-keywords/log", logSearchKeyword);
-router$5.get("/search-keywords/list", getTopSearchKeyword);
+const router$6 = express.Router();
+router$6.post("/search-keywords/log", logSearchKeyword);
+router$6.get("/search-keywords/list", getTopSearchKeyword);
 
 const usersRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$5
+  default: router$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getPostsById = async (req, res) => {
@@ -5939,18 +5875,18 @@ const getAllPostsPagination = async (req, res) => {
   }
 };
 
-const router$4 = Router();
-router$4.get("/category/:categoryId", getPostsByCategory);
-router$4.get("/pagination", getAllPostsPagination);
-router$4.get("/slug/:slug", getPostBySlug);
-router$4.get("/related/:slug", getRelatedPostsBySlug);
-router$4.patch("/view/:slug", updateView);
-router$4.get("/latest", getPostsLatest);
-router$4.get("/:id", getPostsById);
+const router$5 = Router();
+router$5.get("/category/:categoryId", getPostsByCategory);
+router$5.get("/pagination", getAllPostsPagination);
+router$5.get("/slug/:slug", getPostBySlug);
+router$5.get("/related/:slug", getRelatedPostsBySlug);
+router$5.patch("/view/:slug", updateView);
+router$5.get("/latest", getPostsLatest);
+router$5.get("/:id", getPostsById);
 
 const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$4
+  default: router$5
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const PAYMENT_METHOD_STATUS = {
@@ -5970,9 +5906,9 @@ const getOrderById = async (req, res) => {
   }
 };
 const createOrder = async (req, res) => {
+  var _a;
   try {
     const { data, userId, point, usedPoint } = req.body;
-    console.log(req.body);
     if (!(data == null ? void 0 : data.fullname) || !(data == null ? void 0 : data.phone) || !(data == null ? void 0 : data.paymentId) || !(data == null ? void 0 : data.cartItems)) {
       return res.status(400).json({ code: 1, message: "D\u1EEF li\u1EC7u \u0111\u01A1n h\xE0ng kh\xF4ng h\u1EE3p l\u1EC7" });
     }
@@ -6010,6 +5946,60 @@ const createOrder = async (req, res) => {
       membershipDiscountRate,
       membershipDiscountAmount
     });
+    if (Array.isArray(data.voucherUsage) && data.voucherUsage.length > 0 && userId) {
+      for (const v of data.voucherUsage) {
+        const voucher = await VoucherEntity.findOne({ code: v.code });
+        if (!voucher) continue;
+        await VoucherUsageEntity.create({
+          voucherId: voucher._id,
+          userId: userId || null,
+          orderId: newOrder._id,
+          code: v.code,
+          type: v.type,
+          discount: v.discount || 0,
+          applicableProducts: v.applicableProducts || [],
+          expiresAt: v.expiresAt,
+          stackable: v.stackable,
+          meta: {
+            ip: req.ip,
+            userAgent: req.headers["user-agent"] || ""
+          }
+        });
+        voucher.usedCount = (voucher.usedCount || 0) + 1;
+        const exists = (_a = voucher.usedBy) == null ? void 0 : _a.some(
+          (u) => {
+            var _a2;
+            return ((_a2 = u.userId) == null ? void 0 : _a2.toString()) === userId.toString();
+          }
+        );
+        if (exists) {
+          await VoucherEntity.updateOne(
+            { code: v.code },
+            {
+              $inc: {
+                usedCount: 1,
+                "usedBy.$[u].count": 1
+              }
+            },
+            {
+              arrayFilters: [{ "u.userId": userId }]
+            }
+          );
+        } else {
+          await VoucherEntity.updateOne(
+            { code: v.code },
+            {
+              $inc: { usedCount: 1 },
+              $push: { usedBy: { userId, count: 1 } }
+            }
+          );
+        }
+        if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit) {
+          voucher.isActive = false;
+        }
+        await voucher.save();
+      }
+    }
     return res.status(201).json({
       code: 0,
       message: "\u0110\u1EB7t h\xE0ng th\xE0nh c\xF4ng",
@@ -6285,18 +6275,18 @@ const getShippingFee = async (req, res) => {
   }
 };
 
-const router$3 = Router();
-router$3.get("/:id", getOrderById);
-router$3.post("/", createOrder);
-router$3.post("/check-point", authenticate, checkPoint);
-router$3.post("/sepay-callback", sepayCallback);
-router$3.post("/shipping/fee", getShippingFee);
-router$3.get("/users/:userId/orders", authenticate, getOrdersByUserId);
-router$3.get("/users/:userId/rewards", authenticate, getRewardHistoryByUserId);
+const router$4 = Router();
+router$4.get("/:id", getOrderById);
+router$4.post("/", createOrder);
+router$4.post("/check-point", authenticate, checkPoint);
+router$4.post("/sepay-callback", sepayCallback);
+router$4.post("/shipping/fee", getShippingFee);
+router$4.get("/users/:userId/orders", authenticate, getOrdersByUserId);
+router$4.get("/users/:userId/rewards", authenticate, getRewardHistoryByUserId);
 
 const orderManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$3
+  default: router$4
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const WishlistSchema = new Schema(
@@ -6575,19 +6565,19 @@ const searchProducts = async (req, res) => {
   }
 };
 
-const router$2 = Router();
-router$2.get("/promotion", getPromotionalProducts);
-router$2.get("/most-order", getMostOrderedProduct);
-router$2.get("/search", searchProducts);
-router$2.get("/related/:slug", getRelatedProducts);
-router$2.get("/:id", getProductById);
-router$2.get("/users/:userId/wishlist", authenticate, getWishlistByUserId);
-router$2.post("/users/:userId/wishlist", authenticate, addWishlistItem);
-router$2.delete("/users/:userId/wishlist/:productId", authenticate, deleteWishlistItem);
+const router$3 = Router();
+router$3.get("/promotion", getPromotionalProducts);
+router$3.get("/most-order", getMostOrderedProduct);
+router$3.get("/search", searchProducts);
+router$3.get("/related/:slug", getRelatedProducts);
+router$3.get("/:id", getProductById);
+router$3.get("/users/:userId/wishlist", authenticate, getWishlistByUserId);
+router$3.post("/users/:userId/wishlist", authenticate, addWishlistItem);
+router$3.delete("/users/:userId/wishlist/:productId", authenticate, deleteWishlistItem);
 
 const productRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$2
+  default: router$3
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const getProductReviewById = async (req, res) => {
@@ -6757,31 +6747,222 @@ const getReviewsByProduct = async (req, res) => {
   }
 };
 
-const router$1 = Router();
-router$1.get("/:id", getProductReviewById);
-router$1.get("/user/:userId/reviews", authenticate, getReviewsByUser);
-router$1.get("/product/:productId/reviews", getReviewsByProduct);
-router$1.put("/submit", authenticate, submitProductReview);
+const router$2 = Router();
+router$2.get("/:id", getProductReviewById);
+router$2.get("/user/:userId/reviews", authenticate, getReviewsByUser);
+router$2.get("/product/:productId/reviews", getReviewsByProduct);
+router$2.put("/submit", authenticate, submitProductReview);
 
 const productReviewRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const applyVoucher = async (req, res) => {
+  var _a, _b;
+  try {
+    const {
+      code,
+      orderTotal,
+      products = [],
+      orderCreatedAt,
+      userId
+    } = req.body;
+    if (!code || !orderTotal)
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu m\xE3 voucher ho\u1EB7c gi\xE1 tr\u1ECB \u0111\u01A1n h\xE0ng" });
+    if (!userId)
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\xF4ng tin ng\u01B0\u1EDDi d\xF9ng" });
+    const voucher = await VoucherEntity.findOne({ code, isActive: true });
+    if (!voucher)
+      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i ho\u1EB7c kh\xF4ng ho\u1EA1t \u0111\u1ED9ng" });
+    const now = /* @__PURE__ */ new Date();
+    if (voucher.startDate > now)
+      return res.status(400).json({ code: 1, message: "Ch\u01B0a \u0111\u1EBFn th\u1EDDi gian \xE1p d\u1EE5ng voucher" });
+    if (voucher.endDate < now)
+      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt h\u1EA1n" });
+    if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit)
+      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng" });
+    const userUsedCount = await VoucherUsageEntity.countDocuments({
+      voucherId: voucher._id,
+      userId
+    });
+    if (voucher.limitPerUser > 0 && userUsedCount >= voucher.limitPerUser)
+      return res.status(400).json({ code: 1, message: "B\u1EA1n \u0111\xE3 d\xF9ng h\u1EBFt l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y" });
+    if (voucher.minOrderValue && orderTotal < voucher.minOrderValue)
+      return res.status(400).json({
+        code: 1,
+        message: `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${voucher.minOrderValue.toLocaleString()}\u0111`
+      });
+    let applicableProducts = [];
+    if (voucher.type === "product") {
+      if (voucher.value < 0 || voucher.value > 100) {
+        return res.status(400).json({ code: 1, message: "Gi\xE1 tr\u1ECB gi\u1EA3m (%) kh\xF4ng h\u1EE3p l\u1EC7" });
+      }
+      const applicableProductIds = ((_a = voucher.applicableProducts) != null ? _a : []).map(String);
+      const applicableCategoryIds = ((_b = voucher.applicableCategories) != null ? _b : []).map(String);
+      applicableProducts = products.filter((p) => {
+        var _a2, _b2;
+        const pid = (_a2 = p.productId) == null ? void 0 : _a2.toString();
+        const cid = (_b2 = p.categoryId) == null ? void 0 : _b2.toString();
+        return applicableProductIds.includes(pid) || applicableCategoryIds.includes(cid);
+      });
+      if (applicableProducts.length === 0) {
+        return res.status(400).json({
+          code: 1,
+          message: "Voucher kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m n\xE0o trong \u0111\u01A1n h\xE0ng"
+        });
+      }
+    } else {
+      applicableProducts = products;
+    }
+    const subtotalApplicable = applicableProducts.reduce(
+      (sum, p) => sum + p.price * p.quantity,
+      0
+    );
+    let discount = 0;
+    let message = "\xC1p d\u1EE5ng voucher th\xE0nh c\xF4ng";
+    switch (voucher.type) {
+      case "percentage":
+        discount = Math.min(
+          subtotalApplicable * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
+        break;
+      case "fixed":
+        discount = Math.min(voucher.value, subtotalApplicable);
+        break;
+      case "freeship":
+        if (!voucher.maxShippingDiscount)
+          return res.status(400).json({
+            code: 1,
+            message: "Voucher freeship ch\u01B0a c\u1EA5u h\xECnh m\u1EE9c gi\u1EA3m ph\xED t\u1ED1i \u0111a"
+          });
+        discount = Math.min(voucher.maxShippingDiscount, orderTotal);
+        message = `\xC1p d\u1EE5ng mi\u1EC5n ph\xED v\u1EADn chuy\u1EC3n (t\u1ED1i \u0111a ${voucher.maxShippingDiscount.toLocaleString()}\u0111)`;
+        break;
+      case "product":
+        discount = Math.min(
+          subtotalApplicable * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
+        const productNames = applicableProducts.map((p) => p.name);
+        if (productNames.length === 1) {
+          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho s\u1EA3n ph\u1EA9m: ${productNames[0]}`;
+        } else {
+          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho ${productNames.length} s\u1EA3n ph\u1EA9m: ${productNames.map((name) => `<div>- ${name}</div>`).join("")}`;
+        }
+        break;
+      case "timed":
+        if (!orderCreatedAt)
+          return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\u1EDDi gian t\u1EA1o \u0111\u01A1n h\xE0ng" });
+        const createdAt = new Date(orderCreatedAt);
+        if (createdAt < voucher.startDate || createdAt > voucher.endDate)
+          return res.status(400).json({ code: 1, message: "Voucher kh\xF4ng h\u1EE3p l\u1EC7 \u1EDF th\u1EDDi \u0111i\u1EC3m n\xE0y" });
+        discount = Math.min(
+          subtotalApplicable * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
+        message = "\xC1p d\u1EE5ng voucher khung th\u1EDDi gian";
+        break;
+      default:
+        return res.status(400).json({ code: 1, message: "Lo\u1EA1i voucher kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    discount = Math.round(discount * 1e3) / 1e3;
+    return res.json({
+      code: 0,
+      message,
+      data: {
+        code: voucher.code,
+        type: voucher.type,
+        discount,
+        applicableProducts,
+        stackable: voucher.stackable,
+        expiresAt: voucher.endDate
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAvailableVouchers = async (req, res) => {
+  var _a;
+  try {
+    const { orderTotal = 0, categoryIds = [], userId } = req.body;
+    const now = /* @__PURE__ */ new Date();
+    const vouchers = await VoucherEntity.find({
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now }
+    }).sort({ createdAt: -1 });
+    const result = [];
+    for (const v of vouchers) {
+      const userUsedCount = userId ? await VoucherUsageEntity.countDocuments({
+        voucherId: v._id,
+        userId
+      }) : 0;
+      let isDisabled = false;
+      let disabledReason = null;
+      if (v.usageLimit > 0 && v.usedCount >= v.usageLimit) {
+        isDisabled = true;
+        disabledReason = "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng";
+      } else if (v.limitPerUser > 0 && userUsedCount >= v.limitPerUser) {
+        isDisabled = true;
+        disabledReason = "B\u1EA1n \u0111\xE3 s\u1EED d\u1EE5ng h\u1EBFt s\u1ED1 l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y";
+      } else if (orderTotal < (v.minOrderValue || 0)) {
+        isDisabled = true;
+        disabledReason = `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${(_a = v.minOrderValue) == null ? void 0 : _a.toLocaleString()}\u0111`;
+      } else if (v.type === "product") {
+        const hasApplicableCategories = Array.isArray(v.applicableCategories) && Array.isArray(categoryIds) && categoryIds.some(
+          (cid) => {
+            var _a2;
+            return ((_a2 = v.applicableCategories) != null ? _a2 : []).map(String).includes(cid.toString());
+          }
+        );
+        if (!hasApplicableCategories) {
+          isDisabled = true;
+          disabledReason = "Kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m ho\u1EB7c danh m\u1EE5c trong \u0111\u01A1n h\xE0ng";
+        }
+      }
+      result.push({
+        ...v.toObject(),
+        isDisabled,
+        disabledReason
+      });
+    }
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y danh s\xE1ch voucher th\xE0nh c\xF4ng",
+      data: result
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$1 = Router();
+router$1.post("/", getAvailableVouchers);
+router$1.post("/apply", applyVoucher);
+
+const voucherRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$1
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const router = Router();
-router.use("/admin", router$d);
-router.use("/", router$6);
-router.use("/auth", router$c);
-router.use("/users", router$5);
-router.use("/banners", router$b);
-router.use("/categoriesNews", router$a);
-router.use("/newsPosts", router$4);
-router.use("/orders", router$3);
-router.use("/categories", router$9);
-router.use("/products", router$2);
-router.use("/addresses", router$q);
-router.use("/product-reviews", router$1);
-router.use("/", router$2);
+router.use("/admin", router$e);
+router.use("/", router$7);
+router.use("/auth", router$d);
+router.use("/users", router$6);
+router.use("/banners", router$c);
+router.use("/categoriesNews", router$b);
+router.use("/newsPosts", router$5);
+router.use("/orders", router$4);
+router.use("/categories", router$a);
+router.use("/products", router$3);
+router.use("/addresses", router$s);
+router.use("/product-reviews", router$2);
+router.use("/voucher", router$1);
+router.use("/", router$3);
 
 const index = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

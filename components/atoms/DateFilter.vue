@@ -62,6 +62,7 @@ const onSelectToDay = (val: string | null) => {
           style="min-width: 150px"
           v-bind="activatorProps"
           append-inner-icon="mdi-calendar"
+          variant="outlined"
         />
       </template>
 
@@ -88,6 +89,7 @@ const onSelectToDay = (val: string | null) => {
           style="min-width: 150px"
           v-bind="activatorProps"
           append-inner-icon="mdi-calendar"
+          variant="outlined"
         />
       </template>
 

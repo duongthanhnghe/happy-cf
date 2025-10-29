@@ -78,6 +78,7 @@ export interface OrderDTO {
   membershipDiscountRate: number;
   membershipDiscountAmount: number;
   voucherUsage: ApplyVoucherResponse[];
+  voucherRefunded: boolean;
   createdAt: string;
   updatedAt: string;
 }

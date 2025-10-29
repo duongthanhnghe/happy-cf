@@ -112,7 +112,8 @@ export const API_ENDPOINTS_ADMIN = {
     UPDATE: (id) => `/voucher/${id}`,
     DELETE: (id) => `/voucher/${id}`,
     TOGGLE_ACTIVE: (id) => `/voucher/${id}/toggle-active`,
-    APPLY: "/voucher/apply",
-    AVAILABLE: '/voucher/available',
+  },
+  VOUCHERS_USAGE: {
+    LIST: "/voucher-usage",
   },
 }

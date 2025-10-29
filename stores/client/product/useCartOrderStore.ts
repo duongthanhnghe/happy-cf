@@ -19,7 +19,7 @@ import { ROUTES } from '@/shared/constants/routes';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
-import { vouchersAPI } from "@/services/v1/admin/voucher.service";
+import { vouchersAPI } from "@/services/v1/voucher.service";
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 import type { ApplyVoucherResponse, ApplyVoucherProduct } from "@/server/types/dto/v1/voucher.dto"; 
 import { useEventBus } from "@/composables/voucher/useEventBus";
@@ -327,7 +327,7 @@ export const useCartStore = defineStore("Cart", () => {
       ...new Set(cartListItem.value.map(item => item.categoryId))
     ]
     
-    if (userId && categoryIds && totalPriceCurrent.value) {
+    if (categoryIds && totalPriceCurrent.value) {
       listVoucher(userId, categoryIds);
     }
 
@@ -606,7 +606,7 @@ export const useCartStore = defineStore("Cart", () => {
       if(data.code === 0){
         shippingFee.value = data.data.MONEY_TOTAL
 
-        if (activeFreeshipVoucher.value) await reapplyFreeshippVoucher() // xu ly reapply voucher freeship khi thay doi PVC
+        if (storeAccount.getDetailValue?.id && activeFreeshipVoucher.value) await reapplyFreeshippVoucher() // xu ly reapply voucher freeship khi thay doi PVC
 
         handleCalcTotalPriceCurrent()
       } 
@@ -641,7 +641,7 @@ export const useCartStore = defineStore("Cart", () => {
     }));
     const orderCreatedAt = new Date().toISOString();
 
-    if(!userId) return showWarning("Không thể áp dụng voucher");
+    if(!userId) return showWarning("Vui long dang nhap de su dung voucher");
 
     const existingVoucher = voucherUsage.value.find(v => v.code === code);
     if (existingVoucher) {

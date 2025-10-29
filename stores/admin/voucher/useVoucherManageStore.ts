@@ -3,8 +3,8 @@ import { defineStore } from "pinia";
 import { vouchersAPI } from "@/services/v1/admin/voucher.service";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation';
 import { Loading } from '@/utils/global';
-import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto';
-import type { VoucherDTO, CreateVoucherBody } from '@/server/types/dto/v1/voucher.dto';
+import type { TableOpt, TableHeaders, FilterTime } from '@/server/types/dto/v1/table-vuetify.dto';
+import type { VoucherDTO, CreateVoucherBody, VoucherPaginationDTO } from '@/server/types/dto/v1/voucher.dto';
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { VOUCHER_TYPE } from '@/server/shared/constants/voucher-type';
@@ -38,9 +38,8 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
   const formItem = reactive<CreateVoucherBody>({ ...defaultForm });
   const updateItem = reactive<CreateVoucherBody>({ ...defaultForm });
 
-  // 📦 State list
-  const dataList = ref<VoucherDTO[] | null>(null);
-  const itemsPerPage = 10;
+  const dataList = ref<VoucherPaginationDTO>();
+  const itemsPerPage = 20;
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Mã voucher', key: 'code', sortable: false },
@@ -75,44 +74,91 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
   const detailData = ref<VoucherDTO | null>(null);
   const filterType = ref<string | null>(null)
   const checkEdit = ref<boolean>(true);
-
   const selectedCategory = ref<CategoryProductDTO[]>([])
   const selectedCategoryName = ref<string[]>([])
   const treeItems = computed(() => {
     const items = getListCategoryAllTree.value ?? []
     return markAllSelectable(items)
   })
+  const fromDay = ref<string>('')
+  const toDay = ref<string>('')
 
   const getListData = async () => {
-    const res = await vouchersAPI.getAll();
-    if (res.code === 0) dataList.value = res.data;
+    const res = await vouchersAPI.getAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage);
+    if (res.code !== 0) return
+
+    dataList.value = res
+    totalItems.value = res.pagination.total
+    currentTableOptions.value.page = res.pagination.page
+    currentTableOptions.value.itemsPerPage = res.pagination.limit
   };
+
+  const filterByDate = (item: VoucherDTO, filterTime: FilterTime) => {
+    const voucherStart = item.startDate ? new Date(item.startDate) : null
+    const voucherEnd = item.endDate ? new Date(item.endDate) : null
+
+    const from = filterTime.fromDay ? new Date(filterTime.fromDay) : null
+    const to = filterTime.toDay ? new Date(filterTime.toDay) : null
+
+    // Nếu không có startDate/endDate thì bỏ qua lọc
+    if (!voucherStart && !voucherEnd) return true
+
+    // Trường hợp có cả start & end
+    if (voucherStart && voucherEnd) {
+      return (!from || voucherEnd >= from) && (!to || voucherStart <= to)
+    }
+
+    // Chỉ có startDate
+    if (voucherStart && !voucherEnd) {
+      return (!from || voucherStart >= from) && (!to || voucherStart <= to)
+    }
+
+    // Chỉ có endDate
+    if (!voucherStart && voucherEnd) {
+      return (!from || voucherEnd >= from) && (!to || voucherEnd <= to)
+    }
+
+    return true
+  }
 
   const ListAllVoucherApi = {
     async fetch({
+      items,
       page, itemsPerPage, sortBy,
       search,
       filterType,
+      filterTime,
     }: {
+      items: VoucherDTO[],
       page: TableOpt["page"],
       itemsPerPage: TableOpt["itemsPerPage"],
       sortBy: TableOpt["sortBy"],
       search: { code: string },
-      filterType?: string
+      filterType?: string,
+      filterTime?: FilterTime
     }) {
+
       return new Promise(resolve => {
         setTimeout(() => {
-          const start = (page - 1) * itemsPerPage;
-          const end = start + itemsPerPage;
-          const items = dataList.value?.slice().filter(item => {
-            if (search.code && !item.code.toLowerCase().includes(search.code.toLowerCase())) return false;
-            if (filterType && item.type !== filterType) return false;
-            return true;
-          });
-          const paginated = items?.slice(start, end === -1 ? undefined : end);
-          resolve({ items: paginated, total: items?.length });
-        }, 400);
-      });
+          let filtered = items.slice()
+
+          if (search.code) {
+            filtered = filtered.filter(item =>
+              item.code.toLowerCase().includes(search.code.toLowerCase())
+            )
+          }
+
+          if (filterType) {
+            filtered = filtered.filter(item => item.type === filterType)
+          }
+
+          if (filterTime) {
+            filtered = filtered.filter(item => filterByDate(item, filterTime))
+          }
+
+          resolve({ items: filtered })
+        }, 300)
+      })
     },
   };
 
@@ -120,22 +166,29 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     loadingTable.value = true;
     await getListData();
 
-    const { items, total } = await ListAllVoucherApi.fetch({
+    const { items } = (await ListAllVoucherApi.fetch({
+      items: dataList.value?.data || [],
       page: opt.page,
       itemsPerPage: opt.itemsPerPage,
       sortBy: opt.sortBy,
       search: { code: code.value },
-      filterType: filterType.value || ''
-    }) as { items: VoucherDTO[]; total: number };
+      filterType: filterType.value || '',
+      filterTime: { fromDay: fromDay.value, toDay: toDay.value },
+    })) as { items: VoucherDTO[] };
 
     serverItems.value = items;
-    totalItems.value = total;
+    if(dataList.value?.data) totalItems.value = dataList.value.pagination.total
     loadingTable.value = false;
+
   }
 
-  watch([code,filterType], () => {
+  watch([code,filterType,fromDay, toDay], () => {
     loadItems(currentTableOptions.value);
   });
+
+  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
+    loadItems(currentTableOptions.value);
+  })
 
   const handleTogglePopupAdd = (value: boolean) => {
     if (detailData.value) detailData.value.id = '';
@@ -233,7 +286,7 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
       if (res.code === 0) {
         showSuccess(res.message ?? '');
         if (dataList.value)
-          dataList.value = dataList.value.filter(item => item.id !== id);
+          dataList.value.data = dataList.value?.data.filter(item => item.id !== id);
           handleReload();
       } else showWarning(res.message ?? '');
     } catch (err) {
@@ -296,7 +349,26 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     if(newValue?.length === 0 && newValue) fetchCategoryListTree()
   }, { immediate: true})
 
-  // 🔄 Toggle active
+  const resetFilter = () => {
+    code.value = ''
+    fromDay.value = ''
+    toDay.value = ''
+    filterType.value = null
+    currentTableOptions.value.page = 1
+    currentTableOptions.value.itemsPerPage = itemsPerPage
+  }
+
+  const hasFilter = computed(() => {
+    return (
+      code.value !== '' ||
+      fromDay.value !== '' ||
+      toDay.value !== '' ||
+      filterType.value !== null ||
+      currentTableOptions.value.page !== 1 ||
+      currentTableOptions.value.itemsPerPage !== itemsPerPage
+    )
+  })
+
   const { toggleActive } = useToggleActiveStatus(vouchersAPI.toggleActive, serverItems);
 
   return {
@@ -320,6 +392,9 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     selectedCategory,
     checkEdit,
     filterType,
+    hasFilter,
+    toDay,
+    fromDay,
     // Actions
     loadItems,
     handleTogglePopupAdd,
@@ -331,7 +406,7 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     submitUpdate,
     handleDelete,
     toggleActive,
+    resetFilter,
     treeItems,
-
   };
 });

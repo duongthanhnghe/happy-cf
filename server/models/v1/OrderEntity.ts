@@ -54,6 +54,7 @@ export interface Order {
   membershipDiscountRate: number;
   membershipDiscountAmount: number;
   voucherUsage: VoucherUsageOrder[];
+  voucherRefunded: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -130,6 +131,7 @@ const OrderSchema = new Schema<Order>(
     membershipDiscountRate: { type: Number, default: 0 },
     membershipDiscountAmount: { type: Number, default: 0 },
     voucherUsage: [VoucherUsageOrderSchema],
+    voucherRefunded: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
