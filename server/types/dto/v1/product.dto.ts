@@ -94,13 +94,31 @@ export interface SelectedOptionPushDTO {
   variantPrice: number
 }
 
-export interface CartDTO extends ProductDTO {
-  productKey?: string
-  note?: string
-  finalPriceDiscounts?: number
-  quantity: number
-  finalPrice?: number
-  selectedOptionsPush?: SelectedOptionPushDTO[] | null
+// export interface CartDTO extends ProductDTO {
+//   product: ProductDTO | string;
+//   productKey?: string
+//   note?: string
+//   finalPriceDiscounts?: number
+//   quantity: number
+//   finalPrice?: number
+//   selectedOptionsPush?: SelectedOptionPushDTO[] | null
+// }
+
+export interface CartDTO {
+  id?: string; // optional nếu FE không dùng
+  product: string | ProductDTO; // <-- lúc đầu chỉ là string (id), sau khi merge là object
+  productKey?: string;
+  quantity: number;
+  note?: string;
+  selectedOptionsPush?: SelectedOptionPushDTO[];
+  finalPrice?: number;
+  finalPriceDiscounts?: number;
+  price?: number;
+  priceDiscounts?: number;
+  weight?: number;
+  categoryId?: string;
+  productName?: string;
+  image?: string;
 }
 
 export type SelectedOptionDTO = SelectedOptionPushDTO & {id: string}

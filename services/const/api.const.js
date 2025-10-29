@@ -24,13 +24,8 @@ export const API_ENDPOINTS = {
     // TOGGLE_ACTIVE: (id) => `/categories/toggleActive/${id}`,
   },
   PRODUCTS: {
-    // LIST_ALL: '/products',
     GET_BY_ID: (id) => `/products/${id}`,
-    // DELETE: (id) => `/products/${id}`,
-    // UPDATE: (id) => `/products/${id}`,
-    // CREATE: '/products',
     RELATED_BY_SLUG: (slug) => `/products/related/${slug}`,
-    // TOGGLE_ACTIVE: (id) => `/products/toggleActive/${id}`,
     LIST_MOST_ORDER: (limit) => `/products/most-order?limit=${limit}`,
     LIST_PROMOTION: (limit) => `/products/promotion?limit=${limit}`,
     SEARCH: '/products/search',
@@ -39,6 +34,7 @@ export const API_ENDPOINTS = {
     ADD_WISHLIST:  (userId) => `/users/${userId}/wishlist`,
     DELETE_WISHLIST: (userId, productId) =>
       `/users/${userId}/wishlist/${productId}`,
+    CART_DETAIL: '/products/cart-detail',
   },
   ORDERS: {
     CREATE: '/orders',

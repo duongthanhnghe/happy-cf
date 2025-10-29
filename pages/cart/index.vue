@@ -110,10 +110,14 @@ watch(
 )
 
 onMounted(async () => {
-  await storeLocation.fetchProvincesStore()
-  if(storeAccount.getDetailValue?.id) await store.handleGetDefaultAddress()
-  if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
-  eventBus.on('voucher:reset', handleVoucherReset);
+  if(store.getCartListItem.length > 0) {
+    await store.fetchProductCart();
+    
+    await storeLocation.fetchProvincesStore()
+    if(storeAccount.getDetailValue?.id) await store.handleGetDefaultAddress()
+    if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
+    eventBus.on('voucher:reset', handleVoucherReset);
+  } 
 })
 
 onBeforeUnmount(() => {

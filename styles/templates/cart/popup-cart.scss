@@ -1,9 +1,6 @@
 @use "@/assets/_variables.scss" as *;
 
 .popup-cart {
-  &-body {
-    padding-bottom: 140px;
-  }
   &-card {
     background-color: $cl-white;
     padding: 1rem;

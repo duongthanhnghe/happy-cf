@@ -83,7 +83,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount"> {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded"> {
   paymentId: string;
   status: string;
   provinceCode: number;

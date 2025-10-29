@@ -37,15 +37,8 @@ onMounted(() => {
       </div>
 
       <div class="portal-popup-footer">
-        <div class="popup-cart-footer-item">
-        <Heading tag="div" size="md" weight="normal">Tong cong</Heading>
-        <Heading tag="div" size="xl" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }}</Heading>
-        </div>
-        <div v-if="store.getTotalPriceSave != 0" class="popup-cart-footer-item popup-cart-footer-item-save">
-        Ban tiet kiem duoc {{ formatCurrency(store.getTotalPriceSave) }} <span class="popup-cart-footer-item-current">{{ formatCurrency(store.getTotalPriceCurrent) }}</span>
-        </div>
         <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
-          <Button tag="div" label="Dat hang" color="primary" class="mt-sm w-full" />
+          <Button tag="div" label="Dat hang" color="primary" class="w-full" />
         </NuxtLink>
       </div>
     </div>

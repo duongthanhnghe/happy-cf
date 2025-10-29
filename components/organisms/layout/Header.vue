@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import '@/styles/molecules/layout/header.scss';
+import { onMounted } from 'vue'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useSearchStore } from '@/stores/client/product/useSearchStore'
@@ -19,6 +20,12 @@ const props = defineProps({
     default: 'logo',
     validator: (value: string) => ['logo', 'address','name'].includes(value)
   }
+})
+
+onMounted(async () => {
+  if(storeCart.getCartListItem.length > 0) {
+    await storeCart.fetchProductCart();
+  } 
 })
 
 </script>

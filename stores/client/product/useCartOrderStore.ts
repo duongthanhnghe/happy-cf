@@ -1,5 +1,6 @@
 import { ref, reactive, computed, nextTick } from "vue";
 import { useRouter } from 'vue-router'
+import { useRoute } from 'nuxt/app'
 import { defineStore } from "pinia";
 import { setCookie, getCookie, getCurrentDateTime, Loading } from "@/utils/global";
 import { showConfirm } from "@/utils/toast"
@@ -23,6 +24,7 @@ import { vouchersAPI } from "@/services/v1/voucher.service";
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 import type { ApplyVoucherResponse, ApplyVoucherProduct } from "@/server/types/dto/v1/voucher.dto"; 
 import { useEventBus } from "@/composables/voucher/useEventBus";
+import { useProductCartDetail } from '@/composables/product/useProductCartDetail';
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
@@ -32,8 +34,10 @@ export const useCartStore = defineStore("Cart", () => {
   const storeSetting = useSettingStore();
   const { fetchAvailableVouchers, allVouchers } = useAvailableVouchersForOrder();
   const eventBus = useEventBus();
+  const { fetchCartProducts, getCartProducts } = useProductCartDetail()
 
   const router = useRouter()
+  const route = useRoute()
   const timeCurrent = getCurrentDateTime('time');
   const timeRules = [
     (value: string) => {
@@ -56,6 +60,7 @@ export const useCartStore = defineStore("Cart", () => {
 
   const cartCount = ref(0)
   const cartListItem = ref<CartDTO[]>([])
+  const newCartListItem = ref<CartDTO[]>([])
   const totalPriceCurrent = ref(0);
   const totalPriceDiscount = ref(0);
   const orderPriceDiscount = ref(0);
@@ -88,11 +93,13 @@ export const useCartStore = defineStore("Cart", () => {
       existingProduct.quantity++;
     } else {
       cartListItem.value?.push({
-        ...product,
+        // ...product,
+        product: product.id,
         quantity: 1,
       });
     }
     cartCount.value++;
+    console.log(cartListItem.value)
   };
   
   const addProductWithOptions = (product: ProductDTO, selectedOptions: SelectedOptionPushDTO[], quantity: number, note: string) => {
@@ -125,7 +132,8 @@ export const useCartStore = defineStore("Cart", () => {
       }, 0) ?? 0;
 
       cartListItem.value?.push({
-        ...product,
+        // ...product,
+        product: product.id,
         productKey,
         quantity: quantity,
         selectedOptionsPush: [...selectedOptions],
@@ -170,6 +178,7 @@ export const useCartStore = defineStore("Cart", () => {
 
       const updatedProduct = {
         ...product,
+        product: product.id,
         productKey: newProductKey,
         quantity: quantity,
         selectedOptionsPush: [...selectedOptions],
@@ -203,6 +212,7 @@ export const useCartStore = defineStore("Cart", () => {
    
     const updatedProduct = {
       ...product,
+      product: product.id,
       quantity: quantity,
       note: note,
     };
@@ -227,6 +237,23 @@ export const useCartStore = defineStore("Cart", () => {
     updateCookie();
     return true;
   };
+
+  const fetchProductCart = async () => {
+    const productIds = cartListItem.value.map((item: any) => item.product)
+    await fetchCartProducts(productIds)
+
+    if (getCartProducts) {
+      cartListItem.value = cartListItem.value.map(item => {
+        const productDetail = getCartProducts.value.find(p => p.id === item.product)
+        return {
+          ...item,
+          ...productDetail
+        }
+      })
+
+      handleCalcTotalPriceCurrent()
+    }
+  }
 
   const resetValuePopupOrder = () => {
     selectedOptionsData.value = [];
@@ -293,17 +320,18 @@ export const useCartStore = defineStore("Cart", () => {
     isCalculating.value = true;
 
     totalPriceCurrent.value = cartListItem.value.reduce((total, item) => {
+      
       if (item.selectedOptionsPush && item.finalPrice) {
         return total + item.finalPrice * item.quantity;
       }
-      return total + item.price * item.quantity;
+      return total + (item.price || 0) * item.quantity;
     }, 0);
 
     totalPriceDiscount.value = cartListItem.value.reduce((total, item) => {
       if (item.selectedOptionsPush && item.finalPriceDiscounts) {
         return total + item.finalPriceDiscounts * item.quantity;
       }
-      return total + item.priceDiscounts * item.quantity;
+      return total + (item.priceDiscounts||0) * item.quantity;
     }, 0);
 
     orderPriceDiscount.value = totalPriceDiscount.value;
@@ -324,10 +352,10 @@ export const useCartStore = defineStore("Cart", () => {
     //list voucher
     const userId = storeAccount.getDetailValue?.id
     const categoryIds = [
-      ...new Set(cartListItem.value.map(item => item.categoryId))
+      ...new Set(cartListItem.value.map(item => item.categoryId || ''))
     ]
     
-    if (categoryIds && totalPriceCurrent.value) {
+    if (categoryIds && totalPriceCurrent.value && route.path === ROUTES.PUBLIC.CART.path) {
       listVoucher(userId, categoryIds);
     }
 
@@ -420,16 +448,19 @@ export const useCartStore = defineStore("Cart", () => {
   const deleteCartAll = async () => {
     cartCount.value = 0;
     cartListItem.value = [];
+    newCartListItem.value = [];
     updateCookie();
   };
 
   const updateCookie = () => {
     setCookie("cartCount", cartCount.value);
     setCookie("cartListItem", cartListItem.value);
+    fetchProductCart()
     handleCalcTotalPriceCurrent();
   };
 
   const handleTogglePopup = async (value: boolean) => {
+    if(cartListItem.value.length > 0) await fetchProductCart()
     isTogglePopup.value = value
   };
 
@@ -589,7 +620,7 @@ export const useCartStore = defineStore("Cart", () => {
   const handleGetFee = async () => {
     try {
       const productWeight = cartListItem.value.reduce((total, item) => {
-        return total + item.weight * item.quantity
+        return total + (item.weight||0) * item.quantity
       }, 0)
 
       if(!productWeight) return;
@@ -633,10 +664,10 @@ export const useCartStore = defineStore("Cart", () => {
     const userId = storeAccount.getDetailValue?.id;
     const orderTotal = totalPriceDiscount.value;
     const products: ApplyVoucherProduct[] = cartListItem.value.map(item => ({
-      productId: item.id,
-      name: item.productName,
-      categoryId: item.categoryId,
-      price: item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts,
+      productId: item.id || '',
+      name: item.productName || '',
+      categoryId: item.categoryId || '',
+      price: item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts || 0,
       quantity: item.quantity,
     }));
     const orderCreatedAt = new Date().toISOString();
@@ -799,6 +830,7 @@ export const useCartStore = defineStore("Cart", () => {
     handleGetFee,
     applyVoucher,
     handleCalcTotalPriceCurrent,
+    fetchProductCart,
     // getters
     tempSelected,
     getCartCount,

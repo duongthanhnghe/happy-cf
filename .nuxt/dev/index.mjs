@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"3eb11-5+mdhmjGhBJjVC12ZAp77oNk/c0\"",
-    "mtime": "2025-10-29T03:54:22.802Z",
-    "size": 256785,
+    "etag": "\"3ee3d-LAc+yGYbMjsKFu2kcrKKtvT6hc8\"",
+    "mtime": "2025-10-29T04:38:23.642Z",
+    "size": 257597,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"ef875-ZQbDrFeA6x352oBVBP+TDlgtLYU\"",
-    "mtime": "2025-10-29T03:54:22.803Z",
-    "size": 981109,
+    "etag": "\"f04d8-itNvLJvajcU6EsYynopWXtc8vgQ\"",
+    "mtime": "2025-10-29T04:38:23.643Z",
+    "size": 984280,
     "path": "index.mjs.map"
   }
 };
@@ -6564,8 +6564,30 @@ const searchProducts = async (req, res) => {
     });
   }
 };
+const getCartProducts = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ code: 1, message: "Danh s\xE1ch s\u1EA3n ph\u1EA9m kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    const productIds = ids.filter((id) => Types.ObjectId.isValid(id)).map((id) => new Types.ObjectId(id));
+    const products = await ProductEntity.find({
+      _id: { $in: productIds },
+      isActive: true
+    }).lean();
+    return res.json({
+      code: 0,
+      data: toProductListDTO(products),
+      message: "Load cart success"
+    });
+  } catch (error) {
+    console.error("getCartProducts error:", error);
+    return res.status(500).json({ code: 1, message: "Server error" });
+  }
+};
 
 const router$3 = Router();
+router$3.post("/cart-detail", getCartProducts);
 router$3.get("/promotion", getPromotionalProducts);
 router$3.get("/most-order", getMostOrderedProduct);
 router$3.get("/search", searchProducts);
