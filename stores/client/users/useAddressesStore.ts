@@ -43,6 +43,7 @@ export const useAddressesManageStore = defineStore("AddressesManage", () => {
   };
 
   const handleTogglePopupAdd = async (value: boolean) => {
+    handleResetForm()
     if(storeLocation.getListProvinces.length === 0) await storeLocation.fetchProvincesStore()
     isTogglePopupAdd.value = value;
   };

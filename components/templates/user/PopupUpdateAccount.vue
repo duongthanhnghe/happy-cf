@@ -49,7 +49,6 @@ onBeforeUnmount(() => {
 <template>
 
 <PopupFileManageImage :folderName="folderName+accountStore.getDetailValue?.id" :chooseImage="true" column="col-6 col-md-4"/>
-<PopupChangePassword :children="true" />
 
 <Popup popupId="popup-update-account" v-model="storeAccountEdit.isTogglePopupUpdate" :popupHeading="AUTH_TEXT_UPDATE_INFO" align="right">
   <template #body>
@@ -78,8 +77,6 @@ onBeforeUnmount(() => {
           <v-radio :label="GLOBAL_TEXT_FEMALE" value="female"></v-radio>
           <v-radio label="Khac" value="other"></v-radio>
         </v-radio-group>
-
-        <Button color="gray" label="Doi mat khau" class="w-full" @click.prevent="storeAccountEdit.handleTogglePopupChangePassword" />
 
       </v-container>
     </v-form>

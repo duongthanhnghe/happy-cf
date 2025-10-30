@@ -3,7 +3,7 @@ import { getAllCategories, getCategoriesById,
 // createCategories,
 // updateCategories,
 // deleteCategories,
-getProductsByCategory, 
+// getProductsByCategory,
 // toggleActive,
 // updateOrder,
 getCategoriesBySlug, getAllCategoriesTree, getChildrenCategories, } from '../../controllers/v1/categoriesProductController.js';
@@ -16,7 +16,7 @@ router.get("/:id/children", getChildrenCategories);
 // router.post('/',         createCategories)
 // router.put('/:id',       updateCategories)
 // router.delete('/:id',    deleteCategories)
-router.get('/:id/products', getProductsByCategory);
+// router.get('/:id/products', getProductsByCategory)
 // router.patch('/toggleActive/:id', toggleActive)
 // router.patch('/updateOrder/:id',  updateOrder)
 export default router;

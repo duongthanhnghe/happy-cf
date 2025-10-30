@@ -34,7 +34,6 @@ onMounted(async () => {
 <PopupCart />
 <PopupEditItemToCart />
 <PopupAddItemToCart />
-<PopupManageAddress />
 
 <div class="header">
   <div class="header-fixed">

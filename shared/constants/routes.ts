@@ -200,13 +200,64 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       middleware: ['auth-login'],
       layout: 'auth-layout',
     },
-    MY_ACCOUNT: {
-      path: '/account',
+    MENU_ACCOUNT: {
+      path: '/account/menu',
       label: 'Tài khoản',
       icon: 'person',
       middleware: ['auth-login'],
-      layout: 'user-layout',
+      // layout: 'user-layout',
       headerTypeLeft: 'logo',
+    },
+    ACCOUNT: {
+      label: 'Tài khoản',
+      icon: 'person',
+      layout: 'user-layout',
+      middleware: ['auth-login'],
+      headerTypeLeft: 'logo',
+      children: {
+        INFO: {
+          path: '/account/info',
+          label: 'Thông tin tài khoản',
+          icon: 'person',
+          middleware: ['auth-login'],
+          layout: 'user-layout',
+        },
+        ORDERS: {
+          path: '/account/orders',
+          label: 'Lịch sử đơn hàng',
+          icon: 'prescriptions',
+          middleware: ['auth-login'],
+          layout: 'user-layout',
+        },
+        POINT: {
+          path: '/account/point',
+          label: 'Lịch sử Point',
+          icon: 'description',
+          middleware: ['auth-login'],
+          layout: 'user-layout',
+        },
+        USER_ADDRESS: {
+          path: '/account/user-address',
+          label: 'Sổ địa chỉ',
+          icon: 'edit_location',
+          middleware: ['auth-login'],
+          layout: 'user-layout',
+        },
+        REVIEWS: {
+          path: '/account/reviews',
+          label: 'Đánh giá và phản hồi',
+          icon: 'comment',
+          middleware: ['auth-login'],
+          layout: 'user-layout',
+        },
+        WISHLIST: {
+          path: '/account/wishlist',
+          label: 'San pham yeu thich',
+          icon: 'favorite',
+          middleware: ['auth-login'],
+          layout: 'user-layout',
+        }
+      }
     },
     CONTACT: {
       path: '/contact',

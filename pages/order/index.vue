@@ -5,6 +5,7 @@ import { ref, watchEffect } from 'vue'
 import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore';
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore'
+import { useAccountStore } from '@/stores/client/users/useAccountStore';
 
 definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER.headerTypeLeft,
@@ -15,6 +16,7 @@ const tab = ref(null)
 const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeProductCategory = useProductCategoryStore()
+const storeAccount = useAccountStore();
 
 await storeProductCategory.fetchCategoryStore()
 
@@ -74,4 +76,6 @@ watchEffect(() => {
       </v-tabs-window-item>
     </v-tabs-window>
   </div>
+
+  <PopupManageAddress v-if="storeAccount.getDetailValue?.id" />
 </template>

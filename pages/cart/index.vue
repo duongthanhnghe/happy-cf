@@ -257,12 +257,12 @@ onBeforeUnmount(() => {
           <v-textarea class="mb-0" :rows="5" v-model="store.informationOrder.note" variant="outlined" />
         </div>
 
-        <div v-if="storeAccount.getDetailValue?.id" class="card-sm bg-white mt-ms mb-ms pb-0">
+        <div v-if="storeAccount.getDetailValue?.id" class="card-sm bg-white mt-ms mb-ms">
           <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
             Su dung diem <span>(Ban dang co {{ storeAccount.getDetailValue.membership.balancePoint }})</span>
           </Heading>
           <div class="flex gap-sm">
-            <v-text-field type="number" placeholder="Nhập số điểm" v-model="store.usedPointOrder.pointInput" variant="outlined" />
+            <v-text-field type="number" placeholder="Nhập số điểm" v-model="store.usedPointOrder.pointInput" variant="outlined" hide-details/>
             <Button @click.prevent="store.handleCheckPoint()" color="black" label="Ap dung" :disabled="store.usedPointOrder.pointInput == 0" />
           </div>
         </div>
@@ -312,7 +312,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-           <div class="flex gap-sm mt-md">
+           <div v-if="storeAccount.getDetailValue?.id" class="flex gap-sm mt-md">
             <v-text-field type="text" placeholder="Nhập mã voucher" v-model="voucherCode" variant="outlined" hide-details/>
             <Button @click.prevent="handleApplyVoucherInput()" color="black" label="Ap dung" :disabled="!voucherCode" />
           </div>
@@ -373,5 +373,5 @@ onBeforeUnmount(() => {
   </div>
 </div>
 
-<PopupManageAddress v-if="storeAccount.getDetailValue?.id" :action="true" :idChoose="store.getIdAddressChoose"/>
+<PopupManageAddress v-if="storeAccount.getDetailValue?.id" :idChoose="store.getIdAddressChoose"/>
 </template>

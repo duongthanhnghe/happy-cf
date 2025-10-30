@@ -5,7 +5,7 @@ import {
   // createCategories,
   // updateCategories,
   // deleteCategories,
-  getProductsByCategory,
+  // getProductsByCategory,
   // toggleActive,
   // updateOrder,
   getCategoriesBySlug,
@@ -23,7 +23,7 @@ router.get("/:id/children", getChildrenCategories);
 // router.post('/',         createCategories)
 // router.put('/:id',       updateCategories)
 // router.delete('/:id',    deleteCategories)
-router.get('/:id/products', getProductsByCategory)
+// router.get('/:id/products', getProductsByCategory)
 // router.patch('/toggleActive/:id', toggleActive)
 // router.patch('/updateOrder/:id',  updateOrder)
 

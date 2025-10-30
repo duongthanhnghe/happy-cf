@@ -5,12 +5,16 @@
     min-height: calc(100dvh - $height-header - $height-menu-bottom);
   }
   &-link {
-    &-item:not(:last-child) {
-      margin-bottom: 1rem;
-    }
     &-text {
       border-bottom: 1px solid $cl-gray2;
-      padding-bottom: 1rem;
+    }
+    &-item {
+      &.active {
+        color: $cl-primary;
+      }
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
     }
   }
   @media (min-width: 1025px){

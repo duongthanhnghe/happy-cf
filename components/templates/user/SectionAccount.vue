@@ -10,7 +10,7 @@ const props = defineProps({
 <template>
   <CardAccount :showBarcode="props.showBarcode" />
 
-  <PopupMembershipInfor />
+  <PopupMembershipInfo />
   <PopupBarcode />
-  <PopupHistoryRewardByUser />
+  <PopupHistoryReward />
 </template>

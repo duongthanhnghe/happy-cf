@@ -92,6 +92,40 @@ export const productsAPI = {
     }
   },
 
+  getListByCategory: async (
+    id: string,
+    page: number,
+    limit: number,
+    sort?: "discount" | "popular" | "price_desc" | "price_asc"
+  ) => {
+    try {
+      const url = new URL(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}`
+      )
+      url.searchParams.set("page", String(page))
+      url.searchParams.set("limit", String(limit))
+      if (sort) {
+        url.searchParams.set("sort", sort)
+      }
+      
+      const res = await fetch(url.toString())
+      const result = await res.json()
+
+      if (result.code !== 0) {
+        throw new Error(result.message || "Lỗi khi lấy sản phẩm theo danh mục")
+      }
+
+      return {
+        code: 0,
+        data: result.data,
+        pagination: result.pagination,
+      }
+    } catch (err) {
+      console.error("Error fetching products by category:", err)
+      throw err
+    }
+  },
+
   search: async (keyword: string, page = 1, limit = 20): Promise<ProductPaginationDTO> => {
     try {
       const url = `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.SEARCH}?keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${limit}`

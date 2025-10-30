@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"3ee39-aalJgmb8PMNB81kVb+1Twp50EOw\"",
-    "mtime": "2025-10-29T06:28:32.572Z",
-    "size": 257593,
+    "etag": "\"404be-alF0M9IdHFpt9hqL7m+B37BoTaU\"",
+    "mtime": "2025-10-30T10:59:52.792Z",
+    "size": 263358,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"f04c4-mLYFK9uQvr7MFpc7YF34Tv//VlU\"",
-    "mtime": "2025-10-29T06:28:32.586Z",
-    "size": 984260,
+    "etag": "\"f6039-+FkW3F6tPsQvJeHUTDZZl0mrhPg\"",
+    "mtime": "2025-10-30T10:59:52.794Z",
+    "size": 1007673,
     "path": "index.mjs.map"
   }
 };
@@ -5223,8 +5223,18 @@ function buildCategoryTree(list) {
 }
 const getAllCategoriesTree = async (_, res) => {
   try {
-    const categories = await CategoryProductEntity.find({ isActive: true }).lean().sort({ order: 1 });
-    const dtoList = toCategoryProductListDTO(categories);
+    const allCategories = await CategoryProductEntity.find({}).lean().sort({ order: 1 });
+    const activeMap = /* @__PURE__ */ new Map();
+    allCategories.forEach((cat) => activeMap.set(cat._id.toString(), cat));
+    const isParentActive = (cat) => {
+      if (!cat) return false;
+      if (!cat.isActive) return false;
+      if (!cat.parentId) return true;
+      const parent = activeMap.get(cat.parentId.toString());
+      return parent ? isParentActive(parent) : true;
+    };
+    const filtered = allCategories.filter((cat) => isParentActive(cat));
+    const dtoList = toCategoryProductListDTO(filtered);
     const tree = buildCategoryTree(dtoList);
     return res.json({ code: 0, data: tree });
   } catch (err) {
@@ -5290,102 +5300,6 @@ const getChildrenCategories = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const getProductsByCategory = async (req, res) => {
-  var _a;
-  try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
-    }
-    const categoryId = new Types.ObjectId(req.params.id);
-    const categories = await CategoryProductEntity.aggregate([
-      { $match: { _id: categoryId } },
-      {
-        $graphLookup: {
-          from: "product_categories",
-          // 👈 tên collection (mặc định là model name viết thường + "s")
-          startWith: "$_id",
-          connectFromField: "_id",
-          connectToField: "parentId",
-          as: "descendants"
-        }
-      },
-      {
-        $project: {
-          ids: {
-            $concatArrays: [["$_id"], "$descendants._id"]
-          }
-        }
-      }
-    ]);
-    const categoryIds = ((_a = categories[0]) == null ? void 0 : _a.ids) || [categoryId];
-    const page = parseInt(req.query.page, 10) || 1;
-    let limit = parseInt(req.query.limit, 10) || 10;
-    const sortType = req.query.sort || "default";
-    if (limit === -1) {
-      limit = await ProductEntity.countDocuments({
-        categoryId: { $in: categoryIds },
-        isActive: true
-      });
-    }
-    const skip = (page - 1) * limit;
-    const [total, products] = await Promise.all([
-      ProductEntity.countDocuments({
-        categoryId: { $in: categoryIds },
-        isActive: true
-      }),
-      ProductEntity.aggregate([
-        { $match: { categoryId: { $in: categoryIds }, isActive: true } },
-        // Ép kiểu price & priceDiscount sang số
-        {
-          $addFields: {
-            price: { $toDouble: "$price" },
-            priceDiscount: { $toDouble: "$priceDiscount" }
-          }
-        },
-        // Tính toán giảm giá
-        {
-          $addFields: {
-            hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
-            discountValue: {
-              $cond: [
-                { $lt: ["$priceDiscount", "$price"] },
-                { $subtract: ["$price", "$priceDiscount"] },
-                0
-              ]
-            },
-            discountPercent: {
-              $cond: [
-                { $lt: ["$priceDiscount", "$price"] },
-                {
-                  $multiply: [
-                    { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
-                    100
-                  ]
-                },
-                0
-              ]
-            }
-          }
-        },
-        // Sort động theo sortType
-        {
-          $sort: sortType === "discount" ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 } : sortType === "popular" ? { amountOrder: -1 } : sortType === "price_desc" ? { price: -1 } : sortType === "price_asc" ? { price: 1 } : { updatedAt: -1 }
-        },
-        { $skip: skip },
-        { $limit: limit }
-      ])
-    ]);
-    const totalPages = Math.ceil(total / limit);
-    return res.json({
-      code: 0,
-      data: toProductListDTO(products),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 
 const router$a = Router();
 router$a.get("/tree", getAllCategoriesTree);
@@ -5393,7 +5307,6 @@ router$a.get("/", getAllCategories);
 router$a.get("/slug/:slug", getCategoriesBySlug);
 router$a.get("/:id", getCategoriesById);
 router$a.get("/:id/children", getChildrenCategories);
-router$a.get("/:id/products", getProductsByCategory);
 
 const categoriesProductRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -6299,6 +6212,27 @@ const WishlistSchema = new Schema(
 );
 const WishlistModel = model("Wishlist", WishlistSchema, "wishlists");
 
+const isCategoryChainActive = async (categoryId, cache = /* @__PURE__ */ new Map()) => {
+  if (!categoryId) return false;
+  const key = categoryId.toString();
+  if (cache.has(key)) return cache.get(key);
+  const category = await CategoryProductEntity.findById(categoryId).lean();
+  if (!category) {
+    cache.set(key, false);
+    return false;
+  }
+  if (!category.isActive) {
+    cache.set(key, false);
+    return false;
+  }
+  if (!category.parentId) {
+    cache.set(key, true);
+    return true;
+  }
+  const parentActive = await isCategoryChainActive(category.parentId, cache);
+  cache.set(key, parentActive);
+  return parentActive;
+};
 const getProductById = async (req, res) => {
   try {
     let product;
@@ -6309,6 +6243,10 @@ const getProductById = async (req, res) => {
     }
     if (!product) {
       return res.status(404).json({ code: 1, message: "Product kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const isActiveChain = await isCategoryChainActive(product.categoryId);
+    if (!isActiveChain) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c c\u1EE7a s\u1EA3n ph\u1EA9m \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
     }
     return res.json({ code: 0, data: toProductDTO(product) });
   } catch (err) {
@@ -6329,9 +6267,13 @@ const getRelatedProducts = async (req, res) => {
       isActive: true,
       amount: { $gt: 0 }
     }).limit(limit).sort({ createdAt: -1 }).lean();
+    const filtered = [];
+    for (const p of related) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+    }
     return res.json({
       code: 0,
-      data: toProductListDTO(related),
+      data: toProductListDTO(filtered),
       message: "Success"
     });
   } catch (err) {
@@ -6380,7 +6322,15 @@ const getWishlistByUserId = async (req, res) => {
       createdAt: item.createdAt,
       product: toProductDTO(item.product)
     }));
-    return res.json({ code: 0, data: mapped });
+    const filtered = [];
+    for (const item of mapped) {
+      if (await isCategoryChainActive(
+        new mongoose.Types.ObjectId(item.product.categoryId)
+      )) {
+        filtered.push(item);
+      }
+    }
+    return res.json({ code: 0, data: filtered });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -6438,10 +6388,14 @@ const getPromotionalProducts = async (req, res) => {
       { $sort: { discountPercent: -1 } },
       { $limit: limit }
     ]);
+    const filtered = [];
+    for (const p of products) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+    }
     res.json({
       code: 0,
       data: toProductListDTO(
-        products.map((p) => ({
+        filtered.map((p) => ({
           ...p,
           isPromotional: true,
           discountPercent: p.price && p.priceDiscounts ? Math.round((p.price - p.priceDiscounts) / p.price * 100) : 0
@@ -6478,9 +6432,13 @@ const getMostOrderedProduct = async (req, res) => {
       }
     }
     const topProducts = Object.values(productMap).sort((a, b) => b.quantity - a.quantity).slice(0, limit);
+    const filtered = [];
+    for (const p of topProducts) {
+      if (await isCategoryChainActive(p.product.categoryId)) filtered.push(p);
+    }
     res.json({
       code: 0,
-      data: toProductListDTO(topProducts.map(
+      data: toProductListDTO(filtered.map(
         (p) => ({
           ...p.product,
           totalOrdered: p.quantity
@@ -6490,6 +6448,111 @@ const getMostOrderedProduct = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ code: 1, message: "Server error" });
+  }
+};
+const getProductsByCategory = async (req, res) => {
+  var _a;
+  try {
+    if (!Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ code: 1, message: "ID kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    const categoryId = new Types.ObjectId(req.params.id);
+    const categories = await CategoryProductEntity.aggregate([
+      { $match: { _id: categoryId } },
+      {
+        $graphLookup: {
+          from: "product_categories",
+          // 👈 tên collection (mặc định là model name viết thường + "s")
+          startWith: "$_id",
+          connectFromField: "_id",
+          connectToField: "parentId",
+          as: "descendants"
+        }
+      },
+      {
+        $project: {
+          ids: {
+            $concatArrays: [["$_id"], "$descendants._id"]
+          }
+        }
+      }
+    ]);
+    const categoryIds = ((_a = categories[0]) == null ? void 0 : _a.ids) || [categoryId];
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    const sortType = req.query.sort || "default";
+    if (limit === -1) {
+      limit = await ProductEntity.countDocuments({
+        categoryId: { $in: categoryIds },
+        isActive: true
+      });
+    }
+    const skip = (page - 1) * limit;
+    const [total, products] = await Promise.all([
+      ProductEntity.countDocuments({
+        categoryId: { $in: categoryIds },
+        isActive: true
+      }),
+      ProductEntity.aggregate([
+        { $match: { categoryId: { $in: categoryIds }, isActive: true } },
+        // Ép kiểu price & priceDiscount sang số
+        {
+          $addFields: {
+            price: { $toDouble: "$price" },
+            priceDiscount: { $toDouble: "$priceDiscount" }
+          }
+        },
+        // Tính toán giảm giá
+        {
+          $addFields: {
+            hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
+            discountValue: {
+              $cond: [
+                { $lt: ["$priceDiscount", "$price"] },
+                { $subtract: ["$price", "$priceDiscount"] },
+                0
+              ]
+            },
+            discountPercent: {
+              $cond: [
+                { $lt: ["$priceDiscount", "$price"] },
+                {
+                  $multiply: [
+                    { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
+                    100
+                  ]
+                },
+                0
+              ]
+            }
+          }
+        },
+        // Sort động theo sortType
+        {
+          $sort: sortType === "discount" ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 } : sortType === "popular" ? { amountOrder: -1 } : sortType === "price_desc" ? { price: -1 } : sortType === "price_asc" ? { price: 1 } : { updatedAt: -1 }
+        },
+        { $skip: skip },
+        { $limit: limit }
+      ])
+    ]);
+    const cache = /* @__PURE__ */ new Map();
+    const filtered = [];
+    for (const p of products) {
+      const active = await isCategoryChainActive(
+        new mongoose.Types.ObjectId(p.categoryId),
+        cache
+      );
+      if (active) filtered.push(p);
+    }
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toProductListDTO(filtered),
+      pagination: { page, limit, total, totalPages: filtered.length },
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
   }
 };
 const searchProducts = async (req, res) => {
@@ -6541,10 +6604,14 @@ const searchProducts = async (req, res) => {
       ProductEntity.aggregate(pipeline),
       ProductEntity.countDocuments(matchStage)
     ]);
+    const filtered = [];
+    for (const p of products) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+    }
     res.json({
       code: 0,
       data: toProductListDTO(
-        products.map((p) => ({
+        filtered.map((p) => ({
           ...p,
           isPromotional: p.discountPercent > 0
         }))
@@ -6575,9 +6642,13 @@ const getCartProducts = async (req, res) => {
       _id: { $in: productIds },
       isActive: true
     }).lean();
+    const filtered = [];
+    for (const p of products) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+    }
     return res.json({
       code: 0,
-      data: toProductListDTO(products),
+      data: toProductListDTO(filtered),
       message: "Load cart success"
     });
   } catch (error) {
@@ -6592,6 +6663,7 @@ router$3.get("/promotion", getPromotionalProducts);
 router$3.get("/most-order", getMostOrderedProduct);
 router$3.get("/search", searchProducts);
 router$3.get("/related/:slug", getRelatedProducts);
+router$3.get("/category/:id", getProductsByCategory);
 router$3.get("/:id", getProductById);
 router$3.get("/users/:userId/wishlist", authenticate, getWishlistByUserId);
 router$3.post("/users/:userId/wishlist", authenticate, addWishlistItem);
@@ -6963,7 +7035,7 @@ const getAvailableVouchers = async (req, res) => {
 
 const router$1 = Router();
 router$1.post("/", getAvailableVouchers);
-router$1.post("/apply", applyVoucher);
+router$1.post("/apply", authenticate, applyVoucher);
 
 const voucherRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

@@ -3,6 +3,7 @@ import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLayoutStore } from '@/stores/client/layout/useUserLayoutStore'
 import type { HeaderTypeLeft } from '@/stores/client/layout/useUserLayoutStore'
+
 const storeLayout = useLayoutStore()
 const route = useRoute()
 
@@ -15,6 +16,18 @@ watch(() => route.meta, (meta) => {
 
 <template>
   <Header :type-left="storeLayout.headerTypeLeft"/>
-  <slot />
+  <div class="account-bg bg-gray2">
+    <SectionAccount :showBarcode="false"/>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-lg-3">
+          <MenuAccount />
+        </div>
+        <div class="col-12 col-lg-9">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </div>
   <MenuBottom />
 </template>

@@ -17,7 +17,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 }
 </script>
 <template>
-<Popup children popupId="popup-update-category" v-model="store.isTogglePopupUpdate" popupHeading="Sua dia chi" align="right">
+<Popup popupId="popup-update-category" v-model="store.isTogglePopupUpdate" popupHeading="Sua dia chi" align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
       <div class="portal-popup-footer flex gap-sm">

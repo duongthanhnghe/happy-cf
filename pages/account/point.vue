@@ -1,0 +1,17 @@
+<script lang="ts" setup>
+import { ROUTES } from '@/shared/constants/routes';
+import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
+
+definePageMeta({
+  layout: ROUTES.PUBLIC.ACCOUNT.layout,
+  headerTypeLeft: ROUTES.PUBLIC.ACCOUNT.headerTypeLeft,
+  middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
+})
+
+const store = useHistoryRewardByUserStore();
+
+if(!store.getItems) store.getApiListProduct()
+</script>
+<template>
+  <ListHistoryReward />
+</template>

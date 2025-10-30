@@ -16,7 +16,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 }
 </script>
 <template>
-<Popup children popupId="popup-create-address" v-model="store.isTogglePopupAdd" popupHeading="Them dia chi" align="right">
+<Popup popupId="popup-create-address" v-model="store.isTogglePopupAdd" popupHeading="Them dia chi" align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
       <div class="portal-popup-footer">

@@ -9,6 +9,48 @@ import {
   toProductListDTO,
 } from "../../mappers/v1/productMapper"
 
+// export const isCategoryChainActive = async (categoryId: Types.ObjectId | null): Promise<boolean> => {
+//   if (!categoryId) return false;
+
+//   let currentId = categoryId;
+
+//   while (currentId) {
+//     const category = await CategoryProductEntity.findById(currentId).lean();
+//     if (!category) return false;
+//     if (!category.isActive) return false;
+//     if (!category.parentId) return true;
+//     currentId = category.parentId;
+//   }
+
+//   return true;
+// };
+
+export const isCategoryChainActive = async (categoryId: Types.ObjectId | null, cache = new Map()): Promise<boolean> => {
+  if (!categoryId) return false;
+
+  const key = categoryId.toString();
+  if (cache.has(key)) return cache.get(key);
+
+  const category = await CategoryProductEntity.findById(categoryId).lean();
+  if (!category) {
+    cache.set(key, false);
+    return false;
+  }
+  if (!category.isActive) {
+    cache.set(key, false);
+    return false;
+  }
+
+  if (!category.parentId) {
+    cache.set(key, true);
+    return true;
+  }
+
+  const parentActive = await isCategoryChainActive(category.parentId, cache);
+  cache.set(key, parentActive);
+  return parentActive;
+};
+
 export const getProductById = async (req: Request<{ id: string }>, res: Response) => {
   try {
 
@@ -21,6 +63,11 @@ export const getProductById = async (req: Request<{ id: string }>, res: Response
 
     if (!product) {
       return res.status(404).json({ code: 1, message: "Product không tồn tại" })
+    }
+
+    const isActiveChain = await isCategoryChainActive(product.categoryId);
+    if (!isActiveChain) {
+      return res.status(404).json({ code: 1, message: "Danh mục của sản phẩm đã bị vô hiệu hóa" });
     }
 
     return res.json({ code: 0, data: toProductDTO(product) })
@@ -52,9 +99,14 @@ export const getRelatedProducts = async (
       .sort({ createdAt: -1 })
       .lean()
 
+    const filtered = [];
+    for (const p of related) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+    }
+
     return res.json({
       code: 0,
-      data: toProductListDTO(related),
+      data: toProductListDTO(filtered),
       message: "Success"
     })
   } catch (err: any) {
@@ -111,7 +163,18 @@ export const getWishlistByUserId = async (
       product: toProductDTO(item.product),
     }));
 
-    return res.json({ code: 0, data: mapped });
+    const filtered: typeof mapped = [];
+    for (const item of mapped) {
+      if (
+        await isCategoryChainActive(
+          new mongoose.Types.ObjectId(item.product.categoryId)
+        )
+      ) {
+        filtered.push(item);
+      }
+    }
+
+    return res.json({ code: 0, data: filtered });
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -186,10 +249,15 @@ export const getPromotionalProducts = async (
       { $limit: limit }
     ])
 
+    const filtered = [];
+    for (const p of products) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+    }
+
     res.json({
       code: 0,
       data: toProductListDTO(
-        products.map(p => ({
+        filtered.map(p => ({
           ...p,
           isPromotional: true,
           discountPercent: p.price && p.priceDiscounts
@@ -241,9 +309,14 @@ export const getMostOrderedProduct = async (
       .sort((a, b) => b.quantity - a.quantity)
       .slice(0, limit);
 
+    const filtered = [];
+    for (const p of topProducts) {
+      if (await isCategoryChainActive(p.product.categoryId)) filtered.push(p);
+    }
+
     res.json({
       code: 0,
-      data: toProductListDTO(topProducts.map((p) =>
+      data: toProductListDTO(filtered.map((p) =>
         ({
           ...p.product,
           totalOrdered: p.quantity,
@@ -254,6 +327,136 @@ export const getMostOrderedProduct = async (
   } catch (error) {
     console.error(error);
     res.status(500).json({ code: 1, message: "Server error" });
+  }
+};
+
+export const getProductsByCategory = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
+  try {
+    if (!Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
+    }
+
+    const categoryId = new Types.ObjectId(req.params.id);
+
+    const categories = await CategoryProductEntity.aggregate([
+      { $match: { _id: categoryId } },
+      {
+        $graphLookup: {
+          from: "product_categories",      // 👈 tên collection (mặc định là model name viết thường + "s")
+          startWith: "$_id",
+          connectFromField: "_id",
+          connectToField: "parentId",
+          as: "descendants"
+        }
+      },
+      {
+        $project: {
+          ids: {
+            $concatArrays: [["$_id"], "$descendants._id"]
+          }
+        }
+      }
+    ]);
+
+    const categoryIds: Types.ObjectId[] = categories[0]?.ids || [categoryId];
+
+    const page = parseInt(req.query.page as string, 10) || 1;
+    let limit = parseInt(req.query.limit as string, 10) || 10;
+    const sortType = (req.query.sort as string) || "default";
+
+    if (limit === -1) {
+      limit = await ProductEntity.countDocuments({
+        categoryId: { $in: categoryIds },
+        isActive: true
+      });
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [total, products] = await Promise.all([
+      ProductEntity.countDocuments({
+        categoryId: { $in: categoryIds },
+        isActive: true
+      }),
+      ProductEntity.aggregate([
+        { $match: { categoryId: { $in: categoryIds }, isActive: true } },
+
+        // Ép kiểu price & priceDiscount sang số
+        {
+          $addFields: {
+            price: { $toDouble: "$price" },
+            priceDiscount: { $toDouble: "$priceDiscount" },
+          },
+        },
+
+        // Tính toán giảm giá
+        {
+          $addFields: {
+            hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
+            discountValue: {
+              $cond: [
+                { $lt: ["$priceDiscount", "$price"] },
+                { $subtract: ["$price", "$priceDiscount"] },
+                0,
+              ],
+            },
+            discountPercent: {
+              $cond: [
+                { $lt: ["$priceDiscount", "$price"] },
+                {
+                  $multiply: [
+                    { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
+                    100,
+                  ],
+                },
+                0,
+              ],
+            },
+          },
+        },
+
+        // Sort động theo sortType
+        {
+          $sort:
+            sortType === "discount"
+              ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 }
+              : sortType === "popular"
+              ? { amountOrder: -1 }
+              : sortType === "price_desc"
+              ? { price: -1 }
+              : sortType === "price_asc"
+              ? { price: 1 }
+              : { updatedAt: -1 },
+        },
+
+        { $skip: skip },
+        { $limit: limit },
+      ]),
+    ]);
+
+    const cache = new Map();
+    const filtered: typeof products = [];
+    for (const p of products) {
+      const active = await isCategoryChainActive(
+        new mongoose.Types.ObjectId(p.categoryId),
+        cache
+      );
+      if (active) filtered.push(p);
+    }
+
+    const totalPages = Math.ceil(total / limit);
+
+    return res.json({
+      code: 0,
+      data: toProductListDTO(filtered),
+      pagination: { page, limit, total, totalPages: filtered.length },
+      message: "Success",
+    });
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message });
   }
 };
 
@@ -313,10 +516,15 @@ export const searchProducts = async (
       ProductEntity.countDocuments(matchStage)
     ])
 
+    const filtered = [];
+    for (const p of products) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+    }
+
     res.json({
       code: 0,
       data: toProductListDTO(
-        products.map(p => ({
+        filtered.map(p => ({
           ...p,
           isPromotional: p.discountPercent > 0
         }))
@@ -358,9 +566,14 @@ export const getCartProducts = async (
     })
       .lean()
 
+    const filtered = [];
+    for (const p of products) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+    }  
+
     return res.json({
       code: 0,
-      data: toProductListDTO(products),
+      data: toProductListDTO(filtered),
       message: "Load cart success"
     })
   } catch (error: any) {

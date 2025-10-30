@@ -1,21 +1,17 @@
 <script lang="ts" setup>
 import '@/styles/molecules/layout/menu-bottom.scss';
 import { useRoute } from 'vue-router'
-import {
-  useOrderHistoryStore
-} from '@/stores/client/order/useOrderHistoryStore'
 import { ROUTES } from '@/shared/constants/routes';
 import type { MenuItem } from 'server/types/common/menu-item';
 
 const route = useRoute()
-const storeOrder = useOrderHistoryStore()
 
 const listMenu: MenuItem[] = [
   ROUTES.PUBLIC.HOME,
   ROUTES.PUBLIC.ORDER,
-  { label: 'Don hang', icon:'category', action: () => storeOrder.handleTogglePopupAdd(true) },
+  ROUTES.PUBLIC.ACCOUNT.children!.ORDERS,
   ROUTES.PUBLIC.NEWS.children!.MAIN,
-  ROUTES.PUBLIC.MY_ACCOUNT,
+  ROUTES.PUBLIC.MENU_ACCOUNT,
 ]
 
 </script>
@@ -31,7 +27,7 @@ const listMenu: MenuItem[] = [
         >
           <MaterialIcon :name="item.icon" class="menu-bottom-icon"/>
           <div class="text-limit text-size-xs menu-bottom-title">
-            {{ item.label }}
+            {{ item.label.replace('Lịch sử đơn hàng','Đơn hàng') }}
           </div>
         </router-link>
         <div
@@ -48,5 +44,4 @@ const listMenu: MenuItem[] = [
     </div>
   </div>
   
-  <PopupOrderHistory />
 </template>

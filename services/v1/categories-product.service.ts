@@ -128,39 +128,39 @@ export const categoriesAPI = {
   //     throw err
   //   }
   // },
-  getListByCategory: async (
-    id: string,
-    page: number,
-    limit: number,
-    sort?: "discount" | "popular" | "price_desc" | "price_asc"
-  ) => {
-    try {
-      const url = new URL(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}`
-      )
-      url.searchParams.set("page", String(page))
-      url.searchParams.set("limit", String(limit))
-      if (sort) {
-        url.searchParams.set("sort", sort)
-      }
+  // getListByCategory: async (
+  //   id: string,
+  //   page: number,
+  //   limit: number,
+  //   sort?: "discount" | "popular" | "price_desc" | "price_asc"
+  // ) => {
+  //   try {
+  //     const url = new URL(
+  //       `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}`
+  //     )
+  //     url.searchParams.set("page", String(page))
+  //     url.searchParams.set("limit", String(limit))
+  //     if (sort) {
+  //       url.searchParams.set("sort", sort)
+  //     }
       
-      const res = await fetch(url.toString())
-      const result = await res.json()
+  //     const res = await fetch(url.toString())
+  //     const result = await res.json()
 
-      if (result.code !== 0) {
-        throw new Error(result.message || "Lỗi khi lấy sản phẩm theo danh mục")
-      }
+  //     if (result.code !== 0) {
+  //       throw new Error(result.message || "Lỗi khi lấy sản phẩm theo danh mục")
+  //     }
 
-      return {
-        code: 0,
-        data: result.data,
-        pagination: result.pagination,
-      }
-    } catch (err) {
-      console.error("Error fetching products by category:", err)
-      throw err
-    }
-  },
+  //     return {
+  //       code: 0,
+  //       data: result.data,
+  //       pagination: result.pagination,
+  //     }
+  //   } catch (err) {
+  //     console.error("Error fetching products by category:", err)
+  //     throw err
+  //   }
+  // },
   // updateOrder: async (id: string, newOrder: number): Promise<ApiResponse<CategoryProductDTO>> => {
   //   try {
   //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.UPDATE_ORDER(id)}`, {

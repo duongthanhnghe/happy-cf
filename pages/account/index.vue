@@ -1,99 +1,52 @@
 <script lang="ts" setup>
 import './index.scss';
-import { watch } from 'vue'
-import {
-  useAccountStore
-} from '@/stores/client/users/useAccountStore'
-import {
-  useAddressesManageStore
-} from '@/stores/client/users/useAddressesStore'
-import {
-  useOrderHistoryStore
-} from '@/stores/client/order/useOrderHistoryStore';
-import {
-  useWishlistStore
-} from '@/stores/client/users/useWishlistStore';
-import {
-  useProductReviewByUserStore
-} from '@/stores/client/product-review/useProductReviewByUserStore';
-import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
-import { ROUTES } from '@/shared/constants/routes';
-import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
-import { useLocationStore } from '@/stores/shared/useLocationStore';
 
-definePageMeta({
-  layout: ROUTES.PUBLIC.MY_ACCOUNT.layout,
-  headerTypeLeft: ROUTES.PUBLIC.MY_ACCOUNT.headerTypeLeft,
-  middleware: ROUTES.PUBLIC.MY_ACCOUNT.middleware,
-})
+// const store = useAccountStore();
+// const storeAccountEdit = useAccountEditStore()
+// const storeAddress = useAddressesManageStore();
+// const storeOrder = useOrderHistoryStore();
+// const storeWishlist = useWishlistStore();
+// const storeProductReview = useProductReviewByUserStore();
+// const storeHistoryReward = useHistoryRewardByUserStore();
+// const storeLocation = useLocationStore();
 
-const store = useAccountStore();
-const storeAccountEdit = useAccountEditStore()
-const storeAddress = useAddressesManageStore();
-const storeOrder = useOrderHistoryStore();
-const storeWishlist = useWishlistStore();
-const storeProductReview = useProductReviewByUserStore();
-const storeHistoryReward = useHistoryRewardByUserStore();
-const storeLocation = useLocationStore();
+// const menuAccount = [
+//   { label: 'Thong tin ca nhan', icon:'person', action: () => storeAccountEdit.handleEditAccount() },
+//   { label: 'Dia chi da luu', icon:'edit_location', action: () => storeAddress.handleTogglePopupList(true,false) },
+//   { label: 'Lich su don hang', icon:'prescriptions', action: () => storeOrder.handleTogglePopupAdd(true) },
+//   { label: 'Danh sach yeu thich', icon:'favorite', action: () => storeWishlist.handleTogglePopupAdd(true) },
+//   { label: 'Danh gia', icon:'comment', action: () => storeProductReview.handleTogglePopup(true) },
+//   { label: 'Lich su tich diem', icon:'comment', action: () => storeHistoryReward.handleTogglePopup(true) },
+//   { label: 'Dang xuat', icon:'logout', action: () => store.handleLogout() },
+// ]
 
-const menuAccount = [
-  { label: 'Thong tin ca nhan', icon:'person', action: () => storeAccountEdit.handleEditAccount() },
-  { label: 'Dia chi da luu', icon:'edit_location', action: () => storeAddress.handleTogglePopupList(true,false) },
-  { label: 'Lich su don hang', icon:'prescriptions', action: () => storeOrder.handleTogglePopupAdd(true) },
-  { label: 'Danh sach yeu thich', icon:'favorite', action: () => storeWishlist.handleTogglePopupAdd(true) },
-  { label: 'Danh gia', icon:'comment', action: () => storeProductReview.handleTogglePopup(true) },
-  { label: 'Lich su tich diem', icon:'comment', action: () => storeHistoryReward.handleTogglePopup(true) },
-  { label: 'Dang xuat', icon:'logout', action: () => store.handleLogout() },
-]
+// const cardItemClass= 'card card-sm bg-white';
 
-const cardItemClass= 'card card-sm bg-white';
-
-watch(() => storeLocation.selectedProvince, async (newVal) => {
-  if (storeLocation.isSetting) return
+// watch(() => storeLocation.selectedProvince, async (newVal) => {
+//   if (storeLocation.isSetting) return
   
-  if (newVal) {
-    await storeLocation.fetchDistrictsStore(newVal)
-    storeLocation.selectedDistrict = null
-    storeLocation.selectedWard = null
-  } else {
-    storeLocation.districts = []
-    storeLocation.wards = []
-  }
-})
+//   if (newVal) {
+//     await storeLocation.fetchDistrictsStore(newVal)
+//     storeLocation.selectedDistrict = null
+//     storeLocation.selectedWard = null
+//   } else {
+//     storeLocation.districts = []
+//     storeLocation.wards = []
+//   }
+// })
 
-watch(() => storeLocation.selectedDistrict, async (newVal) => {
-  if (storeLocation.isSetting) return
+// watch(() => storeLocation.selectedDistrict, async (newVal) => {
+//   if (storeLocation.isSetting) return
   
-  if (newVal) {
-    await storeLocation.fetchWardsStore(newVal)
-    storeLocation.selectedWard = null
-  } else {
-    storeLocation.wards = []
-  }
-})
+//   if (newVal) {
+//     await storeLocation.fetchWardsStore(newVal)
+//     storeLocation.selectedWard = null
+//   } else {
+//     storeLocation.wards = []
+//   }
+// })
 
 </script>
 <template>
-  <PopupUpdateAccount />
-  <PopupOrderHistory />
-  <PopupWishlist />
-  <PopupProductReviewByUser />
 
-  <div class="account-bg bg-gray2">
-    <SectionAccount :showBarcode="false"/>
-    <div v-if="store.getDetailValue?.id" class="container pt-ms">
-      <div class="account-container">
-        <Heading class="mb-sm" tag="div" color="primary" weight="semibold" size="md">Thông tin tài khoản</Heading>
-        <div :class="`${cardItemClass}`">
-            <div class="account-link-item flex gap-sm cursor-pointer" v-for="(item, index) in menuAccount" @click="item.action" :key="index">
-              <MaterialIcon :name="item.icon" weight="300" size="24" />
-              <div class="account-link-text flex flex-1 justify-between align-center">
-                <span>{{ item.label }}</span>
-                <MaterialIcon name="chevron_right" weight="300" size="20" class="text-color-gray5"/>
-              </div>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>

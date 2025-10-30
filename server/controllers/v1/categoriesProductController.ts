@@ -34,10 +34,39 @@ function buildCategoryTree(list: CategoryProductDTO[]): (CategoryProductDTO & { 
   return tree;
 }
 
+// export const getAllCategoriesTree = async (_: Request, res: Response) => {
+//   try {
+//     const categories = await CategoryProductEntity.find({isActive: true}).lean().sort({ order: 1 });
+//     const dtoList = toCategoryProductListDTO(categories);
+
+//     const tree = buildCategoryTree(dtoList);
+
+//     return res.json({ code: 0, data: tree });
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
+
 export const getAllCategoriesTree = async (_: Request, res: Response) => {
   try {
-    const categories = await CategoryProductEntity.find({isActive: true}).lean().sort({ order: 1 });
-    const dtoList = toCategoryProductListDTO(categories);
+    const allCategories = await CategoryProductEntity.find({})
+      .lean()
+      .sort({ order: 1 });
+
+    const activeMap = new Map<string, any>();
+    allCategories.forEach(cat => activeMap.set(cat._id.toString(), cat));
+
+    const isParentActive = (cat: any): boolean => {
+      if (!cat) return false;
+      if (!cat.isActive) return false;
+      if (!cat.parentId) return true;
+      const parent = activeMap.get(cat.parentId.toString());
+      return parent ? isParentActive(parent) : true;
+    };
+
+    const filtered = allCategories.filter(cat => isParentActive(cat));
+
+    const dtoList = toCategoryProductListDTO(filtered);
 
     const tree = buildCategoryTree(dtoList);
 
@@ -237,125 +266,125 @@ export const getChildrenCategories = async (
 //   }
 // };
 
-export const getProductsByCategory = async (
-  req: Request<{ id: string }>,
-  res: Response
-) => {
-  try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
-    }
+// export const getProductsByCategory = async (
+//   req: Request<{ id: string }>,
+//   res: Response
+// ) => {
+//   try {
+//     if (!Types.ObjectId.isValid(req.params.id)) {
+//       return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
+//     }
 
-    const categoryId = new Types.ObjectId(req.params.id);
+//     const categoryId = new Types.ObjectId(req.params.id);
 
-    const categories = await CategoryProductEntity.aggregate([
-      { $match: { _id: categoryId } },
-      {
-        $graphLookup: {
-          from: "product_categories",      // 👈 tên collection (mặc định là model name viết thường + "s")
-          startWith: "$_id",
-          connectFromField: "_id",
-          connectToField: "parentId",
-          as: "descendants"
-        }
-      },
-      {
-        $project: {
-          ids: {
-            $concatArrays: [["$_id"], "$descendants._id"]
-          }
-        }
-      }
-    ]);
+//     const categories = await CategoryProductEntity.aggregate([
+//       { $match: { _id: categoryId } },
+//       {
+//         $graphLookup: {
+//           from: "product_categories",      // 👈 tên collection (mặc định là model name viết thường + "s")
+//           startWith: "$_id",
+//           connectFromField: "_id",
+//           connectToField: "parentId",
+//           as: "descendants"
+//         }
+//       },
+//       {
+//         $project: {
+//           ids: {
+//             $concatArrays: [["$_id"], "$descendants._id"]
+//           }
+//         }
+//       }
+//     ]);
 
-    const categoryIds: Types.ObjectId[] = categories[0]?.ids || [categoryId];
+//     const categoryIds: Types.ObjectId[] = categories[0]?.ids || [categoryId];
 
-    const page = parseInt(req.query.page as string, 10) || 1;
-    let limit = parseInt(req.query.limit as string, 10) || 10;
-    const sortType = (req.query.sort as string) || "default";
+//     const page = parseInt(req.query.page as string, 10) || 1;
+//     let limit = parseInt(req.query.limit as string, 10) || 10;
+//     const sortType = (req.query.sort as string) || "default";
 
-    if (limit === -1) {
-      limit = await ProductEntity.countDocuments({
-        categoryId: { $in: categoryIds },
-        isActive: true
-      });
-    }
+//     if (limit === -1) {
+//       limit = await ProductEntity.countDocuments({
+//         categoryId: { $in: categoryIds },
+//         isActive: true
+//       });
+//     }
 
-    const skip = (page - 1) * limit;
+//     const skip = (page - 1) * limit;
 
-    const [total, products] = await Promise.all([
-      ProductEntity.countDocuments({
-        categoryId: { $in: categoryIds },
-        isActive: true
-      }),
-      ProductEntity.aggregate([
-        { $match: { categoryId: { $in: categoryIds }, isActive: true } },
+//     const [total, products] = await Promise.all([
+//       ProductEntity.countDocuments({
+//         categoryId: { $in: categoryIds },
+//         isActive: true
+//       }),
+//       ProductEntity.aggregate([
+//         { $match: { categoryId: { $in: categoryIds }, isActive: true } },
 
-        // Ép kiểu price & priceDiscount sang số
-        {
-          $addFields: {
-            price: { $toDouble: "$price" },
-            priceDiscount: { $toDouble: "$priceDiscount" },
-          },
-        },
+//         // Ép kiểu price & priceDiscount sang số
+//         {
+//           $addFields: {
+//             price: { $toDouble: "$price" },
+//             priceDiscount: { $toDouble: "$priceDiscount" },
+//           },
+//         },
 
-        // Tính toán giảm giá
-        {
-          $addFields: {
-            hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
-            discountValue: {
-              $cond: [
-                { $lt: ["$priceDiscount", "$price"] },
-                { $subtract: ["$price", "$priceDiscount"] },
-                0,
-              ],
-            },
-            discountPercent: {
-              $cond: [
-                { $lt: ["$priceDiscount", "$price"] },
-                {
-                  $multiply: [
-                    { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
-                    100,
-                  ],
-                },
-                0,
-              ],
-            },
-          },
-        },
+//         // Tính toán giảm giá
+//         {
+//           $addFields: {
+//             hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
+//             discountValue: {
+//               $cond: [
+//                 { $lt: ["$priceDiscount", "$price"] },
+//                 { $subtract: ["$price", "$priceDiscount"] },
+//                 0,
+//               ],
+//             },
+//             discountPercent: {
+//               $cond: [
+//                 { $lt: ["$priceDiscount", "$price"] },
+//                 {
+//                   $multiply: [
+//                     { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
+//                     100,
+//                   ],
+//                 },
+//                 0,
+//               ],
+//             },
+//           },
+//         },
 
-        // Sort động theo sortType
-        {
-          $sort:
-            sortType === "discount"
-              ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 }
-              : sortType === "popular"
-              ? { amountOrder: -1 }
-              : sortType === "price_desc"
-              ? { price: -1 }
-              : sortType === "price_asc"
-              ? { price: 1 }
-              : { updatedAt: -1 },
-        },
+//         // Sort động theo sortType
+//         {
+//           $sort:
+//             sortType === "discount"
+//               ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 }
+//               : sortType === "popular"
+//               ? { amountOrder: -1 }
+//               : sortType === "price_desc"
+//               ? { price: -1 }
+//               : sortType === "price_asc"
+//               ? { price: 1 }
+//               : { updatedAt: -1 },
+//         },
 
-        { $skip: skip },
-        { $limit: limit },
-      ]),
-    ]);
+//         { $skip: skip },
+//         { $limit: limit },
+//       ]),
+//     ]);
 
-    const totalPages = Math.ceil(total / limit);
+//     const totalPages = Math.ceil(total / limit);
 
-    return res.json({
-      code: 0,
-      data: toProductListDTO(products),
-      pagination: { page, limit, total, totalPages },
-      message: "Success",
-    });
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
+//     return res.json({
+//       code: 0,
+//       data: toProductListDTO(products),
+//       pagination: { page, limit, total, totalPages },
+//       message: "Success",
+//     });
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
 
 // export const updateOrder = async (req: Request, res: Response) => {
 //   try {

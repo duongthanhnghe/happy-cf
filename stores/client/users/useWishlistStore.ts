@@ -8,16 +8,14 @@ import {
 import {
   Loading
 } from '@/utils/global'
-import { showConfirm } from "@/utils/toast";
 
-export const useWishlistStore = defineStore("Wishlist", () => {
+export const useWishlistStore = defineStore("WishlistStore", () => {
   //store
   const storeAccount = useAccountStore();
 
   //state
   const dataList = ref<WishlistItem[]|null>(null)
   const wishlistIds  = reactive(new Set<string>())
-  const isTogglePopupAdd = ref(false);
 
   const loadItems = async () => {
     const userId = storeAccount.getDetailValue?.id;
@@ -25,11 +23,6 @@ export const useWishlistStore = defineStore("Wishlist", () => {
     
     const data = await productsAPI.getWishlistByUserId(userId);
     if(data.code === 0) dataList.value = data.data
-  }
-
-  const handleTogglePopupAdd = (value: boolean) => {
-    if(!dataList.value) loadItems()
-    isTogglePopupAdd.value = value
   }
 
   const handleAddWishlist = async (productId: string) => {
@@ -82,10 +75,8 @@ export const useWishlistStore = defineStore("Wishlist", () => {
 
   return {
     dataList,
-    isTogglePopupAdd,
     wishlistIds,
     loadItems,
-    handleTogglePopupAdd,
     handleAddWishlist,
     handleDeleteWishlist,
     isInWishlist,

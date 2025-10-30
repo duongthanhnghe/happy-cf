@@ -2,12 +2,13 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree';
+import { useProductCategory } from "@/composables/product/useProductCategory";
 
 const TTL_MS = 10 * 60 * 1000
 
 export const useProductCategoryStore = defineStore("ProductCategoryStore", () => {
   const { getListCategoryTree, fetchCategoryListTree } = useProductCategoryTree();
-
+  // const { getListCategory, fetchCategoryList } = useProductCategory();
 
   const dataList = ref<CategoryProductDTO[]>([])
   const lastFetched = ref<number | null>(null)
