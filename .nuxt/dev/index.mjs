@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"404be-alF0M9IdHFpt9hqL7m+B37BoTaU\"",
-    "mtime": "2025-10-30T10:59:52.792Z",
-    "size": 263358,
+    "etag": "\"4024a-M37R0029ZwbJjaRjxvRl/l/zbkg\"",
+    "mtime": "2025-10-31T07:11:30.515Z",
+    "size": 262730,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"f6039-+FkW3F6tPsQvJeHUTDZZl0mrhPg\"",
-    "mtime": "2025-10-30T10:59:52.794Z",
-    "size": 1007673,
+    "etag": "\"f56ae-9uK22MRWRbOk4iQkPSXfth52RXM\"",
+    "mtime": "2025-10-31T07:11:30.515Z",
+    "size": 1005230,
     "path": "index.mjs.map"
   }
 };
@@ -3112,6 +3112,7 @@ const MembershipSchema = new Schema(
     point: { type: Number, default: 0 },
     balancePoint: { type: Number, default: 0 },
     discountRate: { type: Number, default: 0 },
+    pointRate: { type: Number, default: 0.01 },
     joinedAt: { type: Date, default: Date.now },
     barcode: { type: String },
     code: { type: Number }
@@ -3178,6 +3179,7 @@ const MembershipLevelSchema = new Schema(
     icon: { type: String },
     image: { type: String },
     discountRate: { type: Number },
+    pointRate: { type: Number, default: 2 },
     benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
   },
   { timestamps: false }
@@ -3196,7 +3198,7 @@ function toUserDTO(entity) {
     email: entity.email,
     gender: entity.gender || void 0,
     phone: entity.phone || "",
-    birthday: ((_b = entity.birthday) == null ? void 0 : _b.toString()) || null,
+    birthday: ((_b = entity.birthday) == null ? void 0 : _b.toString()) || void 0,
     avatar: entity.avatar || "",
     googleId: entity.googleId,
     authProvider: entity.authProvider,
@@ -3207,6 +3209,7 @@ function toUserDTO(entity) {
       point: entity.membership.point,
       balancePoint: entity.membership.balancePoint,
       discountRate: entity.membership.discountRate,
+      pointRate: entity.membership.pointRate,
       joinedAt: (_c = entity.membership.joinedAt) == null ? void 0 : _c.toString(),
       barcode: entity.membership.barcode || "",
       code: (_d = entity.membership.code) != null ? _d : 0
@@ -3241,6 +3244,7 @@ function toMembershipLevelDTO(entity) {
     icon: entity.icon,
     image: entity.image,
     discountRate: entity.discountRate,
+    pointRate: entity.pointRate,
     benefits: Array.isArray(entity.benefits) ? toMembershipBenefitListDTO(entity.benefits) : []
   };
 }
@@ -4130,7 +4134,6 @@ const rollbackVoucherUsage = async (order) => {
           { $inc: { usedCount: -1 } }
         );
       }
-      console.log(`\u2705 Rollback voucher ${vu.code} th\xE0nh c\xF4ng`);
     } catch (err) {
       console.error(`\u274C L\u1ED7i rollback voucher ${vu.code}:`, err);
     }
@@ -4152,10 +4155,10 @@ const updateOrderStatus = async (req, res) => {
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
-    if (((_a = order.status) == null ? void 0 : _a.toString()) === ORDER_STATUS.COMPLETED || ((_b = order.status) == null ? void 0 : _b.toString()) === ORDER_STATUS.CANCELLED) {
+    if (((_a = order.status) == null ? void 0 : _a.toString()) === ORDER_STATUS.CANCELLED) {
       return res.status(400).json({
         code: 1,
-        message: "\u0110\u01A1n h\xE0ng \u0111\xE3 ho\xE0n t\u1EA5t ho\u1EB7c \u0111\xE3 h\u1EE7y, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i tr\u1EA1ng th\xE1i n\u1EEFa"
+        message: "\u0110\u01A1n h\xE0ng \u0111\xE3 \u0111\xE3 h\u1EE7y, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i tr\u1EA1ng th\xE1i n\u1EEFa"
       });
     }
     order.status = statusId;
@@ -4181,15 +4184,19 @@ const updateOrderStatus = async (req, res) => {
       await order.save();
     }
     if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
-      if (!order.pointsRefunded && order.usedPoints > 0) {
-        const user = await UserModel.findById(order.userId);
-        if (user) {
-          user.membership.balancePoint += order.usedPoints;
-          await user.save();
-          order.pointsRefunded = true;
-        }
+      const user = await UserModel.findById(order.userId);
+      if (!order.pointsRefunded && order.usedPoints > 0 && user) {
+        user.membership.balancePoint += order.usedPoints;
+        user.membership.balancePoint -= order.reward.points;
+        order.pointsRefunded = true;
+      }
+      if (((_b = order.reward) == null ? void 0 : _b.awarded) && order.reward.points > 0) {
+        await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
+        order.reward.awarded = false;
+        order.reward.awardedAt = /* @__PURE__ */ new Date();
       }
       await rollbackVoucherUsage(order);
+      await (user == null ? void 0 : user.save());
     }
     await order.save();
     return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
@@ -4215,7 +4222,7 @@ const getAllPayment = async (_, res) => {
   }
 };
 const setPointAndUpgrade = async (userId, point) => {
-  var _a, _b, _c, _d;
+  var _a, _b, _c, _d, _e;
   const user = await UserModel.findById(userId);
   if (!user) return null;
   const levels = await MembershipLevelModel.find();
@@ -4226,6 +4233,7 @@ const setPointAndUpgrade = async (userId, point) => {
   if (newLevel) {
     user.membership.level = newLevel.name;
     user.membership.discountRate = (_d = newLevel.discountRate) != null ? _d : 0;
+    user.membership.pointRate = (_e = newLevel.pointRate) != null ? _e : 0;
   }
   user.membership.point = newPoint;
   user.membership.balancePoint = newBalancePoint;
@@ -4235,8 +4243,21 @@ const setPointAndUpgrade = async (userId, point) => {
     point: user.membership.point,
     balancePoint: user.membership.balancePoint,
     discountRate: user.membership.discountRate,
+    pointRate: user.membership.pointRate,
     levelChanged
   };
+};
+const revertPointAndDowngrade = async (userId, pointsToRevert) => {
+  const user = await UserModel.findById(userId);
+  if (!user) return;
+  user.membership.point = Math.max(0, user.membership.point - pointsToRevert);
+  const newLevel = await MembershipLevelModel.findOne({ minPoint: { $lte: user.membership.point } }).sort({ minPoint: -1 });
+  if (newLevel && newLevel.name !== user.membership.level) {
+    user.membership.level = newLevel.name;
+    user.membership.discountRate = newLevel.discountRate;
+    user.membership.pointRate = newLevel.pointRate;
+  }
+  await user.save();
 };
 
 const router$k = Router();
@@ -4643,8 +4664,11 @@ function toUsedBy(entity) {
     count: entity.count
   };
 }
+const toVoucherListDTO = (vouchers) => {
+  return vouchers.map(toVoucherDTO);
+};
 
-const getAllVouchers = async (req, res) => {
+const getAllVouchers$1 = async (req, res) => {
   try {
     let { page = 1, limit = 10 } = req.query;
     const numPage = Number(page);
@@ -4797,7 +4821,7 @@ const toggleActiveVoucher = async (req, res) => {
 };
 
 const router$g = Router();
-router$g.get("/", getAllVouchers);
+router$g.get("/", getAllVouchers$1);
 router$g.get("/:id", getVoucherById);
 router$g.post("/", createVoucher);
 router$g.put("/:id", updateVoucher);
@@ -4920,6 +4944,13 @@ const register = async (req, res) => {
     const barcode = Date.now().toString();
     const barcodeFilename = `barcode-${barcode}.png`;
     const barcodePath = await generateBarcode(barcode, barcodeFilename);
+    const defaultLevel = await MembershipLevelModel.findOne({ name: "Bronze" });
+    if (!defaultLevel) {
+      return res.status(500).json({
+        code: 2,
+        message: "Kh\xF4ng t\xECm th\u1EA5y h\u1EA1ng m\u1EB7c \u0111\u1ECBnh (Bronze) trong h\u1EC7 th\u1ED1ng"
+      });
+    }
     const user = await UserModel.create({
       fullname,
       email,
@@ -4933,11 +4964,11 @@ const register = async (req, res) => {
       authProvider: "local",
       googleId: null,
       membership: {
-        level: "Bronze",
+        level: defaultLevel.name || "Bronze",
         point: 0,
         balancePoint: 0,
-        membership: 0,
-        discountRate: 0,
+        discountRate: defaultLevel.discountRate || 0,
+        pointRate: defaultLevel.pointRate || 0,
         joinedAt: /* @__PURE__ */ new Date(),
         code: Date.now(),
         barcode: barcodePath || ""
@@ -4988,6 +5019,13 @@ const googleLogin = async (req, res) => {
       const barcode = Date.now().toString();
       const barcodeFilename = `barcode-${barcode}.png`;
       const barcodePath = await generateBarcode(barcode, barcodeFilename);
+      const defaultLevel = await MembershipLevelModel.findOne({ name: "Bronze" });
+      if (!defaultLevel) {
+        return res.status(500).json({
+          code: 2,
+          message: "Kh\xF4ng t\xECm th\u1EA5y h\u1EA1ng m\u1EB7c \u0111\u1ECBnh (Bronze) trong h\u1EC7 th\u1ED1ng"
+        });
+      }
       user = await UserModel.create({
         fullname: name,
         email,
@@ -5001,11 +5039,11 @@ const googleLogin = async (req, res) => {
         active: true,
         role: 1,
         membership: {
-          level: "Bronze",
+          level: defaultLevel.name || "Bronze",
           point: 0,
           balancePoint: 0,
-          membership: 0,
-          discountRate: 0,
+          discountRate: defaultLevel.discountRate || 0,
+          pointRate: defaultLevel.pointRate || 0,
           joinedAt: /* @__PURE__ */ new Date(),
           code: Date.now(),
           barcode: barcodePath || ""
@@ -7032,9 +7070,33 @@ const getAvailableVouchers = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const getAllVouchers = async (req, res) => {
+  try {
+    const now = /* @__PURE__ */ new Date();
+    const vouchers = await VoucherEntity.find({
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+      $expr: {
+        $or: [
+          { $eq: ["$usageLimit", 0] },
+          { $lt: ["$usedCount", "$usageLimit"] }
+        ]
+      }
+    }).sort({ createdAt: -1 });
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y danh s\xE1ch voucher th\xE0nh c\xF4ng",
+      data: toVoucherListDTO(vouchers)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
 
 const router$1 = Router();
 router$1.post("/", getAvailableVouchers);
+router$1.get("/all", getAllVouchers);
 router$1.post("/apply", authenticate, applyVoucher);
 
 const voucherRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({

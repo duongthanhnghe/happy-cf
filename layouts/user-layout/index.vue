@@ -16,7 +16,7 @@ watch(() => route.meta, (meta) => {
 
 <template>
   <Header :type-left="storeLayout.headerTypeLeft"/>
-  <div class="account-bg bg-gray2">
+  <div class="account-bg bg-gray2 pb-section">
     <SectionAccount :showBarcode="false"/>
     <div class="container">
       <div class="row">

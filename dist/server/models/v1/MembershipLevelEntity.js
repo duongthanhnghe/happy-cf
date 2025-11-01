@@ -6,6 +6,7 @@ const MembershipLevelSchema = new Schema({
     icon: { type: String },
     image: { type: String },
     discountRate: { type: Number },
+    pointRate: { type: Number, default: 2 },
     benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
 }, { timestamps: false });
 export const MembershipLevelModel = model("MembershipLevel", MembershipLevelSchema, "membership_levels");

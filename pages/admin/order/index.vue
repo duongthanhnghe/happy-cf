@@ -1,20 +1,13 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import {
-  useOrderManageStore
-} from '@/stores/admin/order/useOrderManageStore'
-import {
-  useOrderHistoryStore
-} from '@/stores/client/order/useOrderHistoryStore'
-import {
-  formatCurrency, formatDateTime
-} from '@/utils/global'
+import { useOrderManageStore } from '@/stores/admin/order/useOrderManageStore'
+import { formatCurrency, formatDateTime } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
 import { ORDER_STATUS } from "@/shared/constants/order-status";
 import { PAYMENT_TRANSACTION_STATUS } from "@/shared/constants/payment-transaction-status";
-import {
-  useUserManageStore
-} from '@/stores/admin/users/useUserManageStore'
+import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
+import { getTransactionNote } from './useGetTransactionNote';
+import { getFilteredTransactionStatus } from './useFilteredTransactionStatus';
+import { useHandle } from './useHandle'
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,
@@ -22,26 +15,20 @@ definePageMeta({
 })
 
 const store = useOrderManageStore();
-const storeHistory = useOrderHistoryStore();
 const storeUser = useUserManageStore();
-const idOrder = ref<string>('')
-
-const handleDetailPopup = (id:string) => {
-  storeHistory.handleTogglePopupDetail(true, id)
-  idOrder.value = id
-}
+const { idOrder, handleDetailPopup } = useHandle()
 
 </script>
 <template>
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.idOrder"  placeholder="Ma don hang..." hide-details></v-text-field>
+    <v-text-field v-model="store.idOrder"  placeholder="Ma don hang..." variant="outlined" hide-details></v-text-field>
     <!-- <v-text-field v-model="store.name"  placeholder="Tên nguoi dat..." hide-details></v-text-field> -->
-    <v-text-field v-model="store.phone" type="number"  placeholder="So dien thoai..." hide-details></v-text-field>
-    <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'Tất cả' }, ...store.getListStatus]" item-title="name" item-value="id" hide-details />
+    <v-text-field v-model="store.phone" type="number"  placeholder="So dien thoai..." variant="outlined" hide-details></v-text-field>
+    <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'Tất cả' }, ...store.getListStatus]" item-title="name" item-value="id"  variant="outlined"hide-details />
     <v-select label="Thanh toan" v-model="store.filterStatusTransactionOrder" :items="[{ status: '', name: 'Tất cả' }, ...Object.values(PAYMENT_TRANSACTION_STATUS)
-]" item-title="name" item-value="status" hide-details />
+]" item-title="name" item-value="status" variant="outlined" hide-details />
     <DateFilter v-model:fromDay="store.fromDay" v-model:toDay="store.toDay" />
     <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
@@ -60,6 +47,7 @@ const handleDetailPopup = (id:string) => {
     :loading="store.loadingTable"
     :search="store.search"
     item-value="name"
+    class="white-space"
     :items-per-page-options="[20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
     @update:options="options => {
         store.currentTableOptions = options
@@ -76,7 +64,7 @@ const handleDetailPopup = (id:string) => {
       <div class="min-width-200 flex gap-sm align-center white-space">
         <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeUser.handleEdit(item.userId)" />
         <div>
-          <span class="text-limit">{{ item.fullname }}</span>
+          <span v-tooltip="item.fullname" class="max-width-200 text-limit white-space-pre">{{ item.fullname }}</span>
           <span class="text-limit text-color-gray5">{{ item.phone }}</span>
         </div>
       </div>
@@ -95,15 +83,17 @@ const handleDetailPopup = (id:string) => {
     <template #item.status="{ item: order }">
       <v-chip :color="order.status.status" label>
         {{ order.status.name }}
-        <template v-if="order.status.id !== ORDER_STATUS.CANCELLED && order.status.id !== ORDER_STATUS.COMPLETED">
-          <MaterialIcon  name="keyboard_arrow_down" />
+        <template v-if="order.status.id !== ORDER_STATUS.CANCELLED">
+          <MaterialIcon name="keyboard_arrow_down" />
         </template>
       </v-chip>
-      <template v-if="order.status.id !== ORDER_STATUS.CANCELLED && order.status.id !== ORDER_STATUS.COMPLETED">
+      <template v-if="order.status.id !== ORDER_STATUS.CANCELLED ">
         <v-menu transition="slide-x-transition" activator="parent">
           <v-list>
             <v-list-item
-              v-for="statusItem in store.getListStatus"
+              v-for="statusItem in (order.status.id === ORDER_STATUS.COMPLETED
+                                ? store.getListStatus.filter(s => s.id === ORDER_STATUS.CANCELLED)
+                                : store.getListStatus)"
               :key="statusItem.id"
               @click.prevent="store.handleUpdateStatusOrder(order.id, statusItem.id, statusItem.name, order.transaction?.id, order.totalPrice, order.paymentId.method)"
               :class="{ active: statusItem.index == order.status.index }"
@@ -128,26 +118,32 @@ const handleDetailPopup = (id:string) => {
     </template>
 
     <template #item.transaction="{ item }">
-      <v-chip v-if="item.transaction" label :color="item.transaction?.statusColor">
-        {{ item.transaction?.statusText }}
-        <MaterialIcon name="keyboard_arrow_down" />
-      </v-chip>
-      <template v-if="PAYMENT_TRANSACTION_STATUS && item.transaction">
-        <v-menu transition="slide-x-transition" activator="parent">
-          <v-list>
-            <v-list-item
-              v-for="statusItem in PAYMENT_TRANSACTION_STATUS"
-              :key="statusItem.status"
-              :class="{ active: statusItem.status == item.transaction?.status }"
-              @click.prevent="store.handleUpdateStatusTransactionOrder(item.transaction?.id, statusItem.status)"
-            >
-              <v-list-item-title>
-                  {{ statusItem.name }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </template>
+      <div v-if="item.transaction">
+        <v-chip label :color="item.transaction?.statusColor">
+          {{ item.transaction?.statusText }}
+          <MaterialIcon name="keyboard_arrow_down" />
+        </v-chip>
+        
+        <template v-if="PAYMENT_TRANSACTION_STATUS && item.transaction">
+          <v-menu transition="slide-x-transition" activator="parent">
+            <v-list>
+              <v-list-item
+                v-for="statusItem in getFilteredTransactionStatus(item.status.id)"
+                :key="statusItem.status"
+                :class="{ active: statusItem.status == item.transaction?.status }"
+                @click.prevent="store.handleUpdateStatusTransactionOrder(item.transaction?.id, statusItem.status)"
+              >
+                <v-list-item-title>
+                    {{ statusItem.name }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
+      </div>
+      <div v-if="item.transaction" class="mt-xs text-size-xs text-color-gray5 max-width-200 text-limit text-limit-2 white-space-pre">
+        {{ getTransactionNote(item.transaction?.status, item.status.id) }}
+      </div>
     </template>
 
     <template #item.actions="{ item }">

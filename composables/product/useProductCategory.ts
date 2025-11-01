@@ -15,13 +15,11 @@ export const useProductCategory = () => {
     }
   }
 
-  const getListCategoryAll = computed(() => listCategory.value )
-  const getListCategory = computed(() => listCategory.value?.filter((item) => item.isActive === true ))
+  const getListCategory = computed(() => listCategory.value)
 
   return {
    listCategory,
    fetchCategoryList,
    getListCategory,
-   getListCategoryAll
   }
 }

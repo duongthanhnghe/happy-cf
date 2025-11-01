@@ -8,6 +8,7 @@ export interface MembershipLevelsDocument extends Document {
   icon: string;
   image: string;
   discountRate: number;
+  pointRate: number;
   benefits: Types.ObjectId[];
 }
 
@@ -18,6 +19,7 @@ const MembershipLevelSchema = new Schema<MembershipLevelsDocument>(
     icon: { type: String },
     image: { type: String },
     discountRate: { type: Number },
+    pointRate: { type: Number, default: 2 },
     benefits: [{ type: Schema.Types.ObjectId, ref: "MembershipBenefit" }]
   },
   { timestamps: false }

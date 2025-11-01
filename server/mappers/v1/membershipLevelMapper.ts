@@ -10,6 +10,7 @@ export function toMembershipLevelDTO(entity: MembershipLevelsDocument): Membersh
     icon: entity.icon,
     image: entity.image,
     discountRate: entity.discountRate,
+    pointRate: entity.pointRate,
     benefits: Array.isArray(entity.benefits)
       ? toMembershipBenefitListDTO(entity.benefits as any)
       : [],

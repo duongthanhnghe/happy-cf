@@ -70,6 +70,14 @@ a {
   }
 }
 
+.max {
+  &-width {
+    &-200 {
+      max-width: 200px;
+    }
+  }
+}
+
 a {
   text-decoration: none;
   transition: 0.4s;
@@ -620,6 +628,10 @@ body .bg {
 
 .white-space {
   white-space: nowrap;
+}
+
+.white-space-pre {
+  white-space: pre-line;
 }
 
 .line-height1 {

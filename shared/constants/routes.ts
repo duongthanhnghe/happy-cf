@@ -236,6 +236,13 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
           middleware: ['auth-login'],
           layout: 'user-layout',
         },
+        WALLET_VOUCHER: {
+          path: '/account/wallet-voucher',
+          label: 'Ví Voucher',
+          icon: 'confirmation_number',
+          middleware: ['auth-login'],
+          layout: 'user-layout',
+        },
         USER_ADDRESS: {
           path: '/account/user-address',
           label: 'Sổ địa chỉ',

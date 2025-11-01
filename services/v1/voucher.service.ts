@@ -62,4 +62,20 @@ export const vouchersAPI = {
     }
   },
 
+  getAll: async (): Promise<ApiResponse<VoucherAvailableDTO[]>> => {
+    try {
+      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.VOUCHERS.ALL}`)
+
+      const data = await response.json()
+      return data
+    } catch (err) {
+      console.error('Error fetching available vouchers for order:', err)
+      return {
+        code: 1,
+        message: 'Không thể lấy danh sách voucher khả dụng',
+        data: [],
+      } as ApiResponse<VoucherAvailableDTO[]>
+    }
+  },
+
 }

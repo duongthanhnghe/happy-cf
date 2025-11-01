@@ -1,11 +1,10 @@
 @use "@/assets/variables" as *;
 
 .information-account {
-  padding: 1px 0 1rem 0;
   background: $cl-gradient-1;
+  padding: $space-ms 0;
   &-card {
     border-radius: $rd-lg;
-    margin-top: 1rem;
     padding: 1rem;
     background-color: $cl-blur1;
     backdrop-filter: blur(10px);

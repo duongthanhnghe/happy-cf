@@ -6,6 +6,7 @@ export interface Membership {
   point: number;
   balancePoint: number;
   discountRate: number;
+  pointRate: number;
   joinedAt: Date;
   barcode?: string;
   code?: number;
@@ -37,6 +38,7 @@ const MembershipSchema = new Schema(
     point: { type: Number, default: 0 },
     balancePoint: { type: Number, default: 0 },
     discountRate: { type: Number, default: 0 },
+    pointRate: { type: Number, default: 0.01 },
     joinedAt: { type: Date, default: Date.now },
     barcode: { type: String },
     code: { type: Number },

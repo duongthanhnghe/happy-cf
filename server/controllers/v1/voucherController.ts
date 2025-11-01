@@ -1,6 +1,7 @@
 import type { Request, Response } from "express"
 import { VoucherEntity } from "../../models/v1/VoucherEntity"
 import { VoucherUsageEntity } from "../../models/v1/VoucherUsageEntity"
+import { toVoucherListDTO } from "../../mappers/v1/voucherMapper";
 
 export const applyVoucher = async (req: Request, res: Response) => {
   try {
@@ -235,6 +236,32 @@ export const getAvailableVouchers = async (req: Request, res: Response) => {
       code: 0,
       message: "Lấy danh sách voucher thành công",
       data: result,
+    })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const getAllVouchers = async (req: Request, res: Response) => {
+  try {
+    const now = new Date()
+
+    const vouchers = await VoucherEntity.find({
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+      $expr: {
+        $or: [
+          { $eq: ["$usageLimit", 0] },               
+          { $lt: ["$usedCount", "$usageLimit"] },   
+        ],
+      },
+    }).sort({ createdAt: -1 })
+
+    return res.json({
+      code: 0,
+      message: "Lấy danh sách voucher thành công",
+      data: toVoucherListDTO(vouchers),
     })
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message })

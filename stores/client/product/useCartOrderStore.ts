@@ -99,7 +99,6 @@ export const useCartStore = defineStore("Cart", () => {
       });
     }
     cartCount.value++;
-    console.log(cartListItem.value)
   };
   
   const addProductWithOptions = (product: ProductDTO, selectedOptions: SelectedOptionPushDTO[], quantity: number, note: string) => {
@@ -676,7 +675,7 @@ export const useCartStore = defineStore("Cart", () => {
 
     const existingVoucher = voucherUsage.value.find(v => v.code === code);
     if (existingVoucher) {
-      console.log('Voucher đã được áp dụng:', code);
+      showWarning(`Voucher đã được áp dụng: ${code}`);
       return;
     }
 

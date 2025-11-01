@@ -143,7 +143,8 @@ export const API_ENDPOINTS = {
     GET_BY_PRODUCT_ID: (id) => `/product-reviews/product/${id}/reviews`,
   },
   VOUCHERS: {
-    APPLY: "/voucher/apply",
     AVAILABLE: '/voucher',
+    ALL: '/voucher/all',
+    APPLY: "/voucher/apply",
   },
 }

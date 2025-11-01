@@ -63,17 +63,15 @@ const handleApplyVoucherInput = async () => {
 
   await store.applyVoucher(voucherCode.value);
 
-  // Nếu voucher áp dụng thành công, tìm trong danh sách allVouchers để auto checked
   const appliedVoucher = store.voucherUsage.find(v => v.code === voucherCode.value);
   if (appliedVoucher) {
     if (appliedVoucher.type === VOUCHER_TYPE.freeship.type) {
-      selectedFreeship.value = appliedVoucher.code; // ✅ auto checked freeship
+      selectedFreeship.value = appliedVoucher.code;
     } else {
-      selectedVoucher.value = appliedVoucher.code; // ✅ auto checked voucher thường
+      selectedVoucher.value = appliedVoucher.code;
     }
   }
 
-  // Reset input sau khi áp dụng
   voucherCode.value = '';
 };
 

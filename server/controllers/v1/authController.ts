@@ -32,6 +32,15 @@ export const register = async (req: Request, res: Response) => {
     const barcodeFilename = `barcode-${barcode}.png`
     const barcodePath = await generateBarcode(barcode, barcodeFilename) as string;
 
+    const defaultLevel = await MembershipLevelModel.findOne({ name: "Bronze" });
+
+    if (!defaultLevel) {
+      return res.status(500).json({
+        code: 2,
+        message: "Không tìm thấy hạng mặc định (Bronze) trong hệ thống",
+      });
+    }
+
     const user = await UserModel.create({
       fullname,
       email,
@@ -45,11 +54,11 @@ export const register = async (req: Request, res: Response) => {
       authProvider: 'local',
       googleId: null,
       membership: {
-        level: "Bronze",
+        level: defaultLevel.name || "Bronze",
         point: 0,
         balancePoint: 0,
-        membership: 0,
-        discountRate: 0,
+        discountRate: defaultLevel.discountRate || 0,
+        pointRate: defaultLevel.pointRate || 0,
         joinedAt: new Date(),
         code: Date.now(),
         barcode: barcodePath || ""
@@ -110,6 +119,15 @@ export const googleLogin = async (req: Request, res: Response) => {
       const barcodeFilename = `barcode-${barcode}.png`
       const barcodePath = await generateBarcode(barcode, barcodeFilename) as string;
 
+      const defaultLevel = await MembershipLevelModel.findOne({ name: "Bronze" });
+
+      if (!defaultLevel) {
+        return res.status(500).json({
+          code: 2,
+          message: "Không tìm thấy hạng mặc định (Bronze) trong hệ thống",
+        });
+      }
+
       user = await UserModel.create({
         fullname: name,
         email,
@@ -123,11 +141,11 @@ export const googleLogin = async (req: Request, res: Response) => {
         active: true,
         role: 1,
         membership: {
-          level: "Bronze",
+          level: defaultLevel.name || "Bronze",
           point: 0,
           balancePoint: 0,
-          membership: 0,
-          discountRate: 0,
+          discountRate: defaultLevel.discountRate || 0,
+          pointRate: defaultLevel.pointRate || 0,
           joinedAt: new Date(),
           code: Date.now(),
           barcode: barcodePath || ""

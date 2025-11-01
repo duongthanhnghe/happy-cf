@@ -11,12 +11,18 @@ definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER.headerTypeLeft,
 })
 
-const tab = ref(null)
 
 const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeProductCategory = useProductCategoryStore()
 const storeAccount = useAccountStore();
+
+const tab = ref(null)
+const tabs = [
+  { value: 1, icon: 'category', label: 'Menu' },
+  { value: 2, icon: 'local_fire_department', label: 'Top 10' },
+  { value: 3, icon: 'percent', label: 'Khuyến mãi' },
+]
 
 await storeProductCategory.fetchCategoryStore()
 
@@ -31,22 +37,15 @@ watchEffect(() => {
   <div class="bg-gray2 pb-sm">
     <div class="bg-white">
       <v-tabs v-model="tab" align-tabs="center">
-        <v-tab :value="1" class="flex-1 text-color-gray5">
+      <v-tab
+          v-for="item in tabs"
+          :key="item.value"
+          :value="item.value"
+          class="flex-1 text-color-gray5"
+        >
           <div class="flex flex-direction-column">
-            <MaterialIcon name="category" class="text-color-primary"/>
-            Menu
-          </div>
-        </v-tab>
-        <v-tab :value="2" class="flex-1 text-color-gray5">
-          <div class="flex flex-direction-column">
-            <MaterialIcon name="local_fire_department" class="text-color-primary"/>
-            Top 10
-          </div>
-        </v-tab>
-        <v-tab :value="3" class="flex-1 text-color-gray5">
-          <div class="flex flex-direction-column">
-            <MaterialIcon name="percent" class="text-color-primary"/>
-            Khuyen mai
+            <MaterialIcon :name="item.icon" class="text-color-primary" />
+            {{ item.label }}
           </div>
         </v-tab>
       </v-tabs>

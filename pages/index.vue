@@ -32,6 +32,7 @@ await storeNewsLatest.fetchPostStore()
 
 <template>
   <SectionAccount :showBarcode="true"/>
+
   <SectionBanner :items="storeBanner.getListData" :loading="storeBanner.loading" />
 
   <div class="pt-section pb-section">

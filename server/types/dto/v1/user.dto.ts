@@ -18,6 +18,7 @@ export interface User {
     point: number
     balancePoint: number
     discountRate: number
+    pointRate: number
     joinedAt: string
     barcode: string
     code: number
@@ -91,6 +92,7 @@ export interface MembershipLevels {
   icon: string
   image: string
   discountRate: number
+  pointRate: number
   benefits: MembershipBenefitDTO[];
 }
 
