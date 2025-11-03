@@ -37,8 +37,8 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           <v-autocomplete
             v-model="storeLocation.selectedProvince"
               :items="storeLocation.getListProvinces ?? []"
-              item-title="name"
-              item-value="code"
+              item-title="PROVINCE_NAME"
+              item-value="PROVINCE_ID"
               variant="outlined"
               :rules="nullRules"
             />
@@ -48,8 +48,8 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
             <v-autocomplete
             v-model="storeLocation.selectedDistrict"
               :items="storeLocation.getListDistricts ?? []"
-              item-title="name"
-              item-value="code"
+              item-title="DISTRICT_NAME"
+              item-value="DISTRICT_ID"
               variant="outlined"
               :rules="nullRules"
             />
@@ -59,8 +59,8 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           <v-autocomplete
             v-model="storeLocation.selectedWard"
               :items="storeLocation.getListWards ?? []"
-              item-title="name"
-              item-value="code"
+              item-title="WARDS_NAME"
+              item-value="WARDS_ID"
               variant="outlined"
               :rules="nullRules"
             />

@@ -206,6 +206,7 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     getProductDetailApi,
     togglePopup,
     resetFormCart,
+    calcTotalPrice,
     getTotalPages,
     percentDiscount,
     getSummaryReview,

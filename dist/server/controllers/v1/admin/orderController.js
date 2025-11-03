@@ -109,7 +109,6 @@ export const rollbackVoucherUsage = async (order) => {
                 // rollback usedCount tổng
                 await VoucherEntity.updateOne({ code: vu.code }, { $inc: { usedCount: -1 } });
             }
-            console.log(`✅ Rollback voucher ${vu.code} thành công`);
         }
         catch (err) {
             console.error(`❌ Lỗi rollback voucher ${vu.code}:`, err);
@@ -132,11 +131,10 @@ export const updateOrderStatus = async (req, res) => {
         if (!order) {
             return res.status(404).json({ code: 1, message: "Order không tồn tại" });
         }
-        // if (order.status?.toString() === ORDER_STATUS.COMPLETED || order.status?.toString() === ORDER_STATUS.CANCELLED) {
         if (((_a = order.status) === null || _a === void 0 ? void 0 : _a.toString()) === ORDER_STATUS.CANCELLED) {
             return res.status(400).json({
                 code: 1,
-                message: "Đơn hàng đã hoàn tất hoặc đã hủy, không thể thay đổi trạng thái nữa"
+                message: "Đơn hàng đã đã hủy, không thể thay đổi trạng thái nữa"
             });
         }
         order.status = statusId;
@@ -165,10 +163,10 @@ export const updateOrderStatus = async (req, res) => {
         }
         if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
             const user = await UserModel.findById(order.userId);
-            // Refund điểm người dùng đã dùng
+            // Refund điểm người dùng
             if (!order.pointsRefunded && order.usedPoints > 0 && user) {
-                user.membership.balancePoint += order.usedPoints;
-                user.membership.balancePoint -= order.reward.points;
+                user.membership.balancePoint += order.usedPoints; // cong lai điểm người dùng
+                user.membership.balancePoint -= order.reward.points; // tru di điểm order da cong
                 order.pointsRefunded = true;
             }
             // Nếu đơn này từng cộng điểm thưởng → rollback lại
@@ -226,7 +224,6 @@ export const setPointAndUpgrade = async (userId, point) => {
     user.membership.point = newPoint;
     user.membership.balancePoint = newBalancePoint;
     await user.save();
-    console.log('chay qua ham setPointAndUpgrade');
     return {
         level: user.membership.level,
         point: user.membership.point,

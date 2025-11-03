@@ -8,10 +8,10 @@ export const API_ENDPOINTS_SHARED = {
   },
   LOCATION: {
     PROVINCES: '/location/provinces',
-    PROVINCE_DETAIL: (provinceCode) => `/location/provinces/${provinceCode}`,
-    DISTRICTS: (provinceCode) => `/location/districts/${provinceCode}`,
-    DISTRICT_DETAIL: (districtCode) => `/location/district/${districtCode}`,
-    WARDS: (districtCode) => `/location/wards/${districtCode}`,
-    WARD_DETAIL: (wardCode,districtCode) => `/location/ward/${wardCode}?districtCode=${districtCode}`,
+    PROVINCE_DETAIL: (provinceId) => `/location/provinces/${provinceId}`,
+    DISTRICTS: (provinceId) => `/location/districts/${provinceId}`,
+    DISTRICT_DETAIL: (districtId) => `/location/district/${districtId}`,
+    WARDS: (districtId) => `/location/wards/${districtId}`,
+    WARD_DETAIL: (wardId,districtId) => `/location/ward/${wardId}?districtId=${districtId}`,
   }
 }

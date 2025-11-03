@@ -13,6 +13,8 @@ import { nullRules, phoneRules } from '@/utils/validation'
 import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 import { useEventBus } from "@/composables/voucher/useEventBus";
+import { useCartVoucherHandlers } from '@/composables/cart/useCartVoucherHandlers';
+import { useCartLocationWatchers } from '@/composables/cart/useCartLocationWatchers';
 
 definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
@@ -25,131 +27,264 @@ const storePaymentStatus = usePaymentStatusStore();
 const storeLocation = useLocationStore();
 const eventBus = useEventBus();
 
-const selectedFreeship = ref<string| null>(null);
+const selectedFreeship = ref<string | null>(null);
 const selectedVoucher = ref<string | null>(null);
 const voucherCode = ref<string>('');
 
 const submitOrder = async (event: SubmitEventPromise) => {
-  const results = await event
+  const results = await event;
   if (!results.valid) {
     showWarning('Vui lòng chọn đầy đủ thông tin!');
-    return
+    return;
   }
-  store.submitOrder()
-}
-
-const removeVoucher = (code: string, type: any) => {
-  if(type === VOUCHER_TYPE.freeship.type){
-    selectedFreeship.value = null;
-    store.discountVoucherFreeship = 0;
-    store.activeFreeshipVoucher = null;
-  } else {
-    selectedVoucher.value = null;
-    store.discountVoucher = 0;
-    store.messageVoucher = '';
-  }
-
-  store.voucherUsage = store.voucherUsage.filter(v => v.code !== code);
-  store.handleCalcTotalPriceCurrent();
-}
-
-const handleVoucherReset = (data: {resetFreeship: boolean;resetVoucher: boolean;}) => {
-  if (data.resetFreeship) selectedFreeship.value = null;
-  if (data.resetVoucher) selectedVoucher.value = null;
+  store.submitOrder();
 };
 
-const handleApplyVoucherInput = async () => {
-  if (!voucherCode.value) return;
+// Voucher handlers
+const { removeVoucher, handleVoucherReset, handleApplyVoucherInput } = useCartVoucherHandlers(
+  store,
+  selectedFreeship,
+  selectedVoucher,
+  voucherCode
+);
 
-  await store.applyVoucher(voucherCode.value);
+// Location watchers
+useCartLocationWatchers(storeLocation, store);
+// watch(() => storeLocation.selectedProvince, async (newVal) => {
+//   if (storeLocation.isSetting) return
+  
+//   if (newVal) {
+//     await storeLocation.fetchDistrictsStore(newVal)
+//     storeLocation.selectedDistrict = null
+//     storeLocation.selectedWard = null
+//   } else {
+//     storeLocation.districts = []
+//     storeLocation.wards = []
+//   }
+// })
 
-  const appliedVoucher = store.voucherUsage.find(v => v.code === voucherCode.value);
-  if (appliedVoucher) {
-    if (appliedVoucher.type === VOUCHER_TYPE.freeship.type) {
-      selectedFreeship.value = appliedVoucher.code;
-    } else {
-      selectedVoucher.value = appliedVoucher.code;
-    }
-  }
+// watch(() => storeLocation.selectedDistrict, async (newVal) => {
+//   if (storeLocation.isSetting) return
+  
+//   if (newVal) {
+//     await storeLocation.fetchWardsStore(newVal)
+//     storeLocation.selectedWard = null
+//   } else {
+//     storeLocation.wards = []
+//   }
+// })
 
-  voucherCode.value = '';
-};
+// watch(
+//   [() => storeLocation.selectedWard, () => store.cartListItem],
+//   async ([newWard, newCart]) => {
+//     if (newWard && newCart.length > 0) {
+//       await store.handleGetFee()
+//     } else {
+//       store.shippingFee = 0
+//     }
+//   },
+//   { immediate: true, deep: true }
+// )
 
-
-watch( // chon voucher
+// Voucher selection watcher
+watch(
   [selectedVoucher, selectedFreeship],
   ([newVoucher, newFreeship], [oldVoucher, oldFreeship]) => {
     if (newVoucher && newVoucher !== oldVoucher) {
       store.messageVoucher = '';
-      if(oldVoucher) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldVoucher);
+      if (oldVoucher) {
+        store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldVoucher);
+      }
       store.applyVoucher(newVoucher);
     }
 
     if (newFreeship && newFreeship !== oldFreeship) {
-      if(oldFreeship) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldFreeship);
+      if (oldFreeship) {
+        store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldFreeship);
+      }
       store.applyVoucher(newFreeship);
     }
   }
 );
 
-watch(() => storeLocation.selectedProvince, async (newVal) => {
-  if (storeLocation.isSetting) return
-  
-  if (newVal) {
-    await storeLocation.fetchDistrictsStore(newVal)
-    storeLocation.selectedDistrict = null
-    storeLocation.selectedWard = null
-  } else {
-    storeLocation.districts = []
-    storeLocation.wards = []
-  }
-})
-
-watch(() => storeLocation.selectedDistrict, async (newVal) => {
-  if (storeLocation.isSetting) return
-  
-  if (newVal) {
-    await storeLocation.fetchWardsStore(newVal)
-    storeLocation.selectedWard = null
-  } else {
-    storeLocation.wards = []
-  }
-})
-
-watch(
-  [() => storeLocation.selectedWard, () => store.cartListItem],
-  async ([newWard, newCart]) => {
-    if (newWard && newCart.length > 0) {
-      await store.handleGetFee()
-    } else {
-      store.shippingFee = 0
-    }
-  },
-  { immediate: true, deep: true }
-)
-
 onMounted(async () => {
-  if(store.getCartListItem.length > 0) {
+  if (store.getCartListItem.length > 0) {
     await store.fetchProductCart();
     
-    await storeLocation.fetchProvincesStore()
-    if(storeAccount.getDetailValue?.id) await store.handleGetDefaultAddress()
-    if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
+    await storeLocation.fetchProvincesStore();
+    if (storeAccount.getDetailValue?.id) {
+      await store.handleGetDefaultAddress();
+    }
+    if (storePaymentStatus.getListData.length === 0) {
+      storePaymentStatus.fetchPaymentStatusStore();
+    }
     eventBus.on('voucher:reset', handleVoucherReset);
-  } 
-})
+  }
+});
 
 onBeforeUnmount(() => {
-  selectedFreeship.value = null
-  selectedVoucher.value = null
+  selectedFreeship.value = null;
+  selectedVoucher.value = null;
   store.discountVoucher = 0;
   store.discountVoucherFreeship = 0;
   store.messageVoucher = '';
   store.voucherUsage = [];
   store.activeFreeshipVoucher = null;
-  storeLocation.resetLocation
+  storeLocation.resetLocation();
   eventBus.off('voucher:reset', handleVoucherReset);
-})
+});
+
+// import '@/styles/templates/cart/popup-cart.scss'
+// import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+// import type { SubmitEventPromise } from 'vuetify';
+// import { formatCurrency } from '@/utils/global'
+// import { showWarning } from '@/utils/toast'
+// import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+// import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
+// import { useAccountStore } from '@/stores/client/users/useAccountStore';
+// import { ROUTES } from '@/shared/constants/routes';
+// import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
+// import { nullRules, phoneRules } from '@/utils/validation'
+// import { useLocationStore } from '@/stores/shared/useLocationStore';
+// import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
+// import { useEventBus } from "@/composables/voucher/useEventBus";
+
+// definePageMeta({
+//   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
+// })
+
+// const store = useCartStore();
+// const storeAddress = useAddressesManageStore();
+// const storeAccount = useAccountStore();
+// const storePaymentStatus = usePaymentStatusStore();
+// const storeLocation = useLocationStore();
+// const eventBus = useEventBus();
+
+// const selectedFreeship = ref<string| null>(null);
+// const selectedVoucher = ref<string | null>(null);
+// const voucherCode = ref<string>('');
+
+// const submitOrder = async (event: SubmitEventPromise) => {
+//   const results = await event
+//   if (!results.valid) {
+//     showWarning('Vui lòng chọn đầy đủ thông tin!');
+//     return
+//   }
+//   store.submitOrder()
+// }
+
+// const removeVoucher = (code: string, type: any) => {
+//   if(type === VOUCHER_TYPE.freeship.type){
+//     selectedFreeship.value = null;
+//     store.discountVoucherFreeship = 0;
+//     store.activeFreeshipVoucher = null;
+//   } else {
+//     selectedVoucher.value = null;
+//     store.discountVoucher = 0;
+//     store.messageVoucher = '';
+//   }
+
+//   store.voucherUsage = store.voucherUsage.filter(v => v.code !== code);
+//   store.handleCalcTotalPriceCurrent();
+// }
+
+// const handleVoucherReset = (data: {resetFreeship: boolean;resetVoucher: boolean;}) => {
+//   if (data.resetFreeship) selectedFreeship.value = null;
+//   if (data.resetVoucher) selectedVoucher.value = null;
+// };
+
+// const handleApplyVoucherInput = async () => {
+//   if (!voucherCode.value) return;
+
+//   await store.applyVoucher(voucherCode.value);
+
+//   const appliedVoucher = store.voucherUsage.find(v => v.code === voucherCode.value);
+//   if (appliedVoucher) {
+//     if (appliedVoucher.type === VOUCHER_TYPE.freeship.type) {
+//       selectedFreeship.value = appliedVoucher.code;
+//     } else {
+//       selectedVoucher.value = appliedVoucher.code;
+//     }
+//   }
+
+//   voucherCode.value = '';
+// };
+
+
+// watch( // chon voucher
+//   [selectedVoucher, selectedFreeship],
+//   ([newVoucher, newFreeship], [oldVoucher, oldFreeship]) => {
+//     if (newVoucher && newVoucher !== oldVoucher) {
+//       store.messageVoucher = '';
+//       if(oldVoucher) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldVoucher);
+//       store.applyVoucher(newVoucher);
+//     }
+
+//     if (newFreeship && newFreeship !== oldFreeship) {
+//       if(oldFreeship) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldFreeship);
+//       store.applyVoucher(newFreeship);
+//     }
+//   }
+// );
+
+// watch(() => storeLocation.selectedProvince, async (newVal) => {
+//   if (storeLocation.isSetting) return
+  
+//   if (newVal) {
+//     await storeLocation.fetchDistrictsStore(newVal)
+//     storeLocation.selectedDistrict = null
+//     storeLocation.selectedWard = null
+//   } else {
+//     storeLocation.districts = []
+//     storeLocation.wards = []
+//   }
+// })
+
+// watch(() => storeLocation.selectedDistrict, async (newVal) => {
+//   if (storeLocation.isSetting) return
+  
+//   if (newVal) {
+//     await storeLocation.fetchWardsStore(newVal)
+//     storeLocation.selectedWard = null
+//   } else {
+//     storeLocation.wards = []
+//   }
+// })
+
+// watch(
+//   [() => storeLocation.selectedWard, () => store.cartListItem],
+//   async ([newWard, newCart]) => {
+//     if (newWard && newCart.length > 0) {
+//       await store.handleGetFee()
+//     } else {
+//       store.shippingFee = 0
+//     }
+//   },
+//   { immediate: true, deep: true }
+// )
+
+// onMounted(async () => {
+//   if(store.getCartListItem.length > 0) {
+//     await store.fetchProductCart();
+    
+//     await storeLocation.fetchProvincesStore()
+//     if(storeAccount.getDetailValue?.id) await store.handleGetDefaultAddress()
+//     if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
+//     eventBus.on('voucher:reset', handleVoucherReset);
+//   } 
+// })
+
+// onBeforeUnmount(() => {
+//   selectedFreeship.value = null
+//   selectedVoucher.value = null
+//   store.discountVoucher = 0;
+//   store.discountVoucherFreeship = 0;
+//   store.messageVoucher = '';
+//   store.voucherUsage = [];
+//   store.activeFreeshipVoucher = null;
+//   storeLocation.resetLocation
+//   eventBus.off('voucher:reset', handleVoucherReset);
+// })
 
 </script>
 <template>
@@ -210,8 +345,8 @@ onBeforeUnmount(() => {
                 v-model="storeLocation.selectedProvince"
                   label="Chọn thành phố"
                   :items="storeLocation.getListProvinces ?? []"
-                  item-title="name"
-                  item-value="code"
+                  item-title="PROVINCE_NAME"
+                  item-value="PROVINCE_ID"
                   variant="outlined"
                   :rules="nullRules"
                 />
@@ -222,8 +357,8 @@ onBeforeUnmount(() => {
                 v-model="storeLocation.selectedDistrict"
                   label="Chọn quan huyen"
                   :items="storeLocation.getListDistricts ?? []"
-                  item-title="name"
-                  item-value="code"
+                  item-title="DISTRICT_NAME"
+                  item-value="DISTRICT_ID"
                   variant="outlined"
                   :rules="nullRules"
                 />
@@ -234,8 +369,8 @@ onBeforeUnmount(() => {
                 v-model="storeLocation.selectedWard"
                   label="Chọn phuong xa"
                   :items="storeLocation.getListWards ?? []"
-                  item-title="name"
-                  item-value="code"
+                  item-title="WARDS_NAME"
+                  item-value="WARDS_ID"
                   variant="outlined"
                   :rules="nullRules"
                 />
@@ -265,7 +400,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <!-- Voucher Freeship -->
+
         <div v-if="store.allVouchers?.length" class="card-sm bg-white mt-ms mb-ms">
           <div class="flex justify-between mb-sm">
             <Heading tag="div" size="md" weight="semibold" class="black">

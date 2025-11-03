@@ -103,9 +103,9 @@ const totalDiscountVoucher = computed(() => {
         <span class="flex gap-xs align-center weight-semibold text-color-black">
           <Button size="xs" color="secondary" icon="location_on" :disable="true"/>
           {{ getDetailOrder?.address }},
-          {{ getWardDetail?.name }},
-          {{ getDistrictDetail?.name }},
-          {{ getProvinceDetail?.name }}
+          {{ getWardDetail?.WARDS_NAME }},
+          {{ getDistrictDetail?.DISTRICT_NAME }},
+          {{ getProvinceDetail?.PROVINCE_NAME }}
         </span>
         <span class="flex gap-xs align-center text-color-gray5">
           <Button size="xs" color="secondary" icon="schedule" :disable="true"/>

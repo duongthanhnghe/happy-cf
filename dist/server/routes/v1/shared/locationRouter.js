@@ -2,10 +2,10 @@ import express from "express";
 import { getAllProvinces, getDistrictsByProvince, getWardsByDistrict, getProvinceDetail, getDistrictDetail, getWardDetail } from '../../../controllers/v1/shared/locationController.js';
 const router = express.Router();
 router.get("/provinces", getAllProvinces);
-router.get("/provinces/:provinceCode", getProvinceDetail);
-router.get("/districts/:provinceCode", getDistrictsByProvince);
-router.get("/district/:districtCode", getDistrictDetail);
-router.get("/wards/:districtCode", getWardsByDistrict);
-router.get("/ward/:wardCode", getWardDetail);
+router.get("/provinces/:provinceId", getProvinceDetail);
+router.get("/districts/:provinceId", getDistrictsByProvince);
+router.get("/district/:districtId", getDistrictDetail);
+router.get("/wards/:districtId", getWardsByDistrict);
+router.get("/ward/:wardId", getWardDetail);
 export default router;
 //# sourceMappingURL=locationRouter.js.map

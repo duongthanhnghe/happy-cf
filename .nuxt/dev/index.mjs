@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"4024a-M37R0029ZwbJjaRjxvRl/l/zbkg\"",
-    "mtime": "2025-10-31T07:11:30.515Z",
-    "size": 262730,
+    "etag": "\"40c7c-1LZvuVg5YAu1s4AyaRb2daOLhlI\"",
+    "mtime": "2025-11-03T11:17:10.589Z",
+    "size": 265340,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"f56ae-9uK22MRWRbOk4iQkPSXfth52RXM\"",
-    "mtime": "2025-10-31T07:11:30.515Z",
-    "size": 1005230,
+    "etag": "\"f7aa8-9J9wbiYsHsVo9E3FKYLH8ReNMsc\"",
+    "mtime": "2025-11-03T11:17:10.590Z",
+    "size": 1014440,
     "path": "index.mjs.map"
   }
 };
@@ -5515,331 +5515,6 @@ const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePr
   default: router$9
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const getAllProvinces = async (_, res) => {
-  try {
-    const response = await fetch("https://provinces.open-api.vn/api/?depth=1");
-    const data = await response.json();
-    return res.json({ code: 0, data });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch t\u1EC9nh/th\xE0nh", error: err.message });
-  }
-};
-const getDistrictsByProvince = async (req, res) => {
-  try {
-    const { provinceCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
-    const data = await response.json();
-    if (!data || !data.districts) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
-    }
-    return res.json({ code: 0, data: data.districts });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y qu\u1EADn/huy\u1EC7n", error: err.message });
-  }
-};
-const getWardsByDistrict = async (req, res) => {
-  try {
-    const { districtCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-    const data = await response.json();
-    if (!data || !data.wards) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
-    }
-    return res.json({ code: 0, data: data.wards });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y x\xE3/ph\u01B0\u1EDDng", error: err.message });
-  }
-};
-const getProvinceDetail = async (req, res) => {
-  try {
-    const { provinceCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=1`);
-    const data = await response.json();
-    if (!data || !data.name) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y t\u1EC9nh/th\xE0nh" });
-    }
-    return res.json({ code: 0, data });
-  } catch (err) {
-    return res.status(500).json({
-      code: 1,
-      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt t\u1EC9nh/th\xE0nh",
-      error: err.message
-    });
-  }
-};
-const getDistrictDetail = async (req, res) => {
-  try {
-    const { districtCode } = req.params;
-    const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=1`);
-    const data = await response.json();
-    if (!data || !data.name) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y qu\u1EADn/huy\u1EC7n" });
-    }
-    return res.json({ code: 0, data });
-  } catch (err) {
-    return res.status(500).json({
-      code: 1,
-      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt qu\u1EADn/huy\u1EC7n",
-      error: err.message
-    });
-  }
-};
-const getWardDetail = async (req, res) => {
-  const { wardCode } = req.params;
-  const districtCode = req.query.districtCode;
-  if (!districtCode) {
-    return res.status(400).json({
-      code: 1,
-      message: "Thi\u1EBFu districtCode khi t\xECm x\xE3/ph\u01B0\u1EDDng c\xF3 m\xE3 ng\u1EAFn"
-    });
-  }
-  try {
-    const resp = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-    const district = await resp.json();
-    if (resp.ok && district && Array.isArray(district.wards)) {
-      const ward = district.wards.find(
-        (w) => String(w.code) === String(wardCode)
-      );
-      if (ward) {
-        return res.json({ code: 0, data: ward });
-      }
-    }
-    return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y x\xE3/ph\u01B0\u1EDDng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt x\xE3/ph\u01B0\u1EDDng", error: err.message });
-  }
-};
-
-const router$8 = express.Router();
-router$8.get("/provinces", getAllProvinces);
-router$8.get("/provinces/:provinceCode", getProvinceDetail);
-router$8.get("/districts/:provinceCode", getDistrictsByProvince);
-router$8.get("/district/:districtCode", getDistrictDetail);
-router$8.get("/wards/:districtCode", getWardsByDistrict);
-router$8.get("/ward/:wardCode", getWardDetail);
-
-const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$8
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const router$7 = Router();
-router$7.use("/fileManage", router$9);
-router$7.use("/location", router$8);
-
-const index$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$7
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const SearchKeywordSchema = new Schema(
-  {
-    keyword: { type: String, required: true, trim: true, index: true },
-    totalCount: { type: Number, default: 0 },
-    lastSearchTime: { type: Date, default: Date.now }
-  },
-  {
-    timestamps: { createdAt: true, updatedAt: false }
-  }
-);
-const SearchKeywordModel = model("SearchKeyword", SearchKeywordSchema, "search_keywords");
-
-function toSearchKeywordDTO(entity) {
-  return {
-    id: entity._id.toString(),
-    keyword: entity.keyword,
-    totalCount: entity.totalCount,
-    lastSearchTime: entity.lastSearchTime,
-    createdAt: entity.createdAt.toISOString()
-  };
-}
-const toSearchKeywordListDTO = (keywords) => {
-  return keywords.map(toSearchKeywordDTO);
-};
-
-const getTopSearchKeyword = async (req, res) => {
-  try {
-    const limit = Number(req.query.limit) || 10;
-    const keywords = await SearchKeywordModel.find().sort({ totalCount: -1 }).limit(limit);
-    return res.json({
-      code: 0,
-      data: toSearchKeywordListDTO(keywords)
-    });
-  } catch (error) {
-    console.error("getTopSearchKeyword error:", error);
-    return res.status(500).json({ code: 1, message: "Internal server error" });
-  }
-};
-const logSearchKeyword = async (req, res) => {
-  var _a;
-  try {
-    const keyword = (_a = req.body.keyword) == null ? void 0 : _a.trim().toLowerCase();
-    if (!keyword) return res.status(400).json({ code: 1, message: "Keyword required" });
-    const now = /* @__PURE__ */ new Date();
-    const existing = await SearchKeywordModel.findOne({ keyword });
-    if (existing) {
-      existing.totalCount += 1;
-      existing.lastSearchTime = now;
-      await existing.save();
-    } else {
-      await SearchKeywordModel.create({
-        keyword,
-        totalCount: 1,
-        lastSearchTime: now
-      });
-    }
-    return res.status(200).json({ code: 0, message: "OK" });
-  } catch (error) {
-    console.error("logSearchKeyword error:", error);
-    return res.status(500).json({ code: 1, message: "Internal server error" });
-  }
-};
-
-const router$6 = express.Router();
-router$6.post("/search-keywords/log", logSearchKeyword);
-router$6.get("/search-keywords/list", getTopSearchKeyword);
-
-const usersRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$6
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const getPostsById = async (req, res) => {
-  try {
-    const post = await PostNewsModel.findById(req.params.id);
-    if (!post) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, data: toPostNewsDTO(post) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPostBySlug = async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const post = await PostNewsModel.findOne({ slug });
-    if (!post) {
-      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, data: toPostNewsDTO(post) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPostsLatest = async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit, 10) || 5;
-    const posts = await PostNewsModel.find().sort({ createdAt: -1 }).limit(limit);
-    return res.json({ code: 0, data: toPostNewsListDTO(posts) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getPostsByCategory = async (req, res) => {
-  try {
-    const { categoryId } = req.params;
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const skip = (page - 1) * limit;
-    const query = { categoryId };
-    const [total, posts] = await Promise.all([
-      PostNewsModel.countDocuments(query),
-      PostNewsModel.find({ ...query, isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit)
-    ]);
-    const totalPages = Math.ceil(total / limit);
-    return res.json({
-      code: 0,
-      data: toPostNewsListDTO(posts),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getRelatedPostsBySlug = async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const post = await PostNewsModel.findOne({ slug });
-    if (!post) {
-      return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const relatedPosts = await PostNewsModel.find({
-      categoryId: new mongoose.Types.ObjectId(post.categoryId),
-      slug: { $ne: slug },
-      isActive: true
-    }).limit(limit).sort({ createdAt: -1 });
-    return res.json({
-      code: 0,
-      data: relatedPosts.map(toPostNewsDTO),
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const updateView = async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const post = await PostNewsModel.findOneAndUpdate(
-      { slug, isActive: true },
-      { $inc: { views: 1 } },
-      { new: true }
-    );
-    if (!post) return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
-    return res.json({ code: 0, data: { views: post.views }, message: "C\u1EADp nh\u1EADt l\u01B0\u1EE3t xem th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getAllPostsPagination = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page, 10) || 1;
-    let limit = parseInt(req.query.limit, 10) || 10;
-    const search = req.query.search || "";
-    const query = { isActive: true };
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { summaryContent: { $regex: search, $options: "i" } }
-      ];
-    }
-    if (limit === -1) {
-      limit = await PostNewsModel.countDocuments(query);
-    }
-    const skip = (page - 1) * limit;
-    const [total, posts] = await Promise.all([
-      PostNewsModel.countDocuments(query),
-      PostNewsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
-    ]);
-    const totalPages = Math.ceil(total / limit);
-    return res.json({
-      code: 0,
-      data: toPostNewsListDTO(posts),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-
-const router$5 = Router();
-router$5.get("/category/:categoryId", getPostsByCategory);
-router$5.get("/pagination", getAllPostsPagination);
-router$5.get("/slug/:slug", getPostBySlug);
-router$5.get("/related/:slug", getRelatedPostsBySlug);
-router$5.patch("/view/:slug", updateView);
-router$5.get("/latest", getPostsLatest);
-router$5.get("/:id", getPostsById);
-
-const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$5
-}, Symbol.toStringTag, { value: 'Module' }));
-
 const PAYMENT_METHOD_STATUS = {
   BANK: "bank_transfer",
   CASH: "cash"
@@ -6225,6 +5900,420 @@ const getShippingFee = async (req, res) => {
     });
   }
 };
+
+const BASE_URL = "https://partner.viettelpost.vn/v2/categories";
+const getAllProvinces = async (_, res) => {
+  try {
+    const token = await getViettelToken();
+    const response = await fetch(`${BASE_URL}/listProvinceById?provinceId=-1`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Token": token
+      }
+    });
+    const result = await response.json();
+    console.log("\u{1F4E6} Province result:", result);
+    if (!response.ok || result.status !== 200) {
+      throw new Error(result.message || "Kh\xF4ng th\u1EC3 l\u1EA5y danh s\xE1ch T\u1EC9nh/TP");
+    }
+    return res.json({ code: 0, data: result.data });
+  } catch (err) {
+    console.error("\u274C getAllProvinces error:", err.message);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch T\u1EC9nh/TP",
+      error: err.message
+    });
+  }
+};
+const getDistrictsByProvince = async (req, res) => {
+  try {
+    const { provinceId } = req.params;
+    if (!provinceId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu provinceId" });
+    }
+    const token = await getViettelToken();
+    const response = await fetch(`${BASE_URL}/listDistrict?provinceId=${provinceId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Token": token
+      }
+    });
+    const result = await response.json();
+    console.log("\u{1F4E6} District result:", result);
+    if (!response.ok || result.status !== 200) {
+      throw new Error(result.message || "Kh\xF4ng th\u1EC3 l\u1EA5y danh s\xE1ch Qu\u1EADn/Huy\u1EC7n");
+    }
+    return res.json({ code: 0, data: result.data });
+  } catch (err) {
+    console.error("\u274C getDistrictsByProvince error:", err.message);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch Qu\u1EADn/Huy\u1EC7n",
+      error: err.message
+    });
+  }
+};
+const getWardsByDistrict = async (req, res) => {
+  try {
+    const { districtId } = req.params;
+    if (!districtId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu districtId" });
+    }
+    const token = await getViettelToken();
+    const response = await fetch(`${BASE_URL}/listWards?districtId=${districtId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Token": token
+      }
+    });
+    const result = await response.json();
+    console.log("\u{1F4E6} Ward result:", result);
+    if (!response.ok || result.status !== 200) {
+      throw new Error(result.message || "Kh\xF4ng th\u1EC3 l\u1EA5y danh s\xE1ch Ph\u01B0\u1EDDng/X\xE3");
+    }
+    return res.json({ code: 0, data: result.data });
+  } catch (err) {
+    console.error("\u274C getWardsByDistrict error:", err.message);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch Ph\u01B0\u1EDDng/X\xE3",
+      error: err.message
+    });
+  }
+};
+const getProvinceDetail = async (req, res) => {
+  var _a;
+  try {
+    const { provinceId } = req.params;
+    if (!provinceId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu provinceId" });
+    }
+    const token = await getViettelToken();
+    const response = await fetch(`${BASE_URL}/listProvinceById?provinceId=${provinceId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Token": token
+      }
+    });
+    const result = await response.json();
+    if (!response.ok || result.status !== 200 || !((_a = result.data) == null ? void 0 : _a.length)) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y T\u1EC9nh/TP" });
+    }
+    return res.json({ code: 0, data: result.data[0] });
+  } catch (err) {
+    console.error("\u274C getProvinceDetail error:", err.message);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt T\u1EC9nh/TP",
+      error: err.message
+    });
+  }
+};
+const getDistrictDetail = async (req, res) => {
+  try {
+    const { districtId } = req.params;
+    if (!districtId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu districtId" });
+    }
+    const token = await getViettelToken();
+    const response = await fetch(`${BASE_URL}/listDistrict?provinceId=-1`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Token": token
+      }
+    });
+    const result = await response.json();
+    if (!response.ok || result.status !== 200) {
+      throw new Error("Kh\xF4ng th\u1EC3 l\u1EA5y danh s\xE1ch Qu\u1EADn/Huy\u1EC7n");
+    }
+    const district = result.data.find(
+      (d) => String(d.DISTRICT_ID) === String(districtId)
+    );
+    if (!district) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y Qu\u1EADn/Huy\u1EC7n" });
+    }
+    return res.json({ code: 0, data: district });
+  } catch (err) {
+    console.error("\u274C getDistrictDetail error:", err.message);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt Qu\u1EADn/Huy\u1EC7n",
+      error: err.message
+    });
+  }
+};
+const getWardDetail = async (req, res) => {
+  try {
+    const { wardId } = req.params;
+    const districtId = req.query.districtId;
+    if (!wardId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu wardId" });
+    }
+    const token = await getViettelToken();
+    const url = districtId ? `${BASE_URL}/listWards?districtId=${districtId}` : `${BASE_URL}/listWards?districtId=-1`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Token": token
+      }
+    });
+    const result = await response.json();
+    if (!response.ok || result.status !== 200) {
+      throw new Error("Kh\xF4ng th\u1EC3 l\u1EA5y danh s\xE1ch Ph\u01B0\u1EDDng/X\xE3");
+    }
+    const ward = result.data.find(
+      (w) => String(w.WARDS_ID) === String(wardId)
+    );
+    if (!ward) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y Ph\u01B0\u1EDDng/X\xE3" });
+    }
+    return res.json({ code: 0, data: ward });
+  } catch (err) {
+    console.error("\u274C getWardDetail error:", err.message);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt Ph\u01B0\u1EDDng/X\xE3",
+      error: err.message
+    });
+  }
+};
+
+const router$8 = express.Router();
+router$8.get("/provinces", getAllProvinces);
+router$8.get("/provinces/:provinceId", getProvinceDetail);
+router$8.get("/districts/:provinceId", getDistrictsByProvince);
+router$8.get("/district/:districtId", getDistrictDetail);
+router$8.get("/wards/:districtId", getWardsByDistrict);
+router$8.get("/ward/:wardId", getWardDetail);
+
+const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$8
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const router$7 = Router();
+router$7.use("/fileManage", router$9);
+router$7.use("/location", router$8);
+
+const index$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$7
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const SearchKeywordSchema = new Schema(
+  {
+    keyword: { type: String, required: true, trim: true, index: true },
+    totalCount: { type: Number, default: 0 },
+    lastSearchTime: { type: Date, default: Date.now }
+  },
+  {
+    timestamps: { createdAt: true, updatedAt: false }
+  }
+);
+const SearchKeywordModel = model("SearchKeyword", SearchKeywordSchema, "search_keywords");
+
+function toSearchKeywordDTO(entity) {
+  return {
+    id: entity._id.toString(),
+    keyword: entity.keyword,
+    totalCount: entity.totalCount,
+    lastSearchTime: entity.lastSearchTime,
+    createdAt: entity.createdAt.toISOString()
+  };
+}
+const toSearchKeywordListDTO = (keywords) => {
+  return keywords.map(toSearchKeywordDTO);
+};
+
+const getTopSearchKeyword = async (req, res) => {
+  try {
+    const limit = Number(req.query.limit) || 10;
+    const keywords = await SearchKeywordModel.find().sort({ totalCount: -1 }).limit(limit);
+    return res.json({
+      code: 0,
+      data: toSearchKeywordListDTO(keywords)
+    });
+  } catch (error) {
+    console.error("getTopSearchKeyword error:", error);
+    return res.status(500).json({ code: 1, message: "Internal server error" });
+  }
+};
+const logSearchKeyword = async (req, res) => {
+  var _a;
+  try {
+    const keyword = (_a = req.body.keyword) == null ? void 0 : _a.trim().toLowerCase();
+    if (!keyword) return res.status(400).json({ code: 1, message: "Keyword required" });
+    const now = /* @__PURE__ */ new Date();
+    const existing = await SearchKeywordModel.findOne({ keyword });
+    if (existing) {
+      existing.totalCount += 1;
+      existing.lastSearchTime = now;
+      await existing.save();
+    } else {
+      await SearchKeywordModel.create({
+        keyword,
+        totalCount: 1,
+        lastSearchTime: now
+      });
+    }
+    return res.status(200).json({ code: 0, message: "OK" });
+  } catch (error) {
+    console.error("logSearchKeyword error:", error);
+    return res.status(500).json({ code: 1, message: "Internal server error" });
+  }
+};
+
+const router$6 = express.Router();
+router$6.post("/search-keywords/log", logSearchKeyword);
+router$6.get("/search-keywords/list", getTopSearchKeyword);
+
+const usersRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$6
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const getPostsById = async (req, res) => {
+  try {
+    const post = await PostNewsModel.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toPostNewsDTO(post) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPostBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const post = await PostNewsModel.findOne({ slug });
+    if (!post) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toPostNewsDTO(post) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPostsLatest = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit, 10) || 5;
+    const posts = await PostNewsModel.find().sort({ createdAt: -1 }).limit(limit);
+    return res.json({ code: 0, data: toPostNewsListDTO(posts) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getPostsByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+    const query = { categoryId };
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find({ ...query, isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getRelatedPostsBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const post = await PostNewsModel.findOne({ slug });
+    if (!post) {
+      return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const relatedPosts = await PostNewsModel.find({
+      categoryId: new mongoose.Types.ObjectId(post.categoryId),
+      slug: { $ne: slug },
+      isActive: true
+    }).limit(limit).sort({ createdAt: -1 });
+    return res.json({
+      code: 0,
+      data: relatedPosts.map(toPostNewsDTO),
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateView = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const post = await PostNewsModel.findOneAndUpdate(
+      { slug, isActive: true },
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+    if (!post) return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
+    return res.json({ code: 0, data: { views: post.views }, message: "C\u1EADp nh\u1EADt l\u01B0\u1EE3t xem th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAllPostsPagination = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    const search = req.query.search || "";
+    const query = { isActive: true };
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { summaryContent: { $regex: search, $options: "i" } }
+      ];
+    }
+    if (limit === -1) {
+      limit = await PostNewsModel.countDocuments(query);
+    }
+    const skip = (page - 1) * limit;
+    const [total, posts] = await Promise.all([
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toPostNewsListDTO(posts),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$5 = Router();
+router$5.get("/category/:categoryId", getPostsByCategory);
+router$5.get("/pagination", getAllPostsPagination);
+router$5.get("/slug/:slug", getPostBySlug);
+router$5.get("/related/:slug", getRelatedPostsBySlug);
+router$5.patch("/view/:slug", updateView);
+router$5.get("/latest", getPostsLatest);
+router$5.get("/:id", getPostsById);
+
+const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$5
+}, Symbol.toStringTag, { value: 'Module' }));
 
 const router$4 = Router();
 router$4.get("/:id", getOrderById);

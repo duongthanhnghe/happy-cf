@@ -1,23 +1,18 @@
 export interface ProvinceDTO {
-  code: number
-  name: string
-  division_type?: string
-  codename?: string
-  phone_code?: string
+  PROVINCE_ID: number
+  PROVINCE_NAME: string
+  PROVINCE_CODE: string
 }
 
 export interface DistrictDTO {
-  code: number
-  name: string
-  division_type?: string
-  codename?: string
-  province_code?: number
+  DISTRICT_ID: number
+  DISTRICT_NAME: string
+  DISTRICT_VALUE: string
+  PROVINCE_ID: number
 }
 
 export interface WardDTO {
-  code: number
-  name: string
-  division_type?: string
-  codename?: string
-  district_code?: number
+  WARDS_ID: number
+  WARDS_NAME: string
+  DISTRICT_ID: string
 }

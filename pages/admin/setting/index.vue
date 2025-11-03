@@ -130,10 +130,10 @@ onBeforeUnmount(() => {
           <div class="flex-1">
           <LabelInput label="Thành phố" required/>
           <v-autocomplete
-            v-model="storeLocation.selectedProvince"
+              v-model="storeLocation.selectedProvince"
               :items="storeLocation.getListProvinces ?? []"
-              item-title="name"
-              item-value="code"
+              item-title="PROVINCE_NAME"
+              item-value="PROVINCE_ID"
               variant="outlined"
               :rules="nullRules"
             />
@@ -141,10 +141,10 @@ onBeforeUnmount(() => {
           <div class="flex-1">
           <LabelInput label="Quan huyen" required/>
             <v-autocomplete
-            v-model="storeLocation.selectedDistrict"
+              v-model="storeLocation.selectedDistrict"
               :items="storeLocation.getListDistricts ?? []"
-              item-title="name"
-              item-value="code"
+              item-title="DISTRICT_NAME"
+              item-value="DISTRICT_ID"
               variant="outlined"
               :rules="nullRules"
             />
@@ -152,10 +152,10 @@ onBeforeUnmount(() => {
           <div class="flex-1">
           <LabelInput label="Phuong xa" required/>
           <v-autocomplete
-            v-model="storeLocation.selectedWard"
+              v-model="storeLocation.selectedWard"
               :items="storeLocation.getListWards ?? []"
-              item-title="name"
-              item-value="code"
+              item-title="WARDS_NAME"
+              item-value="WARDS_ID"
               variant="outlined"
               :rules="nullRules"
             />
