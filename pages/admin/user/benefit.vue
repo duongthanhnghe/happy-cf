@@ -10,17 +10,12 @@ definePageMeta({
 
 const store = useBenefitStore();
 
-const openPopupAdd = () => {
-  store.handleResetForm()
-  store.isTogglePopupAdd = true
-}
-
 </script>
 <template>
 
   <HeaderAdmin>
     <template #right>
-      <Button label="Them moi" color="primary" :shadow="true" @click="openPopupAdd()" />
+      <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd()" />
     </template>
   </HeaderAdmin>
   <CreateMembershipBenefit />

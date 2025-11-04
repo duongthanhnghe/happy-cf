@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-import { watch, onBeforeUnmount } from 'vue'
-import {
-  useProductManageStore
-} from '@/stores/admin/product/useProductManageStore'
+import { onBeforeUnmount } from 'vue'
+import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
-import {
-  formatCurrency
-} from '@/utils/global'
+import { formatCurrency } from '@/utils/global'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
+import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.PRODUCT.children?.LIST.layout,
@@ -19,14 +16,7 @@ const store = useProductManageStore();
 const storeFileManage = useFileManageFolderStore();
 const folderName = FOLDER_UPLOAD.PRODUCT
 
-const openPopupAdd = () => {
-  store.handleReset()
-  store.handleTogglePopupAdd(true)
-}
-
-watch(() => storeFileManage.isTogglePopup, (newValue) => {
-  if(newValue && !storeFileManage.getItems) storeFileManage.getApiList(folderName)
-}, { immediate: true })
+useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -51,7 +41,7 @@ onBeforeUnmount(() => {
   </template>
 
   <template #right>
-    <Button label="Them moi" color="primary" :shadow="true" @click="openPopupAdd()" />
+    <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
   </template>
 </HeaderAdmin>
 

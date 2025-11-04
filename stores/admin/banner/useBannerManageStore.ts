@@ -116,6 +116,7 @@ const isTogglePopupAdd = ref<boolean>(false)
 
   //actions global
   const handleTogglePopupAdd = (value:boolean) => {
+    handleResetForm()
     isTogglePopupAdd.value = value;
   };
 

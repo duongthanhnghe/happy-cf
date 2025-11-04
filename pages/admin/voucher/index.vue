@@ -12,11 +12,6 @@ definePageMeta({
 
 const store = useVoucherManageStore();
 
-const openPopupAdd = () => {
-  store.handleResetForm();
-  store.handleTogglePopupAdd(true);
-};
-
 onBeforeUnmount(() => {
   store.resetFilter()
   store.serverItems = []
@@ -45,7 +40,7 @@ onBeforeUnmount(() => {
     </template>
 
     <template #right>
-      <Button color="primary" label="Thêm mới" :shadow="true" @click="openPopupAdd()" />
+      <Button color="primary" label="Thêm mới" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
     </template>
   </HeaderAdmin>
 

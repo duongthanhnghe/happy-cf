@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { watch, onBeforeUnmount} from 'vue'
-import {
-  useMembershipStore
-} from '@/stores/admin/users/useMembershipStore'
+import { onBeforeUnmount} from 'vue'
+import { useMembershipStore } from '@/stores/admin/users/useMembershipStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
+import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.USER.children?.MEMBERSHIP_LEVEL.layout,
@@ -16,9 +15,7 @@ const store = useMembershipStore();
 const storeFileManage = useFileManageFolderStore();
 const folderName = FOLDER_UPLOAD.CONFIG
 
-watch(() => storeFileManage.isTogglePopup, (newValue) => {
-  if(newValue && !storeFileManage.getItems) storeFileManage.getApiList(folderName)
-}, { immediate: true })
+useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -29,7 +26,6 @@ onBeforeUnmount(() => {
   <HeaderAdmin />
   <UpdateMembership />
   <PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
-
 
   <v-container>
     <v-data-table-server 

@@ -204,7 +204,9 @@ export const useCartStore = defineStore("Cart", () => {
   const getIsTogglePopup = computed(() => state.isTogglePopup.value);
   const getTotalPriceCurrent = computed(() => state.totalPriceCurrent.value);
   const getTotalPriceDiscount = computed(() => state.totalPriceDiscount.value);
-  const getTotalPoint = computed(() => Math.round(state.totalPriceCurrent.value * 0.05));
+  const getTotalPoint = computed(() => storeAccount.getDetailValue?.membership.pointRate ? 
+    Math.round(state.totalPriceCurrent.value * (storeAccount.getDetailValue.membership.pointRate / 100)) : 0
+  );
   const getTotalPriceSave = computed(() => state.totalPriceSave.value);
   const getOrderPriceDiscount = computed(() => state.totalPriceCurrent.value - state.orderPriceDiscount.value);
   const getShippingFee = computed(() => state.shippingFee.value);

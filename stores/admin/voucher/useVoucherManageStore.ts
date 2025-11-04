@@ -191,6 +191,7 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
   })
 
   const handleTogglePopupAdd = (value: boolean) => {
+    handleResetForm();
     if (detailData.value) detailData.value.id = '';
     isTogglePopupAdd.value = value;
   };

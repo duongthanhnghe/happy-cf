@@ -176,6 +176,7 @@ const checkSelectImage = ref<boolean>(true)
   })
 
   const handleTogglePopupAdd = (value: boolean) => {
+    handleReset()
     updateProductItem.id = ''
     isTogglePopupAdd.value = value;
   };

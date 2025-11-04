@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { useBenefitStore } from '@/stores/admin/users/useBenefitStore'
 import type { SubmitEventPromise } from 'vuetify'
 import { nullRules } from '@/utils/validation';
 
 const store = useBenefitStore()
-const editorRef = ref()
 
 const handleSubmitUpdate = async (event: SubmitEventPromise) => {
   const results = await event

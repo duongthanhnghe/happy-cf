@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import {
-  useUserManageStore
-} from '@/stores/admin/users/useUserManageStore'
+import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
 import { IMAGE_AVATAR_DEFAULT } from '@/const/image';
 
 const store = useUserManageStore();

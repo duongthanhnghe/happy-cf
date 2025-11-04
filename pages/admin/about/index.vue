@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { watch, onBeforeUnmount } from 'vue'
-import {
-  useAboutManageStore
-} from '@/stores/admin/about/useAboutManageStore'
+import { onBeforeUnmount } from 'vue'
+import { useAboutManageStore } from '@/stores/admin/about/useAboutManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { ROUTES } from '@/shared/constants/routes';
+import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ABOUT.layout,
@@ -14,14 +13,7 @@ definePageMeta({
 const store = useAboutManageStore();
 const storeFileManage = useFileManageFolderStore();
 
-const openPopupAdd = () => {
-  store.handleResetForm()
-  store.handleTogglePopupAdd(true)
-}
-
-watch(() => storeFileManage.isTogglePopup, (newValue) => {
-  if(newValue && !storeFileManage.getItems && store.folderName) storeFileManage.getApiList(store.folderName)
-}, { immediate: true })
+useFileManageWatchers(storeFileManage, store.folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -35,7 +27,7 @@ onBeforeUnmount(() => {
   </template>
 
   <template #right>
-    <Button label="Them moi" color="primary" :shadow="true" @click="openPopupAdd" />
+    <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
   </template>
 </HeaderAdmin>
 

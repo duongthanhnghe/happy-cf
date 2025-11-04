@@ -121,6 +121,7 @@ const checkSelectImage = ref<boolean>(true)
 
   //actions global
   const handleTogglePopupAdd = (value:boolean) => {
+    handleResetForm()
     if(detailData.value) detailData.value.data.id = ''
     isTogglePopupAdd.value = value;
   };

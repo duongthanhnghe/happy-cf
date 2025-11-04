@@ -5,9 +5,9 @@ import { ROUTES } from '@/shared/constants/routes';
 import { ORDER_STATUS } from "@/shared/constants/order-status";
 import { PAYMENT_TRANSACTION_STATUS } from "@/shared/constants/payment-transaction-status";
 import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
-import { getTransactionNote } from './useGetTransactionNote';
-import { getFilteredTransactionStatus } from './useFilteredTransactionStatus';
-import { useHandle } from './useHandle'
+import { getTransactionNote } from '@/composables/admin/order/useGetTransactionNote';
+import { getFilteredTransactionStatus } from '@/composables/admin/order/useFilteredTransactionStatus';
+import { useHandle } from '@/composables/admin/order/useOrderManageHandle'
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,

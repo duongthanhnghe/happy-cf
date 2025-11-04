@@ -74,6 +74,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
 
   //utils handle
   const handleTogglePopupAdd = (value: boolean) => {
+    handleResetFormCategoryItem()
     updateCategoryItem.id = ''
     isTogglePopupAdd.value = value;
   };

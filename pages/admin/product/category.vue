@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { watch, onBeforeUnmount} from 'vue'
-import {
-  useCategoryManageStore
-} from '@/stores/admin/product/useCategoryManageStore'
+import { onBeforeUnmount} from 'vue'
+import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
+import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.PRODUCT.children?.CATEGORY.layout,
@@ -16,14 +15,7 @@ const store = useCategoryManageStore();
 const storeFileManage = useFileManageFolderStore();
 const folderName = FOLDER_UPLOAD.CATEGORY_PRODUCT
 
-const openPopupAdd = () => {
-  store.handleResetFormCategoryItem()
-  store.handleTogglePopupAdd(true)
-}
-
-watch(() => storeFileManage.isTogglePopup, (newValue) => {
-  if(newValue && !storeFileManage.getItems) storeFileManage.getApiList(folderName)
-}, { immediate: true })
+useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -36,7 +28,7 @@ onBeforeUnmount(() => {
   </template>
 
   <template #right>
-    <Button label="Them moi" color="primary" :shadow="true" @click="openPopupAdd()" />
+    <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
   </template>
 </HeaderAdmin>
 

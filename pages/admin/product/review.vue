@@ -1,15 +1,9 @@
 <script lang="ts" setup>
-import {
-  useProductReviewManageStore
-} from '@/stores/admin/product-review/useProductReviewManageStore'
-import {
-  formatDateTime
-} from '@/utils/global'
+import { useProductReviewManageStore } from '@/stores/admin/product-review/useProductReviewManageStore'
+import { formatDateTime } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
 import { PRODUCT_REVIEW_STATUS, ARRAY_RATING } from '@/shared/constants/product-review-status'
-import {
-  useUserManageStore
-} from '@/stores/admin/users/useUserManageStore'
+import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,

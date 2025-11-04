@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { watch, onBeforeUnmount} from 'vue'
+import { onBeforeUnmount} from 'vue'
 import { useBannerManageStore } from '@/stores/admin/banner/useBannerManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
+import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.BANNER.layout,
@@ -14,14 +15,7 @@ const store = useBannerManageStore();
 const storeFileManage = useFileManageFolderStore();
 const folderName = FOLDER_UPLOAD.BANNER
 
-const openPopupAdd = () => {
-  store.handleResetForm()
-  store.handleTogglePopupAdd(true)
-}
-
-watch(() => storeFileManage.isTogglePopup, (newValue) => {
-  if(newValue && !storeFileManage.getItems) storeFileManage.getApiList(folderName)
-}, { immediate: true })
+useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -35,7 +29,7 @@ onBeforeUnmount(() => {
   </template>
 
   <template #right>
-    <Button label="Them moi" color="primary" :shadow="true" @click="openPopupAdd" />
+    <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
   </template>
 </HeaderAdmin>
 

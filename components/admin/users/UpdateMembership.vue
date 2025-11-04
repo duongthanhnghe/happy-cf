@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import {
-  useMembershipStore
-} from '@/stores/admin/users/useMembershipStore'
+import { useMembershipStore } from '@/stores/admin/users/useMembershipStore'
 import type { SubmitEventPromise } from 'vuetify'
 import { nullRules } from '@/utils/validation';
 

@@ -136,6 +136,7 @@ const ListAllCategoryApi = {
 
   //actions global
   const handleTogglePopupAdd = (value: boolean) => {
+    handleResetForm()
     if(detailData.value) detailData.value.id = ''
     isTogglePopupAdd.value = value;
   };

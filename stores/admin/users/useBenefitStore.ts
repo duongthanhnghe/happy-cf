@@ -73,6 +73,11 @@ export const useBenefitStore = defineStore("BenefitStore", () => {
     loadingTable.value = false
   }
 
+  const handleTogglePopupAdd = async () => {
+    handleResetForm()
+    isTogglePopupAdd.value = true;
+  }
+
   const handleTogglePopupUpdate = async (value: boolean) => {
     if(getMembershipBenefitList.value.length == 0) await fetchMembershipBenefitList()
     isTogglePopupUpdate.value = value;
@@ -185,6 +190,7 @@ export const useBenefitStore = defineStore("BenefitStore", () => {
     updateItem,
     isTogglePopupAdd,
     // actions
+    handleTogglePopupAdd,
     handleTogglePopupUpdate,
     handleEdit,
     getListData,
