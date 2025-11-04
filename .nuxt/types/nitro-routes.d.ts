@@ -75,6 +75,9 @@ declare module "nitropack/types" {
     '/v1/productRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/productRouter').default>>>>
     }
+    '/v1/shared/baseInformationRouter': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/shared/baseInformationRouter').default>>>>
+    }
     '/v1/shared/fileManageRouter': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/shared/fileManageRouter').default>>>>
     }

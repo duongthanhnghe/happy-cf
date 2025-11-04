@@ -1,35 +1,22 @@
 <script lang="ts" setup>
 import './index.scss';
 import { ROUTES } from '@/shared/constants/routes';
-import { ref, watchEffect } from 'vue'
 import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore';
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
+import { useOrderMainHandlers } from '@/composables/order/useOrderMainHandlers';
 
 definePageMeta({
   headerTypeLeft: ROUTES.PUBLIC.ORDER.headerTypeLeft,
 })
-
 
 const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeProductCategory = useProductCategoryStore()
 const storeAccount = useAccountStore();
 
-const tab = ref(null)
-const tabs = [
-  { value: 1, icon: 'category', label: 'Menu' },
-  { value: 2, icon: 'local_fire_department', label: 'Top 10' },
-  { value: 3, icon: 'percent', label: 'Khuyến mãi' },
-]
-
-await storeProductCategory.fetchCategoryStore()
-
-watchEffect(() => {
-  if (tab.value === 2) storeProductMostOrder.fetchProductStore()
-  if (tab.value === 3) storeProductSale.fetchProductStore()
-})
+const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProductSale, storeProductCategory)
 
 </script>
 

@@ -9,14 +9,14 @@ import {
 } from '@/utils/global'
 import { useOrderDetail } from "@/composables/order/useOrderDetail";
 import { ORDER_STATUS } from "@/shared/constants/order-status"
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore';
 import { useLocation } from "@/composables/product/useLocation"
 
 const { getDetailOrder, fetchOrderDetail } = useOrderDetail();
 const storeHistory = useOrderHistoryStore();
 const storeOrderStatus = useOrderStatusStore();
-const storeSetting = useSettingStore();
+const storeSetting = useBaseInformationStore();
 const { 
   fetchProvinceDetail, 
   fetchDistrictDetail, 
@@ -182,15 +182,15 @@ const totalDiscountVoucher = computed(() => {
       </div>
     </div>
     <div class="card-sm bg-white mt-sm flex gap-sm justify-between">
-      <img class="avatar-src" :src="storeSetting.getSettings?.logoUrl" :alt="storeSetting.getSettings?.name" loading="lazy" /> 
+      <img class="avatar-src" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" loading="lazy" /> 
       <div class="flex flex-1 justify-between">
         <div>
           <div class="weight-medium text-color-black">
             Nhan vien giao hang
           </div>
-          <span class="text-color-gray5 text-size-xs">{{ storeSetting.getSettings?.name }}</span>
+          <span class="text-color-gray5 text-size-xs">{{ storeSetting.getBaseInformation?.name }}</span>
         </div>
-        <a :href="`tel:${Number(storeSetting.getSettings?.phone.replace(/\s+/g, ''))}`">
+        <a :href="`tel:${Number(storeSetting.getBaseInformation?.phone.replace(/\s+/g, ''))}`">
           <Button icon="phone" />
         </a>
       </div>

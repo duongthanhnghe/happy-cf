@@ -1,33 +1,46 @@
 import { watch, reactive } from "vue"
 import { defineStore } from "pinia"
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
-import { settingAPI } from "@/services/v1/admin/setting.service";
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
+import { baseInformationAPI } from "@/services/v1/shared/base-information.service"
 import { Loading} from '@/utils/global'
 import { showSuccess, showWarning } from "@/utils/toast";
 import { useLocationStore } from '@/stores/shared/useLocationStore';
+import type { UpdateBaseInformationBody } from "@/server/types/dto/v1/base-information.dto";
 
-export const useSettingUpdateStore = defineStore("SettingUpdateStore", () => {
-  const storeSetting = useSettingStore();
+export const useBaseInformationUpdateStore = defineStore("BaseInformationUpdateStore", () => {
+  const storeSetting = useBaseInformationStore();
   const storeLocation = useLocationStore();
 
-  const formItem = reactive<any>({});
+  const formItem = reactive<UpdateBaseInformationBody>({
+    name: "",
+    logoUrl: "",
+    phone: "",
+    email: "",
+    address: "",
+    openingHours: "",
+    socialLinks: [],
+    description: "",
+    provinceCode: 0,
+    districtCode: 0,
+    wardCode: 0,
+  });
 
   const handleInitStore = () => {
-    if (!storeSetting.getSettings) return false;
-    Object.assign(formItem, storeSetting.getSettings);
+    if (!storeSetting.getBaseInformation) return false;
+    Object.assign(formItem, storeSetting.getBaseInformation);
 
     storeLocation.selectedProvince = formItem.provinceCode ?? null;
     storeLocation.selectedDistrict = formItem.districtCode ?? null;
     storeLocation.selectedWard = formItem.wardCode ?? null;
   }
 
-  const updateSetting = async () => {
+  const update = async () => {
     Loading(true);
     try {
-      const data = await settingAPI.updateSettings(formItem)
+      const data = await baseInformationAPI.updateBaseInformation(formItem)
       if(data.code == 0){
         showSuccess(data.message ?? '')
-        localStorage.setItem("SettingStore", JSON.stringify(data.data))
+        localStorage.setItem("BaseInformationStore", JSON.stringify(data.data))
       } else {
         showWarning(data.message ?? '')
       }
@@ -38,7 +51,7 @@ export const useSettingUpdateStore = defineStore("SettingUpdateStore", () => {
     }
   }
 
-  watch(() => storeSetting.getSettings, (newValue) => {
+  watch(() => storeSetting.getBaseInformation, (newValue) => {
     if (newValue) {
       handleInitStore();
     }
@@ -74,7 +87,6 @@ export const useSettingUpdateStore = defineStore("SettingUpdateStore", () => {
 
   return {
     formItem,
-    handleInitStore,
-    updateSetting,
+    update,
   }
 })

@@ -6,10 +6,10 @@ import {
 import {
   useOrderHistoryStore
 } from '@/stores/client/order/useOrderHistoryStore'
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 import { ORDER_STATUS } from '@/shared/constants/order-status';
 
-const storeSetting = useSettingStore();
+const storeSetting = useBaseInformationStore();
 const store = useOrderHistoryStore();
 const props = defineProps({
   item: {
@@ -36,7 +36,7 @@ const handleDetailPopup = (id:string) => {
     </div>
     <div class="order-template-content flex gap-sm align-center mt-sm mb-sm">
       <div>
-        <img v-if="storeSetting.getSettings?.logoUrl" class="avatar-src" :src="storeSetting.getSettings?.logoUrl" :alt="storeSetting.getSettings?.name" />
+        <img v-if="storeSetting.getBaseInformation?.logoUrl" class="avatar-src" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" />
       </div>
       <div class="text-color-gray5">
         <div class="mb-xs">

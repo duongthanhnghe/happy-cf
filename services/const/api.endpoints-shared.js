@@ -13,5 +13,9 @@ export const API_ENDPOINTS_SHARED = {
     DISTRICT_DETAIL: (districtId) => `/location/district/${districtId}`,
     WARDS: (districtId) => `/location/wards/${districtId}`,
     WARD_DETAIL: (wardId,districtId) => `/location/ward/${wardId}?districtId=${districtId}`,
-  }
+  },
+  BASE_INFORMATION: {
+    GET: '/base-information',
+    UPDATE: '/base-information',
+  },
 }

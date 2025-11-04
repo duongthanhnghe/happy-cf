@@ -7,7 +7,7 @@ import { useProductDetailStore } from "@/stores/client/product/useProductDetailS
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 
 // Import composables
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
@@ -32,7 +32,7 @@ export const useCartStore = defineStore("Cart", () => {
   const storeAddress = useAddressesManageStore();
   const storeAccount = useAccountStore();
   const storeLocation = useLocationStore();
-  const storeSetting = useSettingStore();
+  const storeSetting = useBaseInformationStore();
   
   const { fetchAvailableVouchers, allVouchers } = useAvailableVouchersForOrder();
   const eventBus = useEventBus();

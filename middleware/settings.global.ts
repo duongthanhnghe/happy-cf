@@ -1,10 +1,10 @@
 // middleware/settings.global.ts
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore'
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore'
 
 export default defineNuxtRouteMiddleware(async () => {
-  const storeSetting = useSettingStore()
+  const storeSetting = useBaseInformationStore()
 
   if (!storeSetting.detailData) {
-    await storeSetting.fetchSetting(true)
+    await storeSetting.fetchBaseInformation(true)
   }
 })

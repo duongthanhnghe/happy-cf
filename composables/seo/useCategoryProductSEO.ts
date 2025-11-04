@@ -1,8 +1,8 @@
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore'
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore'
 
 export const useCategoryProductSEO = () => {
   const configRuntime = useRuntimeConfig()
-  const settingStore = useSettingStore()
+  const settingStore = useBaseInformationStore()
 
   const setCategoryProductSEO = (category: any, routePath: string) => {
     if (!category) return
@@ -31,7 +31,7 @@ export const useCategoryProductSEO = () => {
         { property: 'og:description', content: category.descriptionSEO || category.description || '' },
         { property: 'og:image', content: category.image || '' },
         { property: 'og:url', content: canonicalUrl },
-        { property: 'og:site_name', content: settingStore.getSettings?.name || '' },
+        { property: 'og:site_name', content: settingStore.getBaseInformation?.name || '' },
         
         // Twitter Card
         { name: 'twitter:card', content: 'summary_large_image' },

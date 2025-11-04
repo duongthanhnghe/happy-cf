@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { watch, onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import type { SubmitEventPromise } from 'vuetify'
-import { useSettingUpdateStore } from '@/stores/admin/setting/useSettingUpdateStore';
+import { useBaseInformationUpdateStore } from '@/stores/admin/setting/useBaseInformationUpdateStore';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { showWarning } from '@/utils/toast';
 import { ROUTES } from '@/shared/constants/routes';
@@ -14,7 +14,7 @@ definePageMeta({
   middleware: ROUTES.ADMIN.SETTINGS.middleware,
 })
 
-const storeSettingUpdate = useSettingUpdateStore();
+const storeSettingUpdate = useBaseInformationUpdateStore();
 const storeLocation = useLocationStore();
 const storeDisplay = useDisplayStore()
 
@@ -27,7 +27,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
     showWarning('Vui long dien day du thong tin')
     return
   }
-  await storeSettingUpdate.updateSetting()
+  await storeSettingUpdate.update()
 }
 
 useLocationWatchers(storeLocation);

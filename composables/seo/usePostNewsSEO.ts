@@ -1,8 +1,8 @@
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore'
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore'
 
 export const usePostNewsSEO = () => {
   const configRuntime = useRuntimeConfig()
-  const settingStore = useSettingStore()
+  const settingStore = useBaseInformationStore()
 
   const setNewsSEO = (post: any, routePath: string) => {
     if (!post) return
@@ -31,7 +31,7 @@ export const usePostNewsSEO = () => {
         { property: 'og:description', content: post.descriptionSEO || post.summaryContent || '' },
         { property: 'og:image', content: post.image || '' },
         { property: 'og:url', content: canonicalUrl },
-        { property: 'og:site_name', content: settingStore.getSettings?.name || '' },
+        { property: 'og:site_name', content: settingStore.getBaseInformation?.name || '' },
         { property: 'article:published_time', content: post.createdAt },
         { property: 'article:modified_time', content: post.updatedAt || post.createdAt },
         
@@ -70,10 +70,10 @@ export const usePostNewsSEO = () => {
             },
             "publisher": {
               "@type": "Organization",
-              "name": settingStore.getSettings?.name || '',
+              "name": settingStore.getBaseInformation?.name || '',
               "logo": {
                 "@type": "ImageObject",
-                "url": settingStore.getSettings?.logo || ''
+                "url": settingStore.getBaseInformation?.logo || ''
               }
             },
             "datePublished": post.createdAt,

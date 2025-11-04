@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import '@/styles/molecules/layout/footer.scss';
 import { IMAGE_FOOTER } from '@/const/image'
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 
-const storeSetting = useSettingStore();
+const storeSetting = useBaseInformationStore();
 const listLink = [
   {
     name: 'Dieu khoan',
@@ -32,9 +32,9 @@ const listLink = [
   <div class="footer" :style="`background-image: url('${IMAGE_FOOTER}')`">
     <div class="container">
     <div class="footer-content">
-      <img v-if="storeSetting.getSettings?.logoUrl" class="footer-logo" :src="storeSetting.getSettings?.logoUrl" :alt="storeSetting.getSettings?.name" loading="lazy" />
+      <img v-if="storeSetting.getBaseInformation?.logoUrl" class="footer-logo" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" loading="lazy" />
       <div class="flex gap-sm">
-        <template v-for="item in storeSetting.getSettings?.socialLinks" :key="item.icon">
+        <template v-for="item in storeSetting.getBaseInformation?.socialLinks" :key="item.icon">
           <a :href="item.src" target="_blank">
             <Button color="secondary" :border="false">
               <component :is="storeSetting.iconMap[item.icon]" />
@@ -50,7 +50,7 @@ const listLink = [
         </template>
       </div>
       <div class="text-color-gray5">
-        {{ storeSetting.getSettings?.description }}
+        {{ storeSetting.getBaseInformation?.description }}
       </div>
     </div>
     </div>

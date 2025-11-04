@@ -5,10 +5,10 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useSearchStore } from '@/stores/client/product/useSearchStore'
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 import { ROUTES } from '@/shared/constants/routes';
 
-const storeSetting = useSettingStore();
+const storeSetting = useBaseInformationStore();
 const storeCart = useCartStore()
 const storeAccount = useAccountStore()
 const storeSearch = useSearchStore()
@@ -42,7 +42,7 @@ onMounted(async () => {
         <div class="header-left">
           <template v-if="props.typeLeft === 'logo'">
             <NuxtLink :to="{ path: ROUTES.PUBLIC.HOME.path }">
-              <img v-if="storeSetting.getSettings?.logoUrl" class="header-logo" :src="storeSetting.getSettings?.logoUrl" :alt="storeSetting.getSettings?.name" />
+              <img v-if="storeSetting.getBaseInformation?.logoUrl" class="header-logo" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" />
             </NuxtLink>
           </template>
 
@@ -59,7 +59,7 @@ onMounted(async () => {
             </div>
           </template>
           <template v-else>
-            {{ storeSetting.getSettings?.name }}
+            {{ storeSetting.getBaseInformation?.name }}
             <div>
               Xin chào {{ storeAccount.getDetailValue?.fullname || 'Quý khách' }}!
             </div>

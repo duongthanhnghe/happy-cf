@@ -27,8 +27,8 @@ export const useCartShipping = (
         PRODUCT_WEIGHT: productWeight,
         PRODUCT_PRICE: totalPriceDiscount.value,
         MONEY_COLLECTION: totalPriceDiscount.value,
-        SENDER_PROVINCE: storeSetting.getSettings?.provinceCode || 1,
-        SENDER_DISTRICT: storeSetting.getSettings?.districtCode || 12,
+        SENDER_PROVINCE: storeSetting.getBaseInformation?.provinceCode || 1,
+        SENDER_DISTRICT: storeSetting.getBaseInformation?.districtCode || 12,
         RECEIVER_PROVINCE: storeLocation.selectedProvince || 1,
         RECEIVER_DISTRICT: storeLocation.selectedDistrict || 1,
       });

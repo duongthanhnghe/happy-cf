@@ -18,7 +18,7 @@ import type { CreateOrderBody, cartItems } from '@/server/types/dto/v1/order.dto
 import { Base64 } from "js-base64";
 import { ROUTES } from '@/shared/constants/routes';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
-import { useSettingStore } from '@/stores/shared/setting/useSettingStore';
+import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
 import { vouchersAPI } from "@/services/v1/voucher.service";
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
@@ -31,7 +31,7 @@ export const useCartStore = defineStore("Cart", () => {
   const storeAddress = useAddressesManageStore();
   const storeAccount = useAccountStore();
   const storeLocation = useLocationStore();
-  const storeSetting = useSettingStore();
+  const storeSetting = useBaseInformationStore();
   const { fetchAvailableVouchers, allVouchers } = useAvailableVouchersForOrder();
   const eventBus = useEventBus();
   const { fetchCartProducts, getCartProducts } = useProductCartDetail()
@@ -628,8 +628,8 @@ export const useCartStore = defineStore("Cart", () => {
         PRODUCT_WEIGHT: productWeight,
         PRODUCT_PRICE: totalPriceDiscount.value,
         MONEY_COLLECTION: totalPriceDiscount.value,
-        SENDER_PROVINCE: storeSetting.getSettings?.provinceCode || 1,
-        SENDER_DISTRICT: storeSetting.getSettings?.districtCode || 12,
+        SENDER_PROVINCE: storeSetting.getBaseInformation?.provinceCode || 1,
+        SENDER_DISTRICT: storeSetting.getBaseInformation?.districtCode || 12,
         RECEIVER_PROVINCE: storeLocation.selectedProvince || 1,
         RECEIVER_DISTRICT: storeLocation.selectedDistrict || 1,
       })
