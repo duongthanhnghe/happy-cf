@@ -7,6 +7,7 @@ import { showWarning } from '@/utils/toast';
 import { ROUTES } from '@/shared/constants/routes';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { nullRules, emailRules } from '@/utils/validation';
+import { useLocationWatchers } from '@/composables/shared/location/useLocationWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.SETTINGS.layout,
@@ -29,29 +30,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
   await storeSettingUpdate.updateSetting()
 }
 
-watch(() => storeLocation.selectedProvince, async (newVal) => {
-  if (storeLocation.isSetting) return
-  
-  if (newVal) {
-    await storeLocation.fetchDistrictsStore(newVal)
-    storeLocation.selectedDistrict = null
-    storeLocation.selectedWard = null
-  } else {
-    storeLocation.districts = []
-    storeLocation.wards = []
-  }
-})
-
-watch(() => storeLocation.selectedDistrict, async (newVal) => {
-  if (storeLocation.isSetting) return
-  
-  if (newVal) {
-    await storeLocation.fetchWardsStore(newVal)
-    storeLocation.selectedWard = null
-  } else {
-    storeLocation.wards = []
-  }
-})
+useLocationWatchers(storeLocation);
 
 onMounted(async () => {
   await storeLocation.fetchProvincesStore()

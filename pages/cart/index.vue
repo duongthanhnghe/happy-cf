@@ -14,6 +14,7 @@ import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 import { useEventBus } from "@/composables/voucher/useEventBus";
 import { useCartVoucherHandlers } from '@/composables/cart/useCartVoucherHandlers';
+import { useLocationWatchers } from '@/composables/shared/location/useLocationWatchers';
 import { useCartLocationWatchers } from '@/composables/cart/useCartLocationWatchers';
 
 definePageMeta({
@@ -49,6 +50,7 @@ const { removeVoucher, handleVoucherReset, handleApplyVoucherInput } = useCartVo
 );
 
 // Location watchers
+useLocationWatchers(storeLocation);
 useCartLocationWatchers(storeLocation, store);
 
 // Voucher selection watcher

@@ -15,17 +15,17 @@ import {
   GLOBAL_TEXT_MALE,
   GLOBAL_TEXT_FEMALE
 } from '@/const/text'
-import PopupChangePassword from './PopupChangePassword.vue';
 import { IMAGE_EMPTY_DEFAULT } from '@/const/image'
 import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
+import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 const storeAccountEdit = useAccountEditStore()
 const accountStore = useAccountStore()
 const storeFileManage = useFileManageFolderStore();
-const folderName = FOLDER_UPLOAD.MEMBER
+let folderName = FOLDER_UPLOAD.MEMBER
 
 const handleSubmitUpdate = async (event: SubmitEventPromise) => {
   const result = await event;
@@ -38,9 +38,8 @@ watch(() => storeFileManage.getSelectImage, (newValue) => {
   storeAccountEdit.formUserItem.avatar = newValue.url
 }, { immediate: true })
 
-watch(() => storeFileManage.isTogglePopup, (newValue) => {
-  if(newValue && !storeFileManage.getItems) storeFileManage.getApiList(`${folderName}${accountStore.getDetailValue?.id}`)
-}, { immediate: true })
+folderName = `${FOLDER_UPLOAD.MEMBER}${accountStore.getDetailValue?.id}`;
+useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
