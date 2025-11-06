@@ -64,6 +64,7 @@ export const useAccountStore = defineStore("AccountStore", () => {
     } catch (err: any) {
       showWarning(err.message);
       console.error('Error submitting form:', err)
+      Loading(false);
     }
   }
 
@@ -92,6 +93,7 @@ export const useAccountStore = defineStore("AccountStore", () => {
       Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+      Loading(false);
     }
   }
 
@@ -132,6 +134,7 @@ export const useAccountStore = defineStore("AccountStore", () => {
       }
       Loading(false);
     } catch (err) {
+      Loading(false);
       console.error('Error submitting form:', err)
     }
   }
@@ -149,6 +152,7 @@ export const useAccountStore = defineStore("AccountStore", () => {
       }
       Loading(false);
     } catch (err) {
+      Loading(false);
       console.error("Logout error:", err);
     }
   }
