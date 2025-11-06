@@ -2,7 +2,7 @@ export const API_ENDPOINTS_ADMIN = {
   SETTINGS: {
     UPDATE: '/settings/update',
   },
-  ADMIN_AUTH: {
+  ACCOUNT: {
     VERIFY_TOKEN: '/account/verify-token',
     LOGIN: '/account/login',
     RESET_PASSWORD: '/account/reset-password',
@@ -10,6 +10,10 @@ export const API_ENDPOINTS_ADMIN = {
     UPDATE: '/account/update',
     CHANGE_PASSWORD: '/account/change-password',
     LOGOUT: '/account/logout',
+    ACCOUNT_LIST: "/account/list",
+    DELETE: (id) => `/account/${id}`,
+    TOGGLE_ACTIVE: (id) => `/account/toggleActive/${id}`,
+    CREATE: '/account/create',
   },
   ABOUT: {
     LIST: '/about',

@@ -16,10 +16,10 @@ import paymentTransactionRoutes from './paymentTransactionRoutes.js';
 import productReviewRouter from './productReviewRouter.js';
 import voucherRouter from './voucherRouter.js';
 import voucherUsageRouter from './voucherUsageRouter.js';
-import adminAuthRouter from './adminAuthRouter.js';
+import accountRouter from './accountRouter.js';
 // import locationRoutes from './locationRouter.js'
 const router = Router();
-router.use('/account', adminAuthRouter);
+router.use('/account', accountRouter);
 router.use('/settings', settingRoutes);
 // router.use('/fileManage', fileManageRoutes)
 // router.use('/auth', authRoutes)

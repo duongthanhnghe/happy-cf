@@ -12,7 +12,8 @@ type HydrationStrategies = {
 }
 type LazyComponent<T> = (T & DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }>)
 interface _GlobalComponents {
-      'CreateBanner': typeof import("../components/admin/banners/CreateBanner.vue")['default']
+      'PopupAccountCreate': typeof import("../components/admin/account/PopupAccountCreate.vue")['default']
+    'CreateBanner': typeof import("../components/admin/banners/CreateBanner.vue")['default']
     'UpdateBanner': typeof import("../components/admin/banners/UpdateBanner.vue")['default']
     'HeaderAdmin': typeof import("../components/admin/layout/HeaderAdmin.vue")['default']
     'Sidebar': typeof import("../components/admin/layout/Sidebar.vue")['default']
@@ -125,7 +126,8 @@ interface _GlobalComponents {
     'Body': typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
     'NuxtIsland': typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
     'NuxtRouteAnnouncer': typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
-      'LazyCreateBanner': LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
+      'LazyPopupAccountCreate': LazyComponent<typeof import("../components/admin/account/PopupAccountCreate.vue")['default']>
+    'LazyCreateBanner': LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
     'LazyUpdateBanner': LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
     'LazyHeaderAdmin': LazyComponent<typeof import("../components/admin/layout/HeaderAdmin.vue")['default']>
     'LazySidebar': LazyComponent<typeof import("../components/admin/layout/Sidebar.vue")['default']>
@@ -244,6 +246,7 @@ declare module 'vue' {
   export interface GlobalComponents extends _GlobalComponents { }
 }
 
+export const PopupAccountCreate: typeof import("../components/admin/account/PopupAccountCreate.vue")['default']
 export const CreateBanner: typeof import("../components/admin/banners/CreateBanner.vue")['default']
 export const UpdateBanner: typeof import("../components/admin/banners/UpdateBanner.vue")['default']
 export const HeaderAdmin: typeof import("../components/admin/layout/HeaderAdmin.vue")['default']
@@ -357,6 +360,7 @@ export const Html: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
 export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
 export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
+export const LazyPopupAccountCreate: LazyComponent<typeof import("../components/admin/account/PopupAccountCreate.vue")['default']>
 export const LazyCreateBanner: LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
 export const LazyUpdateBanner: LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
 export const LazyHeaderAdmin: LazyComponent<typeof import("../components/admin/layout/HeaderAdmin.vue")['default']>

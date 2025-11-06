@@ -58,7 +58,7 @@ onBeforeUnmount(() => {
 </script>
 <template>
 
-<HeaderAdmin />
+<HeaderAdmin label="Cai dat thong tin" />
 
 <v-container>
   <v-form v-if="storeSettingUpdate.formItem.name" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">

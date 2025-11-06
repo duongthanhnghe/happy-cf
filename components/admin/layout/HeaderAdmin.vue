@@ -3,11 +3,10 @@
 import '@/styles/organisms/layout/header-admin.scss'
 import { IMAGE_AVATAR_DEFAULT } from '@/const/image';
 import { ROUTES } from '@/shared/constants/routes';
-import { useAdminAuthStore } from '@/stores/admin/admin-auth/useAdminAuthStore';
+import { useAccountStore } from '@/stores/admin/account/useAccountStore';
 import type { MenuItem } from 'server/types/common/menu-item';
 
-const storeAdminAuth = useAdminAuthStore()
-const listMenu = ROUTES.ADMIN;
+const storeAccount = useAccountStore()
 const props = defineProps({
   headerClass: {
     type: String,
@@ -16,6 +15,7 @@ const props = defineProps({
     type: String,
   },
 })
+const listMenu = ROUTES.ADMIN
 
 </script>
 
@@ -30,13 +30,13 @@ const props = defineProps({
       <v-menu transition="slide-x-transition">
         <template v-slot:activator="{ props }">
           <div class="header-admin-right-avatar" v-bind="props">
-            <img :src="storeAdminAuth.getDetailAccount?.avatar || IMAGE_AVATAR_DEFAULT" width="44" alt="avatar" />
+            <img :src="storeAccount.getDetailAccount?.avatar || IMAGE_AVATAR_DEFAULT" width="44" alt="avatar" />
           </div>
         </template>
         <template v-if="listMenu">
           <v-list class="mt-sm">
             <v-list-item 
-              v-for="(item, index) in Object.values(listMenu).filter((item: MenuItem) => item.isShowMenuAccount)"
+              v-for="(item, index) in Object.values(listMenu).filter((item: MenuItem) => item.isShowMenuAccount && item.roles?.includes(storeAccount.getDetailAccount?.role))" 
               :key="index"
               :value="item.path"
               class="header-admin-right-list">
@@ -49,7 +49,7 @@ const props = defineProps({
             </v-list-item>
             <v-list-item class="bg-gray2">
               <v-list-item-title >
-                <div class="flex align-center gap-sm weight-medium cursor-pointer" @click="storeAdminAuth.handleLogout()">
+                <div class="flex align-center gap-sm weight-medium cursor-pointer" @click="storeAccount.handleLogout()">
                   <MaterialIcon name="logout" />
                   Dang xuat
                 </div>

@@ -1,3 +1,4 @@
+import type { AccountRoleType } from "@/server/types/dto/v1/account.dto";
 export interface MenuItem {
   path?: string;
   name?: string;
@@ -9,5 +10,6 @@ export interface MenuItem {
   children?: Record<string, MenuItem>;
   isShowSidebar?: boolean;
   isShowMenuAccount?: boolean;
+  roles?: AccountRoleType[];
   action?: () => void;
 }

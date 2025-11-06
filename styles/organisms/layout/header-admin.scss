@@ -22,12 +22,13 @@
     gap: 0.5rem;
   }
   &-right {
-    gap: 1rem;
+    gap: $space-sm;
     justify-content: end;
     &-avatar img {
       border-radius: 50%;
       width: $space-xl;
       object-fit: cover;
+      border: 1px solid $cl-gray;
     }
     &-list {
       min-width: 200px;

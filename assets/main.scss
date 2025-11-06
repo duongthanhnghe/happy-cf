@@ -526,6 +526,9 @@ a.button, button.button {
   &-xxl {
     border-radius: $rd-xxl;
   }
+  &-full {
+    border-radius: 50%;
+  }
 }
 
 .text {

@@ -1,4 +1,4 @@
-export function toAdminAccountDTO(entity) {
+export function toAccountDTO(entity) {
     var _a, _b, _c;
     return {
         id: entity._id.toString(),
@@ -12,7 +12,7 @@ export function toAdminAccountDTO(entity) {
         updatedAt: (_c = entity.updatedAt) === null || _c === void 0 ? void 0 : _c.toISOString(),
     };
 }
-export const toAdminAccountListDTO = (admins) => {
-    return admins.map(toAdminAccountDTO);
+export const toAccountListDTO = (admins) => {
+    return admins.map(toAccountDTO);
 };
 //# sourceMappingURL=adminAuthMapper.js.map

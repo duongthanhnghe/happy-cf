@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
-import { AdminAccountModel } from "../models/v1/AdminAccountEntity.js";
+import { AccountModel } from "../models/v1/AccountEntity.js";
 export const authenticateAdmin = async (req, res, next) => {
     var _a;
     const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.admin_token;
     if (!token)
-        return res.status(401).json({ code: 1, message: 'Thiếu token' });
+        return res.status(401).json({ code: 1, message: 'Thiếu token 123?' });
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || '');
-        const admin = await AdminAccountModel.findById(decoded.id);
+        const admin = await AccountModel.findById(decoded.id);
         if (!admin) {
             return res.status(401).json({ code: 2, message: "Tài khoản admin không tồn tại hoặc đã bị xóa" });
         }

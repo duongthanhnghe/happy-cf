@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { AccountModel } from "../../../models/v1/AdminAccountEntity.js";
+import { AccountModel } from "../../../models/v1/AccountEntity.js";
 import { toAccountDTO, toAccountListDTO } from "../../../mappers/v1/adminAuthMapper.js";
-export const verifyAdminToken = async (req, res) => {
+export const verifyToken = async (req, res) => {
     var _a;
     const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.admin_token;
     if (!token)
@@ -28,7 +28,7 @@ export const verifyAdminToken = async (req, res) => {
         return res.status(401).json({ code: 3, message: "Token không hợp lệ hoặc đã hết hạn" });
     }
 };
-export const adminLogin = async (req, res) => {
+export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const admin = await AccountModel.findOne({ email });
@@ -65,7 +65,7 @@ export const adminLogin = async (req, res) => {
         return res.status(500).json({ code: 500, message: "Lỗi hệ thống", error: err.message });
     }
 };
-export const resetAdminPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
     try {
         const { email, newPassword } = req.body;
         if (!email || !newPassword) {
@@ -222,7 +222,7 @@ export const getAccountList = async (req, res) => {
         });
     }
     catch (error) {
-        console.error("getAllAdminAccounts error:", error);
+        console.error("get all account error:", error);
         return res.status(500).json({
             code: 500,
             message: "Internal server error",
@@ -271,7 +271,7 @@ export const createAccount = async (req, res) => {
             });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newAdmin = await AccountModel.create({
+        const newAccount = await AccountModel.create({
             fullname,
             email,
             password: hashedPassword,
@@ -283,7 +283,7 @@ export const createAccount = async (req, res) => {
         return res.status(201).json({
             code: 0,
             message: "Tạo tài khoản thành công",
-            data: toAccountDTO(newAdmin),
+            data: toAccountDTO(newAccount),
         });
     }
     catch (err) {
@@ -295,4 +295,4 @@ export const createAccount = async (req, res) => {
         });
     }
 };
-//# sourceMappingURL=adminAuthController.js.map
+//# sourceMappingURL=accountController.js.map

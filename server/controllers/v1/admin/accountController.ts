@@ -1,19 +1,19 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
-import { AdminAccountModel } from "../../../models/v1/AdminAccountEntity";
-import { toAdminAccountDTO } from "../../../mappers/v1/adminAuthMapper"
-import type { AdminJwtPayload } from "@/server/types/dto/v1/admin-auth.dto";
+import { AccountModel } from "../../../models/v1/AccountEntity";
+import { toAccountDTO, toAccountListDTO } from "../../../mappers/v1/adminAuthMapper"
+import type { AccountJwtPayload } from "@/server/types/dto/v1/account.dto";
 
-export const verifyAdminToken = async (req: Request, res: Response) => {
+export const verifyToken = async (req: Request, res: Response) => {
   const token = req.cookies?.admin_token;
 
   if (!token)
     return res.status(401).json({ code: 1, message: "Thiếu token đăng nhập" });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "") as AdminJwtPayload;
-    const admin = await AdminAccountModel.findById(decoded.id);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "") as AccountJwtPayload;
+    const admin = await AccountModel.findById(decoded.id);
 
     if (!admin || !admin.active) {
       return res.status(403).json({ code: 2, message: "Tài khoản không hợp lệ" });
@@ -34,10 +34,10 @@ export const verifyAdminToken = async (req: Request, res: Response) => {
   }
 };
 
-export const adminLogin = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const admin = await AdminAccountModel.findOne({ email });
+    const admin = await AccountModel.findOne({ email });
     if (!admin) {
       return res.status(400).json({ code: 1, message: "Tài khoản không tồn tại" });
     }
@@ -72,7 +72,7 @@ export const adminLogin = async (req: Request, res: Response) => {
       message: "Đăng nhập thành công",
       data: {
         token,
-        admin: toAdminAccountDTO(admin)
+        admin: toAccountDTO(admin)
       },
     });
   } catch (err: any) {
@@ -81,7 +81,7 @@ export const adminLogin = async (req: Request, res: Response) => {
   }
 };
 
-export const resetAdminPassword = async (req: Request, res: Response) => {
+export const resetPassword = async (req: Request, res: Response) => {
   try {
     const { email, newPassword } = req.body;
 
@@ -89,7 +89,7 @@ export const resetAdminPassword = async (req: Request, res: Response) => {
       return res.status(400).json({ code: 1, message: "Thiếu email hoặc mật khẩu mới" });
     }
 
-    const admin = await AdminAccountModel.findOne({ email });
+    const admin = await AccountModel.findOne({ email });
     if (!admin) {
       return res.status(404).json({ code: 2, message: "Không tìm thấy tài khoản admin" });
     }
@@ -100,7 +100,7 @@ export const resetAdminPassword = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       code: 0,
-      message: "Đặt lại mật khẩu thành công",
+      message: "Đặt lại mật khẩu thành công, mật khẩu mới là: " + newPassword,
       data: {
         email: admin.email,
         fullname: admin.fullname,
@@ -125,7 +125,7 @@ export const getAccount = async (req: any, res: Response) => {
       return res.status(400).json({ code: 1, message: "Thiếu ID admin" });
     }
 
-    const admin = await AdminAccountModel.findById(adminId).select("-password");
+    const admin = await AccountModel.findById(adminId).select("-password");
     if (!admin) {
       return res.status(404).json({ code: 2, message: "Không tìm thấy tài khoản admin" });
     }
@@ -133,7 +133,7 @@ export const getAccount = async (req: any, res: Response) => {
     return res.status(200).json({
       code: 0,
       message: "Lấy thông tin admin thành công",
-      data: toAdminAccountDTO(admin)
+      data: toAccountDTO(admin)
     });
   } catch (err: any) {
     console.error("Get admin info error:", err);
@@ -153,7 +153,7 @@ export const updateAccount = async (req: any, res: Response) => {
       avatar: req.body.avatar,
     };
 
-    const updated = await AdminAccountModel.findByIdAndUpdate(adminId, fields, { new: true }).select("-password");
+    const updated = await AccountModel.findByIdAndUpdate(adminId, fields, { new: true }).select("-password");
 
     if (!updated) {
       return res.status(404).json({ code: 2, message: "Không tìm thấy tài khoản admin" });
@@ -162,7 +162,7 @@ export const updateAccount = async (req: any, res: Response) => {
     return res.status(200).json({
       code: 0,
       message: "Cập nhật thông tin thành công",
-      data: toAdminAccountDTO(updated)
+      data: toAccountDTO(updated)
     });
   } catch (err: any) {
     console.error("Update admin error:", err);
@@ -179,7 +179,7 @@ export const changePassword = async (req: any, res: Response) => {
       return res.status(400).json({ code: 1, message: "Thiếu mật khẩu cũ hoặc mới" });
     }
 
-    const admin = await AdminAccountModel.findById(adminId);
+    const admin = await AccountModel.findById(adminId);
     if (!admin) {
       return res.status(404).json({ code: 2, message: "Không tìm thấy tài khoản admin" });
     }
@@ -198,6 +198,142 @@ export const changePassword = async (req: any, res: Response) => {
     });
   } catch (err: any) {
     console.error("Change admin password error:", err);
+    return res.status(500).json({
+      code: 500,
+      message: "Lỗi hệ thống",
+      error: err.message,
+    });
+  }
+};
+
+export const getAccountList = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const search = (req.query.search as string)?.trim() || "";
+
+    const filter: any = {};
+
+    if (search) {
+      filter.$or = [
+        { fullname: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (limit === -1) {
+      const admins = await AccountModel.find(filter)
+        .sort({ createdAt: -1 })
+        .select("-password");
+
+      return res.status(200).json({
+        code: 0,
+        data: toAccountListDTO(admins),
+        pagination: {
+          total: admins.length,
+          totalPages: 1,
+          page: 1,
+          limit: admins.length,
+        },
+      });
+    }
+
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 },
+      select: "-password",
+    };
+
+    const result = await (AccountModel as any).paginate(filter, options);
+
+    return res.status(200).json({
+      code: 0,
+      data: toAccountListDTO(result.docs),
+      pagination: {
+        total: result.totalDocs,
+        totalPages: result.totalPages,
+        page: result.page,
+        limit: result.limit,
+      },
+    });
+  } catch (error: any) {
+    console.error("get all account error:", error);
+
+    return res.status(500).json({
+      code: 500,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const toggleActive = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+
+    const item = await AccountModel.findById(id)
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "Account không tồn tại" })
+    }
+
+    item.active = !item.active
+    await item.save()
+
+    return res.json({
+      code: 0,
+      message: "Cập nhật trạng thái thành công",
+      data: toAccountDTO(item)
+    })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const deleteAccount = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  await AccountModel.findByIdAndDelete(id);
+  res.json({ code: 0, message: "Delete success" });
+};
+
+export const createAccount = async (req: Request, res: Response) => {
+  try {
+    const { fullname, email, password, role } = req.body;
+
+    if (!fullname || !email || !password || !role) {
+      return res.status(400).json({
+        code: 1,
+        message: "Thiếu thông tin bắt buộc",
+      });
+    }
+
+    const existing = await AccountModel.findOne({ email });
+    if (existing) {
+      return res.status(409).json({
+        code: 3,
+        message: "Email đã tồn tại",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newAccount = await AccountModel.create({
+      fullname,
+      email,
+      password: hashedPassword,
+      role,
+      active: true,
+      avatar: process.env.IMAGE_AVATAR_DEFAULT || "",
+      lastLogin: null,
+    });
+
+    return res.status(201).json({
+      code: 0,
+      message: "Tạo tài khoản thành công",
+      data: toAccountDTO(newAccount),
+    });
+  } catch (err: any) {
+    console.error("Create admin error:", err);
     return res.status(500).json({
       code: 500,
       message: "Lỗi hệ thống",

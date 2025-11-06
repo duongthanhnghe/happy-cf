@@ -1,40 +1,34 @@
 import { ref, reactive, computed } from "vue";
 import { defineStore } from "pinia";
-import { adminAuthAPI } from "@/services/v1/admin/adminAuth.service";
-import {
-  Loading
-} from '@/utils/global'
+import { accountAPI } from "@/services/v1/admin/account.service";
+import { Loading } from '@/utils/global'
 import { useRouter } from 'vue-router'
-import { useRoute } from 'vue-router'
 import { jwtDecode } from 'jwt-decode'
 import { showWarning, showSuccess } from "@/utils/toast";
 import type { MyJwtPayload } from '@/server/types/dto/v1/user.dto'
 import { ROUTES } from '@/shared/constants/routes';
 import { setCookie } from '@/utils/global'
-import type { AdminAccountDTO, AdminLoginDTO, AdminUpdateDTO, ChangePasswordDTO } from "@/server/types/dto/v1/admin-auth.dto";
+import type { AccountDTO, LoginDTO, AccountUpdateDTO, ChangePasswordDTO } from "@/server/types/dto/v1/account.dto";
 
-export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
+export const useAccountStore = defineStore("AccountStore", () => {
 
   const router = useRouter()
-  const route = useRoute()
   const token = useCookie<string | null>("admin_token", { sameSite: "lax" });
   const showPassword = ref<boolean>(false)
   const showPasswordConfirm = ref<boolean>(false)
   const oldPassword = ref<string>('')
   const newPassword = ref<string>('')
   const newPasswordConfirm = ref<string>('')
-  const detailData = ref<AdminAccountDTO|null>(null)
-  const userId = ref<string|null>(null)
-  const loading = ref(false)
+  const detailData = ref<AccountDTO|null>(null)
   const lastVerifiedAt = ref<number>(0)
   const verifyCacheDuration = 15 * 60 * 1000 // 15 phút
 
-  const formLogin = reactive<AdminLoginDTO>({
+  const formLogin = reactive<LoginDTO>({
     email: '',
     password: '',
   });
 
-  const formUpdate = reactive<AdminUpdateDTO>({
+  const formUpdate = reactive<AccountUpdateDTO>({
     id: '',
     avatar: '',
     fullname: '',
@@ -54,7 +48,7 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
         password: formLogin.password,
       }
     
-      const data = await adminAuthAPI.Login(dataLogin)
+      const data = await accountAPI.Login(dataLogin)
       if (data.code === 0 && data.data.token) {
         setCookie('admin_token', data.data.token, 7)
         handleResetLogin()
@@ -76,7 +70,7 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
   const handleGetDetailAccount = async (userId: string) => {
     if(!userId) return
     Loading(true);
-    const data = await adminAuthAPI.getAccount(userId)
+    const data = await accountAPI.getAccount(userId)
     if(data.code === 0){
       detailData.value = data.data;
       Object.assign(formUpdate, detailData.value);
@@ -88,7 +82,7 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
     try {
       Loading(true);
       const payload = {...formUpdate}
-      const data = await adminAuthAPI.updateAccount(payload)
+      const data = await accountAPI.updateAccount(payload)
       if(data.code === 0){
         showSuccess('Cap nhat thanh cong')
         detailData.value = data.data
@@ -115,7 +109,7 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
         newPassword: newPassword.value
       }
       
-      const data = await adminAuthAPI.changePassword(dataReset)
+      const data = await accountAPI.changePassword(dataReset)
       if(data.code === 1){
         showWarning('Token không hợp lệ hoặc đã hết hạn!');
       }
@@ -145,7 +139,7 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
   const handleLogout = async () => {
     try {
       Loading(true);
-      const res = await adminAuthAPI.Logout();
+      const res = await accountAPI.Logout();
 
       if (res.code === 0) {
         token.value = null;
@@ -169,10 +163,11 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
         return true
       }
 
-      const res = await adminAuthAPI.verifyToken()
+      const res = await accountAPI.verifyToken()
 
       if (res.code === 0 && res.data) {
         lastVerifiedAt.value = now
+        await handleGetDetailAccount(res.data.id);
         return true
       }
 
@@ -183,41 +178,6 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
       return false
     }
   }
-
-  const { refresh: refreshAccount } = useAsyncData(
-    'accountDetailAdmin',
-    async () => {
-      if (!token.value){
-        loading.value = false
-        return null;
-      } 
-
-      try {
-        const decoded = jwtDecode<MyJwtPayload>(token.value)
-
-        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-          handleLogout()
-          return null
-        }
-
-        userId.value = decoded.id
-        if (!userId.value) return null
-
-        handleGetDetailAccount(userId.value)
-
-        return detailData.value
-      } catch (err) {
-        console.error("Token decode error:", err)
-        return null
-      } finally {
-        loading.value = false
-      }
-    },
-    {
-      immediate: true,
-      watch: [token],
-    }
-  )
 
   const getDetailAccount = computed(() => detailData.value)
 
@@ -241,6 +201,6 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
     submitChangePassword,
     verifyToken,
     getDetailAccount,
-    refreshAccount,
+    // refreshAccount,
   };
 });

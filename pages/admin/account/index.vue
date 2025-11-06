@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import type { SubmitEventPromise } from 'vuetify'
 import { showWarning } from '@/utils/toast';
 import { ROUTES } from '@/shared/constants/routes';
 import { nullRules, createNewPasswordRules } from '@/utils/validation';
-import { useAdminAuthStore } from '@/stores/admin/admin-auth/useAdminAuthStore';
+import { useAccountStore } from '@/stores/admin/account/useAccountStore';
 
 definePageMeta({
   layout: ROUTES.ADMIN.BASE_INFORMATION.layout,
   middleware: ROUTES.ADMIN.BASE_INFORMATION.middleware,
 })
 
-const storeAdminAuth = useAdminAuthStore()
+const storeAccount = useAccountStore()
 const cardItemClass= 'card card-sm bg-white';
 const newPasswordRules = computed(() =>
-  createNewPasswordRules(storeAdminAuth.newPasswordConfirm)
+  createNewPasswordRules(storeAccount.newPasswordConfirm)
 )
 const confirmPasswordRules = computed(() =>
-  createNewPasswordRules(storeAdminAuth.newPassword)
+  createNewPasswordRules(storeAccount.newPassword)
 )
 
 const handleSubmitCreate = async (event: SubmitEventPromise) => {
@@ -26,7 +26,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
     showWarning('Vui long dien day du thong tin')
     return
   }
-  await storeAdminAuth.submitUpdate()
+  await storeAccount.submitUpdate()
 }
 
 const submitChangePassword = async (event: SubmitEventPromise) => {
@@ -35,12 +35,8 @@ const submitChangePassword = async (event: SubmitEventPromise) => {
     showWarning('Vui long dien day du thong tin')
     return
   }
-  await storeAdminAuth.submitChangePassword(storeAdminAuth.getDetailAccount?.id ?? '', storeAdminAuth.oldPassword ?? '');
+  await storeAccount.submitChangePassword(storeAccount.getDetailAccount?.id ?? '', storeAccount.oldPassword ?? '');
 }
-
-onMounted(async () => {
-  if(!storeAdminAuth.getDetailAccount?.id) await storeAdminAuth.refreshAccount()
-})
 
 </script>
 <template>
@@ -54,19 +50,19 @@ onMounted(async () => {
       <div class="row row-xs">
         <div class="col-12 col-md-6 col-xxl-4">
           <LabelInput label="Anh dai dien" required/>
-          <v-text-field v-model="storeAdminAuth.formUpdate.avatar" :rules="nullRules" label="Avatar" variant="outlined" required></v-text-field>
+          <v-text-field v-model="storeAccount.formUpdate.avatar" :rules="nullRules" label="Avatar" variant="outlined" required></v-text-field>
         </div>
         <div class="col-12 col-md-6 col-xxl-4">
           <LabelInput label="Ho va ten" required/>
-          <v-text-field v-model="storeAdminAuth.formUpdate.fullname" :rules="nullRules" label="Nhap ho ten" variant="outlined" required></v-text-field>
+          <v-text-field v-model="storeAccount.formUpdate.fullname" :rules="nullRules" label="Nhap ho ten" variant="outlined" required></v-text-field>
         </div>
         <div class="col-12 col-md-6 col-xxl-4">
           <LabelInput label="Email" required/>
-          <v-text-field v-model="storeAdminAuth.formUpdate.email" label="Email" variant="outlined" required disabled></v-text-field>
+          <v-text-field v-model="storeAccount.formUpdate.email" label="Email" variant="outlined" required disabled></v-text-field>
         </div>
         <div class="col-12 col-md-6 col-xxl-4">
           <LabelInput label="Role" required/>
-          <v-text-field v-model="storeAdminAuth.formUpdate.role" label="Role" variant="outlined" required disabled></v-text-field>
+          <v-text-field v-model="storeAccount.formUpdate.role" label="Role" variant="outlined" required disabled></v-text-field>
         </div>
         <div class="col-12">
           <Button type="submit" color="black" label="Luu thong tin" />
@@ -81,17 +77,17 @@ onMounted(async () => {
       <div class="row row-xs">
         <div class="col-12">
           <LabelInput label="Mat khau cu" required/>
-          <v-text-field :append-icon="storeAdminAuth.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAdminAuth.showPassword ? 'text' : 'password'" @click:append="storeAdminAuth.showPassword = !storeAdminAuth.showPassword" v-model="storeAdminAuth.oldPassword" 
+          <v-text-field :append-icon="storeAccount.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccount.showPassword ? 'text' : 'password'" @click:append="storeAccount.showPassword = !storeAccount.showPassword" v-model="storeAccount.oldPassword" 
           :rules="nullRules" label="Mat khau cu" autocomplete="old-password" required></v-text-field>
         </div>
         <div class="col-12">
           <LabelInput label="Mat khau moi" required/>
-          <v-text-field :append-icon="storeAdminAuth.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAdminAuth.showPassword ? 'text' : 'password'" @click:append="storeAdminAuth.showPassword = !storeAdminAuth.showPassword" v-model="storeAdminAuth.newPassword" 
+          <v-text-field :append-icon="storeAccount.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccount.showPassword ? 'text' : 'password'" @click:append="storeAccount.showPassword = !storeAccount.showPassword" v-model="storeAccount.newPassword" 
           :rules="newPasswordRules" label="Mat khau moi" autocomplete="new-password" required></v-text-field>
         </div>
         <div class="col-12">
           <LabelInput label="Xac nhan mat khau" required/>
-          <v-text-field :append-icon="storeAdminAuth.showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAdminAuth.showPasswordConfirm ? 'text' : 'password'" @click:append="storeAdminAuth.showPasswordConfirm = !storeAdminAuth.showPasswordConfirm" v-model="storeAdminAuth.newPasswordConfirm" 
+          <v-text-field :append-icon="storeAccount.showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccount.showPasswordConfirm ? 'text' : 'password'" @click:append="storeAccount.showPasswordConfirm = !storeAccount.showPasswordConfirm" v-model="storeAccount.newPasswordConfirm" 
           :rules="confirmPasswordRules" label="Xac nhan mat khau" autocomplete="new-password" required></v-text-field>
         </div>
         <div class="col-12">

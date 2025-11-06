@@ -1,0 +1,1 @@
+{"version":3,"file":"account.dto.js","sourceRoot":"","sources":["../../../../../server/types/dto/v1/account.dto.ts"],"names":[],"mappings":"AAGA,MAAM,CAAC,MAAM,aAAa,GAAG,CAAC,YAAY,EAAE,QAAQ,CAAU,CAAC;AAI/D,MAAM,CAAC,MAAM,mBAAmB,GAAG;IACjC,UAAU,EAAE,aAAa,CAAC,CAAC,CAAC;IAC5B,MAAM,EAAE,aAAa,CAAC,CAAC,CAAC;CAChB,CAAC"}

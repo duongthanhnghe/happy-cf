@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import {ref } from 'vue'
-import { adminAuthAPI } from "@/services/v1/admin/adminAuth.service";
+import { accountAPI } from "@/services/v1/admin/account.service";
 import { showSuccess } from '@/utils/toast';
 
 const email = ref('');
@@ -16,7 +16,7 @@ const newPassword = ref('');
 
 const handleReset = async () => {
   try {
-    const res = await adminAuthAPI.resetPassword(email.value, newPassword.value);
+    const res = await accountAPI.resetPassword(email.value, newPassword.value);
     showSuccess(res.message);
   } catch (err: any) {
     // showError(err.message);

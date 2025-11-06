@@ -17,12 +17,12 @@ import paymentTransactionRoutes from './paymentTransactionRoutes'
 import productReviewRouter from './productReviewRouter'
 import voucherRouter from './voucherRouter'
 import voucherUsageRouter from './voucherUsageRouter'
-import adminAuthRouter from './adminAuthRouter'
+import accountRouter from './accountRouter'
 // import locationRoutes from './locationRouter'
 
 const router = Router()
 
-router.use('/account', adminAuthRouter)
+router.use('/account', accountRouter)
 router.use('/settings', settingRoutes)
 // router.use('/fileManage', fileManageRoutes)
 // router.use('/auth', authRoutes)

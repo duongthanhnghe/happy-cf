@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useAdminAuthStore } from '@/stores/admin/admin-auth/useAdminAuthStore'
+import { useAccountStore } from '@/stores/admin/account/useAccountStore'
 import type { SubmitEventPromise } from 'vuetify';
-import { AUTH_TEXT_LOGIN, AUTH_TEXT_PASSWORD, AUTH_TEXT_USERNAME, AUTH_TEXT_FORGOT_PASSWORD, AUTH_TEXT_LOGIN_GOOGLE, AUTH_TEXT_LOGIN_EMAIL, AUTH_TEXT_REGISTER_HINT } from '@/const/text'
+import { AUTH_TEXT_LOGIN, AUTH_TEXT_PASSWORD, AUTH_TEXT_USERNAME } from '@/const/text'
 import { ROUTES } from '@/shared/constants/routes';
 import { strongPasswordRules, emailRules } from '@/utils/validation';
 
@@ -9,7 +9,7 @@ definePageMeta({
   layout: ROUTES.ADMIN.LOGIN.layout,
 })
 
-const store = useAdminAuthStore();
+const store = useAccountStore();
 
 const handleSubmitLogin = async (event: SubmitEventPromise) => {
   const result = await event

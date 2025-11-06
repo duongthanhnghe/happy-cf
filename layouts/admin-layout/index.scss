@@ -9,13 +9,13 @@
   @media (min-width: 1025px){
     padding-left: $width-taskbar;
     .v-table__wrapper {
-      height: calc(100dvh - ($space-md * 2 + $height-header + $height-table-footer));
+      height: calc(100dvh - ($space-md + $height-header + $height-table-footer));
     }
     .v-data-table-no-footer .v-table__wrapper {
-      height: calc(100dvh - ($space-md * 2 + $height-header));
+      height: calc(100dvh - ($space-md + $height-header));
     }
     & > .v-container {
-      padding: $space-md;
+      padding: 0 $space-md $space-sm $space-md;
     }
   }
 }

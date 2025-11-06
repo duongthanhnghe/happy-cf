@@ -1,15 +1,15 @@
 import { ROUTES } from "@/shared/constants/routes";
-import { useAdminAuthStore } from "@/stores/admin/admin-auth/useAdminAuthStore";
+import { useAccountStore } from "@/stores/admin/account/useAccountStore";
 
 export default defineNuxtRouteMiddleware(async () => {
-  const storeAdminAuth = useAdminAuthStore();
+  const storeAccount = useAccountStore();
 
-  if (storeAdminAuth.getDetailAccount?.id) {
+  if (storeAccount.getDetailAccount?.id) {
     return;
   }
 
   setTimeout(async function(){
-    const ok = await storeAdminAuth.verifyToken();
+    const ok = await storeAccount.verifyToken();
     if (!ok) {
       const adminToken = useCookie("admin_token");
       adminToken.value = null;

@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"4390a-TMJxxnSbYgmIZyhokuqkn7EbgHE\"",
-    "mtime": "2025-11-06T05:00:08.161Z",
-    "size": 276746,
+    "etag": "\"4486e-L0IOJUZlzAVBk1BTtfV+NjMAiv8\"",
+    "mtime": "2025-11-06T17:13:27.871Z",
+    "size": 280686,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"102c98-V2R6Y6k1Gycfwdzrl97Bkg6qyso\"",
-    "mtime": "2025-11-06T05:00:08.166Z",
-    "size": 1059992,
+    "etag": "\"106ce6-0XeHf9zT257jGJXRvxJv5OpNaPk\"",
+    "mtime": "2025-11-06T17:13:27.872Z",
+    "size": 1076454,
     "path": "index.mjs.map"
   }
 };
@@ -1568,7 +1568,7 @@ async function getIslandContext(event) {
 
 const _lazy_WZOimk = () => Promise.resolve().then(function () { return addressesRouter; });
 const _lazy_tuVKNW = () => Promise.resolve().then(function () { return aboutRouter; });
-const _lazy_KWjcKG = () => Promise.resolve().then(function () { return adminAuthRouter; });
+const _lazy_2cawTH = () => Promise.resolve().then(function () { return accountRouter; });
 const _lazy_wad1E_ = () => Promise.resolve().then(function () { return bannerRouter$1; });
 const _lazy_TqIHqT = () => Promise.resolve().then(function () { return categoriesNewsRouter$1; });
 const _lazy_rYJmrv = () => Promise.resolve().then(function () { return categoriesProductRouter$1; });
@@ -1603,7 +1603,7 @@ const handlers = [
   { route: '', handler: _uxO0JW, lazy: false, middleware: true, method: undefined },
   { route: '/v1/addressesRouter', handler: _lazy_WZOimk, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/aboutRouter', handler: _lazy_tuVKNW, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/adminAuthRouter', handler: _lazy_KWjcKG, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/accountRouter', handler: _lazy_2cawTH, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/bannerRouter', handler: _lazy_wad1E_, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/categoriesNewsRouter', handler: _lazy_TqIHqT, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/categoriesProductRouter', handler: _lazy_rYJmrv, lazy: true, middleware: false, method: undefined },
@@ -2264,7 +2264,7 @@ const updateOrder$3 = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const toggleActive$6 = async (req, res) => {
+const toggleActive$7 = async (req, res) => {
   try {
     const { id } = req.params;
     const item = await AboutEntity.findById(id);
@@ -2283,31 +2283,38 @@ const toggleActive$6 = async (req, res) => {
   }
 };
 
-const AdminAccountSchema = new Schema(
+const ACCOUNT_ROLES = ["superadmin", "editor"];
+const ACCOUNT_ROLES_CONST = {
+  SUPERADMIN: ACCOUNT_ROLES[0],
+  EDITOR: ACCOUNT_ROLES[1]
+};
+
+const AccountSchema = new Schema(
   {
     avatar: { type: String, required: true },
     fullname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ["superadmin", "editor"], default: "editor" },
+    role: { type: String, enum: ACCOUNT_ROLES, default: ACCOUNT_ROLES_CONST.EDITOR },
     active: { type: Boolean, default: true },
     lastLogin: { type: Date }
   },
   { timestamps: true }
 );
-const AdminAccountModel = mongoose.model(
-  "AdminAccount",
-  AdminAccountSchema,
+AccountSchema.plugin(mongoosePaginate);
+const AccountModel = mongoose.model(
+  "Account",
+  AccountSchema,
   "admin_accounts"
 );
 
 const authenticateAdmin = async (req, res, next) => {
   var _a;
   const token = (_a = req.cookies) == null ? void 0 : _a.admin_token;
-  if (!token) return res.status(401).json({ code: 1, message: "Thi\u1EBFu token" });
+  if (!token) return res.status(401).json({ code: 1, message: "Thi\u1EBFu token 123?" });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    const admin = await AdminAccountModel.findById(decoded.id);
+    const admin = await AccountModel.findById(decoded.id);
     if (!admin) {
       return res.status(401).json({ code: 2, message: "T\xE0i kho\u1EA3n admin kh\xF4ng t\u1ED3n t\u1EA1i ho\u1EB7c \u0111\xE3 b\u1ECB x\xF3a" });
     }
@@ -2328,14 +2335,14 @@ router$t.post("/", authenticateAdmin, createAbout);
 router$t.put("/:id", authenticateAdmin, updateAbout);
 router$t.delete("/:id", authenticateAdmin, deleteAbout);
 router$t.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
-router$t.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
+router$t.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$t
 }, Symbol.toStringTag, { value: 'Module' }));
 
-function toAdminAccountDTO(entity) {
+function toAccountDTO(entity) {
   var _a, _b, _c;
   return {
     id: entity._id.toString(),
@@ -2349,15 +2356,18 @@ function toAdminAccountDTO(entity) {
     updatedAt: (_c = entity.updatedAt) == null ? void 0 : _c.toISOString()
   };
 }
+const toAccountListDTO = (admins) => {
+  return admins.map(toAccountDTO);
+};
 
-const verifyAdminToken = async (req, res) => {
+const verifyToken = async (req, res) => {
   var _a;
   const token = (_a = req.cookies) == null ? void 0 : _a.admin_token;
   if (!token)
     return res.status(401).json({ code: 1, message: "Thi\u1EBFu token \u0111\u0103ng nh\u1EADp" });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    const admin = await AdminAccountModel.findById(decoded.id);
+    const admin = await AccountModel.findById(decoded.id);
     if (!admin || !admin.active) {
       return res.status(403).json({ code: 2, message: "T\xE0i kho\u1EA3n kh\xF4ng h\u1EE3p l\u1EC7" });
     }
@@ -2375,10 +2385,10 @@ const verifyAdminToken = async (req, res) => {
     return res.status(401).json({ code: 3, message: "Token kh\xF4ng h\u1EE3p l\u1EC7 ho\u1EB7c \u0111\xE3 h\u1EBFt h\u1EA1n" });
   }
 };
-const adminLogin = async (req, res) => {
+const login$1 = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const admin = await AdminAccountModel.findOne({ email });
+    const admin = await AccountModel.findOne({ email });
     if (!admin) {
       return res.status(400).json({ code: 1, message: "T\xE0i kho\u1EA3n kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
@@ -2408,7 +2418,7 @@ const adminLogin = async (req, res) => {
       message: "\u0110\u0103ng nh\u1EADp th\xE0nh c\xF4ng",
       data: {
         token,
-        admin: toAdminAccountDTO(admin)
+        admin: toAccountDTO(admin)
       }
     });
   } catch (err) {
@@ -2416,13 +2426,13 @@ const adminLogin = async (req, res) => {
     return res.status(500).json({ code: 500, message: "L\u1ED7i h\u1EC7 th\u1ED1ng", error: err.message });
   }
 };
-const resetAdminPassword = async (req, res) => {
+const resetPassword$1 = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
     if (!email || !newPassword) {
       return res.status(400).json({ code: 1, message: "Thi\u1EBFu email ho\u1EB7c m\u1EADt kh\u1EA9u m\u1EDBi" });
     }
-    const admin = await AdminAccountModel.findOne({ email });
+    const admin = await AccountModel.findOne({ email });
     if (!admin) {
       return res.status(404).json({ code: 2, message: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n admin" });
     }
@@ -2431,7 +2441,7 @@ const resetAdminPassword = async (req, res) => {
     await admin.save();
     return res.status(200).json({
       code: 0,
-      message: "\u0110\u1EB7t l\u1EA1i m\u1EADt kh\u1EA9u th\xE0nh c\xF4ng",
+      message: "\u0110\u1EB7t l\u1EA1i m\u1EADt kh\u1EA9u th\xE0nh c\xF4ng, m\u1EADt kh\u1EA9u m\u1EDBi l\xE0: " + newPassword,
       data: {
         email: admin.email,
         fullname: admin.fullname,
@@ -2454,14 +2464,14 @@ const getAccount = async (req, res) => {
     if (!adminId) {
       return res.status(400).json({ code: 1, message: "Thi\u1EBFu ID admin" });
     }
-    const admin = await AdminAccountModel.findById(adminId).select("-password");
+    const admin = await AccountModel.findById(adminId).select("-password");
     if (!admin) {
       return res.status(404).json({ code: 2, message: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n admin" });
     }
     return res.status(200).json({
       code: 0,
       message: "L\u1EA5y th\xF4ng tin admin th\xE0nh c\xF4ng",
-      data: toAdminAccountDTO(admin)
+      data: toAccountDTO(admin)
     });
   } catch (err) {
     console.error("Get admin info error:", err);
@@ -2478,14 +2488,14 @@ const updateAccount$1 = async (req, res) => {
       fullname: req.body.fullname,
       avatar: req.body.avatar
     };
-    const updated = await AdminAccountModel.findByIdAndUpdate(adminId, fields, { new: true }).select("-password");
+    const updated = await AccountModel.findByIdAndUpdate(adminId, fields, { new: true }).select("-password");
     if (!updated) {
       return res.status(404).json({ code: 2, message: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n admin" });
     }
     return res.status(200).json({
       code: 0,
       message: "C\u1EADp nh\u1EADt th\xF4ng tin th\xE0nh c\xF4ng",
-      data: toAdminAccountDTO(updated)
+      data: toAccountDTO(updated)
     });
   } catch (err) {
     console.error("Update admin error:", err);
@@ -2499,7 +2509,7 @@ const changePassword$1 = async (req, res) => {
     if (!oldPassword || !newPassword) {
       return res.status(400).json({ code: 1, message: "Thi\u1EBFu m\u1EADt kh\u1EA9u c\u0169 ho\u1EB7c m\u1EDBi" });
     }
-    const admin = await AdminAccountModel.findById(adminId);
+    const admin = await AccountModel.findById(adminId);
     if (!admin) {
       return res.status(404).json({ code: 2, message: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n admin" });
     }
@@ -2522,6 +2532,121 @@ const changePassword$1 = async (req, res) => {
     });
   }
 };
+const getAccountList = async (req, res) => {
+  var _a;
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = ((_a = req.query.search) == null ? void 0 : _a.trim()) || "";
+    const filter = {};
+    if (search) {
+      filter.$or = [
+        { fullname: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } }
+      ];
+    }
+    if (limit === -1) {
+      const admins = await AccountModel.find(filter).sort({ createdAt: -1 }).select("-password");
+      return res.status(200).json({
+        code: 0,
+        data: toAccountListDTO(admins),
+        pagination: {
+          total: admins.length,
+          totalPages: 1,
+          page: 1,
+          limit: admins.length
+        }
+      });
+    }
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 },
+      select: "-password"
+    };
+    const result = await AccountModel.paginate(filter, options);
+    return res.status(200).json({
+      code: 0,
+      data: toAccountListDTO(result.docs),
+      pagination: {
+        total: result.totalDocs,
+        totalPages: result.totalPages,
+        page: result.page,
+        limit: result.limit
+      }
+    });
+  } catch (error) {
+    console.error("get all account error:", error);
+    return res.status(500).json({
+      code: 500,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+const toggleActive$6 = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await AccountModel.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "Account kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.active = !item.active;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toAccountDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deleteAccount = async (req, res) => {
+  const { id } = req.params;
+  await AccountModel.findByIdAndDelete(id);
+  res.json({ code: 0, message: "Delete success" });
+};
+const createAccount = async (req, res) => {
+  try {
+    const { fullname, email, password, role } = req.body;
+    if (!fullname || !email || !password || !role) {
+      return res.status(400).json({
+        code: 1,
+        message: "Thi\u1EBFu th\xF4ng tin b\u1EAFt bu\u1ED9c"
+      });
+    }
+    const existing = await AccountModel.findOne({ email });
+    if (existing) {
+      return res.status(409).json({
+        code: 3,
+        message: "Email \u0111\xE3 t\u1ED3n t\u1EA1i"
+      });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newAccount = await AccountModel.create({
+      fullname,
+      email,
+      password: hashedPassword,
+      role,
+      active: true,
+      avatar: process.env.IMAGE_AVATAR_DEFAULT || "",
+      lastLogin: null
+    });
+    return res.status(201).json({
+      code: 0,
+      message: "T\u1EA1o t\xE0i kho\u1EA3n th\xE0nh c\xF4ng",
+      data: toAccountDTO(newAccount)
+    });
+  } catch (err) {
+    console.error("Create admin error:", err);
+    return res.status(500).json({
+      code: 500,
+      message: "L\u1ED7i h\u1EC7 th\u1ED1ng",
+      error: err.message
+    });
+  }
+};
 
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
@@ -2536,12 +2661,14 @@ const authorizeRoles = (...roles) => {
 };
 
 const router$s = Router();
-router$s.post("/login", adminLogin);
-router$s.post("/reset-password", authenticateAdmin, authorizeRoles("superadmin", "editor"), resetAdminPassword);
-router$s.get("/verify-token", verifyAdminToken);
+router$s.post("/login", login$1);
+router$s.post("/reset-password", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), resetPassword$1);
+router$s.get("/verify-token", verifyToken);
+router$s.get("/list", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), getAccountList);
 router$s.get("/me/:id", authenticateAdmin, getAccount);
 router$s.put("/update", authenticateAdmin, updateAccount$1);
 router$s.post("/change-password", authenticateAdmin, changePassword$1);
+router$s.post("/create", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), createAccount);
 router$s.post("/logout", (req, res) => {
   res.clearCookie("admin_token", {
     httpOnly: true,
@@ -2550,8 +2677,10 @@ router$s.post("/logout", (req, res) => {
   });
   res.json({ code: 0, message: "\u0110\u0103ng xu\u1EA5t th\xE0nh c\xF4ng" });
 });
+router$s.patch("/toggleActive/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), toggleActive$6);
+router$s.delete("/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), deleteAccount);
 
-const adminAuthRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const accountRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$s
 }, Symbol.toStringTag, { value: 'Module' }));

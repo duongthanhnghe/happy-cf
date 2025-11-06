@@ -1,7 +1,7 @@
-import type { AdminAccountDocument } from "../../models/v1/AdminAccountEntity";
-import type { AdminAccountDTO } from "../../types/dto/v1/admin-auth.dto";
+import type { AccountDocument } from "../../models/v1/AccountEntity";
+import type { AccountDTO } from "../../types/dto/v1/account.dto";
 
-export function toAdminAccountDTO(entity: AdminAccountDocument): AdminAccountDTO {
+export function toAccountDTO(entity: AccountDocument): AccountDTO {
   return {
     id: entity._id.toString(),
     avatar: entity.avatar,
@@ -15,6 +15,6 @@ export function toAdminAccountDTO(entity: AdminAccountDocument): AdminAccountDTO
   };
 }
 
-export const toAdminAccountListDTO = (admins: AdminAccountDocument[]): AdminAccountDTO[] => {
-  return admins.map(toAdminAccountDTO);
+export const toAccountListDTO = (admins: AccountDocument[]): AccountDTO[] => {
+  return admins.map(toAccountDTO);
 };
