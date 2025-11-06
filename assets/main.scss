@@ -1415,6 +1415,10 @@ a.button, button.button {
   max-height: 500px !important;
 }
 
+.v-field-date-filter .v-field__overlay {
+  border-color: transparent !important;
+}
+
 // vuetify custom
 .v-infinite-scroll__side {
   padding: 0 !important;
@@ -1504,7 +1508,7 @@ a.button, button.button {
   padding-top: 1rem !important;
       mask-image: none !important;
 }
-.v-field__overlay {
+.v-field__overlay, .v-field-date-filter {
   background-color: $cl-gray2 !important;
   opacity: 1 !important;
     border: 1px solid $cl-gray !important;

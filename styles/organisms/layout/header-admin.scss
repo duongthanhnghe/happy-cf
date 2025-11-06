@@ -3,24 +3,26 @@
 .header-admin {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: center;
   height: $height-header-admin;
   padding: 0 $space-md;
   position: fixed;
   top: 0;
   right: 0;
   width: 100%;
+  background-color: $cl-gray2;
   z-index: 11;
   &-right,
   &-left {
     display: flex;
     align-items: center;
-    gap: 1rem;
   }
   &-left {
     flex: 1;
+    gap: 0.5rem;
   }
   &-right {
+    gap: 1rem;
     justify-content: end;
     &-avatar img {
       border-radius: 50%;

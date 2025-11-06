@@ -45,7 +45,7 @@ const isChildActive = (children: Record<string, MenuItem>) => {
         </NuxtLink>
 
         <template v-for="(item, index) in listMenu" :key="index">
-          <template v-if="item.isActive">
+          <template v-if="item.isShowSidebar">
           <NuxtLink
             :to="{ path: item.path }"
             class="taskbar-href flex"

@@ -7,8 +7,8 @@ import { nullRules, createNewPasswordRules } from '@/utils/validation';
 import { useAdminAuthStore } from '@/stores/admin/admin-auth/useAdminAuthStore';
 
 definePageMeta({
-  layout: ROUTES.ADMIN.SETTINGS.layout,
-  middleware: ROUTES.ADMIN.SETTINGS.middleware,
+  layout: ROUTES.ADMIN.BASE_INFORMATION.layout,
+  middleware: ROUTES.ADMIN.BASE_INFORMATION.middleware,
 })
 
 const storeAdminAuth = useAdminAuthStore()
@@ -45,7 +45,7 @@ onMounted(async () => {
 </script>
 <template>
 
-<HeaderAdmin />
+<HeaderAdmin label="Quan ly tai khoan" />
 
 <v-container>
   <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
@@ -100,8 +100,6 @@ onMounted(async () => {
       </div>
     </div>
   </v-form>
-
-  <Button type="submit" color="primary" :shadow="true" label="Dang xuat" class="mt-md" @click="storeAdminAuth.handleLogout()" />
 
 </v-container>
 </template>

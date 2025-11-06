@@ -7,6 +7,7 @@ export interface MenuItem {
   layout?: string;
   headerTypeLeft?: 'address' | 'logo' | 'name' | 'back';
   children?: Record<string, MenuItem>;
-  isActive?: boolean;
+  isShowSidebar?: boolean;
+  isShowMenuAccount?: boolean;
   action?: () => void;
 }

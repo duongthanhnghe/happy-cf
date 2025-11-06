@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 import {
   useAccountEditStore
 } from '@/stores/client/users/useAccountEditStore'
@@ -15,9 +16,17 @@ import {
   GLOBAL_TEXT_UPDATE,
   AUTH_TEXT_PASSWORD_HINT,
 } from '@/const/text'
+import { createNewPasswordRules } from '@/utils/validation';
 
 const storeAccountEdit = useAccountEditStore();
 const storeAccount = useAccountStore();
+
+const newPasswordRules = computed(() =>
+  createNewPasswordRules(storeAccountEdit.newPasswordConfirm)
+)
+const confirmPasswordRules = computed(() =>
+  createNewPasswordRules(storeAccountEdit.newPassword)
+)
 
 const handleSubmitUpdate = async (event: SubmitEventPromise) => {
   const result = await event;
@@ -35,9 +44,9 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
       </div>
 
       <LabelInput :label="AUTH_TEXT_PASSWORD_NEW" required/>
-      <v-text-field :append-icon="storeAccountEdit.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccountEdit.showPassword ? 'text' : 'password'" @click:append="storeAccountEdit.showPassword = !storeAccountEdit.showPassword" v-model="storeAccountEdit.newPassword" :rules="storeAccountEdit.newPasswordRules" :label="AUTH_TEXT_PASSWORD_HINT" autocomplete="new-password" required></v-text-field>
+      <v-text-field :append-icon="storeAccountEdit.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccountEdit.showPassword ? 'text' : 'password'" @click:append="storeAccountEdit.showPassword = !storeAccountEdit.showPassword" v-model="storeAccountEdit.newPassword" :rules="newPasswordRules" :label="AUTH_TEXT_PASSWORD_HINT" autocomplete="new-password" required></v-text-field>
       <LabelInput :label="AUTH_TEXT_CONFIRM_PASSWORD" required/>
-      <v-text-field :append-icon="storeAccountEdit.showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccountEdit.showPasswordConfirm ? 'text' : 'password'" @click:append="storeAccountEdit.showPasswordConfirm = !storeAccountEdit.showPasswordConfirm" v-model="storeAccountEdit.newPasswordConfirm" :rules="storeAccountEdit.newPasswordRules" :label="AUTH_TEXT_PASSWORD_HINT" autocomplete="new-password" required></v-text-field>
+      <v-text-field :append-icon="storeAccountEdit.showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccountEdit.showPasswordConfirm ? 'text' : 'password'" @click:append="storeAccountEdit.showPasswordConfirm = !storeAccountEdit.showPasswordConfirm" v-model="storeAccountEdit.newPasswordConfirm" :rules="confirmPasswordRules" :label="AUTH_TEXT_PASSWORD_HINT" autocomplete="new-password" required></v-text-field>
 
     </v-form>
   </template>

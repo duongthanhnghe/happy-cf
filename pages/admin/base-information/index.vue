@@ -10,8 +10,8 @@ import { nullRules, emailRules } from '@/utils/validation';
 import { useLocationWatchers } from '@/composables/shared/location/useLocationWatchers';
 
 definePageMeta({
-  layout: ROUTES.ADMIN.SETTINGS.layout,
-  middleware: ROUTES.ADMIN.SETTINGS.middleware,
+  layout: ROUTES.ADMIN.BASE_INFORMATION.layout,
+  middleware: ROUTES.ADMIN.BASE_INFORMATION.middleware,
 })
 
 const storeSettingUpdate = useBaseInformationUpdateStore();

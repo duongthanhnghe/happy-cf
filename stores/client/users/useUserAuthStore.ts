@@ -12,7 +12,6 @@ import type { UserRegister, ResetPassword, MyJwtPayload } from '@/server/types/d
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { setCookie } from '@/utils/global'
-import { USER_ROLES } from "@/shared/constants/user-roles";
 
 export const useUserAuthStore = defineStore("UserAuth", () => {
 
@@ -21,39 +20,12 @@ const storeAccount = useAccountStore();
 //state global  
 const router = useRouter()
 const route = useRoute()
-// const token = ref<string | null>(process.client ? localStorage.getItem('token') : null)
 const token = useCookie<string | null>("token", { sameSite: "lax" });
-const valid = ref<boolean>(false)
 const showPassword = ref<boolean>(false)
 const showPasswordConfirm = ref<boolean>(false)
 const emailForgot = ref<string>('')
 const newPassword = ref<string>('')
 const newPasswordConfirm = ref<string>('')
-
-
-const emailRules = [
-  (value: string) => !!value || 'Email không được để trống',
-  (value: string) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailPattern.test(value) || 'Email không hợp lệ'
-  }
-]
-
-const fullnameRules = [
-  (value: string) => {
-    if (value) return true
-    return 'Ho va ten khong duoc trong'
-  },
-]
-
-const passwordRules = [
-  (value: string) => !!value || 'Mật khẩu không được để trống',
-  (value: string) => value.length >= 8 || 'Mật khẩu phải có ít nhất 8 ký tự',
-  (value: string) => /[A-Z]/.test(value) || 'Mật khẩu phải có ít nhất 1 chữ cái in hoa',
-  (value: string) => /[a-z]/.test(value) || 'Mật khẩu phải có ít nhất 1 chữ cái thường',
-  (value: string) => /[0-9]/.test(value) || 'Mật khẩu phải có ít nhất 1 số',
-  (value: string) => /[^A-Za-z0-9]/.test(value) || 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt'
-]
 
 const formUserItem = reactive<UserRegister>({
   fullname: '',
@@ -61,8 +33,6 @@ const formUserItem = reactive<UserRegister>({
   password: '',
   gender: 'male'
 });
-
-const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
 
   const handleResetFormUserItem = () => {
     formUserItem.fullname = ''
@@ -213,10 +183,6 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
     showPassword,
     showPasswordConfirm,
     token,
-    valid,
-    fullnameRules,
-    emailRules,
-    passwordRules,
     formUserItem,
     emailForgot,
     newPassword,

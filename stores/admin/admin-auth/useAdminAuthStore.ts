@@ -61,7 +61,7 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
         const decoded = jwtDecode<MyJwtPayload>(data.data.token) 
         await handleGetDetailAccount(decoded.id)
         setTimeout(() => {
-          router.push({ path: ROUTES.ADMIN.SETTINGS.path })
+          router.push({ path: ROUTES.ADMIN.BASE_INFORMATION.path })
         }, 500)
       } else {
         showWarning(data.message ?? '');
@@ -75,11 +75,13 @@ export const useAdminAuthStore = defineStore("AdminAuthStore", () => {
 
   const handleGetDetailAccount = async (userId: string) => {
     if(!userId) return
+    Loading(true);
     const data = await adminAuthAPI.getAccount(userId)
     if(data.code === 0){
       detailData.value = data.data;
       Object.assign(formUpdate, detailData.value);
     } 
+    Loading(false);
   };
 
   async function submitUpdate() {

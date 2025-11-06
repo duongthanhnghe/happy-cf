@@ -12,6 +12,7 @@ import {
   AUTH_TEXT_EMAIL_HINT,
 } from '@/const/text'
 import { ROUTES } from '@/shared/constants/routes';
+import { emailRules } from '@/utils/validation';
 
 definePageMeta({
   layout: ROUTES.PUBLIC.FORGOT_PASSWORD.layout,
@@ -30,9 +31,9 @@ const handleSubmitForgotPassword = async (event: SubmitEventPromise) => {
     <div class="text-center text-size-xs text-color-gray5 mb-md">
         {{ AUTH_TEXT_FORGOT_SUGGEST }}
       </div>
-    <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitForgotPassword">
+    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitForgotPassword">
       <LabelInput label="Email" required/>
-      <v-text-field v-model="store.emailForgot" :rules="store.emailRules" :label="AUTH_TEXT_EMAIL_HINT" variant="outlined" required></v-text-field>
+      <v-text-field v-model="store.emailForgot" :rules="emailRules" :label="AUTH_TEXT_EMAIL_HINT" variant="outlined" required></v-text-field>
       <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_SEND_EMAIL" class="w-full" />
     </v-form>
 </template>

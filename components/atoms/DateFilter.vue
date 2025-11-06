@@ -45,7 +45,7 @@ const onSelectToDay = (val: string | null) => {
 </script>
 
 <template>
-  <div class="flex gap-xs">
+  <div class="flex bg-white v-field-date-filter">
     <!-- FROM DAY -->
     <v-menu
       v-model="menuFromDay"

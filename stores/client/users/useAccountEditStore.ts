@@ -21,21 +21,6 @@ export const useAccountEditStore = defineStore("useAccountEdit", () => {
     gender: 'male',
     phone: ''
   });
-  const fullnameRules = [
-    (value: string) => {
-      if (value) return true
-      return 'Ten khong duoc trong'
-    },
-    (value: string) => {
-      if (value?.length <= 100) return true
-      return 'Ten khong duoc qua 100 ky tu'
-    },
-    (value: string) => {
-      const regex = /^[\p{L}0-9\s]+$/u
-      if (regex.test(value)) return true
-      return 'Ten khong duoc chua ky tu dac biet'
-    }
-  ]
   const newPassword = ref<string>('')
   const newPasswordConfirm = ref<string>('')
   const isTogglePopupChangePassword = ref<boolean>(false);
@@ -141,17 +126,13 @@ export const useAccountEditStore = defineStore("useAccountEdit", () => {
   const newPasswordRules = computed(() => createNewPasswordRules(newPasswordConfirm.value))
 
   return {
-    // state
     formUserItem,
     isTogglePopupUpdate,
-    fullnameRules,
     newPassword,
     newPasswordConfirm,
     isTogglePopupChangePassword,
     showPassword,
     showPasswordConfirm,
-    
-    // actions
     handleEditAccount,
     submitUpdate,
     handleTogglePopupUpdate,
