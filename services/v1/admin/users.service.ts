@@ -18,10 +18,10 @@ export const usersAPI = {
       throw err
     }
   },
-  getAllUsers: async (page: number = 1, limit: number = 10, role: number = 1) => {
+  getAllUsers: async (page: number = 1, limit: number = 10) => {
     try {
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST}?page=${page}&limit=${limit}&role=${role}`, {
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST}?page=${page}&limit=${limit}`, {
           credentials: 'include',
         }
       );

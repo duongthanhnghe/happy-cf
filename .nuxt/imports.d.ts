@@ -36,7 +36,7 @@ export { useSeoWatchers } from '../utils/seoHandle';
 export { storageWithTTL } from '../utils/storageWithTTL';
 export { Toast, showSuccess, showToastError, showWarning, showConfirm } from '../utils/toast';
 export { findItemInTree, markAllSelectable } from '../utils/treeHelpers';
-export { nullRules, nullAndSpecialRules } from '../utils/validation';
+export { createNewPasswordRules, useNewPasswordRules, nullRules, nullAndSpecialRules } from '../utils/validation';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/@pinia/nuxt/dist/runtime/composables';
 export { useNuxtDevTools } from '../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
 export { definePageMeta } from '../node_modules/nuxt/dist/pages/runtime/composables';

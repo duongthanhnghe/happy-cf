@@ -45,10 +45,9 @@ export const useUserManageStore = defineStore("UserManage", () => {
   })
   const isTogglePopupUpdate = ref<boolean>(false);
   const detailData = ref<User|null>(null);
-  const role = USER_ROLES.USER;
 
   const getListData = async () => {
-    await fetchListUserAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage,role)
+    await fetchListUserAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage)
 
     if(!getListUserAllApi.value) return
     dataList.value = getListUserAllApi.value.data

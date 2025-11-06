@@ -3,7 +3,6 @@ import type { BaseInformation } from "../../models/v1/BaseInformationEntity";
 
 export function toBaseInformationDTO(entity: BaseInformation): BaseInformationDTO {
   return {
-    id: entity._id.toString(),
     name: entity.name,
     logoUrl: entity.logoUrl,
     phone: entity.phone,

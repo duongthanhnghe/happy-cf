@@ -1,3 +1,6 @@
+import { computed } from 'vue'
+import type { Ref } from 'vue'
+
 function requiredRule(value: string) {
   return !!value || 'Nội dung không được trống'
 }
@@ -23,7 +26,33 @@ function emailFormatRule(value: string) {
   return emailPattern.test(value) || 'Email không hợp lệ'
 }
 
+const basePasswordRules = [
+  (value: string) => !!value || 'Mật khẩu không được để trống',
+  (value: string) => value.length >= 8 || 'Mật khẩu phải có ít nhất 8 ký tự',
+  (value: string) => /[A-Z]/.test(value) || 'Phải có ít nhất 1 chữ in hoa',
+  (value: string) => /[a-z]/.test(value) || 'Phải có ít nhất 1 chữ thường',
+  (value: string) => /[0-9]/.test(value) || 'Phải có ít nhất 1 số',
+  (value: string) => /[^A-Za-z0-9]/.test(value) || 'Phải có ít nhất 1 ký tự đặc biệt',
+]
+
+export const createNewPasswordRules = (newPasswordConfirm: Ref<string> | string) => {
+  return [
+    ...basePasswordRules,
+    (value: string) => {
+      const confirmValue = typeof newPasswordConfirm === 'string'
+        ? newPasswordConfirm
+        : newPasswordConfirm.value
+      return value === confirmValue || 'Mật khẩu không giống nhau'
+    },
+  ]
+}
+
+export const useNewPasswordRules = (newPasswordConfirm: Ref<string>) => {
+  return computed(() => createNewPasswordRules(newPasswordConfirm))
+}
+
 export const nullRules = [requiredRule]
 export const nullAndSpecialRules = [requiredRule, noSpecialCharRule]
 export const phoneRules = [requiredRule, phoneRule]
 export const emailRules = [emailRequiredRule, emailFormatRule]
+export const strongPasswordRules = basePasswordRules

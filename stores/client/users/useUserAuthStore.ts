@@ -87,8 +87,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         const decoded = jwtDecode<MyJwtPayload>(data.data.token) 
         await storeAccount.handleGetDetailAccount(decoded.id)
         setTimeout(() => {
-          if(data.data.user.role === USER_ROLES.ADMIN) router.push({ path: ROUTES.ADMIN.SETTINGS.path })
-          else router.push({ path: ROUTES.PUBLIC.HOME.path })
+          router.push({ path: ROUTES.PUBLIC.HOME.path })
         }, 500)
 
       } else {
@@ -198,8 +197,7 @@ const timeout = ref<ReturnType<typeof setTimeout> | undefined>();
         const decoded = jwtDecode<MyJwtPayload>(data.data.token)
         await storeAccount.handleGetDetailAccount(decoded.id)
         setTimeout(() => {
-          if(data.data.user.role === USER_ROLES.ADMIN) router.push({ path: ROUTES.ADMIN.SETTINGS.path })
-          else router.push({ path: ROUTES.PUBLIC.HOME.path })
+          router.push({ path: ROUTES.PUBLIC.HOME.path })
         }, 500)
 
       }

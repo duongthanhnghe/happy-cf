@@ -1,7 +1,6 @@
 export function toBaseInformationDTO(entity) {
     var _a, _b;
     return {
-        id: entity._id.toString(),
         name: entity.name,
         logoUrl: entity.logoUrl,
         phone: entity.phone,

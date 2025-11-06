@@ -208,11 +208,7 @@ export const getAllUsers = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-        const role = req.query.role ? parseInt(req.query.role) : undefined;
         const filter = {};
-        if (role !== undefined) {
-            filter.role = role;
-        }
         if (limit === -1) {
             const users = await UserModel.find(filter).sort({ createdAt: -1 });
             return res.status(200).json({

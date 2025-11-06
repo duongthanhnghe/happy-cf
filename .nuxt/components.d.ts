@@ -57,7 +57,6 @@ interface _GlobalComponents {
     'FileImageItem': typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
     'Pagination': typeof import("../components/molecules/global/Pagination.vue")['default']
     'NewsItemTemplate1': typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']
-    'OrderItemDetailTemplate1': typeof import("../components/molecules/order/OrderItemDetailTemplate1.vue")['default']
     'OrderItemTemplate1': typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']
     'PaymentItemTemplate1': typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']
     'ProductReviewItemTemplate1': typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']
@@ -70,6 +69,7 @@ interface _GlobalComponents {
     'MenuAccount': typeof import("../components/organisms/layout/MenuAccount.vue")['default']
     'MenuBottom': typeof import("../components/organisms/layout/MenuBottom.vue")['default']
     'SectionNewsLatest': typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']
+    'OrderDetailTemplate': typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']
     'ProductCategoryMenu': typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']
     'UseProductCategoryMenu': typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']
     'SectionProductList': typeof import("../components/organisms/product/SectionProductList.vue")['default']
@@ -170,7 +170,6 @@ interface _GlobalComponents {
     'LazyFileImageItem': LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
     'LazyPagination': LazyComponent<typeof import("../components/molecules/global/Pagination.vue")['default']>
     'LazyNewsItemTemplate1': LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']>
-    'LazyOrderItemDetailTemplate1': LazyComponent<typeof import("../components/molecules/order/OrderItemDetailTemplate1.vue")['default']>
     'LazyOrderItemTemplate1': LazyComponent<typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']>
     'LazyPaymentItemTemplate1': LazyComponent<typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']>
     'LazyProductReviewItemTemplate1': LazyComponent<typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']>
@@ -183,6 +182,7 @@ interface _GlobalComponents {
     'LazyMenuAccount': LazyComponent<typeof import("../components/organisms/layout/MenuAccount.vue")['default']>
     'LazyMenuBottom': LazyComponent<typeof import("../components/organisms/layout/MenuBottom.vue")['default']>
     'LazySectionNewsLatest': LazyComponent<typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']>
+    'LazyOrderDetailTemplate': LazyComponent<typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']>
     'LazyProductCategoryMenu': LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']>
     'LazyUseProductCategoryMenu': LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']>
     'LazySectionProductList': LazyComponent<typeof import("../components/organisms/product/SectionProductList.vue")['default']>
@@ -289,7 +289,6 @@ export const CartItemTemplate2: typeof import("../components/molecules/cart/Cart
 export const FileImageItem: typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
 export const Pagination: typeof import("../components/molecules/global/Pagination.vue")['default']
 export const NewsItemTemplate1: typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']
-export const OrderItemDetailTemplate1: typeof import("../components/molecules/order/OrderItemDetailTemplate1.vue")['default']
 export const OrderItemTemplate1: typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']
 export const PaymentItemTemplate1: typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']
 export const ProductReviewItemTemplate1: typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']
@@ -302,6 +301,7 @@ export const Header: typeof import("../components/organisms/layout/Header.vue")[
 export const MenuAccount: typeof import("../components/organisms/layout/MenuAccount.vue")['default']
 export const MenuBottom: typeof import("../components/organisms/layout/MenuBottom.vue")['default']
 export const SectionNewsLatest: typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']
+export const OrderDetailTemplate: typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']
 export const ProductCategoryMenu: typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']
 export const UseProductCategoryMenu: typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']
 export const SectionProductList: typeof import("../components/organisms/product/SectionProductList.vue")['default']
@@ -402,7 +402,6 @@ export const LazyCartItemTemplate2: LazyComponent<typeof import("../components/m
 export const LazyFileImageItem: LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
 export const LazyPagination: LazyComponent<typeof import("../components/molecules/global/Pagination.vue")['default']>
 export const LazyNewsItemTemplate1: LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']>
-export const LazyOrderItemDetailTemplate1: LazyComponent<typeof import("../components/molecules/order/OrderItemDetailTemplate1.vue")['default']>
 export const LazyOrderItemTemplate1: LazyComponent<typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']>
 export const LazyPaymentItemTemplate1: LazyComponent<typeof import("../components/molecules/order/PaymentItemTemplate1.vue")['default']>
 export const LazyProductReviewItemTemplate1: LazyComponent<typeof import("../components/molecules/product-review/ProductReviewItemTemplate1.vue")['default']>
@@ -415,6 +414,7 @@ export const LazyHeader: LazyComponent<typeof import("../components/organisms/la
 export const LazyMenuAccount: LazyComponent<typeof import("../components/organisms/layout/MenuAccount.vue")['default']>
 export const LazyMenuBottom: LazyComponent<typeof import("../components/organisms/layout/MenuBottom.vue")['default']>
 export const LazySectionNewsLatest: LazyComponent<typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']>
+export const LazyOrderDetailTemplate: LazyComponent<typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']>
 export const LazyProductCategoryMenu: LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']>
 export const LazyUseProductCategoryMenu: LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']>
 export const LazySectionProductList: LazyComponent<typeof import("../components/organisms/product/SectionProductList.vue")['default']>

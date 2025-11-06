@@ -77,40 +77,41 @@ export const useAccountEditStore = defineStore("useAccountEdit", () => {
   }
 
   async function submitChangePassword(userId: string, oldPassword: string) {
-    Loading(true);
-      try {
-        if (!userId || !oldPassword) {
-          showWarning('Thiếu thông tin userId hoặc oldPassword');
-          return;
-        }
-
-        const dataReset:ChangePassword = {
-          userId: userId,
-          oldPassword: oldPassword,
-          newPassword: newPassword.value
-        }
-
-        const data = await authAPI.ChangePassword(dataReset)
-        if(data.code === 0){
-          showWarning('Vui long nhap mat khau day du!');
-        }
-        else if(data.code === 1){
-          showWarning('Token không hợp lệ hoặc đã hết hạn!');
-        }
-        else if(data.code === 2){
-          showSuccess('Đặt lại mật khẩu thành công');
-          newPassword.value = ''
-          newPasswordConfirm.value = ''
-          handleTogglePopupChangePassword(false)
-        } else {
-          newPassword.value = ''
-          newPasswordConfirm.value = ''
-          showWarning('Vui long nhap mat khau day du!');
-        }
-      } catch (err) {
-        console.error('Error submitting form:', err)
+    try {
+      if (!userId || !oldPassword) {
+        showWarning('Thiếu thông tin userId hoặc oldPassword');
+        return;
       }
-      Loading(false);
+
+      const dataReset:ChangePassword = {
+        userId: userId,
+        oldPassword: oldPassword,
+        newPassword: newPassword.value
+      }
+
+      const data = await authAPI.ChangePassword(dataReset)
+      if(data.code === 2){
+        showWarning('Không tìm thấy tài khoản admin');
+      }
+      else if(data.code === 1){
+        showWarning('Thiếu mật khẩu cũ hoặc mới');
+      }
+      else if(data.code === 3){
+        showWarning('Mật khẩu cũ không đúng');
+      }
+      else if(data.code === 0){
+        showSuccess('Đặt lại mật khẩu thành công');
+        newPassword.value = ''
+        newPasswordConfirm.value = ''
+        handleTogglePopupChangePassword(false)
+      } else {
+        newPassword.value = ''
+        newPasswordConfirm.value = ''
+        showWarning('Vui long nhap mat khau day du!');
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err)
+    }
   }
 
   const handleTogglePopupChangePassword = (value: boolean) => {

@@ -1,8 +1,5 @@
 import { getViettelToken } from "../orderController.js";
 const BASE_URL = "https://partner.viettelpost.vn/v2/categories";
-/**
- * 🔹 Lấy danh sách Tỉnh/TP
- */
 export const getAllProvinces = async (_, res) => {
     try {
         const token = await getViettelToken();
@@ -14,14 +11,12 @@ export const getAllProvinces = async (_, res) => {
             },
         });
         const result = await response.json();
-        console.log("📦 Province result:", result);
         if (!response.ok || result.status !== 200) {
             throw new Error(result.message || "Không thể lấy danh sách Tỉnh/TP");
         }
         return res.json({ code: 0, data: result.data });
     }
     catch (err) {
-        console.error("❌ getAllProvinces error:", err.message);
         return res.status(500).json({
             code: 1,
             message: "Lỗi khi lấy danh sách Tỉnh/TP",
@@ -29,9 +24,6 @@ export const getAllProvinces = async (_, res) => {
         });
     }
 };
-/**
- * 🔹 Lấy danh sách Quận/Huyện theo Province
- */
 export const getDistrictsByProvince = async (req, res) => {
     try {
         const { provinceId } = req.params;
@@ -47,14 +39,12 @@ export const getDistrictsByProvince = async (req, res) => {
             },
         });
         const result = await response.json();
-        console.log("📦 District result:", result);
         if (!response.ok || result.status !== 200) {
             throw new Error(result.message || "Không thể lấy danh sách Quận/Huyện");
         }
         return res.json({ code: 0, data: result.data });
     }
     catch (err) {
-        console.error("❌ getDistrictsByProvince error:", err.message);
         return res.status(500).json({
             code: 1,
             message: "Lỗi khi lấy danh sách Quận/Huyện",
@@ -62,9 +52,6 @@ export const getDistrictsByProvince = async (req, res) => {
         });
     }
 };
-/**
- * 🔹 Lấy danh sách Phường/Xã theo District
- */
 export const getWardsByDistrict = async (req, res) => {
     try {
         const { districtId } = req.params;
@@ -80,14 +67,12 @@ export const getWardsByDistrict = async (req, res) => {
             },
         });
         const result = await response.json();
-        console.log("📦 Ward result:", result);
         if (!response.ok || result.status !== 200) {
             throw new Error(result.message || "Không thể lấy danh sách Phường/Xã");
         }
         return res.json({ code: 0, data: result.data });
     }
     catch (err) {
-        console.error("❌ getWardsByDistrict error:", err.message);
         return res.status(500).json({
             code: 1,
             message: "Lỗi khi lấy danh sách Phường/Xã",
@@ -95,9 +80,6 @@ export const getWardsByDistrict = async (req, res) => {
         });
     }
 };
-/**
- * 🔹 Lấy chi tiết Tỉnh/TP
- */
 export const getProvinceDetail = async (req, res) => {
     var _a;
     try {
@@ -120,7 +102,6 @@ export const getProvinceDetail = async (req, res) => {
         return res.json({ code: 0, data: result.data[0] });
     }
     catch (err) {
-        console.error("❌ getProvinceDetail error:", err.message);
         return res.status(500).json({
             code: 1,
             message: "Lỗi khi lấy chi tiết Tỉnh/TP",
@@ -128,9 +109,6 @@ export const getProvinceDetail = async (req, res) => {
         });
     }
 };
-/**
- * 🔹 Lấy chi tiết Quận/Huyện
- */
 export const getDistrictDetail = async (req, res) => {
     try {
         const { districtId } = req.params;
@@ -156,7 +134,6 @@ export const getDistrictDetail = async (req, res) => {
         return res.json({ code: 0, data: district });
     }
     catch (err) {
-        console.error("❌ getDistrictDetail error:", err.message);
         return res.status(500).json({
             code: 1,
             message: "Lỗi khi lấy chi tiết Quận/Huyện",
@@ -164,9 +141,6 @@ export const getDistrictDetail = async (req, res) => {
         });
     }
 };
-/**
- * 🔹 Lấy chi tiết Phường/Xã
- */
 export const getWardDetail = async (req, res) => {
     try {
         const { wardId } = req.params;
@@ -196,7 +170,6 @@ export const getWardDetail = async (req, res) => {
         return res.json({ code: 0, data: ward });
     }
     catch (err) {
-        console.error("❌ getWardDetail error:", err.message);
         return res.status(500).json({
             code: 1,
             message: "Lỗi khi lấy chi tiết Phường/Xã",

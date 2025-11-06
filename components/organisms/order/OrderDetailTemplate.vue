@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 import '@/styles/molecules/order/order-item-detail-template1.scss'
-import { ref, computed, watch } from 'vue'
-import {
-  useOrderHistoryStore
-} from '@/stores/client/order/useOrderHistoryStore'
-import {
-  formatCurrency
-} from '@/utils/global'
+import { toRef } from 'vue'
+import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
+import { formatCurrency } from '@/utils/global'
 import { useOrderDetail } from "@/composables/order/useOrderDetail";
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore';
 import { useLocation } from "@/composables/product/useLocation"
+import { useOrderDetailHandlers } from '@/composables/order/useOrderDetailHandlers';
 
 const { getDetailOrder, fetchOrderDetail } = useOrderDetail();
 const storeHistory = useOrderHistoryStore();
@@ -32,43 +29,22 @@ const props = defineProps({
     default: ''
   },
 });
-const elCurrent = ref(ORDER_STATUS.PENDING)
 
-const activeIndex = computed(() => {
-  return storeOrderStatus.getListData.findIndex(item => item.id === elCurrent.value)
-})
+const idOrderRef = toRef(props, 'idOrder')
 
-watch(() => props.idOrder, () => {
-    if(storeHistory.isTogglePopupDetail || storeHistory.getCheckPageDetail){
-      fetchOrderDetail(props.idOrder);
-    }
-  },
-  { immediate: true }
+const {
+  activeIndex,
+  totalDiscountVoucher
+} = useOrderDetailHandlers(
+  storeHistory,
+  storeOrderStatus,
+  getDetailOrder,
+  idOrderRef,
+  fetchProvinceDetail,
+  fetchDistrictDetail,
+  fetchWardDetail,
+  fetchOrderDetail
 )
-
-watch(() => getDetailOrder.value?.status.id, (newId) => {
-    if (newId) {
-      elCurrent.value = newId || ORDER_STATUS.PENDING
-    }
-  },
-  { immediate: true }
-)
-
-watch(
-  () => getDetailOrder.value,
-  (val) => {
-    if (val) {
-      if (val.provinceCode) fetchProvinceDetail(val.provinceCode)
-      if (val.districtCode) fetchDistrictDetail(val.districtCode)
-      if (val.wardCode) fetchWardDetail(val.wardCode, val.districtCode)
-    }
-  },
-  { immediate: true }
-)
-
-const totalDiscountVoucher = computed(() => {
-  return getDetailOrder.value?.voucherUsage?.reduce((total, voucher) => total + (voucher.discount || 0), 0)
-})
 
 </script>
 <template>
@@ -120,7 +96,7 @@ const totalDiscountVoucher = computed(() => {
         <Button size="xs" color="secondary" icon="edit" />
         {{ getDetailOrder?.note }}
       </div>
-      <div class="row" v-for="items in getDetailOrder?.productList">
+      <div class="row" v-for="(items, index) in getDetailOrder?.productList" :key="index">
         <CartItemTemplate2 v-bind="items" />
       </div>
       <div class="flex flex-direction-column gap-xs mt-xs">

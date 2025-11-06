@@ -2,6 +2,15 @@ export const API_ENDPOINTS_ADMIN = {
   SETTINGS: {
     UPDATE: '/settings/update',
   },
+  ADMIN_AUTH: {
+    VERIFY_TOKEN: '/account/verify-token',
+    LOGIN: '/account/login',
+    RESET_PASSWORD: '/account/reset-password',
+    GET_ME: (id) => `/account/me/${id}`,
+    UPDATE: '/account/update',
+    CHANGE_PASSWORD: '/account/change-password',
+    LOGOUT: '/account/logout',
+  },
   ABOUT: {
     LIST: '/about',
     GET_BY_ID: (id) => `/about/${id}`,

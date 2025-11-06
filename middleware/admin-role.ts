@@ -1,35 +1,19 @@
-import { ref } from "vue";
-import { useAccountStore } from '@/stores/client/users/useAccountStore'
-import type { MyJwtPayload } from '@/server/types/dto/v1/user.dto'
-import { jwtDecode } from 'jwt-decode'
-import { ROUTES } from '@/shared/constants/routes';
+import { ROUTES } from "@/shared/constants/routes";
+import { useAdminAuthStore } from "@/stores/admin/admin-auth/useAdminAuthStore";
 
 export default defineNuxtRouteMiddleware(async () => {
-  const storeAccount = useAccountStore()
-  const numberRoleAdmin = 2
-  const isAdminRole = ref(false)
+  const storeAdminAuth = useAdminAuthStore();
 
-  const token = useCookie<string | null>('token')
-
-  if (!token.value) {
-    return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
+  if (storeAdminAuth.getDetailAccount?.id) {
+    return;
   }
 
-  try {
-    const decoded = jwtDecode<MyJwtPayload>(token.value)
-
-    if (!storeAccount.getDetailValue?.id) {
-      await storeAccount.handleGetDetailAccount(decoded.id)
+  setTimeout(async function(){
+    const ok = await storeAdminAuth.verifyToken();
+    if (!ok) {
+      const adminToken = useCookie("admin_token");
+      adminToken.value = null;
+      return navigateTo(ROUTES.ADMIN.LOGIN.path, { replace: true });
     }
-
-    if (storeAccount.getDetailValue?.role !== numberRoleAdmin) {
-      isAdminRole.value = false
-      return navigateTo(ROUTES.PUBLIC.HOME.path, { replace: true })
-    }
-
-    isAdminRole.value = true
-  } catch (err) {
-    console.error('Token decode error:', err)
-    return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
-  }
-})
+  }, 1000);
+});

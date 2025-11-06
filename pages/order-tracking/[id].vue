@@ -20,6 +20,6 @@ watch(() => idOrder, (newValue) => {
 </script>
 <template>
   <div class="bg-gradient-1 pd-md pt-md pl-sm pr-sm">
-    <OrderItemDetailTemplate1 :idOrder="idOrder" />
+    <PopupOrderDetail :idOrder="idOrder" />
   </div> 
 </template>

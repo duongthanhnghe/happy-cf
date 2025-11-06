@@ -259,12 +259,8 @@ export const getAllUsers = async (req: Request, res: Response) => {
    
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    const role = req.query.role ? parseInt(req.query.role as string) : undefined;
 
     const filter: any = {};
-    if (role !== undefined) {
-      filter.role = role;
-    }
 
     if (limit === -1) {
     

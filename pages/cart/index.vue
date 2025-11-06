@@ -41,7 +41,6 @@ const submitOrder = async (event: SubmitEventPromise) => {
   store.submitOrder();
 };
 
-// Voucher handlers
 const { removeVoucher, handleVoucherReset, handleApplyVoucherInput } = useCartVoucherHandlers(
   store,
   selectedFreeship,
@@ -49,11 +48,9 @@ const { removeVoucher, handleVoucherReset, handleApplyVoucherInput } = useCartVo
   voucherCode
 );
 
-// Location watchers
 useLocationWatchers(storeLocation);
 useCartLocationWatchers(storeLocation, store);
 
-// Voucher selection watcher
 watch(
   [selectedVoucher, selectedFreeship],
   ([newVoucher, newFreeship], [oldVoucher, oldFreeship]) => {
@@ -101,158 +98,6 @@ onBeforeUnmount(() => {
   eventBus.off('voucher:reset', handleVoucherReset);
 });
 
-// import '@/styles/templates/cart/popup-cart.scss'
-// import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
-// import type { SubmitEventPromise } from 'vuetify';
-// import { formatCurrency } from '@/utils/global'
-// import { showWarning } from '@/utils/toast'
-// import { useCartStore } from '@/stores/client/product/useCartOrderStore'
-// import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
-// import { useAccountStore } from '@/stores/client/users/useAccountStore';
-// import { ROUTES } from '@/shared/constants/routes';
-// import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
-// import { nullRules, phoneRules } from '@/utils/validation'
-// import { useLocationStore } from '@/stores/shared/useLocationStore';
-// import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
-// import { useEventBus } from "@/composables/voucher/useEventBus";
-
-// definePageMeta({
-//   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
-// })
-
-// const store = useCartStore();
-// const storeAddress = useAddressesManageStore();
-// const storeAccount = useAccountStore();
-// const storePaymentStatus = usePaymentStatusStore();
-// const storeLocation = useLocationStore();
-// const eventBus = useEventBus();
-
-// const selectedFreeship = ref<string| null>(null);
-// const selectedVoucher = ref<string | null>(null);
-// const voucherCode = ref<string>('');
-
-// const submitOrder = async (event: SubmitEventPromise) => {
-//   const results = await event
-//   if (!results.valid) {
-//     showWarning('Vui lòng chọn đầy đủ thông tin!');
-//     return
-//   }
-//   store.submitOrder()
-// }
-
-// const removeVoucher = (code: string, type: any) => {
-//   if(type === VOUCHER_TYPE.freeship.type){
-//     selectedFreeship.value = null;
-//     store.discountVoucherFreeship = 0;
-//     store.activeFreeshipVoucher = null;
-//   } else {
-//     selectedVoucher.value = null;
-//     store.discountVoucher = 0;
-//     store.messageVoucher = '';
-//   }
-
-//   store.voucherUsage = store.voucherUsage.filter(v => v.code !== code);
-//   store.handleCalcTotalPriceCurrent();
-// }
-
-// const handleVoucherReset = (data: {resetFreeship: boolean;resetVoucher: boolean;}) => {
-//   if (data.resetFreeship) selectedFreeship.value = null;
-//   if (data.resetVoucher) selectedVoucher.value = null;
-// };
-
-// const handleApplyVoucherInput = async () => {
-//   if (!voucherCode.value) return;
-
-//   await store.applyVoucher(voucherCode.value);
-
-//   const appliedVoucher = store.voucherUsage.find(v => v.code === voucherCode.value);
-//   if (appliedVoucher) {
-//     if (appliedVoucher.type === VOUCHER_TYPE.freeship.type) {
-//       selectedFreeship.value = appliedVoucher.code;
-//     } else {
-//       selectedVoucher.value = appliedVoucher.code;
-//     }
-//   }
-
-//   voucherCode.value = '';
-// };
-
-
-// watch( // chon voucher
-//   [selectedVoucher, selectedFreeship],
-//   ([newVoucher, newFreeship], [oldVoucher, oldFreeship]) => {
-//     if (newVoucher && newVoucher !== oldVoucher) {
-//       store.messageVoucher = '';
-//       if(oldVoucher) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldVoucher);
-//       store.applyVoucher(newVoucher);
-//     }
-
-//     if (newFreeship && newFreeship !== oldFreeship) {
-//       if(oldFreeship) store.voucherUsage = store.voucherUsage.filter(v => v.code !== oldFreeship);
-//       store.applyVoucher(newFreeship);
-//     }
-//   }
-// );
-
-// watch(() => storeLocation.selectedProvince, async (newVal) => {
-//   if (storeLocation.isSetting) return
-  
-//   if (newVal) {
-//     await storeLocation.fetchDistrictsStore(newVal)
-//     storeLocation.selectedDistrict = null
-//     storeLocation.selectedWard = null
-//   } else {
-//     storeLocation.districts = []
-//     storeLocation.wards = []
-//   }
-// })
-
-// watch(() => storeLocation.selectedDistrict, async (newVal) => {
-//   if (storeLocation.isSetting) return
-  
-//   if (newVal) {
-//     await storeLocation.fetchWardsStore(newVal)
-//     storeLocation.selectedWard = null
-//   } else {
-//     storeLocation.wards = []
-//   }
-// })
-
-// watch(
-//   [() => storeLocation.selectedWard, () => store.cartListItem],
-//   async ([newWard, newCart]) => {
-//     if (newWard && newCart.length > 0) {
-//       await store.handleGetFee()
-//     } else {
-//       store.shippingFee = 0
-//     }
-//   },
-//   { immediate: true, deep: true }
-// )
-
-// onMounted(async () => {
-//   if(store.getCartListItem.length > 0) {
-//     await store.fetchProductCart();
-    
-//     await storeLocation.fetchProvincesStore()
-//     if(storeAccount.getDetailValue?.id) await store.handleGetDefaultAddress()
-//     if(storePaymentStatus.getListData.length === 0) storePaymentStatus.fetchPaymentStatusStore()
-//     eventBus.on('voucher:reset', handleVoucherReset);
-//   } 
-// })
-
-// onBeforeUnmount(() => {
-//   selectedFreeship.value = null
-//   selectedVoucher.value = null
-//   store.discountVoucher = 0;
-//   store.discountVoucherFreeship = 0;
-//   store.messageVoucher = '';
-//   store.voucherUsage = [];
-//   store.activeFreeshipVoucher = null;
-//   storeLocation.resetLocation
-//   eventBus.off('voucher:reset', handleVoucherReset);
-// })
-
 </script>
 <template>
 
@@ -274,8 +119,8 @@ onBeforeUnmount(() => {
           <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
         </div>
 
-        <div v-if="store.getTotalPriceDiscount != 0" class="card-sm bg-white flex justify-between mt-ms">
-          {{ storeAccount.getDetailValue?.id ? 'Tang diem tuy lich':'Dang nhap de tich diem' }}
+        <div v-if="store.getTotalPriceDiscount != 0 && storeAccount.getDetailValue?.id" class="card-sm bg-white flex justify-between mt-ms">
+          Tang diem tuy lich
           <span class="flex gap-xs weight-semibold">
             <Button size="xs" color="secondary" icon="diamond_shine"/>
             {{ store.getTotalPoint }}

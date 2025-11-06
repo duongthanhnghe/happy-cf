@@ -28,10 +28,10 @@ onMounted(() => {
         <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
       </div>
 
-      <div v-if="store.getTotalPriceDiscount != 0" class="card-sm bg-white flex justify-between mt-ms">
-        {{ storeAccount.getDetailValue?.id ? 'Tang diem tuy lich':'Dang nhap de tich diem' }}
+      <div v-if="store.getTotalPriceDiscount != 0 && storeAccount.getDetailValue?.id" class="card-sm bg-white flex justify-between mt-ms">
+        Tang diem tuy lich
         <span class="flex gap-xs weight-semibold">
-          <Button size="xs" color="secondary" icon="diamond_shine"/>
+          <Button tag="span" size="xs" color="secondary" icon="diamond_shine"/>
           {{ store.getTotalPoint }}
         </span>
       </div>

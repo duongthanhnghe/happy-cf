@@ -10,9 +10,9 @@ import fs, { promises } from 'node:fs';
 import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
 import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
 import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
+import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
 import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
 import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
-import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
 import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
 import nodemailer from 'file:///Users/ttcenter/happy-cf/node_modules/nodemailer/lib/nodemailer.js';
 import { OAuth2Client } from 'file:///Users/ttcenter/happy-cf/node_modules/google-auth-library/build/src/index.js';
@@ -1144,7 +1144,22 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"4390a-TMJxxnSbYgmIZyhokuqkn7EbgHE\"",
+    "mtime": "2025-11-06T05:00:08.161Z",
+    "size": 276746,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"102c98-V2R6Y6k1Gycfwdzrl97Bkg6qyso\"",
+    "mtime": "2025-11-06T05:00:08.166Z",
+    "size": 1059992,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -1553,6 +1568,7 @@ async function getIslandContext(event) {
 
 const _lazy_WZOimk = () => Promise.resolve().then(function () { return addressesRouter; });
 const _lazy_tuVKNW = () => Promise.resolve().then(function () { return aboutRouter; });
+const _lazy_KWjcKG = () => Promise.resolve().then(function () { return adminAuthRouter; });
 const _lazy_wad1E_ = () => Promise.resolve().then(function () { return bannerRouter$1; });
 const _lazy_TqIHqT = () => Promise.resolve().then(function () { return categoriesNewsRouter$1; });
 const _lazy_rYJmrv = () => Promise.resolve().then(function () { return categoriesProductRouter$1; });
@@ -1587,6 +1603,7 @@ const handlers = [
   { route: '', handler: _uxO0JW, lazy: false, middleware: true, method: undefined },
   { route: '/v1/addressesRouter', handler: _lazy_WZOimk, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/aboutRouter', handler: _lazy_tuVKNW, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/adminAuthRouter', handler: _lazy_KWjcKG, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/bannerRouter', handler: _lazy_wad1E_, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/categoriesNewsRouter', handler: _lazy_TqIHqT, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/categoriesProductRouter', handler: _lazy_rYJmrv, lazy: true, middleware: false, method: undefined },
@@ -2111,18 +2128,18 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$t = Router();
-router$t.get("/default/:userId", authenticate, getDefaultAddressByUserId);
-router$t.get("/user/:userId", authenticate, getAllAddress);
-router$t.get("/:id", authenticate, getAddressById);
-router$t.post("/", authenticate, createAddress);
-router$t.put("/:id", authenticate, updateAddress);
-router$t.delete("/:id", authenticate, deleteAddress);
-router$t.post("/:id/set-default", authenticate, setAddressDefault);
+const router$u = Router();
+router$u.get("/default/:userId", authenticate, getDefaultAddressByUserId);
+router$u.get("/user/:userId", authenticate, getAllAddress);
+router$u.get("/:id", authenticate, getAddressById);
+router$u.post("/", authenticate, createAddress);
+router$u.put("/:id", authenticate, updateAddress);
+router$u.delete("/:id", authenticate, deleteAddress);
+router$u.post("/:id/set-default", authenticate, setAddressDefault);
 
 const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$t
+  default: router$u
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ListImageSchema$1 = new Schema(
@@ -2266,32 +2283,275 @@ const toggleActive$6 = async (req, res) => {
   }
 };
 
-const authenticateAdmin = (req, res, next) => {
+const AdminAccountSchema = new Schema(
+  {
+    avatar: { type: String, required: true },
+    fullname: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ["superadmin", "editor"], default: "editor" },
+    active: { type: Boolean, default: true },
+    lastLogin: { type: Date }
+  },
+  { timestamps: true }
+);
+const AdminAccountModel = mongoose.model(
+  "AdminAccount",
+  AdminAccountSchema,
+  "admin_accounts"
+);
+
+const authenticateAdmin = async (req, res, next) => {
   var _a;
-  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  const token = (_a = req.cookies) == null ? void 0 : _a.admin_token;
   if (!token) return res.status(401).json({ code: 1, message: "Thi\u1EBFu token" });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    if (decoded.role !== 2) {
-      return res.status(403).json({ code: 1, message: "B\u1EA1n kh\xF4ng c\xF3 quy\u1EC1n truy c\u1EADp (Admin only)" });
+    const admin = await AdminAccountModel.findById(decoded.id);
+    if (!admin) {
+      return res.status(401).json({ code: 2, message: "T\xE0i kho\u1EA3n admin kh\xF4ng t\u1ED3n t\u1EA1i ho\u1EB7c \u0111\xE3 b\u1ECB x\xF3a" });
     }
-    req.user = decoded;
+    if (!admin.active) {
+      return res.status(403).json({ code: 3, message: "T\xE0i kho\u1EA3n qu\u1EA3n tr\u1ECB \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
+    }
+    req.admin = decoded;
     next();
   } catch {
     return res.status(401).json({ code: 1, message: "Token kh\xF4ng h\u1EE3p l\u1EC7 ho\u1EB7c \u0111\xE3 h\u1EBFt h\u1EA1n" });
   }
 };
 
-const router$s = Router();
-router$s.get("/", authenticateAdmin, getAllAbout);
-router$s.get("/:id", getAboutById);
-router$s.post("/", authenticateAdmin, createAbout);
-router$s.put("/:id", authenticateAdmin, updateAbout);
-router$s.delete("/:id", authenticateAdmin, deleteAbout);
-router$s.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
-router$s.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
+const router$t = Router();
+router$t.get("/", authenticateAdmin, getAllAbout);
+router$t.get("/:id", getAboutById);
+router$t.post("/", authenticateAdmin, createAbout);
+router$t.put("/:id", authenticateAdmin, updateAbout);
+router$t.delete("/:id", authenticateAdmin, deleteAbout);
+router$t.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
+router$t.patch("/toggleActive/:id", authenticateAdmin, toggleActive$6);
 
 const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$t
+}, Symbol.toStringTag, { value: 'Module' }));
+
+function toAdminAccountDTO(entity) {
+  var _a, _b, _c;
+  return {
+    id: entity._id.toString(),
+    avatar: entity.avatar,
+    fullname: entity.fullname,
+    email: entity.email,
+    role: entity.role,
+    active: entity.active,
+    lastLogin: (_a = entity.lastLogin) == null ? void 0 : _a.toISOString(),
+    createdAt: (_b = entity.createdAt) == null ? void 0 : _b.toISOString(),
+    updatedAt: (_c = entity.updatedAt) == null ? void 0 : _c.toISOString()
+  };
+}
+
+const verifyAdminToken = async (req, res) => {
+  var _a;
+  const token = (_a = req.cookies) == null ? void 0 : _a.admin_token;
+  if (!token)
+    return res.status(401).json({ code: 1, message: "Thi\u1EBFu token \u0111\u0103ng nh\u1EADp" });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
+    const admin = await AdminAccountModel.findById(decoded.id);
+    if (!admin || !admin.active) {
+      return res.status(403).json({ code: 2, message: "T\xE0i kho\u1EA3n kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    return res.status(200).json({
+      code: 0,
+      message: "X\xE1c th\u1EF1c th\xE0nh c\xF4ng",
+      data: {
+        id: admin._id,
+        fullname: admin.fullname,
+        email: admin.email,
+        role: admin.role
+      }
+    });
+  } catch (err) {
+    return res.status(401).json({ code: 3, message: "Token kh\xF4ng h\u1EE3p l\u1EC7 ho\u1EB7c \u0111\xE3 h\u1EBFt h\u1EA1n" });
+  }
+};
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const admin = await AdminAccountModel.findOne({ email });
+    if (!admin) {
+      return res.status(400).json({ code: 1, message: "T\xE0i kho\u1EA3n kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(400).json({ code: 2, message: "M\u1EADt kh\u1EA9u kh\xF4ng \u0111\xFAng" });
+    }
+    if (!admin.active) {
+      return res.status(403).json({ code: 3, message: "T\xE0i kho\u1EA3n b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
+    }
+    const token = jwt.sign(
+      { id: admin._id, role: admin.role, email: admin.email, avatar: admin.avatar },
+      process.env.JWT_SECRET,
+      { expiresIn: "8h" }
+    );
+    admin.lastLogin = /* @__PURE__ */ new Date();
+    await admin.save();
+    res.cookie("admin_token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+      // true khi deploy https
+      maxAge: 8 * 60 * 60 * 1e3
+    });
+    return res.status(200).json({
+      code: 0,
+      message: "\u0110\u0103ng nh\u1EADp th\xE0nh c\xF4ng",
+      data: {
+        token,
+        admin: toAdminAccountDTO(admin)
+      }
+    });
+  } catch (err) {
+    console.error("Admin login error:", err);
+    return res.status(500).json({ code: 500, message: "L\u1ED7i h\u1EC7 th\u1ED1ng", error: err.message });
+  }
+};
+const resetAdminPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    if (!email || !newPassword) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu email ho\u1EB7c m\u1EADt kh\u1EA9u m\u1EDBi" });
+    }
+    const admin = await AdminAccountModel.findOne({ email });
+    if (!admin) {
+      return res.status(404).json({ code: 2, message: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n admin" });
+    }
+    const hashed = await bcrypt.hash(newPassword, 10);
+    admin.password = hashed;
+    await admin.save();
+    return res.status(200).json({
+      code: 0,
+      message: "\u0110\u1EB7t l\u1EA1i m\u1EADt kh\u1EA9u th\xE0nh c\xF4ng",
+      data: {
+        email: admin.email,
+        fullname: admin.fullname,
+        role: admin.role
+      }
+    });
+  } catch (err) {
+    console.error("Reset admin password error:", err);
+    return res.status(500).json({
+      code: 500,
+      message: "L\u1ED7i h\u1EC7 th\u1ED1ng",
+      error: err.message
+    });
+  }
+};
+const getAccount = async (req, res) => {
+  var _a, _b;
+  try {
+    const adminId = ((_a = req.user) == null ? void 0 : _a.id) || ((_b = req.params) == null ? void 0 : _b.id);
+    if (!adminId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu ID admin" });
+    }
+    const admin = await AdminAccountModel.findById(adminId).select("-password");
+    if (!admin) {
+      return res.status(404).json({ code: 2, message: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n admin" });
+    }
+    return res.status(200).json({
+      code: 0,
+      message: "L\u1EA5y th\xF4ng tin admin th\xE0nh c\xF4ng",
+      data: toAdminAccountDTO(admin)
+    });
+  } catch (err) {
+    console.error("Get admin info error:", err);
+    return res.status(500).json({ code: 500, message: "L\u1ED7i h\u1EC7 th\u1ED1ng", error: err.message });
+  }
+};
+const updateAccount$1 = async (req, res) => {
+  try {
+    const adminId = req.body.id;
+    if (!adminId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\xF4ng tin x\xE1c th\u1EF1c" });
+    }
+    const fields = {
+      fullname: req.body.fullname,
+      avatar: req.body.avatar
+    };
+    const updated = await AdminAccountModel.findByIdAndUpdate(adminId, fields, { new: true }).select("-password");
+    if (!updated) {
+      return res.status(404).json({ code: 2, message: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n admin" });
+    }
+    return res.status(200).json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt th\xF4ng tin th\xE0nh c\xF4ng",
+      data: toAdminAccountDTO(updated)
+    });
+  } catch (err) {
+    console.error("Update admin error:", err);
+    return res.status(500).json({ code: 500, message: "L\u1ED7i h\u1EC7 th\u1ED1ng", error: err.message });
+  }
+};
+const changePassword$1 = async (req, res) => {
+  try {
+    const adminId = req.body.id;
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu m\u1EADt kh\u1EA9u c\u0169 ho\u1EB7c m\u1EDBi" });
+    }
+    const admin = await AdminAccountModel.findById(adminId);
+    if (!admin) {
+      return res.status(404).json({ code: 2, message: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n admin" });
+    }
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({ code: 3, message: "M\u1EADt kh\u1EA9u c\u0169 kh\xF4ng \u0111\xFAng" });
+    }
+    admin.password = await bcrypt.hash(newPassword, 10);
+    await admin.save();
+    return res.status(200).json({
+      code: 0,
+      message: "\u0110\u1ED5i m\u1EADt kh\u1EA9u th\xE0nh c\xF4ng"
+    });
+  } catch (err) {
+    console.error("Change admin password error:", err);
+    return res.status(500).json({
+      code: 500,
+      message: "L\u1ED7i h\u1EC7 th\u1ED1ng",
+      error: err.message
+    });
+  }
+};
+
+const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!req.admin) {
+      return res.status(403).json({ code: 403, message: "Ch\u01B0a x\xE1c th\u1EF1c t\xE0i kho\u1EA3n qu\u1EA3n tr\u1ECB" });
+    }
+    if (!roles.includes(req.admin.role)) {
+      return res.status(403).json({ code: 403, message: "B\u1EA1n kh\xF4ng c\xF3 quy\u1EC1n truy c\u1EADp ch\u1EE9c n\u0103ng n\xE0y" });
+    }
+    next();
+  };
+};
+
+const router$s = Router();
+router$s.post("/login", adminLogin);
+router$s.post("/reset-password", authenticateAdmin, authorizeRoles("superadmin", "editor"), resetAdminPassword);
+router$s.get("/verify-token", verifyAdminToken);
+router$s.get("/me/:id", authenticateAdmin, getAccount);
+router$s.put("/update", authenticateAdmin, updateAccount$1);
+router$s.post("/change-password", authenticateAdmin, changePassword$1);
+router$s.post("/logout", (req, res) => {
+  res.clearCookie("admin_token", {
+    httpOnly: true,
+    path: "/",
+    sameSite: "lax"
+  });
+  res.json({ code: 0, message: "\u0110\u0103ng xu\u1EA5t th\xE0nh c\xF4ng" });
+});
+
+const adminAuthRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$s
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3541,11 +3801,7 @@ const getAllUsers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const role = req.query.role ? parseInt(req.query.role) : void 0;
     const filter = {};
-    if (role !== void 0) {
-      filter.role = role;
-    }
     if (limit === -1) {
       const users = await UserModel.find(filter).sort({ createdAt: -1 });
       return res.status(200).json({
@@ -4860,8 +5116,9 @@ const voucherUsageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.define
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const router$f = Router();
+router$f.use("/account", router$s);
 router$f.use("/settings", router$o);
-router$f.use("/about", router$s);
+router$f.use("/about", router$t);
 router$f.use("/users", router$n);
 router$f.use("/banners", router$r);
 router$f.use("/categoriesNews", router$q);
@@ -5900,13 +6157,11 @@ const getAllProvinces = async (_, res) => {
       }
     });
     const result = await response.json();
-    console.log("\u{1F4E6} Province result:", result);
     if (!response.ok || result.status !== 200) {
       throw new Error(result.message || "Kh\xF4ng th\u1EC3 l\u1EA5y danh s\xE1ch T\u1EC9nh/TP");
     }
     return res.json({ code: 0, data: result.data });
   } catch (err) {
-    console.error("\u274C getAllProvinces error:", err.message);
     return res.status(500).json({
       code: 1,
       message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch T\u1EC9nh/TP",
@@ -5929,13 +6184,11 @@ const getDistrictsByProvince = async (req, res) => {
       }
     });
     const result = await response.json();
-    console.log("\u{1F4E6} District result:", result);
     if (!response.ok || result.status !== 200) {
       throw new Error(result.message || "Kh\xF4ng th\u1EC3 l\u1EA5y danh s\xE1ch Qu\u1EADn/Huy\u1EC7n");
     }
     return res.json({ code: 0, data: result.data });
   } catch (err) {
-    console.error("\u274C getDistrictsByProvince error:", err.message);
     return res.status(500).json({
       code: 1,
       message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch Qu\u1EADn/Huy\u1EC7n",
@@ -5958,13 +6211,11 @@ const getWardsByDistrict = async (req, res) => {
       }
     });
     const result = await response.json();
-    console.log("\u{1F4E6} Ward result:", result);
     if (!response.ok || result.status !== 200) {
       throw new Error(result.message || "Kh\xF4ng th\u1EC3 l\u1EA5y danh s\xE1ch Ph\u01B0\u1EDDng/X\xE3");
     }
     return res.json({ code: 0, data: result.data });
   } catch (err) {
-    console.error("\u274C getWardsByDistrict error:", err.message);
     return res.status(500).json({
       code: 1,
       message: "L\u1ED7i khi l\u1EA5y danh s\xE1ch Ph\u01B0\u1EDDng/X\xE3",
@@ -5993,7 +6244,6 @@ const getProvinceDetail = async (req, res) => {
     }
     return res.json({ code: 0, data: result.data[0] });
   } catch (err) {
-    console.error("\u274C getProvinceDetail error:", err.message);
     return res.status(500).json({
       code: 1,
       message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt T\u1EC9nh/TP",
@@ -6027,7 +6277,6 @@ const getDistrictDetail = async (req, res) => {
     }
     return res.json({ code: 0, data: district });
   } catch (err) {
-    console.error("\u274C getDistrictDetail error:", err.message);
     return res.status(500).json({
       code: 1,
       message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt Qu\u1EADn/Huy\u1EC7n",
@@ -6063,7 +6312,6 @@ const getWardDetail = async (req, res) => {
     }
     return res.json({ code: 0, data: ward });
   } catch (err) {
-    console.error("\u274C getWardDetail error:", err.message);
     return res.status(500).json({
       code: 1,
       message: "L\u1ED7i khi l\u1EA5y chi ti\u1EBFt Ph\u01B0\u1EDDng/X\xE3",
@@ -6118,7 +6366,6 @@ const BaseInformationEntity = model(
 function toBaseInformationDTO(entity) {
   var _a, _b;
   return {
-    id: entity._id.toString(),
     name: entity.name,
     logoUrl: entity.logoUrl,
     phone: entity.phone,
@@ -7285,7 +7532,7 @@ router.use("/newsPosts", router$5);
 router.use("/orders", router$4);
 router.use("/categories", router$b);
 router.use("/products", router$3);
-router.use("/addresses", router$t);
+router.use("/addresses", router$u);
 router.use("/product-reviews", router$2);
 router.use("/voucher", router$1);
 router.use("/", router$3);

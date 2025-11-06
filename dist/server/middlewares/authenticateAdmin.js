@@ -1,15 +1,20 @@
 import jwt from 'jsonwebtoken';
-export const authenticateAdmin = (req, res, next) => {
+import { AdminAccountModel } from "../models/v1/AdminAccountEntity.js";
+export const authenticateAdmin = async (req, res, next) => {
     var _a;
-    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
+    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.admin_token;
     if (!token)
         return res.status(401).json({ code: 1, message: 'Thiếu token' });
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || '');
-        if (decoded.role !== 2) {
-            return res.status(403).json({ code: 1, message: 'Bạn không có quyền truy cập (Admin only)' });
+        const admin = await AdminAccountModel.findById(decoded.id);
+        if (!admin) {
+            return res.status(401).json({ code: 2, message: "Tài khoản admin không tồn tại hoặc đã bị xóa" });
         }
-        req.user = decoded;
+        if (!admin.active) {
+            return res.status(403).json({ code: 3, message: "Tài khoản quản trị đã bị vô hiệu hóa" });
+        }
+        req.admin = decoded;
         next();
     }
     catch {
