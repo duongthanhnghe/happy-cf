@@ -1,3 +1,5 @@
+.env
+.env.*
 # cache / storage / token files
 storage/
 vtp_token_cache.json

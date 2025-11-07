@@ -1,2 +1,10 @@
 /// <reference types="nuxt" />
 /// <reference types="@nuxt/schema" />
+interface ImportMetaEnv {
+  readonly VITE_API_BASE_URL: string
+  readonly VITE_API_ADMIN_URL: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
