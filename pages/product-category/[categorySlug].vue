@@ -2,14 +2,15 @@
 import { ref, watch } from "vue"
 import { ROUTES } from '@/shared/constants/routes'
 import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
+import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
 })
 
 const storeCategoryMain = useCategoryMainStore()
-
 const valueChangePage = ref<boolean|null>(null)
+const detail: CategoryProductDTO | null = storeCategoryMain.getDetail
 
 watch(valueChangePage, (newVal) => {
   if(newVal !== null) storeCategoryMain.handleChangePage(newVal)
@@ -18,14 +19,14 @@ watch(valueChangePage, (newVal) => {
 </script>
 
 <template>
-  <div>
-    <div class="container pt-section pb-section" v-if="storeCategoryMain.getDetail">
-      <h1 v-if="storeCategoryMain.getDetail.categoryName">{{ storeCategoryMain.getDetail.categoryName }}</h1>
+  <template v-if="detail">
+    <div class="container pt-section pb-section" >
+      <h1 v-if="detail.categoryName">{{ detail.categoryName }}</h1>
       <h1 v-else></h1>
-      <p>{{ storeCategoryMain.getDetail.description }}</p>
+      <p>{{ detail.description }}</p>
       <v-radio-group v-if="storeCategoryMain.getListCategoryChildren.length > 1" v-model="storeCategoryMain.filterCategory">
         <v-radio
-          v-for="item in [{ id: '', categoryName: storeCategoryMain.getDetail.categoryName }, ...storeCategoryMain.getListCategoryChildren]"
+          v-for="item in [{ id: '', categoryName: detail.categoryName }, ...storeCategoryMain.getListCategoryChildren]"
           :key="item.id"
           :label="item.categoryName"
           :value="item.id"
@@ -60,8 +61,8 @@ watch(valueChangePage, (newVal) => {
         </div>
       </template>
     </div>
-    <div v-else>
-      <p>Đang tải dữ liệu...</p>
-    </div>
+  </template>
+  <div v-else>
+    <p>Đang tải dữ liệu...</p>
   </div>
 </template>

@@ -1,4 +1,4 @@
-import { getViettelToken } from "../orderController.js";
+import { getViettelToken } from "../order.controller.js";
 const BASE_URL = "https://partner.viettelpost.vn/v2/categories";
 export const getAllProvinces = async (_, res) => {
     try {

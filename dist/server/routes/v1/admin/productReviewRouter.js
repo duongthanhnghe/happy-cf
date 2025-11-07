@@ -3,7 +3,7 @@ import { getAllProductReviews, getProductReviewById, updateProductReviewStatus, 
 // submitProductReview,
 // getReviewsByUser,
 // getReviewsByProduct,
- } from '../../../controllers/v1/admin/productReviewController.js';
+ } from '../../../controllers/v1/admin/product-review.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
 router.get("/", authenticateAdmin, getAllProductReviews);

@@ -1,22 +1,22 @@
 import { Router } from 'express';
-import settingRoutes from './settingRouter.js';
+import settingRoutes from './setting.router.js';
 // import fileManageRoutes from './fileManageRouter.js'
 // import authRoutes from './authRouter.js'
-import aboutRoutes from './aboutRouter.js';
-import usersRouter from './usersRouter.js';
-import bannerRoutes from './bannerRouter.js';
-import categoriesNewsRoutes from './categoriesNewsRouter.js';
-import postsNewsRoutes from './postsNewsRouter.js';
-import orderManageRoutes from './orderManageRouter.js';
-import categoriesProductRoutes from './categoriesProductRouter.js';
-import productRoutes from './productRouter.js';
+import aboutRoutes from './about.router.js';
+import usersRouter from './users.router.js';
+import bannerRoutes from './banner.router.js';
+import categoriesNewsRoutes from './categories-news.router.js';
+import postsNewsRoutes from './posts-news.router.js';
+import orderManageRoutes from './order-manage.router.js';
+import categoriesProductRoutes from './categories-product.router.js';
+import productRoutes from './product.router.js';
 // import addressRoutes from './addressesRouter.js'
-import paymentTransactionRoutes from './paymentTransactionRoutes.js';
+import paymentTransactionRoutes from './payment-transaction.routes.js';
 // import wishlistRoutes from './productRouter.js'
-import productReviewRouter from './productReviewRouter.js';
-import voucherRouter from './voucherRouter.js';
-import voucherUsageRouter from './voucherUsageRouter.js';
-import accountRouter from './accountRouter.js';
+import productReviewRouter from './product-review.router.js';
+import voucherRouter from './voucher.router.js';
+import voucherUsageRouter from './voucher-usage.router.js';
+import accountRouter from './account.router.js';
 // import locationRoutes from './locationRouter.js'
 const router = Router();
 router.use('/account', accountRouter);

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getProductById, getPromotionalProducts, getMostOrderedProduct, getWishlistByUserId, addWishlistItem, deleteWishlistItem, searchProducts, getRelatedProducts, getCartProducts, getProductsByCategory, } from '../../controllers/v1/productController.js';
+import { getProductById, getPromotionalProducts, getMostOrderedProduct, getWishlistByUserId, addWishlistItem, deleteWishlistItem, searchProducts, getRelatedProducts, getCartProducts, getProductsByCategory, } from '../../controllers/v1/product.controller.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 const router = Router();
 router.post('/cart-detail', getCartProducts);

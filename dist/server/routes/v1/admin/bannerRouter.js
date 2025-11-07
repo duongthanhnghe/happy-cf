@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllBanners, getBannerById, createBanner, updateBanner, deleteBanner, updateOrder, toggleActive, } from '../../../controllers/v1/admin/bannerController.js';
+import { getAllBanners, getBannerById, createBanner, updateBanner, deleteBanner, updateOrder, toggleActive, } from '../../../controllers/v1/admin/banner.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
 router.get('/', authenticateAdmin, getAllBanners);

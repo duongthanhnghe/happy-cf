@@ -4,7 +4,7 @@ import {
 getProductReviewById, 
 // updateProductReviewStatus,
 // deleteProductReview,
-submitProductReview, getReviewsByUser, getReviewsByProduct, } from '../../controllers/v1/productReviewController.js';
+submitProductReview, getReviewsByUser, getReviewsByProduct, } from '../../controllers/v1/product-review.controller.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 const router = Router();
 // router.get("/", getAllProductReviews);

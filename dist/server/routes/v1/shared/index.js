@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import fileManageRoutes from './fileManageRouter.js';
-import locationRoutes from './locationRouter.js';
-import baseInformationRoutes from './baseInformationRouter.js';
+import fileManageRoutes from './file-manage.router.js';
+import locationRoutes from './location.router.js';
+import baseInformationRoutes from './base-information.router.js';
 const router = Router();
 router.use('/fileManage', fileManageRoutes);
 router.use('/location', locationRoutes);

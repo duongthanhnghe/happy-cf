@@ -1,8 +1,8 @@
 import { Router } from 'express'
 
-import fileManageRoutes from './fileManageRouter'
-import locationRoutes from './locationRouter'
-import baseInformationRoutes from './baseInformationRouter'
+import fileManageRoutes from './file-manage.router'
+import locationRoutes from './location.router'
+import baseInformationRoutes from './base-information.router'
 
 const router = Router()
 

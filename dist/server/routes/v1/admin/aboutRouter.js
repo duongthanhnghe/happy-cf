@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllAbout, getAboutById, createAbout, updateAbout, deleteAbout, updateOrder, toggleActive, } from '../../../controllers/v1/admin/aboutController.js';
+import { getAllAbout, getAboutById, createAbout, updateAbout, deleteAbout, updateOrder, toggleActive, } from '../../../controllers/v1/admin/about.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
 router.get('/', authenticateAdmin, getAllAbout);

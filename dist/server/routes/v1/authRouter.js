@@ -16,7 +16,7 @@ getUserById,
 // deleteMembershipBenefit,
 // getAllMembershipBenefits,
 // getMembershipBenefitById,
-googleLogin, } from '../../controllers/v1/authController.js';
+googleLogin, verifyToken, } from '../../controllers/v1/auth.controller.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 const router = express.Router();
 // User routes
@@ -24,6 +24,7 @@ const router = express.Router();
 router.put('/users/me', authenticate, updateAccount);
 router.get('/users/:id', getUserById);
 // router.patch('/users/toggleActive/:id', toggleActive)
+router.get('/verify-token', verifyToken);
 router.post('/register', register);
 router.post('/login', login);
 router.post('/google-login', googleLogin);

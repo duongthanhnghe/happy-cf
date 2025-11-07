@@ -7,7 +7,7 @@ getOrderById, createOrder,
 // getAllPayment,
 getOrdersByUserId, 
 // updateOrderStatus,
-getRewardHistoryByUserId, checkPoint, sepayCallback, getShippingFee, } from '../../controllers/v1/orderController.js';
+getRewardHistoryByUserId, checkPoint, sepayCallback, getShippingFee, } from '../../controllers/v1/order.controller.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 const router = Router();
 // router.get('/',          getAllOrder)

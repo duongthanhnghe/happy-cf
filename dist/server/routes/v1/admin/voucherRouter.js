@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllVouchers, getVoucherById, createVoucher, updateVoucher, deleteVoucher, toggleActiveVoucher, } from "../../../controllers/v1/admin/voucherController.js";
+import { getAllVouchers, getVoucherById, createVoucher, updateVoucher, deleteVoucher, toggleActiveVoucher, } from "../../../controllers/v1/admin/voucher.controller.js";
 const router = Router();
 router.get("/", getAllVouchers);
 router.get("/:id", getVoucherById);

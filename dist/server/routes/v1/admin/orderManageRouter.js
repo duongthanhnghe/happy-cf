@@ -8,7 +8,7 @@ updateOrderStatus,
 // checkPoint,
 // sepayCallback,
 // getShippingFee,
- } from '../../../controllers/v1/admin/orderController.js';
+ } from '../../../controllers/v1/admin/order.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
 router.get('/', authenticateAdmin, getAllOrder);

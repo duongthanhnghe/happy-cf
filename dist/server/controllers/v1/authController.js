@@ -8,6 +8,30 @@ import { sendResetPasswordEmail } from "../../utils/mailer.js";
 import { randomBytes } from 'crypto';
 import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
+export const verifyToken = async (req, res) => {
+    var _a;
+    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
+    if (!token)
+        return res.status(401).json({ code: 1, message: "Thiếu token đăng nhập" });
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
+        const user = await UserModel.findById(decoded.id);
+        if (!user || !user.active) {
+            return res.status(403).json({ code: 2, message: "Tài khoản không hợp lệ" });
+        }
+        return res.status(200).json({
+            code: 0,
+            message: "Xác thực thành công",
+            data: {
+                id: user._id,
+                email: user.email,
+            },
+        });
+    }
+    catch (err) {
+        return res.status(401).json({ code: 3, message: "Token không hợp lệ hoặc đã hết hạn" });
+    }
+};
 export const register = async (req, res) => {
     try {
         const { fullname, email, password, gender } = req.body;
@@ -65,7 +89,7 @@ export const login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch)
             return res.status(400).json({ code: 1, message: "Mat khau khong dung, vui long nhap lai!" });
-        const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "12h" });
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
         res.cookie('token', token, {
             httpOnly: true, // FE không đọc trực tiếp
             secure: false, // localhost => false
@@ -127,7 +151,7 @@ export const googleLogin = async (req, res) => {
                 }
             });
         }
-        const jwtToken = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
+        const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
             expiresIn: "12h",
         });
         res.cookie('token', jwtToken, {

@@ -7,7 +7,7 @@ getPostsById,
 // deletePosts,
 getPostsLatest, 
 // toggleActive,
-getPostsByCategory, getPostBySlug, getRelatedPostsBySlug, updateView, getAllPostsPagination, } from '../../controllers/v1/postNewsController.js';
+getPostsByCategory, getPostBySlug, getRelatedPostsBySlug, updateView, getAllPostsPagination, } from '../../controllers/v1/post-news.controller.js';
 const router = Router();
 router.get('/category/:categoryId', getPostsByCategory);
 // router.get('/',          getAllPosts)

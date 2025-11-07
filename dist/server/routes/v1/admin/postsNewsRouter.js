@@ -7,7 +7,7 @@ toggleActive,
 // getRelatedPostsBySlug,
 // updateView,
 // getAllPostsPagination,
- } from '../../../controllers/v1/admin/postNewsController.js';
+ } from '../../../controllers/v1/admin/post-news.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
 // router.get('/category/:categoryId', getPostsByCategory)

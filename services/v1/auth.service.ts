@@ -4,6 +4,22 @@ import type { User, UserRegister, UserEdit, UserLogin, ResetPassword, ChangePass
 import type { ApiResponse } from '@server/types/common/api-response'
 
 export const authAPI = {
+  verifyToken: async (): Promise<ApiResponse<User>> => {
+    const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.VERIFY_TOKEN}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const data = await response.json()
+    if (!response.ok || data.code !== 0) {
+      throw new Error(data.message || 'Token không hợp lệ hoặc đã hết hạn')
+    }
+
+    return data
+  },
   Login: async (loginData: UserLogin) => {
     try {
       const resultData = {

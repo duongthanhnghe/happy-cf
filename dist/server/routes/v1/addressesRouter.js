@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllAddress, getAddressById, createAddress, updateAddress, deleteAddress, setAddressDefault, getDefaultAddressByUserId, } from '../../controllers/v1/addressesController.js';
+import { getAllAddress, getAddressById, createAddress, updateAddress, deleteAddress, setAddressDefault, getDefaultAddressByUserId, } from '../../controllers/v1/addresses.controller.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 const router = Router();
 router.get('/default/:userId', authenticate, getDefaultAddressByUserId);

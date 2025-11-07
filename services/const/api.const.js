@@ -77,6 +77,7 @@ export const API_ENDPOINTS = {
     LIST: '/banners',
   },
   AUTH: {
+    VERIFY_TOKEN: '/auth/verify-token',
     LOGIN: '/auth/login',
     GOOGLE_LOGIN: "/auth/google-login",
     REGISTER: '/auth/register',

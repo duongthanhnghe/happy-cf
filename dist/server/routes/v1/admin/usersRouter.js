@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUsers, getAllUsers, getAllMembershipLevel, getUserById, toggleActive, getMembershipLevelById, updateMembershipLevel, createMembershipBenefit, updateMembershipBenefit, deleteMembershipBenefit, getAllMembershipBenefits, getMembershipBenefitById, getRewardHistory, } from '../../../controllers/v1/admin/usersController.js';
+import { deleteUsers, getAllUsers, getAllMembershipLevel, getUserById, toggleActive, getMembershipLevelById, updateMembershipLevel, createMembershipBenefit, updateMembershipBenefit, deleteMembershipBenefit, getAllMembershipBenefits, getMembershipBenefitById, getRewardHistory, } from '../../../controllers/v1/admin/users.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = express.Router();
 router.get('/reward-history', authenticateAdmin, getRewardHistory);

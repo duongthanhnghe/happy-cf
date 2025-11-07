@@ -5,7 +5,7 @@ toggleActive, updateOrder,
 // getCategoriesBySlug,
 getAllCategoriesTree,
 // getChildrenCategories,
- } from '../../../controllers/v1/admin/categoriesProductController.js';
+ } from '../../../controllers/v1/admin/categories-product.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
 router.get('/tree', authenticateAdmin, getAllCategoriesTree);

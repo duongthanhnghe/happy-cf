@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllProvinces, getDistrictsByProvince, getWardsByDistrict, getProvinceDetail, getDistrictDetail, getWardDetail } from '../../../controllers/v1/shared/locationController.js';
+import { getAllProvinces, getDistrictsByProvince, getWardsByDistrict, getProvinceDetail, getDistrictDetail, getWardDetail } from '../../../controllers/v1/shared/location.controller.js';
 const router = express.Router();
 router.get("/provinces", getAllProvinces);
 router.get("/provinces/:provinceId", getProvinceDetail);

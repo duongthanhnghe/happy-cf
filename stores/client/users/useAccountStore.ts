@@ -1,22 +1,22 @@
-import { ref, computed, watchEffect, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from 'vue-router'
 import { defineStore } from "pinia";
 import { authAPI } from "@/services/v1/auth.service";
-import { jwtDecode } from 'jwt-decode'
-import type { User, MyJwtPayload, InformationMembershipLevels, MembershipLevels } from '@/server/types/dto/v1/user.dto'
 import { ROUTES } from '@/shared/constants/routes';
+import type { User, InformationMembershipLevels, MembershipLevels } from '@/server/types/dto/v1/user.dto'
 
-export const useAccountStore = defineStore("Account", () => {
+export const useAccountStore = defineStore("AccountStore", () => {
 
   const router = useRouter()
-  // const token = useCookie<string | null>("token", { sameSite: "lax" });
-  const token = useCookie<string | null>("token");
+  const token = useCookie<string | null>("token", { sameSite: "lax" });
   const isTogglePopupBarcode = ref<boolean>(false);
   const isTogglePopupMembershipInformation = ref<boolean>(false);
   const informationMembershipLevel = ref<InformationMembershipLevels|null>(null);
   const detailData = ref<User|null>(null)
   const userId = ref<string|null>(null)
   const loading = ref(false)
+  const lastVerifiedAt = ref<number>(0)
+  const verifyCacheDuration = 15 * 60 * 1000 // 15 phút
 
   const handleGetDetailAccount = async (userId: string) => {
     if(!userId) return
@@ -29,7 +29,6 @@ export const useAccountStore = defineStore("Account", () => {
     isTogglePopupBarcode.value = value;
   }
 
-  //popup barcode
   const handleTogglePopupMembershipInformation = (value: boolean) => {
     isTogglePopupMembershipInformation.value = value;
   }
@@ -78,84 +77,49 @@ export const useAccountStore = defineStore("Account", () => {
     router.push({ path: ROUTES.PUBLIC.HOME.path })
   }
 
-  const { refresh: refreshAccount } = useAsyncData(
-    'accountDetail',
-    async () => {
-      if (!token.value){
-        loading.value = false
-        return null;
-      } 
+  async function verifyToken(force = false): Promise<null|boolean> {
+    try {
+      if (!token.value) return false
 
-      try {
-        const decoded = jwtDecode<MyJwtPayload>(token.value)
-
-        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-          handleLogout()
-          return null
-        }
-
-        userId.value = decoded.id
-        if (!userId.value) return null
-
-        const data = await authAPI.getDetailAccount(userId.value)
-        detailData.value = data.data
-        return data.data
-      } catch (err) {
-        console.error("Token decode error:", err)
-        return null
-      } finally {
-        loading.value = false
+      const now = Date.now()
+      
+      if (!force && detailData.value && now - lastVerifiedAt.value < verifyCacheDuration) {
+        return true
       }
-    },
-    {
-      immediate: true,
-      watch: [token],
+
+      const res = await authAPI.verifyToken()
+
+      if (res.code === 0 && res.data) {
+        lastVerifiedAt.value = now
+        await handleGetDetailAccount(res.data.id);
+        userId.value = res.data.id;
+        return true
+      }
+
+      console.warn("verifyToken failed:", res.message)
+      return false
+    } catch (err: any) {
+      console.error("verifyToken error:", err)
+      return null
     }
-  )
+  }
 
-  // onMounted(() => {
-  //   watchEffect(async () => {
-  //     if (!token.value) return;
-
-  //     try {
-  //       const decoded = jwtDecode<MyJwtPayload>(token.value);
-  //       if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-  //         handleLogout();
-  //         return;
-  //       }
-
-  //       userId.value = decoded.id;
-  //       const data = await authAPI.getDetailAccount(userId.value);
-  //       detailData.value = data.data;
-  //     } catch (err) {
-  //       console.error("Token decode error:", err);
-  //     } finally {
-  //       loading.value = false;
-  //     }
-  //   });
-  // });
-
-
-  //getters
   const getDetailValue = computed(() => detailData.value)
   const getLoading = computed(() => loading.value)
   const getUserId = computed(() => userId.value)
   const getInformationMembershipLevel = computed(() => informationMembershipLevel.value)
 
   return {
-    // state
     detailData,
     userId,
     isTogglePopupBarcode,
     isTogglePopupMembershipInformation,
-    // actions
     handleGetDetailAccount,
     handleTogglePopupBarcode,
     getNextMembershipLevel,
     handleLogout,
     handleTogglePopupMembershipInformation,
-    refreshAccount,
-    //getters
+    verifyToken,
     getDetailValue,
     getUserId,
     getInformationMembershipLevel,

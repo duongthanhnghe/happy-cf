@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { AccountModel } from "../models/v1/AccountEntity.js";
+import { AccountModel } from "../models/v1/account.entity.js";
 export const authenticateAdmin = async (req, res, next) => {
     var _a;
     const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.admin_token;

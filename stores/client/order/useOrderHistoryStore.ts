@@ -12,23 +12,22 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   const storeOrderStatus = useOrderStatusStore();
   const router = useRouter()
 
-  //state
   const dataList = ref<OrderDTO[]|null>(null)
   const isTogglePopupAdd = ref(false)
   const isTogglePopupDetail = ref(false)
   const idOrderPopupDetail = ref<string>('')
   const filterStatusOrder = ref<string|null>('')
   const items = ref<OrderDTO[]|null>(null)
-  const pageSize = 2
+  const pageSize = 20
   const checkPageDetail = ref(false)
 
-  //actions
   const handleTogglePopupAdd = (value: boolean) => {
     isTogglePopupAdd.value = value
   }
 
   const getApiData = async () => {
-    const userId = storeAccount.getDetailValue?.id;
+    const userId = storeAccount.getUserId;
+
     if (!userId) return
 
     const data = await ordersAPI.getByUserId(userId);

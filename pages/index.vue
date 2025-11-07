@@ -7,6 +7,7 @@ import { usePostLatestStore } from '@/stores/client/news/usePostLatestStore';
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
+  middleware: ROUTES.PUBLIC.HOME.middleware,
   headerTypeLeft: ROUTES.PUBLIC.HOME.headerTypeLeft,
 })
 

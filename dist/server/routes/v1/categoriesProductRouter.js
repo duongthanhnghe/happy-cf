@@ -6,7 +6,7 @@ import { getAllCategories, getCategoriesById,
 // getProductsByCategory,
 // toggleActive,
 // updateOrder,
-getCategoriesBySlug, getAllCategoriesTree, getChildrenCategories, } from '../../controllers/v1/categoriesProductController.js';
+getCategoriesBySlug, getAllCategoriesTree, getChildrenCategories, } from '../../controllers/v1/categories-product.controller.js';
 const router = Router();
 router.get('/tree', getAllCategoriesTree);
 router.get('/', getAllCategories);

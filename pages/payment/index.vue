@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import '@/styles/templates/cart/popup-cart.scss'
 import { useRoute } from 'vue-router'
 import { onMounted, onBeforeUnmount } from 'vue'
 import { formatCurrency } from '@/utils/global'
@@ -7,6 +6,7 @@ import { usePaymentOrderStore } from '@/stores/client/product/usePaymentOrderSto
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
+  middleware: ROUTES.PUBLIC.PAYMENT.middleware,
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
 })
 

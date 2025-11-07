@@ -1147,16 +1147,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"4486e-L0IOJUZlzAVBk1BTtfV+NjMAiv8\"",
-    "mtime": "2025-11-06T17:13:27.871Z",
-    "size": 280686,
+    "etag": "\"44c2e-dW4U1r1EOoTsrb3m3sgnWRis07Q\"",
+    "mtime": "2025-11-07T06:32:07.385Z",
+    "size": 281646,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"106ce6-0XeHf9zT257jGJXRvxJv5OpNaPk\"",
-    "mtime": "2025-11-06T17:13:27.872Z",
-    "size": 1076454,
+    "etag": "\"107c46-9qEPaNlknBYFRpZkLaSOx3TEY2c\"",
+    "mtime": "2025-11-07T06:32:07.390Z",
+    "size": 1080390,
     "path": "index.mjs.map"
   }
 };
@@ -1566,72 +1566,72 @@ async function getIslandContext(event) {
   return ctx;
 }
 
-const _lazy_WZOimk = () => Promise.resolve().then(function () { return addressesRouter; });
-const _lazy_tuVKNW = () => Promise.resolve().then(function () { return aboutRouter; });
-const _lazy_2cawTH = () => Promise.resolve().then(function () { return accountRouter; });
-const _lazy_wad1E_ = () => Promise.resolve().then(function () { return bannerRouter$1; });
-const _lazy_TqIHqT = () => Promise.resolve().then(function () { return categoriesNewsRouter$1; });
-const _lazy_rYJmrv = () => Promise.resolve().then(function () { return categoriesProductRouter$1; });
+const _lazy_wNwSbU = () => Promise.resolve().then(function () { return addresses_router; });
+const _lazy_5UHfhE = () => Promise.resolve().then(function () { return about_router; });
+const _lazy_Kv_SzT = () => Promise.resolve().then(function () { return account_router; });
+const _lazy_xcMgXI = () => Promise.resolve().then(function () { return banner_router$1; });
+const _lazy_qQgg3H = () => Promise.resolve().then(function () { return categoriesNews_router$1; });
+const _lazy_k4fO0v = () => Promise.resolve().then(function () { return categoriesProduct_router$1; });
 const _lazy_ZkwUyZ = () => Promise.resolve().then(function () { return index$2; });
-const _lazy_uLsZkj = () => Promise.resolve().then(function () { return orderManageRouter$1; });
-const _lazy_xiyN0M = () => Promise.resolve().then(function () { return paymentTransactionRoutes; });
-const _lazy_keFZb5 = () => Promise.resolve().then(function () { return postsNewsRouter$1; });
-const _lazy_H3u2OJ = () => Promise.resolve().then(function () { return productReviewRouter$1; });
-const _lazy_AInuxj = () => Promise.resolve().then(function () { return productRouter$1; });
-const _lazy_NI8dax = () => Promise.resolve().then(function () { return settingRouter; });
-const _lazy_iadr18 = () => Promise.resolve().then(function () { return usersRouter$1; });
-const _lazy_5UO9M7 = () => Promise.resolve().then(function () { return voucherRouter$1; });
-const _lazy_yscScW = () => Promise.resolve().then(function () { return voucherUsageRouter; });
-const _lazy_6thR5q = () => Promise.resolve().then(function () { return authRouter; });
-const _lazy_5GTSlq = () => Promise.resolve().then(function () { return bannerRouter; });
-const _lazy_ndfMJ7 = () => Promise.resolve().then(function () { return categoriesNewsRouter; });
-const _lazy_5F7aiU = () => Promise.resolve().then(function () { return categoriesProductRouter; });
+const _lazy_DX_tpS = () => Promise.resolve().then(function () { return orderManage_router$1; });
+const _lazy_PIlvNR = () => Promise.resolve().then(function () { return paymentTransaction_routes; });
+const _lazy_GxTKtg = () => Promise.resolve().then(function () { return postsNews_router$1; });
+const _lazy_mugbZM = () => Promise.resolve().then(function () { return productReview_router$1; });
+const _lazy__nV5aS = () => Promise.resolve().then(function () { return product_router$1; });
+const _lazy_E1NKrS = () => Promise.resolve().then(function () { return setting_router; });
+const _lazy_agt9Pn = () => Promise.resolve().then(function () { return users_router$1; });
+const _lazy_tSt8P8 = () => Promise.resolve().then(function () { return voucherUsage_router; });
+const _lazy_jq_GgP = () => Promise.resolve().then(function () { return voucher_router$1; });
+const _lazy_EYPker = () => Promise.resolve().then(function () { return auth_router; });
+const _lazy_lSFrtu = () => Promise.resolve().then(function () { return banner_router; });
+const _lazy_TDsBUZ = () => Promise.resolve().then(function () { return categoriesNews_router; });
+const _lazy_sY9KoI = () => Promise.resolve().then(function () { return categoriesProduct_router; });
 const _lazy_Snf5SD = () => Promise.resolve().then(function () { return index; });
-const _lazy_Ti7wbR = () => Promise.resolve().then(function () { return orderManageRouter; });
-const _lazy_soYMBM = () => Promise.resolve().then(function () { return postsNewsRouter; });
-const _lazy_AH2XbG = () => Promise.resolve().then(function () { return productReviewRouter; });
-const _lazy_FuVwdC = () => Promise.resolve().then(function () { return productRouter; });
-const _lazy_UP_kxK = () => Promise.resolve().then(function () { return baseInformationRouter; });
-const _lazy_yozqhu = () => Promise.resolve().then(function () { return fileManageRouter; });
+const _lazy_bMFNSl = () => Promise.resolve().then(function () { return orderManage_router; });
+const _lazy_1x1J8x = () => Promise.resolve().then(function () { return postsNews_router; });
+const _lazy_GpYWlk = () => Promise.resolve().then(function () { return productReview_router; });
+const _lazy_S7FJjE = () => Promise.resolve().then(function () { return product_router; });
+const _lazy_mwgJUG = () => Promise.resolve().then(function () { return baseInformation_router; });
+const _lazy_cnp6El = () => Promise.resolve().then(function () { return fileManage_router; });
 const _lazy_qiGXOx = () => Promise.resolve().then(function () { return index$1; });
-const _lazy_QCha66 = () => Promise.resolve().then(function () { return locationRouter; });
-const _lazy_T3AZC3 = () => Promise.resolve().then(function () { return usersRouter; });
-const _lazy__E1hgC = () => Promise.resolve().then(function () { return voucherRouter; });
+const _lazy_FhyP7P = () => Promise.resolve().then(function () { return location_router; });
+const _lazy_aD8P6H = () => Promise.resolve().then(function () { return users_router; });
+const _lazy_AMtkES = () => Promise.resolve().then(function () { return voucher_router; });
 const _lazy_wB4Btu = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _uxO0JW, lazy: false, middleware: true, method: undefined },
-  { route: '/v1/addressesRouter', handler: _lazy_WZOimk, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/aboutRouter', handler: _lazy_tuVKNW, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/accountRouter', handler: _lazy_2cawTH, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/bannerRouter', handler: _lazy_wad1E_, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/categoriesNewsRouter', handler: _lazy_TqIHqT, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/categoriesProductRouter', handler: _lazy_rYJmrv, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/addresses.router', handler: _lazy_wNwSbU, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/about.router', handler: _lazy_5UHfhE, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/account.router', handler: _lazy_Kv_SzT, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/banner.router', handler: _lazy_xcMgXI, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/categories-news.router', handler: _lazy_qQgg3H, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/categories-product.router', handler: _lazy_k4fO0v, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin', handler: _lazy_ZkwUyZ, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/orderManageRouter', handler: _lazy_uLsZkj, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/paymentTransactionRoutes', handler: _lazy_xiyN0M, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/postsNewsRouter', handler: _lazy_keFZb5, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/productReviewRouter', handler: _lazy_H3u2OJ, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/productRouter', handler: _lazy_AInuxj, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/settingRouter', handler: _lazy_NI8dax, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/usersRouter', handler: _lazy_iadr18, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/voucherRouter', handler: _lazy_5UO9M7, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/admin/voucherUsageRouter', handler: _lazy_yscScW, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/authRouter', handler: _lazy_6thR5q, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/bannerRouter', handler: _lazy_5GTSlq, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/categoriesNewsRouter', handler: _lazy_ndfMJ7, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/categoriesProductRouter', handler: _lazy_5F7aiU, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/order-manage.router', handler: _lazy_DX_tpS, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/payment-transaction.routes', handler: _lazy_PIlvNR, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/posts-news.router', handler: _lazy_GxTKtg, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/product-review.router', handler: _lazy_mugbZM, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/product.router', handler: _lazy__nV5aS, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/setting.router', handler: _lazy_E1NKrS, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/users.router', handler: _lazy_agt9Pn, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/voucher-usage.router', handler: _lazy_tSt8P8, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/voucher.router', handler: _lazy_jq_GgP, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/auth.router', handler: _lazy_EYPker, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/banner.router', handler: _lazy_lSFrtu, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/categories-news.router', handler: _lazy_TDsBUZ, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/categories-product.router', handler: _lazy_sY9KoI, lazy: true, middleware: false, method: undefined },
   { route: '/v1', handler: _lazy_Snf5SD, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/orderManageRouter', handler: _lazy_Ti7wbR, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/postsNewsRouter', handler: _lazy_soYMBM, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/productReviewRouter', handler: _lazy_AH2XbG, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/productRouter', handler: _lazy_FuVwdC, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/shared/baseInformationRouter', handler: _lazy_UP_kxK, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/shared/fileManageRouter', handler: _lazy_yozqhu, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/order-manage.router', handler: _lazy_bMFNSl, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/posts-news.router', handler: _lazy_1x1J8x, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/product-review.router', handler: _lazy_GpYWlk, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/product.router', handler: _lazy_S7FJjE, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/shared/base-information.router', handler: _lazy_mwgJUG, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/shared/file-manage.router', handler: _lazy_cnp6El, lazy: true, middleware: false, method: undefined },
   { route: '/v1/shared', handler: _lazy_qiGXOx, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/shared/locationRouter', handler: _lazy_QCha66, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/usersRouter', handler: _lazy_T3AZC3, lazy: true, middleware: false, method: undefined },
-  { route: '/v1/voucherRouter', handler: _lazy__E1hgC, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/shared/location.router', handler: _lazy_FhyP7P, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/users.router', handler: _lazy_aD8P6H, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/voucher.router', handler: _lazy_AMtkES, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_error', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_wB4Btu, lazy: true, middleware: false, method: undefined }
@@ -2137,7 +2137,7 @@ router$u.put("/:id", authenticate, updateAddress);
 router$u.delete("/:id", authenticate, deleteAddress);
 router$u.post("/:id/set-default", authenticate, setAddressDefault);
 
-const addressesRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const addresses_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$u
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2337,7 +2337,7 @@ router$t.delete("/:id", authenticateAdmin, deleteAbout);
 router$t.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
 router$t.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
 
-const aboutRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const about_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$t
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2360,7 +2360,7 @@ const toAccountListDTO = (admins) => {
   return admins.map(toAccountDTO);
 };
 
-const verifyToken = async (req, res) => {
+const verifyToken$1 = async (req, res) => {
   var _a;
   const token = (_a = req.cookies) == null ? void 0 : _a.admin_token;
   if (!token)
@@ -2663,7 +2663,7 @@ const authorizeRoles = (...roles) => {
 const router$s = Router();
 router$s.post("/login", login$1);
 router$s.post("/reset-password", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), resetPassword$1);
-router$s.get("/verify-token", verifyToken);
+router$s.get("/verify-token", verifyToken$1);
 router$s.get("/list", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), getAccountList);
 router$s.get("/me/:id", authenticateAdmin, getAccount);
 router$s.put("/update", authenticateAdmin, updateAccount$1);
@@ -2680,7 +2680,7 @@ router$s.post("/logout", (req, res) => {
 router$s.patch("/toggleActive/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), toggleActive$6);
 router$s.delete("/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), deleteAccount);
 
-const accountRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const account_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$s
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2824,7 +2824,7 @@ router$r.delete("/:id", authenticateAdmin, deleteBanner);
 router$r.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
 router$r.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
 
-const bannerRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const banner_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$r
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3095,7 +3095,7 @@ router$q.delete("/:id", authenticateAdmin, deleteCategories$1);
 router$q.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
 router$q.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
 
-const categoriesNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const categoriesNews_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$q
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3457,7 +3457,7 @@ router$p.delete("/:id", authenticateAdmin, deleteCategories);
 router$p.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
 router$p.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
 
-const categoriesProductRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const categoriesProduct_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$p
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3477,7 +3477,7 @@ const updateSettings = async (req, res) => {
 const router$o = Router();
 router$o.put("/update", authenticateAdmin, updateSettings);
 
-const settingRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const setting_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$o
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -4235,7 +4235,7 @@ router$n.get("/:id", getUserById$1);
 router$n.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
 router$n.delete("/:id", authenticateAdmin, deleteUsers);
 
-const usersRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const users_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$n
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -4333,7 +4333,7 @@ router$m.put("/:id", authenticateAdmin, updatePosts);
 router$m.delete("/:id", authenticateAdmin, deletePosts);
 router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive$1);
 
-const postsNewsRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const postsNews_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$m
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -4640,7 +4640,7 @@ router$l.get("/:id", getOrderById$1);
 router$l.delete("/:id", authenticateAdmin, deleteOrder);
 router$l.put("/status", authenticateAdmin, updateOrderStatus);
 
-const orderManageRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const orderManage_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$l
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -4768,7 +4768,7 @@ router$k.put("/:id", authenticateAdmin, updateProduct);
 router$k.delete("/:id", authenticateAdmin, deleteProduct);
 router$k.patch("/toggleActive/:id", authenticateAdmin, toggleActive);
 
-const productRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const product_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$k
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -4878,7 +4878,7 @@ router$j.put("/status", updatePaymentTransactionStatus);
 router$j.get("/", getPaymentTransactions);
 router$j.delete("/:id", deletePaymentTransaction);
 
-const paymentTransactionRoutes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const paymentTransaction_routes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$j
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5000,7 +5000,7 @@ router$i.get("/:id", getProductReviewById$1);
 router$i.put("/status", authenticateAdmin, updateProductReviewStatus);
 router$i.delete("/:id", authenticateAdmin, deleteProductReview);
 
-const productReviewRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const productReview_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$i
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5200,7 +5200,7 @@ router$h.put("/:id", updateVoucher);
 router$h.delete("/:id", deleteVoucher);
 router$h.patch("/:id/toggle-active", toggleActiveVoucher);
 
-const voucherRouter$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const voucher_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$h
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5239,7 +5239,7 @@ const getAllVoucherUsage = async (req, res) => {
 const router$g = Router();
 router$g.get("/", getAllVoucherUsage);
 
-const voucherUsageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const voucherUsage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$g
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5306,6 +5306,29 @@ const sendResetPasswordEmail = async (to, resetLink) => {
 };
 
 const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
+const verifyToken = async (req, res) => {
+  var _a;
+  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  if (!token)
+    return res.status(401).json({ code: 1, message: "Thi\u1EBFu token \u0111\u0103ng nh\u1EADp" });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
+    const user = await UserModel.findById(decoded.id);
+    if (!user || !user.active) {
+      return res.status(403).json({ code: 2, message: "T\xE0i kho\u1EA3n kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    return res.status(200).json({
+      code: 0,
+      message: "X\xE1c th\u1EF1c th\xE0nh c\xF4ng",
+      data: {
+        id: user._id,
+        email: user.email
+      }
+    });
+  } catch (err) {
+    return res.status(401).json({ code: 3, message: "Token kh\xF4ng h\u1EE3p l\u1EC7 ho\u1EB7c \u0111\xE3 h\u1EBFt h\u1EA1n" });
+  }
+};
 const register = async (req, res) => {
   try {
     const { fullname, email, password, gender } = req.body;
@@ -5360,7 +5383,7 @@ const login = async (req, res) => {
     if (!user) return res.status(400).json({ code: 2, message: "Email khong dung, vui long nhap lai!" });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ code: 1, message: "Mat khau khong dung, vui long nhap lai!" });
-    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "12h" });
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
     res.cookie("token", token, {
       httpOnly: true,
       // FE không đọc trực tiếp
@@ -5423,7 +5446,7 @@ const googleLogin = async (req, res) => {
         }
       });
     }
-    const jwtToken = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
+    const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
       expiresIn: "12h"
     });
     res.cookie("token", jwtToken, {
@@ -5534,6 +5557,7 @@ const changePassword = async (req, res) => {
 const router$e = express.Router();
 router$e.put("/users/me", authenticate, updateAccount);
 router$e.get("/users/:id", getUserById);
+router$e.get("/verify-token", verifyToken);
 router$e.post("/register", register);
 router$e.post("/login", login);
 router$e.post("/google-login", googleLogin);
@@ -5541,7 +5565,7 @@ router$e.post("/forgot-password", forgotPassword);
 router$e.post("/reset-password", resetPassword);
 router$e.post("/change-password", authenticate, changePassword);
 
-const authRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const auth_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$e
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5558,7 +5582,7 @@ const getAllBanners = async (_, res) => {
 const router$d = Router();
 router$d.get("/", getAllBanners);
 
-const bannerRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const banner_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$d
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5607,7 +5631,7 @@ router$c.get("/", getAllCategories$1);
 router$c.get("/slug/:slug", getCategoryBySlug);
 router$c.get("/:id", getCategoriesById$1);
 
-const categoriesNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const categoriesNews_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$c
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5719,7 +5743,7 @@ router$b.get("/slug/:slug", getCategoriesBySlug);
 router$b.get("/:id", getCategoriesById);
 router$b.get("/:id/children", getChildrenCategories);
 
-const categoriesProductRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const categoriesProduct_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$b
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5883,7 +5907,7 @@ router$a.delete("/images/delete", authenticate, deleteImage);
 router$a.get("/images/search", authenticate, searchImage);
 router$a.post("/images/upload", authenticate, uploadImageMulter.single("file"), uploadImage);
 
-const fileManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const fileManage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$a
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6457,7 +6481,7 @@ router$9.get("/district/:districtId", getDistrictDetail);
 router$9.get("/wards/:districtId", getWardsByDistrict);
 router$9.get("/ward/:wardId", getWardDetail);
 
-const locationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const location_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$9
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6549,7 +6573,7 @@ const router$8 = Router();
 router$8.get("/", getBaseInformation);
 router$8.put("/", authenticate, updateBaseInformation);
 
-const baseInformationRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const baseInformation_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$8
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6631,7 +6655,7 @@ const router$6 = express.Router();
 router$6.post("/search-keywords/log", logSearchKeyword);
 router$6.get("/search-keywords/list", getTopSearchKeyword);
 
-const usersRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const users_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$6
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6767,7 +6791,7 @@ router$5.patch("/view/:slug", updateView);
 router$5.get("/latest", getPostsLatest);
 router$5.get("/:id", getPostsById);
 
-const postsNewsRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const postsNews_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$5
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6781,7 +6805,7 @@ router$4.post("/shipping/fee", getShippingFee);
 router$4.get("/users/:userId/orders", authenticate, getOrdersByUserId);
 router$4.get("/users/:userId/rewards", authenticate, getRewardHistoryByUserId);
 
-const orderManageRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const orderManage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$4
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -7253,7 +7277,7 @@ router$3.get("/users/:userId/wishlist", authenticate, getWishlistByUserId);
 router$3.post("/users/:userId/wishlist", authenticate, addWishlistItem);
 router$3.delete("/users/:userId/wishlist/:productId", authenticate, deleteWishlistItem);
 
-const productRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const product_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -7431,7 +7455,7 @@ router$2.get("/user/:userId/reviews", authenticate, getReviewsByUser);
 router$2.get("/product/:productId/reviews", getReviewsByProduct);
 router$2.put("/submit", authenticate, submitProductReview);
 
-const productReviewRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const productReview_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -7645,7 +7669,7 @@ router$1.post("/", getAvailableVouchers);
 router$1.get("/all", getAllVouchers);
 router$1.post("/apply", authenticate, applyVoucher);
 
-const voucherRouter = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const voucher_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$1
 }, Symbol.toStringTag, { value: 'Module' }));

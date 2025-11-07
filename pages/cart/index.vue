@@ -18,6 +18,7 @@ import { useLocationWatchers } from '@/composables/shared/location/useLocationWa
 import { useCartLocationWatchers } from '@/composables/cart/useCartLocationWatchers';
 
 definePageMeta({
+  middleware: ROUTES.PUBLIC.CART.middleware,
   headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
 })
 

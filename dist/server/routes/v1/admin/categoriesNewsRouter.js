@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllCategories, getCategoriesById, createCategories, updateCategories, deleteCategories, toggleActive, updateOrder, } from '../../../controllers/v1/admin/categoriesNewsController.js';
+import { getAllCategories, getCategoriesById, createCategories, updateCategories, deleteCategories, toggleActive, updateOrder, } from '../../../controllers/v1/admin/categories-news.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
 router.get('/', authenticateAdmin, getAllCategories);

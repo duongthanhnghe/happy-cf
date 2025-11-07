@@ -8,7 +8,7 @@ import { getAllProduct, getProductById, createProduct, updateProduct, deleteProd
 toggleActive,
 // searchProducts,
 // getRelatedProducts,
- } from '../../../controllers/v1/admin/productController.js';
+ } from '../../../controllers/v1/admin/product.controller.js';
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 const router = Router();
 router.get('/', authenticateAdmin, getAllProduct);

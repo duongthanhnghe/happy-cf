@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { applyVoucher, getAvailableVouchers, getAllVouchers } from "../../controllers/v1/voucherController.js";
+import { applyVoucher, getAvailableVouchers, getAllVouchers } from "../../controllers/v1/voucher-controller.js";
 import { authenticate } from '../../middlewares/authenticate.js';
 const router = Router();
 router.post('/', getAvailableVouchers);

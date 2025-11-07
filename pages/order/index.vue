@@ -8,6 +8,7 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useOrderMainHandlers } from '@/composables/order/useOrderMainHandlers';
 
 definePageMeta({
+  middleware: ROUTES.PUBLIC.ORDER.middleware,
   headerTypeLeft: ROUTES.PUBLIC.ORDER.headerTypeLeft,
 })
 

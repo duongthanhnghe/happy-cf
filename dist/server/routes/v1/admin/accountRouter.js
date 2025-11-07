@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, resetPassword, getAccount, updateAccount, changePassword, verifyToken, getAccountList, toggleActive, deleteAccount, createAccount, } from "../../../controllers/v1/admin/accountController.js";
+import { login, resetPassword, getAccount, updateAccount, changePassword, verifyToken, getAccountList, toggleActive, deleteAccount, createAccount, } from "../../../controllers/v1/admin/account.controller.js";
 import { authorizeRoles } from "../../../middlewares/adminRole.js";
 import { authenticateAdmin } from '../../../middlewares/authenticateAdmin.js';
 import { ACCOUNT_ROLES_CONST } from "../../../types/dto/v1/account.dto.js";

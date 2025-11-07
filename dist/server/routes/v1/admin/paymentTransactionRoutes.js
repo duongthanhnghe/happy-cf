@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createPaymentTransaction, updatePaymentTransactionStatus, getPaymentTransactions, deletePaymentTransaction } from '../../../controllers/v1/admin/paymentTransactionController.js';
+import { createPaymentTransaction, updatePaymentTransactionStatus, getPaymentTransactions, deletePaymentTransaction } from '../../../controllers/v1/admin/payment-transaction.controller.js';
 const router = Router();
 router.post("/", createPaymentTransaction);
 router.put("/status", updatePaymentTransactionStatus);

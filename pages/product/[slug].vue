@@ -6,6 +6,7 @@ import { formatCurrency } from '@/utils/global';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
 import { useAccountStore } from "@/stores/client/users/useAccountStore";
+import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.DETAIL.middleware ?? { middleware: ['product-detail'] },
@@ -15,6 +16,7 @@ const store = useProductDetailStore()
 const storeAccount = useAccountStore()
 const storeCart = useCartStore();
 const valueChangePage = ref<boolean|null>(null)
+const detail: ProductDTO | null = store.getDetail
 const { fetchAvailableVouchers, getVoucherProduct } = useAvailableVouchersForOrder();
 
 watch(valueChangePage, (newVal) => {
@@ -23,9 +25,11 @@ watch(valueChangePage, (newVal) => {
 })
 
 onMounted(async () => {
-  const userId = storeAccount.getDetailValue.id;
-  const categoryIds = store.getDetail?.categoryId ? [store.getDetail?.categoryId] : [];
-  const orderTotal = store.getDetail?.priceDiscounts;
+  if(!detail) return
+  
+  const userId = storeAccount.getUserId || '';
+  const categoryIds = detail.categoryId ? [detail.categoryId] : [];
+  const orderTotal = detail.priceDiscounts;
 
   if(categoryIds && orderTotal){
     await fetchAvailableVouchers({
@@ -39,7 +43,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <template v-if="detail">
 
     <div class="flex gap-sm overflow-auto" v-if="getVoucherProduct?.length">
       <VoucherItemTemplate1
@@ -49,19 +53,19 @@ onMounted(async () => {
       />
     </div>
 
-    <div class="container pt-section pb-section" v-if="store.getDetail">
+    <div class="container pt-section pb-section" >
       percentDiscount: {{ store.percentDiscount }}
       getTotalReview: {{ store.getSummaryReview?.averageRating }}
       totalReviews: {{ store.getSummaryReview?.totalReviews }}
       <div>
-        price: {{ store.getDetail.price }}
-        priceDiscounts: {{ store.getDetail.priceDiscounts }}
+        price: {{ detail.price }}
+        priceDiscounts: {{ detail.priceDiscounts }}
       </div>
-      <Button :color="`${store.isFavorite ? 'black' : 'secondary'}`" icon="favorite" @click.prevent="store.toggleLike(store.getDetail.id)"/>
+      <Button :color="`${store.isFavorite ? 'black' : 'secondary'}`" icon="favorite" @click.prevent="store.toggleLike(detail.id)"/>
 
 
-      <template v-if="store.getDetail?.options.length > 0">
-        <v-radio-group hide-details v-model="storeCart.selectedOptionsData[item.id]" :name="`radio-group-${item.id}`" :key="item.id" v-for="item in store.getDetail?.options" class="mt-sm mb-sm popup-detail-product-card">
+      <template v-if="detail.options.length > 0">
+        <v-radio-group hide-details v-model="storeCart.selectedOptionsData[item.id]" :name="`radio-group-${item.id}`" :key="item.id" v-for="item in detail.options" class="mt-sm mb-sm popup-detail-product-card">
           <Heading tag="div" size="md" weight="semibold" class="black pt-sm pl-ms pr-ms">
             {{ item.name }}
           </Heading>
@@ -96,9 +100,9 @@ onMounted(async () => {
         @handleOnClick="store.handleAddToCart()"
       />
       <!-- <div>
-      {{ store.getDetail.productName }}
+      {{ detail.productName }}
       </div>
-      <p>{{ store.getDetail.summaryContent }}</p>
+      <p>{{ detail.summaryContent }}</p>
       <template v-if="store.getListItems">
         <div v-for="item in store.getListItems" :key="item.id">
           <div class="mt-md">
@@ -120,8 +124,8 @@ onMounted(async () => {
         </template>
       </template> -->
     </div>
-    <div v-else>
-      <p>Đang tải dữ liệu...</p>
-    </div>
+  </template>
+  <div v-else>
+    <p>Đang tải dữ liệu...</p>
   </div>
 </template>
