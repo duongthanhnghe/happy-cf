@@ -1,30 +1,26 @@
 <script lang="ts" setup>
 import { ROUTES } from '@/shared/constants/routes'
 import { usePostDetailStore } from '@/stores/client/news/usePostDetailStore'
-import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.NEWS.children?.DETAIL.middleware ?? { middleware: ['post-detail'] },
 })
 
 const storePostDetail = usePostDetailStore()
-const detail: PostNewsDTO | null = storePostDetail.getDetail
+const detail = storePostDetail.getDetail
+const breakpoints = {
+  320: { slidesPerView: 2.3, spaceBetween: 10 },
+  640: { slidesPerView: 3, spaceBetween: 10 },
+  1024: { slidesPerView: 3, spaceBetween: 10 },
+  1200: { slidesPerView: 4, spaceBetween: 24 }
+}
 
 </script>
 
 <template>
-  <div class="container pt-section pb-section" v-if="detail">
-    <h1 v-if="detail.title">{{ detail.title }}</h1>
-    <p>{{ detail.summaryContent }}</p>
-    <template v-if="storePostDetail.getListItems">
-      <div v-for="item in storePostDetail.getListItems" :key="item.id">
-        <div class="mt-md">
-          {{ item.title }}
-        </div>
-      </div>
-    </template>
-  </div>
-  <div v-else>
-    <p>Đang tải dữ liệu...</p>
+  <div v-if="detail" class="container pt-section pb-section" >
+    <PostDetail :item="detail"/>
+
+    <ListPostRelated :items="storePostDetail.getListItems" :loading="storePostDetail.loadingListRelated" :breakpoints="breakpoints" headingText="Tin lien quan" />
   </div>
 </template>

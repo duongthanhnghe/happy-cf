@@ -11,7 +11,7 @@ import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 export const useCategoryMainStore = defineStore("CategoryMainNewsStore", () => {
   const { setCategoryNewsSEO } = useCategoryNewsSEO()
   const { getDetailNewsCategoryApi } = useNewsCategoryDetail()
-  const { getPostByCategoryApi, fetchPostByCategory } = usePostByCategory()
+  const { getPostByCategoryApi, fetchPostByCategory, loading: loadingListPost } = usePostByCategory()
 
   const listItems = ref<PostNewsDTO[]|null>(null);
   const pagination = computed(() => getPostByCategoryApi.value?.pagination)
@@ -55,6 +55,7 @@ export const useCategoryMainStore = defineStore("CategoryMainNewsStore", () => {
     getDetail,
     getListItems,
     getTotalPages,
+    loadingListPost,
     handleChangePage
   };
 });

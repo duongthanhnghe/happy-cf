@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <div v-if="props.loading">Đang tải dữ liệu...</div>
+  <LoadingData v-if="props.loading" />
   <template v-else>
     <div class="container">
       <Heading tag="h2" size="xl" weight="semibold" class="black mb-sm">

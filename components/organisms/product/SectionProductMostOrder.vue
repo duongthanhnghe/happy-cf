@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <div v-if="props.loading">Đang tải dữ liệu...</div>
+  <LoadingData v-if="props.loading" />
   <template v-else>
     <Heading v-if="props.headingText" tag="h2" size="xl" weight="semibold" class="black flex justify-between mb-sm">
       {{ props.headingText }}

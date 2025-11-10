@@ -5,8 +5,10 @@ import type { ProductReviewPaginationDTO } from '@/server/types/dto/v1/product-r
 export const useProductReviewByProduct = () => {
   
   const listData = ref<ProductReviewPaginationDTO>();
+  const loading = ref(false);
 
   const fetchListReview = async (productId: string, page: number, limit: number) => {
+    loading.value = true;
     try {
       const data: ProductReviewPaginationDTO = await productReviewAPI.getReviewsByProduct(productId, page, limit)
       if(data.code === 0) {
@@ -15,12 +17,15 @@ export const useProductReviewByProduct = () => {
       }
     } catch (err) {
       console.error('Error product all', err)
+    } finally {
+      loading.value = false;
     }
   }
 
   const getListReview = computed(() => listData.value || null);
 
   return {
+    loading,
     fetchListReview,
     getListReview
   }

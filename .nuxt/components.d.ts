@@ -70,11 +70,17 @@ interface _GlobalComponents {
     'Header': typeof import("../components/organisms/layout/Header.vue")['default']
     'MenuAccount': typeof import("../components/organisms/layout/MenuAccount.vue")['default']
     'MenuBottom': typeof import("../components/organisms/layout/MenuBottom.vue")['default']
+    'ListPostRelated': typeof import("../components/organisms/news/ListPostRelated.vue")['default']
+    'PostDetail': typeof import("../components/organisms/news/PostDetail.vue")['default']
     'SectionNewsLatest': typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']
     'OrderDetailTemplate': typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']
     'ListProductReview': typeof import("../components/organisms/product-review/ListProductReview.vue")['default']
+    'ListReviewByProduct': typeof import("../components/organisms/product-review/ListReviewByProduct.vue")['default']
+    'ListProductRelated': typeof import("../components/organisms/product/ListProductRelated.vue")['default']
+    'ListVoucherByProduct': typeof import("../components/organisms/product/ListVoucherByProduct.vue")['default']
     'ProductCategoryMenu': typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']
     'UseProductCategoryMenu': typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']
+    'ProductDetail': typeof import("../components/organisms/product/ProductDetail.vue")['default']
     'SectionProductList': typeof import("../components/organisms/product/SectionProductList.vue")['default']
     'SectionProductMostOrder': typeof import("../components/organisms/product/SectionProductMostOrder.vue")['default']
     'SectionProductSales': typeof import("../components/organisms/product/SectionProductSales.vue")['default']
@@ -185,11 +191,17 @@ interface _GlobalComponents {
     'LazyHeader': LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
     'LazyMenuAccount': LazyComponent<typeof import("../components/organisms/layout/MenuAccount.vue")['default']>
     'LazyMenuBottom': LazyComponent<typeof import("../components/organisms/layout/MenuBottom.vue")['default']>
+    'LazyListPostRelated': LazyComponent<typeof import("../components/organisms/news/ListPostRelated.vue")['default']>
+    'LazyPostDetail': LazyComponent<typeof import("../components/organisms/news/PostDetail.vue")['default']>
     'LazySectionNewsLatest': LazyComponent<typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']>
     'LazyOrderDetailTemplate': LazyComponent<typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']>
     'LazyListProductReview': LazyComponent<typeof import("../components/organisms/product-review/ListProductReview.vue")['default']>
+    'LazyListReviewByProduct': LazyComponent<typeof import("../components/organisms/product-review/ListReviewByProduct.vue")['default']>
+    'LazyListProductRelated': LazyComponent<typeof import("../components/organisms/product/ListProductRelated.vue")['default']>
+    'LazyListVoucherByProduct': LazyComponent<typeof import("../components/organisms/product/ListVoucherByProduct.vue")['default']>
     'LazyProductCategoryMenu': LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']>
     'LazyUseProductCategoryMenu': LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']>
+    'LazyProductDetail': LazyComponent<typeof import("../components/organisms/product/ProductDetail.vue")['default']>
     'LazySectionProductList': LazyComponent<typeof import("../components/organisms/product/SectionProductList.vue")['default']>
     'LazySectionProductMostOrder': LazyComponent<typeof import("../components/organisms/product/SectionProductMostOrder.vue")['default']>
     'LazySectionProductSales': LazyComponent<typeof import("../components/organisms/product/SectionProductSales.vue")['default']>
@@ -306,11 +318,17 @@ export const Footer: typeof import("../components/organisms/layout/Footer.vue")[
 export const Header: typeof import("../components/organisms/layout/Header.vue")['default']
 export const MenuAccount: typeof import("../components/organisms/layout/MenuAccount.vue")['default']
 export const MenuBottom: typeof import("../components/organisms/layout/MenuBottom.vue")['default']
+export const ListPostRelated: typeof import("../components/organisms/news/ListPostRelated.vue")['default']
+export const PostDetail: typeof import("../components/organisms/news/PostDetail.vue")['default']
 export const SectionNewsLatest: typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']
 export const OrderDetailTemplate: typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']
 export const ListProductReview: typeof import("../components/organisms/product-review/ListProductReview.vue")['default']
+export const ListReviewByProduct: typeof import("../components/organisms/product-review/ListReviewByProduct.vue")['default']
+export const ListProductRelated: typeof import("../components/organisms/product/ListProductRelated.vue")['default']
+export const ListVoucherByProduct: typeof import("../components/organisms/product/ListVoucherByProduct.vue")['default']
 export const ProductCategoryMenu: typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']
 export const UseProductCategoryMenu: typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']
+export const ProductDetail: typeof import("../components/organisms/product/ProductDetail.vue")['default']
 export const SectionProductList: typeof import("../components/organisms/product/SectionProductList.vue")['default']
 export const SectionProductMostOrder: typeof import("../components/organisms/product/SectionProductMostOrder.vue")['default']
 export const SectionProductSales: typeof import("../components/organisms/product/SectionProductSales.vue")['default']
@@ -421,11 +439,17 @@ export const LazyFooter: LazyComponent<typeof import("../components/organisms/la
 export const LazyHeader: LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
 export const LazyMenuAccount: LazyComponent<typeof import("../components/organisms/layout/MenuAccount.vue")['default']>
 export const LazyMenuBottom: LazyComponent<typeof import("../components/organisms/layout/MenuBottom.vue")['default']>
+export const LazyListPostRelated: LazyComponent<typeof import("../components/organisms/news/ListPostRelated.vue")['default']>
+export const LazyPostDetail: LazyComponent<typeof import("../components/organisms/news/PostDetail.vue")['default']>
 export const LazySectionNewsLatest: LazyComponent<typeof import("../components/organisms/news/SectionNewsLatest.vue")['default']>
 export const LazyOrderDetailTemplate: LazyComponent<typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']>
 export const LazyListProductReview: LazyComponent<typeof import("../components/organisms/product-review/ListProductReview.vue")['default']>
+export const LazyListReviewByProduct: LazyComponent<typeof import("../components/organisms/product-review/ListReviewByProduct.vue")['default']>
+export const LazyListProductRelated: LazyComponent<typeof import("../components/organisms/product/ListProductRelated.vue")['default']>
+export const LazyListVoucherByProduct: LazyComponent<typeof import("../components/organisms/product/ListVoucherByProduct.vue")['default']>
 export const LazyProductCategoryMenu: LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/index.vue")['default']>
 export const LazyUseProductCategoryMenu: LazyComponent<typeof import("../components/organisms/product/ProductCategoryMenu/useProductCategoryMenu")['default']>
+export const LazyProductDetail: LazyComponent<typeof import("../components/organisms/product/ProductDetail.vue")['default']>
 export const LazySectionProductList: LazyComponent<typeof import("../components/organisms/product/SectionProductList.vue")['default']>
 export const LazySectionProductMostOrder: LazyComponent<typeof import("../components/organisms/product/SectionProductMostOrder.vue")['default']>
 export const LazySectionProductSales: LazyComponent<typeof import("../components/organisms/product/SectionProductSales.vue")['default']>

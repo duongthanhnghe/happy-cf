@@ -20,25 +20,26 @@ watch(valueChangePage, (newVal) => {
 </script>
 
 <template>
-  <div class="container pt-section pb-section" v-if="detail">
+  <div v-if="detail" class="container pt-section pb-section">
     <h1 v-if="detail.categoryName">{{ detail.categoryName }}</h1>
     <h1 v-else></h1>
     <p>{{ detail.summaryContent }}</p>
-    <template v-if="storeCategoryMain.getListItems">
-      <div v-for="item in storeCategoryMain.getListItems" :key="item.id">
-        <div class="mt-md">
-          {{ item.title }}
-        </div>
+
+    <LoadingData v-if="storeCategoryMain.loadingListPost && storeCategoryMain.getListItems === null"/>
+    <div 
+      v-else-if="storeCategoryMain.getListItems && storeCategoryMain.getListItems.length > 0" 
+      v-for="item in storeCategoryMain.getListItems" 
+      :key="item.id">
+      <div class="mt-md">
+        {{ item.title }}
       </div>
-    </template>
+    </div>
+    <NoData v-else/>
 
     <template v-if="storeCategoryMain.getTotalPages && storeCategoryMain.getTotalPages.length > 1">
       <div class="flex gap-sm justify-end">
         <Pagination :totalPages="storeCategoryMain.getTotalPages" v-model:page="storeCategoryMain.page" v-model:valueChangePage="valueChangePage" />
       </div>
     </template>
-  </div>
-  <div v-else>
-    <p>Đang tải dữ liệu...</p>
   </div>
 </template>

@@ -41,6 +41,7 @@ export const useAvailableVouchersForOrder = () => {
   const getVoucherProduct = computed(() => vouchers.value?.filter((item) => item.type !== VOUCHER_TYPE.freeship.type && item.disabledReason === null))
 
   return {
+    loading,
     fetchAvailableVouchers,
     allVouchers,
     getVoucherProduct,

@@ -42,7 +42,7 @@ watch(mappedData, (val) => {
 <div class="bg-white product-category-section">
   <div class="container">
     <div class="product-category-list pb-sm">
-    <div v-if="props.loading">Đang tải dữ liệu...</div>
+    <LoadingData v-if="props.loading" />
     <template v-else>
       <div v-for="category in store.getListProducts" :key="category.id" :id="`product-category-scroll${category.id}`" :data-id="`scroll-${category.id}`" rel="js-section-scroll">
         <div class="flex justify-between mb-sm sticky bg-white pt-sm z-index-3">

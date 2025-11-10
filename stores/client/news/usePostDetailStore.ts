@@ -7,7 +7,7 @@ import { usePostNewsSEO } from '@/composables/seo/usePostNewsSEO'
 
 export const usePostDetailStore = defineStore("PostDetailStore", () => {
   const { getDetailPostApi } = usePostDetail()
-  const { getListPostRelatedApi } = usePostRelated()
+  const { getListPostRelatedApi, loading: loadingListRelated } = usePostRelated()
   const { setNewsSEO } = usePostNewsSEO()
 
   const limitRelated = 12
@@ -27,5 +27,6 @@ export const usePostDetailStore = defineStore("PostDetailStore", () => {
     getDetail,
     getListItems,
     limitRelated,
+    loadingListRelated,
   };
 });

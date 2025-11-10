@@ -14,8 +14,8 @@ import type { ProductDTO, CartDTO, SelectedOptionDTO } from "@/server/types/dto/
 
 export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   const { getDetailProduct, fetchDetailProduct } = useProductDetail()
-  const { getListProductRelated } = useProductRelated()
-  const { getListReview, fetchListReview } = useProductReviewByProduct()
+  const { getListProductRelated, loading: loadingListRelated } = useProductRelated()
+  const { getListReview, fetchListReview, loading: loadingListReviews } = useProductReviewByProduct()
   const { setProductSEO } = useProductSEO()
   
   const storeCart = useCartStore();
@@ -195,6 +195,8 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     priceTotalEdit,
     quantityEdit,
     popups,
+    loadingListRelated,
+    loadingListReviews,
     handleChangePage,
     toggleLike,
     inDecrement,
