@@ -12,13 +12,13 @@ import type { ProductDTO, ProductSortType } from '@/server/types/dto/v1/product.
 export const useCategoryMainStore = defineStore("CategoryMainProductStore", () => {
   const { setCategoryProductSEO } = useCategoryProductSEO()
   const { getProductCategoryDetail } = useProductCategoryDetail()
-  const { getProductByCategoryApi, fetchProductByCategory } = useProductByCategory()
+  const { loadingData, getProductByCategoryApi, fetchProductByCategory } = useProductByCategory()
   const { getListCategoryChildren, fetchCategoryChildrenList } = useProductCategoryChildren()
 
   const listItems = ref<ProductDTO[]|null>(null);
   const pagination = computed(() => getProductByCategoryApi.value?.pagination)
   const page = ref('1')
-  const limit = 2
+  const limit = 20
   const filterCategory = ref<string>('')
   const filterType = ref<ProductSortType>('discount')
   const filterArray = ref([
@@ -71,14 +71,14 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
 
   watch(page, async (newValue) => {
     if(newValue && getProductCategoryDetail.value) {
-      Loading(true)
       try {
+        Loading(true)
         await fetchProductByCategory(getProductCategoryDetail.value?.id,Number(newValue), limit, filterType.value)
         listItems.value = getProductByCategoryApi.value?.data || []
+        Loading(false)
       } catch (error) {
         console.error('category-news error:', error)
       }
-      Loading(false)
     }
   })
 
@@ -112,6 +112,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     maxPrice,
     getListCategoryChildren,
     filterCategory,
+    loadingData,
     handleChangePage,
   };
 });

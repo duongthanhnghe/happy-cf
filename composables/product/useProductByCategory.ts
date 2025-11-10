@@ -6,19 +6,24 @@ import { useState } from "nuxt/app";
 export const useProductByCategory = () => {
   
   const listData = useState<ProductPaginationDTO | null>('product-by-category', () => null)
+  const loadingData = ref<boolean>(false)
   
   const fetchProductByCategory = async (id: string, page: number, limit: number, filter: ProductSortType) => {
     try {
+      loadingData.value = true
       const data = await productsAPI.getListByCategory(id, page, limit, filter)
       if(data.code === 0) listData.value = data
     } catch (error) {
       console.error("Error fetching product:", error)
+    } finally {
+      loadingData.value = false
     }
   }
 
   const getProductByCategoryApi = computed(() => listData.value)
 
   return {
+  loadingData,
    fetchProductByCategory,
    getProductByCategoryApi,
   }

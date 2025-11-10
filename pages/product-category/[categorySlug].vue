@@ -46,7 +46,9 @@ watch(valueChangePage, (newVal) => {
         :max="storeCategoryMain.maxPrice"
         thumb-label="always"
       ></v-range-slider>
-      <div class="row row-xs" v-if="storeCategoryMain.getListItems && storeCategoryMain.getListItems.length > 0">
+
+      <LoadingData v-if="storeCategoryMain.loadingData && storeCategoryMain.getListItems === null" />
+      <div v-else-if="storeCategoryMain.getListItems && storeCategoryMain.getListItems.length > 0" class="row row-xs">
         <div v-for="item in storeCategoryMain.getListItems" :key="item.id" class="mb-sm col-6 col-md-4">
           <ProductItemTemplate1 :product="item" background="bg-white" />
         </div>
@@ -62,7 +64,4 @@ watch(valueChangePage, (newVal) => {
       </template>
     </div>
   </template>
-  <div v-else>
-    <p>Đang tải dữ liệu...</p>
-  </div>
 </template>

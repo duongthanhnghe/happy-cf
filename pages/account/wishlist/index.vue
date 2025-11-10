@@ -10,7 +10,7 @@ definePageMeta({
 
 const store = useWishlistStore();
 
-if(!store.getListOrders) store.loadItems()
+if(!store.getItems) await store.loadItems()
 </script>
 <template>
   <ListWishlist />

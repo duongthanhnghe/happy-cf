@@ -1147,7 +1147,22 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"44939-yu9Lh91fVaRexFlm88tTtsnZn+M\"",
+    "mtime": "2025-11-10T06:50:03.428Z",
+    "size": 280889,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"106f2b-GTmeCS5RULCBJdk9pCOdr9x7ziE\"",
+    "mtime": "2025-11-10T06:50:03.433Z",
+    "size": 1077035,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -7077,8 +7092,7 @@ const getProductsByCategory = async (req, res) => {
       { $match: { _id: categoryId } },
       {
         $graphLookup: {
-          from: "product_categories",
-          // 👈 tên collection (mặc định là model name viết thường + "s")
+          from: CategoryProductEntity.collection.name,
           startWith: "$_id",
           connectFromField: "_id",
           connectToField: "parentId",
@@ -7087,85 +7101,50 @@ const getProductsByCategory = async (req, res) => {
       },
       {
         $project: {
-          ids: {
-            $concatArrays: [["$_id"], "$descendants._id"]
-          }
+          ids: { $concatArrays: [["$_id"], "$descendants._id"] }
         }
       }
     ]);
     const categoryIds = ((_a = categories[0]) == null ? void 0 : _a.ids) || [categoryId];
-    const page = parseInt(req.query.page, 10) || 1;
-    let limit = parseInt(req.query.limit, 10) || 10;
-    const sortType = req.query.sort || "default";
-    if (limit === -1) {
-      limit = await ProductEntity.countDocuments({
-        categoryId: { $in: categoryIds },
-        isActive: true
-      });
-    }
-    const skip = (page - 1) * limit;
-    const [total, products] = await Promise.all([
-      ProductEntity.countDocuments({
-        categoryId: { $in: categoryIds },
-        isActive: true
-      }),
-      ProductEntity.aggregate([
-        { $match: { categoryId: { $in: categoryIds }, isActive: true } },
-        // Ép kiểu price & priceDiscount sang số
-        {
-          $addFields: {
-            price: { $toDouble: "$price" },
-            priceDiscount: { $toDouble: "$priceDiscount" }
-          }
-        },
-        // Tính toán giảm giá
-        {
-          $addFields: {
-            hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
-            discountValue: {
-              $cond: [
-                { $lt: ["$priceDiscount", "$price"] },
-                { $subtract: ["$price", "$priceDiscount"] },
-                0
-              ]
-            },
-            discountPercent: {
-              $cond: [
-                { $lt: ["$priceDiscount", "$price"] },
-                {
-                  $multiply: [
-                    { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
-                    100
-                  ]
-                },
-                0
-              ]
-            }
-          }
-        },
-        // Sort động theo sortType
-        {
-          $sort: sortType === "discount" ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 } : sortType === "popular" ? { amountOrder: -1 } : sortType === "price_desc" ? { price: -1 } : sortType === "price_asc" ? { price: 1 } : { updatedAt: -1 }
-        },
-        { $skip: skip },
-        { $limit: limit }
-      ])
-    ]);
+    const activeCategories = [];
     const cache = /* @__PURE__ */ new Map();
-    const filtered = [];
-    for (const p of products) {
-      const active = await isCategoryChainActive(
-        new mongoose.Types.ObjectId(p.categoryId),
-        cache
-      );
-      if (active) filtered.push(p);
+    for (const id of categoryIds) {
+      if (await isCategoryChainActive(id, cache)) {
+        activeCategories.push(id);
+      }
     }
-    const totalPages = Math.ceil(total / limit);
+    if (activeCategories.length === 0) {
+      return res.json({ code: 0, data: [], pagination: { page: 1, limit: 0, total: 0, totalPages: 0 } });
+    }
+    const match = {
+      categoryId: { $in: activeCategories },
+      isActive: true
+    };
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const total = await ProductEntity.countDocuments(match);
+    const products = await ProductEntity.aggregate([
+      { $match: match },
+      {
+        $addFields: {
+          price: { $toDouble: "$price" },
+          priceDiscount: { $toDouble: "$priceDiscounts" }
+        }
+      },
+      { $sort: { updatedAt: -1 } },
+      { $skip: skip },
+      { $limit: limit }
+    ]);
     return res.json({
       code: 0,
-      data: toProductListDTO(filtered),
-      pagination: { page, limit, total, totalPages: filtered.length },
-      message: "Success"
+      data: toProductListDTO(products),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
     });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
