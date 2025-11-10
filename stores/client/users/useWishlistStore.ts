@@ -2,18 +2,12 @@ import { ref, reactive, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { productsAPI } from "@/services/v1/product.service";
 import type { WishlistItem } from '@/server/types/dto/v1/product.dto'
-import {
-  useAccountStore
-} from '@/stores/client/users/useAccountStore';
-import {
-  Loading
-} from '@/utils/global'
+import { useAccountStore } from '@/stores/client/users/useAccountStore';
+import { Loading } from '@/utils/global'
 
 export const useWishlistStore = defineStore("WishlistStore", () => {
-  //store
   const storeAccount = useAccountStore();
 
-  //state
   const dataList = ref<WishlistItem[]|null>(null)
   const wishlistIds  = reactive(new Set<string>())
 
@@ -58,10 +52,10 @@ export const useWishlistStore = defineStore("WishlistStore", () => {
   const fetchWishlist = async (userId: string) => {
     const list = await productsAPI.getWishlistByUserId(userId)
 
-    if(list.data.length === 0) return
+    if(list.data?.length === 0) return
     dataList.value = list.data
     wishlistIds.clear()
-    list.data.forEach(item => wishlistIds.add(item.product.id))
+    list.data?.forEach(item => wishlistIds.add(item.product.id))
   }
 
   watch(() => storeAccount.getDetailValue?.id, id => {

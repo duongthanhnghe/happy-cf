@@ -18,9 +18,9 @@ const store = useProductReviewByUserStore();
       :text="item.name"
     />
   </v-tabs>
-  <div class="container pt-ms">
+  <LoadingData v-if="store.loadingData && !store.getItems === null" />
+  <div v-else-if="store.getItems && store.getItems.length > 0" class="pt-ms">
     <v-infinite-scroll
-      v-if="store.getItems && store.getItems.length > 0"
       height="auto"
       mode="manual"
       @load="store.load"
@@ -32,9 +32,7 @@ const store = useProductReviewByUserStore();
         <Button color="secondary" label="Tải thêm" @click="props.onClick" />
       </template>
     </v-infinite-scroll>
-    <div v-else>
-      <NoData />
-    </div>
   </div>
+  <NoData v-else />
 </template>
 

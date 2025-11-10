@@ -8,16 +8,17 @@ definePageMeta({
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
 })
 
-const { fetchVoucherAll, getVoucherAll } = useVoucherAll();
-if(getVoucherAll.value.length === 0) fetchVoucherAll()
-
+const { fetchVoucherAll, getVoucherAll, loadingData } = useVoucherAll();
+if(getVoucherAll.value.length === 0) await fetchVoucherAll()
 </script>
 <template>
-  <div class="flex gap-sm flex-column" v-if="getVoucherAll.length > 0">
+  <LoadingData v-if="loadingData" />
+  <div v-else-if="getVoucherAll.length > 0" class="flex gap-sm flex-column">
     <VoucherItemTemplate1
       v-for="voucher in getVoucherAll"
       :key="voucher.code"
       :item="voucher"
     />
   </div>
+  <NoData v-else />
 </template>

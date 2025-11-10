@@ -34,6 +34,7 @@ export const useAddressesManageStore = defineStore("AddressesManage", () => {
   const isTogglePopupAdd = ref(false);
   const isChildrenPopupManage = ref(false);
   const actionChangeAddress = ref(false);
+  const loadingData = ref(false);
 
   // utils
   const handleTogglePopupList = (value: boolean, action: boolean) => {
@@ -56,10 +57,12 @@ export const useAddressesManageStore = defineStore("AddressesManage", () => {
   async function loadItems() {
     const userId = storeAccount.getDetailValue?.id
     if (!userId) return
+    loadingData.value = true
     await fetchAddressAll(userId)
     if (getListAddressAllApi.value?.length) {
       dataList.value = getListAddressAllApi.value
     }
+    loadingData.value = false
   }
 
   const handleResetForm = () => {
@@ -203,7 +206,6 @@ export const useAddressesManageStore = defineStore("AddressesManage", () => {
     }
   )
 
-  // getters
   const getListAddress = computed(() => dataList.value);
   const getActionChangeAddress = computed(() => actionChangeAddress.value);
 
@@ -216,7 +218,7 @@ export const useAddressesManageStore = defineStore("AddressesManage", () => {
     isTogglePopupAdd,
     isChildrenPopupManage,
     actionChangeAddress,
-
+    loadingData,
     loadItems,
     handleResetForm,
     submitCreate,
@@ -227,7 +229,6 @@ export const useAddressesManageStore = defineStore("AddressesManage", () => {
     handleTogglePopupList,
     handleTogglePopupAdd,
     handleTogglePopupUpdate,
-
     getListAddress,
     getActionChangeAddress,
   }

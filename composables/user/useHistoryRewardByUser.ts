@@ -11,10 +11,13 @@ export const useHistoryRewardByUser = () => {
       const data: RewardHistoryPaginationDTO = await ordersAPI.getRewardHistoryByUserId(userId, page, limit)
       if(data.code === 0) {
         listData.value = data
-        return data
       }
+      return data
     } catch (err) {
       console.error('Error product all', err)
+      return {
+        code: 1
+      }
     }
   }
 

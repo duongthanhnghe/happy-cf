@@ -18,6 +18,7 @@ export const verifyToken = async (req, res) => {
             message: "Xác thực thành công",
             data: {
                 id: admin._id,
+                avatar: admin.avatar,
                 fullname: admin.fullname,
                 email: admin.email,
                 role: admin.role,

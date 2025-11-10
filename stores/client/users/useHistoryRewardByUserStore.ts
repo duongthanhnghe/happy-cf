@@ -9,17 +9,12 @@ export const useHistoryRewardByUserStore = defineStore("HistoryRewardByUserStore
   const { getListOrder, fetchListOrder } = useHistoryRewardByUser()
   const storeAccount = useAccountStore();
 
-  const isTogglePopup = ref<boolean>(false);
   const limit = 20
   const items = ref<RewardHistoryPaginationDTO|null>(null)
-
-  const handleTogglePopup = (value: boolean) => {
-    isTogglePopup.value = value;
-    if(!getListOrder.value) getApiListProduct()
-  };
+  const loadingData = ref(false)
 
   async function load({ done }: { done: (status: 'ok' | 'empty') => void }) {
-    if(!items.value) return
+    if(!items.value || !storeAccount.getUserId) return
     try {
       const currentPage = items.value.pagination.page
       const totalPages = items.value.pagination.totalPages
@@ -30,7 +25,7 @@ export const useHistoryRewardByUserStore = defineStore("HistoryRewardByUserStore
       }
 
       const nextPage = currentPage + 1
-      await fetchListOrder(storeAccount.getDetailValue?.id,nextPage, limit)
+      await fetchListOrder(storeAccount.getUserId,nextPage, limit)
 
       if (getListOrder.value && getListOrder.value.data && getListOrder.value.data.length > 0) {
         items.value.data.push(...getListOrder.value.data)
@@ -45,23 +40,24 @@ export const useHistoryRewardByUserStore = defineStore("HistoryRewardByUserStore
     }
   }
 
-  const getApiListProduct = async () => {
-    await fetchListOrder(storeAccount.getDetailValue?.id, 1, limit)
+  const getDataInit = async () => {
+    if(!storeAccount.getUserId) return
+    loadingData.value = true;
+
+    const data = await fetchListOrder(storeAccount.getUserId, 1, limit)
+    if(data.code !== 0) return loadingData.value = false;
+
     if(getListOrder.value) items.value = getListOrder.value
+
+    loadingData.value = false;
   }
 
-  //getters
   const getItems = computed(() => items.value?.data)
 
   return {
-    // state
-    items,
-    isTogglePopup,
-    // actions
-    handleTogglePopup,
-    getApiListProduct,
+    loadingData,
+    getDataInit,
     load,
-    //getters
     getItems,
   };
 });

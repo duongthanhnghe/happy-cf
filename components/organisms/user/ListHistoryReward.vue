@@ -5,7 +5,7 @@ import { REWARD_HISTORY_TYPE } from '@/shared/constants/history-reward-type'
 const store = useHistoryRewardByUserStore();
 </script>
 <template>
-  
+  <LoadingData v-if="store.loadingData && !store.getItems" />
   <v-infinite-scroll
     v-if="store.getItems && store.getItems.length > 0"
     height="auto"
@@ -33,9 +33,6 @@ const store = useHistoryRewardByUserStore();
       <Button color="secondary" label="Tải thêm" @click="props.onClick" />
     </template>
   </v-infinite-scroll>
-  <div v-else>
-    <NoData />
-  </div>
-     
+  <NoData v-else />
 </template>
 

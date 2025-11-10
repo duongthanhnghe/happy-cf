@@ -69,20 +69,58 @@ export const ordersAPI = {
     }
   },
 
-  getByUserId: async (userId: string): Promise<ApiResponse<OrderDTO[]>> => {
+  getByUserId: async (
+    userId: string,
+    page = 1,
+    limit = 10,
+    statusId: string,
+  ): Promise<OrderPaginationDTO> => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_BY_USER(userId)}`,{
-        credentials: 'include',
-      })
-      const data = await response.json()
-      return data
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      });
+
+      if (statusId) params.append("statusId", statusId)
+
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_BY_USER(userId)}?${params}`,
+        {
+          credentials: 'include',
+        }
+      );
+
+      if (!response.ok) {
+        const err = await response.json();
+        return {
+          code: 1,
+          message: err.message || 'Failed to fetch orders',
+          data: [],
+          pagination: {
+            page,
+            limit,
+            total: 0,
+            totalPages: 0
+          }
+        };
+      }
+
+      const data: OrderPaginationDTO = await response.json();
+      return data;
+
     } catch (err) {
-      console.error(`Error getting orders for user ${userId}:`, err)
+      console.error(`Error getting orders for user ${userId}:`, err);
       return {
         code: 1,
         message: `Failed to fetch orders for user ${userId}`,
         data: [],
-      }
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
+      };
     }
   },
 

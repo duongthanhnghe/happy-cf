@@ -4,10 +4,10 @@ import type { VoucherAvailableDTO } from "@/server/types/dto/v1/voucher.dto";
 
 export const useVoucherAll = () => {
   const vouchers = ref<VoucherAvailableDTO[]>([]);
-  const loading = ref(false);
+  const loadingData = ref(false);
 
   const fetchVoucherAll = async () => {
-    loading.value = true;
+    loadingData.value = true;
     try {
       const res = await vouchersAPI.getAll();
 
@@ -19,7 +19,7 @@ export const useVoucherAll = () => {
     } catch (err) {
       console.error("Error fetching available vouchers:", err);
     } finally {
-      loading.value = false;
+      loadingData.value = false;
     }
   };
 
@@ -28,6 +28,7 @@ export const useVoucherAll = () => {
   const getTotalVoucherAll = computed(() => vouchers.value.length);
 
   return {
+    loadingData,
     fetchVoucherAll,
     getVoucherAll,
     getTotalVoucherAll,

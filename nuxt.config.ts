@@ -14,15 +14,25 @@ export default defineNuxtConfig({
     transpile: ['vuetify'],
   },
   modules: ['@pinia/nuxt'],
+  // nitro: {
+  //   routeRules: {
+  //     '/**': {
+  //       headers: {
+  //         'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+  //         'Cross-Origin-Embedder-Policy': 'unsafe-none'
+  //       }
+  //     }
+  //   }
+  // },
   nitro: {
     routeRules: {
-      '/**': {
+      "/api/**": {
+        proxy: "http://localhost:5001/api/**",
         headers: {
-          'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-          'Cross-Origin-Embedder-Policy': 'unsafe-none'
+          "Access-Control-Allow-Credentials": "true"
         }
       }
-    }
+    },
   },
   runtimeConfig: {
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,

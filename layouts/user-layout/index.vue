@@ -21,7 +21,9 @@ watch(() => route.meta, (meta) => {
     <div class="container">
       <div class="row">
         <div class="col-12 col-lg-3">
-          <MenuAccount />
+          <div class="sticky">
+            <MenuAccount />
+          </div>
         </div>
         <div class="col-12 col-lg-9">
           <slot />

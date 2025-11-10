@@ -10,7 +10,7 @@ definePageMeta({
 
 const store = useHistoryRewardByUserStore();
 
-if(!store.getItems) store.getApiListProduct()
+if(!store.getItems) await store.getDataInit()
 </script>
 <template>
   <ListHistoryReward />

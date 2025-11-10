@@ -10,7 +10,7 @@ definePageMeta({
 
 const store = useOrderHistoryStore();
 
-if(!store.getItems) store.getApiData();
+if(!store.getItems) await store.getApiData();
 
 </script>
 <template>

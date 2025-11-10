@@ -645,10 +645,13 @@ const _inlineRuntimeConfig = {
       "/__nuxt_error": {
         "cache": false
       },
-      "/**": {
+      "/api/**": {
+        "proxy": {
+          "to": "http://localhost:5001/api/**",
+          "_proxyStripBase": "/api"
+        },
         "headers": {
-          "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
-          "Cross-Origin-Embedder-Policy": "unsafe-none"
+          "Access-Control-Allow-Credentials": "true"
         }
       },
       "/_nuxt/builds/meta/**": {
@@ -2361,6 +2364,7 @@ const verifyToken$1 = async (req, res) => {
       message: "X\xE1c th\u1EF1c th\xE0nh c\xF4ng",
       data: {
         id: admin._id,
+        avatar: admin.avatar,
         fullname: admin.fullname,
         email: admin.email,
         role: admin.role
@@ -6020,8 +6024,27 @@ const createOrder = async (req, res) => {
 };
 const getOrdersByUserId = async (req, res) => {
   try {
-    const orders = await OrderEntity.find({ userId: req.params.userId }).populate("paymentId").populate("status").sort({ createdAt: -1 });
-    return res.json({ code: 0, data: orders.map(toOrderDTO) });
+    const { userId } = req.params;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const statusId = req.query.statusId;
+    const filter = { userId };
+    if (statusId) {
+      filter.status = statusId;
+    }
+    const skip = (page - 1) * limit;
+    const total = await OrderEntity.countDocuments(filter);
+    const orders = await OrderEntity.find(filter).populate("paymentId").populate("status").populate("userId").sort({ createdAt: -1 }).skip(skip).limit(limit);
+    return res.json({
+      code: 0,
+      data: orders.map(toOrderDTO),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }

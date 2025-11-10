@@ -19,6 +19,7 @@ export const useAccountStore = defineStore("AccountStore", () => {
   const oldPassword = ref<string>('')
   const newPassword = ref<string>('')
   const newPasswordConfirm = ref<string>('')
+  const userId = ref<string|null>(null)
   const detailData = ref<AccountDTO|null>(null)
   const lastVerifiedAt = ref<number>(0)
   const verifyCacheDuration = 15 * 60 * 1000 // 15 phút
@@ -68,15 +69,14 @@ export const useAccountStore = defineStore("AccountStore", () => {
     }
   }
 
-  const handleGetDetailAccount = async (userId: string) => {
-    if(!userId) return
-    Loading(true);
-    const data = await accountAPI.getAccount(userId)
+  const handleGetDetailAccount = async (id: string) => {
+    if(!id) return
+    const data = await accountAPI.getAccount(id)
     if(data.code === 0){
       detailData.value = data.data;
+      userId.value = data.data.id;
       Object.assign(formUpdate, detailData.value);
     } 
-    Loading(false);
   };
 
   async function submitUpdate() {
@@ -157,7 +157,7 @@ export const useAccountStore = defineStore("AccountStore", () => {
     }
   }
 
-  async function verifyToken(force = false): Promise<boolean> {
+  async function verifyToken(force = false): Promise<boolean|null> {
     try {
       if (!token.value) return false
 
@@ -179,14 +179,14 @@ export const useAccountStore = defineStore("AccountStore", () => {
       return false
     } catch (err: any) {
       console.error("verifyToken error:", err)
-      return false
+      return null
     }
   }
 
   const getDetailAccount = computed(() => detailData.value)
+  const getUserId = computed(() => userId.value)
 
   return {
-    // state
     showPassword,
     showPasswordConfirm,
     token,
@@ -196,7 +196,6 @@ export const useAccountStore = defineStore("AccountStore", () => {
     formUpdate,
     formLogin,
     detailData,
-    // actions
     handleResetLogin,
     submitLogin,
     handleLogout,
@@ -205,6 +204,6 @@ export const useAccountStore = defineStore("AccountStore", () => {
     submitChangePassword,
     verifyToken,
     getDetailAccount,
-    // refreshAccount,
+    getUserId,
   };
 });

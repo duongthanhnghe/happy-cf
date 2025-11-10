@@ -43,6 +43,7 @@ interface _GlobalComponents {
     'Heading': typeof import("../components/atoms/Heading.vue")['default']
     'LabelInput': typeof import("../components/atoms/LabelInput.vue")['default']
     'Loading': typeof import("../components/atoms/Loading.vue")['default']
+    'LoadingData': typeof import("../components/atoms/LoadingData.vue")['default']
     'MaterialIcon': typeof import("../components/atoms/MaterialIcon.vue")['default']
     'NoData': typeof import("../components/atoms/NoData.vue")['default']
     'PageProgress': typeof import("../components/atoms/PageProgress.vue")['default']
@@ -79,6 +80,7 @@ interface _GlobalComponents {
     'CardAccount': typeof import("../components/organisms/user/CardAccount.vue")['default']
     'ListHistoryReward': typeof import("../components/organisms/user/ListHistoryReward.vue")['default']
     'ListManageAddress': typeof import("../components/organisms/user/ListManageAddress.vue")['default']
+    'ListOrderHistory': typeof import("../components/organisms/user/ListOrderHistory.vue")['default']
     'PopupBarcode': typeof import("../components/organisms/user/PopupBarcode.vue")['default']
     'CreateAbout': typeof import("../components/templates/about/CreateAbout.vue")['default']
     'UpdateAbout': typeof import("../components/templates/about/UpdateAbout.vue")['default']
@@ -92,7 +94,6 @@ interface _GlobalComponents {
     'ListProductReview': typeof import("../components/templates/product-review/ListProductReview.vue")['default']
     'PopupProductReviewSubmit': typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']
     'PopupSearch': typeof import("../components/templates/product/PopupSearch.vue")['default']
-    'ListOrderHistory': typeof import("../components/templates/user/ListOrderHistory.vue")['default']
     'ListWishlist': typeof import("../components/templates/user/ListWishlist.vue")['default']
     'PopupChangePassword': typeof import("../components/templates/user/PopupChangePassword.vue")['default']
     'PopupHistoryReward': typeof import("../components/templates/user/PopupHistoryReward.vue")['default']
@@ -157,6 +158,7 @@ interface _GlobalComponents {
     'LazyHeading': LazyComponent<typeof import("../components/atoms/Heading.vue")['default']>
     'LazyLabelInput': LazyComponent<typeof import("../components/atoms/LabelInput.vue")['default']>
     'LazyLoading': LazyComponent<typeof import("../components/atoms/Loading.vue")['default']>
+    'LazyLoadingData': LazyComponent<typeof import("../components/atoms/LoadingData.vue")['default']>
     'LazyMaterialIcon': LazyComponent<typeof import("../components/atoms/MaterialIcon.vue")['default']>
     'LazyNoData': LazyComponent<typeof import("../components/atoms/NoData.vue")['default']>
     'LazyPageProgress': LazyComponent<typeof import("../components/atoms/PageProgress.vue")['default']>
@@ -193,6 +195,7 @@ interface _GlobalComponents {
     'LazyCardAccount': LazyComponent<typeof import("../components/organisms/user/CardAccount.vue")['default']>
     'LazyListHistoryReward': LazyComponent<typeof import("../components/organisms/user/ListHistoryReward.vue")['default']>
     'LazyListManageAddress': LazyComponent<typeof import("../components/organisms/user/ListManageAddress.vue")['default']>
+    'LazyListOrderHistory': LazyComponent<typeof import("../components/organisms/user/ListOrderHistory.vue")['default']>
     'LazyPopupBarcode': LazyComponent<typeof import("../components/organisms/user/PopupBarcode.vue")['default']>
     'LazyCreateAbout': LazyComponent<typeof import("../components/templates/about/CreateAbout.vue")['default']>
     'LazyUpdateAbout': LazyComponent<typeof import("../components/templates/about/UpdateAbout.vue")['default']>
@@ -206,7 +209,6 @@ interface _GlobalComponents {
     'LazyListProductReview': LazyComponent<typeof import("../components/templates/product-review/ListProductReview.vue")['default']>
     'LazyPopupProductReviewSubmit': LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']>
     'LazyPopupSearch': LazyComponent<typeof import("../components/templates/product/PopupSearch.vue")['default']>
-    'LazyListOrderHistory': LazyComponent<typeof import("../components/templates/user/ListOrderHistory.vue")['default']>
     'LazyListWishlist': LazyComponent<typeof import("../components/templates/user/ListWishlist.vue")['default']>
     'LazyPopupChangePassword': LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
     'LazyPopupHistoryReward': LazyComponent<typeof import("../components/templates/user/PopupHistoryReward.vue")['default']>
@@ -277,6 +279,7 @@ export const FirstLoader: typeof import("../components/atoms/FirstLoader.vue")['
 export const Heading: typeof import("../components/atoms/Heading.vue")['default']
 export const LabelInput: typeof import("../components/atoms/LabelInput.vue")['default']
 export const Loading: typeof import("../components/atoms/Loading.vue")['default']
+export const LoadingData: typeof import("../components/atoms/LoadingData.vue")['default']
 export const MaterialIcon: typeof import("../components/atoms/MaterialIcon.vue")['default']
 export const NoData: typeof import("../components/atoms/NoData.vue")['default']
 export const PageProgress: typeof import("../components/atoms/PageProgress.vue")['default']
@@ -313,6 +316,7 @@ export const SectionProductSales: typeof import("../components/organisms/product
 export const CardAccount: typeof import("../components/organisms/user/CardAccount.vue")['default']
 export const ListHistoryReward: typeof import("../components/organisms/user/ListHistoryReward.vue")['default']
 export const ListManageAddress: typeof import("../components/organisms/user/ListManageAddress.vue")['default']
+export const ListOrderHistory: typeof import("../components/organisms/user/ListOrderHistory.vue")['default']
 export const PopupBarcode: typeof import("../components/organisms/user/PopupBarcode.vue")['default']
 export const CreateAbout: typeof import("../components/templates/about/CreateAbout.vue")['default']
 export const UpdateAbout: typeof import("../components/templates/about/UpdateAbout.vue")['default']
@@ -326,7 +330,6 @@ export const PopupOrderDetail: typeof import("../components/templates/order/Popu
 export const ListProductReview: typeof import("../components/templates/product-review/ListProductReview.vue")['default']
 export const PopupProductReviewSubmit: typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']
 export const PopupSearch: typeof import("../components/templates/product/PopupSearch.vue")['default']
-export const ListOrderHistory: typeof import("../components/templates/user/ListOrderHistory.vue")['default']
 export const ListWishlist: typeof import("../components/templates/user/ListWishlist.vue")['default']
 export const PopupChangePassword: typeof import("../components/templates/user/PopupChangePassword.vue")['default']
 export const PopupHistoryReward: typeof import("../components/templates/user/PopupHistoryReward.vue")['default']
@@ -391,6 +394,7 @@ export const LazyFirstLoader: LazyComponent<typeof import("../components/atoms/F
 export const LazyHeading: LazyComponent<typeof import("../components/atoms/Heading.vue")['default']>
 export const LazyLabelInput: LazyComponent<typeof import("../components/atoms/LabelInput.vue")['default']>
 export const LazyLoading: LazyComponent<typeof import("../components/atoms/Loading.vue")['default']>
+export const LazyLoadingData: LazyComponent<typeof import("../components/atoms/LoadingData.vue")['default']>
 export const LazyMaterialIcon: LazyComponent<typeof import("../components/atoms/MaterialIcon.vue")['default']>
 export const LazyNoData: LazyComponent<typeof import("../components/atoms/NoData.vue")['default']>
 export const LazyPageProgress: LazyComponent<typeof import("../components/atoms/PageProgress.vue")['default']>
@@ -427,6 +431,7 @@ export const LazySectionProductSales: LazyComponent<typeof import("../components
 export const LazyCardAccount: LazyComponent<typeof import("../components/organisms/user/CardAccount.vue")['default']>
 export const LazyListHistoryReward: LazyComponent<typeof import("../components/organisms/user/ListHistoryReward.vue")['default']>
 export const LazyListManageAddress: LazyComponent<typeof import("../components/organisms/user/ListManageAddress.vue")['default']>
+export const LazyListOrderHistory: LazyComponent<typeof import("../components/organisms/user/ListOrderHistory.vue")['default']>
 export const LazyPopupBarcode: LazyComponent<typeof import("../components/organisms/user/PopupBarcode.vue")['default']>
 export const LazyCreateAbout: LazyComponent<typeof import("../components/templates/about/CreateAbout.vue")['default']>
 export const LazyUpdateAbout: LazyComponent<typeof import("../components/templates/about/UpdateAbout.vue")['default']>
@@ -440,7 +445,6 @@ export const LazyPopupOrderDetail: LazyComponent<typeof import("../components/te
 export const LazyListProductReview: LazyComponent<typeof import("../components/templates/product-review/ListProductReview.vue")['default']>
 export const LazyPopupProductReviewSubmit: LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']>
 export const LazyPopupSearch: LazyComponent<typeof import("../components/templates/product/PopupSearch.vue")['default']>
-export const LazyListOrderHistory: LazyComponent<typeof import("../components/templates/user/ListOrderHistory.vue")['default']>
 export const LazyListWishlist: LazyComponent<typeof import("../components/templates/user/ListWishlist.vue")['default']>
 export const LazyPopupChangePassword: LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
 export const LazyPopupHistoryReward: LazyComponent<typeof import("../components/templates/user/PopupHistoryReward.vue")['default']>

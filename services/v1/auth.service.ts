@@ -2,23 +2,45 @@ import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS } from '@/services/const/api.const'
 import type { User, UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword, MembershipBenefitDTO } from '@/server/types/dto/v1/user.dto.js'
 import type { ApiResponse } from '@server/types/common/api-response'
+import { useRequestHeaders } from 'nuxt/app'
 
 export const authAPI = {
+  // verifyToken: async (): Promise<ApiResponse<User>> => {
+  //   try {
+  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.VERIFY_TOKEN}`, {
+  //       method: 'GET',
+  //       credentials: 'include',
+  //     })
+
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     return {
+  //       code: 1,
+  //       message: (err as Error).message,
+  //       data: null as any
+  //     }
+  //   }
+  // },
   verifyToken: async (): Promise<ApiResponse<User>> => {
-    const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.VERIFY_TOKEN}`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    try {
+      const headers = process.client
+        ? {}
+        : useRequestHeaders(['cookie'])
 
-    const data = await response.json()
-    if (!response.ok || data.code !== 0) {
-      throw new Error(data.message || 'Token không hợp lệ hoặc đã hết hạn')
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.VERIFY_TOKEN}`,
+        {
+          method: 'GET',
+          credentials: 'include',
+          headers
+        }
+      )
+
+      return await response.json()
+    } catch (err) {
+      return { code: 1, message: (err as Error).message, data: null as any }
     }
-
-    return data
   },
   Login: async (loginData: UserLogin) => {
     try {

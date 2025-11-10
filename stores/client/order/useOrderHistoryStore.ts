@@ -1,7 +1,7 @@
 import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { ordersAPI } from "@/services/v1/orders.service";
-import type { OrderDTO} from '@/server/types/dto/v1/order.dto'
+import type { OrderDTO, OrderPaginationDTO} from '@/server/types/dto/v1/order.dto'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore'
 import { useRouter } from 'vue-router'
@@ -12,47 +12,55 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   const storeOrderStatus = useOrderStatusStore();
   const router = useRouter()
 
-  const dataList = ref<OrderDTO[]|null>(null)
-  const isTogglePopupAdd = ref(false)
   const isTogglePopupDetail = ref(false)
   const idOrderPopupDetail = ref<string>('')
-  const filterStatusOrder = ref<string|null>('')
-  const items = ref<OrderDTO[]|null>(null)
-  const pageSize = 20
+  const filterStatusOrder = ref<string>('')
+  const items = ref<OrderPaginationDTO|null>(null)
+  const limit = 10
   const checkPageDetail = ref(false)
-
-  const handleTogglePopupAdd = (value: boolean) => {
-    isTogglePopupAdd.value = value
-  }
+  const loadingData = ref(false)
 
   const getApiData = async () => {
     const userId = storeAccount.getUserId;
-
     if (!userId) return
+    loadingData.value = true;
 
-    const data = await ordersAPI.getByUserId(userId);
-    if(data.code !== 0) return
+    const data = await ordersAPI.getByUserId(userId, 1, limit, filterStatusOrder.value);
+    if (data.code !== 0) return (loadingData.value = false);
 
-    dataList.value = data.data
-    if (filterStatusOrder.value) dataList.value = dataList.value.filter((order: OrderDTO) => order.status.id === filterStatusOrder.value)
+    items.value = data;
 
-    items.value = dataList.value.slice(0, pageSize)
-  }
-  
-  function loadItems({ done }: { done: (status: 'ok' | 'empty') => void }) {
-    if(!items.value) return
-    const start = items.value.length
-    const nextItems = dataList.value?.slice(start, start + pageSize)
-    if(!nextItems) return
-    setTimeout(() => {
-      if (nextItems.length > 0) {
-        if(!items.value) return
-        items.value.push(...nextItems)
+    if (filterStatusOrder.value) {
+      items.value.data = items.value.data.filter((order: OrderDTO) =>
+        order.status.id === filterStatusOrder.value
+      );
+    }
+
+    loadingData.value = false;
+  };
+
+  async function loadItems({ done }: { done: (status: 'ok' | 'empty') => void }) {
+    if(!items.value || !storeAccount.getUserId) return done('empty');
+    try {
+      const currentPage = items.value.pagination.page
+      const totalPages = items.value.pagination.totalPages
+
+      if (currentPage >= totalPages) return done('empty');
+
+      const nextPage = currentPage + 1
+      const data = await ordersAPI.getByUserId(storeAccount.getUserId,nextPage, limit, filterStatusOrder.value)
+
+      if (data && data.data && data.data.length > 0) {
+        items.value.data.push(...data.data)
+        items.value.pagination = data.pagination
         done('ok')
       } else {
         done('empty')
       }
-    }, 500)
+    } catch (err) {
+      console.error('Error loading more products:', err)
+      done('empty')
+    }
   }
 
   const handleTogglePopupDetail = (value: boolean, id: string) => {
@@ -65,7 +73,6 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
   }
 
   const handlePaymentOrder = (orderId: string, orderCode: string, amount: number) => {
-    isTogglePopupAdd.value = false
     router.push({
       path: ROUTES.PUBLIC.PAYMENT.path,
       query: {
@@ -81,43 +88,26 @@ export const useOrderHistoryStore = defineStore("OrderHistory", () => {
     getApiData()
   });
 
-  watch(() => isTogglePopupAdd.value, async (newValue) => {
-    if(newValue && !dataList.value) getApiData()
-  }, { immediate: true })
-
-  watch(() => [isTogglePopupDetail.value,checkPageDetail.value,isTogglePopupAdd.value], async (newValue) => {
+  watch(() => [isTogglePopupDetail.value,checkPageDetail.value], async (newValue) => {
     if(newValue && storeOrderStatus.getListData.length === 0) await storeOrderStatus.fetchOrderStatusStore()
   }, { immediate: true })
 
-  //getters
-  const getItems = computed(() => items.value)
+  const getItems = computed(() => items.value?.data)
   const getIdOrderPopupDetail = computed(() => idOrderPopupDetail.value);
   const getCheckPageDetail = computed(() => checkPageDetail.value)
   const getOrderStatus = computed(() => storeOrderStatus.getListData)
-  const canLoadMore = computed(() => {
-    if(!items.value?.length || !dataList.value?.length) return false
-    return items.value.length < dataList.value.length
-  })
 
   return {
-    // state
-    items,
-    pageSize,
-    isTogglePopupAdd,
     filterStatusOrder,
     isTogglePopupDetail,
     idOrderPopupDetail,
-    // actions
+    loadingData,
     getApiData,
-    handleTogglePopupAdd,
     loadItems,
     handleTogglePopupDetail,
     setCheckPageDetail,
     handlePaymentOrder,
-    //getters
-    // getListOrders,
     getItems,
-    canLoadMore,
     getIdOrderPopupDetail,
     getCheckPageDetail,
     getOrderStatus

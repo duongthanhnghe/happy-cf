@@ -1,7 +1,6 @@
 
 <script lang="ts" setup>
 import '@/styles/organisms/layout/header-admin.scss'
-import { IMAGE_AVATAR_DEFAULT } from '@/const/image';
 import { ROUTES } from '@/shared/constants/routes';
 import { useAccountStore } from '@/stores/admin/account/useAccountStore';
 import type { MenuItem } from 'server/types/common/menu-item';
@@ -16,6 +15,7 @@ const props = defineProps({
   },
 })
 const listMenu = ROUTES.ADMIN
+const detailAccount = storeAccount.getDetailAccount
 
 </script>
 
@@ -30,13 +30,13 @@ const listMenu = ROUTES.ADMIN
       <v-menu transition="slide-x-transition">
         <template v-slot:activator="{ props }">
           <div class="header-admin-right-avatar" v-bind="props">
-            <img :src="storeAccount.getDetailAccount?.avatar || IMAGE_AVATAR_DEFAULT" width="44" alt="avatar" />
+            <img v-if="detailAccount?.avatar" :src="detailAccount?.avatar" width="44" alt="avatar" />
           </div>
         </template>
         <template v-if="listMenu">
           <v-list class="mt-sm">
             <v-list-item 
-              v-for="(item, index) in Object.values(listMenu).filter((item: MenuItem) => item.isShowMenuAccount && item.roles?.includes(storeAccount.getDetailAccount?.role))" 
+              v-for="(item, index) in Object.values(listMenu).filter((item: MenuItem) => item.isShowMenuAccount && item.roles?.includes(detailAccount?.role))" 
               :key="index"
               :value="item.path"
               class="header-admin-right-list">

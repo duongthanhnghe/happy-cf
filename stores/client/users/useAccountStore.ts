@@ -18,10 +18,11 @@ export const useAccountStore = defineStore("AccountStore", () => {
   const lastVerifiedAt = ref<number>(0)
   const verifyCacheDuration = 15 * 60 * 1000 // 15 phút
 
-  const handleGetDetailAccount = async (userId: string) => {
-    if(!userId) return
-    const data = await authAPI.getDetailAccount(userId)
-    detailData.value = data.data;
+  const handleGetDetailAccount = async (id: string) => {
+    if(!id) return
+    const data = await authAPI.getDetailAccount(id)
+    if(data.code === 0) detailData.value = data.data;
+    userId.value = id;
   };
 
   const handleTogglePopupBarcode = (value: boolean) => {
@@ -78,30 +79,23 @@ export const useAccountStore = defineStore("AccountStore", () => {
   }
 
   async function verifyToken(force = false): Promise<null|boolean> {
-    try {
-      if (!token.value) return false
+    if (!token.value) return false
 
-      const now = Date.now()
-      
-      if (!force && detailData.value && now - lastVerifiedAt.value < verifyCacheDuration) {
-        return true
-      }
-
-      const res = await authAPI.verifyToken()
-
-      if (res.code === 0 && res.data) {
-        lastVerifiedAt.value = now
-        await handleGetDetailAccount(res.data.id);
-        userId.value = res.data.id;
-        return true
-      }
-
-      console.warn("verifyToken failed:", res.message)
-      return false
-    } catch (err: any) {
-      console.error("verifyToken error:", err)
-      return null
+    const now = Date.now()
+    
+    if (!force && detailData.value && now - lastVerifiedAt.value < verifyCacheDuration) {
+      return true
     }
+
+    const res = await authAPI.verifyToken()
+
+    if (res.code === 0 && res.data) {
+      lastVerifiedAt.value = now
+      await handleGetDetailAccount(res.data.id);
+      return true
+    }
+
+    return false
   }
 
   const getDetailValue = computed(() => detailData.value)

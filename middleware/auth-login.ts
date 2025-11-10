@@ -1,21 +1,19 @@
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
 
-export default defineNuxtRouteMiddleware(async() => {
+export default defineNuxtRouteMiddleware(async () => {
   const storeAccount = useAccountStore()
+  const token = useCookie("token")
 
-  if (storeAccount.getDetailValue?.id) return
-
-  const ok = await storeAccount.verifyToken()
-
-  if (ok === false) {
-    const token = useCookie("token")
-    token.value = null
+  if (!token.value) {
     return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
   }
 
-  if (ok === true) return
+  if (storeAccount.getUserId) return
 
-  return
+  const res = await storeAccount.verifyToken(true)
+
+  if (res === false) {
+    return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
+  }
 })
-

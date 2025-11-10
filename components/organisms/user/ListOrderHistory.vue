@@ -16,8 +16,10 @@ const store = useOrderHistoryStore();
         :text="item.name"
       />
     </v-tabs>
-    <div class="container pt-ms pb-ms">
-      <template v-if="store.getItems?.length">
+
+    <div class="pt-ms pb-ms">
+      <LoadingData v-if="store.loadingData && store.getItems == null" />
+      <template v-else-if="store.getItems?.length">
         <v-infinite-scroll
           height="auto"
           mode="manual"
@@ -28,19 +30,15 @@ const store = useOrderHistoryStore();
           </template>
 
           <template #load-more="{ props }">
-            <template v-if="store.canLoadMore">
-              <Button
-                color="secondary"
-                label="Tải thêm"
-                @click="props.onClick"
-              />
-            </template>
+            <Button
+              color="secondary"
+              label="Tải thêm"
+              @click="props.onClick"
+            />
           </template>
         </v-infinite-scroll>
       </template>
-      <div v-else>
-        <NoData />
-      </div>
+      <NoData v-else />
     </div>
   </div>
 

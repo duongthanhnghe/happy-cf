@@ -25,10 +25,12 @@ app.use(cors({
         'http://localhost:5000',
         'http://0.0.0.0:3000',
         'http://192.168.1.113:3000',
+        'http://192.168.2.161:3000',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', "Cookie"],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ["Set-Cookie"],
 }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
