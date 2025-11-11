@@ -53,12 +53,12 @@ const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProd
       </v-tabs-window-item>
       <v-tabs-window-item :value="2">
         <div class="container pt-sm order-main-content-scroll scroll-hide">
-          <SectionProductMostOrder :items="storeProductMostOrder.getListData" :loading="storeProductMostOrder.loading" :runSlide="false" background="bg-white"/>
+          <SectionProductMostOrder :items="storeProductMostOrder.getListProductMostOrder" :loading="storeProductMostOrder.loading" :runSlide="false" background="bg-white"/>
         </div>
       </v-tabs-window-item>
       <v-tabs-window-item :value="3">
         <div class="container pt-sm order-main-content-scroll scroll-hide">
-          <SectionProductSales :items="storeProductSale.getListData" :loading="storeProductSale.loading" :runSlide="false" background="bg-white"/>
+          <SectionProductSales :items="storeProductSale.getListProductSales" :loading="storeProductSale.loading" :runSlide="false" background="bg-white"/>
         </div>
       </v-tabs-window-item>
     </v-tabs-window>

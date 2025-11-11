@@ -10,9 +10,12 @@ export const usePostByCategory = () => {
     loading.value = true;
     try {
       const data = await newsAPI.getPostsByCategory(id, page, limit)
-      if(data.code === 0) listData.value = data
+      if(data.code === 0){
+        listData.value = data
+      } 
     } catch (error) {
       console.error("Error fetching post:", error)
+      return []
     } finally {
       loading.value = false;
     }

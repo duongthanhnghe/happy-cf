@@ -4,9 +4,11 @@ import type { ProductPaginationDTO } from '@/server/types/dto/v1/product.dto';
 
 export const useProductSearch = () => {
   
-  const listData = ref<ProductPaginationDTO>();
+  const listData = ref<ProductPaginationDTO>()
+  const loading = ref(false)
 
   const fetchListProductSearch = async (keyword: string, page: number, limit: number) => {
+    loading.value = true;
     try {
       const data: ProductPaginationDTO = await productsAPI.search(keyword, page, limit)
       if(data.code === 0) {
@@ -15,6 +17,8 @@ export const useProductSearch = () => {
       }
     } catch (err) {
       console.error('Error product all', err)
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -22,6 +26,7 @@ export const useProductSearch = () => {
 
   return {
     fetchListProductSearch,
-    getListProductSearch
+    getListProductSearch,
+    loading
   }
 }

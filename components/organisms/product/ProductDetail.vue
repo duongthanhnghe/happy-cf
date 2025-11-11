@@ -13,7 +13,7 @@ definePageMeta({
 const store = useProductDetailStore()
 const storeCart = useCartStore()
 const valueChangePage = ref<boolean|null>(null)
-const detail: ProductDTO | null = store.getDetail
+const detail: ProductDTO | null = store.getDetailProduct
 
 watch(valueChangePage, (newVal) => {
   if(newVal !== null) store.handleChangePage(newVal)

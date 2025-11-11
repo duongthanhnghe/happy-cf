@@ -34,22 +34,22 @@ await storeNewsLatest.fetchPostStore()
 <template>
   <SectionAccount :showBarcode="true"/>
 
-  <SectionBanner :items="storeBanner.getListData" :loading="storeBanner.loading" />
+  <SectionBanner :items="storeBanner.getListBanner" :loading="storeBanner.loading" />
 
   <div class="pt-section pb-section">
     <div :class="['container', storeDisplay.isMobileTable ? 'pr-0' : '']">
-      <SectionProductSales :items="storeProductSale.getListData" :breakpoints="breakpoints" :loading="storeProductSale.loading" headingText="Khuyến mãi" :viewMore="true" />
+      <SectionProductSales :items="storeProductSale.getListProductSales" :breakpoints="breakpoints" :loading="storeProductSale.loading" headingText="Khuyến mãi" :viewMore="true" />
     </div>
   </div>
 
   <div class="pb-section">
     <div :class="['container', storeDisplay.isMobileTable ? 'pr-0' : '']">
-      <SectionProductMostOrder :items="storeProductMostOrder.getListData" :breakpoints="breakpoints" :loading="storeProductMostOrder.loading" headingText="Gợi ý cho bạn" :viewMore="true" />
+      <SectionProductMostOrder :items="storeProductMostOrder.getListProductMostOrder" :breakpoints="breakpoints" :loading="storeProductMostOrder.loading" headingText="Gợi ý cho bạn" :viewMore="true" />
     </div>
   </div>
 
   <div class="pb-section">
-    <SectionNewsLatest :items="storeNewsLatest.getListData" :loading="storeNewsLatest.loading" headingText="Tin mới nhất" />
+    <SectionNewsLatest :items="storeNewsLatest.getListNewsLatest" :loading="storeNewsLatest.loading" headingText="Tin mới nhất" />
   </div>
 
   <client-only><Footer /></client-only>

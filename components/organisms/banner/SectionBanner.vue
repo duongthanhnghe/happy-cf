@@ -1,13 +1,7 @@
 <script lang="ts" setup>
 import type { BannerDTO } from '@/server/types/dto/v1/banner.dto'
-import {
-  Swiper,
-  SwiperSlide
-} from 'swiper/vue';
-import {
-  Pagination,
-  Autoplay
-} from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
@@ -22,7 +16,7 @@ const props = withDefaults(defineProps<{
 </script>
 <template>
   <div class="container">
-    <div v-if="props.loading">Đang tải dữ liệu...</div>
+    <div v-if="props.loading && props.items.length === 0">Đang tải dữ liệu...</div>
     <template v-else>
       <div class="banner overflow-hidden rd-lg">
         <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :space-between="0" :pagination="{ clickable: true }" :autoplay="{ delay: 5000, disableOnInteraction: false }" class="mySwiper">

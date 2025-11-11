@@ -1,6 +1,5 @@
 import { ref, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { ROUTES } from '@/shared/constants/routes'
 import { useProductDetail } from '@/composables/product/useProductDetail'
 import { useProductDetailHandle } from '@/composables/product/useProductDetailHandle'
 import { useProductRelated } from '@/composables/product/useProductRelated'
@@ -189,14 +188,12 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   const { handleChangePage, getTotalPages } = usePagination(pageReview, computed(() => paginationReview.value?.totalPages ?? 0))
   const { percentDiscount, getSummaryReview, isFavorite, toggleLike } = useProductDetailHandle(getDetailProduct,getListReview)
 
-  const getDetail = computed(() => getDetailProduct.value);
   const getListReviewProduct = computed(() => getListReview.value?.data);
   const getSelectedOptionsDataEdit = computed(() =>  selectedOptionsDataEdit.value)
   const getProductDetailDataEdit = computed(() => productDetailEdit.value);
 
   return {
     getDetailProduct,
-    getDetail,
     limitRelated,
     getListReviewProduct,
     pageReview,

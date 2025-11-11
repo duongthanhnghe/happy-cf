@@ -1,15 +1,7 @@
 <script lang="ts" setup>
-import {
-  useDisplayStore
-} from '@/stores/shared/useDisplayStore'
-import {
-  Swiper,
-  SwiperSlide
-} from 'swiper/vue';
-import {
-  Navigation,
-  Autoplay
-} from 'swiper/modules';
+import { useDisplayStore } from '@/stores/shared/useDisplayStore'
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';

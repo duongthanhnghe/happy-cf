@@ -10,7 +10,7 @@ definePageMeta({
 
 const storeCategoryMain = useCategoryMainStore()
 const valueChangePage = ref<boolean|null>(null)
-const detail: CategoryNewsDTO | null = storeCategoryMain.getDetail
+const detail: CategoryNewsDTO | null = storeCategoryMain.getDetailNewsCategoryApi
 
 watch(valueChangePage, (newVal) => {
   if(newVal !== null) storeCategoryMain.handleChangePage(newVal)

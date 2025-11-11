@@ -1,10 +1,11 @@
 import { ref, computed } from "vue";
 import { categoriesAPI } from "@/services/v1/categories-product.service";
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
+import { useState } from "nuxt/app";
 
 export const useProductCategoryChildren = () => {
   
-  const listCategory = ref<CategoryProductDTO[]>([])
+  const listCategory = useState<CategoryProductDTO[]>('product-category-children', () => [])
   
   const fetchCategoryChildrenList = async (parentId: string, includeInactive: boolean) => {
     try {

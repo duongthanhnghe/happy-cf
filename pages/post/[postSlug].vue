@@ -7,7 +7,7 @@ definePageMeta({
 })
 
 const storePostDetail = usePostDetailStore()
-const detail = storePostDetail.getDetail
+const detail = storePostDetail.getDetailPostApi
 const breakpoints = {
   320: { slidesPerView: 2.3, spaceBetween: 10 },
   640: { slidesPerView: 3, spaceBetween: 10 },
@@ -21,6 +21,6 @@ const breakpoints = {
   <div v-if="detail" class="container pt-section pb-section" >
     <PostDetail :item="detail"/>
 
-    <ListPostRelated :items="storePostDetail.getListItems" :loading="storePostDetail.loadingListRelated" :breakpoints="breakpoints" headingText="Tin lien quan" />
+    <ListPostRelated :items="storePostDetail.getListPostRelatedApi" :loading="storePostDetail.loadingListRelated" :breakpoints="breakpoints" headingText="Tin lien quan" />
   </div>
 </template>

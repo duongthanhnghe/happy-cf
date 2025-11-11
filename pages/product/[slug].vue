@@ -10,7 +10,7 @@ definePageMeta({
 
 const store = useProductDetailStore()
 const valueChangePage = ref<boolean|null>(null)
-const detail: ProductDTO | null = store.getDetail
+const detail: ProductDTO | null = store.getDetailProduct
 const breakpoints = {
   320: { slidesPerView: 2.3, spaceBetween: 10 },
   640: { slidesPerView: 3, spaceBetween: 10 },

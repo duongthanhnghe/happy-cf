@@ -1,19 +1,16 @@
 import { ref, watch, computed } from "vue";
 import { defineStore } from "pinia";
 import { Loading} from '@/utils/global'
-import { ROUTES } from '@/shared/constants/routes'
 import { useProductCategoryDetail } from '@/composables/product/useProductCategoryDetail'
 import { useProductByCategory } from '@/composables/product/useProductByCategory'
-import { useCategoryProductSEO } from '@/composables/seo/useCategoryProductSEO'
 import { usePagination } from '@/utils/paginationHandle'
 import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren'
 import type { ProductDTO, ProductSortType } from '@/server/types/dto/v1/product.dto'
 
 export const useCategoryMainStore = defineStore("CategoryMainProductStore", () => {
-  const { setCategoryProductSEO } = useCategoryProductSEO()
   const { getProductCategoryDetail } = useProductCategoryDetail()
   const { loadingData, getProductByCategoryApi, fetchProductByCategory } = useProductByCategory()
-  const { getListCategoryChildren, fetchCategoryChildrenList } = useProductCategoryChildren()
+  const { getListCategoryChildren } = useProductCategoryChildren()
 
   const listItems = ref<ProductDTO[]|null>(null);
   const pagination = computed(() => getProductByCategoryApi.value?.pagination)
@@ -41,13 +38,6 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   ])
   const maxPrice = ref(0)
   const rangePrice = ref([0, maxPrice.value])
-
-  watch(getProductCategoryDetail, (newValue) => {
-    if(newValue) {
-      setCategoryProductSEO(newValue, ROUTES.PUBLIC.NEWS.children?.MAIN.path || '')
-      fetchCategoryChildrenList(newValue.id, false)
-    }
-  }, { immediate: true })
 
   watch(getProductByCategoryApi, (newValue) => {
     if (newValue && newValue.data) {
@@ -82,13 +72,13 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     }
   })
 
-  const { handleChangePage, getTotalPages } = usePagination(page, computed(() => pagination.value?.totalPages ?? 0))
-
   watch([listItems, filterType], () => {
     if (listItems.value?.length) {
       rangePrice.value = [0, maxPrice.value]
     }
   }, { immediate: true })
+
+  const { handleChangePage, getTotalPages } = usePagination(page, computed(() => pagination.value?.totalPages ?? 0))
 
   const getListItems = computed(() => {
     const [min, max] = rangePrice.value
@@ -98,14 +88,12 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     })
   })
 
-  const getDetail = computed(() => getProductCategoryDetail.value);
-
   return {
     filterType,
     filterArray,
     limit,
     page,
-    getDetail,
+    getProductCategoryDetail,
     getListItems,
     getTotalPages,
     rangePrice,

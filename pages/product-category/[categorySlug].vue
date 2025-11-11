@@ -10,7 +10,7 @@ definePageMeta({
 
 const storeCategoryMain = useCategoryMainStore()
 const valueChangePage = ref<boolean|null>(null)
-const detail: CategoryProductDTO | null = storeCategoryMain.getDetail
+const detail: CategoryProductDTO | null = storeCategoryMain.getProductCategoryDetail
 
 watch(valueChangePage, (newVal) => {
   if(newVal !== null) storeCategoryMain.handleChangePage(newVal)
