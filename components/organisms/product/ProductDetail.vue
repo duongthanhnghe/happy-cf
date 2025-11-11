@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch, onMounted } from "vue"
+import { ref, watch } from "vue"
 import { ROUTES } from '@/shared/constants/routes'
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { formatCurrency } from '@/utils/global';
@@ -35,9 +35,8 @@ watch(valueChangePage, (newVal) => {
       </div>
       <Button :color="`${store.isFavorite ? 'black' : 'secondary'}`" icon="favorite" @click.prevent="store.toggleLike(detail.id)"/>
 
-
       <template v-if="detail.options.length > 0">
-        <v-radio-group hide-details v-model="storeCart.selectedOptionsData[item.id]" :name="`radio-group-${item.id}`" :key="item.id" v-for="item in detail.options" class="mt-sm mb-sm popup-detail-product-card">
+        <v-radio-group hide-details v-model="storeCart.selectedOptionsData[item.id as any]" :name="`radio-group-${item.id}`" :key="item.id" v-for="item in detail.options" class="mt-sm mb-sm popup-detail-product-card">
           <Heading tag="div" size="md" weight="semibold" class="black pt-sm pl-ms pr-ms">
             {{ item.name }}
           </Heading>

@@ -89,6 +89,7 @@ export interface CategoryWithProductsDTO extends CategoryProductDTO {
 }
 
 export interface SelectedOptionPushDTO {
+  id: string
   optionName: string
   variantName: string
   variantPrice: number

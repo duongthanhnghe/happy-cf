@@ -1,10 +1,14 @@
 import { ref, computed } from "vue";
 import { productReviewAPI } from "@/services/v1/productReview.service";
 import type { ProductReviewPaginationDTO } from '@/server/types/dto/v1/product-review.dto';
+import { useState } from "nuxt/app";
 
 export const useProductReviewByProduct = () => {
   
-  const listData = ref<ProductReviewPaginationDTO>();
+  const listData = useState<ProductReviewPaginationDTO | null>(
+    'product-review',
+    () => null
+  )
   const loading = ref(false);
 
   const fetchListReview = async (productId: string, page: number, limit: number) => {

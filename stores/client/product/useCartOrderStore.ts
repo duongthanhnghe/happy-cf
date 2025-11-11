@@ -170,6 +170,8 @@ export const useCartStore = defineStore("Cart", () => {
 
   // Wrapper functions
   const addProductToCart = (product: any, quantity: number, note: string) => {
+    // alert(quantity)
+
     return productOps.addProductToCart(
       product,
       quantity,

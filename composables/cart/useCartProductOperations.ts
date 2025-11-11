@@ -11,19 +11,19 @@ export const useCartProductOperations = (
   resetValuePopupOrder: () => void
 ) => {
   
-  const addNormalProduct = (product: ProductDTO) => {
+  const addNormalProduct = (product: ProductDTO, quantity?: number) => {
     const existingProduct = cartListItem.value?.find(
       (item) => item.id === product.id
     );
     if (existingProduct && existingProduct.quantity) {
-      existingProduct.quantity++;
+      quantity ? existingProduct.quantity += quantity : existingProduct.quantity++;
     } else {
       cartListItem.value?.push({
         product: product.id,
-        quantity: 1,
+        quantity: quantity ? quantity : 1,
       });
     }
-    cartCount.value++;
+    quantity ? cartCount.value += quantity : cartCount.value++;
   };
   
   const addProductWithOptions = (
@@ -41,7 +41,7 @@ export const useCartProductOperations = (
 
     if (existingProduct && existingProduct.quantity) {
       existingProduct.quantity = existingProduct.quantity + quantity;
-      cartCount.value = cartCount.value + quantity;
+      cartCount.value += quantity;
     } else {
       if (product.options.length > selectedOptions.length) {
         showWarning("Vui lòng chọn đầy đủ options!");
@@ -70,8 +70,8 @@ export const useCartProductOperations = (
         finalPriceDiscounts: product.priceDiscounts + optionsPrice,
       });
 
-      cartCount.value = cartCount.value + quantity;
-      if(!popupOrderState) showSuccess('Dat hang thanh cong')
+      cartCount.value += quantity;
+      // if(!popupOrderState) showSuccess('Dat hang thanh cong')
     }
 
     resetValuePopupOrder();
@@ -177,7 +177,7 @@ export const useCartProductOperations = (
     if (product.options.length > 0) {
       addProductWithOptions(product, selectedOptionsData.value, quantity, note, popupOrderState);
     } else {
-      addNormalProduct(product);
+      addNormalProduct(product, quantity);
     }
     updateCookie();
     return true;

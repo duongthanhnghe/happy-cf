@@ -5,28 +5,24 @@ import { useProductDetail } from '@/composables/product/useProductDetail'
 import { useProductDetailHandle } from '@/composables/product/useProductDetailHandle'
 import { useProductRelated } from '@/composables/product/useProductRelated'
 import { useProductReviewByProduct } from '@/composables/product-review/useProductReviewByProduct'
-import { useProductSEO } from '@/composables/seo/useProductSEO'
 import { usePagination } from '@/utils/paginationHandle'
 import { Loading} from '@/utils/global'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
-import { showSuccess } from "@/utils/toast";
-import type { ProductDTO, CartDTO, SelectedOptionDTO } from "@/server/types/dto/v1/product.dto";
+import { showSuccess, showWarning } from "@/utils/toast";
+import type { CartDTO, SelectedOptionDTO } from "@/server/types/dto/v1/product.dto";
+import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
 
 export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   const { getDetailProduct, fetchDetailProduct } = useProductDetail()
   const { getListProductRelated, loading: loadingListRelated } = useProductRelated()
   const { getListReview, fetchListReview, loading: loadingListReviews } = useProductReviewByProduct()
-  const { setProductSEO } = useProductSEO()
-  
+  const { getVoucherProduct, loading: loadingListVoucher } = useAvailableVouchersForOrder();
   const storeCart = useCartStore();
 
   const limitRelated = 12
   const limitReview = 1
   const pageReview = ref('1')
   const paginationReview = computed(() => getListReview.value?.pagination)
-  const routePath = ROUTES.PUBLIC.PRODUCT.children?.DETAIL?.path ?? '/product'
-
-  //handle order
   const quantity = ref(1);
   const priceTotal = ref(0);
   const priceOptions = ref(0);
@@ -68,13 +64,31 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
       if(productDetailEdit.value?.finalPriceDiscounts){
         priceTotalEdit.value = productDetailEdit.value.finalPriceDiscounts * quantityEdit.value;
       } else {
-        if(productDetailEdit.value) priceTotalEdit.value = productDetailEdit.value.priceDiscounts * quantityEdit.value;
+        if(productDetailEdit.value && productDetailEdit.value.priceDiscounts) priceTotalEdit.value = productDetailEdit.value.priceDiscounts * quantityEdit.value;
       }
     }
   };
 
   const handleAddToCart = () => {
     if(!getDetailProduct.value) return
+
+    const product = getDetailProduct.value;
+    const selectedOptions = storeCart.selectedOptionsData;
+
+    if (product.options && product.options.length > 0) {
+      const isAllRequiredSelected = product.options.every(group => {
+        const selectedVariant = selectedOptions[group.id as any]  as any;
+        
+        return selectedVariant && group.variants.some(variant => 
+          variant.id === selectedVariant
+        );
+      });
+
+      if (!isAllRequiredSelected) {
+        return showWarning("Vui lòng chọn đầy đủ các tùy chọn bắt buộc!");
+      }
+    }
+
     const res = storeCart.addProductToCart(getDetailProduct.value, quantity.value, note.value)
     if(res){
       showSuccess('Dat hang thanh cong')
@@ -87,6 +101,7 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     note.value = '';
     priceTotal.value = getDetailProduct.value?.priceDiscounts || 0;
     productDetailEdit.value = null;
+    storeCart.selectedOptionsData = [];
     quantityEdit.value = 0;
     priceTotalEdit.value = 0;
     togglePopup("edit", false);
@@ -153,14 +168,13 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
 
   watch(getDetailProduct, (newValue) => {
     if(newValue) {
-      setProductSEO(newValue, routePath)
-      fetchListReview(newValue.id, 1, limitReview)
       calcTotalPrice("order");
     }
   }, { immediate: true })
 
   watch(pageReview, async (newValue) => {
     if(newValue && getListReview.value && getDetailProduct.value?.id) {
+      console.log("truoc"+loadingListReviews.value)
       Loading(true)
       try {
         await fetchListReview(getDetailProduct.value?.id,Number(newValue), limitReview)
@@ -168,6 +182,7 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
         console.error('category-news error:', error)
       }
       Loading(false)
+      console.log("sau"+loadingListReviews.value)
     }
   })
 
@@ -175,7 +190,6 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   const { percentDiscount, getSummaryReview, isFavorite, toggleLike } = useProductDetailHandle(getDetailProduct,getListReview)
 
   const getDetail = computed(() => getDetailProduct.value);
-  const getListItems = computed(() => getListProductRelated.value);
   const getListReviewProduct = computed(() => getListReview.value?.data);
   const getSelectedOptionsDataEdit = computed(() =>  selectedOptionsDataEdit.value)
   const getProductDetailDataEdit = computed(() => productDetailEdit.value);
@@ -183,7 +197,6 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   return {
     getDetailProduct,
     getDetail,
-    getListItems,
     limitRelated,
     getListReviewProduct,
     pageReview,
@@ -197,6 +210,9 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     popups,
     loadingListRelated,
     loadingListReviews,
+    loadingListVoucher,
+    getVoucherProduct,
+    limitReview,
     handleChangePage,
     toggleLike,
     inDecrement,
@@ -209,6 +225,7 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     togglePopup,
     resetFormCart,
     calcTotalPrice,
+    getListProductRelated,
     getTotalPages,
     percentDiscount,
     getSummaryReview,
