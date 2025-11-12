@@ -29,6 +29,7 @@ const headers = ref<TableHeaders[]>([
   { title: 'Thanh toan', key: 'transaction', sortable: false, },
   { title: 'Tong cong', key: 'totalPrice', sortable: false, },
   { title: 'Tinh trang don', key: 'status', sortable: false, },
+  { title: 'Yeu cau huy don', key: 'cancelRequested', sortable: false, },
   { title: '', key: 'actions', sortable: false, headerProps: { class: 'v-data-table-sticky-cl-right' },
     cellProps: { class: 'v-data-table-sticky-cl-right' }},
 ])

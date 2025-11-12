@@ -22,12 +22,12 @@ export const useOrderDetailHandlers = (
   })
 
   watch(() => idOrder.value, (newId) => {
-      if(storeHistory.isTogglePopupDetail || storeHistory.getCheckPageDetail){
+      if(storeHistory.isTogglePopupDetail || storeHistory.checkPageDetail){
         fetchOrderDetail(newId);
         hasFetched.value = false;
       }
     },
-    { immediate: storeHistory.getCheckPageDetail ? true : false }
+    { immediate: storeHistory.checkPageDetail ? true : false }
   )
 
   watch(() => getDetailOrder.value?.status.id, (newId) => {

@@ -14,6 +14,7 @@ import path from "path";
 import fs from "fs";
 import { VoucherEntity } from "../../models/v1/voucher.entity";
 import { VoucherUsageEntity } from "../../models/v1/voucher-usage.entity";
+import mongoose from "mongoose";
 
 export const getOrderById = async (req: Request, res: Response) => {
   try {
@@ -79,6 +80,7 @@ export const createOrder = async (req: Request, res: Response) => {
       pointsRefunded: false,
       membershipDiscountRate,
       membershipDiscountAmount,
+      cancelRequested: false,
     })
 
     //tao log voucher
@@ -519,3 +521,48 @@ export const getShippingFee = async (req: Request, res: Response) => {
     })
   }
 }
+
+export const cancelOrderByUser = async (req: Request, res: Response) => {
+  try {
+    const { orderId,userId } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ code: 1, message: "Unauthorized" });
+    }
+
+    if (!orderId) {
+      return res.status(400).json({ code: 1, message: "Thiếu orderId" });
+    }
+
+    const order = await OrderEntity.findById(orderId)
+
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Đơn hàng không tồn tại" });
+    }
+
+    if (order.cancelRequested) {
+      return res.status(400).json({ code: 1, message: "Đơn hàng da duoc gui yeu cau huy don" });
+    }
+
+    if (!order.userId || order.userId?.toString() !== userId) {
+      return res.status(403).json({ code: 1, message: "Bạn không có quyền hủy đơn này" });
+    }
+
+    if (order.status && [ORDER_STATUS.CANCELLED, ORDER_STATUS.COMPLETED, ORDER_STATUS.CONFIRMED].includes(order.status.toString())) {
+      return res.status(400).json({ code: 1, message: "Đơn hàng này không thể hủy" });
+    }
+
+    order.cancelRequested = true;
+    await order.save();
+
+    return res.json({
+      code: 0,
+      message: "Yêu cầu hủy đơn hàng đã được gửi đến admin",
+      data: order
+    });
+
+  } catch (err: any) {
+    console.error("Lỗi cancelOrderByUser:", err);
+    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
+  }
+};

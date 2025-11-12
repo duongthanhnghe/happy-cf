@@ -1,6 +1,7 @@
 import { UserModel } from "../../models/v1/user.entity.js";
 import { OrderEntity } from "../../models/v1/order.entity.js";
 import { toOrderDTO } from "../../mappers/v1/order.mapper.js";
+import { ORDER_STATUS } from "../../shared/constants/order-status.js";
 import { PaymentTransactionEntity } from "../../models/v1/payment-transaction.entity.js";
 import { PAYMENT_TRANSACTION_STATUS } from "../../shared/constants/payment-transaction-status.js";
 import { PAYMENT_METHOD_STATUS } from "../../shared/constants/payment-method-status.js";
@@ -63,6 +64,7 @@ export const createOrder = async (req, res) => {
             pointsRefunded: false,
             membershipDiscountRate,
             membershipDiscountAmount,
+            cancelRequested: false,
         });
         //tao log voucher
         if (Array.isArray(data.voucherUsage) && data.voucherUsage.length > 0 && userId) {
@@ -427,6 +429,42 @@ export const getShippingFee = async (req, res) => {
             message: "Internal Server Error",
             data: null
         });
+    }
+};
+export const cancelOrderByUser = async (req, res) => {
+    var _a;
+    try {
+        const { orderId, userId } = req.body;
+        if (!userId) {
+            return res.status(401).json({ code: 1, message: "Unauthorized" });
+        }
+        if (!orderId) {
+            return res.status(400).json({ code: 1, message: "Thiếu orderId" });
+        }
+        const order = await OrderEntity.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ code: 1, message: "Đơn hàng không tồn tại" });
+        }
+        if (order.cancelRequested) {
+            return res.status(400).json({ code: 1, message: "Đơn hàng da duoc gui yeu cau huy don" });
+        }
+        if (!order.userId || ((_a = order.userId) === null || _a === void 0 ? void 0 : _a.toString()) !== userId) {
+            return res.status(403).json({ code: 1, message: "Bạn không có quyền hủy đơn này" });
+        }
+        if (order.status && [ORDER_STATUS.CANCELLED, ORDER_STATUS.COMPLETED, ORDER_STATUS.CONFIRMED].includes(order.status.toString())) {
+            return res.status(400).json({ code: 1, message: "Đơn hàng này không thể hủy" });
+        }
+        order.cancelRequested = true;
+        await order.save();
+        return res.json({
+            code: 0,
+            message: "Yêu cầu hủy đơn hàng đã được gửi đến admin",
+            data: order
+        });
+    }
+    catch (err) {
+        console.error("Lỗi cancelOrderByUser:", err);
+        return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
     }
 };
 //# sourceMappingURL=order.controller.js.map

@@ -42,6 +42,6 @@ const store = useOrderHistoryStore();
     </div>
   </div>
 
-  <PopupOrderDetail :typePopup="true" :idOrder="store.getIdOrderPopupDetail" />
+  <PopupOrderDetail :typePopup="true" :idOrder="store.idOrderPopupDetail" />
 </template>
 

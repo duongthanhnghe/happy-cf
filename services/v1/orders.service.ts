@@ -237,5 +237,41 @@ export const ordersAPI = {
         data: null
       }
     }
-  }
+  },
+  cancelOrderByUser: async (
+    orderId: string,
+    userId: string,
+  ): Promise<any> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.CANCEL_REQUEST}`, 
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId,userId })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || data.code !== 0) {
+        return {
+          code: 1,
+          message: data.message || "Hủy đơn thất bại",
+          data: null,
+        };
+      }
+
+      return data as ApiResponse<OrderDTO>;
+
+    } catch (err: any) {
+      console.error("Cancel order error:", err);
+      return {
+        code: 1,
+        message: err.message || "Hủy đơn thất bại",
+        data: null,
+      };
+    }
+  },
 }

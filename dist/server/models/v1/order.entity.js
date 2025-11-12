@@ -46,6 +46,7 @@ const OrderSchema = new Schema({
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
+    cancelRequested: { type: Boolean, default: false },
     reward: {
         points: { type: Number, default: 0 },
         awarded: { type: Boolean, default: false },

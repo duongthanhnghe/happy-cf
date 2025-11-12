@@ -43,6 +43,7 @@ export interface Order {
   // point?: number;
   status: Types.ObjectId;
   userId?: Types.ObjectId | null;
+  cancelRequested: boolean;
   transaction?: Types.ObjectId;
   reward: {
     points: number;
@@ -121,6 +122,7 @@ const OrderSchema = new Schema<Order>(
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
+    cancelRequested: { type: Boolean, default: false },
     reward: {
       points: { type: Number, default: 0 },
       awarded: { type: Boolean, default: false },

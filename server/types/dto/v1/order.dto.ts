@@ -67,6 +67,7 @@ export interface OrderDTO {
   shippingFee: number;
   status: OrderStatusDTO;
   userId: string | null;
+  cancelRequested: boolean;
   transaction: PaymentTransactionDTO | null;
   reward: {
     points: number,
@@ -74,7 +75,7 @@ export interface OrderDTO {
     awardedAt: string | null;
   };
   usedPoints: number;
-  pointsRefunded: boolean
+  pointsRefunded: boolean;
   membershipDiscountRate: number;
   membershipDiscountAmount: number;
   voucherUsage: ApplyVoucherResponse[];
@@ -83,7 +84,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded"> {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested"> {
   paymentId: string;
   status: string;
   provinceCode: number;

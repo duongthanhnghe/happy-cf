@@ -258,121 +258,6 @@ export const getMostOrderedProduct = async (req, res) => {
         res.status(500).json({ code: 1, message: "Server error" });
     }
 };
-// export const getProductsByCategory = async (
-//   req: Request<{ id: string }>,
-//   res: Response
-// ) => {
-//   try {
-//     if (!Types.ObjectId.isValid(req.params.id)) {
-//       return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
-//     }
-//     const categoryId = new Types.ObjectId(req.params.id);
-//     const categories = await CategoryProductEntity.aggregate([
-//       { $match: { _id: categoryId } },
-//       {
-//         $graphLookup: {
-//           from: "categories",      // 👈 tên collection (mặc định là model name viết thường + "s")
-//           startWith: "$_id",
-//           connectFromField: "_id",
-//           connectToField: "parentId",
-//           as: "descendants"
-//         }
-//       },
-//       {
-//         $project: {
-//           ids: {
-//             $concatArrays: [["$_id"], "$descendants._id"]
-//           }
-//         }
-//       }
-//     ]);
-//     const categoryIds: Types.ObjectId[] = categories[0]?.ids || [categoryId];
-//     const page = parseInt(req.query.page as string, 10) || 1;
-//     let limit = parseInt(req.query.limit as string, 10) || 10;
-//     const sortType = (req.query.sort as string) || "default";
-//     if (limit === -1) {
-//       limit = await ProductEntity.countDocuments({
-//         categoryId: { $in: categoryIds },
-//         isActive: true
-//       });
-//     }
-//     const skip = (page - 1) * limit;
-//     const [total, products] = await Promise.all([
-//       ProductEntity.countDocuments({
-//         categoryId: { $in: categoryIds },
-//         isActive: true
-//       }),
-//       ProductEntity.aggregate([
-//         { $match: { categoryId: { $in: categoryIds }, isActive: true } },
-//         // Ép kiểu price & priceDiscount sang số
-//         {
-//           $addFields: {
-//             price: { $toDouble: "$price" },
-//             priceDiscount: { $toDouble: "$priceDiscount" },
-//           },
-//         },
-//         // Tính toán giảm giá
-//         {
-//           $addFields: {
-//             hasDiscount: { $cond: [{ $lt: ["$priceDiscount", "$price"] }, 1, 0] },
-//             discountValue: {
-//               $cond: [
-//                 { $lt: ["$priceDiscount", "$price"] },
-//                 { $subtract: ["$price", "$priceDiscount"] },
-//                 0,
-//               ],
-//             },
-//             discountPercent: {
-//               $cond: [
-//                 { $lt: ["$priceDiscount", "$price"] },
-//                 {
-//                   $multiply: [
-//                     { $divide: [{ $subtract: ["$price", "$priceDiscount"] }, "$price"] },
-//                     100,
-//                   ],
-//                 },
-//                 0,
-//               ],
-//             },
-//           },
-//         },
-//         // Sort động theo sortType
-//         {
-//           $sort:
-//             sortType === "discount"
-//               ? { hasDiscount: -1, discountPercent: -1, updatedAt: -1 }
-//               : sortType === "popular"
-//               ? { amountOrder: -1 }
-//               : sortType === "price_desc"
-//               ? { price: -1 }
-//               : sortType === "price_asc"
-//               ? { price: 1 }
-//               : { updatedAt: -1 },
-//         },
-//         { $skip: skip },
-//         { $limit: limit },
-//       ]),
-//     ]);
-//     const cache = new Map();
-//     const filtered: typeof products = [];
-//     for (const p of products) {
-//       const active = await isCategoryChainActive(
-//         new mongoose.Types.ObjectId(p.categoryId),
-//         cache
-//       );
-//       if (active) filtered.push(p);
-//     }
-//     const totalPages = Math.ceil(total / limit);
-//     return res.json({
-//       code: 0,
-//       data: toProductListDTO(filtered),
-//       pagination: { page, limit, total, totalPages: filtered.length },
-//       message: "Success",
-//     });
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message });
-//   }
-// };
 export const getProductsByCategory = async (req, res) => {
     var _a;
     try {
@@ -380,12 +265,11 @@ export const getProductsByCategory = async (req, res) => {
             return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
         }
         const categoryId = new Types.ObjectId(req.params.id);
-        // ✅ Lấy tất cả category con
         const categories = await CategoryProductEntity.aggregate([
             { $match: { _id: categoryId } },
             {
                 $graphLookup: {
-                    from: CategoryProductEntity.collection.name, // ✅ Sửa tên collection
+                    from: CategoryProductEntity.collection.name,
                     startWith: "$_id",
                     connectFromField: "_id",
                     connectToField: "parentId",
@@ -399,7 +283,6 @@ export const getProductsByCategory = async (req, res) => {
             }
         ]);
         const categoryIds = ((_a = categories[0]) === null || _a === void 0 ? void 0 : _a.ids) || [categoryId];
-        // ❗ Filter category active trước
         const activeCategories = [];
         const cache = new Map();
         for (const id of categoryIds) {
@@ -410,7 +293,6 @@ export const getProductsByCategory = async (req, res) => {
         if (activeCategories.length === 0) {
             return res.json({ code: 0, data: [], pagination: { page: 1, limit: 0, total: 0, totalPages: 0 } });
         }
-        // ✅ Lọc theo category active
         const match = {
             categoryId: { $in: activeCategories },
             isActive: true
@@ -424,7 +306,7 @@ export const getProductsByCategory = async (req, res) => {
             {
                 $addFields: {
                     price: { $toDouble: "$price" },
-                    priceDiscount: { $toDouble: "$priceDiscounts" } // ✅ Fix field name
+                    priceDiscount: { $toDouble: "$priceDiscounts" }
                 }
             },
             { $sort: { updatedAt: -1 } },

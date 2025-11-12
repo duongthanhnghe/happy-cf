@@ -8,6 +8,7 @@ import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
 import { getTransactionNote } from '@/composables/admin/order/useGetTransactionNote';
 import { getFilteredTransactionStatus } from '@/composables/admin/order/useFilteredTransactionStatus';
 import { useHandle } from '@/composables/admin/order/useOrderManageHandle'
+import type { OrderDTO } from '@/server/types/dto/v1/order.dto';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,
@@ -17,14 +18,21 @@ definePageMeta({
 const store = useOrderManageStore();
 const storeUser = useUserManageStore();
 const { idOrder, handleDetailPopup } = useHandle()
+const statusListToShow = (order: OrderDTO) => {
+  if (order.status.id === ORDER_STATUS.CANCELLED) return [];
 
+  if (order.cancelRequested || order.status.id === ORDER_STATUS.COMPLETED) {
+    return store.getListStatus.filter(s => s.id === ORDER_STATUS.CANCELLED);
+  }
+
+  return store.getListStatus;
+};
 </script>
 <template>
 
 <HeaderAdmin>
   <template #left>
     <v-text-field v-model="store.idOrder"  placeholder="Ma don hang..." variant="outlined" hide-details></v-text-field>
-    <!-- <v-text-field v-model="store.name"  placeholder="Tên nguoi dat..." hide-details></v-text-field> -->
     <v-text-field v-model="store.phone" type="number"  placeholder="So dien thoai..." variant="outlined" hide-details></v-text-field>
     <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'Tất cả' }, ...store.getListStatus]" item-title="name" item-value="id"  variant="outlined"hide-details />
     <v-select label="Thanh toan" v-model="store.filterStatusTransactionOrder" :items="[{ status: '', name: 'Tất cả' }, ...Object.values(PAYMENT_TRANSACTION_STATUS)
@@ -87,13 +95,19 @@ const { idOrder, handleDetailPopup } = useHandle()
           <MaterialIcon name="keyboard_arrow_down" />
         </template>
       </v-chip>
-      <template v-if="order.status.id !== ORDER_STATUS.CANCELLED ">
+      <template v-if="order.status.id !== ORDER_STATUS.CANCELLED">
         <v-menu transition="slide-x-transition" activator="parent">
           <v-list>
-            <v-list-item
+            <!-- <v-list-item
               v-for="statusItem in (order.status.id === ORDER_STATUS.COMPLETED
                                 ? store.getListStatus.filter(s => s.id === ORDER_STATUS.CANCELLED)
                                 : store.getListStatus)"
+              :key="statusItem.id"
+              @click.prevent="store.handleUpdateStatusOrder(order.id, statusItem.id, statusItem.name, order.transaction?.id, order.totalPrice, order.paymentId.method)"
+              :class="{ active: statusItem.index == order.status.index }"
+            > -->
+            <v-list-item
+              v-for="statusItem in statusListToShow(order)"
               :key="statusItem.id"
               @click.prevent="store.handleUpdateStatusOrder(order.id, statusItem.id, statusItem.name, order.transaction?.id, order.totalPrice, order.paymentId.method)"
               :class="{ active: statusItem.index == order.status.index }"
@@ -144,6 +158,12 @@ const { idOrder, handleDetailPopup } = useHandle()
       <div v-if="item.transaction" class="mt-xs text-size-xs text-color-gray5 max-width-200 text-limit text-limit-2 white-space-pre">
         {{ getTransactionNote(item.transaction?.status, item.status.id) }}
       </div>
+    </template>
+
+    <template #item.cancelRequested="{ item }">
+      <v-chip v-if="item.cancelRequested && item.status.id === ORDER_STATUS.PENDING" label color="orange">
+        {{ item.cancelRequested ? 'Xu ly yeu cau' : null }}
+      </v-chip>
     </template>
 
     <template #item.actions="{ item }">

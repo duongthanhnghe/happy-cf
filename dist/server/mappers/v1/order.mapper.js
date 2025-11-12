@@ -50,6 +50,7 @@ export function toOrderDTO(entity) {
                 ? entity.userId._id.toString()
                 : entity.userId.toString()
             : null,
+        cancelRequested: entity.cancelRequested,
         transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
         reward: entity.reward
             ? {

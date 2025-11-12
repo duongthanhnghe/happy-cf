@@ -1150,16 +1150,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"44939-yu9Lh91fVaRexFlm88tTtsnZn+M\"",
-    "mtime": "2025-11-10T06:50:03.428Z",
-    "size": 280889,
+    "etag": "\"45112-7Bev5z1MB01yL2FfcVpw4twx/h8\"",
+    "mtime": "2025-11-12T06:12:34.978Z",
+    "size": 282898,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"106f2b-GTmeCS5RULCBJdk9pCOdr9x7ziE\"",
-    "mtime": "2025-11-10T06:50:03.433Z",
-    "size": 1077035,
+    "etag": "\"109072-leo95do2SdOdDDy3IerN7kjWttI\"",
+    "mtime": "2025-11-12T06:12:34.981Z",
+    "size": 1085554,
     "path": "index.mjs.map"
   }
 };
@@ -3769,6 +3769,7 @@ const OrderSchema = new Schema(
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
+    cancelRequested: { type: Boolean, default: false },
     reward: {
       points: { type: Number, default: 0 },
       awarded: { type: Boolean, default: false },
@@ -3867,6 +3868,7 @@ function toOrderDTO(entity) {
     shippingFee: entity.shippingFee,
     status: toOrderStatusDTO(entity.status),
     userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
+    cancelRequested: entity.cancelRequested,
     transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
     reward: entity.reward ? {
       points: (_b = entity.reward.points) != null ? _b : 0,
@@ -4530,6 +4532,12 @@ const updateOrderStatus = async (req, res) => {
     const order = await OrderEntity.findById(orderId);
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    if (order.cancelRequested && statusId !== ORDER_STATUS.CANCELLED) {
+      return res.status(400).json({
+        code: 1,
+        message: "Kh\xE1ch \u0111ang y\xEAu c\u1EA7u h\u1EE7y \u0111\u01A1n, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i sang tr\u1EA1ng th\xE1i n\xE0y"
+      });
     }
     if (((_a = order.status) == null ? void 0 : _a.toString()) === ORDER_STATUS.CANCELLED) {
       return res.status(400).json({
@@ -5971,7 +5979,8 @@ const createOrder = async (req, res) => {
       usedPoints: deductedPoints,
       pointsRefunded: false,
       membershipDiscountRate,
-      membershipDiscountAmount
+      membershipDiscountAmount,
+      cancelRequested: false
     });
     if (Array.isArray(data.voucherUsage) && data.voucherUsage.length > 0 && userId) {
       for (const v of data.voucherUsage) {
@@ -6318,6 +6327,41 @@ const getShippingFee = async (req, res) => {
       message: "Internal Server Error",
       data: null
     });
+  }
+};
+const cancelOrderByUser = async (req, res) => {
+  var _a;
+  try {
+    const { orderId, userId } = req.body;
+    if (!userId) {
+      return res.status(401).json({ code: 1, message: "Unauthorized" });
+    }
+    if (!orderId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu orderId" });
+    }
+    const order = await OrderEntity.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "\u0110\u01A1n h\xE0ng kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    if (order.cancelRequested) {
+      return res.status(400).json({ code: 1, message: "\u0110\u01A1n h\xE0ng da duoc gui yeu cau huy don" });
+    }
+    if (!order.userId || ((_a = order.userId) == null ? void 0 : _a.toString()) !== userId) {
+      return res.status(403).json({ code: 1, message: "B\u1EA1n kh\xF4ng c\xF3 quy\u1EC1n h\u1EE7y \u0111\u01A1n n\xE0y" });
+    }
+    if (order.status && [ORDER_STATUS.CANCELLED, ORDER_STATUS.COMPLETED, ORDER_STATUS.CONFIRMED].includes(order.status.toString())) {
+      return res.status(400).json({ code: 1, message: "\u0110\u01A1n h\xE0ng n\xE0y kh\xF4ng th\u1EC3 h\u1EE7y" });
+    }
+    order.cancelRequested = true;
+    await order.save();
+    return res.json({
+      code: 0,
+      message: "Y\xEAu c\u1EA7u h\u1EE7y \u0111\u01A1n h\xE0ng \u0111\xE3 \u0111\u01B0\u1EE3c g\u1EEDi \u0111\u1EBFn admin",
+      data: order
+    });
+  } catch (err) {
+    console.error("L\u1ED7i cancelOrderByUser:", err);
+    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
   }
 };
 
@@ -6827,6 +6871,7 @@ router$4.post("/sepay-callback", sepayCallback);
 router$4.post("/shipping/fee", getShippingFee);
 router$4.get("/users/:userId/orders", authenticate, getOrdersByUserId);
 router$4.get("/users/:userId/rewards", authenticate, getRewardHistoryByUserId);
+router$4.post("/users/cancel-request", authenticate, cancelOrderByUser);
 
 const orderManage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

@@ -77,7 +77,7 @@ export const useCartStore = defineStore("Cart", () => {
   const handleCalcTotalPriceCurrent = () => {
     pricing.handleCalcTotalPriceCurrent(storeAccount.getDetailValue?.membership?.discountRate);
     
-    const userId = storeAccount.getDetailValue?.id;
+    const userId = storeAccount.getDetailValue?.id || '';
     const categoryIds = [...new Set(state.cartListItem.value.map(item => item.categoryId || ''))];
     
     if (categoryIds && state.totalPriceCurrent.value && route.path === ROUTES.PUBLIC.CART.path) {

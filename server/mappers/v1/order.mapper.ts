@@ -62,6 +62,7 @@ export function toOrderDTO(entity: Order): OrderDTO {
         ? (entity.userId as any)._id.toString()
         : entity.userId.toString()           
       : null,
+    cancelRequested: entity.cancelRequested,
     transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction as any) : null,
     reward: entity.reward
       ? {

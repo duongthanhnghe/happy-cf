@@ -31,6 +31,7 @@ export const API_ENDPOINTS = {
     LIST_REWARDS_BY_USER: (id: string) => `/orders/users/${id}/rewards`,
     CHECK_POINT: "/orders/check-point",
     SHIPPING_FEE: "/orders/shipping/fee",
+    CANCEL_REQUEST: "/orders/users/cancel-request",
   },
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',

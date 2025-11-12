@@ -131,6 +131,12 @@ export const updateOrderStatus = async (req, res) => {
         if (!order) {
             return res.status(404).json({ code: 1, message: "Order không tồn tại" });
         }
+        if (order.cancelRequested && statusId !== ORDER_STATUS.CANCELLED) {
+            return res.status(400).json({
+                code: 1,
+                message: "Khách đang yêu cầu hủy đơn, không thể thay đổi sang trạng thái này"
+            });
+        }
         if (((_a = order.status) === null || _a === void 0 ? void 0 : _a.toString()) === ORDER_STATUS.CANCELLED) {
             return res.status(400).json({
                 code: 1,
