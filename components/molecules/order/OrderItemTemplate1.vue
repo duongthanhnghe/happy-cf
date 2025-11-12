@@ -51,9 +51,10 @@ const props = defineProps({
         <Button v-if="props.item?.transaction === null && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handlePaymentOrder(props.item?.id, props.item?.code, props.item?.totalPrice)" size="sm" color="secondary" label="Thanh toan"/>
       </div>
       <div class="flex gap-xs">
-        <template v-if="props.item?.status.id === ORDER_STATUS.PENDING">
-          <Button v-if="!props.item?.cancelRequested" @click.prevent="store.handleCancelOrder(props.item?.id, props.item?.userId)" size="sm" color="secondary" label="Yeu cau huy don"/>
-          <Button v-else v-tooltip.left="'Da gui yeu cau huy don den admin'" tag="span" size="sm" color="gray" :border="false" label="Da yeu cau" />
+        <template v-if="props.item?.status.id === ORDER_STATUS.PENDING || props.item?.status.id === ORDER_STATUS.CANCELLED">
+          <Button v-if="!props.item?.cancelRequested && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handleCancelOrder(props.item?.id, props.item?.userId)" size="sm" color="secondary" label="Yeu cau huy don"/>
+          <Button v-else-if="props.item?.cancelRequested" v-tooltip.left="'Da gui yeu cau huy don den admin'" tag="span" size="sm" color="gray" :border="false" label="Da yeu cau" />
+          <template v-else />
         </template>
         <v-chip label :color="props.item?.status.status">
           {{ props.item?.status.name }}
