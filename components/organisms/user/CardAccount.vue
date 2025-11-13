@@ -33,8 +33,7 @@ watchEffect(() => {
 <template>
   <div class="information-account">
     <div class="container">
-      <div v-if="storeAccount.getLoading && !storeAccount.getDetailValue?.id" class="information-account-card">Đang tải tài khoản...</div>
-      <div v-else-if="!storeAccount.getLoading && storeAccount.getDetailValue?.id" class="information-account-card">
+        <div v-if="storeAccount.getDetailValue?.id" class="information-account-card">
           <div class="flex justify-between">
             <div class="flex align-center gap-sm">
               <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
@@ -60,7 +59,7 @@ watchEffect(() => {
               </div>
               <div class="information-account-process">
                 <div class="information-account-process-percent" :style="{width: (storeAccount.getDetailValue?.membership.point / (storeAccount.getInformationMembershipLevel?.nextLevel?.minPoint || 1) * 100).toFixed(2) + '%'
-    }"></div>
+                }"></div>
                 <div class="information-account-process-line"></div>
               </div>
               <div class="flex justify-between mt-xs text-size-xs text-color-gray8">
