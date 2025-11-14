@@ -120,6 +120,8 @@ export interface CartDTO {
   categoryId?: string;
   productName?: string;
   image?: string;
+  summaryContent?: string;
+  options?: OptionDTO[];
 }
 
 export type SelectedOptionDTO = SelectedOptionPushDTO & {id: string}

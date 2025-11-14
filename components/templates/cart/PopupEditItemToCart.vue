@@ -1,28 +1,28 @@
-<script setup>
+<script lang="ts" setup>
 import '@/styles/templates/cart/popup-add-item-to-cart.scss'
-import { watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
-import { formatCurrency } from '~/utils/global';
+import { formatCurrency } from '@/utils/global';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 
 const storeProduct = useProductDetailStore();
 const storeCart = useCartStore();
 const storeDisplay = useDisplayStore()
 
-const handleChangeVariant = (idOption, idVariant, optionName, variantName, variantPrice) => {
+const handleChangeVariant = (idOption: string, idVariant: string, optionName: string, variantName: string, variantPrice: number) => {
   storeCart.setSelectedOptionsData(idOption, idVariant, optionName, variantName, variantPrice);
   storeProduct.priceOptions = storeCart.getSelectedOptionsData.reduce(
     (total, item) => total + item.variantPrice,
     0
   );
-  storeProduct.calcTotalPrice("edit");
+  storeCart.calcTotalPrice("edit");
 };
 
-watch(() => storeProduct.getProductDetailDataEdit?.selectedOptionsPush, (newValue) => {
-  if (newValue) {
-    storeProduct.getProductDetailDataEdit.selectedOptionsPush.forEach(opt => {
-      const option = storeProduct.getProductDetailDataEdit.options.find(o => o.name === opt.optionName)
+watch(() => storeCart.getProductDetailDataEdit?.selectedOptionsPush, (newValue) => {
+  if (newValue && storeCart.getProductDetailDataEdit?.selectedOptionsPush) {
+    storeCart.getProductDetailDataEdit?.selectedOptionsPush.forEach(opt => {
+      const option = storeCart.getProductDetailDataEdit?.options?.find(o => o.name === opt.optionName)
       const variant = option?.variants.find(v => v.name === opt.variantName)
       if (option && variant) {
         storeCart.selectedOptionsData[option.id] = variant.id
@@ -30,42 +30,46 @@ watch(() => storeProduct.getProductDetailDataEdit?.selectedOptionsPush, (newValu
     })
   }
 }, { immediate: true })
+
+const detail = computed(() => storeCart.getProductDetailDataEdit);
+const detailProduct = computed(() => storeProduct.getDetailProduct);
+
 </script>
 
 <template>
-  <Popup :children="storeCart.isTogglePopup ? true: false" :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" align="bottom" popupId="popup-edit" :modelValue="storeProduct.getPopupState('edit')" :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" @update:modelValue="storeProduct.togglePopup('edit', false)">
-    <template #body v-if="storeProduct.getProductDetailDataEdit">
+  <Popup :children="storeCart.isTogglePopup ? true: false" :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" align="bottom" popupId="popup-edit" :modelValue="storeCart.getPopupState('edit')" :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" @update:modelValue="storeCart.togglePopup('edit', false)">
+    <template #body v-if="detail">
       <div class="popup-detail-product">
         <div class="popup-detail-product-image">
-          <img :src="storeProduct.getProductDetailDataEdit.image" :alt="storeProduct.getProductDetailDataEdit.productName" />
+          <img :src="detailProduct?.image" :alt="detailProduct?.productName" />
         </div>
         <div class="popup-detail-product-card popup-detail-product-info">
           <div class="popup-detail-product-right">
             <Heading tag="div" size="lg" weight="bold" class="black mb-sm">
-              {{ storeProduct.getProductDetailDataEdit.productName }}
+              {{ detailProduct?.productName }}
             </Heading>
-            <div class="text-color-gray5 weight-semibold" v-if="storeProduct.getProductDetailDataEdit?.finalPriceDiscounts && storeProduct.getProductDetailDataEdit?.finalPriceDiscounts != undefined">
-              {{ formatCurrency(parseInt(storeProduct.getProductDetailDataEdit?.finalPriceDiscounts)) }}
+            <div class="text-color-gray5 weight-semibold" v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined">
+              {{ formatCurrency(detail.finalPriceDiscounts) }}
             </div>
             <div class="text-color-gray5 weight-semibold" v-else>
-              {{ formatCurrency(parseInt(storeProduct.getProductDetailDataEdit?.priceDiscounts)) }}
+              {{ formatCurrency(detail.priceDiscounts) }}
             </div>
             <div class="mt-md text-size-xs pb-ms">
-              {{ storeProduct.getProductDetailDataEdit.summaryContent }}
+              {{ detailProduct?.summaryContent }}
             </div>
           </div>
         </div>
-        <template v-if="storeProduct.getProductDetailDataEdit?.options && storeProduct.getProductDetailDataEdit?.options.length > 0">
+        <template v-if="detailProduct?.options && detailProduct?.options?.length > 0">
           <v-radio-group
             hide-details
-            v-for="item in storeProduct.getProductDetailDataEdit?.options"
+            v-for="item in detail?.options"
             :key="item.id"
             v-model="storeCart.tempSelected[item.id]"
             :name="`radio-group-${item.id}`"
             class="mt-sm mb-sm popup-detail-product-card"
             @update:modelValue="(val) => {
               const variant = item.variants.find(v => v.id === val)
-              if (variant) {
+              if (variant && val && variant.priceModifier) {
                 handleChangeVariant(item.id, val, item.name, variant.name, variant.priceModifier)
               }
             }"
@@ -95,35 +99,35 @@ watch(() => storeProduct.getProductDetailDataEdit?.selectedOptionsPush, (newValu
           <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
             Them luu y cho quan
           </Heading>
-          <v-textarea class="mb-0" :rows="5" v-model="storeProduct.getProductDetailDataEdit.note" :value="storeProduct.getProductDetailDataEdit.note"/>
+          <v-textarea class="mb-0" :rows="5" v-model="detail.note" :value="detail.note"/>
 
           <div class="flex justify-center">
-            <Button color="gray" icon="check_indeterminate_small" @click="storeProduct.inDecrementEdit(false)" />
-            <Button :disabled="true" :border="false" color="secondary" class="popup-detail-product-quantity pd-0 text-size-large weight-medium" :label="storeProduct.quantityEdit"/>
-            <Button color="gray" icon="add" @click="storeProduct.inDecrementEdit(true)" />
+            <Button color="gray" icon="check_indeterminate_small" @click="storeCart.inDecrementEdit(false)" />
+            <Button :disabled="true" :border="false" color="secondary" class="popup-detail-product-quantity pd-0 text-size-large weight-medium" :label="storeCart.quantityEdit"/>
+            <Button color="gray" icon="add" @click="storeCart.inDecrementEdit(true)" />
           </div>
         </div>
 
       </div>
     </template>
 
-    <template #footer v-if="storeProduct.getProductDetailDataEdit">
+    <template #footer v-if="detail">
       <div class="portal-popup-footer">
       <Button
-        v-if="storeProduct.getProductDetailDataEdit?.finalPriceDiscounts && storeProduct.getProductDetailDataEdit?.finalPriceDiscounts != undefined"
-        :label="'Cập nhật - ' + formatCurrency(parseInt(storeProduct.priceTotalEdit))"
+        v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined"
+        :label="'Cập nhật - ' + formatCurrency(storeCart.priceTotalEdit)"
         class="w-full"
         color="primary"
-        @handleOnClick="storeCart.updateProductWithOptions(storeProduct.getProductDetailDataEdit, storeProduct.quantityEdit, storeProduct.getProductDetailDataEdit.note, storeProduct.getProductDetailDataEdit.productKey)"
+        @handleOnClick="storeCart.updateProductWithOptions(detailProduct, storeCart.quantityEdit, detail.note, detail.productKey)"
       />
       <template v-else>
-      <Button
-        v-if="storeProduct.getProductDetailDataEdit.id"
-        :label="'Cập nhật - ' + formatCurrency(parseInt(storeProduct.priceTotalEdit))"
-        class="w-full"
-        color="primary"
-        @handleOnClick="storeCart.updateNormalProduct(storeProduct.getProductDetailDataEdit, storeProduct.quantityEdit, storeProduct.getProductDetailDataEdit.note, storeProduct.getProductDetailDataEdit.id)"
-      />
+        <Button
+          v-if="detail.id"
+          :label="'Cập nhật - ' + formatCurrency(storeCart.priceTotalEdit)"
+          class="w-full"
+          color="primary"
+          @handleOnClick="storeCart.updateNormalProduct(detailProduct, storeCart.quantityEdit, detail.note, detail.id)"
+        />
       </template>
       </div>
     </template>

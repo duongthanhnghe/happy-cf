@@ -56,16 +56,16 @@ watch(valueChangePage, (newVal) => {
         <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
           Them luu y cho quan
         </Heading>
-        <v-textarea class="mb-0" :rows="5" v-model="store.note"/>
+        <v-textarea class="mb-0" :rows="5" v-model="storeCart.note"/>
         <div class="flex justify-center">
-          <Button color="gray" icon="check_indeterminate_small" @click="store.inDecrement(false)" />
-          <Button :disabled="true" :border="false" color="secondary" class="popup-detail-product-quantity pd-0 text-size-large weight-medium">{{ store.quantity }}</Button>
-          <Button color="gray" icon="add" @click="store.inDecrement(true)" />
+          <Button color="gray" icon="check_indeterminate_small" @click="storeCart.inDecrement(false)" />
+          <Button :disabled="true" :border="false" color="secondary" class="popup-detail-product-quantity pd-0 text-size-large weight-medium">{{ storeCart.quantity }}</Button>
+          <Button color="gray" icon="add" @click="storeCart.inDecrement(true)" />
         </div>
       </div>
 
       <Button
-        :label="'Đặt hàng - ' + formatCurrency(store.priceTotal)"
+        :label="'Đặt hàng - ' + formatCurrency(storeCart.priceTotal)"
         class="w-full"
         color="primary"
         @handleOnClick="store.handleAddToCart()"

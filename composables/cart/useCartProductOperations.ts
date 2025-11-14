@@ -1,15 +1,28 @@
 import { showWarning, showSuccess, showConfirm } from "@/utils/toast";
 import { Base64 } from "js-base64";
-import type { ProductDTO, CartDTO, SelectedOptionPushDTO, OptionDTO } from '@/server/types/dto/v1/product.dto';
+import type { ProductDTO, CartDTO, SelectedOptionPushDTO, OptionDTO, SelectedOptionDTO } from '@/server/types/dto/v1/product.dto';
 import type { Ref } from 'vue';
+import { useProductDetail } from '@/composables/product/useProductDetail'
 
 export const useCartProductOperations = (
   cartListItem: Ref<CartDTO[]>,
   cartCount: Ref<number>,
   selectedOptionsData: Ref<SelectedOptionPushDTO[]>,
+  productDetailEdit: Ref<CartDTO|null|undefined>,
+  quantityEdit: Ref<number>,
+  priceTotalEdit: Ref<number>,
+  selectedOptionsDataEdit: Ref<(string | number | boolean)[]>,
+  priceTotal: Ref<number>,
+  priceOptions: Ref<number>,
+  quantity: Ref<number>,
   updateCookie: () => void,
-  resetValuePopupOrder: () => void
+  resetValuePopupOrder: () => void,
+  updateSelectedOptionsData: (newOptions: SelectedOptionDTO[]) => void,
+  syncTempSelectedFromSelectedOptionsData: (options: any) => void,
+  togglePopup: (popupId: string, value: boolean) => void,
 ) => {
+
+  const { getDetailProduct, fetchDetailProduct } = useProductDetail()
   
   const addNormalProduct = (product: ProductDTO, quantity?: number) => {
     const existingProduct = cartListItem.value?.find(
@@ -33,7 +46,9 @@ export const useCartProductOperations = (
     note: string,
     popupOrderState: boolean
   ) => {
-    const productKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions))}`;
+
+    // const productKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions))}`;
+    const productKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions+note))}`;
 
     const existingProduct = cartListItem.value?.find(
       (item) => item.productKey === productKey
@@ -78,11 +93,12 @@ export const useCartProductOperations = (
   };
 
   const updateProductWithOptions = (
-    product: ProductDTO, 
+    product: ProductDTO | null, 
     quantity: number, 
-    note: string, 
-    oldProductKey: string
+    note?: string, 
+    oldProductKey?: string
   ) => {
+    if(!product) return
     const selectedOptions = selectedOptionsData.value;
     try {
       const newProductKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions))}`;
@@ -132,10 +148,10 @@ export const useCartProductOperations = (
   };
 
   const updateNormalProduct = (
-    product: ProductDTO, 
+    product: ProductDTO | null, 
     quantity: number, 
-    note: string, 
-    oldProductKey: string
+    note?: string, 
+    oldProductKey?: string
   ) => {
     if(!product || !oldProductKey) return;
     
@@ -171,7 +187,7 @@ export const useCartProductOperations = (
     popupOrderState: boolean
   ) => {
     if (!product || product.amount <= 0) return false;
-    
+
     selectedOptionsData.value = buildSelectedOptions(product.options);
     
     if (product.options.length > 0) {
@@ -253,6 +269,75 @@ export const useCartProductOperations = (
     return totalQuantity;
   };
 
+  const calcTotalPrice = (formId: string) => {
+    if(formId === "order") {
+      if(getDetailProduct.value) {
+        priceTotal.value = (getDetailProduct.value.priceDiscounts + priceOptions.value) * quantity.value;
+      }
+    }
+    else if(formId === "edit") {
+      if(productDetailEdit.value?.finalPriceDiscounts){
+        priceTotalEdit.value = productDetailEdit.value.finalPriceDiscounts * quantityEdit.value;
+      } else {
+        if(productDetailEdit.value && productDetailEdit.value.priceDiscounts) priceTotalEdit.value = productDetailEdit.value.priceDiscounts * quantityEdit.value;
+      }
+    }
+  };
+
+  const getProductDetailEdit = async (id: string) => {
+    productDetailEdit.value = cartListItem.value.find((item: CartDTO) => {
+      if (item.productKey && id.includes("_")) {
+        return item.productKey === id;
+      }
+      return item.id === id;
+    });
+
+    if (!productDetailEdit.value) return;
+
+    quantityEdit.value = productDetailEdit.value.quantity;
+
+    if (productDetailEdit.value.productKey && productDetailEdit.value.selectedOptionsPush) {
+      selectedOptionsDataEdit.value = productDetailEdit.value.selectedOptionsPush.map(
+        (obj) => Object.values(obj)[0]
+      );
+
+      const newOptions = productDetailEdit.value.selectedOptionsPush;
+
+      updateSelectedOptionsData(newOptions as SelectedOptionDTO[]);
+
+      if (productDetailEdit.value.options) {
+        syncTempSelectedFromSelectedOptionsData(productDetailEdit.value.options);
+      }
+    }
+
+    if(productDetailEdit.value.id) await fetchDetailProduct(productDetailEdit.value.id)
+
+    togglePopup("edit", true);
+    calcTotalPrice("edit");
+  };
+
+  const inDecrementEdit = (type: boolean) => {
+    if (type === false) {
+      if (quantityEdit.value == 1) return;
+      quantityEdit.value--;
+    } else {
+      quantityEdit.value++;
+    }
+
+    calcTotalPrice("edit");
+  };
+
+  const inDecrement = (type: boolean) => {
+    if (type === false) {
+      if (quantity.value == 1) return;
+      quantity.value--;
+    } else {
+      quantity.value++;
+    }
+
+    calcTotalPrice("order");
+  };
+
   return {
     addNormalProduct,
     addProductWithOptions,
@@ -264,5 +349,9 @@ export const useCartProductOperations = (
     deleteCartAll,
     handleDeleteCartAll,
     getTemplate1Amount,
+    getProductDetailEdit,
+    inDecrementEdit,
+    inDecrement,
+    calcTotalPrice,
   };
 };

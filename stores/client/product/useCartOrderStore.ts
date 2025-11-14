@@ -25,6 +25,8 @@ import { useCartOptions } from '@/composables/cart/useCartOptions';
 import { useCartUtils } from '@/composables/cart/useCartUtils';
 
 import { ROUTES } from '@/shared/constants/routes';
+import { useCartSharedUtils } from "@/composables/cart/useCartSharedUtils";
+import { useProductDetailState } from "@/composables/product/useProductDetailState";
 
 export const useCartStore = defineStore("Cart", () => {
   // External dependencies
@@ -85,6 +87,17 @@ export const useCartStore = defineStore("Cart", () => {
     }
   };
 
+  const utilShared = useCartSharedUtils(
+    state.quantity,
+    state.priceTotal,
+    state.note,
+    state.productDetailEdit,
+    state.selectedOptionsData,
+    state.quantityEdit,
+    state.priceTotalEdit,
+    state.popups,
+  );
+
   // 5. Initialize utils
   const utils = useCartUtils(
     state.cartCount,
@@ -97,9 +110,15 @@ export const useCartStore = defineStore("Cart", () => {
     state.isTogglePopup,
     fetchProductCart,
     handleCalcTotalPriceCurrent,
-    storeProduct.resetFormCart,
+    utilShared.resetFormCart,
     storeLocation,
-    storeAddress
+    storeAddress,
+  );
+
+  // 7. Initialize options
+  const options = useCartOptions(
+    state.selectedOptionsData,
+    state.tempSelected
   );
 
   // 6. Initialize product operations
@@ -107,14 +126,18 @@ export const useCartStore = defineStore("Cart", () => {
     state.cartListItem,
     state.cartCount,
     state.selectedOptionsData,
+    state.productDetailEdit,
+    state.quantityEdit,
+    state.priceTotalEdit,
+    state.selectedOptionsDataEdit,
+    state.priceTotal,
+    state.priceOptions,
+    state.quantity,
     utils.updateCookie,
-    utils.resetValuePopupOrder
-  );
-
-  // 7. Initialize options
-  const options = useCartOptions(
-    state.selectedOptionsData,
-    state.tempSelected
+    utils.resetValuePopupOrder,
+    options.updateSelectedOptionsData,
+    options.syncTempSelectedFromSelectedOptionsData,
+    utilShared.togglePopup as (popupId: string, value: boolean) => void,
   );
 
   // 8. Initialize voucher
@@ -170,8 +193,6 @@ export const useCartStore = defineStore("Cart", () => {
 
   // Wrapper functions
   const addProductToCart = (product: any, quantity: number, note: string) => {
-    // alert(quantity)
-
     return productOps.addProductToCart(
       product,
       quantity,
@@ -216,11 +237,12 @@ export const useCartStore = defineStore("Cart", () => {
   const getSelectedOptionsData = computed(() => state.selectedOptionsData.value);
   const getIdAddressChoose = computed(() => state.idAddressChoose.value);
   const getNameAddressChoose = computed(() => state.informationOrder.address);
-
+  const getProductDetailDataEdit = computed(() => state.productDetailEdit.value);
+  
   return {
     // State
     ...state,
-    
+    ...utilShared,
     // Product operations
     addProductToCart,
     updateQuantity: productOps.updateQuantity,
@@ -230,7 +252,11 @@ export const useCartStore = defineStore("Cart", () => {
     getTemplate1Amount: productOps.getTemplate1Amount,
     updateProductWithOptions: productOps.updateProductWithOptions,
     updateNormalProduct: productOps.updateNormalProduct,
-    
+    getProductDetailEdit: productOps.getProductDetailEdit,
+    inDecrementEdit: productOps.inDecrementEdit,
+    inDecrement: productOps.inDecrement,
+    calcTotalPrice: productOps.calcTotalPrice,
+
     // Options
     setSelectedOptionsData: options.setSelectedOptionsData,
     updateSelectedOptionsData: options.updateSelectedOptionsData,
@@ -273,5 +299,6 @@ export const useCartStore = defineStore("Cart", () => {
     getShippingFee,
     getOrderPriceDiscount,
     allVouchers,
+    getProductDetailDataEdit,
   };
 });

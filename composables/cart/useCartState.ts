@@ -54,6 +54,18 @@ export const useCartState = () => {
   const loadingAllVouchers = ref(false);
   const isCalculating = ref(false);
   const activeFreeshipVoucher = ref<string | null>(null);
+  const popups = ref({
+    order: false,
+    edit: false,
+  });
+  const productDetailEdit = ref<CartDTO|null|undefined>(null);
+  const quantityEdit = ref(0);
+  const priceTotalEdit = ref(0);
+  const selectedOptionsDataEdit = ref<(string | number | boolean)[]>([]);
+  const priceTotal = ref(0);
+  const priceOptions = ref(0);
+  const quantity = ref(1);
+  const note = ref<string>('');
 
   return {
     informationOrder,
@@ -80,5 +92,14 @@ export const useCartState = () => {
     loadingAllVouchers,
     isCalculating,
     activeFreeshipVoucher,
+    popups,
+    productDetailEdit,
+    quantityEdit,
+    priceTotalEdit,
+    selectedOptionsDataEdit,
+    priceTotal,
+    priceOptions,
+    quantity,
+    note,
   };
 };

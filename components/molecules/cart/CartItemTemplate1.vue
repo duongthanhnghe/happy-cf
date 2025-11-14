@@ -1,24 +1,13 @@
 <script lang="ts" setup>
 import '@/styles/molecules/cart/cart-item-template1.scss'
-import {
-  useCartStore
-} from '@/stores/client/product/useCartOrderStore'
-import {
-  defineProps
-} from 'vue'
-import {
-  formatCurrency
-} from '@/utils/global'
-import {
-  useProductDetailStore
-} from '@/stores/client/product/useProductDetailStore'
+import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { formatCurrency } from '@/utils/global'
 import type { CartDTO } from '@/server/types/dto/v1/product.dto';
 
 const props = defineProps<{
   item: CartDTO
 }>()
 
-const storeProduct = useProductDetailStore()
 const storeCart = useCartStore();
 
 const getOriginalPrice = (item: any) => {
@@ -53,13 +42,11 @@ const getOriginalPrice = (item: any) => {
       </div>
       <div class="cart-template1-action">
         <div class="cart-template1-input" v-if="item.id">
-          <Button v-if="item.productKey" color="secondary" size="xs" icon="check_indeterminate_small" @click.prevent="storeCart.updateQuantity(item.productKey,false)" />
-          <Button v-else color="secondary" size="xs" icon="check_indeterminate_small" @click.prevent="storeCart.updateQuantity(item.id,false)" />
+          <Button color="secondary" size="xs" icon="check_indeterminate_small" @click.prevent="storeCart.updateQuantity(item.productKey ? item.productKey : item.id,false)" />
 
           <Button :disabled="true" :border="false" size="xs" color="gray" class="cart-template1-quantity pd-0" :label="item.quantity" />
 
-          <Button v-if="item.productKey" color="secondary" size="xs" icon="add" @click.prevent="storeCart.updateQuantity(item.productKey,true)" />
-          <Button v-else color="secondary" size="xs" icon="add" @click.prevent="storeCart.updateQuantity(item.id,true)" />
+          <Button color="secondary" size="xs" icon="add" @click.prevent="storeCart.updateQuantity(item.productKey ? item.productKey : item.id,true)" />
         </div>
         <div class="flex gap-xs">
           <span v-if="item.priceDiscounts" class="text-color-danger">{{ formatCurrency(item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts) }}</span>
@@ -67,9 +54,8 @@ const getOriginalPrice = (item: any) => {
         </div>
       </div>
       <div class="cart-template1-delete flex" v-if="item.id">
-        <Button v-if="item.productKey" color="secondary" :border="false" size="sm" icon="edit" @click.prevent="storeProduct.getProductDetailEdit(item.productKey)" />
-        <Button v-else color="secondary" :border="false" size="sm" icon="edit" @click.prevent="storeProduct.getProductDetailEdit(item.id)" />
-        <Button color="secondary" :border="false" size="sm" icon="delete" @click.prevent="storeCart.deleteCart(item.id)" />
+        <Button color="secondary" :border="false" size="sm" icon="edit" @click.prevent="storeCart.getProductDetailEdit(item.productKey ? item.productKey : item.id)" />
+        <Button color="secondary" :border="false" size="sm" icon="delete" @click.prevent="storeCart.deleteCart(item.productKey ? item.productKey : item.id)" />
       </div>
     </div>
   </div>
