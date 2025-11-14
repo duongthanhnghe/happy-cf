@@ -100,7 +100,7 @@ const {
         <CartItemTemplate2 v-bind="items" />
       </div>
       <div class="flex flex-direction-column gap-xs mt-xs">
-      <div class="flex justify-between text-size-normal mt-sm weight-medium line-height1">
+      <div class="flex justify-between text-size-normal mt-sm weight-medium line-height-1">
         <div class="flex align-center gap-xs">
           Tong cong
           <span v-if="getDetailOrder?.totalPriceSave && getDetailOrder?.totalPriceSave !== 0" class="text-size-base text-color-green">(Tiet kiem: {{ formatCurrency(getDetailOrder?.totalPriceSave) }})</span>

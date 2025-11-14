@@ -16,7 +16,7 @@ const props = defineProps({
 </script>
 <template>
   <div class="card card-sm bg-white mb-sm">
-    <div class="flex justify-between line-height1">
+    <div class="flex justify-between line-height-1">
       <div class="flex gap-xs align-center weight-semibold cursor-pointer" @click="store.handleTogglePopupDetail(true, props.item?.id)">
         <Button size="xs" color="secondary" icon="package_2" :disable="true"/>
         {{ props.item?.code }}

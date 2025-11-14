@@ -17,7 +17,7 @@ const props = defineProps<{
   <div class="cursor-pointer card card-sm bg-white" v-if="props.item?.status === PRODUCT_REVIEW_STATUS.pending.status"
     @click="store.handleTogglePopupSubmit(true, props.item?.id)"
   >
-    <div class="flex justify-between line-height1">
+    <div class="flex justify-between line-height-1">
       <div class="flex gap-xs align-center weight-semibold">
         <Button size="xs" color="secondary" icon="package_2" :disable="true"/>
         {{ props.item?.id }}
@@ -34,7 +34,7 @@ const props = defineProps<{
     </div>
   </div>
   <div v-else class="card card-sm bg-white" >
-    <div class="flex justify-between line-height1">
+    <div class="flex justify-between line-height-1">
       <v-rating
         readonly
         :model-value="props.item?.rating"

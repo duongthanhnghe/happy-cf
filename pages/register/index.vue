@@ -38,7 +38,7 @@ onMounted(() => {
   </div>
   </client-only>
 
-  <div class="text-center text-size-xs text-color-gray5 mt-md mb-md line-height1">
+  <div class="text-center text-size-xs text-color-gray5 mt-md mb-md line-height-1">
     {{ AUTH_TEXT_LOGIN_EMAIL }}
   </div>
   <v-form validate-on="submit lazy" @submit.prevent="handleSubmitRegister">
@@ -56,6 +56,6 @@ onMounted(() => {
     <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_REGISTER" class="w-full" />
   </v-form>
   <router-link :to="{ name: 'login' }">
-    <div class="block text-center text-size-xs text-color-gray5 mt-md line-height1">{{ AUTH_TEXT_REGISTER_HINT2 }} <span class="text-color-black weight-semibold">{{AUTH_TEXT_LOGIN}}!</span></div>
+    <div class="block text-center text-size-xs text-color-gray5 mt-md line-height-1">{{ AUTH_TEXT_REGISTER_HINT2 }} <span class="text-color-black weight-semibold">{{AUTH_TEXT_LOGIN}}!</span></div>
   </router-link>
 </template>

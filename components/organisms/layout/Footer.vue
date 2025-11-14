@@ -42,7 +42,7 @@ const listLink = [
           </a>
         </template>
       </div>
-      <div class="flex flex-wrap justify-center gap-sm line-height1">
+      <div class="flex flex-wrap justify-center gap-sm line-height-1">
         <template v-for="(item, index) in listLink" :key="index">
           <a :href="item.src" target="_blank">
             {{ item.name }}

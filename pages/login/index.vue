@@ -38,7 +38,7 @@ onMounted(() => {
   </div>
   </client-only>
 
-  <div class="text-center text-size-xs text-color-gray5 mt-md mb-md line-height1">
+  <div class="text-center text-size-xs text-color-gray5 mt-md mb-md line-height-1">
     {{ AUTH_TEXT_LOGIN_EMAIL }}
   </div>
   <v-form validate-on="submit lazy" @submit.prevent="handleSubmitLogin">
@@ -52,7 +52,7 @@ onMounted(() => {
     <v-text-field :append-icon="store.showPassword ? 'mdi-eye' : 'mdi-eye-off'" variant="outlined" :type="store.showPassword ? 'text' : 'password'" @click:append="store.showPassword = !store.showPassword" v-model="store.formUserLoginItem.password" :rules="strongPasswordRules" label="Nhap mat khau" required></v-text-field>
     <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_LOGIN" class="w-full" />
   </v-form>
-  <NuxtLink :to="{ name: 'register' }" class="block text-center text-size-xs text-color-gray5 mt-md line-height1">
+  <NuxtLink :to="{ name: 'register' }" class="block text-center text-size-xs text-color-gray5 mt-md line-height-1">
     {{ AUTH_TEXT_REGISTER_HINT }} <span class="text-color-black weight-semibold">{{AUTH_TEXT_REGISTER}}!</span>
   </NuxtLink>
 </template>
