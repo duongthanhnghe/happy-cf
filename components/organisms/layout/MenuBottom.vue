@@ -43,5 +43,4 @@ const listMenu: MenuItem[] = [
       </template>
     </div>
   </div>
-  
 </template>

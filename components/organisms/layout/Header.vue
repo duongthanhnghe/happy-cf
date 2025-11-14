@@ -30,58 +30,58 @@ onMounted(async () => {
 
 </script>
 <template>
-<PopupSearch />
-<PopupCart />
-<PopupEditItemToCart />
-<PopupAddItemToCart />
+  <PopupSearch />
+  <PopupCart />
+  <PopupEditItemToCart />
+  <PopupAddItemToCart />
 
-<div class="header">
-  <div class="header-fixed">
-    <div class="container">
-      <div class="header-content">
-        <div class="header-left">
-          <template v-if="props.typeLeft === 'logo'">
-            <NuxtLink :to="{ path: ROUTES.PUBLIC.HOME.path }">
-              <img v-if="storeSetting.getBaseInformation?.logoUrl" class="header-logo" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" />
-            </NuxtLink>
-          </template>
+  <div class="header">
+    <div class="header-fixed">
+      <div class="container">
+        <div class="header-content">
+          <div class="header-left">
+            <template v-if="props.typeLeft === 'logo'">
+              <NuxtLink :to="{ path: ROUTES.PUBLIC.HOME.path }">
+                <img v-if="storeSetting.getBaseInformation?.logoUrl" class="header-logo" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" />
+              </NuxtLink>
+            </template>
 
-          <template v-else-if="props.typeLeft === 'address'">
-            <div class="flex gap-sm align-center">
-              <MaterialIcon size="30" name="location_on"/>
-              <div>
-                Giao hàng tới
-                <div class="text-limit flex" @click.prevent="storeAddress.handleTogglePopupList(true, true)">
-                  {{ storeCart.getNameAddressChoose || 'Chưa nhập địa chỉ' }}
-                  <MaterialIcon size="24" name="keyboard_arrow_down"/>
+            <template v-else-if="props.typeLeft === 'address'">
+              <div class="flex gap-sm align-center">
+                <MaterialIcon size="30" name="location_on"/>
+                <div>
+                  Giao hàng tới
+                  <div class="text-limit flex" @click.prevent="storeAddress.handleTogglePopupList(true, true)">
+                    {{ storeCart.getNameAddressChoose || 'Chưa nhập địa chỉ' }}
+                    <MaterialIcon size="24" name="keyboard_arrow_down"/>
+                  </div>
                 </div>
               </div>
-            </div>
-          </template>
-          <template v-else>
-            {{ storeSetting.getBaseInformation?.name }}
-            <div>
-              Xin chào {{ storeAccount.getDetailValue?.fullname || 'Quý khách' }}!
-            </div>
-          </template>
-        </div>
-        <div class="header-right flex gap-sm">
-          <Button
-          color="third"
-          icon="search"
-          class="rd-xs"
-          @click="storeSearch.handleTogglePopup(true)"
-          />
-        <Button
-          color="third"
-          icon="shopping_cart"
-          class="rd-xs"
-          @click="storeCart.handleTogglePopup(true)"
-          > <span class="header-cart-count">{{ storeCart.getCartCount }}</span>
-          </Button>
+            </template>
+            <template v-else>
+              {{ storeSetting.getBaseInformation?.name }}
+              <div>
+                Xin chào {{ storeAccount.getDetailValue?.fullname || 'Quý khách' }}!
+              </div>
+            </template>
+          </div>
+          <div class="header-right flex gap-sm">
+            <Button
+              color="third"
+              icon="search"
+              class="rd-xs"
+              @click="storeSearch.handleTogglePopup(true)"
+            />
+            <Button
+              color="third"
+              icon="shopping_cart"
+              class="rd-xs"
+              @click="storeCart.handleTogglePopup(true)"
+              > <span class="header-cart-count">{{ storeCart.getCartCount }}</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>

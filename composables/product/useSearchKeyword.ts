@@ -1,9 +1,10 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { usersAPI } from "@/services/v1/users.service";
+import { useState } from "nuxt/app";
 import type { SearchKeywordDTO } from '@/server/types/dto/v1/search-keyword.dto'
 
 export const useSearchKeyword = () => {
-  const listSearchKeyword = ref<SearchKeywordDTO[]|[]>([]);
+  const listSearchKeyword = useState<SearchKeywordDTO[]>('list-keyword-search', () => [])
 
   const fetchSearchKeyword = async (limit: number) => {
     try {
@@ -27,7 +28,6 @@ export const useSearchKeyword = () => {
   const getListSearchKeyword = computed(() => listSearchKeyword.value);
 
   return {
-    listSearchKeyword,
     fetchSearchKeyword,
     getListSearchKeyword,
     fetchLogSearchKeyword,

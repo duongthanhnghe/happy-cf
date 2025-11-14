@@ -26,7 +26,6 @@ import { useCartUtils } from '@/composables/cart/useCartUtils';
 
 import { ROUTES } from '@/shared/constants/routes';
 import { useCartSharedUtils } from "@/composables/cart/useCartSharedUtils";
-import { useProductDetailState } from "@/composables/product/useProductDetailState";
 
 export const useCartStore = defineStore("Cart", () => {
   // External dependencies

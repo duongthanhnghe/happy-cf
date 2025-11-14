@@ -3,6 +3,7 @@ import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
 import { ROUTES } from '@/shared/constants/routes';
+// import { definePageMeta } from 'nuxt/dist/pages/runtime';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.ORDER.middleware,
