@@ -113,26 +113,6 @@ body .bg {
   }
 }
 
-.weight-light {
-  font-weight: 300;
-}
-
-.weight-normal {
-  font-weight: 400;
-}
-
-.weight-medium {
-  font-weight: 500;
-}
-
-.weight-semibold {
-  font-weight: 600 !important;
-}
-
-.weight-bold {
-  font-weight: 700;
-}
-
 .heading {
   margin: 0;
   padding: 0;
@@ -609,11 +589,41 @@ a.button, button.button {
 }
 
 .weight {
+  &-light {
+    font-weight: 300;
+  }
   &-normal {
     font-weight: 400;
   }
   &-medium {
     font-weight: 500;
+  }
+  &-semibold {
+    font-weight: 600;
+  }
+  &-bold {
+    font-weight: 700;
+  }
+}
+
+.line-height {
+  &-1 {
+    line-height: 1;
+  }
+  &-1d2 {
+    line-height: 1.2;
+  }
+  &-1d4 {
+    line-height: 1.4;
+  }
+  &-1d6 {
+    line-height: 1.6;
+  }
+  &-1d8 {
+    line-height: 1.8;
+  }
+  &-2 {
+    line-height: 2;
   }
 }
 
@@ -638,10 +648,6 @@ a.button, button.button {
 
 .white-space-pre {
   white-space: pre-line;
-}
-
-.line-height1 {
-  line-height: 1;
 }
 
 .w-full {

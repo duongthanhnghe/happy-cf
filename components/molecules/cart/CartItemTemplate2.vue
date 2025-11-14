@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import '@/styles/molecules/cart/cart-item-template1.scss'
-import { defineProps } from 'vue'
 import { formatCurrency } from '@/utils/global'
 import type { selectedOptionsPush } from '@/server/types/dto/v1/order.dto';
 

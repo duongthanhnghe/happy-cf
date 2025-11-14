@@ -39,7 +39,7 @@ onMounted(async () => {
     <div class="header-fixed">
       <div class="container">
         <div class="header-content">
-          <div class="header-left">
+          <Text color="white" weight="semibold" class="header-left">
             <template v-if="props.typeLeft === 'logo'">
               <NuxtLink :to="{ path: ROUTES.PUBLIC.HOME.path }">
                 <img v-if="storeSetting.getBaseInformation?.logoUrl" class="header-logo" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" />
@@ -51,10 +51,10 @@ onMounted(async () => {
                 <MaterialIcon size="30" name="location_on"/>
                 <div>
                   Giao hàng tới
-                  <div class="text-limit flex" @click.prevent="storeAddress.handleTogglePopupList(true, true)">
-                    {{ storeCart.getNameAddressChoose || 'Chưa nhập địa chỉ' }}
+                  <Text class="flex cursor-pointer" @click.prevent="storeAddress.handleTogglePopupList(true, true)">
+                    <Text limit="1" :text="storeCart.getNameAddressChoose || 'Chưa nhập địa chỉ'" />
                     <MaterialIcon size="24" name="keyboard_arrow_down"/>
-                  </div>
+                  </Text>
                 </div>
               </div>
             </template>
@@ -64,7 +64,7 @@ onMounted(async () => {
                 Xin chào {{ storeAccount.getDetailValue?.fullname || 'Quý khách' }}!
               </div>
             </template>
-          </div>
+          </Text>
           <div class="header-right flex gap-sm">
             <Button
               color="third"

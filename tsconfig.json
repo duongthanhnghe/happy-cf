@@ -1,11 +1,11 @@
 {
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    // "types": [
-    //   "@types/node",
-    //   "nuxt",
-    //   "@nuxt/schema",
-    // ],
+    "types": [
+      "@types/node",
+      "nuxt",
+      "@nuxt/schema",
+    ],
     "strict": true,
     "allowJs": true,
     "target": "ESNext",
@@ -26,6 +26,7 @@
     ".nuxt",
     "env.d.ts",
     "global.d.ts",
+    "nuxt.d.ts",
     "**/*.ts",
     "**/*.js",
     "**/*.vue","plugins/vuetify.ts"

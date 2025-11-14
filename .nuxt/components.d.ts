@@ -49,6 +49,7 @@ interface _GlobalComponents {
     'PageProgress': typeof import("../components/atoms/PageProgress.vue")['default']
     'Popup': typeof import("../components/atoms/Popup.vue")['default']
     'SelectOrder': typeof import("../components/atoms/SelectOrder.vue")['default']
+    'Text': typeof import("../components/atoms/Text.vue")['default']
     'VTreeChoose': typeof import("../components/atoms/VTreeChoose.vue")['default']
     'Facebook': typeof import("../components/atoms/icons/Facebook.vue")['default']
     'Instagram': typeof import("../components/atoms/icons/Instagram.vue")['default']
@@ -170,6 +171,7 @@ interface _GlobalComponents {
     'LazyPageProgress': LazyComponent<typeof import("../components/atoms/PageProgress.vue")['default']>
     'LazyPopup': LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
     'LazySelectOrder': LazyComponent<typeof import("../components/atoms/SelectOrder.vue")['default']>
+    'LazyText': LazyComponent<typeof import("../components/atoms/Text.vue")['default']>
     'LazyVTreeChoose': LazyComponent<typeof import("../components/atoms/VTreeChoose.vue")['default']>
     'LazyFacebook': LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
     'LazyInstagram': LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
@@ -297,6 +299,7 @@ export const NoData: typeof import("../components/atoms/NoData.vue")['default']
 export const PageProgress: typeof import("../components/atoms/PageProgress.vue")['default']
 export const Popup: typeof import("../components/atoms/Popup.vue")['default']
 export const SelectOrder: typeof import("../components/atoms/SelectOrder.vue")['default']
+export const Text: typeof import("../components/atoms/Text.vue")['default']
 export const VTreeChoose: typeof import("../components/atoms/VTreeChoose.vue")['default']
 export const Facebook: typeof import("../components/atoms/icons/Facebook.vue")['default']
 export const Instagram: typeof import("../components/atoms/icons/Instagram.vue")['default']
@@ -418,6 +421,7 @@ export const LazyNoData: LazyComponent<typeof import("../components/atoms/NoData
 export const LazyPageProgress: LazyComponent<typeof import("../components/atoms/PageProgress.vue")['default']>
 export const LazyPopup: LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
 export const LazySelectOrder: LazyComponent<typeof import("../components/atoms/SelectOrder.vue")['default']>
+export const LazyText: LazyComponent<typeof import("../components/atoms/Text.vue")['default']>
 export const LazyVTreeChoose: LazyComponent<typeof import("../components/atoms/VTreeChoose.vue")['default']>
 export const LazyFacebook: LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
 export const LazyInstagram: LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>

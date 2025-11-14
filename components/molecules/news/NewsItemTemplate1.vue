@@ -1,11 +1,6 @@
 <script lang="ts" setup>
 import '@/styles/molecules/news/news-item-template1.scss'
-import {
-  defineProps
-} from 'vue'
-import {
-  formatDateTime
-} from '~/utils/global'
+import { formatDateTime } from '@/utils/global'
 
 const props = defineProps({
   item: {

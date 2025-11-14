@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import './index.scss';
+// import './index/';
 
 // const store = useAccountStore();
 // const storeAccountEdit = useAccountEditStore()
