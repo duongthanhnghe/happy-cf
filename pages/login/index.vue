@@ -43,13 +43,13 @@ onMounted(() => {
   </div>
   <v-form validate-on="submit lazy" @submit.prevent="handleSubmitLogin">
     <LabelInput :label="AUTH_TEXT_USERNAME" required/>
-    <v-text-field v-model="store.formUserItem.email" :rules="emailRules" label="email@gmail.com" variant="outlined" required></v-text-field>
+    <v-text-field v-model="store.formUserLoginItem.email" :rules="emailRules" label="email@gmail.com" variant="outlined" required></v-text-field>
     <LabelInput :label="AUTH_TEXT_PASSWORD" class="flex justify-between" required>
       <slot>
         <NuxtLink tabindex="-1" :to="{ name: 'forgot-password' }" class="text-size-xs text-color-gray5">{{AUTH_TEXT_FORGOT_PASSWORD}}?</NuxtLink>
       </slot>
     </LabelInput>
-    <v-text-field :append-icon="store.showPassword ? 'mdi-eye' : 'mdi-eye-off'" variant="outlined" :type="store.showPassword ? 'text' : 'password'" @click:append="store.showPassword = !store.showPassword" v-model="store.formUserItem.password" :rules="strongPasswordRules" label="Nhap mat khau" required></v-text-field>
+    <v-text-field :append-icon="store.showPassword ? 'mdi-eye' : 'mdi-eye-off'" variant="outlined" :type="store.showPassword ? 'text' : 'password'" @click:append="store.showPassword = !store.showPassword" v-model="store.formUserLoginItem.password" :rules="strongPasswordRules" label="Nhap mat khau" required></v-text-field>
     <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_LOGIN" class="w-full" />
   </v-form>
   <NuxtLink :to="{ name: 'register' }" class="block text-center text-size-xs text-color-gray5 mt-md line-height1">
