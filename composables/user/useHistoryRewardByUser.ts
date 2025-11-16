@@ -4,9 +4,11 @@ import type { RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-hi
 
 export const useHistoryRewardByUser = () => {
   
-  const listData = ref<RewardHistoryPaginationDTO>();
+  const listData = ref<RewardHistoryPaginationDTO|null>(null);
+  const loadingData = ref(false)
 
   const fetchListOrder = async (userId: string, page: number, limit: number) => {
+    loadingData.value = true
     try {
       const data: RewardHistoryPaginationDTO = await ordersAPI.getRewardHistoryByUserId(userId, page, limit)
       if(data.code === 0) {
@@ -15,15 +17,16 @@ export const useHistoryRewardByUser = () => {
       return data
     } catch (err) {
       console.error('Error product all', err)
-      return {
-        code: 1
-      }
+      return null
+    } finally {
+      loadingData.value = false
     }
   }
 
   const getListOrder = computed(() => listData.value);
 
   return {
+    loadingData,
     fetchListOrder,
     getListOrder
   }

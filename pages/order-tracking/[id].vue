@@ -3,7 +3,6 @@ import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
 import { ROUTES } from '@/shared/constants/routes';
-// import { definePageMeta } from 'nuxt/dist/pages/runtime';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.ORDER.middleware,
@@ -20,6 +19,6 @@ watch(() => idOrder, (newValue) => {
 </script>
 <template>
   <div class="bg-gradient-1 pd-md pt-md pl-sm pr-sm">
-    <PopupOrderDetail :idOrder="idOrder" />
+    <OrderDetailTemplate :idOrder="idOrder" />
   </div> 
 </template>

@@ -647,7 +647,7 @@ const _inlineRuntimeConfig = {
       },
       "/api/**": {
         "proxy": {
-          "to": "http://localhost:5001/api/**",
+          "to": "http://localhost:8080/api/**",
           "_proxyStripBase": "/api"
         },
         "headers": {

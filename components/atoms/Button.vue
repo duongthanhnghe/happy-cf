@@ -3,33 +3,37 @@
       :is="tag"
       v-bind="{
         ...(inputId ? { id: inputId } : {}),
-        ...(disabled ? { disabled: true } : {}),
+        ...(disabled || loading ? { disabled: true } : {}),
       }"
       :class="[
         'button',
         color ? `button-${color}` : '',
         size ? `button-size-${size}` : '',
-        disabled ? 'button-disabled' : '',
+        disabled || loading ? 'button-disabled' : '',
         shadow ? 'button-shadow' : '',
         border ? '' : 'button-border-none',
-        label ? '' : 'button-no-text',
+        label || slotContent ? '' : 'button-no-text',
         inputClass,
       ]"
       @change="$emit('handleOnChange')"
       @click="$emit('handleOnClick')"
     >
+      <svg v-if="loading" class="button-spinner" viewBox="0 0 50 50">
+        <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+      </svg>
       <MaterialIcon
-        v-if="icon"
+        v-else-if="icon"
         :name="icon"
         :size="24"
         class="button-icon"
       />
-      {{ label }}
-      <slot></slot>
+      <span v-if="!loading">{{ label }}</span>
+      <slot v-if="!loading" ref="slotRef"></slot>
     </component>
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 
 const props = defineProps({
   label: String|Number,
@@ -47,6 +51,7 @@ const props = defineProps({
     default: 'md',
     validator: (value) => ['xs','sm', 'md','lg'].includes(value)
   },
+  loading: { type: Boolean, default: false },
   disabled: {
     type: Boolean,
     default: false,
@@ -70,4 +75,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['handleOnChange', 'handleOnClick'])
+const slotRef = ref(null)
+const slotContent = ref(false)
+
+onMounted(() => {
+  slotContent.value = slotRef.value?.innerHTML.trim().length > 0
+})
 </script>

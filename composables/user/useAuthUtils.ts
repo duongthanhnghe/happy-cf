@@ -1,5 +1,5 @@
 import { type Reactive, type Ref } from 'vue';
-import { Loading, setCookie } from '@/utils/global';
+import { setCookie } from '@/utils/global';
 import type { ResetPassword, UserLogin, UserRegister } from '@/server/types/dto/v1/user.dto';
 import { showSuccess, showWarning } from '@/utils/toast';
 import { useRouter } from 'vue-router'
@@ -13,6 +13,7 @@ export const useAuthUtils = (
   newPasswordConfirm: Ref<string>,
   formUserItem: Reactive<UserRegister>,
   formUserLoginItem: Reactive<UserLogin>,
+  loadingAuth: Ref<boolean>,
 ) => {
 
   const router = useRouter()
@@ -31,33 +32,29 @@ export const useAuthUtils = (
   }
 
   async function submitLogin() {
+    loadingAuth.value = true
     try {
-      Loading(true);
       const dataLogin = {...formUserLoginItem}
     
       const data = await authAPI.Login(dataLogin)
       if (data.code === 0 && data.data.token) {
         setCookie('token', data.data.token, 7)
         handleResetFormLoginItem()
-        // const decoded = jwtDecode<MyJwtPayload>(data.data.token) 
-        // await handleGetDetailAccount(decoded.id)
-        setTimeout(() => {
-          router.push({ path: ROUTES.PUBLIC.HOME.path })
-        }, 500)
-
+        router.push({ path: ROUTES.PUBLIC.HOME.path })
       } else {
         showWarning(data.message);
       }
-      Loading(false);
     } catch (err: any) {
       showWarning(err.message);
       console.error('Error submitting form:', err)
+    } finally {
+      loadingAuth.value = false
     }
   }
 
   async function submitRegister() {
+    loadingAuth.value = true
     try {
-      Loading(true);
       const dataRegister = {...formUserItem}
 
       const data = await authAPI.Register(dataRegister)
@@ -69,32 +66,34 @@ export const useAuthUtils = (
         }, 1000);
       }
       else showWarning(data.message);
-      Loading(false);
     } catch (err: any) {
       showWarning(err.message);
       console.error('Error submitting form:', err)
+    } finally {
+      loadingAuth.value = false
     }
   }
 
   async function submitForgotPassword() {
+    loadingAuth.value = true
     try {
-      Loading(true);
       const data = await authAPI.ForgotPassword(emailForgot.value)
       if(data.code === 0){
         showSuccess(data.message)
         emailForgot.value = ''
       }
       else showWarning(data.message);
-      Loading(false);
     } catch (err: any) {
       showWarning(err.message);
       console.error('Error submitting form:', err)
+    } finally {
+      loadingAuth.value = false
     }
   }
 
   async function submitResetPassword() {
+    loadingAuth.value = true
     try {
-      Loading(true);
       const email = route.query.email as string
       const token = route.query.token as string
       if (email === null || token === null) {
@@ -121,14 +120,16 @@ export const useAuthUtils = (
         newPasswordConfirm.value = ''
         showWarning(data.message);
       }
-      Loading(false);
     } catch (err: any) {
       showWarning(err.message);
       console.error('Error submitting form:', err)
+    } finally {
+      loadingAuth.value = false
     }
   }
 
   const handleGoogleLogin = async (response: any) => {
+    loadingAuth.value = true
     try {
       const googleToken = response?.credential
 
@@ -139,16 +140,13 @@ export const useAuthUtils = (
       const data = await authAPI.googleLogin(googleToken)
       if (data.code === 0) {
         setCookie('token', data.data.token, 7)
-        // const decoded = jwtDecode<MyJwtPayload>(data.data.token)
-        // await handleGetDetailAccount(decoded.id)
-        setTimeout(() => {
-          router.push({ path: ROUTES.PUBLIC.HOME.path })
-        }, 500)
-
+        router.push({ path: ROUTES.PUBLIC.HOME.path })
       }
     } catch (err: any) {
       showWarning(err.message)
       console.error('Error submitting form:', err)
+    } finally {
+      loadingAuth.value = false
     }
   }
 

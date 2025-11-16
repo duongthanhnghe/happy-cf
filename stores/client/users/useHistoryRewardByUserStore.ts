@@ -10,19 +10,19 @@ export const useHistoryRewardByUserStore = defineStore("HistoryRewardByUserStore
 
   const limit = 20
   const items = ref<RewardHistoryPaginationDTO|null>(null)
-  const loadingData = ref(false)
+  const isTogglePopup = ref(false)
 
   const utils = useHistoryRewardUtils(
     limit,
     items,
-    loadingData,
+    isTogglePopup,
     storeAccount.getUserId,
   );
   
   const getItems = computed(() => items.value?.data)
 
   return {
-    loadingData,
+    isTogglePopup,
     ...utils,
     getItems,
   };

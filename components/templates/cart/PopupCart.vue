@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import '@/styles/templates/cart/popup-cart.scss'
-import { formatCurrency } from '@/utils/global'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
+import { formatCurrency } from "@/utils/global";
 
 const store = useCartStore();
 const storeDisplay = useDisplayStore()
@@ -17,13 +17,13 @@ onMounted(() => {
 </script>
 <template>
 
-<Popup popupId="popup-cart" v-model="store.isTogglePopup" popupHeading="Gio hang" bodyClass="bg-gray2 popup-cart-body" align="right">
+<Popup popupId="popup-cart" v-model="store.isTogglePopup" popupHeading="Gio hang" bodyClass="bg-gray2 popup-cart-body" footerFixed align="right">
   <template #header v-if="store.getCartListItem && store.getCartListItem.length > 0">
     <Button label="Huy" :color="!storeDisplay.isMobileTable ? 'gray':'blur'" :size="!storeDisplay.isMobileTable ? 'md':'sm'" @handleOnClick="store.handleDeleteCartAll" />
   </template>
 
   <template #body>
-    <div v-if="store.getCartListItem && store.getCartListItem.length > 0">
+    <template v-if="store.getCartListItem && store.getCartListItem.length > 0">
       <div class="rd-lg overflow-hidden">
         <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
       </div>
@@ -35,16 +35,20 @@ onMounted(() => {
           {{ store.getTotalPoint }}
         </span>
       </div>
-
-      <div class="portal-popup-footer">
-        <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
-          <Button tag="div" label="Dat hang" color="primary" class="w-full" />
-        </NuxtLink>
-      </div>
-    </div>
+      <Text color="gray5" textClass="mt-ms flex gap-xs justify-end">
+        <Text text="Tam tinh:"/>
+        <Text color="black" weight="semibold" :text="`${formatCurrency(store.getTotalPriceCurrent - store.getOrderPriceDiscount)}`"/>
+        <Text :text="`(${store.getCartCount} san pham)`"/>
+      </Text>
+    </template>
     <div v-else>
       <NoData />
     </div>
+  </template>
+  <template #footer v-if="store.getCartListItem && store.getCartListItem.length > 0">
+    <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
+      <Button tag="div" label="Dat hang" color="primary" class="w-full" />
+    </NuxtLink>
   </template>
 </Popup>
 

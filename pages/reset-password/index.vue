@@ -30,6 +30,6 @@ const handleSubmitResetPassword = async (event: SubmitEventPromise) => {
     <v-text-field :append-icon="store.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="store.showPassword ? 'text' : 'password'" @click:append="store.showPassword = !store.showPassword" v-model="store.newPassword" :rules="strongPasswordRules" :label="AUTH_TEXT_PASSWORD_HINT" variant="outlined" required></v-text-field>
     <LabelInput :label="AUTH_TEXT_CONFIRM_PASSWORD" required/>
     <v-text-field :append-icon="store.showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'" :type="store.showPasswordConfirm ? 'text' : 'password'" @click:append="store.showPasswordConfirm = !store.showPasswordConfirm" v-model="store.newPasswordConfirm" :rules="strongPasswordRules" :label="AUTH_TEXT_PASSWORD_HINT" variant="outlined" required></v-text-field>
-    <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_CHANGE_PASSWORD" class="w-full" />
+    <Button type="submit" color="primary" :loading="store.loadingAuth" :shadow="true" :label="AUTH_TEXT_CHANGE_PASSWORD" class="w-full" />
   </v-form>
 </template>

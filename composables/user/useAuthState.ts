@@ -17,6 +17,7 @@ export const useAuthState = () => {
     email: '',
     password: '',
   });
+  const loadingAuth = ref<boolean>(false)
 
   return {
     showPassword,
@@ -26,5 +27,6 @@ export const useAuthState = () => {
     emailForgot,
     newPassword,
     newPasswordConfirm,
+    loadingAuth,
   };
 };

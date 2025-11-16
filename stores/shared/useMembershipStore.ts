@@ -12,24 +12,18 @@ const storeName =
     : "MembershipStore";
 
 export const useMembershipStore = defineStore(storeName, () => {
-  const { getMembershipList, fetchMembershipList } = useMembershipList();
+  const { loading, getMembershipList, fetchMembershipList } = useMembershipList();
 
   const dataList = ref<MembershipLevels[]>([])
   const lastFetched = ref<number | null>(null)
-  const loading = ref(false)
 
   const fetchMembershipStore = async () => {
     const now = Date.now()
     if (dataList.value.length > 0 && lastFetched.value && now - lastFetched.value < TTL_MS) return
 
-    loading.value = true
-    try {
-      await fetchMembershipList()
-      dataList.value = getMembershipList.value
-      lastFetched.value = now
-    } finally {
-      loading.value = false
-    }
+    await fetchMembershipList()
+    dataList.value = getMembershipList.value
+    lastFetched.value = now
   }
 
   const getListData = computed(() => dataList.value);

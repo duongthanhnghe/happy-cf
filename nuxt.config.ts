@@ -27,7 +27,7 @@ export default defineNuxtConfig({
   nitro: {
     routeRules: {
       "/api/**": {
-        proxy: "http://localhost:5001/api/**",
+        proxy: "http://localhost:8080/api/**",
         headers: {
           "Access-Control-Allow-Credentials": "true"
         }

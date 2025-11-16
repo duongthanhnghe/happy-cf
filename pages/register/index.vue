@@ -34,7 +34,7 @@ onMounted(() => {
   <client-only>
   <div class="auth-google">
     <div :id="googleButtonId" class="auth-google-button"></div>
-    <Button icon="account_circle" color="gray" :shadow="true" :label="AUTH_TEXT_LOGIN_GOOGLE" class="w-full" />
+    <Button icon="account_circle" :loading="store.loadingAuth" color="gray" :shadow="true" :label="AUTH_TEXT_LOGIN_GOOGLE" class="w-full" />
   </div>
   </client-only>
 
@@ -53,7 +53,7 @@ onMounted(() => {
       <v-radio :label="GLOBAL_TEXT_FEMALE" value="female"></v-radio>
       <v-radio label="Khac" value="other"></v-radio>
     </v-radio-group>
-    <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_REGISTER" class="w-full" />
+    <Button type="submit" :loading="store.loadingAuth" color="primary" :shadow="true" :label="AUTH_TEXT_REGISTER" class="w-full" />
   </v-form>
   <router-link :to="{ name: 'login' }">
     <div class="block text-center text-size-xs text-color-gray5 mt-md line-height-1">{{ AUTH_TEXT_REGISTER_HINT2 }} <span class="text-color-black weight-semibold">{{AUTH_TEXT_LOGIN}}!</span></div>

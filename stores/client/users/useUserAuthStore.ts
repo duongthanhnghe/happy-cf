@@ -12,6 +12,7 @@ export const useUserAuthStore = defineStore("UserAuth", () => {
     state.newPasswordConfirm,
     state.formUserItem,
     state.formUserLoginItem,
+    state.loadingAuth,
   );
 
   return {

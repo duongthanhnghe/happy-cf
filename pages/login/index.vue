@@ -34,10 +34,9 @@ onMounted(() => {
   <client-only>
   <div class="auth-google">
     <div :id="googleButtonId" class="auth-google-button"></div>
-    <Button icon="account_circle" color="gray" :shadow="true" :label="AUTH_TEXT_LOGIN_GOOGLE" class="w-full" />
+    <Button icon="account_circle" :loading="store.loadingAuth" color="gray" :shadow="true" :label="AUTH_TEXT_LOGIN_GOOGLE" class="w-full" />
   </div>
   </client-only>
-
   <div class="text-center text-size-xs text-color-gray5 mt-md mb-md line-height-1">
     {{ AUTH_TEXT_LOGIN_EMAIL }}
   </div>
@@ -50,7 +49,7 @@ onMounted(() => {
       </slot>
     </LabelInput>
     <v-text-field :append-icon="store.showPassword ? 'mdi-eye' : 'mdi-eye-off'" variant="outlined" :type="store.showPassword ? 'text' : 'password'" @click:append="store.showPassword = !store.showPassword" v-model="store.formUserLoginItem.password" :rules="strongPasswordRules" label="Nhap mat khau" required></v-text-field>
-    <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_LOGIN" class="w-full" />
+    <Button type="submit" :loading="store.loadingAuth" color="primary" :shadow="true" :label="AUTH_TEXT_LOGIN" class="w-full" />
   </v-form>
   <NuxtLink :to="{ name: 'register' }" class="block text-center text-size-xs text-color-gray5 mt-md line-height-1">
     {{ AUTH_TEXT_REGISTER_HINT }} <span class="text-color-black weight-semibold">{{AUTH_TEXT_REGISTER}}!</span>

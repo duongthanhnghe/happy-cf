@@ -19,9 +19,14 @@
                 <slot name="header"></slot>
               </div>
             </div>
-            <div :class="`portal-popup-body scroll-hide ${bodyClass}`">
-              <slot name="body"></slot>
-              <slot name="footer"></slot>
+            <div :class="`portal-popup-body scroll-hide ${bodyClass} ${footerFixed ? 'flex flex-direction-column justify-between fixed':''}`">
+              <div class="portal-popup-box">
+                <slot name="body"></slot>
+              </div>
+              <div class="portal-popup-footer">
+                <slot name="footer">
+                </slot>
+              </div>
             </div>
           </div>
           <div class="portal-popup-shape" @click="handleClosePopup"></div>
@@ -85,6 +90,10 @@ const props = defineProps({
     type: String,
     default: 'right',
     validator: (value) => ['top', 'center' ,'bottom','right'].includes(value)
+  },
+  footerFixed: {
+    type: Boolean,
+    default: false,
   },
 })
 

@@ -7,7 +7,7 @@ const store = useHistoryRewardByUserStore();
 <template>
   <LoadingData v-if="store.loadingData && !store.getItems" />
   <v-infinite-scroll
-    v-if="store.getItems && store.getItems.length > 0"
+    v-else-if="store.getItems && store.getItems.length > 0"
     height="auto"
     mode="manual"
     @load="store.load"

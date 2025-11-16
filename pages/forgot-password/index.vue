@@ -30,6 +30,6 @@ const handleSubmitForgotPassword = async (event: SubmitEventPromise) => {
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitForgotPassword">
       <LabelInput label="Email" required/>
       <v-text-field v-model="store.emailForgot" :rules="emailRules" :label="AUTH_TEXT_EMAIL_HINT" variant="outlined" required></v-text-field>
-      <Button type="submit" color="primary" :shadow="true" :label="AUTH_TEXT_SEND_EMAIL" class="w-full" />
+      <Button type="submit" :loading="store.loadingAuth" color="primary" :shadow="true" :label="AUTH_TEXT_SEND_EMAIL" class="w-full" />
     </v-form>
 </template>

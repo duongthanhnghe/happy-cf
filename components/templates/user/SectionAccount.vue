@@ -9,7 +9,6 @@ const props = defineProps({
 </script>
 <template>
   <CardAccount :showBarcode="props.showBarcode" />
-
   <PopupMembershipInfo />
   <PopupBarcode />
   <PopupHistoryReward />

@@ -1,12 +1,9 @@
 import type { Request, Response } from "express"
 import { UserModel } from "../../models/v1/user.entity"
-import { OrderEntity, OrderStatusEntity, PaymentEntity } from "../../models/v1/order.entity"
-import { MembershipLevelModel } from "../../models/v1/membership-level.entity"
-import type { MembershipLevel } from "@/server/types/dto/v1/user.dto"
+import { OrderEntity } from "../../models/v1/order.entity"
 import type { Types } from "mongoose";
-import { toOrderDTO, toOrderListDTO, toOrderStatusListDTO, toPaymentListDTO } from "../../mappers/v1/order.mapper"
+import { toOrderDTO } from "../../mappers/v1/order.mapper"
 import { ORDER_STATUS } from "../../shared/constants/order-status";
-import { ProductReviewEntity } from "../../models/v1/product-review.entity";
 import { PaymentTransactionEntity } from "../../models/v1/payment-transaction.entity";
 import { PAYMENT_TRANSACTION_STATUS } from "../../shared/constants/payment-transaction-status"
 import { PAYMENT_METHOD_STATUS } from "../../shared/constants/payment-method-status"
@@ -14,7 +11,6 @@ import path from "path";
 import fs from "fs";
 import { VoucherEntity } from "../../models/v1/voucher.entity";
 import { VoucherUsageEntity } from "../../models/v1/voucher-usage.entity";
-import mongoose from "mongoose";
 
 export const getOrderById = async (req: Request, res: Response) => {
   try {

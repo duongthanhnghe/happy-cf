@@ -9,6 +9,7 @@ import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformat
 import { useOrderStatusStore } from '@/stores/shared/useOrderStatusStore';
 import { useLocation } from "@/composables/product/useLocation"
 import { useOrderDetailHandlers } from '@/composables/order/useOrderDetailHandlers';
+import { useAccountStore } from '@/stores/client/users/useAccountStore';
 
 const { getDetailOrder, fetchOrderDetail } = useOrderDetail();
 const storeHistory = useOrderHistoryStore();
@@ -22,6 +23,7 @@ const {
   getDistrictDetail, 
   getWardDetail 
 } = useLocation();
+const storeAccount = useAccountStore();
 
 const props = defineProps({
   idOrder: {
@@ -48,7 +50,7 @@ const {
 
 </script>
 <template>
-  <template v-if="getDetailOrder">
+  <template v-if="getDetailOrder && (getDetailOrder.userId === null || getDetailOrder.userId === storeAccount.getUserId)">
     <div class="text-center text-color-white text-size-xl weight-semibold">
       <div class="text-size-large weight-normal">Đơn hàng</div>
       {{ getDetailOrder?.code }}
@@ -175,9 +177,5 @@ const {
       Dat luc: {{ getDetailOrder?.createdAt }}
     </div>
   </template>
-  <template v-else>
-    <div class="text-center text-color-white text-size-large weight-semibold pb-xl">
-      Don hang khong ton tai
-    </div>
-  </template>
+  <NoData v-else />
 </template>

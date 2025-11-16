@@ -5,11 +5,11 @@ import { useHistoryRewardByUser } from "@/composables/user/useHistoryRewardByUse
 export const useHistoryRewardUtils = (
   limit: number,
   items: Ref<RewardHistoryPaginationDTO|null>,
-  loadingData: Ref<boolean>,
+  isTogglePopup: Ref<boolean>,
   userId: string,
 ) => {
 
-  const { getListOrder, fetchListOrder } = useHistoryRewardByUser()
+  const { loadingData, getListOrder, fetchListOrder } = useHistoryRewardByUser()
 
   async function load({ done }: { done: (status: 'ok' | 'empty') => void }) {
     if(!items.value || !userId) return
@@ -40,18 +40,19 @@ export const useHistoryRewardUtils = (
 
   const getDataInit = async () => {
     if(!userId) return
-    loadingData.value = true;
-
-    const data = await fetchListOrder(userId, 1, limit)
-    if(data.code !== 0) return loadingData.value = false;
-
+    await fetchListOrder(userId, 1, limit)
     if(getListOrder.value) items.value = getListOrder.value
+  }
 
-    loadingData.value = false;
+  const handleTogglePopup = async (value: boolean) => {
+    isTogglePopup.value = value;
+    if(!getListOrder.value) await getDataInit()
   }
 
   return {
+    loadingData,
     load,
     getDataInit,
+    handleTogglePopup,
   };
 };

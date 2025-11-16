@@ -32,7 +32,9 @@ await storeNewsLatest.fetchPostStore()
 </script>
 
 <template>
-  <SectionAccount :showBarcode="true"/>
+  <ClientOnly>
+    <SectionAccount :showBarcode="true"/>
+  </ClientOnly>
 
   <SectionBanner :items="storeBanner.getListBanner" :loading="storeBanner.loading" />
 
