@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import '@/styles/molecules/voucher/voucher-item1.scss'
 import { computed } from "vue";
 import type { VoucherAvailableDTO } from "@/server/types/dto/v1/voucher.dto";
 import { VOUCHER_TYPE } from "@/shared/constants/voucher-type";
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { showWarning } from "@/utils/toast";
-
+import { formatDateTime} from "@/utils/global";
 const storeAccount = useAccountStore();
 
 const props = defineProps<{
@@ -30,23 +31,26 @@ const toggleSelection = () => {
 
 <template>
   <label>
-    <div 
+    <Card 
       :id="`voucher-item-${item.code}`"
-      class="voucher-item card card-sm bg-gray2 flex"
+      class="voucher-item1 rd-lg flex"
       :class="{
         'cursor-pointer': action,
         'disable': item.isDisabled && action,
         'active': isSelected,
       }"
+      bg="gray2"
+      size="xs"
+      border
       @click="toggleSelection"
       >
       <div class="flex-1">
-        <div class="flex items-center gap-1 font-semibold text-gray-800">
-          <span>{{ item.code }}</span>
-          <span v-if="item.usageLimit" class="text-sm text-gray-500"
-            >(Còn {{ Math.max(item.usageLimit - item.usedCount, 0) }})</span
-          >
+        <div class="flex gap-xs align-baseline">
+          <Text :text="item.code" color="black" size="normal" weight="semibold" class="text-uppercase" />
+          <Text v-if="item.usageLimit" :text="`(Còn ${ Math.max(item.usageLimit - item.usedCount, 0) })`" size="xs" />
         </div>
+        <Text :text="item.description" size="xs" limit="2" class="voucher-item1-desc"/>
+        <Text :text="`HSD: ${formatDateTime(item.endDate,'vi-VN', false)}`" size="xs" />
       </div>
 
       <div v-if="action" class="flex">
@@ -59,7 +63,7 @@ const toggleSelection = () => {
           readonly
         />
       </div>
-    </div>
+    </Card>
     <div v-if="item.disabledReason && action">{{ item.disabledReason }}</div>
   </label>
 </template>

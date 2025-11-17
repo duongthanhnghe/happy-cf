@@ -24,33 +24,32 @@ const getOriginalPrice = (item: any) => {
 
 </script>
 <template>
-  <div class="cart-template1-item">
+  <div class="cart-template1-item rd-xl">
     <div class="cart-template1-image">
       <img :src="item.image" :alt="item.productName" />
     </div>
     <div class="cart-template1-info">
       <div>
-        <Heading tag="div" size="sm" weight="medium" class="black text-limit text-limit-2 mb-sm">
-          {{ item.productName }}
-        </Heading>
+        <Text :text="item.productName" color="black" class="mb-sm" />
         <div class="cart-template1-options">
-          <div v-if="item.selectedOptionsPush" v-for="optionItem in item.selectedOptionsPush">
-              {{ optionItem.optionName }}:  <span>{{ optionItem.variantName }} </span> (+{{ formatCurrency(optionItem.variantPrice) }})
-          </div>
-          {{ item.note }}
+          <Text
+            v-if="item.selectedOptionsPush"
+            v-for="optionItem in item.selectedOptionsPush"
+            :text="`${ optionItem.variantName }(+${ formatCurrency(optionItem.variantPrice) })`"
+            color="gray4" size="xs"
+          />
+          <Text color="gray4" size="xs" :text="item.note" />
         </div>
       </div>
       <div class="cart-template1-action">
         <div class="cart-template1-input" v-if="item.id">
           <Button color="secondary" size="xs" icon="check_indeterminate_small" @click.prevent="storeCart.updateQuantity(item.productKey ? item.productKey : item.id,false)" />
-
-          <Button :disabled="true" :border="false" size="xs" color="gray" class="cart-template1-quantity pd-0" :label="item.quantity" />
-
-          <Button color="secondary" size="xs" icon="add" @click.prevent="storeCart.updateQuantity(item.productKey ? item.productKey : item.id,true)" />
+          <Button disabled :border="false" size="xs" class="bg-transparent cart-template1-quantity pd-0" :label="item.quantity" />
+          <Button color="black" size="xs" icon="add" @click.prevent="storeCart.updateQuantity(item.productKey ? item.productKey : item.id,true)" />
         </div>
         <div class="flex gap-xs">
-          <span v-if="item.priceDiscounts" class="text-color-danger">{{ formatCurrency(item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts) }}</span>
-          <span class="text-color-gray5 text-line-through" v-if="getOriginalPrice(item) !== ''">{{ formatCurrency(getOriginalPrice(item)) }}</span>
+          <Text color="danger" v-if="item.priceDiscounts" :text="formatCurrency(item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts)" />
+          <Text color="gray4" class="text-line-through" v-if="getOriginalPrice(item) !== ''" :text="formatCurrency(getOriginalPrice(item))" />
         </div>
       </div>
       <div class="cart-template1-delete flex" v-if="item.id">

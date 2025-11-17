@@ -11,10 +11,8 @@
         <template v-if="variant === 'modal-right'">
           <div class="portal-popup-main">
             <div class="portal-popup-header">
-              <Button :color="storeDisplay.isMobileTable ? 'blur':'secondary'" :size="storeDisplay.isMobileTable ? 'sm':'md'" class="portal-popup-close" icon="arrow_back" @click="handleClosePopup" />
-              <Heading v-if="popupHeading" tag="div" :size="storeDisplay.isMobileTable ? 'md':'lg'" weight="semibold">
-                {{ popupHeading }}
-              </Heading>
+              <Button color="secondary" class="portal-popup-close" icon="arrow_back" @click="handleClosePopup" />
+              <Text v-if="popupHeading" :size="storeDisplay.isMobileTable ? 'md':'lg'" weight="medium" :text="popupHeading" />
               <div class="portal-popup-header-actions flex gap-xs">
                 <slot name="header"></slot>
               </div>

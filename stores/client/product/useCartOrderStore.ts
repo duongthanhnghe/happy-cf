@@ -112,6 +112,8 @@ export const useCartStore = defineStore("Cart", () => {
     utilShared.resetFormCart,
     storeLocation,
     storeAddress,
+    state.isTogglePopupVoucher,
+    state.isTogglePopupPoint,
   );
 
   // 7. Initialize options
@@ -237,6 +239,7 @@ export const useCartStore = defineStore("Cart", () => {
   const getIdAddressChoose = computed(() => state.idAddressChoose.value);
   const getNameAddressChoose = computed(() => state.informationOrder.address);
   const getProductDetailDataEdit = computed(() => state.productDetailEdit.value);
+  const getMaxPointCanUse = computed(() => Math.floor(state.totalPriceDiscount.value * 0.1));
   
   return {
     // State
@@ -269,6 +272,8 @@ export const useCartStore = defineStore("Cart", () => {
     handleTogglePopup: utils.handleTogglePopup,
     handleChooseAddress: utils.handleChooseAddress,
     syncCartCookie: utils.syncCartCookie,
+    handleTogglePopupVoucher: utils.handleTogglePopupVoucher,
+    handleTogglePopupPoint: utils.handleTogglePopupPoint,
     handleGetDefaultAddress,
     handleCheckPoint,
     
@@ -299,5 +304,6 @@ export const useCartStore = defineStore("Cart", () => {
     getOrderPriceDiscount,
     allVouchers,
     getProductDetailDataEdit,
+    getMaxPointCanUse,
   };
 });

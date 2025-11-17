@@ -1,0 +1,28 @@
+@use "@/assets/variables" as *;
+
+.voucher-item1 {
+  position: relative;
+  padding-left: 2.45rem;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: $cl-gray6;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    left: 1.5rem;
+    top: 0;
+    height: 100%;
+    border-right: 1px dashed $cl-gray4;
+  }
+  &-desc {
+    min-height: 38px;
+  }
+}

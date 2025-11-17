@@ -4,26 +4,26 @@
   &-item {
     display: flex;
     background-color: $cl-white;
-    border-bottom: 1px solid $cl-gray2;
-    padding: 1rem;
+    border: 1px solid $cl-gray2;
+    padding: $space-xs;
   }
   &-image {
-    width: 70px;
+    width: 100px;
     img {
-      border-radius: $rd-md;
-    background-color: $cl-gray2;
+      border-radius: $rd-lg;
+      background-color: $cl-gray6;
     }
   }
   &-info {
-    width: calc(100% - 70px);
-    padding-left: 12px;
+    width: calc(100% - 100px);
+    padding: 6px 6px 6px 12px;
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    .heading {
-      padding-right: 70px;
-    }    
+    .text-color-black {
+      padding-right: 60px;
+    }
   }
   &-options {
     color: $cl-gray5;
@@ -41,15 +41,15 @@
     display: flex;
     width: fit-content;
     padding: 4px;
-    background-color: $cl-gray2;
-    border-radius: $rd-md;
+    background-color: $cl-gray6;
+    border-radius: $rd-lg;
   }
   &-quantity {
     min-width: 40px;
   }
   &-delete {
     position: absolute;
-    right: -8px;
+    right: 0;
     top: 0;
   }
 }

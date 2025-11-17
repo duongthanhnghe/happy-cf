@@ -31,7 +31,7 @@ const props = defineProps({
   size: {
     type: String,
     default: '',
-    validator: (value) => ['xs', 'sm', 'md', 'lg', 'xl', '2xl',''].includes(value)
+    validator: (value) => ['xs', 'sm','normal', 'md', 'lg', 'xl', '2xl',''].includes(value)
   },
   lineHeight: {
     type: String,

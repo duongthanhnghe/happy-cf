@@ -19,7 +19,9 @@ export const useCartUtils = (
   handleCalcTotalPriceCurrent: () => void,
   resetFormCart: () => void,
   storeLocation: any,
-  storeAddress: any
+  storeAddress: any,
+  isTogglePopupVoucher: Ref<boolean>,
+  isTogglePopupPoint: Ref<boolean>,
 ) => {
 
   const updateCookie = () => {
@@ -101,6 +103,14 @@ export const useCartUtils = (
     }
   };
 
+  const handleTogglePopupVoucher = (value: boolean) => {
+    isTogglePopupVoucher.value = value;
+  };
+
+  const handleTogglePopupPoint = (value: boolean) => {
+    isTogglePopupPoint.value = value;
+  };
+
   return {
     updateCookie,
     syncCartCookie,
@@ -109,5 +119,7 @@ export const useCartUtils = (
     handleGetDefaultAddress,
     handleChooseAddress,
     handleCheckPoint,
+    handleTogglePopupVoucher,
+    handleTogglePopupPoint,
   };
 };

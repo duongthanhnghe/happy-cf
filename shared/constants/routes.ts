@@ -392,7 +392,7 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       label: 'Dat hang',
       icon: 'info',
       middleware: ['auth-account'],
-      layout: 'default',
+      layout: 'cart-layout',
       headerTypeLeft: 'logo',
     },
     PAYMENT: {

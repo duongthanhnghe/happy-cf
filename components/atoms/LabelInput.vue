@@ -6,7 +6,7 @@
         labelClass
       ]"
     >
-      <span class="portal-label-text text-color-title weight-medium">
+      <span class="portal-label-text text-color-title">
         {{ label }}
         <span v-if="required" class="text-color-danger ml-xs">*</span>
       </span>

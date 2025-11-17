@@ -37,6 +37,7 @@ interface _GlobalComponents {
     'Button': typeof import("../components/atoms/Button.vue")['default']
     'CKEditorCDN': typeof import("../components/atoms/CKEditorCDN.vue")['default']
     'CKEditorCDNBackup': typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']
+    'Card': typeof import("../components/atoms/Card.vue")['default']
     'ControlImage': typeof import("../components/atoms/ControlImage.vue")['default']
     'DateFilter': typeof import("../components/atoms/DateFilter.vue")['default']
     'FirstLoader': typeof import("../components/atoms/FirstLoader.vue")['default']
@@ -159,6 +160,7 @@ interface _GlobalComponents {
     'LazyButton': LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
     'LazyCKEditorCDN': LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
     'LazyCKEditorCDNBackup': LazyComponent<typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']>
+    'LazyCard': LazyComponent<typeof import("../components/atoms/Card.vue")['default']>
     'LazyControlImage': LazyComponent<typeof import("../components/atoms/ControlImage.vue")['default']>
     'LazyDateFilter': LazyComponent<typeof import("../components/atoms/DateFilter.vue")['default']>
     'LazyFirstLoader': LazyComponent<typeof import("../components/atoms/FirstLoader.vue")['default']>
@@ -287,6 +289,7 @@ export const BreadcrumbDefault: typeof import("../components/atoms/BreadcrumbDef
 export const Button: typeof import("../components/atoms/Button.vue")['default']
 export const CKEditorCDN: typeof import("../components/atoms/CKEditorCDN.vue")['default']
 export const CKEditorCDNBackup: typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']
+export const Card: typeof import("../components/atoms/Card.vue")['default']
 export const ControlImage: typeof import("../components/atoms/ControlImage.vue")['default']
 export const DateFilter: typeof import("../components/atoms/DateFilter.vue")['default']
 export const FirstLoader: typeof import("../components/atoms/FirstLoader.vue")['default']
@@ -409,6 +412,7 @@ export const LazyBreadcrumbDefault: LazyComponent<typeof import("../components/a
 export const LazyButton: LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
 export const LazyCKEditorCDN: LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
 export const LazyCKEditorCDNBackup: LazyComponent<typeof import("../components/atoms/CKEditorCDNBackup.vue")['default']>
+export const LazyCard: LazyComponent<typeof import("../components/atoms/Card.vue")['default']>
 export const LazyControlImage: LazyComponent<typeof import("../components/atoms/ControlImage.vue")['default']>
 export const LazyDateFilter: LazyComponent<typeof import("../components/atoms/DateFilter.vue")['default']>
 export const LazyFirstLoader: LazyComponent<typeof import("../components/atoms/FirstLoader.vue")['default']>

@@ -17,14 +17,14 @@ onMounted(() => {
 </script>
 <template>
 
-<Popup popupId="popup-cart" v-model="store.isTogglePopup" popupHeading="Gio hang" bodyClass="bg-gray2 popup-cart-body" footerFixed align="right">
+<Popup popupId="popup-cart" v-model="store.isTogglePopup" popupHeading="Gio hang" bodyClass="bg-gray6 popup-cart-body" footerFixed align="right">
   <template #header v-if="store.getCartListItem && store.getCartListItem.length > 0">
-    <Button label="Huy" :color="!storeDisplay.isMobileTable ? 'gray':'blur'" :size="!storeDisplay.isMobileTable ? 'md':'sm'" @handleOnClick="store.handleDeleteCartAll" />
+    <Button icon="remove_shopping_cart" color="secondary" @handleOnClick="store.handleDeleteCartAll" />
   </template>
 
   <template #body>
     <template v-if="store.getCartListItem && store.getCartListItem.length > 0">
-      <div class="rd-lg overflow-hidden">
+      <div class="flex flex-direction-column gap-sm">
         <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
       </div>
 
@@ -35,9 +35,9 @@ onMounted(() => {
           {{ store.getTotalPoint }}
         </span>
       </div>
-      <Text color="gray5" textClass="mt-ms flex gap-xs justify-end">
+      <Text color="gray5" textClass="mt-sm flex gap-xs justify-end align-baseline">
         <Text text="Tam tinh:"/>
-        <Text color="black" weight="semibold" :text="`${formatCurrency(store.getTotalPriceCurrent - store.getOrderPriceDiscount)}`"/>
+        <Text color="black" size="md" weight="semibold" :text="`${formatCurrency(store.getTotalPriceCurrent - store.getOrderPriceDiscount)}`"/>
         <Text :text="`(${store.getCartCount} san pham)`"/>
       </Text>
     </template>

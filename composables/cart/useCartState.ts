@@ -66,6 +66,8 @@ export const useCartState = () => {
   const priceOptions = ref(0);
   const quantity = ref(1);
   const note = ref<string>('');
+  const isTogglePopupVoucher = ref<boolean>(false);
+  const isTogglePopupPoint = ref<boolean>(false);
 
   return {
     informationOrder,
@@ -101,5 +103,7 @@ export const useCartState = () => {
     priceOptions,
     quantity,
     note,
+    isTogglePopupVoucher,
+    isTogglePopupPoint,
   };
 };
