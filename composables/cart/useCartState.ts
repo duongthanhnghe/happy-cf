@@ -68,6 +68,9 @@ export const useCartState = () => {
   const note = ref<string>('');
   const isTogglePopupVoucher = ref<boolean>(false);
   const isTogglePopupPoint = ref<boolean>(false);
+  const selectedFreeship = ref<string | null>(null);
+  const selectedVoucher = ref<string | null>(null);
+  const voucherCode = ref<string>('');
 
   return {
     informationOrder,
@@ -105,5 +108,8 @@ export const useCartState = () => {
     note,
     isTogglePopupVoucher,
     isTogglePopupPoint,
+    selectedFreeship,
+    selectedVoucher,
+    voucherCode,
   };
 };

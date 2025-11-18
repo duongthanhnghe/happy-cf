@@ -68,6 +68,13 @@ interface _GlobalComponents {
     'ProductItemWishlistTemplate': typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']
     'VoucherItemTemplate1': typeof import("../components/molecules/voucher/VoucherItemTemplate1.vue")['default']
     'SectionBanner': typeof import("../components/organisms/banner/SectionBanner.vue")['default']
+    'CartPointInfoLabel': typeof import("../components/organisms/cart/CartPointInfoLabel.vue")['default']
+    'CartPointInput': typeof import("../components/organisms/cart/CartPointInput.vue")['default']
+    'CartVoucherChoose': typeof import("../components/organisms/cart/CartVoucherChoose.vue")['default']
+    'CartVoucherInput': typeof import("../components/organisms/cart/CartVoucherInput.vue")['default']
+    'CartVoucherList': typeof import("../components/organisms/cart/CartVoucherList.vue")['default']
+    'CartVoucherListText': typeof import("../components/organisms/cart/CartVoucherListText.vue")['default']
+    'CartVoucherMessage': typeof import("../components/organisms/cart/CartVoucherMessage.vue")['default']
     'Footer': typeof import("../components/organisms/layout/Footer.vue")['default']
     'Header': typeof import("../components/organisms/layout/Header.vue")['default']
     'MenuAccount': typeof import("../components/organisms/layout/MenuAccount.vue")['default']
@@ -94,6 +101,12 @@ interface _GlobalComponents {
     'PopupBarcode': typeof import("../components/organisms/user/PopupBarcode.vue")['default']
     'CreateAbout': typeof import("../components/templates/about/CreateAbout.vue")['default']
     'UpdateAbout': typeof import("../components/templates/about/UpdateAbout.vue")['default']
+    'CartPaymentInfo': typeof import("../components/templates/cart/CartPaymentInfo.vue")['default']
+    'CartPersonInfo': typeof import("../components/templates/cart/CartPersonInfo.vue")['default']
+    'CartPointMobile': typeof import("../components/templates/cart/CartPointMobile.vue")['default']
+    'CartPointPC': typeof import("../components/templates/cart/CartPointPC.vue")['default']
+    'CartVoucherMobile': typeof import("../components/templates/cart/CartVoucherMobile.vue")['default']
+    'CartVoucherPC': typeof import("../components/templates/cart/CartVoucherPC.vue")['default']
     'PopupAddItemToCart': typeof import("../components/templates/cart/PopupAddItemToCart.vue")['default']
     'PopupCart': typeof import("../components/templates/cart/PopupCart.vue")['default']
     'PopupEditItemToCart': typeof import("../components/templates/cart/PopupEditItemToCart.vue")['default']
@@ -191,6 +204,13 @@ interface _GlobalComponents {
     'LazyProductItemWishlistTemplate': LazyComponent<typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']>
     'LazyVoucherItemTemplate1': LazyComponent<typeof import("../components/molecules/voucher/VoucherItemTemplate1.vue")['default']>
     'LazySectionBanner': LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
+    'LazyCartPointInfoLabel': LazyComponent<typeof import("../components/organisms/cart/CartPointInfoLabel.vue")['default']>
+    'LazyCartPointInput': LazyComponent<typeof import("../components/organisms/cart/CartPointInput.vue")['default']>
+    'LazyCartVoucherChoose': LazyComponent<typeof import("../components/organisms/cart/CartVoucherChoose.vue")['default']>
+    'LazyCartVoucherInput': LazyComponent<typeof import("../components/organisms/cart/CartVoucherInput.vue")['default']>
+    'LazyCartVoucherList': LazyComponent<typeof import("../components/organisms/cart/CartVoucherList.vue")['default']>
+    'LazyCartVoucherListText': LazyComponent<typeof import("../components/organisms/cart/CartVoucherListText.vue")['default']>
+    'LazyCartVoucherMessage': LazyComponent<typeof import("../components/organisms/cart/CartVoucherMessage.vue")['default']>
     'LazyFooter': LazyComponent<typeof import("../components/organisms/layout/Footer.vue")['default']>
     'LazyHeader': LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
     'LazyMenuAccount': LazyComponent<typeof import("../components/organisms/layout/MenuAccount.vue")['default']>
@@ -217,6 +237,12 @@ interface _GlobalComponents {
     'LazyPopupBarcode': LazyComponent<typeof import("../components/organisms/user/PopupBarcode.vue")['default']>
     'LazyCreateAbout': LazyComponent<typeof import("../components/templates/about/CreateAbout.vue")['default']>
     'LazyUpdateAbout': LazyComponent<typeof import("../components/templates/about/UpdateAbout.vue")['default']>
+    'LazyCartPaymentInfo': LazyComponent<typeof import("../components/templates/cart/CartPaymentInfo.vue")['default']>
+    'LazyCartPersonInfo': LazyComponent<typeof import("../components/templates/cart/CartPersonInfo.vue")['default']>
+    'LazyCartPointMobile': LazyComponent<typeof import("../components/templates/cart/CartPointMobile.vue")['default']>
+    'LazyCartPointPC': LazyComponent<typeof import("../components/templates/cart/CartPointPC.vue")['default']>
+    'LazyCartVoucherMobile': LazyComponent<typeof import("../components/templates/cart/CartVoucherMobile.vue")['default']>
+    'LazyCartVoucherPC': LazyComponent<typeof import("../components/templates/cart/CartVoucherPC.vue")['default']>
     'LazyPopupAddItemToCart': LazyComponent<typeof import("../components/templates/cart/PopupAddItemToCart.vue")['default']>
     'LazyPopupCart': LazyComponent<typeof import("../components/templates/cart/PopupCart.vue")['default']>
     'LazyPopupEditItemToCart': LazyComponent<typeof import("../components/templates/cart/PopupEditItemToCart.vue")['default']>
@@ -320,6 +346,13 @@ export const ProductItemTemplate1: typeof import("../components/molecules/produc
 export const ProductItemWishlistTemplate: typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']
 export const VoucherItemTemplate1: typeof import("../components/molecules/voucher/VoucherItemTemplate1.vue")['default']
 export const SectionBanner: typeof import("../components/organisms/banner/SectionBanner.vue")['default']
+export const CartPointInfoLabel: typeof import("../components/organisms/cart/CartPointInfoLabel.vue")['default']
+export const CartPointInput: typeof import("../components/organisms/cart/CartPointInput.vue")['default']
+export const CartVoucherChoose: typeof import("../components/organisms/cart/CartVoucherChoose.vue")['default']
+export const CartVoucherInput: typeof import("../components/organisms/cart/CartVoucherInput.vue")['default']
+export const CartVoucherList: typeof import("../components/organisms/cart/CartVoucherList.vue")['default']
+export const CartVoucherListText: typeof import("../components/organisms/cart/CartVoucherListText.vue")['default']
+export const CartVoucherMessage: typeof import("../components/organisms/cart/CartVoucherMessage.vue")['default']
 export const Footer: typeof import("../components/organisms/layout/Footer.vue")['default']
 export const Header: typeof import("../components/organisms/layout/Header.vue")['default']
 export const MenuAccount: typeof import("../components/organisms/layout/MenuAccount.vue")['default']
@@ -346,6 +379,12 @@ export const ListWishlist: typeof import("../components/organisms/user/ListWishl
 export const PopupBarcode: typeof import("../components/organisms/user/PopupBarcode.vue")['default']
 export const CreateAbout: typeof import("../components/templates/about/CreateAbout.vue")['default']
 export const UpdateAbout: typeof import("../components/templates/about/UpdateAbout.vue")['default']
+export const CartPaymentInfo: typeof import("../components/templates/cart/CartPaymentInfo.vue")['default']
+export const CartPersonInfo: typeof import("../components/templates/cart/CartPersonInfo.vue")['default']
+export const CartPointMobile: typeof import("../components/templates/cart/CartPointMobile.vue")['default']
+export const CartPointPC: typeof import("../components/templates/cart/CartPointPC.vue")['default']
+export const CartVoucherMobile: typeof import("../components/templates/cart/CartVoucherMobile.vue")['default']
+export const CartVoucherPC: typeof import("../components/templates/cart/CartVoucherPC.vue")['default']
 export const PopupAddItemToCart: typeof import("../components/templates/cart/PopupAddItemToCart.vue")['default']
 export const PopupCart: typeof import("../components/templates/cart/PopupCart.vue")['default']
 export const PopupEditItemToCart: typeof import("../components/templates/cart/PopupEditItemToCart.vue")['default']
@@ -443,6 +482,13 @@ export const LazyProductItemTemplate1: LazyComponent<typeof import("../component
 export const LazyProductItemWishlistTemplate: LazyComponent<typeof import("../components/molecules/product/ProductItemWishlistTemplate.vue")['default']>
 export const LazyVoucherItemTemplate1: LazyComponent<typeof import("../components/molecules/voucher/VoucherItemTemplate1.vue")['default']>
 export const LazySectionBanner: LazyComponent<typeof import("../components/organisms/banner/SectionBanner.vue")['default']>
+export const LazyCartPointInfoLabel: LazyComponent<typeof import("../components/organisms/cart/CartPointInfoLabel.vue")['default']>
+export const LazyCartPointInput: LazyComponent<typeof import("../components/organisms/cart/CartPointInput.vue")['default']>
+export const LazyCartVoucherChoose: LazyComponent<typeof import("../components/organisms/cart/CartVoucherChoose.vue")['default']>
+export const LazyCartVoucherInput: LazyComponent<typeof import("../components/organisms/cart/CartVoucherInput.vue")['default']>
+export const LazyCartVoucherList: LazyComponent<typeof import("../components/organisms/cart/CartVoucherList.vue")['default']>
+export const LazyCartVoucherListText: LazyComponent<typeof import("../components/organisms/cart/CartVoucherListText.vue")['default']>
+export const LazyCartVoucherMessage: LazyComponent<typeof import("../components/organisms/cart/CartVoucherMessage.vue")['default']>
 export const LazyFooter: LazyComponent<typeof import("../components/organisms/layout/Footer.vue")['default']>
 export const LazyHeader: LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
 export const LazyMenuAccount: LazyComponent<typeof import("../components/organisms/layout/MenuAccount.vue")['default']>
@@ -469,6 +515,12 @@ export const LazyListWishlist: LazyComponent<typeof import("../components/organi
 export const LazyPopupBarcode: LazyComponent<typeof import("../components/organisms/user/PopupBarcode.vue")['default']>
 export const LazyCreateAbout: LazyComponent<typeof import("../components/templates/about/CreateAbout.vue")['default']>
 export const LazyUpdateAbout: LazyComponent<typeof import("../components/templates/about/UpdateAbout.vue")['default']>
+export const LazyCartPaymentInfo: LazyComponent<typeof import("../components/templates/cart/CartPaymentInfo.vue")['default']>
+export const LazyCartPersonInfo: LazyComponent<typeof import("../components/templates/cart/CartPersonInfo.vue")['default']>
+export const LazyCartPointMobile: LazyComponent<typeof import("../components/templates/cart/CartPointMobile.vue")['default']>
+export const LazyCartPointPC: LazyComponent<typeof import("../components/templates/cart/CartPointPC.vue")['default']>
+export const LazyCartVoucherMobile: LazyComponent<typeof import("../components/templates/cart/CartVoucherMobile.vue")['default']>
+export const LazyCartVoucherPC: LazyComponent<typeof import("../components/templates/cart/CartVoucherPC.vue")['default']>
 export const LazyPopupAddItemToCart: LazyComponent<typeof import("../components/templates/cart/PopupAddItemToCart.vue")['default']>
 export const LazyPopupCart: LazyComponent<typeof import("../components/templates/cart/PopupCart.vue")['default']>
 export const LazyPopupEditItemToCart: LazyComponent<typeof import("../components/templates/cart/PopupEditItemToCart.vue")['default']>

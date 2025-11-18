@@ -11,21 +11,34 @@ const storeAccount = useAccountStore();
 const props = defineProps<{
   item: VoucherAvailableDTO;
   action: boolean;
-  modelValue: string | null;
+  selectedCode: string | null;  // dùng để check selected
+  onSelect?: (voucher: VoucherAvailableDTO) => void;
 }>();
+
+// const emit = defineEmits<{
+//   (e: "update:modelValue", value: string | string[]): void;
+// }>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string | string[]): void;
+  (e: "select", voucher: VoucherAvailableDTO): void
 }>();
 
-const isFreeship = computed(() => props.item.type === VOUCHER_TYPE.freeship.type);
+// const isFreeship = computed(() => props.item.type === VOUCHER_TYPE.freeship.type);
 
-const isSelected = computed(() => props.modelValue === props.item.code);
+// const isSelected = computed(() => props.modelValue === props.item.code);
+const isSelected = computed(() => props.selectedCode === props.item.code);
 
-const toggleSelection = () => {
-  if(!storeAccount.getDetailValue?.id) return showWarning('Vui long dang nhap de su dung voucher!')
-  if (props.item.isDisabled && !props.action) return;
-  emit("update:modelValue", props.item.code);
+// const toggleSelection = () => {
+//   if(!storeAccount.getDetailValue?.id) return showWarning('Vui long dang nhap de su dung voucher!')
+//   if (props.item.isDisabled && !props.action) return;
+//   emit("update:modelValue", props.item.code);
+// };
+
+const handleClick = () => {
+  if (!storeAccount.getDetailValue?.id) return showWarning('Vui lòng đăng nhập để sử dụng voucher!');
+  if (props.item.isDisabled) return;
+
+  emit('select', props.item); // emit event
 };
 </script>
 
@@ -36,13 +49,13 @@ const toggleSelection = () => {
       class="voucher-item1 rd-lg flex"
       :class="{
         'cursor-pointer': action,
-        'disable': item.isDisabled && action,
+        'disable pointer-events': item.isDisabled && action,
         'active': isSelected,
       }"
       bg="gray2"
       size="xs"
       border
-      @click="toggleSelection"
+      @click="handleClick"
       >
       <div class="flex-1">
         <div class="flex gap-xs align-baseline">
@@ -64,6 +77,6 @@ const toggleSelection = () => {
         />
       </div>
     </Card>
-    <div v-if="item.disabledReason && action">{{ item.disabledReason }}</div>
+    <Text v-if="item.disabledReason && action" size="xs" class="voucher-item1-warning" limit="1" v-tooltip="item.disabledReason" :text="item.disabledReason" />
   </label>
 </template>

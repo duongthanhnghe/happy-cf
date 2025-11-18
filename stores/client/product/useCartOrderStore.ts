@@ -26,6 +26,7 @@ import { useCartUtils } from '@/composables/cart/useCartUtils';
 
 import { ROUTES } from '@/shared/constants/routes';
 import { useCartSharedUtils } from "@/composables/cart/useCartSharedUtils";
+import { useCartVoucherHandlers } from "@/composables/cart/useCartVoucherHandlers";
 
 export const useCartStore = defineStore("Cart", () => {
   // External dependencies
@@ -214,6 +215,19 @@ export const useCartStore = defineStore("Cart", () => {
     await voucher.applyVoucher(code, storeAccount.getDetailValue?.id);
   };
 
+  const handlesVoucher = useCartVoucherHandlers(
+  state.selectedFreeship,
+  state.selectedVoucher,
+  state.voucherCode,
+  state.discountVoucher,
+  state.discountVoucherFreeship,
+  state.activeFreeshipVoucher,
+  state.voucherUsage,
+  state.messageVoucher,
+  applyVoucher,
+  handleCalcTotalPriceCurrent,
+);
+
   const handleCheckPoint = async () => {
     await utils.handleCheckPoint(storeAccount.getDetailValue?.id);
   };
@@ -239,7 +253,7 @@ export const useCartStore = defineStore("Cart", () => {
   const getIdAddressChoose = computed(() => state.idAddressChoose.value);
   const getNameAddressChoose = computed(() => state.informationOrder.address);
   const getProductDetailDataEdit = computed(() => state.productDetailEdit.value);
-  const getMaxPointCanUse = computed(() => Math.floor(state.totalPriceDiscount.value * 0.1));
+  const getMaxPointCanUse = computed(() =>  Math.floor(state.totalPriceDiscount.value * 0.1));
   
   return {
     // State
@@ -287,6 +301,9 @@ export const useCartStore = defineStore("Cart", () => {
     // Pricing
     handleCalcTotalPriceCurrent,
     fetchProductCart,
+
+    //voucher handle
+    ...handlesVoucher,
     
     // Getters
     getCartCount,

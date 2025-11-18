@@ -1,5 +1,5 @@
 import { setCookie, getCookie } from "@/utils/global";
-import { showWarning } from "@/utils/toast";
+import { showSuccess, showWarning } from "@/utils/toast";
 import { Loading } from "@/utils/global";
 import { ordersAPI } from "@/services/v1/orders.service";
 import type { Ref } from 'vue';
@@ -96,9 +96,10 @@ export const useCartUtils = (
         showWarning(res.message ?? '');
       }
       handleCalcTotalPriceCurrent();
-      Loading(false);
+      showSuccess('Ap dung thanh cong');
     } catch (err: any) {
       showWarning(err.message);
+    } finally {
       Loading(false);
     }
   };

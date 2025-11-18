@@ -67,6 +67,9 @@ a {
     &-200 {
       min-width: 200px;
     }
+    &-300 {
+      min-width: 300px;
+    }
   }
 }
 
@@ -754,6 +757,10 @@ body .bg {
   opacity: 0.5;
 }
 
+.pointer-events {
+  pointer-events: none;
+}
+
 .shape-loading {
   position: absolute;
   left: 0;
@@ -988,12 +995,23 @@ body .bg {
         .portal-popup-center {
           &-body {
             border-radius: $rd-xxl $rd-xxl 0 0;
-            max-height: 85%;
+            max-height: 90%;
             padding-bottom: 0;
           }
         }
         .portal-popup-footer {
           position: sticky;
+        }
+        .portal-popup-center-body {
+          &.fixed .portal-popup-footer {
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            min-width: 100%;
+            padding: 1rem;
+            background-color: $cl-white;
+            z-index: 2;
+          }
         }
       }
       &.top {
@@ -1021,6 +1039,18 @@ body .bg {
         left: 1rem;
         top: 1rem;
       }
+    }
+    &-badge {
+      width: 50px;
+      height: 4px;
+      border-radius: 30px;
+      background-color: $cl-gray4;
+      position: absolute;
+      top: 0.75rem;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      z-index: 1;
     }
   }
 

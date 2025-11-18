@@ -37,7 +37,7 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
 </script>
 
 <template>
-  <Popup :children="storeCart.isTogglePopup ? true: false" :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" align="bottom" popupId="popup-edit" :modelValue="storeCart.getPopupState('edit')" :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" @update:modelValue="storeCart.togglePopup('edit', false)">
+  <Popup :children="storeCart.isTogglePopup ? true: false" :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" footerFixed align="bottom" popupId="popup-edit" :modelValue="storeCart.getPopupState('edit')" :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" @update:modelValue="storeCart.togglePopup('edit', false)">
     <template #body v-if="detail">
       <div class="popup-detail-product">
         <div class="popup-detail-product-image">
@@ -112,7 +112,6 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
     </template>
 
     <template #footer v-if="detail">
-      <div class="portal-popup-footer">
       <Button
         v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined"
         :label="'Cập nhật - ' + formatCurrency(storeCart.priceTotalEdit)"
@@ -129,7 +128,6 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
           @handleOnClick="storeCart.updateNormalProduct(detailProduct, storeCart.quantityEdit, detail.note, detail.id)"
         />
       </template>
-      </div>
     </template>
   </Popup>
 </template>

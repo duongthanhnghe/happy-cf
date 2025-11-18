@@ -25,4 +25,10 @@
   &-desc {
     min-height: 38px;
   }
+  &-warning {
+    background-color: rgb(255 69 96 / 30%) !important;
+    padding: 2px 7px;
+    border-radius: 8px;
+    margin-top: 4px;
+  }
 }

@@ -31,16 +31,18 @@
         </template>
         <template v-else>
           <div :class="`portal-popup-center ${align}`" @click.prevent="handleClosePopup">
-          <div :class="`portal-popup-center-body scroll-hide ${bodyClass}`" @click.stop>
-            <Button color="secondary" :size="storeDisplay.isMobileTable ? 'sm':'md'" class="portal-popup-center-close" icon="close" @click="handleClosePopup" />
-            <Heading v-if="popupHeading" tag="div" :size="storeDisplay.isMobileTable ? 'xl':'2xl'" class="text-center" weight="semibold">
-              {{ popupHeading }}
-            </Heading>
+          <div :class="`portal-popup-center-body scroll-hide ${bodyClass} ${footerFixed ? 'fixed':''}`" @click.stop>
+            <Button v-if="!storeDisplay.isMobileTable" color="secondary" :size="storeDisplay.isMobileTable ? 'sm':'md'" class="portal-popup-center-close" icon="close" @click="handleClosePopup" />
+            <div v-else class="portal-popup-badge" @click="handleClosePopup"></div>
+            <Text v-if="popupHeading" :size="storeDisplay.isMobileTable ? 'md':'2xl'" weight="semibold" :text="popupHeading" />
             <div class="portal-popup-header-actions flex gap-xs">
               <slot name="header"></slot>
             </div>
             <slot name="body"></slot>
-            <slot name="footer"></slot>
+            <div class="portal-popup-footer">
+              <slot name="footer">
+              </slot>
+            </div>
           </div>
           </div>
           <div class="portal-popup-shape"></div>
@@ -69,7 +71,6 @@ const props = defineProps({
   },
   popupId: {
     type: String,
-    required: true, 
   },
   modelValue: {
     type: Boolean,
