@@ -6,7 +6,7 @@ import type { CategoryProductDTO, CategoryWithProductsDTO, ProductSortType } fro
 export const useOrderStore = defineStore('order', () => {
   
   const resultData = ref<CategoryWithProductsDTO[]|null>(null)
-  const limit = 4
+  const limit = 12
   const filterType = ref<ProductSortType>('discount')
   const filterCategory = ref<Record<string, string>>({})
 

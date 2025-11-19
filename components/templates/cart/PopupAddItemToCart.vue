@@ -22,7 +22,7 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
         <Button v-if="detail?.id" :size="storeDisplay.isMobileTable ? 'sm':'md'" :color="storeWishlist.isInWishlist(detail?.id) ? 'black' : 'secondary'" icon="favorite" @click="storeProductDetail?.toggleLike(detail?.id)"/>
       </template>
       <template #body >
-        <div class="popup-detail-product">
+        <div class="popup-detail-product overflow-hidden">
           <div class="popup-detail-product-image">
             <img :src="detail?.image" :alt="detail?.productName" />
           </div>

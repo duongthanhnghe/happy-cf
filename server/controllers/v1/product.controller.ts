@@ -369,6 +369,31 @@ export const getProductsByCategory = async (
 
     const total = await ProductEntity.countDocuments(match);
 
+    let sortQuery: any = { updatedAt: -1 }; // default
+
+    const sort = req.query.sort as string;
+
+    switch (sort) {
+      case "price_desc":
+        sortQuery = { price: -1 };
+        break;
+
+      case "price_asc":
+        sortQuery = { price: 1 };
+        break;
+
+      case "discount":
+        sortQuery = { 
+          discountValue: -1 
+        };
+        break;
+
+      case "popular":
+        sortQuery = { amountOrder: -1 };
+        break;
+    }
+
+
     const products = await ProductEntity.aggregate([
       { $match: match },
       {
@@ -377,7 +402,8 @@ export const getProductsByCategory = async (
           priceDiscount: { $toDouble: "$priceDiscounts" }
         }
       },
-      { $sort: { updatedAt: -1 } },
+      { $sort: sortQuery },
+      // { $sort: { updatedAt: -1 } },
       { $skip: skip },
       { $limit: limit }
     ]);

@@ -3,6 +3,7 @@
 .voucher-item1 {
   position: relative;
   padding-left: 2.45rem;
+  overflow: hidden;
   &::before {
     content: '';
     position: absolute;

@@ -9,7 +9,6 @@ import {
 } from '@/utils/global'
 import {
   ref,
-  computed
 } from 'vue'
 import {
   useCartStore
@@ -29,7 +28,7 @@ import { ROUTES } from '@/shared/constants/routes';
 const props = defineProps<{
   product: ProductDTO
   listView?: Boolean
-  background?: 'bg-white' | 'bg-gray7'
+  background?: 'bg-white' | 'bg-gray7' | ''
 }>()
 
 const storeCart = useCartStore()
@@ -51,7 +50,7 @@ const handleShowAction = () => {
       <img v-lazy="product.image" :alt="product.productName" class="product-template1-image-src">
     </NuxtLink>
     <client-only>
-      <Button v-if="storeAccount.getDetailValue?.id" class="product-template1-favorite" :color="storeWishlist.isInWishlist(product.id) ? 'black' : 'secondary'" size="xs" icon="favorite" @click="storeProduct.toggleLike(product.id)"/>
+      <Button v-if="storeAccount.getUserId && !props.listView" class="product-template1-favorite" :color="storeWishlist.isInWishlist(product.id) ? 'black' : 'secondary'" size="xs" icon="favorite" @click="storeProduct.toggleLike(product.id)"/>
     </client-only>
     <div v-if="product.amount == 0" class="product-template1-amount">
       {{orderText.textStockNull}}

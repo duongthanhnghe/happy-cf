@@ -40,10 +40,12 @@ onMounted(() => {
       <NoData />
     </div>
   </template>
-  <template #footer v-if="store.getCartListItem && store.getCartListItem.length > 0">
-    <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
-      <Button tag="div" label="Dat hang" color="primary" class="w-full" />
-    </NuxtLink>
+  <template #footer>
+    <template v-if="store.getCartListItem && store.getCartListItem.length > 0">
+      <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
+        <Button tag="div" label="Dat hang" color="primary" class="w-full" />
+      </NuxtLink>
+    </template>
   </template>
 </Popup>
 

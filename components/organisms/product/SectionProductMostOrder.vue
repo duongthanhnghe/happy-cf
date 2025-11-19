@@ -14,6 +14,7 @@ import {
   Autoplay
 } from 'swiper/modules';
 import { ROUTES } from '@/shared/constants/routes';
+import { COLUMN } from '@/shared/constants/column';
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
 import type { SwiperOptions } from 'swiper/types';
 
@@ -27,6 +28,7 @@ const props = withDefaults(defineProps<{
   viewMore?: boolean
   background?: string
   breakpoints?: SwiperOptions['breakpoints']
+  column?: string
 }>(), {
   items: () => [],
   loading: false,
@@ -56,8 +58,8 @@ const props = withDefaults(defineProps<{
       </swiper>
       </client-only>
     </template>
-    <div v-else class="row row-xs">
-      <div v-for="(product, index) in props.items" :key="index" class="col-6 mb-sm">
+    <div v-else :class="COLUMN.ROW">
+      <div v-for="(product, index) in props.items" :key="index" :class="column ? column : 'col-6 mb-sm'">
         <ProductItemTemplate1 :product="product" :background="props.background"/>
       </div>
     </div>

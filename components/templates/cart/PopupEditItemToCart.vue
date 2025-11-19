@@ -39,7 +39,7 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
 <template>
   <Popup :children="storeCart.isTogglePopup ? true: false" :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" footerFixed align="bottom" popupId="popup-edit" :modelValue="storeCart.getPopupState('edit')" :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" @update:modelValue="storeCart.togglePopup('edit', false)">
     <template #body v-if="detail">
-      <div class="popup-detail-product">
+      <div class="popup-detail-product overflow-hidden">
         <div class="popup-detail-product-image">
           <img :src="detailProduct?.image" :alt="detailProduct?.productName" />
         </div>
@@ -111,22 +111,24 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
       </div>
     </template>
 
-    <template #footer v-if="detail">
-      <Button
-        v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined"
-        :label="'Cập nhật - ' + formatCurrency(storeCart.priceTotalEdit)"
-        class="w-full"
-        color="primary"
-        @handleOnClick="storeCart.updateProductWithOptions(detailProduct, storeCart.quantityEdit, detail.note, detail.productKey)"
-      />
-      <template v-else>
+    <template #footer>
+      <template v-if="detail">
         <Button
-          v-if="detail.id"
+          v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined"
           :label="'Cập nhật - ' + formatCurrency(storeCart.priceTotalEdit)"
           class="w-full"
           color="primary"
-          @handleOnClick="storeCart.updateNormalProduct(detailProduct, storeCart.quantityEdit, detail.note, detail.id)"
+          @handleOnClick="storeCart.updateProductWithOptions(detailProduct, storeCart.quantityEdit, detail.note, detail.productKey)"
         />
+        <template v-else>
+          <Button
+            v-if="detail.id"
+            :label="'Cập nhật - ' + formatCurrency(storeCart.priceTotalEdit)"
+            class="w-full"
+            color="primary"
+            @handleOnClick="storeCart.updateNormalProduct(detailProduct, storeCart.quantityEdit, detail.note, detail.id)"
+          />
+        </template>
       </template>
     </template>
   </Popup>

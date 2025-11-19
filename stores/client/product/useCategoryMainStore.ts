@@ -6,6 +6,7 @@ import { useProductByCategory } from '@/composables/product/useProductByCategory
 import { usePagination } from '@/utils/paginationHandle'
 import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren'
 import type { ProductDTO, ProductSortType } from '@/server/types/dto/v1/product.dto'
+import { scrollIntoView } from "@/utils/global";
 
 export const useCategoryMainStore = defineStore("CategoryMainProductStore", () => {
   const { getProductCategoryDetail } = useProductCategoryDetail()
@@ -15,7 +16,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   const listItems = ref<ProductDTO[]|null>(null);
   const pagination = computed(() => getProductByCategoryApi.value?.pagination)
   const page = ref('1')
-  const limit = 20
+  const limit = 24
   const filterCategory = ref<string>('')
   const filterType = ref<ProductSortType>('discount')
   const filterArray = ref([
@@ -38,6 +39,9 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   ])
   const maxPrice = ref(0)
   const rangePrice = ref([0, maxPrice.value])
+  const isTogglePopupFilter = ref(false)
+  const valueChangePage = ref<boolean|null>(null)
+
 
   watch(getProductByCategoryApi, (newValue) => {
     if (newValue && newValue.data) {
@@ -61,32 +65,67 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
 
   watch(page, async (newValue) => {
     if(newValue && getProductCategoryDetail.value) {
+      Loading(true)
       try {
-        Loading(true)
         await fetchProductByCategory(getProductCategoryDetail.value?.id,Number(newValue), limit, filterType.value)
         listItems.value = getProductByCategoryApi.value?.data || []
-        Loading(false)
       } catch (error) {
-        console.error('category-news error:', error)
+        console.error('category-product error:', error)
+      } finally {
+        Loading(false)
+        if(window.innerWidth > 1024) scrollIntoView('filter-product')
       }
     }
   })
 
   watch([listItems, filterType], () => {
+    if (!getProductCategoryDetail.value?.id) return
     if (listItems.value?.length) {
       rangePrice.value = [0, maxPrice.value]
     }
   }, { immediate: true })
 
+  watch(valueChangePage, (newVal) => {
+    if(newVal !== null) handleChangePage(newVal)
+    valueChangePage.value = null
+  })
+
   const { handleChangePage, getTotalPages } = usePagination(page, computed(() => pagination.value?.totalPages ?? 0))
+
+  const handleTogglePopupFilter = (value: boolean) => {
+    isTogglePopupFilter.value = value;
+  };
+
+  const resetFilter = () => {
+    isTogglePopupFilter.value = false
+    page.value = '1'
+    filterType.value = 'discount'
+    maxPrice.value = 0
+    rangePrice.value = [0, maxPrice.value]
+    filterCategory.value = ''
+  }
+
+  const hasFilter = computed(() => {
+    return (
+      page.value !== '1' ||
+      filterType.value !== 'discount' ||
+      filterCategory.value !== '' ||
+      rangePrice.value[0] !== 0 || 
+      rangePrice.value[1] !== maxPrice.value 
+    )
+  })
 
   const getListItems = computed(() => {
     const [min, max] = rangePrice.value
+    if (maxPrice.value === 0) return listItems.value
+
     return listItems.value?.filter(item => {
       const price = item.price || 0
       return price >= min && price <= max
     })
   })
+
+  const getTotalItems = computed(() => { return pagination.value?.total })
 
   return {
     filterType,
@@ -96,11 +135,17 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     getProductCategoryDetail,
     getListItems,
     getTotalPages,
+    getTotalItems,
     rangePrice,
     maxPrice,
     getListCategoryChildren,
     filterCategory,
     loadingData,
+    isTogglePopupFilter,
+    hasFilter,
+    valueChangePage,
     handleChangePage,
+    handleTogglePopupFilter,
+    resetFilter,
   };
 });

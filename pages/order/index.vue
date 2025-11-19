@@ -6,7 +6,8 @@ import { useProductMostOrderStore } from '@/stores/client/product/useProductMost
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useOrderMainHandlers } from '@/composables/order/useOrderMainHandlers';
-
+import { COLUMN } from '@/shared/constants/column';
+import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 definePageMeta({
   middleware: ROUTES.PUBLIC.ORDER.middleware,
   headerTypeLeft: ROUTES.PUBLIC.ORDER.headerTypeLeft,
@@ -16,15 +17,15 @@ const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeProductCategory = useProductCategoryStore()
 const storeAccount = useAccountStore();
+const storeDisplay = useDisplayStore();
 
 const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProductSale, storeProductCategory)
 
 </script>
 
 <template>
-  <div class="bg-gray2 pb-sm">
-    <div class="bg-white">
-      <v-tabs v-model="tab" align-tabs="center">
+  <div class="bg-white shadow-2">
+    <v-tabs v-model="tab" align-tabs="center" :class="{ container: storeDisplay.isLaptop }">
       <v-tab
           v-for="item in tabs"
           :key="item.value"
@@ -36,14 +37,13 @@ const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProd
             {{ item.label }}
           </div>
         </v-tab>
-      </v-tabs>
-    </div>
+    </v-tabs>
   </div>
   <div class="order-main-content">
     <v-tabs-window v-model="tab">
       <v-tabs-window-item :value="1">
-        <div class="flex align-start bg-gray2">
-          <div class="order-main-content-scroll scroll-hide">
+        <div class="flex align-start bg-gray6">
+          <div class="order-main-content-scroll scroll-hide bg-white">
             <ProductCategoryMenu :items="storeProductCategory.getListData" :loading="storeProductCategory.loading" />
           </div>
           <div class="order-main-content-scroll scroll-hide flex-1">
@@ -52,13 +52,27 @@ const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProd
         </div>
       </v-tabs-window-item>
       <v-tabs-window-item :value="2">
-        <div class="container pt-sm order-main-content-scroll scroll-hide">
-          <SectionProductMostOrder :items="storeProductMostOrder.getListProductMostOrder" :loading="storeProductMostOrder.loading" :runSlide="false" background="bg-white"/>
+        <div class="container container-xxl pt-section order-main-content-scroll scroll-hide">
+          <SectionProductMostOrder
+            :items="storeProductMostOrder.getListProductMostOrder"
+            :loading="storeProductMostOrder.loading" 
+            :runSlide="false" 
+            background="bg-white"
+            :column="COLUMN.PRODUCT_XL"
+            headingText="Top ban chay"
+          />
         </div>
       </v-tabs-window-item>
       <v-tabs-window-item :value="3">
-        <div class="container pt-sm order-main-content-scroll scroll-hide">
-          <SectionProductSales :items="storeProductSale.getListProductSales" :loading="storeProductSale.loading" :runSlide="false" background="bg-white"/>
+        <div class="container container-xxl pt-section order-main-content-scroll scroll-hide">
+          <SectionProductSales
+            :items="storeProductSale.getListProductSales"
+            :loading="storeProductSale.loading"
+            :runSlide="false"
+            background="bg-white"
+            :column="COLUMN.PRODUCT_XL"
+            headingText="Khuyen mai"
+          />
         </div>
       </v-tabs-window-item>
     </v-tabs-window>

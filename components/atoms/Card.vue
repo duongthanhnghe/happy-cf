@@ -2,11 +2,12 @@
   <div
     :class="[
       'card',
-      size ? `card-size-${size}` : '',
-      bg ? `bg-${bg}` : '',
-      border ? 'card-border' : '',
+      props.size ? `card-size-${props.size}` : '',
+      props.bg ? `bg-${props.bg}` : '',
+      props.border ? 'card-border' : '',
     ]"
   >
+    <Text v-if="props.heading" :text="props.heading" color="black" :size="props.size" weight="semibold" class="mb-sm" />
     <slot></slot>
   </div>
 </template>
@@ -28,5 +29,8 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  heading: {
+    type: String,
+  }
 })
 </script>

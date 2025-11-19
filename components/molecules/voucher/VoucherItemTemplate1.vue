@@ -54,13 +54,12 @@ const handleClick = () => {
       }"
       bg="gray2"
       size="xs"
-      border
       @click="handleClick"
       >
       <div class="flex-1">
         <div class="flex gap-xs align-baseline">
           <Text :text="item.code" color="black" size="normal" weight="semibold" class="text-uppercase" />
-          <Text v-if="item.usageLimit" :text="`(Còn ${ Math.max(item.usageLimit - item.usedCount, 0) })`" size="xs" />
+          <Text v-if="item.usageLimit" :text="`(Còn ${ Math.max(item.usageLimit - item.usedCount, 0) })`" size="xs" limit="1" />
         </div>
         <Text :text="item.description" size="xs" limit="2" class="voucher-item1-desc"/>
         <Text :text="`HSD: ${formatDateTime(item.endDate,'vi-VN', false)}`" size="xs" />

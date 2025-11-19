@@ -4,7 +4,7 @@ import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
 
 export const useProductMostOrder = () => {
   const listProductMostOrder = ref<ProductDTO[]>([]);
-  const limitProductMostOrder = ref<number>(10);
+  const limitProductMostOrder = ref<number>(12);
 
   const fetchListProductMostOrder = async () => {
     try {

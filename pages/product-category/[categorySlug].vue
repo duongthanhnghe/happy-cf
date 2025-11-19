@@ -1,65 +1,44 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue"
 import { ROUTES } from '@/shared/constants/routes'
 import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
+import { IMAGE_AUTH_LOGIN } from '@/const/image'
+import { useDisplayStore } from "@/stores/shared/useDisplayStore";
 import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
+import { onBeforeUnmount } from 'vue';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
 })
 
 const storeCategoryMain = useCategoryMainStore()
-const valueChangePage = ref<boolean|null>(null)
+const storeDisplay = useDisplayStore()
 const detail: CategoryProductDTO | null = storeCategoryMain.getProductCategoryDetail
 
-watch(valueChangePage, (newVal) => {
-  if(newVal !== null) storeCategoryMain.handleChangePage(newVal)
-  valueChangePage.value = null
+onBeforeUnmount(() => {
+  storeCategoryMain.resetFilter()
 })
 </script>
 
 <template>
-  <template v-if="detail">
-    <div class="container pt-section pb-section" >
-      <h1 v-if="detail.categoryName">{{ detail.categoryName }}</h1>
-      <h1 v-else></h1>
-      <p>{{ detail.description }}</p>
-      <v-radio-group v-if="storeCategoryMain.getListCategoryChildren.length > 1" v-model="storeCategoryMain.filterCategory">
-        <v-radio
-          v-for="item in [{ id: '', categoryName: detail.categoryName }, ...storeCategoryMain.getListCategoryChildren]"
-          :key="item.id"
-          :label="item.categoryName"
-          :value="item.id"
-        />
-      </v-radio-group>
-      <v-select
-        v-model="storeCategoryMain.filterType"
-        :items="[{title: 'Moi nhat',value:''},...storeCategoryMain.filterArray]"
-        item-title="title"
-        item-value="value"
-        hide-details
-      />
-      <v-range-slider
-        v-model="storeCategoryMain.rangePrice"
-        step="10"
-        :min="0"
-        :max="storeCategoryMain.maxPrice"
-        thumb-label="always"
-      ></v-range-slider>
+  <template v-if="detail" >
+    <Breadcrumb :heading="detail.categoryName" :description="`${storeCategoryMain.getTotalItems} Ket qua`" :image="IMAGE_AUTH_LOGIN">
+      <slot v-if="storeDisplay.isMobileTable">
+        <div id="filter-product">
+          <ProductFilterMobile :categoryName="detail.categoryName" />
+        </div>
+      </slot>
+    </Breadcrumb>
 
-      <LoadingData v-if="storeCategoryMain.loadingData && storeCategoryMain.getListItems === null" />
-      <div v-else-if="storeCategoryMain.getListItems && storeCategoryMain.getListItems.length > 0" class="row row-xs">
-        <div v-for="item in storeCategoryMain.getListItems" :key="item.id" class="mb-sm col-6 col-md-4">
-          <ProductItemTemplate1 :product="item" background="bg-white" />
+    <div class="container container-xxl" >
+      <div v-if="storeDisplay.isLaptop" class="flex gap-md align-start">
+        <ProductFilterPC :categoryName="detail.categoryName" />
+        <div class="flex-1 pt-section pb-section">
+          <ProductCategoryMain :detail="detail"/>
         </div>
       </div>
-      <div v-else>
-        <NoData />
-      </div>
-
-      <template v-if="storeCategoryMain.getTotalPages && storeCategoryMain.getTotalPages.length > 1">
-        <div class="flex gap-sm justify-end">
-          <Pagination :totalPages="storeCategoryMain.getTotalPages" v-model:page="storeCategoryMain.page" v-model:valueChangePage="valueChangePage" />
+      <template v-else>
+        <div class="pt-section pb-section">
+          <ProductCategoryMain :detail="detail"/>
         </div>
       </template>
     </div>

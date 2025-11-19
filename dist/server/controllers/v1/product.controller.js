@@ -301,6 +301,24 @@ export const getProductsByCategory = async (req, res) => {
         const limit = Number(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const total = await ProductEntity.countDocuments(match);
+        let sortQuery = { updatedAt: -1 }; // default
+        const sort = req.query.sort;
+        switch (sort) {
+            case "price_desc":
+                sortQuery = { price: -1 };
+                break;
+            case "price_asc":
+                sortQuery = { price: 1 };
+                break;
+            case "discount":
+                sortQuery = {
+                    discountValue: -1
+                };
+                break;
+            case "popular":
+                sortQuery = { amountOrder: -1 };
+                break;
+        }
         const products = await ProductEntity.aggregate([
             { $match: match },
             {
@@ -309,7 +327,8 @@ export const getProductsByCategory = async (req, res) => {
                     priceDiscount: { $toDouble: "$priceDiscounts" }
                 }
             },
-            { $sort: { updatedAt: -1 } },
+            { $sort: sortQuery },
+            // { $sort: { updatedAt: -1 } },
             { $skip: skip },
             { $limit: limit }
         ]);
