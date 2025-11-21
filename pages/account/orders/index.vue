@@ -4,7 +4,6 @@ import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore
 
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
-  headerTypeLeft: ROUTES.PUBLIC.ACCOUNT.headerTypeLeft,
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
 })
 

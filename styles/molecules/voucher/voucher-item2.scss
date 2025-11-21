@@ -1,0 +1,14 @@
+@use "@/assets/variables" as *;
+
+.voucher-item2 {
+ text-align: center;
+ position: relative;
+ &-title {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  translate: 0 -50%;
+ }
+}

@@ -37,7 +37,16 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
 </script>
 
 <template>
-  <Popup :children="storeCart.isTogglePopup ? true: false" :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" footerFixed align="bottom" popupId="popup-edit" :modelValue="storeCart.getPopupState('edit')" :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" @update:modelValue="storeCart.togglePopup('edit', false)">
+  <Popup 
+    :children="storeCart.isTogglePopup ? true: false" 
+    :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" 
+    :bodySpace="false" footerFixed align="bottom" 
+    popupId="popup-edit" 
+    :modelValue="storeCart.getPopupState('edit')" 
+    :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" 
+    bodyClass="bg-gray2" 
+    @update:modelValue="storeCart.togglePopup('edit', false)"
+  >
     <template #body v-if="detail">
       <div class="popup-detail-product overflow-hidden">
         <div class="popup-detail-product-image">

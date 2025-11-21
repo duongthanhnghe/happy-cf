@@ -3,7 +3,6 @@ import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
   // layout: ROUTES.PUBLIC.MENU_ACCOUNT.layout,
-  headerTypeLeft: ROUTES.PUBLIC.MENU_ACCOUNT.headerTypeLeft,
   middleware: ROUTES.PUBLIC.MENU_ACCOUNT.middleware,
 })
 

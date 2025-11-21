@@ -16,7 +16,6 @@ import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 definePageMeta({
   middleware: ROUTES.PUBLIC.CART.middleware,
   layout: ROUTES.PUBLIC.CART.layout,
-  headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
 })
 
 const store = useCartStore();
@@ -95,12 +94,12 @@ onBeforeUnmount(() => {
       
         <!-- POINT AND VOUCHER -->
         <template v-if="!storeDisplay.isMobileTable">
-          <CartPointPC :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint"/>
+          <CartPointPC v-if="storeAccount.getUserId" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint"/>
           <CartVoucherPC />
         </template>
 
         <!-- PAYMENT INFO -->
-        <CartPaymentInfo :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint"/>
+        <CartPaymentInfo :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint || 0"/>
       </v-form>
       <div v-else class="text-center">
         <Heading weight="semibold" class="text-center">Gio hang</Heading>
@@ -114,7 +113,7 @@ onBeforeUnmount(() => {
 
   <template v-if="storeDisplay.isMobileTable">
     <!-- POPUP USE POINT -->
-    <CartPointMobile :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" />
+    <CartPointMobile v-if="storeAccount.getUserId" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" />
     <!-- POPUP CHOOSE VOUCHER -->
     <CartVoucherMobile />
   </template>

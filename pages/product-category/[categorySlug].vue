@@ -3,15 +3,18 @@ import { ROUTES } from '@/shared/constants/routes'
 import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
 import { IMAGE_AUTH_LOGIN } from '@/const/image'
 import { useDisplayStore } from "@/stores/shared/useDisplayStore";
-import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
 import { onBeforeUnmount } from 'vue';
+import { useAccountStore } from '@/stores/client/users/useAccountStore';
+import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
+  headerTypeLeft: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.headerTypeLeft,
 })
 
 const storeCategoryMain = useCategoryMainStore()
 const storeDisplay = useDisplayStore()
+const storeAccount = useAccountStore();
 const detail: CategoryProductDTO | null = storeCategoryMain.getProductCategoryDetail
 
 onBeforeUnmount(() => {
@@ -22,9 +25,12 @@ onBeforeUnmount(() => {
 <template>
   <template v-if="detail" >
     <Breadcrumb :heading="detail.categoryName" :description="`${storeCategoryMain.getTotalItems} Ket qua`" :image="IMAGE_AUTH_LOGIN">
-      <slot v-if="storeDisplay.isMobileTable">
-        <div id="filter-product">
+      <slot>
+        <div v-if="storeDisplay.isMobileTable" id="filter-product">
           <ProductFilterMobile :categoryName="detail.categoryName" />
+        </div>
+        <div v-if="storeCategoryMain.getListCategoryChildren.length > 0" class="mt-ms">
+          <ProductChildByCategory :list="storeCategoryMain.getListCategoryChildren" />
         </div>
       </slot>
     </Breadcrumb>
@@ -43,4 +49,6 @@ onBeforeUnmount(() => {
       </template>
     </div>
   </template>
+
+  <PopupManageAddress v-if="storeAccount.getUserId" />
 </template>

@@ -10,12 +10,15 @@ export const useWishlistStore = defineStore("WishlistStore", () => {
   const dataList = ref<WishlistItem[]|null>(null)
   const wishlistIds  = reactive(new Set<string>())
   const loadingData = ref<boolean>(false)
+  const loaded = ref<boolean>(false);
 
   const utils = useWishlistUtils(
     dataList,
     wishlistIds,
     loadingData,
     storeAccount.getUserId,
+    loaded,
+    () => { loaded.value = true }
   );
 
   const getItems = computed(() => dataList.value);
@@ -24,6 +27,7 @@ export const useWishlistStore = defineStore("WishlistStore", () => {
     dataList,
     wishlistIds,
     loadingData,
+    loaded,
     ...utils,
     getItems,
   };

@@ -12,10 +12,12 @@ const props = defineProps<{
       <Button v-if="storeCategoryMain.hasFilter" icon="filter_alt_off" color="secondary" @click.prevent="storeCategoryMain.resetFilter()" />
     </template>
     <template #body>
-      <Text text="Danh muc" color="black" size="normal" weight="semibold" class="mb-sm" />
-      <ProductFilterCategory :categoryName="props.categoryName"/>
+      <template v-if="storeCategoryMain.getListCategoryChildren.length > 0">
+        <Text text="Danh muc" color="black" size="normal" weight="semibold" class="mt-sm mb-sm" />
+        <ProductFilterCategory :categoryName="props.categoryName" :list="storeCategoryMain.getListCategoryChildren"/>
+      </template>
 
-      <Text text="Khoang gia" color="black" size="normal" weight="semibold" class="mt-sm mb-md" />
+      <Text text="Khoang gia" color="black" size="normal" weight="semibold" class="mt-md mb-md" />
       <ProductFilterPrice />
     </template>
     <template #footer>

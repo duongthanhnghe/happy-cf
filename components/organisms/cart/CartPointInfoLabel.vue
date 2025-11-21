@@ -4,10 +4,10 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <Card border class="rd-xl flex justify-between mt-sm">
+  <Card border class="rd-xl flex justify-between mt-sm cart-point-info-label">
     Tang diem tuy lich
     <span class="flex gap-xs weight-semibold">
-      <Button size="xs" color="secondary" icon="diamond_shine"/>
+      <Button tag="span" size="xs" color="secondary" icon="diamond_shine"/>
       {{ props.getTotalPoint }}
     </span>
   </Card>

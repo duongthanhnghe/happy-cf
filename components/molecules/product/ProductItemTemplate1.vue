@@ -29,6 +29,7 @@ const props = defineProps<{
   product: ProductDTO
   listView?: Boolean
   background?: 'bg-white' | 'bg-gray7' | ''
+  variant?: 'card'
 }>()
 
 const storeCart = useCartStore()
@@ -44,7 +45,7 @@ const handleShowAction = () => {
 </script>
 
 <template>
-<div v-if="product && product.isActive" :class="['product-template1-item', background ,listView ? 'product-template1-listView' : '' ,storeCart.getTemplate1Amount(product.id) != 0 ? 'active' : '']">
+<div v-if="product && product.isActive" :class="['product-template1-item', `variant-${variant}`, background ,listView ? 'product-template1-listView' : '' ,storeCart.getTemplate1Amount(product.id) != 0 ? 'active' : '']">
   <div class="product-template1-image">
     <NuxtLink v-if="product.slug" :to="`${ROUTES.PUBLIC.PRODUCT.children?.DETAIL?.path}/${product.slug}`">
       <img v-lazy="product.image" :alt="product.productName" class="product-template1-image-src">

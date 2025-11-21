@@ -6,7 +6,6 @@ import type { User } from '@/server/types/dto/v1/user.dto';
 
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
-  headerTypeLeft: ROUTES.PUBLIC.ACCOUNT.headerTypeLeft,
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
 })
 

@@ -20,6 +20,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  bodySpace: {
+    type: Boolean,
+    default: true,
+  },
   popupId: {
     type: String,
   },
@@ -74,11 +78,11 @@ const handleClosePopup = () => {
               <slot name="header"></slot>
             </div>
           </div>
-          <div :class="`portal-popup-body scroll-hide ${bodyClass} ${footerFixed ? 'flex flex-direction-column justify-between fixed':''}`">
-            <div class="portal-popup-box">
+          <div :class="`portal-popup-body scroll-hide ${bodyClass} ${bodySpace ? '':'pd-0'} ${footerFixed ? 'flex flex-direction-column justify-between fixed':''}`">
+            <div :class="`portal-popup-box ${bodySpace ? '':'pd-0'}`">
               <slot name="body"></slot>
             </div>
-            <div :class="slotContent ? 'portal-popup-footer':''">
+            <div :class="slotContent ? `portal-popup-footer ${bodySpace ? '':'mg-0 bottom-0'}`:''">
               <slot name="footer">
               </slot>
             </div>
@@ -88,10 +92,10 @@ const handleClosePopup = () => {
       </template>
       <template v-else>
         <div :class="`portal-popup-center ${align}`" @click.prevent="handleClosePopup">
-        <div :class="`portal-popup-center-body scroll-hide ${bodyClass} ${footerFixed ? 'fixed':''}`" @click.stop>
+        <div :class="`portal-popup-center-body scroll-hide ${bodyClass} ${bodySpace ? '':'pd-0'} ${footerFixed ? 'fixed':''}`" @click.stop>
           <Button v-if="!storeDisplay.isMobileTable" color="secondary" :size="storeDisplay.isMobileTable ? 'sm':'md'" class="portal-popup-center-close" icon="close" @click="handleClosePopup" />
-          <div v-else class="portal-popup-badge" @click="handleClosePopup"></div>
-          <Text v-if="popupHeading" :size="storeDisplay.isMobileTable ? 'md':'2xl'" weight="semibold" :text="popupHeading" />
+          <div v-if="storeDisplay.isMobileTable && align === 'bottom'" class="portal-popup-badge" @click="handleClosePopup"></div>
+          <Text v-if="popupHeading" :size="storeDisplay.isMobileTable ? 'lg':'xl'" align="center" weight="semibold" :text="popupHeading" />
           <div class="portal-popup-header-actions flex gap-xs">
             <slot name="header"></slot>
           </div>

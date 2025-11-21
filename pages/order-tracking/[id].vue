@@ -6,7 +6,6 @@ import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.ORDER.middleware,
-  headerTypeLeft: ROUTES.PUBLIC.ORDER_TRACKING.headerTypeLeft,
 })
 
 const route = useRoute()

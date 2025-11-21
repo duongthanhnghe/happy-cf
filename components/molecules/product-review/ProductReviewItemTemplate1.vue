@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import '@/styles/molecules/order/order-item-template1.scss'
-import {
-  formatCurrency, formatDateTime
-} from '@/utils/global'
-import type { ProductReviewWithProductDTO } from '@/server/types/dto/v1/product-review.dto';
+import { formatDateTime } from '@/utils/global'
 import { useProductReviewByUserStore } from '@/stores/client/product-review/useProductReviewByUserStore';
 import { PRODUCT_REVIEW_STATUS } from '@/shared/constants/product-review-status'
+import type { ProductReviewWithProductDTO } from '@/server/types/dto/v1/product-review.dto';
 
 const store = useProductReviewByUserStore();
 const props = defineProps<{

@@ -4,7 +4,6 @@ import { useProductReviewByUserStore } from '@/stores/client/product-review/useP
 
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
-  headerTypeLeft: ROUTES.PUBLIC.ACCOUNT.headerTypeLeft,
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
 })
 

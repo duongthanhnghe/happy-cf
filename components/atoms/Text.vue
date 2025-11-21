@@ -8,6 +8,7 @@
       color ? `text-color-${color}` : '',
       limit ? `text-limit text-limit-${limit}` : '',
       lineHeight ? `line-height-${lineHeight}` : '',
+      hover ? `transition-0d3 text-hover-${hover}` : '',
       textClass
     ]"
   >
@@ -20,7 +21,7 @@
 
 const props = defineProps({
   text: {
-    type: String,
+    type: [String, Number],
     default: '',
   },
   tag: {
@@ -31,7 +32,7 @@ const props = defineProps({
   size: {
     type: String,
     default: '',
-    validator: (value) => ['xs', 'sm','normal', 'md', 'lg', 'xl', '2xl',''].includes(value)
+    validator: (value) => ['xs','base','normal', 'md', 'lg', 'xl', 'xxl',''].includes(value)
   },
   lineHeight: {
     type: String,
@@ -39,6 +40,11 @@ const props = defineProps({
     validator: (value) => ['1', '1d2', '1d4', '1d6', '1d8', '2',''].includes(value)
   },
   color: {
+    type: String,
+    default: '',
+    validator: (value) => ['','white', 'black', 'primary', 'danger', 'green', 'gray','gray2','gray4','gray5','gray8'].includes(value)
+  },
+  hover: {
     type: String,
     default: '',
     validator: (value) => ['','white', 'black', 'primary', 'danger', 'green', 'gray','gray2','gray4','gray5','gray8'].includes(value)

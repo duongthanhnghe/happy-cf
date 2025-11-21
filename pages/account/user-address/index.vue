@@ -6,7 +6,6 @@ import { useLocationWatchers } from '@/composables/shared/location/useLocationWa
 
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
-  headerTypeLeft: ROUTES.PUBLIC.ACCOUNT.headerTypeLeft,
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
 })
 

@@ -24,10 +24,10 @@ const breakpoints = {
   1200: { slidesPerView: 4, spaceBetween: 24 }
 }
 
-await storeBanner.fetchBannerStore()
-await storeProductSale.fetchProductStore()
-await storeProductMostOrder.fetchProductStore()
-await storeNewsLatest.fetchPostStore()
+if(storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
+if(storeProductSale.getListProductSales.length === 0) await storeProductSale.fetchProductStore()
+if(storeProductMostOrder.getListProductMostOrder.length === 0) await storeProductMostOrder.fetchProductStore()
+if(storeNewsLatest.getListNewsLatest.length === 0) await storeNewsLatest.fetchPostStore()
 
 </script>
 

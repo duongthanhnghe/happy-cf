@@ -11,7 +11,7 @@ const storeLocation = useLocationStore();
 const storePaymentStatus = usePaymentStatusStore();
 
 const props = defineProps<{
-  userId: string;
+  userId: string | null;
 }>();
 </script>
 <template>

@@ -171,4 +171,15 @@
       }
     }
   }
+  &-item.variant-card {
+    border-radius: $rd-lg;
+    padding: 0.5rem;
+    background-color: $cl-white;
+    box-shadow: $cl-shadow-1;
+    .product-template1 {
+      &-content {
+        padding: 1rem 0.75rem 0.75rem 0.75rem;
+      }
+    }
+  }
 }

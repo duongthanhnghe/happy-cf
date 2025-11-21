@@ -8,6 +8,8 @@ export const useWishlistUtils = (
   wishlistIds: Reactive<Set<string>>,
   loadingData: Ref<boolean>,
   userId: string,
+  loaded: Ref<boolean>,
+  onLoaded?: () => void 
 ) => {
 
   const loadItems = async () => {
@@ -47,12 +49,18 @@ export const useWishlistUtils = (
   const isInWishlist = (productId: string) => wishlistIds.has(productId)
 
   const fetchWishlist = async (userId: string) => {
+    if(!userId) return
+    loaded.value = false
+
     const list = await productsAPI.getWishlistByUserId(userId)
 
     if(list.data?.length === 0) return
     dataList.value = list.data
     wishlistIds.clear()
     list.data?.forEach(item => wishlistIds.add(item.product.id))
+
+    loaded.value = true
+    if(onLoaded) onLoaded()
   }
 
   watch(() => userId, id => {

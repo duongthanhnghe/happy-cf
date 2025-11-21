@@ -1,0 +1,30 @@
+<script lang="ts" setup>
+import LabelInput from '@/components/atoms/LabelInput.vue';
+import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore';
+import { useDisplayStore } from '@/stores/shared/useDisplayStore';
+
+const store = useProductDetailStore();
+const storeCart = useCartStore();
+const storeDisplay = useDisplayStore()
+
+</script>
+<template>
+  <Popup 
+  v-model="store.isTogglePopupNote" 
+  variant="modal-center" 
+  bodyClass="bg-gray6" 
+  :align="storeDisplay.isLaptop ? 'center':'bottom'"
+  :popupHeading="storeDisplay.isLaptop ? 'Ghi chu don hang':''"
+  >
+    <template #body >
+        <LabelInput class="weight-medium"/>
+        <v-textarea placeholder="Them luu y" class="mb-0" :rows="5" v-model="storeCart.note" :hideDetails="true"/>
+    </template>
+    <template #footer >
+      <div class="mt-sm">
+        <Button color="black" class="w-full" label="Xac nhan" @click.prevent="store.handleTogglePopupNote(false)"/>
+      </div>
+    </template>
+  </Popup>
+</template>

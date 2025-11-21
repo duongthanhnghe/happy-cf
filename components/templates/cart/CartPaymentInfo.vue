@@ -6,7 +6,7 @@ import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 const store = useCartStore();
 const storeDisplay = useDisplayStore()
 const props = defineProps<{
-  userId: string;
+  userId: string | null;
   balancePoint: number;
 }>();
 </script>

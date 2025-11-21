@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue"
+import './index.scss';
 import { ROUTES } from '@/shared/constants/routes'
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
+import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore';
 import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
 
 definePageMeta({
@@ -9,34 +10,24 @@ definePageMeta({
 })
 
 const store = useProductDetailStore()
-const valueChangePage = ref<boolean|null>(null)
+const storeProductSale = useProductSaleStore()
 const detail: ProductDTO | null = store.getDetailProduct
-const breakpoints = {
-  320: { slidesPerView: 2.3, spaceBetween: 10 },
-  640: { slidesPerView: 3, spaceBetween: 10 },
-  1024: { slidesPerView: 3, spaceBetween: 10 },
-  1200: { slidesPerView: 4, spaceBetween: 24 }
-}
 
-watch(valueChangePage, (newVal) => {
-  if(newVal !== null) store.handleChangePage(newVal)
-  valueChangePage.value = null
-})
+if(storeProductSale.getListProductSales.length === 0) await storeProductSale.fetchProductStore()
 
 </script>
 
 <template>
-  <div v-if="detail" class="container pt-section pb-section" >
-    <ProductDetail />
-
-    <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" />
-
-    <ListProductRelated :items="store.getListProductRelated" :loading="store.loadingListRelated" :breakpoints="breakpoints" headingText="Gợi ý lien quan" />
-
-    <ListReviewByProduct :items="store.getListReviewProduct" :loading="store.loadingListReviews" />
-    <div v-if="store.getTotalPages && store.getTotalPages.length > 1" class="flex gap-sm justify-end">
-      <Pagination :totalPages="store.getTotalPages" v-model:page="store.pageReview" v-model:valueChangePage="valueChangePage" />
+  <template v-if="detail">
+    <div class="container">
+      <BreadcrumbDefault />
     </div>
-  </div>
+    <div class="product-detail-body">
+      <ProductDetail />
+      <SectionProductListSwiper v-if="store.getListProductRelated.length > 0" :items="store.getListProductRelated" :loading="store.loadingListRelated" headingText="Gợi ý lien quan" class="pt-section pb-section" />
+      <ListReviewByProduct />
+      <SectionProductListSwiper v-if="storeProductSale.getListProductSales.length > 0" :items="storeProductSale.getListProductSales" :loading="storeProductSale.loading" headingText="Dang khuyen mai" class="pt-section pb-section" />
+    </div>
+  </template>
   <NoData v-else />
 </template>

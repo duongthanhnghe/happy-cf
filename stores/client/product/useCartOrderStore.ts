@@ -83,7 +83,7 @@ export const useCartStore = defineStore("Cart", () => {
     const categoryIds = [...new Set(state.cartListItem.value.map(item => item.categoryId || ''))];
     
     if (categoryIds && state.totalPriceCurrent.value && route.path === ROUTES.PUBLIC.CART.path) {
-      voucher.listVoucher(userId, categoryIds, route.path);
+      voucher.listVoucher(userId, categoryIds);
     }
   };
 

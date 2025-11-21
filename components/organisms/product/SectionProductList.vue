@@ -88,7 +88,8 @@ watch(mappedData, (val) => {
           >
             <ProductItemTemplate1 
               :product="item" 
-              :listView="storeDisplay.isLaptop ? false : true" 
+              :listView="storeDisplay.isLaptop ? false : true"
+              :variant="storeDisplay.isLaptop ? 'card':''"
             />
           </div>
           <template #load-more="{ props }">

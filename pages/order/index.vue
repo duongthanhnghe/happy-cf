@@ -78,5 +78,5 @@ const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProd
     </v-tabs-window>
   </div>
 
-  <PopupManageAddress v-if="storeAccount.getDetailValue?.id" />
+  <PopupManageAddress v-if="storeAccount.getUserId" />
 </template>

@@ -42,7 +42,6 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   const isTogglePopupFilter = ref(false)
   const valueChangePage = ref<boolean|null>(null)
 
-
   watch(getProductByCategoryApi, (newValue) => {
     if (newValue && newValue.data) {
       listItems.value = newValue.data
@@ -100,7 +99,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     isTogglePopupFilter.value = false
     page.value = '1'
     filterType.value = 'discount'
-    maxPrice.value = 0
+    maxPrice.value = listItems.value ? Math.max(...listItems.value.map(item => item.price)) : 0
     rangePrice.value = [0, maxPrice.value]
     filterCategory.value = ''
   }

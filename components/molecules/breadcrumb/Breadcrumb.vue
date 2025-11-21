@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import '@/styles/molecules/breadcrumb/breadcrumb.scss'
-import { useDisplayStore } from '@/stores/shared/useDisplayStore'
-
+  import '@/styles/molecules/breadcrumb/breadcrumb.scss'
+  import { useDisplayStore } from '@/stores/shared/useDisplayStore'
+  
   interface Breadcrumb {
     heading: string
     description?: string
@@ -18,7 +18,7 @@ import { useDisplayStore } from '@/stores/shared/useDisplayStore'
     <div v-if="props.image" class="breadcrumb-image">
       <img :src="props.image" :alt="props.heading">
     </div>
-    <div class="container container-xxl pt-md pb-md">
+    <div class="container container-xxl pt-md pb-section">
       <Heading tag="h1" :size="storeDisplay.isLaptop ? '2xl':'xl'" weight="semibold" class="breadcrumb-heading black">
         {{ props.heading }}
       </Heading>

@@ -17,7 +17,17 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
 </script>
 
 <template>
-  <Popup :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" align="bottom" popupId="popup-order" :modelValue="storeCart.getPopupState('order')" :popupHeading="storeDisplay.isMobileTable ? '':'Them gio hang'" bodyClass="pt-0 pl-0 pr-0 bg-gray2" footerFixed @update:modelValue="storeCart.togglePopup('order', false)" >
+  <Popup 
+    :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" 
+    :bodySpace="false" 
+    align="bottom" 
+    popupId="popup-order" 
+    :modelValue="storeCart.getPopupState('order')" 
+    :popupHeading="storeDisplay.isMobileTable ? '':'Them gio hang'" 
+    bodyClass="bg-gray2" 
+    footerFixed 
+    @update:modelValue="storeCart.togglePopup('order', false)"
+  >
       <template #header >
         <Button v-if="detail?.id" :size="storeDisplay.isMobileTable ? 'sm':'md'" :color="storeWishlist.isInWishlist(detail?.id) ? 'black' : 'secondary'" icon="favorite" @click="storeProductDetail?.toggleLike(detail?.id)"/>
       </template>

@@ -13,11 +13,14 @@ const props = withDefaults(defineProps<{
 
 <template>
   <div v-if="props.loading && props.items.length === 0">Loading...</div>
-  <div class="flex gap-sm overflow-auto" v-else>
-    <VoucherItemTemplate1
-      v-for="voucher in props.items"
-      :key="voucher.code"
-      :item="voucher"
-    />
+  <div class="flex align-center gap-sm mt-ms" v-else>
+    <Text text="Mã giảm giá" color="gray5" />
+    <div class="flex flex-wrap gap-xs">
+      <VoucherItemTemplate2
+        v-for="voucher in props.items"
+        :key="voucher.code"
+        :item="voucher"
+      />
+    </div>
   </div>
 </template>

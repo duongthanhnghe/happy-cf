@@ -15,7 +15,14 @@ onMounted(() => {
 </script>
 <template>
 
-<Popup popupId="popup-cart" v-model="store.isTogglePopup" popupHeading="Gio hang" bodyClass="bg-gray6 popup-cart-body" footerFixed align="right">
+<Popup
+    popupId="popup-cart" 
+    v-model="store.isTogglePopup" 
+    popupHeading="Gio hang" 
+    bodyClass="bg-gray6 popup-cart-body" 
+    footerFixed 
+    align="right"
+  >
   <template #header v-if="store.getCartListItem && store.getCartListItem.length > 0">
     <Button icon="remove_shopping_cart" color="secondary" @handleOnClick="store.handleDeleteCartAll" />
   </template>

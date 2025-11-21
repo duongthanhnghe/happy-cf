@@ -4,7 +4,6 @@ import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRew
 
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
-  headerTypeLeft: ROUTES.PUBLIC.ACCOUNT.headerTypeLeft,
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
 })
 

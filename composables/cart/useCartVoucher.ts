@@ -105,7 +105,7 @@ export const useCartVoucher = (
     }
   };
 
-  const listVoucher = async (userId: string, categoryIds: string[], routePath: string) => {
+  const listVoucher = async (userId: string, categoryIds: string[]) => {
     loadingAllVouchers.value = true;
     
     await new Promise(resolve => setTimeout(resolve, 500));
