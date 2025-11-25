@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
 
 <PopupFileManageImage :folderName="folderName+accountStore.getDetailValue?.id" :chooseImage="true" column="col-6 col-md-4"/>
 
-<Popup popupId="popup-update-account" v-model="storeAccountEdit.isTogglePopupUpdate" footerFixed :popupHeading="AUTH_TEXT_UPDATE_INFO" align="right">
+<Popup bodyClass="bg-gray6" v-model="storeAccountEdit.isTogglePopupUpdate" footerFixed :popupHeading="AUTH_TEXT_UPDATE_INFO" align="right">
   <template #body>
     <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
       <AvatarEdit :label="AUTH_TEXT_EDIT_AVATAR" className="mb-md width-200 height-200" @click.prevent="storeFileManage.handleTogglePopup(true)">

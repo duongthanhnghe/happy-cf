@@ -9,7 +9,7 @@ const props = defineProps<{
 
 </script>
 <template>
-  <Popup popupId="popup-list-address" v-model="store.isTogglePopupList" popupHeading="Dia chi" bodyClass="bg-gray2" align="right">
+  <Popup v-model="store.isTogglePopupList" popupHeading="Dia chi" bodyClass="bg-gray6" align="right">
     <template #body>
         <ListManageAddress :idChoose="props.idChoose" />
     </template>

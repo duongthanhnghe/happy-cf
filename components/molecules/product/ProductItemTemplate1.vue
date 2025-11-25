@@ -52,8 +52,10 @@ const handleShowAction = () => {
       <img v-lazy="product.image" :alt="product.productName" class="product-template1-image-src">
     </NuxtLink>
     <client-only>
-      <Button v-if="storeAccount.getUserId && !props.listView && !props.deleteFavorite" class="product-template1-favorite" :color="storeWishlist.isInWishlist(product.id) ? 'black' : 'secondary'" size="xs" icon="favorite" @click="storeProduct.toggleLike(product.id)"/>
-      <Button v-else class="product-template1-favorite" color="secondary" size="sm" icon="delete" @click="storeWishlist.handleDeleteWishlist(product.id)"/>
+      <template v-if="!props.listView">
+        <Button v-if="storeAccount.getUserId && !props.deleteFavorite" class="product-template1-favorite" :color="storeWishlist.isInWishlist(product.id) ? 'black' : 'secondary'" size="xs" icon="favorite" @click="storeProduct.toggleLike(product.id)"/>
+        <Button v-else class="product-template1-favorite" color="secondary" size="sm" icon="delete" @click="storeWishlist.handleDeleteWishlist(product.id)"/>
+      </template>
     </client-only>
     <div v-if="product.amount == 0" class="product-template1-amount">
       {{orderText.textStockNull}}

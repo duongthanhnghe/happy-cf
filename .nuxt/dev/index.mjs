@@ -675,7 +675,8 @@ const _inlineRuntimeConfig = {
     "GOOGLE_CLIENT_ID": "1036928626180-p62cm07r5mtp5gisv2jd433eskrismq6.apps.googleusercontent.com",
     "sepayAccountNo": "04430890101",
     "sepayBankId": "970423",
-    "sepayAccountName": "DUONG THANH NGHE"
+    "sepayAccountName": "DUONG THANH NGHE",
+    "sepayBankName": "Ngân hàng Thương mại Cổ phần Tiên Phong"
   },
   "cloudinaryApiKey": "785428416695536",
   "cloudinaryApiSecret": "w2NE8N4tV-kouwXqO0QYZuF-YW8"

@@ -31,10 +31,10 @@ const bindProps = computed(() =>
       { 'text-color-primary': route.path === item.path }
     ]"
   >
-    <MaterialIcon :name="item.icon" weight="300" size="24" />
+    <MaterialIcon :name="item.icon" weight="light" size="lg-2" />
     <div :class="['flex flex-1 justify-between align-center',{ 'border-bottom-default pb-ms': !props.isLast }]">
       <span>{{ item.label }}</span>
-      <MaterialIcon name="chevron_right" weight="300" size="20" class="text-color-gray5"/>
+      <MaterialIcon name="chevron_right" weight="light" size="lg-2" class="text-color-gray5"/>
     </div>
   </component>
 </template>

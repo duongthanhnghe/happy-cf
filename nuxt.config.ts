@@ -48,6 +48,7 @@ export default defineNuxtConfig({
       sepayAccountNo: process.env.SEPAY_ACCOUNT_NO,
       sepayBankId: process.env.SEPAY_BANK_ID,
       sepayAccountName: process.env.SEPAY_ACCOUNT_NAME,
+      sepayBankName: process.env.SEPAY_BANK_NAME,
     }
   },
   app: {

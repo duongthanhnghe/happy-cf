@@ -15,44 +15,64 @@ const storeAccount = useAccountStore();
 const storeAccountEdit = useAccountEditStore()
 const storeDisplay = useDisplayStore()
 const user: User = storeAccount.getDetailValue
-const classItem = 'flex gap-sm mb-ms';
+const classItem = storeDisplay.isLaptop ? 'flex gap-sm mb-ms':'bg-white mb-xs pt-ms pb-ms pl-ms pr-ms shadow-1 rd-lg position-relative';
 const classTitle = 'min-width-150';
-
+const infoItems = [
+  { label: 'Họ và tên', value: user.fullname, edit: true },
+  { label: 'Email', value: user.email, edit: false },
+  { label: 'Số điện thoại', value: user.phone, edit: true },
+  { label: 'Giới tính', value: user.gender, edit: true },
+  { label: 'Ngày sinh', value: formatDateTime(user.birthday,'vi-VN',false), edit: true },
+]
 </script>
 <template>
   <Card size="md" :bg="storeDisplay.isMobileTable ? 'gray6':'white'" :heading="ROUTES.PUBLIC.ACCOUNT.children?.INFO.label" :class="storeDisplay.isMobileTable ? 'pd-0':'rd-xl'">
-    <div :class="classItem">
-      <Text text="Họ và tên" color="gray5" :class="classTitle" />
-      <Text :text="user.fullname" color="black" :class="classTitle" />
+
+    <div v-for="(item, index) in infoItems" :key="index" :class="classItem">
+      <Text :text="item.label" color="gray5" :class="classTitle" />
+      <Text :text="item.value" color="black" size="normal" :class="classTitle" />
+      <Button
+        v-if="item.edit && storeDisplay.isMobileTable"
+        color="secondary" size="sm" icon="edit"
+        class="rd-full position-absolute right-1 bottom-1"
+        @click.prevent="storeAccountEdit.handleEditAccount"
+      />
     </div>
-    <div :class="classItem">
-      <Text text="Email" color="gray5" :class="classTitle" />
-      <Text :text="user.email" color="black" :class="classTitle" />
-    </div>
-    <div :class="classItem">
-      <Text text="Số điện thoại" color="gray5" :class="classTitle" />
-      <Text :text="user.phone" color="black" :class="classTitle" />
-    </div>
-    <div :class="classItem">
-      <Text text="Giới tính" color="gray5" :class="classTitle" />
-      <Text :text="user.gender" color="black" :class="classTitle" />
-    </div>
-    <div :class="classItem">
-      <Text text="Ngày sinh" color="gray5" :class="classTitle" />
-      <Text :text="formatDateTime(user.birthday,'vi-VN',false)" color="black" :class="classTitle" />
-    </div>
-    <Button color="gray" label="Cập nhật" class="mt-xs" @click.prevent="storeAccountEdit.handleEditAccount" />
+
+    <Button
+      v-if="storeDisplay.isLaptop"
+      color="gray" label="Cập nhật"
+      class="mt-xs"
+      @click.prevent="storeAccountEdit.handleEditAccount"
+    />
 
     <Text text="Thông tin đăng nhập" color="black" size="md" weight="semibold" class="mb-sm mt-lg" />
+
     <div :class="classItem">
       <Text text="Email" color="gray5" :class="classTitle" />
-      <Text :text="user.email" color="black" :class="classTitle" />
+      <Text :text="user.email" color="black" size="normal" :class="classTitle" />
     </div>
+
     <div :class="classItem">
       <Text text="Mật khẩu" color="gray5" :class="classTitle" />
-      <Text text="••••••••••••••••" color="black" :class="classTitle" />
+      <Text text="••••••••••••••••" color="black" size="normal" :class="classTitle" />
+      <Button
+        v-if="storeDisplay.isMobileTable"
+        color="secondary" size="sm" icon="edit"
+        class="rd-full position-absolute right-1 bottom-1"
+        @click.prevent="storeAccountEdit.handleTogglePopupChangePassword"
+      />
     </div>
-    <Button color="gray" label="Cập nhật" class="mt-xs" @click="storeAccountEdit.handleTogglePopupChangePassword" />
+
+    <Button
+      v-if="storeDisplay.isLaptop"
+      color="gray" label="Cập nhật"
+      class="mt-xs"
+      @click="storeAccountEdit.handleTogglePopupChangePassword"
+    />
+
+    <Text :text="`Tham gia ngay ${formatDateTime(user.membership.joinedAt,'vi-VN',false)}`" color="gray4" align="center" class="mt-sm" />
+
   </Card>
 
   <PopupUpdateAccount />

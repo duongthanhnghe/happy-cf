@@ -103,6 +103,8 @@ declare module 'nuxt/schema' {
    sepayBankId: string,
 
    sepayAccountName: string,
+
+   sepayBankName: string,
   }
 }
 declare module 'vue' {

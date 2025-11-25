@@ -30,7 +30,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 
 </script>
 <template>
-<Popup popupId="popup-change-password" v-model="storeAccountEdit.isTogglePopupChangePassword" :popupHeading="AUTH_TEXT_CHANGE_PASSWORD" align="right">
+<Popup bodyClass="bg-gray6" v-model="storeAccountEdit.isTogglePopupChangePassword" :popupHeading="AUTH_TEXT_CHANGE_PASSWORD" align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
       <LabelInput :label="AUTH_TEXT_PASSWORD_NEW" required/>
