@@ -182,4 +182,18 @@
       }
     }
   }
+  @media (min-width:1025px){
+    &-favorite {
+      right: 12px;
+      top: 12px;
+    }
+    &-delete {
+      left: 12px;
+      top: 12px;
+    }
+    &-plus {
+      right: 12px;
+      bottom: 12px;
+    }
+  }
 }

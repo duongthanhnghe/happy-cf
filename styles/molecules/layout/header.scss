@@ -21,11 +21,11 @@
     height: $space-xl;
     object-fit: cover;
   }
-  &-center {
-    flex: 1;
-    padding: 0 3rem;
-    .portal-control-item {
-      margin-bottom: 0;
+  &-menu {
+    &-href:hover, &-href.active {
+      .button {
+        background-color: rgb(255 255 255 / 20%);
+      }
     }
   }
   &-search {
@@ -56,6 +56,19 @@
       font-size: $fz-xs;
       background-color: $cl-black;
       color: $cl-white;
+    }
+  }
+  @media (min-width: 1920px){
+    &-left, &-right {
+      min-width: 400px;
+    }
+    &-search {
+      &-button {
+        &-toggle {
+          background-color: rgb(255 255 255 / 20%) !important;
+          border-color: rgb(255 255 255 / 10%) !important;
+        }
+      }
     }
   }
 }

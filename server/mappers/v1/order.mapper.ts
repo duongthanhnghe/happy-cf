@@ -109,10 +109,26 @@ export const toOrderListDTO = (orders: Order[]): OrderDTO[] =>
   orders.map(toOrderDTO);
 
 function toCartItemDTO(entity: cartItems): cartItems {
+  let idProduct: any = entity.idProduct;
+
+  // Nếu là string → convert sang objectId
+  if (typeof idProduct === "string") {
+    idProduct = new Types.ObjectId(idProduct);
+  }
+  // Nếu là ObjectId → giữ nguyên
+  else if (idProduct instanceof Types.ObjectId) {
+    // ok giữ nguyên
+  }
+  // Nếu là object → ProductDTO
+  else if (typeof idProduct === "object" && idProduct !== null) {
+    // giữ nguyên object
+  }
+  else {
+    idProduct = new Types.ObjectId()
+  }
+
   return {
-    idProduct: entity.idProduct
-      ? new Types.ObjectId(entity.idProduct)
-      : new Types.ObjectId(),
+    idProduct,
     priceDiscounts: entity.priceDiscounts,
     quantity: entity.quantity,
     note: entity.note || "",
@@ -122,6 +138,7 @@ function toCartItemDTO(entity: cartItems): cartItems {
     finalPriceDiscounts: entity.finalPriceDiscounts,
   };
 }
+
 
 function toSelectedOptionDTO(entity: selectedOptionsPush): selectedOptionsPush {
   return {

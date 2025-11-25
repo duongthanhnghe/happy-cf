@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import { ROUTES } from '@/shared/constants/routes'
 import { useVoucherAll } from "@/composables/voucher/useVoucherAll";
+import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
 })
 
+const storeDisplay = useDisplayStore()
 const { fetchVoucherAll, getVoucherAll, loadingData } = useVoucherAll();
 if(getVoucherAll.value.length === 0) await fetchVoucherAll()
 </script>
 <template>
-  <Card size="md" :heading="ROUTES.PUBLIC.ACCOUNT.children?.WALLET_VOUCHER.label" class="rd-xl">
-    <LoadingData v-if="loadingData" />
+  <Card :bg="storeDisplay.isMobileTable ? 'gray6':'white'" size="md" :heading="ROUTES.PUBLIC.ACCOUNT.children?.WALLET_VOUCHER.label" :class="storeDisplay.isMobileTable ? 'pd-0':'rd-xl'">
+    <LoadingData v-if="loadingData && !getVoucherAll" />
     <div v-else-if="getVoucherAll.length > 0" class="row row-xs has-control">
       <VoucherItemTemplate1
         v-for="voucher in getVoucherAll"

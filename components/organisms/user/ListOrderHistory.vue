@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore';
+import { useStickyObserver } from "@/utils/stickyObserver"
+
 const store = useOrderHistoryStore();
+const { isStuck } = useStickyObserver('tabsSticky')
+
 </script>
 <template>
   <div>
     <v-tabs
       fixed-tabs
       v-model="store.filterStatusOrder"
-      class="bg-white sticky"
+      :class="['sticky sticky-cover-header', isStuck ? 'bg-gray6':'bg-white rd-lg shadow-1']"
     >
       <v-tab
         v-for="item in [{ id: '', name: 'Tất cả' }, ...store.getOrderStatus]"
@@ -16,9 +20,10 @@ const store = useOrderHistoryStore();
         :text="item.name"
       />
     </v-tabs>
+    <div id="tabsSticky" />
 
     <div class="pt-ms pb-ms">
-      <LoadingData v-if="store.loadingData && store.getItems == null" />
+      <LoadingData v-if="store.loadingData && !store.getItems" />
       <template v-else-if="store.getItems?.length">
         <v-infinite-scroll
           height="auto"

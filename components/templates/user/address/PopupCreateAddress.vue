@@ -16,12 +16,15 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 }
 </script>
 <template>
-<Popup popupId="popup-create-address" v-model="store.isTogglePopupAdd" popupHeading="Them dia chi" align="right">
+<Popup 
+  popupId="popup-create-address" 
+  v-model="store.isTogglePopupAdd" 
+  popupHeading="Them dia chi" 
+  footerFixed
+  align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-      <div class="portal-popup-footer">
-        <Button type="submit" color="primary" label="Luu moi" class="w-full" />
-      </div>
+      
         <LabelInput label="Ho va ten" required/>
         <v-text-field v-model="store.formDataItem.fullname" :rules="nullRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
 
@@ -78,6 +81,9 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           <v-radio :label="ADDRESS_TAG.OTHER" :value="ADDRESS_TAG.OTHER"></v-radio>
         </v-radio-group>
     </v-form>
+  </template>
+  <template #footer>
+    <Button type="submit" color="primary" label="Luu moi" class="w-full" />
   </template>
 </Popup>
 </template>

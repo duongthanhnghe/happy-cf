@@ -14,11 +14,10 @@ export const useProductReviewUtils = (
   defaultForm: SubmitProductReviewBody,
   formDataItem: Reactive<SubmitProductReviewBody>,
   ratingNumber: Ref<number>,
-  loadingData: Ref<boolean>,
   userId: string,
 ) => {
 
-  const { getListReview, fetchListReview } = useProductReviewByUser()
+  const { getListReview, fetchListReview, loadingData } = useProductReviewByUser()
   const { getDetailReview, fetchDetailReview } = useProductReviewDetail()
 
   async function load({ done }: { done: (status: 'ok' | 'empty') => void }) {
@@ -50,14 +49,13 @@ export const useProductReviewUtils = (
 
   const getApiListData = async () => {
     if(!userId) return
-    loadingData.value = true
     await fetchListReview(userId, statusFilter.value,1, limit)
     if(getListReview.value) items.value = getListReview.value
-    loadingData.value = false
   }
 
   watch(() => statusFilter.value, () => {
     items.value = null
+    loadingData.value = true
     getApiListData()
   })
 
@@ -101,5 +99,6 @@ export const useProductReviewUtils = (
     handleTogglePopupSubmit,
     submitReview,
     handleResetForm,
+    loadingData,
   };
 };

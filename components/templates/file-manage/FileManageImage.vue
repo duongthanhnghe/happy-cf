@@ -37,7 +37,7 @@ const handleFileChange = (event: Event) => {
         <MaterialIcon v-if="store.txtSearch !== ''" @click="store.handleCancelSearch(props.folderName)" name="cancel" size="24" class="search-input-cancel" />
       </div>
       <div class="button-upload-file">
-        <v-file-input ref="inputUploadFile" v-model="store.file" label="Chon hinh anh" :rules="store.imageRules" chips accept=".jpg, .jpeg, .png" @change="handleFileChange"></v-file-input>
+        <v-file-input ref="inputUploadFile" v-model="store.file" label="Chon hinh anh" :rules="store.imageRules" chips accept=".jpg, .jpeg, .png, .avif" @change="handleFileChange"></v-file-input>
         <Button color="black" label="Upload file" :shadow="true" />
       </div>
     </div>

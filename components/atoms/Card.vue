@@ -23,7 +23,7 @@ const props = defineProps({
   bg: {
     type: String,
     default: 'white',
-    validator: (value) => ['white', 'black', 'primary', 'danger', 'green', 'gray','gray2','gray4','gray5','gray8'].includes(value)
+    validator: (value) => ['white', 'black','black2', 'primary', 'danger', 'green', 'gray','gray2','gray4','gray5','gray6','gray8'].includes(value)
   },
   border: {
     type: Boolean,

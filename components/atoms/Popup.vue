@@ -73,7 +73,7 @@ const handleClosePopup = () => {
         <div class="portal-popup-main">
           <div class="portal-popup-header">
             <Button color="secondary" class="portal-popup-close" icon="arrow_back" @click="handleClosePopup" />
-            <Text v-if="popupHeading" :size="storeDisplay.isMobileTable ? 'md':'lg'" weight="medium" :text="popupHeading" />
+            <Text v-if="popupHeading" :size="storeDisplay.isMobileTable ? 'md':'lg'" weight="medium" :text="popupHeading" limit="1"/>
             <div class="portal-popup-header-actions flex gap-xs">
               <slot name="header"></slot>
             </div>

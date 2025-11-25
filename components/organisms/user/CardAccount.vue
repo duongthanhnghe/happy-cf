@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { watch, watchEffect } from 'vue';
 import '@/styles/organisms/user/section-account.scss'
+import { watch, watchEffect } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { useMembershipStore } from '@/stores/shared/useMembershipStore'
 import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
+import { formatCurrency } from '@/utils/global';
 
 const storeAccount = useAccountStore()
 const storeMembership = useMembershipStore()
@@ -43,7 +44,7 @@ watchEffect(() => {
               </div>
             </div>
             <div class="flex gap-sm">
-              <Button @click.prevent="storeHistoryReward.handleTogglePopup(true)" color="secondary" :label="`${storeAccount.getDetailValue?.membership.balancePoint || 0}`" icon="diamond_shine" class="information-account-point" size="sm" />
+              <Button @click.prevent="storeHistoryReward.handleTogglePopup(true)" color="secondary" :label="`${formatCurrency(storeAccount.getDetailValue?.membership.balancePoint).replace('đ','') || 0}`" icon="diamond_shine" class="information-account-point" size="sm" />
               <Button @click.prevent="storeAccount.handleTogglePopupBarcode(true)" :border="false" color="gray" icon="qr_code_scanner" size="sm"/>
             </div>
           </div>
@@ -55,7 +56,7 @@ watchEffect(() => {
           <div v-else class="mt-md">
             <template v-if="storeAccount.getInformationMembershipLevel">
               <div class="text-size-normal weight-semibold mb-xs">
-                {{ storeAccount.getDetailValue?.membership.point }}
+                {{ formatCurrency(storeAccount.getDetailValue?.membership.point).replace('đ','') }}
               </div>
               <div class="information-account-process">
                 <div class="information-account-process-percent" :style="{width: (storeAccount.getDetailValue?.membership.point / (storeAccount.getInformationMembershipLevel?.nextLevel?.minPoint || 1) * 100).toFixed(2) + '%'
@@ -63,13 +64,11 @@ watchEffect(() => {
                 <div class="information-account-process-line"></div>
               </div>
               <div class="flex justify-between mt-xs text-size-xs text-color-gray8">
-                Hang {{ storeAccount.getInformationMembershipLevel?.currentLevel.name }}
-                <span>
-                  Hang {{ storeAccount.getInformationMembershipLevel?.nextLevel.name }}
-                </span>
+                <img v-if="storeAccount.getInformationMembershipLevel?.currentLevel.image" :src="storeAccount.getInformationMembershipLevel?.currentLevel.image" :alt="storeAccount.getInformationMembershipLevel?.currentLevel.name" width="50" />
+                <img v-if="storeAccount.getInformationMembershipLevel?.nextLevel.image" :src="storeAccount.getInformationMembershipLevel?.nextLevel.image" :alt="storeAccount.getInformationMembershipLevel?.nextLevel.name" width="50" />
               </div>
               <div v-if="storeAccount.getDetailValue?.membership.point < storeAccount.getInformationMembershipLevel?.nextLevel.minPoint" class="mt-xs">
-                Tich luy them <span class="weight-semibold">{{ storeAccount.getInformationMembershipLevel?.nextLevel.minPoint - storeAccount.getDetailValue?.membership.point }} điểm</span> de thang hang {{ storeAccount.getInformationMembershipLevel?.nextLevel.name }}
+                Tich luy them <span class="weight-semibold">{{ formatCurrency(storeAccount.getInformationMembershipLevel?.nextLevel.minPoint - storeAccount.getDetailValue?.membership.point).replace('đ','') }} điểm</span> de thang hang {{ storeAccount.getInformationMembershipLevel?.nextLevel.name }}
               </div>
             </template>
           </div>

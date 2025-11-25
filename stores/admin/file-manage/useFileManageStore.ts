@@ -19,7 +19,7 @@ const file = ref<File | null>(null)
 const imageRules = [
   (v: File | null) => {
     if (!v) return 'Hình ảnh không được trống'
-    return ['image/jpeg', 'image/jpg', 'image/png'].includes(v.type)
+    return ['image/jpeg', 'image/jpg', 'image/png','image/avif'].includes(v.type)
       || 'Chỉ chấp nhận JPG / JPEG / PNG'
   },
 ]

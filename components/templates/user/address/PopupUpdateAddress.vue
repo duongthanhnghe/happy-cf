@@ -17,13 +17,14 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 }
 </script>
 <template>
-<Popup popupId="popup-update-category" v-model="store.isTogglePopupUpdate" popupHeading="Sua dia chi" align="right">
+<Popup 
+  popupId="popup-update-category" 
+  v-model="store.isTogglePopupUpdate" 
+  popupHeading="Sua dia chi" 
+  footerFixed
+  align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
-      <div class="portal-popup-footer flex gap-sm">
-        <Button v-if="store.detailData" color="gray" label="Xoa" :border="false" class="w-full" @click.prevent="store.handleDelete(store.detailData.id)"/>
-        <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
-      </div>
         <LabelInput label="Ho va ten" required/>
         <v-text-field v-model="store.formDataItem.fullname" :rules="nullRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
 
@@ -84,6 +85,12 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
         <v-switch :label="`Dia chi ${store.formDataItem.isDefault ? 'mac dinh':'lua chon'}`" class="mt-0" v-model="store.formDataItem.isDefault" inset
         ></v-switch>
     </v-form>
+  </template>
+  <template #footer>
+    <div class="flex gap-sm">
+      <Button v-if="store.detailData" color="gray" label="Xoa" :border="false" class="w-full" @click.prevent="store.handleDelete(store.detailData.id)"/>
+      <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
+    </div>
   </template>
 </Popup>
 </template>

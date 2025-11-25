@@ -30,6 +30,10 @@ a {
   &-xxl {
     max-width: 1800px;
   }
+  &-cover {
+    margin-left: -$gutter-x;
+    margin-right: -$gutter-x;
+  }
 }
 
 .row {
@@ -40,6 +44,20 @@ a {
   flex-wrap: wrap;
   margin-right: calc($gutter-x * -1);
   margin-left: calc($gutter-x * -1);
+  &-xxs {
+    margin-right: -0.25rem;
+    margin-left: -0.25rem;
+    [class*="col-"] {
+      padding-right: 0.25rem;
+      padding-left: 0.25rem;
+    }
+    &.has-control {
+      margin-bottom: -0.5rem;
+      [class*="col-"] {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
   &-xs {
     margin-right: -0.5rem;
     margin-left: -0.5rem;
@@ -77,27 +95,63 @@ a {
   padding-left: $gutter-x;
 }
 
+.width {
+  &-70 {
+    width: 70px;
+  }
+  &-150 {
+    width: 150px;
+  }
+  &-200 {
+    width: 200px;
+  }
+  &-300 {
+    width: 300px;
+  }
+}
+
+.height {
+  &-200 {
+    height: 200px;
+  }
+  &-300 {
+    height: 300px;
+  }
+}
+
 .min {
   &-width {
     &-70 {
       min-width: 70px;
     }
+    &-150 {
+      min-width: 150px;
+    }
     &-200 {
       min-width: 200px;
     }
     &-300 {
-      min-width: 300px;
+      min-width: 300px !important;
     }
   }
   &-height {
     &-70 {
       min-height: 70px;
     }
+    &-200 {
+      min-height: 200px;
+    }
+    &-dvh {
+      min-height: 100dvh;
+    }
   }
 }
 
 .max {
   &-width {
+    &-50 {
+      max-width: 50px !important;
+    }
     &-200 {
       max-width: 200px;
     }
@@ -107,10 +161,16 @@ a {
     &-600 {
       max-width: 600px;
     }
-  }
-  &-width {
     &-1800 {
       max-width: 1800px;
+    }
+  }
+  &-height {
+    &-200 {
+      max-height: 200px;
+    }
+    &-300 {
+      max-height: 300px;
     }
   }
 }
@@ -135,6 +195,12 @@ body .bg {
   }
   &-white {
     background-color: $cl-white;
+  }
+  &-black {
+    background-color: $cl-black;
+  }
+  &-black2 {
+    background-color: $cl-black2;
   }
   &-gradient-1 {
     background: $cl-gradient-1;
@@ -258,6 +324,11 @@ body .bg {
     border-color: rgb(18 18 18 / 3%);
     color: $cl-white;
   }
+  &-danger {
+    color: $cl-primary;
+    background-color: rgba($cl-primary, 0.2);
+    border: none;
+  }
   &-transparent {
     background-color: transparent;
     border: none;
@@ -273,6 +344,9 @@ body .bg {
       height: 66px;
       padding: 0 2rem;
       border-radius: 1.5rem;
+      .button-icon {
+        font-size: $fz-xl !important;
+      }
     }
     &-sm {
       height: $space-lg;
@@ -294,7 +368,7 @@ body .bg {
     }
   }
   &-border-none {
-    border-color: transparent;
+    border-color: transparent !important;
   }
   &-no-text {
     padding: 0;
@@ -415,6 +489,9 @@ body .bg {
   &-0 {
     padding-left: 0 !important;
   }
+  &-xs {
+    padding-left: $space-xs !important;
+  }
   &-sm {
     padding-left: $space-sm !important;
   }
@@ -438,6 +515,9 @@ body .bg {
 .pr {
   &-0 {
     padding-right: 0 !important;
+  }
+  &-xs {
+    padding-right: $space-xs !important;
   }
   &-sm {
     padding-right: $space-sm !important;
@@ -749,8 +829,15 @@ body .bg {
   &-hidden {
     overflow: hidden;
   }
+  &-hidden-x {
+    overflow-x: hidden;
+  }
   &-auto {
     overflow: auto;
+  }
+  &-cover-header {
+    overflow-y: auto;
+    height: calc(100dvh - $height-header);
   }
 }
 
@@ -787,6 +874,25 @@ body .bg {
   cursor: pointer;
 }
 
+.border {
+  &-bottom {
+    &-default {
+      border-bottom: 1px solid $cl-gray6;
+    }
+    &-dashed {
+      border-bottom: 1px dashed $cl-gray6;
+    }
+  }
+  &-color {
+    &-gray {
+      border-color: $cl-gray;
+    }
+    &-gray2 {
+      border-color: $cl-gray2;
+    }
+  }
+}
+
 .z-index {
   &-1 {
     z-index: 1;
@@ -806,6 +912,12 @@ body .bg {
   &-1 {
     opacity: 1;
   }
+  &-per30 {
+    opacity: 0.3;
+  }
+  &-per40 {
+    opacity: 0.4;
+  }
   &-per50 {
     opacity: 0.5;
   }
@@ -821,6 +933,19 @@ body .bg {
   &-0 {
     bottom: 0 !important;
   }
+}
+
+.right {
+  &-0 {
+    right: 0 !important;
+  }
+}
+
+.el-absolute {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
 .disable {
@@ -863,6 +988,9 @@ body .bg {
 }
 
 .justify {
+  &-start {
+    justify-content: start;
+  }
   &-center {
     justify-content: center;
   }
@@ -1442,6 +1570,8 @@ body .bg {
   img {
     background-color: $cl-gray2;
     width: 100%;
+    object-fit: cover;
+    height: 100%;
   }
 }
 
@@ -1590,16 +1720,16 @@ body .swiper {
       background-color: $cl-black2;
       color: $cl-white;
       transition: 0.3s all;
-      height: 2.5rem;
-      min-width: 2.5rem;
-      width: 2.5rem;
+      height: 2rem;
+      min-width: 2rem;
+      width: 2rem;
       &.swiper-button-disabled {
         opacity: 1;
         background-color: $cl-gray;
         color: $cl-black;
       }
       &:after {
-        font-size: 1.1rem;
+        font-size: $fz-base;
       }
     }
   }

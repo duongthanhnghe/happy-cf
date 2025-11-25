@@ -24,9 +24,9 @@ if(storeProductSale.getListProductSales.length === 0) await storeProductSale.fet
     </div>
     <div class="product-detail-body">
       <ProductDetail />
-      <SectionProductListSwiper v-if="store.getListProductRelated.length > 0" :items="store.getListProductRelated" :loading="store.loadingListRelated" headingText="Gợi ý lien quan" class="pt-section pb-section" />
+      <SectionProductListSwiper v-if="store.getListProductRelated.length > 0" :items="store.getListProductRelated" :loading="store.loadingListRelated" container="container container-xxl" headingText="Gợi ý lien quan" class="pt-section pb-section" />
       <ListReviewByProduct />
-      <SectionProductListSwiper v-if="storeProductSale.getListProductSales.length > 0" :items="storeProductSale.getListProductSales" :loading="storeProductSale.loading" headingText="Dang khuyen mai" class="pt-section pb-section" />
+      <SectionProductListSwiper v-if="storeProductSale.getListProductSales.length > 0" :items="storeProductSale.getListProductSales" :loading="storeProductSale.loading" container="container container-xxl" headingText="Dang khuyen mai" class="pt-section pb-section" />
     </div>
   </template>
   <NoData v-else />

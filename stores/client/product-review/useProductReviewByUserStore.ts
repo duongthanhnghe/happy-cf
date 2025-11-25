@@ -20,7 +20,6 @@ export const useProductReviewByUserStore = defineStore("ProductReviewByUserStore
     state.defaultForm,
     state.formDataItem,
     state.ratingNumber,
-    state.loadingData,
     storeAccount.getUserId
   );
 

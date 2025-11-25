@@ -5,22 +5,16 @@ import { useProductMostOrder } from '@/composables/product/useProductMostOrder'
 const TTL_MS = 10 * 60 * 1000
 
 export const useProductMostOrderStore = defineStore("ProductMostOrderStore", () => {
-  const { fetchListProductMostOrder, getListProductMostOrder } = useProductMostOrder()
+  const { fetchListProductMostOrder, getListProductMostOrder, loading } = useProductMostOrder()
 
   const lastFetched = ref<number | null>(null)
-  const loading = ref(false)
 
   const fetchProductStore = async () => {
     const now = Date.now()
     if (getListProductMostOrder.value.length > 0 && lastFetched.value && now - lastFetched.value < TTL_MS) return
 
-    loading.value = true
-    try {
-      await fetchListProductMostOrder()
-      lastFetched.value = now
-    } finally {
-      loading.value = false
-    }
+    await fetchListProductMostOrder()
+    lastFetched.value = now
   }
 
   return {

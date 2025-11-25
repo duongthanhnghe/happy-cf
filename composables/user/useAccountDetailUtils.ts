@@ -13,6 +13,7 @@ export const useAccountDetailUtils = (state: {
   userId: Ref<string|null>,
   lastVerifiedAt: Ref<number>,
   verifyCacheDuration: number,
+  isTogglePopupAccountMenuInfo: Ref<boolean>,
 }) => {
   const {
     detailData,
@@ -23,6 +24,7 @@ export const useAccountDetailUtils = (state: {
     userId,
     lastVerifiedAt,
     verifyCacheDuration,
+    isTogglePopupAccountMenuInfo,
   } = state;
 
   const router = useRouter()
@@ -107,6 +109,10 @@ export const useAccountDetailUtils = (state: {
     return false
   }
 
+  const handleTogglePopupAccountMenuInfo = (value: boolean) => {
+    isTogglePopupAccountMenuInfo.value = value;
+  }
+
   return {
     handleGetDetailAccount,
     handleTogglePopupBarcode,
@@ -114,5 +120,6 @@ export const useAccountDetailUtils = (state: {
     getNextMembershipLevel,
     handleLogout,
     verifyToken,
+    handleTogglePopupAccountMenuInfo,
   };
 };

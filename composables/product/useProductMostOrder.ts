@@ -5,8 +5,10 @@ import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
 export const useProductMostOrder = () => {
   const listProductMostOrder = ref<ProductDTO[]>([]);
   const limitProductMostOrder = ref<number>(12);
+  const loading = ref(false)
 
   const fetchListProductMostOrder = async () => {
+    loading.value = true
     try {
       const data = await productsAPI.getMostOrdered(limitProductMostOrder.value)
       if(data.code === 0) {
@@ -15,6 +17,8 @@ export const useProductMostOrder = () => {
       }
     } catch (err) {
       console.error('Error most order', err)
+    } finally {
+      loading.value = false
     }
   }
 
@@ -24,6 +28,7 @@ export const useProductMostOrder = () => {
     listProductMostOrder,
     limitProductMostOrder,
     fetchListProductMostOrder,
-    getListProductMostOrder
+    getListProductMostOrder,
+    loading
   }
 }

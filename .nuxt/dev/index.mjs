@@ -3895,8 +3895,14 @@ function toOrderDTO(entity) {
 }
 const toOrderListDTO = (orders) => orders.map(toOrderDTO);
 function toCartItemDTO(entity) {
+  let idProduct = entity.idProduct;
+  if (typeof idProduct === "string") {
+    idProduct = new Types.ObjectId(idProduct);
+  } else if (idProduct instanceof Types.ObjectId) ; else if (typeof idProduct === "object" && idProduct !== null) ; else {
+    idProduct = new Types.ObjectId();
+  }
   return {
-    idProduct: entity.idProduct ? new Types.ObjectId(entity.idProduct) : new Types.ObjectId(),
+    idProduct,
     priceDiscounts: entity.priceDiscounts,
     quantity: entity.quantity,
     note: entity.note || "",
@@ -6043,7 +6049,11 @@ const getOrdersByUserId = async (req, res) => {
     }
     const skip = (page - 1) * limit;
     const total = await OrderEntity.countDocuments(filter);
-    const orders = await OrderEntity.find(filter).populate("paymentId").populate("status").populate("userId").sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const orders = await OrderEntity.find(filter).populate("paymentId").populate("status").populate("userId").populate({
+      path: "cartItems.idProduct",
+      model: "Product",
+      select: "image productName"
+    }).sort({ createdAt: -1 }).skip(skip).limit(limit);
     return res.json({
       code: 0,
       data: orders.map(toOrderDTO),

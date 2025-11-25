@@ -16,9 +16,11 @@ const props = withDefaults(defineProps<{
   headingText?: string
   backgroundItem?: string
   breakpoints?: SwiperOptions['breakpoints']
+  container?: string
+  showNoData?: boolean
 }>(), {
   items: () => [],
-  loading: false,
+  showNoData: false,
 })
 
 const breakpointsDefault = {
@@ -34,9 +36,9 @@ const breakpointsDefault = {
 
 <template>
   <div>
-    <div :class="`container container-xxl`">
-      <LoadingData v-if="props.loading" />
-      <template v-else>
+    <div :class="container">
+      <LoadingData v-if="props.loading && !items" />
+      <template v-else-if="items.length > 0">
         <Heading v-if="props.headingText" tag="h2" size="lg" weight="semibold" class="black mb-sm">
           {{ props.headingText }}
         </Heading>
@@ -47,6 +49,9 @@ const breakpointsDefault = {
             </swiper-slide>
           </swiper>
         </client-only>
+      </template>
+      <template v-else>
+        <NoData v-if="showNoData" />
       </template>
     </div>
   </div>

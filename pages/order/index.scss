@@ -12,3 +12,9 @@ $height-tab: 48px;
 .order-main-content-scroll {
   overflow-y: auto;
 }
+
+@media (min-width: 1025px){
+  .order-main-content, .order-main-content-scroll {
+    height: calc(100dvh - ($height-header + $height-tab));
+  }
+}

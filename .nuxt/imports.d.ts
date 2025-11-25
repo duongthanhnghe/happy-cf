@@ -34,6 +34,7 @@ export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, get
 export { useForbiddenHandler } from '../utils/handle403';
 export { usePagination } from '../utils/paginationHandle';
 export { useSeoWatchers } from '../utils/seoHandle';
+export { useStickyObserver } from '../utils/stickyObserver';
 export { storageWithTTL } from '../utils/storageWithTTL';
 export { Toast, showSuccess, showToastError, showWarning, showConfirm } from '../utils/toast';
 export { findItemInTree, markAllSelectable } from '../utils/treeHelpers';

@@ -16,7 +16,6 @@ export const useProductReviewState = () => {
   };
   const formDataItem = reactive<SubmitProductReviewBody>({ ...defaultForm })
   const ratingNumber = ref(1)
-  const loadingData = ref<boolean>(false);
 
   return {
     isTogglePopupSubmit,
@@ -26,6 +25,5 @@ export const useProductReviewState = () => {
     defaultForm,
     formDataItem,
     ratingNumber,
-    loadingData,
   };
 };

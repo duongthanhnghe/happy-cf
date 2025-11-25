@@ -263,7 +263,7 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       label: 'Tài khoản',
       icon: 'person',
       middleware: ['auth-login'],
-      // layout: 'user-layout',
+      layout: 'user-layout',
       headerTypeLeft: 'logo',
     },
     ACCOUNT: {
@@ -338,7 +338,7 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       children: {
         MAIN: {
           path: '/news',
-          label: 'Uu dai',
+          label: 'Tin tức',
           icon: 'article',
           middleware: ['news-main','auth-account'],
           layout: 'default',

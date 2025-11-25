@@ -7,7 +7,11 @@ import type { HeaderTypeLeft } from '@/stores/client/layout/useUserLayoutStore'
 const storeLayout = useLayoutStore()
 const route = useRoute()
 
-watch(() => route.meta, (meta) => {
+watch(() => route.fullPath, () => {
+  const meta = route.meta
+
+  storeLayout.setHeaderTypeLeft('logo')
+
   if (meta?.headerTypeLeft) {
     storeLayout.setHeaderTypeLeft(meta.headerTypeLeft as HeaderTypeLeft)
   }

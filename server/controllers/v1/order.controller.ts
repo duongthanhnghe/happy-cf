@@ -173,6 +173,11 @@ export const createOrder = async (req: Request, res: Response) => {
       .populate("paymentId")
       .populate("status")
       .populate("userId")
+      .populate({
+        path: "cartItems.idProduct",
+        model: "Product",
+        select: "image productName"
+      })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);

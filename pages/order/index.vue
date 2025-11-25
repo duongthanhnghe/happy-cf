@@ -52,28 +52,24 @@ const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProd
         </div>
       </v-tabs-window-item>
       <v-tabs-window-item :value="2">
-        <div class="container container-xxl pt-section order-main-content-scroll scroll-hide">
-          <SectionProductMostOrder
-            :items="storeProductMostOrder.getListProductMostOrder"
-            :loading="storeProductMostOrder.loading" 
-            :runSlide="false" 
-            background="bg-white"
-            :column="COLUMN.PRODUCT_XL"
-            headingText="Top ban chay"
-          />
-        </div>
+        <SectionProductListColumn
+          :items="storeProductMostOrder.getListProductMostOrder"
+          :loading="storeProductMostOrder.loading" 
+          :column="COLUMN.PRODUCT_XL"
+          container="container container-xxl"
+          class="pt-section order-main-content-scroll scroll-hide"
+          headingText="Top ban chay"
+        />
       </v-tabs-window-item>
       <v-tabs-window-item :value="3">
-        <div class="container container-xxl pt-section order-main-content-scroll scroll-hide">
-          <SectionProductSales
-            :items="storeProductSale.getListProductSales"
-            :loading="storeProductSale.loading"
-            :runSlide="false"
-            background="bg-white"
-            :column="COLUMN.PRODUCT_XL"
-            headingText="Khuyen mai"
-          />
-        </div>
+        <SectionProductListColumn
+          :items="storeProductSale.getListProductSales"
+          :loading="storeProductSale.loading" 
+          :column="COLUMN.PRODUCT_XL"
+          container="container container-xxl"
+          class="pt-section order-main-content-scroll scroll-hide"
+          headingText="Khuyen mai"
+        />
       </v-tabs-window-item>
     </v-tabs-window>
   </div>

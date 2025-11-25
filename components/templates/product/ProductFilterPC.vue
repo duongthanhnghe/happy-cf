@@ -14,10 +14,12 @@ const props = defineProps<{
 
     <template v-if="storeCategoryMain.getListCategoryChildren.length > 0">
       <Text text="Danh muc" color="black" size="normal" weight="semibold" class="mt-md mb-sm" />
-      <ProductFilterCategory :categoryName="props.categoryName" :list="storeCategoryMain.getListCategoryChildren"/>
+      <div class="overflow-auto max-height-300">
+        <ProductFilterCategory :categoryName="props.categoryName" :list="storeCategoryMain.getListCategoryChildren"/>
+      </div>
     </template>    
 
     <Text text="Khoang gia" color="black" size="normal" weight="semibold" class="mt-md mb-md" />
-    <ProductFilterPrice />
+    <ProductFilterPrice class="v-range-slider-custom" />
   </div>
 </template>

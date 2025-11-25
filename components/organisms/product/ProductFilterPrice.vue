@@ -9,5 +9,6 @@ const storeCategoryMain = useCategoryMainStore()
     :min="0"
     :max="storeCategoryMain.maxPrice"
     thumb-label="always"
+    :thumb-label-props="{ teleport: 'body' }"
   ></v-range-slider>
 </template>

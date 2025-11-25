@@ -3,8 +3,10 @@ import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLayoutStore } from '@/stores/client/layout/useUserLayoutStore'
 import type { HeaderTypeLeft } from '@/stores/client/layout/useUserLayoutStore'
+import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 
 const storeLayout = useLayoutStore()
+const storeDisplay = useDisplayStore()
 const route = useRoute()
 
 // watch(() => route.meta, (meta) => {
@@ -30,6 +32,6 @@ watch(() => route.fullPath, () => {
   <div>
     <Header :typeLeft="storeLayout.headerTypeLeft"/>
     <slot />
-    <MenuBottom />
+    <MenuBottom v-if="storeDisplay.isMobileTable" />
   </div>
 </template>

@@ -13,7 +13,8 @@ export interface OrderMappingNew extends OrderDTO {
 }
 
 export interface cartItems {
-  idProduct: string | Types.ObjectId
+  // idProduct: string | Types.ObjectId
+  idProduct: string | ProductDTO | Types.ObjectId
   priceDiscounts: number
   quantity: number
   note: string | null

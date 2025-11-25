@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ROUTES } from '@/shared/constants/routes';
 import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
+import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
@@ -8,9 +9,12 @@ definePageMeta({
 })
 
 const store = useHistoryRewardByUserStore();
+const storeDisplay = useDisplayStore()
 
 if(!store.getItems) await store.getDataInit()
 </script>
 <template>
-  <ListHistoryReward />
+  <Card size="md" :bg="storeDisplay.isMobileTable ? 'gray6':'white'" :heading="ROUTES.PUBLIC.ACCOUNT.children?.POINT.label" :class="storeDisplay.isMobileTable ? 'pd-0':'rd-xl'">
+    <ListHistoryReward />
+  </Card>
 </template>
