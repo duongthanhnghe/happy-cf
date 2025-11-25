@@ -1,34 +1,18 @@
 <template>
   <span
-    class="material-symbols-rounded icon"
-    :style="styleObject"
+    :class="`material-symbols-rounded icon text-color-${props.color} text-size-${props.size} weight-${props.weight}`"
   >
     {{ name }}
   </span>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
   name: { type: String, required: true },
-  size: { type: [String, Number], default: 20 },
+  size: { type: String, default: 'lg' },
   color: { type: String, default: 'inherit' },
-  weight: { type: [String, Number], default: 400 }
+  weight: { type: String, default: 'normal' }
 })
-
-const fontSize = computed(() => {
-  const val = props.size
-  if (typeof val === 'number') return `${val}px`
-  if (/^\d+$/.test(val)) return `${val}px`
-  return val
-})
-
-const styleObject = computed(() => ({
-  fontSize: fontSize.value,
-  color: props.color,
-  fontVariationSettings: `'FILL' 0, 'wght' ${props.weight}, 'GRAD' 0, 'opsz' ${parseInt(fontSize.value)}`
-}))
 </script>
 
 <style scoped>

@@ -24,7 +24,7 @@
       <MaterialIcon
         v-else-if="icon"
         :name="icon"
-        :size="24"
+        size="lg-2"
         class="button-icon"
       />
       <span v-if="!loading">{{ label }}</span>

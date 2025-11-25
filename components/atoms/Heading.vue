@@ -11,7 +11,7 @@
       ]"
     >
       <slot></slot>
-      <MaterialIcon v-if="icon" :name="icon" size="24" class="heading-icon" />
+      <MaterialIcon v-if="icon" :name="icon" size="lg-2" class="heading-icon" />
     </component>
 </template>
 

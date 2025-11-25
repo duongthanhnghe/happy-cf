@@ -40,7 +40,7 @@ watchEffect(() => {
               <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
               <div class="text-size-xs">
                 <Heading weight="semibold"> {{ storeAccount.getDetailValue?.fullname || '' }} </Heading>
-                <span @click="storeAccount.handleTogglePopupMembershipInformation(true)" class="text-color-gray8">Hang {{ storeAccount.getDetailValue?.membership.level || '' }} </span>
+                <span @click="storeAccount.handleTogglePopupMembershipInformation(true)" class="text-color-gray8 cursor-pointer">Hang {{ storeAccount.getDetailValue?.membership.level || '' }} </span>
               </div>
             </div>
             <div class="flex gap-sm">

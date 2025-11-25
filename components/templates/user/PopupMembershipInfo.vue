@@ -39,9 +39,10 @@ watch(() => store.getListData, (newVal) => {
             :key="item.id"
             :value="item.id"
             :text="item.name"
-          />
+          >
+            <img v-if="item.image" :src="item.image" class="max-height-25" />
+          </v-tab>
         </v-tabs>
-
         <v-tabs-window v-model="tab">
           <v-tabs-window-item
             v-for="n in store.getListData"
@@ -50,7 +51,14 @@ watch(() => store.getListData, (newVal) => {
           >
             <div class="container pt-ms pb-ms">
               <div v-for="item in n.benefits" :key="item.id">
-                {{ item.name }}
+                <Card size="xs" class="rd-lg mb-sm shadow-1">
+                  <div class="flex gap-sm align-center">
+                    <div class="bg-gray2 min-width-50 min-height-50 flex align-center justify-center rd-lg">
+                      <MaterialIcon :name="item.icon" size="xl" color="primary" weight="light" />
+                    </div>
+                    {{ item.name }}
+                  </div>
+                </Card>
               </div>
             </div>
           </v-tabs-window-item>

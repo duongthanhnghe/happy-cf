@@ -121,6 +121,9 @@ a {
 
 .min {
   &-width {
+    &-50 {
+      min-width: 50px;
+    }
     &-70 {
       min-width: 70px;
     }
@@ -135,6 +138,9 @@ a {
     }
   }
   &-height {
+    &-50 {
+      min-height: 50px;
+    }
     &-70 {
       min-height: 70px;
     }
@@ -166,6 +172,9 @@ a {
     }
   }
   &-height {
+    &-25 {
+      max-height: 25px;
+    }
     &-200 {
       max-height: 200px;
     }
@@ -192,6 +201,9 @@ body .bg {
   &-primary {
     background-color: $cl-primary !important;
     color: inherit !important;
+    &-50 {
+      background-color: rgba($cl-primary, 0.5);
+    }
   }
   &-white {
     background-color: $cl-white;
@@ -733,6 +745,9 @@ body .bg {
     }
     &-lg {
       font-size: $fz-large;
+    }
+    &-lg-2 {
+      font-size: $fz-large-2;
     }
     &-xl {
       font-size: $fz-xl;
