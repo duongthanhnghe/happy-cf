@@ -21,3 +21,8 @@ export interface RewardHistoryDTO {
 }
 
 export type RewardHistoryPaginationDTO = PaginationDTO<RewardHistoryDTO>
+
+export interface PendingRewardData {
+  totalPendingPoints: number;
+  orders: number;
+}

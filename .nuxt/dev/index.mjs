@@ -1148,7 +1148,22 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"457d5-MStCC3CQQs7AavxQc3VTaOs587c\"",
+    "mtime": "2025-11-25T12:42:16.378Z",
+    "size": 284629,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"10ab80-9h+5mMmk0sXUsjeOWJK34xiDZVU\"",
+    "mtime": "2025-11-25T12:42:16.382Z",
+    "size": 1092480,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -6360,6 +6375,33 @@ const cancelOrderByUser = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
   }
 };
+const getPendingRewardPoints = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu userId" });
+    }
+    const orders = await OrderEntity.find({
+      userId,
+      "reward.points": { $gt: 0 },
+      "reward.awarded": false
+    }).select("reward.points");
+    const totalPendingPoints = orders.reduce((sum, order) => {
+      var _a;
+      return sum + (((_a = order.reward) == null ? void 0 : _a.points) || 0);
+    }, 0);
+    return res.json({
+      code: 0,
+      data: {
+        totalPendingPoints,
+        orders: orders.length
+      }
+    });
+  } catch (error) {
+    console.error("L\u1ED7i getPendingRewardPoints:", error);
+    return res.status(500).json({ code: 1, message: error.message });
+  }
+};
 
 const BASE_URL = "https://partner.viettelpost.vn/v2/categories";
 const getAllProvinces = async (_, res) => {
@@ -6868,6 +6910,7 @@ router$4.post("/shipping/fee", getShippingFee);
 router$4.get("/users/:userId/orders", authenticate, getOrdersByUserId);
 router$4.get("/users/:userId/rewards", authenticate, getRewardHistoryByUserId);
 router$4.post("/users/cancel-request", authenticate, cancelOrderByUser);
+router$4.get("/rewards/pending/:userId", authenticate, getPendingRewardPoints);
 
 const orderManage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

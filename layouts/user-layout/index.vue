@@ -13,6 +13,7 @@ const storeDisplay = useDisplayStore()
 const route = useRoute()
 const listMenu = [
   ...store.accountMenu,
+  { label: 'Đăng xuất', action: () => store.handleLogout(), icon: 'logout' }
 ];
 
 watch(() => route.fullPath, () => {

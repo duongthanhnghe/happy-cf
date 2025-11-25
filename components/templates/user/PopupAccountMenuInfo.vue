@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import { onMounted } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 
 const storeAccount = useAccountStore();
-
+onMounted(() => {
+  if(!storeAccount.getPendingReward && storeAccount.getUserId) storeAccount.fetchPendingRewardPoints(storeAccount.getUserId)
+});
 </script>
 <template>
   <Popup
@@ -16,7 +19,7 @@ const storeAccount = useAccountStore();
     <template #body>
       <CardAccount :showBarcode="false" />
       <div class="pl-ms pr-ms pb-md">
-        <CardPointInfo :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint"/>
+        <CardPointInfo v-if="storeAccount.getDetailValue?.membership?.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints"/>
         <div class="row row-xxs has-control mt-md">
           <div class="col-4" v-for="(item, index) in storeAccount.accountMenu" :key="index">
             <MenuAccountItemTemplate2 :item="item" @click="storeAccount.handleTogglePopupAccountMenuInfo(false)"/>

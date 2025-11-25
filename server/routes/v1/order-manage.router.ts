@@ -8,6 +8,7 @@ import {
   sepayCallback,
   getShippingFee,
   cancelOrderByUser,
+  getPendingRewardPoints,
 } from '../../controllers/v1/order.controller'
 import { authenticate } from '../../middlewares/authenticate'
 
@@ -21,5 +22,6 @@ router.post("/shipping/fee", getShippingFee);
 router.get('/users/:userId/orders', authenticate, getOrdersByUserId)
 router.get('/users/:userId/rewards', authenticate, getRewardHistoryByUserId)
 router.post('/users/cancel-request', authenticate, cancelOrderByUser);
+router.get('/rewards/pending/:userId', authenticate, getPendingRewardPoints)
 
 export default router

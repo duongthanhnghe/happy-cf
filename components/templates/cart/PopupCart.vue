@@ -9,8 +9,11 @@ import { formatCurrency } from "@/utils/global";
 const store = useCartStore();
 const storeAccount = useAccountStore();
 
-onMounted(() => {
-    store.syncCartCookie();
+onMounted(async() => {
+  store.syncCartCookie();
+  if(!storeAccount.getPendingReward && storeAccount.getUserId){
+    await storeAccount.fetchPendingRewardPoints(storeAccount.getUserId)
+  } 
 });
 </script>
 <template>
@@ -34,7 +37,7 @@ onMounted(() => {
       </div>
 
       <template v-if="store.getTotalPriceDiscount != 0 && storeAccount.getUserId">
-        <CartPointInfoLabel :getTotalPoint="store.getTotalPoint"/>
+        <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" />
       </template>
     
       <Text color="gray5" textClass="mt-sm flex gap-xs justify-end align-baseline">

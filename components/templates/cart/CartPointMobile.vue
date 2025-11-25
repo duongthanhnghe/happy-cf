@@ -6,16 +6,17 @@ const store = useCartStore();
 const props = defineProps<{
   userId: string;
   balancePoint: number;
+  totalPendingPoints: number;
 }>();
 </script>
 <template>
   <Popup v-model="store.isTogglePopupPoint" popupHeading="Su dung Point" bodyClass="bg-gray6" footerFixed align="right">
     <template #body >
       <template v-if="props.userId">
-        <CardPointInfo :balancePoint="props.balancePoint" class="mb-lg"/>
+        <CardPointInfo v-if="props.balancePoint && props.totalPendingPoints" :balancePoint="props.balancePoint" :totalPendingPoints="props.totalPendingPoints" class="mb-lg"/>
 
         <div class="mb-xl">
-          <CartPointInput classEl="flex flex-direction-column gap-sm" :balancePoint="props.balancePoint"/>
+          <CartPointInput classEl="flex flex-direction-column gap-sm" :balancePoint="props.balancePoint" />
         </div>
 
         <div class="mb-md">

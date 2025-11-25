@@ -25,6 +25,7 @@ type NuxtAppInjections =
   InjectionType<typeof import("../../plugins/cloudinary.client")> &
   InjectionType<typeof import("../../plugins/floating-vue.client")> &
   InjectionType<typeof import("../../plugins/lazyload")> &
+  InjectionType<typeof import("../../plugins/nprogress.client")> &
   InjectionType<typeof import("../../plugins/persistedState.client")> &
   InjectionType<typeof import("../../plugins/sweetalert2.js")> &
   InjectionType<typeof import("../../plugins/vuetify")>

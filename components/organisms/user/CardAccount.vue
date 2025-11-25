@@ -32,6 +32,7 @@ watchEffect(() => {
 
 </script>
 <template>
+  <client-only>
   <div class="information-account">
     <div class="container">
         <div v-if="storeAccount.getDetailValue?.id" class="information-account-card">
@@ -82,4 +83,5 @@ watchEffect(() => {
       </div>
     </div>
   </div>
+  </client-only>
 </template>

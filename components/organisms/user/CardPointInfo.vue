@@ -4,6 +4,7 @@ import { ROUTES } from '@/shared/constants/routes';
 
 const props = defineProps<{
   balancePoint: number;
+  totalPendingPoints: number;
 }>();
 </script>
 <template>
@@ -11,7 +12,7 @@ const props = defineProps<{
     <Card size="sm" bg="white" border class="flex-1 rd-lg line-height-1 shadow-1">
       <Text text="Bạn đang có" />
       <Text :text="`${formatCurrency(props.balancePoint).replace('đ','')} Point`" weight="semibold" size="md" class="mt-sm mb-sm" />
-      <Text text="Đang chờ 0 point" />
+      <Text v-if="props.totalPendingPoints" :text="`Đang chờ ${formatCurrency(props.totalPendingPoints).replace('đ','')} point`" />
     </Card>
     <Card size="sm" bg="black2" class="flex-1 rd-lg" style="max-width: 140px">
       <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }">

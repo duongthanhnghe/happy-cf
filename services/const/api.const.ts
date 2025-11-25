@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
     CHECK_POINT: "/orders/check-point",
     SHIPPING_FEE: "/orders/shipping/fee",
     CANCEL_REQUEST: "/orders/users/cancel-request",
+    PENDING_REWARD: (userId: string) => `/orders/rewards/pending/${userId}`,
   },
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',

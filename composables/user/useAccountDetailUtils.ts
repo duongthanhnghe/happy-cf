@@ -3,6 +3,7 @@ import { ROUTES } from "@/shared/constants/routes";
 import { authAPI } from "@/services/v1/auth.service";
 import { useRouter } from 'vue-router'
 import type { InformationMembershipLevels, MembershipLevels, User } from "@/server/types/dto/v1/user.dto";
+import { usePendingRewardPoints } from '../order/usePendingRewardPoints';
 
 export const useAccountDetailUtils = (state: {
   detailData: Ref<User | null>,
@@ -28,6 +29,7 @@ export const useAccountDetailUtils = (state: {
   } = state;
 
   const router = useRouter()
+  const { fetchPendingRewardPoints, getPendingReward } = usePendingRewardPoints()
   
   const handleGetDetailAccount = async (id: string) => {
     if(!id) return
@@ -121,5 +123,7 @@ export const useAccountDetailUtils = (state: {
     handleLogout,
     verifyToken,
     handleTogglePopupAccountMenuInfo,
+    fetchPendingRewardPoints,
+    getPendingReward,
   };
 };

@@ -46,12 +46,14 @@ onMounted(async () => {
   <PopupCart />
   <PopupEditItemToCart v-if="storeCart.getCartListItem.length > 0" />
   <PopupAddItemToCart />
-  <template v-if="storeAccount.getUserId">
-  <PopupAccountMenuInfo />
-  <PopupMembershipInfo />
-  <PopupBarcode />
-  <PopupHistoryReward />
-  </template>
+  <client-only>
+    <template v-if="storeAccount.getUserId">
+    <PopupAccountMenuInfo />
+    <PopupMembershipInfo />
+    <PopupBarcode />
+    <PopupHistoryReward />
+    </template>
+  </client-only>
 
 
   <div class="header">

@@ -472,4 +472,32 @@ export const cancelOrderByUser = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
     }
 };
+export const getPendingRewardPoints = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId) {
+            return res.status(400).json({ code: 1, message: "Thiếu userId" });
+        }
+        const orders = await OrderEntity.find({
+            userId,
+            "reward.points": { $gt: 0 },
+            "reward.awarded": false
+        }).select("reward.points");
+        const totalPendingPoints = orders.reduce((sum, order) => {
+            var _a;
+            return sum + (((_a = order.reward) === null || _a === void 0 ? void 0 : _a.points) || 0);
+        }, 0);
+        return res.json({
+            code: 0,
+            data: {
+                totalPendingPoints,
+                orders: orders.length
+            }
+        });
+    }
+    catch (error) {
+        console.error("Lỗi getPendingRewardPoints:", error);
+        return res.status(500).json({ code: 1, message: error.message });
+    }
+};
 //# sourceMappingURL=order.controller.js.map

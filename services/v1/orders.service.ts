@@ -8,6 +8,7 @@ import type {
   OrderPaginationDTO,
 } from '@/server/types/dto/v1/order.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
+import type { PendingRewardData } from '@/server/types/dto/v1/reward-history.dto';
 
 const APP_URL = process.env.DOMAIN || "http://localhost:3000";
 
@@ -272,6 +273,38 @@ export const ordersAPI = {
         message: err.message || "Hủy đơn thất bại",
         data: null,
       };
+    }
+  },
+  getPendingRewardPoints: async (
+    userId: string
+  ): Promise<ApiResponse<PendingRewardData>> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.PENDING_REWARD(userId)}`,
+        {
+          credentials: 'include',
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return {
+          code: 1,
+          message: data.message || "Failed to fetch pending reward points",
+          data: { totalPendingPoints: 0, orders: 0 },
+        }
+      }
+
+      return data;
+
+    } catch (err: any) {
+      console.error("Error fetching pending reward points:", err);
+      return {
+        code: 1,
+        message: err.message || "Error fetching pending reward points",
+        data: { totalPendingPoints: 0, orders: 0 },
+      }
     }
   },
 }
