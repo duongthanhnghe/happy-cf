@@ -2,7 +2,7 @@
 import '@/styles/molecules/order/order-item-detail-template1.scss'
 import { toRef } from 'vue'
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
-import { formatCurrency } from '@/utils/global'
+import { formatCurrency, formatDateTime } from '@/utils/global'
 import { useOrderDetail } from "@/composables/order/useOrderDetail";
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
@@ -58,7 +58,7 @@ const {
     <div v-if="getDetailOrder.status.id !== ORDER_STATUS.CANCELLED" class="flex justify-between mt-xl mb-md">
       <div v-for="(items, index) in storeOrderStatus.getListData.filter(i => i.id !== ORDER_STATUS.CANCELLED)" :key="items.id" :class="{ 'is-active': index <= activeIndex }" class="flex-1 text-center text-color-white popup-detail-order-status-item">
         <div class="avatar-src popup-detail-order-status-icon m-auto">
-          <MaterialIcon size="26" :name="items.icon"/>
+          <MaterialIcon size="xl" :name="items.icon"/>
         </div>
         <div class="mt-sm popup-detail-order-status-title">
           {{ items.name }}
@@ -68,7 +68,7 @@ const {
     <div v-else class="flex justify-between mt-md mb-md">
       <div class="is-active flex-1 text-center text-color-white popup-detail-order-status-item">
         <div class="avatar-src popup-detail-order-status-icon m-auto">
-          <MaterialIcon size="26" name="close"/>
+          <MaterialIcon size="xl" name="close"/>
         </div>
         <div class="mt-sm popup-detail-order-status-title">
           {{ getDetailOrder.status.name }}
@@ -76,7 +76,7 @@ const {
       </div>
     </div>
     
-    <div class="card-sm bg-white">
+    <Card size="sm" class="rd-lg">
       <div class="flex justify-between">
         <span class="flex gap-xs align-center weight-semibold text-color-black">
           <Button size="xs" color="secondary" icon="location_on" :disable="true"/>
@@ -98,8 +98,10 @@ const {
         <Button size="xs" color="secondary" icon="edit" />
         {{ getDetailOrder?.note }}
       </div>
-      <div class="row" v-for="(items, index) in getDetailOrder?.productList" :key="index">
-        <CartItemTemplate2 v-bind="items" />
+      <div class="mt-ms">
+      <div v-for="(items, index) in getDetailOrder?.productList" :key="index">
+        <CartItemTemplate2 v-bind="items" class="mt-xs"/>
+      </div>
       </div>
       <div class="flex flex-direction-column gap-xs mt-xs">
       <div class="flex justify-between text-size-normal mt-sm weight-medium line-height-1">
@@ -158,8 +160,8 @@ const {
         </v-chip>
       </div>
       </div>
-    </div>
-    <div class="card-sm bg-white mt-sm flex gap-sm justify-between">
+    </Card>
+    <Card size="sm" class="rd-lg mt-sm flex gap-sm justify-between">
       <img class="avatar-src" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" loading="lazy" /> 
       <div class="flex flex-1 justify-between">
         <div>
@@ -168,13 +170,23 @@ const {
           </div>
           <span class="text-color-gray5 text-size-xs">{{ storeSetting.getBaseInformation?.name }}</span>
         </div>
-        <a :href="`tel:${Number(storeSetting.getBaseInformation?.phone.replace(/\s+/g, ''))}`">
-          <Button icon="phone" />
-        </a>
+        <div class="flex gap-sm">
+          <a v-if="storeSetting.getBaseInformation?.phone" :href="`tel:${Number(storeSetting.getBaseInformation?.phone.replace(/\s+/g, ''))}`">
+            <Button tag="span" color="gray" icon="phone" />
+          </a>
+          <a v-if="storeSetting.getBaseInformation?.socialLinks" :href="storeSetting.getBaseInformation?.socialLinks[0].src" target="_blank">
+            <Button tag="span" color="black" icon="chat" />
+          </a>
+        </div>
       </div>
-    </div>
+    </Card>
     <div class="text-center mt-sm">
-      Dat luc: {{ getDetailOrder?.createdAt }}
+      Dat luc: {{ formatDateTime(getDetailOrder?.createdAt) }}
+    </div>
+    <div v-if="getDetailOrder?.status.id === ORDER_STATUS.PENDING || getDetailOrder?.status.id === ORDER_STATUS.CANCELLED" class="mt-md">
+      <Button v-if="getDetailOrder.userId && !getDetailOrder?.cancelRequested && getDetailOrder?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="storeHistory.handleCancelOrder(getDetailOrder?.id, getDetailOrder.userId)" size="lg" color="black" label="Yeu cau huy don" icon="cancel" class="w-full rd-lg"/>
+      <Button v-else-if="getDetailOrder?.cancelRequested" tag="span" color="black" :border="false" label="Da yeu cau huy don" icon="partner_reports" class="w-full rd-lg" />
+      <template v-else />
     </div>
   </template>
   <NoData v-else />

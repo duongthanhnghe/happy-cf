@@ -2038,6 +2038,20 @@ body .swiper {
   }
 }
 
+.v-rating-control {
+  gap: $space-xs;
+  .v-rating__wrapper {
+    background-color: $cl-white;
+    border-radius: $rd-lg;
+    min-width: calc(20% - $space-xs);
+    padding-bottom: 0.5rem;
+    border: 1px solid $cl-gray2;
+  }
+  & > label {
+    display: none;
+  }
+}
+
 .v-main {
   background: #f2f2f2;
 }

@@ -7,7 +7,7 @@ import { useProductReviewState } from "@/composables/user/useProductReviewState"
 
 export const useProductReviewByUserStore = defineStore("ProductReviewByUserStore", () => {
 
-  const { getDetailReview } = useProductReviewDetail()
+  // const { getDetailReview } = useProductReviewDetail()
   const storeAccount = useAccountStore();
 
   const state = useProductReviewState();
@@ -24,12 +24,12 @@ export const useProductReviewByUserStore = defineStore("ProductReviewByUserStore
   );
 
   const getItems = computed(() => state.items.value?.data)
-  const getDetailItem = computed(() => getDetailReview.value)
+  // const getDetailItem = computed(() => getDetailReview.value)
 
   return {
     ...state,
     ...utils,
     getItems,
-    getDetailItem,
+    // getDetailItem,
   };
 });

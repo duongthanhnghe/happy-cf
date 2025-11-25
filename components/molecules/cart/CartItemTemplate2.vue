@@ -17,7 +17,7 @@ const props = defineProps<{
 
 </script>
 <template>
-  <div class="cart-template1-item flex-1">
+  <div class="cart-template1-item rd-xl flex-1">
     <div class="cart-template1-image">
       <img :src="props.data?.image" :alt="props.data?.productName" />
     </div>

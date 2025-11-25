@@ -100,5 +100,6 @@ export const useProductReviewUtils = (
     submitReview,
     handleResetForm,
     loadingData,
+    getDetailReview,
   };
 };
