@@ -6,7 +6,7 @@ export const useOrderMainHandlers = async (
   storeProductCategory: any,
 ) => {
 
-  const tab = ref(null)
+  const tab = ref<number|null>(null)
   const tabs = [
     { value: 1, icon: 'category', label: 'Menu' },
     { value: 2, icon: 'local_fire_department', label: 'Top 10' },

@@ -1,7 +1,7 @@
 import type { PostNewsDTO, CategoryNewsDTO } from "../../types/dto/v1/news.dto";
 import type { PostNewsDocument, CategoryNewsDocument } from "../../models/v1/news.entity"
 
-export function toPostNewsDTO(entity: PostNewsDocument): PostNewsDTO {
+export function toPostNewsDTO(entity: any): PostNewsDTO {
   return {
     id: entity._id.toString(),
     title: entity.title,
@@ -12,12 +12,12 @@ export function toPostNewsDTO(entity: PostNewsDocument): PostNewsDTO {
     categoryId: entity.categoryId.toString(),
     views: entity.views,
     author: entity.author,
+    categoryName: entity.categoryName || undefined,
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,
     slug: entity.slug,
     keywords: entity.keywords,
-
     createdAt: entity.createdAt.toISOString(),
     updatedAt: entity.updatedAt.toISOString(),
   };

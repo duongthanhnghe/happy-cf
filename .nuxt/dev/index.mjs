@@ -1148,22 +1148,7 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"457d5-MStCC3CQQs7AavxQc3VTaOs587c\"",
-    "mtime": "2025-11-25T12:42:16.378Z",
-    "size": 284629,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"10ab80-9h+5mMmk0sXUsjeOWJK34xiDZVU\"",
-    "mtime": "2025-11-25T12:42:16.382Z",
-    "size": 1092480,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2934,6 +2919,7 @@ function toPostNewsDTO(entity) {
     categoryId: entity.categoryId.toString(),
     views: entity.views,
     author: entity.author,
+    categoryName: entity.categoryName || void 0,
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,
@@ -6765,11 +6751,24 @@ const users_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
   default: router$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const isNewsCategoryActive = async (categoryId) => {
+  if (!categoryId) return false;
+  const category = await CategoryNewsModel.findById(categoryId).lean();
+  if (!category) return false;
+  return category.isActive === true;
+};
 const getPostsById = async (req, res) => {
   try {
     const post = await PostNewsModel.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    if (!post.isActive) {
+      return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
+    }
+    const isActiveCategory = await isNewsCategoryActive(post.categoryId);
+    if (!isActiveCategory) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c c\u1EE7a b\xE0i vi\u1EBFt \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
     }
     return res.json({ code: 0, data: toPostNewsDTO(post) });
   } catch (err) {
@@ -6783,6 +6782,13 @@ const getPostBySlug = async (req, res) => {
     if (!post) {
       return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
+    if (!post.isActive) {
+      return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
+    }
+    const isActiveCategory = await isNewsCategoryActive(post.categoryId);
+    if (!isActiveCategory) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c c\u1EE7a b\xE0i vi\u1EBFt \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
+    }
     return res.json({ code: 0, data: toPostNewsDTO(post) });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
@@ -6791,8 +6797,29 @@ const getPostBySlug = async (req, res) => {
 const getPostsLatest = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit, 10) || 5;
-    const posts = await PostNewsModel.find().sort({ createdAt: -1 }).limit(limit);
-    return res.json({ code: 0, data: toPostNewsListDTO(posts) });
+    const posts = await PostNewsModel.aggregate([
+      { $match: { isActive: true } },
+      {
+        $lookup: {
+          from: "post_categories",
+          localField: "categoryId",
+          foreignField: "_id",
+          as: "category"
+        }
+      },
+      { $unwind: { path: "$category", preserveNullAndEmptyArrays: false } },
+      { $match: { "category.isActive": true } },
+      // thêm categoryName
+      { $addFields: { categoryName: "$category.categoryName" } },
+      { $sort: { createdAt: -1 } },
+      { $limit: limit },
+      { $project: { category: 0 } }
+    ]);
+    return res.json({
+      code: 0,
+      data: posts.map(toPostNewsDTO),
+      message: "Success"
+    });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -6804,6 +6831,10 @@ const getPostsByCategory = async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;
     const query = { categoryId };
+    const isActiveCategory = await isNewsCategoryActive(new Types.ObjectId(categoryId));
+    if (!isActiveCategory) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
+    }
     const [total, posts] = await Promise.all([
       PostNewsModel.countDocuments(query),
       PostNewsModel.find({ ...query, isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit)
@@ -6826,6 +6857,10 @@ const getRelatedPostsBySlug = async (req, res) => {
     const post = await PostNewsModel.findOne({ slug });
     if (!post) {
       return res.status(404).json({ code: 1, message: "B\xE0i vi\u1EBFt kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const isActiveCategory = await isNewsCategoryActive(post.categoryId);
+    if (!isActiveCategory) {
+      return res.status(404).json({ code: 1, message: "Danh m\u1EE5c c\u1EE7a b\xE0i vi\u1EBFt \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
     }
     const relatedPosts = await PostNewsModel.find({
       categoryId: new mongoose.Types.ObjectId(post.categoryId),
@@ -6856,29 +6891,49 @@ const updateView = async (req, res) => {
   }
 };
 const getAllPostsPagination = async (req, res) => {
+  var _a;
   try {
     const page = parseInt(req.query.page, 10) || 1;
     let limit = parseInt(req.query.limit, 10) || 10;
     const search = req.query.search || "";
-    const query = { isActive: true };
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { summaryContent: { $regex: search, $options: "i" } }
-      ];
-    }
-    if (limit === -1) {
-      limit = await PostNewsModel.countDocuments(query);
-    }
     const skip = (page - 1) * limit;
-    const [total, posts] = await Promise.all([
-      PostNewsModel.countDocuments(query),
-      PostNewsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
-    ]);
+    const pipeline = [
+      // 1. Lọc bài viết active
+      { $match: { isActive: true } },
+      // 2. Join danh mục
+      {
+        $lookup: {
+          from: "post_categories",
+          localField: "categoryId",
+          foreignField: "_id",
+          as: "category"
+        }
+      },
+      { $unwind: { path: "$category", preserveNullAndEmptyArrays: false } },
+      // 3. Lọc danh mục active
+      { $match: { "category.isActive": true } }
+    ];
+    if (search) {
+      pipeline.push({
+        $match: {
+          $or: [
+            { title: { $regex: search, $options: "i" } },
+            { summaryContent: { $regex: search, $options: "i" } }
+          ]
+        }
+      });
+    }
+    pipeline.push({ $sort: { createdAt: -1 } });
+    const countPipeline = [...pipeline, { $count: "total" }];
+    const totalResult = await PostNewsModel.aggregate(countPipeline);
+    const total = ((_a = totalResult[0]) == null ? void 0 : _a.total) || 0;
+    pipeline.push({ $skip: skip }, { $limit: limit });
+    pipeline.push({ $project: { category: 0 } });
+    const posts = await PostNewsModel.aggregate(pipeline);
     const totalPages = Math.ceil(total / limit);
     return res.json({
       code: 0,
-      data: toPostNewsListDTO(posts),
+      data: posts.map(toPostNewsDTO),
       pagination: { page, limit, total, totalPages },
       message: "Success"
     });

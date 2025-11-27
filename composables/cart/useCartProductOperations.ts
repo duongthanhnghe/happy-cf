@@ -48,7 +48,11 @@ export const useCartProductOperations = (
   ) => {
 
     // const productKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions))}`;
-    const productKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions+note))}`;
+    // const productKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions+note))}`;
+    const productKey = `${product.id}_${Base64.encode(JSON.stringify({
+      selectedOptions,
+      note
+    }))}`;
 
     const existingProduct = cartListItem.value?.find(
       (item) => item.productKey === productKey

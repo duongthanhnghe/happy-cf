@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import '@/styles/molecules/news/news-item-template1.scss'
 import { formatDateTime } from '@/utils/global'
+import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 
-const props = defineProps({
-  item: {
-    type: Object,
-  }
-})
+const props = defineProps<{
+  item: PostNewsDTO
+}>()
 
 </script>
 <template>
@@ -15,6 +14,7 @@ const props = defineProps({
       <img :src="props.item?.image" :alt="props.item?.title" />
     </div>
     <div class="news-template1-item-info flex justify-between">
+      <Text :text="props.item?.categoryName" color="gray5" />
       <Heading tag="div" size="sm" weight="semibold" class="news-template1-item-title black text-limit text-limit-2 mb-sm">
         {{ props.item?.title }}
       </Heading>
@@ -22,7 +22,7 @@ const props = defineProps({
         <div class="news-template1-item-date text-color-black flex gap-xs align-center">
           <MaterialIcon name="calendar_today" size="14"/>
           <span class="text-color-gray5">
-            {{ formatDateTime(props.item?.time,'vi-VN', false) }}
+            {{ formatDateTime(props.item?.createdAt,'vi-VN', false) }}
           </span>
         </div>
         <router-link to="" class="text-color-gray5">

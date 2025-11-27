@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Autoplay } from 'swiper/modules';
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
 import type { SwiperOptions } from 'swiper/types';
-
+import { PRODUCT_LIST_SWIPER_DEFAULT } from '@/shared/constants/breakpoints';
 const storeDisplay = useDisplayStore()
 
 const props = withDefaults(defineProps<{
@@ -18,32 +18,24 @@ const props = withDefaults(defineProps<{
   breakpoints?: SwiperOptions['breakpoints']
   container?: string
   showNoData?: boolean
+  fullScreen?: boolean
 }>(), {
   items: () => [],
   showNoData: false,
+  fullScreen: false,
 })
-
-const breakpointsDefault = {
-  320: { slidesPerView: 2.3, spaceBetween: 10 },
-  640: { slidesPerView: 3, spaceBetween: 10 },
-  1024: { slidesPerView: 3, spaceBetween: 10 },
-  1200: { slidesPerView: 4, spaceBetween: 16 },
-  1400: { slidesPerView: 5, spaceBetween: 16 },
-  1920: { slidesPerView: 6, spaceBetween: 16 },
-}
-
 </script>
 
 <template>
   <div>
-    <div :class="container">
+    <div :class="[container, fullScreen ? 'pl-0 pr-0':'']">
       <LoadingData v-if="props.loading && !items" />
       <template v-else-if="items.length > 0">
-        <Heading v-if="props.headingText" tag="h2" size="lg" weight="semibold" class="black mb-sm">
+        <Heading v-if="props.headingText" tag="h2" size="lg" weight="semibold" :class="['black mb-sm',fullScreen ? 'pl-ms pr-ms':'']">
           {{ props.headingText }}
         </Heading>
         <client-only>
-          <swiper :modules="[Navigation, Autoplay]" :breakpoints='props.breakpoints ? props.breakpoints : breakpointsDefault' :space-between="10" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" class="mySwiper">
+          <swiper :modules="[Navigation, Autoplay]" :breakpoints='props.breakpoints ? props.breakpoints : PRODUCT_LIST_SWIPER_DEFAULT' :space-between="10" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" :class="fullScreen ? 'pl-ms pr-ms':''">
             <swiper-slide v-for="(product, index) in props.items" :key="index">
               <ProductItemTemplate1 :product="product" :background="props.backgroundItem" />
             </swiper-slide>

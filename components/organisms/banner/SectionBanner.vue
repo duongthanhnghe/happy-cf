@@ -15,13 +15,13 @@ const props = withDefaults(defineProps<{
 })
 </script>
 <template>
-  <div class="container">
-    <div v-if="props.loading && props.items.length === 0">Đang tải dữ liệu...</div>
+  <div class="container container-xxl">
+    <LoadingData v-if="props.loading && props.items.length === 0" />
     <template v-else>
-      <div class="banner overflow-hidden rd-lg">
-        <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :space-between="0" :pagination="{ clickable: true }" :autoplay="{ delay: 5000, disableOnInteraction: false }" class="mySwiper">
+      <div class="banner overflow-hidden rd-lg shadow-2">
+        <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :space-between="0" :pagination="{ clickable: true }" :autoplay="{ delay: 5000, disableOnInteraction: false }">
           <swiper-slide v-for="item in props.items" :key="item.id">
-            <img :src="item.image" :alt="item.title" />
+            <img :src="item.image" :alt="item.title" class="w-full"/>
           </swiper-slide>
         </swiper>
       </div>

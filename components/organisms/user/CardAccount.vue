@@ -14,7 +14,11 @@ const storeHistoryReward = useHistoryRewardByUserStore();
 const props = defineProps({
   showBarcode: {
     type: Boolean,
-    default: true
+    default: false
+  },
+  showLevel: {
+    type: Boolean,
+    default: false
   },
 })
 
@@ -54,7 +58,7 @@ watchEffect(() => {
               <img :src="storeAccount.getDetailValue?.membership.barcode" alt="code" />
               {{ storeAccount.getDetailValue?.membership.code }}
           </div>
-          <div v-else class="mt-md">
+          <div v-if="props.showLevel" class="mt-md">
             <template v-if="storeAccount.getInformationMembershipLevel">
               <div class="text-size-normal weight-semibold mb-xs">
                 {{ formatCurrency(storeAccount.getDetailValue?.membership.point).replace('đ','') }}

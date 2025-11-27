@@ -8,7 +8,9 @@
   &-image {
     background-color: $cl-gray6;
     border-radius: $rd-lg;
+    text-align: center;
     position: relative;
+    padding: 1rem;
     img {
       border-radius: $rd-lg;
     }
@@ -159,6 +161,7 @@
         width: 87px;
         position: static;
         border: none;
+        padding: 0.25rem;
       }
       &-content {
         width: calc(100% - 87px);

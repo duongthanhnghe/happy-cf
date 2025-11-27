@@ -9,6 +9,7 @@ export function toPostNewsDTO(entity) {
         categoryId: entity.categoryId.toString(),
         views: entity.views,
         author: entity.author,
+        categoryName: entity.categoryName || undefined,
         // SEO
         titleSEO: entity.titleSEO,
         descriptionSEO: entity.descriptionSEO,

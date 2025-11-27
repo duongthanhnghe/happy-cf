@@ -8,11 +8,15 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useOrderMainHandlers } from '@/composables/order/useOrderMainHandlers';
 import { COLUMN } from '@/shared/constants/column';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
+import { watch } from 'vue';
+import { useRoute } from 'vue-router';
+
 definePageMeta({
   middleware: ROUTES.PUBLIC.ORDER.middleware,
   headerTypeLeft: ROUTES.PUBLIC.ORDER.headerTypeLeft,
 })
 
+const route = useRoute()
 const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeProductCategory = useProductCategoryStore()
@@ -20,6 +24,12 @@ const storeAccount = useAccountStore();
 const storeDisplay = useDisplayStore();
 
 const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProductSale, storeProductCategory)
+
+if (route.query.tab) tab.value = Number(route.query.tab)
+
+watch(() => route.query.tab, (newVal) => {
+  if (newVal) tab.value = Number(newVal)
+})
 
 </script>
 

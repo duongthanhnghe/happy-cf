@@ -1,0 +1,9 @@
+@use "@/assets/variables" as *;
+
+.home-page {
+  &-content {
+    border-radius: $rd-xl $rd-xl 0 0;
+    overflow: hidden;
+    background-color: $cl-white;
+  }
+}

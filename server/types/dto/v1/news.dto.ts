@@ -33,6 +33,7 @@ export interface PostNewsDTO {
   isActive: boolean
   views: number
   author: string
+  categoryName?: string
   // SEO
   titleSEO: string
   descriptionSEO: string

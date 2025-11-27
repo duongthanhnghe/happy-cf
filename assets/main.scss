@@ -138,6 +138,9 @@ a {
     }
   }
   &-height {
+    &-40 {
+      min-height: 40px;
+    }
     &-50 {
       min-height: 50px;
     }
@@ -219,6 +222,9 @@ body .bg {
   }
   &-gradient-1 {
     background: $cl-gradient-1;
+  }
+  &-gradient-2 {
+    background: $cl-gradient-2;
   }
   &-gray {
     background-color: $cl-gray;
@@ -433,8 +439,19 @@ body .bg {
   }
 }
 
-.pd-0 {
-  padding: 0 !important;
+.pd {
+  &-0 {
+    padding: 0 !important;
+  }
+  &-xs {
+    padding: $space-xs;
+  }
+  &-sm {
+    padding: $space-sm;
+  }
+  &-ms {
+    padding: $space-ms;
+  }
   &-lg {
     padding: $space-lg !important;
   }
@@ -977,6 +994,15 @@ body .bg {
   }
 }
 
+.left {
+  &-0 {
+    left: 0 !important;
+  }
+  &-1 {
+    left: 1rem !important;
+  }
+}
+
 .el-absolute {
   position: absolute;
   width: 100%;
@@ -1065,6 +1091,9 @@ body .bg {
   }
   &-sm {
     gap: $space-sm;
+  }
+  &-ms {
+    gap: $space-ms;
   }
   &-md {
     gap: $space-md;
