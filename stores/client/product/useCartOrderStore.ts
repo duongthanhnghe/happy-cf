@@ -2,19 +2,16 @@ import { computed } from "vue";
 import { useRouter, useRoute } from 'nuxt/app';
 import { defineStore } from "pinia";
 
-// Import stores
 import { useProductDetailStore } from "@/stores/client/product/useProductDetailStore";
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 
-// Import composables
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
 import { useEventBus } from "@/composables/voucher/useEventBus";
 import { useProductCartDetail } from '@/composables/product/useProductCartDetail';
 
-// Import 8 cart composables
 import { useCartState } from '@/composables/cart/useCartState';
 import { useCartProductOperations } from '@/composables/cart/useCartProductOperations';
 import { useCartPricing } from '@/composables/cart/useCartPricing';
@@ -29,7 +26,6 @@ import { useCartSharedUtils } from "@/composables/cart/useCartSharedUtils";
 import { useCartVoucherHandlers } from "@/composables/cart/useCartVoucherHandlers";
 
 export const useCartStore = defineStore("Cart", () => {
-  // External dependencies
   const storeProduct = useProductDetailStore();
   const storeAddress = useAddressesManageStore();
   const storeAccount = useAccountStore();
@@ -42,10 +38,8 @@ export const useCartStore = defineStore("Cart", () => {
   const router = useRouter();
   const route = useRoute();
 
-  // 1. Initialize state
   const state = useCartState();
 
-  // 2. Fetch product cart
   const fetchProductCart = async () => {
     const productIds = state.cartListItem.value.map((item: any) => item.product);
     await fetchCartProducts(productIds);
@@ -60,7 +54,6 @@ export const useCartStore = defineStore("Cart", () => {
     }
   };
 
-  // 3. Initialize pricing
   const pricing = useCartPricing(
     state.cartListItem,
     state.totalPriceCurrent,
@@ -75,7 +68,6 @@ export const useCartStore = defineStore("Cart", () => {
     state.isCalculating
   );
 
-  // 4. Override pricing calculation with voucher list
   const handleCalcTotalPriceCurrent = () => {
     pricing.handleCalcTotalPriceCurrent(storeAccount.getDetailValue?.membership?.discountRate);
     
@@ -105,7 +97,6 @@ export const useCartStore = defineStore("Cart", () => {
     options.clearTempSelected,
   );
 
-  // 5. Initialize utils
   const utils = useCartUtils(
     state.cartCount,
     state.cartListItem,
@@ -125,7 +116,6 @@ export const useCartStore = defineStore("Cart", () => {
     options.clearTempSelected,
   );
 
-  // 6. Initialize product operations
   const productOps = useCartProductOperations(
     state.cartListItem,
     state.cartCount,
@@ -144,7 +134,6 @@ export const useCartStore = defineStore("Cart", () => {
     utilShared.togglePopup as (popupId: string, value: boolean) => void,
   );
 
-  // 8. Initialize voucher
   const voucher = useCartVoucher(
     state.cartListItem,
     state.totalPriceCurrent,
@@ -163,7 +152,6 @@ export const useCartStore = defineStore("Cart", () => {
     route
   );
 
-  // 9. Initialize shipping
   const shipping = useCartShipping(
     state.cartListItem,
     state.totalPriceDiscount,
@@ -176,7 +164,6 @@ export const useCartStore = defineStore("Cart", () => {
     state.activeFreeshipVoucher
   );
 
-  // 10. Initialize order
   const order = useCartOrder(
     state.cartListItem,
     state.informationOrder,
@@ -195,7 +182,6 @@ export const useCartStore = defineStore("Cart", () => {
     storeLocation
   );
 
-  // Wrapper functions
   const addProductToCart = (product: any, quantity: number, note: string) => {
     return productOps.addProductToCart(
       product,
@@ -206,7 +192,6 @@ export const useCartStore = defineStore("Cart", () => {
     );
   };
   
-
   const submitOrder = async () => {
     await order.submitOrder(
       storeAccount.getDetailValue?.id,
@@ -219,17 +204,17 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const handlesVoucher = useCartVoucherHandlers(
-  state.selectedFreeship,
-  state.selectedVoucher,
-  state.voucherCode,
-  state.discountVoucher,
-  state.discountVoucherFreeship,
-  state.activeFreeshipVoucher,
-  state.voucherUsage,
-  state.messageVoucher,
-  applyVoucher,
-  handleCalcTotalPriceCurrent,
-);
+    state.selectedFreeship,
+    state.selectedVoucher,
+    state.voucherCode,
+    state.discountVoucher,
+    state.discountVoucherFreeship,
+    state.activeFreeshipVoucher,
+    state.voucherUsage,
+    state.messageVoucher,
+    applyVoucher,
+    handleCalcTotalPriceCurrent,
+  );
 
   const handleCheckPoint = async () => {
     await utils.handleCheckPoint(storeAccount.getDetailValue?.id);
@@ -239,7 +224,6 @@ export const useCartStore = defineStore("Cart", () => {
     await utils.handleGetDefaultAddress(storeAccount.getDetailValue?.id);
   };
 
-  // Getters
   const getCartCount = computed(() => state.cartCount.value);
   const getCartListItem = computed(() => state.cartListItem.value);
   const getIsTogglePopup = computed(() => state.isTogglePopup.value);
@@ -259,7 +243,6 @@ export const useCartStore = defineStore("Cart", () => {
   const getMaxPointCanUse = computed(() =>  Math.floor(state.totalPriceDiscount.value * 0.1));
   
   return {
-    // State
     ...state,
     ...utilShared,
     // Product operations

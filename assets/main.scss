@@ -219,6 +219,9 @@ body .bg {
   }
   &-black {
     background-color: $cl-black;
+    &-40 {
+      background-color: rgba($cl-black, 0.4);
+    }
   }
   &-black2 {
     background-color: $cl-black2;
@@ -308,7 +311,7 @@ body .bg {
     box-shadow: 0px 1px 0px 0px #ffffff54 inset;
     box-shadow: 0px 3px 4px -1px #00000026;
   }
-  &-primary {
+  &-primary, &-primary[type=submit] {
     background-color: $cl-primary;
     border-color: $cl-primary;
     color: $cl-white;

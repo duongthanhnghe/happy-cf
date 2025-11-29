@@ -49,6 +49,10 @@ onBeforeUnmount(() => {
       <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
     </template>
 
+    <template #item.banner="{ item }">
+      <v-img v-if="item.banner" :src="item.banner" max-height="60" class="rounded" />
+    </template>
+
     <template #item.parentId="{ item }">
       <v-chip label v-if="item.parentId">
         {{ store.getCategoryName(item.parentId)?.categoryName }}

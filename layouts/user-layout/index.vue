@@ -31,7 +31,7 @@ watch(() => route.fullPath, () => {
   <div :class="['min-height-dvh pb-section',storeDisplay.isLaptop ? 'bg-gray2':'bg-gray6']">
     <Header :type-left="storeLayout.headerTypeLeft"/>
     <template v-if="storeDisplay.isLaptop">
-      <SectionAccount :showBarcode="false"/>
+      <SectionAccount showLevel />
       <div class="container">
         <div class="row">
           <div class="col-12 col-lg-3">

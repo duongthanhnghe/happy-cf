@@ -65,7 +65,7 @@ const handleShowAction = () => {
     <div v-else>
       <div v-if="storeCart.getTemplate1Amount(product.id) < 1">
         <Button v-if="product.options.length > 0" color="primary" size="xs" class="product-template1-plus" @click="storeCart.getProductDetailApi(product.id)">
-          <MaterialIcon name="check_indeterminate_small" />
+          <MaterialIcon name="add" />
         </Button>
         <Button v-else class="product-template1-plus" color="primary" size="xs" @click="storeCart.addProductToCart(product, 1, '')">
           <MaterialIcon name="add" />
@@ -87,7 +87,7 @@ const handleShowAction = () => {
       <div v-if="storeCart.getTemplate1Amount(product.id) == 1" class="product-template1-delete" @click="storeCart.deleteCart(product.id)">
         <MaterialIcon name="delete" />
       </div>
-      <Button class="product-template1-input-btn" icon="check_indeterminate_small" @click.prevent="storeCart.updateQuantity(product.id,false)" />
+      <Button class="product-template1-input-btn" icon="add" @click.prevent="storeCart.updateQuantity(product.id,false)" />
       <div class="product-template1-input-quantity">{{ storeCart.getTemplate1Amount(product.id) }}</div>
       <Button class="product-template1-input-btn" icon="add" @click.prevent="storeCart.updateQuantity(product.id,true)" />
     </div>

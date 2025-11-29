@@ -47,10 +47,10 @@ const storeProductMostOrder = useProductMostOrderStore()
           </template>
         </div>
         <template #load-more="{ props }">
-          <Button color="secondary" label="Tải thêm" @click="props.onClick" />
+          <Button color="secondary" label="Xem thêm" @click="props.onClick" />
         </template>
       </v-infinite-scroll>
-      <NoData v-else-if="store.getListProductResult && store.getListProductResult.length === 0" class="mt-sm" text="Khong co ket qua phu hop" />
+      <NoData v-else-if="store.getListProductResult && store.getListProductResult.length === 0" class="mt-sm" text="Không có kết quả phù hợp" />
       <template v-else></template>
 
       <div v-if="store.getListSearchKeyword && store.getListSearchKeyword.length > 0 && (!store.getListProductResult || store.getListProductResult.length === 0)" class="flex flex-wrap gap-xs mt-sm">
@@ -59,8 +59,8 @@ const storeProductMostOrder = useProductMostOrderStore()
         </div>
       </div>
 
-      <div v-if="storeProductMostOrder.getListProductMostOrder.length > 0" class="mt-md">
-        <SectionProductListSwiper :items="storeProductMostOrder.getListProductMostOrder" :loading="storeProductMostOrder.loading" :breakpoints="POPUP_HEADER_SEARCH" headingText="Gợi ý cho ban" />
+      <div v-if="storeProductMostOrder.getListProductMostOrder.length > 0" class="mt-md pb-mt">
+        <SectionProductListSwiper :items="storeProductMostOrder.getListProductMostOrder" :loading="storeProductMostOrder.loading" :breakpoints="POPUP_HEADER_SEARCH" headingText="Gợi ý cho bạn" />
       </div>
 
     </template>

@@ -24,7 +24,7 @@ const props = defineProps<{
     </Text>
     <div class="row row-xs">
       <div class="col-6">
-        <LabelInput label="Giờ lấy hang" required/>
+        <LabelInput label="Giờ lấy hàng" required/>
         <v-text-field type="time" v-model="store.informationOrder.time" required :rules="store.timeRules" variant="outlined" />
       </div>
       <div class="col-6">
@@ -52,10 +52,10 @@ const props = defineProps<{
           />
       </div>
       <div class="col-4">
-        <LabelInput label="Quan huyen" required/>
+        <LabelInput label="Quận/Huyện" required/>
           <v-autocomplete
           v-model="storeLocation.selectedDistrict"
-            label="Chọn quan huyen"
+            label="Chọn Quận/Huyện"
             :items="storeLocation.getListDistricts ?? []"
             item-title="DISTRICT_NAME"
             item-value="DISTRICT_ID"
@@ -64,10 +64,10 @@ const props = defineProps<{
           />
       </div>
       <div class="col-4">
-        <LabelInput label="Phuong xa" required/>
+        <LabelInput label="Phường/Xã" required/>
         <v-autocomplete
           v-model="storeLocation.selectedWard"
-            label="Chọn phuong xa"
+            label="Chọn Phường/Xã"
             :items="storeLocation.getListWards ?? []"
             item-title="WARDS_NAME"
             item-value="WARDS_ID"
@@ -77,12 +77,12 @@ const props = defineProps<{
       </div>
     </div>
 
-    <Text text="Thanh toan" color="black" size="md" weight="semibold" class="mb-sm" />
+    <Text text="Thanh toán" color="black" size="md" weight="semibold" class="mb-sm" />
     <v-radio-group inline v-model="store.paymentSelected" class="payment-template1-group" nameRadio="namePayment">
       <PaymentItemTemplate1 v-for="(item, index) in storePaymentStatus.getListData" :key="index" :item="item" />
     </v-radio-group>
 
-    <Text text="Ghi chu" color="black" size="md" weight="semibold" class="mb-sm" />
+    <Text text="Ghi chú" color="black" size="md" weight="semibold" class="mb-sm" />
     <v-textarea class="mb-0" :rows="5" v-model="store.informationOrder.note" variant="outlined" hide-details />
   </Card>
 </template>

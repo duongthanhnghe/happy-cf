@@ -10,11 +10,11 @@ export const useCartState = () => {
   const timeRules = [
     (value: string) => {
       if (value) return true
-      return 'Thoi gian khong duoc trong'
+      return 'Thời gian lấy hàng không được trống!'
     },
     (value: string | null) => {
       if (timeCurrent !== null && value !== null && timeCurrent < value) return true
-      return 'Thoi gian khong hop le'
+      return 'Thời gian lấy hàng không hợp lệ!'
     },
   ];
 

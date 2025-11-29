@@ -32,7 +32,7 @@ export const useCartOrder = (
     if (!confirm) return;
 
     if (shippingFee.value === 0) {
-      showWarning('Khong tinh duoc phi van chuyen');
+      showWarning('Vui lòng điền thông tin nhận hàng');
       return;
     }
 
@@ -87,7 +87,7 @@ export const useCartOrder = (
       
       if (result.code === 0 && result.data.id) {
         if (paymentSelected.value === PAYMENT_STATUS.BANK) {
-          showSuccess('Đặt hàng thành công, vui long thanh toan!');
+          showSuccess('Đặt hàng thành công, vui lòng thanh toán đơn hàng!');
           router.push({
             path: ROUTES.PUBLIC.PAYMENT.path,
             query: {
@@ -107,10 +107,10 @@ export const useCartOrder = (
 
           showConfirm(
             "Đặt hàng thành công",
-            "Đơn hàng của bạn đang đuợc tiêp nhân và xử lý",
+            "Đơn hàng của bạn đang đuợc tiếp nhận và xử lý",
             'success',
-            'Theo doi don hang',
-            'Ve trang chu',
+            'Theo dõi đơn hàng',
+            'Về trang chủ',
             () => handleSubmitOk(result.data.id),
             handleSubmitCancel
           );

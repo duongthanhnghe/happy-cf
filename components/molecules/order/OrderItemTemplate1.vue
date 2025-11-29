@@ -25,19 +25,15 @@ const props = defineProps<{
       <div class="flex gap-xs position-relative">
         <template v-for="(itemImage, index) in props.item?.cartItems" :key="index" >
           <img v-if="index < 3 && itemImage.idProduct.image" :class="[storeDisplay.isLaptop ? 'bg-white':'bg-gray6','rd-lg']" width="50" :src="itemImage.idProduct.image" :alt="itemImage.idProduct.productName" />
-          <span v-else class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black opacity-per40 rd-lg">+{{ props.item?.cartItems.length - 3 }}</span>
+          <span v-else-if="index < 4" class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ props.item?.cartItems.length - 3 }}</span>
+          <template v-else />
         </template>
       </div>
       <div class="text-color-gray5">
         <div class="mb-xs">
           {{ props.item?.address }}
         </div>
-        <div class="flex align-center gap-xs line-height-1">
-          <span class="text-color-black weight-semibold text-size-normal">{{ formatCurrency(props.item?.totalPrice) }}</span>
-          <div class="text-size-xs">
-          ({{ props.item?.cartItems.length }} mon)
-          </div>
-        </div>
+        <span class="text-color-black weight-semibold text-size-normal">{{ formatCurrency(props.item?.totalPrice) }}</span>
       </div>
     </div>
     <div class="flex justify-between align-center">
@@ -46,13 +42,13 @@ const props = defineProps<{
           <img width="20" :src="props.item?.paymentId.image" alt="icon" class="mr-xs"/>
           {{ props.item?.paymentId.name }}
         </v-chip>
-        <Button v-if="props.item?.transaction === null && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handlePaymentOrder(props.item?.id, props.item?.code, props.item?.totalPrice)" size="sm" color="black" label="Thanh toan"/>
+        <Button v-if="props.item?.transaction === null && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handlePaymentOrder(props.item?.id, props.item?.code, props.item?.totalPrice)" size="sm" color="black" label="Thanh toán"/>
       </div>
       <div class="flex gap-xs">
         <template v-if="storeDisplay.isLaptop">
           <template v-if="props.item?.status.id === ORDER_STATUS.PENDING || props.item?.status.id === ORDER_STATUS.CANCELLED">
-            <Button v-if="!props.item?.cancelRequested && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handleCancelOrder(props.item?.id, props.item?.userId)" size="sm" color="secondary" label="Yeu cau huy don"/>
-            <Button v-else-if="props.item?.cancelRequested" v-tooltip.left="'Da gui yeu cau huy don den admin'" tag="span" size="sm" color="gray" :border="false" label="Da yeu cau" />
+            <Button v-if="!props.item?.cancelRequested && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handleCancelOrder(props.item?.id, props.item?.userId)" size="sm" color="secondary" label="Yêu cầu huỷ đơn"/>
+            <Button v-else-if="props.item?.cancelRequested" v-tooltip.left="'Đã gửi yêu cầu huỷ đơn đến admin'" tag="span" size="sm" color="gray" :border="false" label="Đã yêu cầu" />
             <template v-else />
           </template>
         </template>

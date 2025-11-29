@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ROUTES } from '@/shared/constants/routes'
 import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
-import { IMAGE_AUTH_LOGIN } from '@/const/image'
 import { useDisplayStore } from "@/stores/shared/useDisplayStore";
 import { onBeforeUnmount } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
@@ -24,7 +23,7 @@ onBeforeUnmount(() => {
 
 <template>
   <template v-if="detail" >
-    <Breadcrumb :heading="detail.categoryName" :description="`${storeCategoryMain.getTotalItems} Ket qua`" :image="IMAGE_AUTH_LOGIN">
+    <Breadcrumb :heading="detail.categoryName" :description="`${storeCategoryMain.getTotalItems} Ket qua`" :image="storeCategoryMain.listBannerCategory">
       <slot>
         <div v-if="storeDisplay.isMobileTable" id="filter-product">
           <ProductFilterMobile :categoryName="detail.categoryName" />

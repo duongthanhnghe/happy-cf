@@ -10,9 +10,11 @@ const props = withDefaults(defineProps<{
   container?: string
   column?: string
   variant?: string
+  deleteFavorite?: boolean
 }>(), {
   items: () => [],
   loading: false,
+  deleteFavorite: false,
 })
 </script>
 
@@ -26,7 +28,7 @@ const props = withDefaults(defineProps<{
         </Heading>
         <div :class="COLUMN.ROW">
           <div v-for="(product, index) in props.items" :key="index" :class="column ? column : 'col-6 mb-sm'">
-            <ProductItemTemplate1 :product="product" :background="props.backgroundItem" :variant="props.variant" :deleteFavorite="true"/>
+            <ProductItemTemplate1 :product="product" :background="props.backgroundItem" :variant="props.variant" :deleteFavorite="props.deleteFavorite" />
           </div>
         </div>
       </template>

@@ -20,12 +20,12 @@ watch(() => store.getListData, (newVal) => {
   <Popup
     popupId="popup-membership-info"
     v-model="storeAccount.isTogglePopupMembershipInformation"
-    popupHeading="Hang thanh vien"
+    popupHeading="Hạng thành viên"
     bodyClass="bg-gray2 pd-0"
     align="right"
   >
     <template #body>
-      <CardAccount :showBarcode="false" />
+      <CardAccount showLevel />
 
       <LoadingData v-if="store.loading && store.getListData.length === 0" />
       <template v-else>

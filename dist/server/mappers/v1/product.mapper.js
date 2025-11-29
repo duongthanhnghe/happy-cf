@@ -48,6 +48,7 @@ export function toCategoryProductDTO(entity) {
         categoryName: entity.categoryName,
         description: entity.description || "",
         image: entity.image,
+        banner: entity.banner,
         order: entity.order,
         isActive: entity.isActive,
         parentId: entity.parentId ? entity.parentId.toString() : "",

@@ -71,7 +71,7 @@ const infoItems = [
       @click="storeAccountEdit.handleTogglePopupChangePassword"
     />
 
-    <Text :text="`Tham gia ngay ${formatDateTime(user.membership.joinedAt,'vi-VN',false)}`" color="gray4" align="center" class="mt-sm" />
+    <Text :text="`Tham gia ngày ${formatDateTime(user.membership.joinedAt,'vi-VN',false)}`" color="gray4" align="center" class="mt-sm" />
 
   </Card>
 

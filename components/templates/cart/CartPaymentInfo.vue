@@ -13,25 +13,25 @@ const props = defineProps<{
 <template>
   <Card class="rd-xl mt-sm shadow-1 mt-ms">
     <div class="flex gap-xs align-baseline">
-      <Text text="Chi tiet thanh toan" color="black" size="md" weight="semibold" />
-      <Text v-if="!storeDisplay.isMobileTable" color="green" :text="`(Tiet kiem: ${ formatCurrency(store.getTotalPriceSave)})`" />
+      <Text text="Chi tiết thanh toán" color="black" size="md" weight="semibold" />
+      <Text v-if="!storeDisplay.isMobileTable" color="green" :text="`(Tiết kiệm: ${ formatCurrency(store.getTotalPriceSave)})`" />
     </div>
 
     <div class="line-height-1 flex justify-between mt-sm">
-      <Text color="gray5" text="Thanh tien" />
+      <Text color="gray5" text="Thành tiền" />
       <Text size="md" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }} </Text>
     </div>
 
     <Text v-if="store.getTotalPriceSave != 0" color="gray5" class="flex justify-between mt-xs">
-    Don hang <span>{{ formatCurrency(store.getTotalPriceCurrent) }}</span>
+    Đơn hàng <span>{{ formatCurrency(store.getTotalPriceCurrent) }}</span>
     </Text>
 
     <Text color="gray5" class="flex justify-between mt-xs">
-    Phi van chuyen: <span>{{ formatCurrency(store.getShippingFee) }}</span>
+    Phí vận chuyển: <span>{{ formatCurrency(store.getShippingFee) }}</span>
     </Text>
 
     <Text v-if="store.discountVoucherFreeship" color="gray5" class="flex justify-between mt-xs">
-    Voucher phi van chuyen: <span>-{{ formatCurrency(store.discountVoucherFreeship) }}</span>
+    Voucher phí vận chuyển: <span>-{{ formatCurrency(store.discountVoucherFreeship) }}</span>
     </Text>
 
     <Text v-if="store.discountVoucher" color="gray5" class="flex justify-between mt-xs">
@@ -39,19 +39,19 @@ const props = defineProps<{
     </Text>
 
     <Text v-if="store.getOrderPriceDiscount != 0" color="gray5" class="flex justify-between mt-xs">
-    Giam don hang <span>-{{ formatCurrency(store.getOrderPriceDiscount) }}</span>
+    Giảm đơn hàng <span>-{{ formatCurrency(store.getOrderPriceDiscount) }}</span>
     </Text>
 
     <Text v-if="store.usedPointOrder.usedPoint != 0" color="gray5" class="flex justify-between mt-xs">
-    Point <span>-{{ formatCurrency(store.usedPointOrder.usedPoint) }}</span>
+    Điểm sử dụng <span>-{{ formatCurrency(store.usedPointOrder.usedPoint) }}</span>
     </Text>
 
     <Text v-if="store.totalDiscountRateMembership != 0" color="gray5" class="flex justify-between mt-xs">
-    Uu dai thanh vien <span>-{{ formatCurrency(store.totalDiscountRateMembership) }}</span>
+    Ưu đãi thành viên <span>-{{ formatCurrency(store.totalDiscountRateMembership) }}</span>
     </Text>
 
     <Text v-if="store.getTotalPriceDiscount != 0 && props.userId" color="gray5" class="flex justify-between mt-xs">
-      Hoan tien point
+      Hoàn điểm thưởng
       <Text color="danger" :text="`+${ formatCurrency(store.getTotalPoint).replace('đ','') }`" />
     </Text>
 
@@ -64,35 +64,35 @@ const props = defineProps<{
             <MaterialIcon name="keyboard_arrow_right"/>
           </div>
           <Text v-else color="gray5" class="line-height-1 flex align-center gap-xs">
-            Chon voucher
+            Chọn voucher
             <MaterialIcon name="keyboard_arrow_right"/>
           </Text>
         </div>
 
         <div v-if="props.userId" class="flex justify-between cart-mb-submit-item" @click.prevent="store.handleTogglePopupPoint(true)">
-          <Text color="gray5" text="Point" />
+          <Text color="gray5" text="Sử dụng điểm" />
           <Text v-if="!store.usedPointOrder.pointInput" color="gray5" class="line-height-1 flex align-center gap-xs">
-            Dang co: {{ formatCurrency(props.balancePoint).replace('đ','') }}
+            Đang có: {{ formatCurrency(props.balancePoint).replace('đ','') }}
             <MaterialIcon name="keyboard_arrow_right"/>
           </Text>
           <Text v-else color="gray5" class="line-height-1 flex align-center gap-xs">
-            Su dung: <Text color="primary" weight="semibold" :text="formatCurrency(store.usedPointOrder.pointInput).replace('đ','')" />
-            <MaterialIcon name="keyboard_arrow_right"/>
+            Sử dụng: <Text color="primary" weight="semibold" :text="formatCurrency(store.usedPointOrder.pointInput).replace('đ','')" />
+            <MaterialIcon name="keyboard_arrow_right" />
           </Text>
         </div>
 
         <div class="flex justify-between">
           <div>
-          <Text color="gray5" text="Thanh tien" />
-          <Text color="green" :text="`Tiet kiem: ${ formatCurrency(store.getTotalPriceSave) }`" />
+          <Text color="gray5" text="Thành tiền" />
+          <Text color="green" :text="`Tiết kiệm: ${ formatCurrency(store.getTotalPriceSave) }`" />
           </div>
           <Text size="md" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }} </Text>
         </div>
-        <Button type="submit" label="Dat hang" color="primary" class="mt-xs w-full" />
+        <Button type="submit" label="Đặt hàng" color="primary" class="mt-xs w-full" />
       </div>
     </template>
     <template v-else>
-      <Button type="submit" label="Dat hang" color="primary" class="mt-sm w-full" />
+      <Button type="submit" label="Đặt hàng" color="primary" class="mt-sm w-full" />
     </template>
   </Card>
 </template>

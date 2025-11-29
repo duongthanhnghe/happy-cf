@@ -9,9 +9,9 @@ const storeAccount = useAccountStore();
 <template>
   <Popup v-model="store.isTogglePopupVoucher" popupHeading="Voucher giảm giá" bodyClass="bg-gray6" footerFixed align="right">
     <template #body>
-      <div v-if="store.allVouchers?.length">
+      <div v-if="store.allVouchers?.length > 0">
         <div v-if="store.selectedVoucher || store.selectedFreeship" class="mb-md">
-          <Text text="Voucher dang ap dung" color="black" size="normal" weight="semibold" class="mb-sm" />
+          <Text text="Voucher đang áp dụng" color="black" size="normal" weight="semibold" class="mb-sm" />
           <div v-if="store.voucherUsage.length > 0" class="flex gap-xs flex-wrap mb-sm">
             <CartVoucherChoose />
           </div>
@@ -27,15 +27,16 @@ const storeAccount = useAccountStore();
           <div class="shape-loading" v-if="store.loadingAllVouchers">
             <v-progress-circular indeterminate ></v-progress-circular>
           </div>
-          <div v-if="store.allVouchers?.length" class="flex flex-direction-column gap-sm">
+          <div v-if="store.allVouchers?.length > 0" class="flex flex-direction-column gap-sm">
             <CartVoucherList />
           </div>
         </div>
       </div>
+      <NoData v-else text="Không có voucher nào" />
     </template>
     <template #footer>
       <div class="text-center">
-        <Button color="black" label="Tiep tuc thanh toan" @click.prevent="store.handleTogglePopupVoucher(false)"/>
+        <Button color="black" label="Tiếp tục thanh toán" @click.prevent="store.handleTogglePopupVoucher(false)"/>
       </div>
     </template>
   </Popup>

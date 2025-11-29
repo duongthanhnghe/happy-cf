@@ -21,7 +21,7 @@ onMounted(async() => {
 <Popup
     popupId="popup-cart" 
     v-model="store.isTogglePopup" 
-    popupHeading="Gio hang" 
+    popupHeading="Giỏ hàng" 
     bodyClass="bg-gray6 popup-cart-body" 
     footerFixed 
     align="right"
@@ -41,9 +41,9 @@ onMounted(async() => {
       </template>
     
       <Text color="gray5" textClass="mt-sm flex gap-xs justify-end align-baseline">
-        <Text text="Tam tinh:"/>
+        <Text text="Tạm tính:"/>
         <Text color="black" size="md" weight="semibold" :text="`${formatCurrency(store.getTotalPriceCurrent - store.getOrderPriceDiscount)}`"/>
-        <Text :text="`(${store.getCartCount} san pham)`"/>
+        <Text :text="`(${store.getCartCount} sản phẩm)`"/>
       </Text>
     </template>
     <div v-else>
@@ -53,7 +53,7 @@ onMounted(async() => {
   <template #footer>
     <template v-if="store.getCartListItem && store.getCartListItem.length > 0">
       <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
-        <Button tag="div" label="Dat hang" color="primary" class="w-full" />
+        <Button tag="div" label="Đặt hàng" color="primary" class="w-full" />
       </NuxtLink>
     </template>
   </template>

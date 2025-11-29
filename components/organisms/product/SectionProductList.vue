@@ -52,6 +52,9 @@ watch(mappedData, (val) => {
         rel="js-section-scroll"
         class="product-list-section"
         >
+        <template v-if="category.banner">
+          <img :src="category.banner" :alt="category.categoryName" :class="[storeDisplay.isLaptop ? 'rd-xl mt-lg':'rd-lg mt-ms','w-full']" />
+        </template>
         <div class="product-list-section-top bg-gray6">
           <Text :size="storeDisplay.isLaptop ? 'xl':'md'" weight="semibold" color="black">
             <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`">
@@ -60,7 +63,7 @@ watch(mappedData, (val) => {
           </Text>
           <div v-if="category.children && category.children.length > 1" class="product-list-section-button scroll-hide flex gap-xs">
             <Button
-              v-for="item in [{ id: category.id, categoryName: 'Tat ca' }, ...category.children]"
+              v-for="item in [{ id: category.id, categoryName: 'Tất cả' }, ...category.children]"
               :key="item.id"
               :label="item.categoryName"
               :class="['weight-medium ',{ 'active': store.filterCategory[category.id] === item.id }]"
@@ -94,7 +97,7 @@ watch(mappedData, (val) => {
           </div>
           <template #load-more="{ props }">
             <div :class="category.products.pagination.totalPages === 1 ? '_hidden':''">
-              <Button color="secondary" label="Tải thêm" @click="props.onClick" />
+              <Button color="secondary" label="Xem thêm" @click="props.onClick" />
             </div>
           </template>
         </v-infinite-scroll>

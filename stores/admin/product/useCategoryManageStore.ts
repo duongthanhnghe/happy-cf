@@ -26,6 +26,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     categoryName: '',
     description: '',
     image: '',
+    banner: '',
     isActive: false,
     parentId: null,
     titleSEO: '',
@@ -51,6 +52,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Hinh anh', key: 'image', sortable: false, },
+    { title: 'Banner', key: 'banner', sortable: false, },
     { title: 'Ten danh muc', sortable: false, key: 'categoryName'},
     { title: 'Mo ta', key: 'description', sortable: false, },
     { title: 'Danh muc cha', key: 'parentId', sortable: false, },
@@ -71,6 +73,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
   const isTogglePopupUpdate = ref<boolean>(false);
   const detailData = ref<CategoryProductDTO | null>(null);
   const isTogglePopupAdd = ref<boolean>(false);
+  const currentImageType = ref<'image' | 'banner' | null>(null)
 
   //utils handle
   const handleTogglePopupAdd = (value: boolean) => {
@@ -255,16 +258,24 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     return Array.from({ length: maxOrder.value }, (_, i) => i + 1)
   })
 
-
   //upload image
-  const handleAddImage = () => {
-    storeFileManage.handleTogglePopup(true)
+  const handleAddImage = (type: 'image' | 'banner') => {
+    currentImageType.value = type;
+    storeFileManage.handleTogglePopup(true);
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {
     if (!newValue) return
+
     const target = updateCategoryItem.id ? updateCategoryItem : formCategoryItem
-    target.image = newValue.url
+
+    if (currentImageType.value === 'image') {
+      target.image = newValue.url
+    } else if (currentImageType.value === 'banner') {
+      target.banner = newValue.url
+    }
+
+    currentImageType.value = null
   })
 
 

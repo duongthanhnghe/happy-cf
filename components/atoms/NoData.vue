@@ -4,7 +4,7 @@ import { IMAGE_EMPTY_DEFAULT } from '@/const/image'
 const props = defineProps({
   text: {
     type: String,
-    default: 'Khong co du lieu',
+    default: 'Không có dữ liệu',
   },
   image: {
     type: String,

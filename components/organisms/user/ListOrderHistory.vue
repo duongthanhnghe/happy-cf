@@ -37,7 +37,7 @@ const { isStuck } = useStickyObserver('tabsSticky')
           <template #load-more="{ props }">
             <Button
               color="secondary"
-              label="Tải thêm"
+              label="Xem thêm"
               @click="props.onClick"
             />
           </template>

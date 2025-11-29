@@ -55,6 +55,7 @@ const CategoryProductSchema = new Schema({
     categoryName: { type: String, required: true, trim: true },
     description: { type: String },
     image: { type: String, required: true },
+    banner: { type: String },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
     parentId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", default: null },

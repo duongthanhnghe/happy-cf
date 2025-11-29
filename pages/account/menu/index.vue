@@ -14,12 +14,12 @@ const listMenu = [
 </script>
 <template>
   <div :class="['min-height-dvh',storeDisplay.isLaptop ? 'bg-gray2':'bg-gray6']">
-    <SectionAccount :showBarcode="false"/>
+    <SectionAccount showLevel/>
     <div class="container">
       <div class="pt-ms">
         <MenuAccount :menu="listMenu" heading="Tài khoản"/>
         <div class="flex justify-center">
-          <Button @click.prevent="store.handleLogout()" color="danger" class="bg-gray6 mt-sm" icon="logout" label="Dang xuat" />
+          <Button @click.prevent="store.handleLogout()" color="danger" class="bg-gray6 mt-sm" icon="logout" label="Đăng xuất" />
         </div>
       </div>
     </div>

@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { formatDateTime } from '@/utils/global'
-import { useProductReviewByUserStore } from '@/stores/client/product-review/useProductReviewByUserStore';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import type { ProductReviewWithProductDTO } from '@/server/types/dto/v1/product-review.dto';
 
-const store = useProductReviewByUserStore();
 const storeAccount = useAccountStore();
 const storeDisplay = useDisplayStore()
 const props = defineProps<{
@@ -29,8 +27,10 @@ const props = defineProps<{
       ></v-rating>
     </div>
 
-    <div :class="['flex gap-sm align-center mt-md mb-md rd-lg', storeDisplay.isLaptop ? 'bg-white':'bg-gray6']">
-      <img class="rd-lg" :src="props.item.productId.image" :alt="props.item.productId.productName" width="50"/>
+    <div :class="['flex gap-xs align-center mt-md mb-md rd-lg', storeDisplay.isLaptop ? 'bg-white':'bg-gray6']">
+      <div class="pd-xs">
+        <img class="rd-lg" :src="props.item.productId.image" :alt="props.item.productId.productName" width="40"/>
+      </div>
       <Text :text="props.item.productId.productName" limit="2" />
     </div>
 

@@ -10,7 +10,7 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <Popup v-model="store.isTogglePopupPoint" popupHeading="Su dung Point" bodyClass="bg-gray6" footerFixed align="right">
+  <Popup v-model="store.isTogglePopupPoint" popupHeading="Sử dụng điểm" bodyClass="bg-gray6" footerFixed align="right">
     <template #body >
       <template v-if="props.userId">
         <CardPointInfo v-if="props.balancePoint && props.totalPendingPoints" :balancePoint="props.balancePoint" :totalPendingPoints="props.totalPendingPoints" class="mb-lg"/>
@@ -22,9 +22,9 @@ const props = defineProps<{
         <div class="mb-md">
           <Text weight="semibold" color="black" class="text-uppercase" text="Lưu ý" />
           <ul class="list-disc pl-lg">
-            <li class="mt-xs">Point bạn áp dụng cho đơn hàng sẽ được khấu trừ từ tài khoản của bạn sau khi bạn nhấp vào <span class="weight-bold">"Thanh toán"</span>.</li>
+            <li class="mt-xs">Điểm bạn áp dụng cho đơn hàng sẽ được khấu trừ từ tài khoản của bạn sau khi bạn nhấp vào <span class="weight-bold">"Thanh toán"</span>.</li>
             <li class="mt-xs">Bạn có thể hủy đơn hàng trong <span class="weight-bold">"Lịch sử đơn hàng"</span> số Point bạn đã áp dụng sẽ hoàn lại tài khoản của bạn.</li>
-            <li class="mt-xs">Point có thể được sử dụng lên tới <span class="weight-bold">0% tổng giá trị thanh toán</span>.</li>
+            <li class="mt-xs">Điểm có thể được sử dụng lên tới <span class="weight-bold">0% tổng giá trị thanh toán</span>.</li>
           </ul>
         </div>
 
@@ -32,7 +32,7 @@ const props = defineProps<{
           <Button color="primary" label="Hướng dẫn Point" />
         </NuxtLink>
       </template>
-      <NoData v-else text="Vui long dang nhap de su dung"/>
+      <NoData v-else text="Vui lòng đăng nhập để sử dụng điểm"/>
     </template>
   </Popup>
 </template>

@@ -1,4 +1,3 @@
-import type { Ref } from 'vue';
 import { watchEffect, ref } from 'vue';
 export const useOrderMainHandlers = async (
   storeProductMostOrder: any,
@@ -9,7 +8,7 @@ export const useOrderMainHandlers = async (
   const tab = ref<number|null>(null)
   const tabs = [
     { value: 1, icon: 'category', label: 'Menu' },
-    { value: 2, icon: 'local_fire_department', label: 'Top 10' },
+    { value: 2, icon: 'local_fire_department', label: 'Bán chạy' },
     { value: 3, icon: 'percent', label: 'Khuyến mãi' },
   ]
 

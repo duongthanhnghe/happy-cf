@@ -50,10 +50,11 @@ export interface CategoryProductDTO {
   categoryName: string;
   description: string;
   image: string;
+  banner?: string;
   order: number;
   isActive: boolean;
   parentId: string | null;
-  children?: CategoryProductDTO[];
+  children?: CategoryProductDTO[] | null;
   //SEO
   titleSEO: string;
   descriptionSEO: string;
@@ -96,19 +97,9 @@ export interface SelectedOptionPushDTO {
   variantPrice: number
 }
 
-// export interface CartDTO extends ProductDTO {
-//   product: ProductDTO | string;
-//   productKey?: string
-//   note?: string
-//   finalPriceDiscounts?: number
-//   quantity: number
-//   finalPrice?: number
-//   selectedOptionsPush?: SelectedOptionPushDTO[] | null
-// }
-
 export interface CartDTO {
-  id?: string; // optional nếu FE không dùng
-  product: string | ProductDTO; // <-- lúc đầu chỉ là string (id), sau khi merge là object
+  id?: string;
+  product: string | ProductDTO;
   productKey?: string;
   quantity: number;
   note?: string;

@@ -14,7 +14,7 @@ const store = useHistoryRewardByUserStore();
       <RewardItemTemplate1 :item="item"/>
     </div>
     <template #load-more="{ props }">
-      <Button color="secondary" label="Tải thêm" @click="props.onClick" />
+      <Button color="secondary" label="Xem thêm" @click="props.onClick" />
     </template>
   </v-infinite-scroll>
   <NoData v-else />

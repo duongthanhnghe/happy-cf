@@ -33,7 +33,7 @@ const { isStuck } = useStickyObserver('tabsReview')
         <ProductReviewItemTemplate3 :item="item" v-else />
       </div>
       <template #load-more="{ props }">
-        <Button color="secondary" label="Tải thêm" @click="props.onClick" />
+        <Button color="secondary" label="Xem thêm" @click="props.onClick" />
       </template>
     </v-infinite-scroll>
   </div>

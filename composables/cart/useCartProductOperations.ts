@@ -1,4 +1,4 @@
-import { showWarning, showSuccess, showConfirm } from "@/utils/toast";
+import { showWarning, showConfirm } from "@/utils/toast";
 import { Base64 } from "js-base64";
 import type { ProductDTO, CartDTO, SelectedOptionPushDTO, OptionDTO, SelectedOptionDTO } from '@/server/types/dto/v1/product.dto';
 import type { Ref } from 'vue';
@@ -97,7 +97,6 @@ export const useCartProductOperations = (
       });
 
       cartCount.value += quantity;
-      // if(!popupOrderState) showSuccess('Dat hang thanh cong')
     }
 
     resetValuePopupOrder();
@@ -258,7 +257,6 @@ export const useCartProductOperations = (
 
       cartCount.value = cartCount.value - elProduct.quantity;
       updateCookie();
-      showSuccess("Đã xóa sản phẩm khỏi giỏ hàng!");
     }
   };
 
@@ -285,7 +283,7 @@ export const useCartProductOperations = (
     return totalQuantity;
   };
 
-  const calcTotalPrice = (formId: string) => {
+  const calcTotalPrice = (formId: 'order'|'edit') => {
     if(formId === "order") {
       if(getDetailProduct.value) {
         priceTotal.value = (getDetailProduct.value.priceDiscounts + priceOptions.value) * quantity.value;

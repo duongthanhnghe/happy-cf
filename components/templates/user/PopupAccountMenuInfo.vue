@@ -17,7 +17,7 @@ onMounted(() => {
     :bodySpace="false"
   >
     <template #body>
-      <CardAccount :showBarcode="false" />
+      <CardAccount showBarcode />
       <div class="pl-ms pr-ms pb-md">
         <CardPointInfo v-if="storeAccount.getDetailValue?.membership?.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints"/>
         <div class="row row-xxs has-control mt-md">
@@ -29,7 +29,7 @@ onMounted(() => {
     </template>
     <template #footer>
       <NuxtLink :to="{ path: storeAccount.accountMenu[0].path }" @click="storeAccount.handleTogglePopupAccountMenuInfo(false)">
-        <Button tag="div" label="Di toi tai khoan" color="primary" class="w-full text-uppercase" />
+        <Button tag="div" label="Đi tới tài khoản" color="primary" class="w-full text-uppercase" />
       </NuxtLink>
     </template>
   </Popup>

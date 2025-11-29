@@ -104,7 +104,7 @@ export const useCartUtils = (
 
   const handleCheckPoint = async (userId?: string) => {
     if (!userId || usedPointOrder.pointInput == 0 || totalPriceDiscount.value === 0) {
-      showWarning('Vui long kiem tra lai thong tin!');
+      showWarning('Vui lòng kiểm tra lại thông tin!');
       return;
     }
 
@@ -125,7 +125,7 @@ export const useCartUtils = (
         showWarning(res.message ?? '');
       }
       handleCalcTotalPriceCurrent();
-      showSuccess('Ap dung thanh cong');
+      showSuccess('Áp dụng điểm thành công');
     } catch (err: any) {
       showWarning(err.message);
     } finally {

@@ -68,7 +68,7 @@ watch(() => route.query.tab, (newVal) => {
           :column="COLUMN.PRODUCT_XL"
           container="container container-xxl"
           class="pt-section order-main-content-scroll scroll-hide"
-          headingText="Top ban chay"
+          headingText="Top bán chay"
         />
       </v-tabs-window-item>
       <v-tabs-window-item :value="3">
@@ -78,7 +78,7 @@ watch(() => route.query.tab, (newVal) => {
           :column="COLUMN.PRODUCT_XL"
           container="container container-xxl"
           class="pt-section order-main-content-scroll scroll-hide"
-          headingText="Khuyen mai"
+          headingText="Top khuyến mãi"
         />
       </v-tabs-window-item>
     </v-tabs-window>

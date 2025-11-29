@@ -7,6 +7,7 @@ import { usePagination } from '@/utils/paginationHandle'
 import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren'
 import type { ProductDTO, ProductSortType } from '@/server/types/dto/v1/product.dto'
 import { scrollIntoView } from "@/utils/global";
+import { IMAGE_AUTH_LOGIN } from "@/const/image";
 
 export const useCategoryMainStore = defineStore("CategoryMainProductStore", () => {
   const { getProductCategoryDetail } = useProductCategoryDetail()
@@ -126,7 +127,19 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
 
   const getTotalItems = computed(() => { return pagination.value?.total })
 
+  const listBannerCategory = computed(() => {
+    if (!getListCategoryChildren.value || getListCategoryChildren.value.length === 0) {
+      if(!getProductCategoryDetail) return
+      return getProductCategoryDetail.value?.banner ? getProductCategoryDetail.value?.banner : IMAGE_AUTH_LOGIN
+    }
+
+    return getListCategoryChildren.value
+      .map(item => item.banner)
+      .filter(Boolean)
+  })
+
   return {
+    listItems,
     filterType,
     filterArray,
     limit,
@@ -143,6 +156,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     isTogglePopupFilter,
     hasFilter,
     valueChangePage,
+    listBannerCategory,
     handleChangePage,
     handleTogglePopupFilter,
     resetFilter,

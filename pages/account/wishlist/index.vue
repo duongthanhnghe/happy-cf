@@ -20,8 +20,9 @@ if(!store.getItems) await store.loadItems()
     <SectionProductListColumn
       :items="store.getItems?.map(item => item.product)"
       :loading="store.loadingData" 
-      :column="COLUMN.PRODUCT"
+      :column="COLUMN.PRODUCT_LG"
       :variant="storeDisplay.isMobileTable ? 'card':''"
+      deleteFavorite
     />
   </Card>
 </template>

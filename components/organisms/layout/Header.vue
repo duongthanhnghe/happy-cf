@@ -102,7 +102,7 @@ onMounted(async () => {
               color="third"
               icon="search"
               :class="['header-search-button-toggle rd-xs', storeDisplay.isLaptop ? 'min-width-300 justify-start weight-normal pl-ms pr-ms':'']"
-              :label="storeDisplay.isLaptop ? 'Tim kiem':''"
+              :label="storeDisplay.isLaptop ? 'Tìm kiếm':''"
               @click="storeSearch.handleTogglePopup(true)"
             />
             <template v-if="storeDisplay.isLaptop">

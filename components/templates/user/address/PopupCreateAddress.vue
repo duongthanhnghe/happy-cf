@@ -19,20 +19,20 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 <Popup 
   popupId="popup-create-address" 
   v-model="store.isTogglePopupAdd" 
-  popupHeading="Them dia chi" 
+  popupHeading="Thêm địa chỉ" 
   footerFixed
   align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
       
-        <LabelInput label="Ho va ten" required/>
-        <v-text-field v-model="store.formDataItem.fullname" :rules="nullRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
+        <LabelInput label="Tên người nhận" required/>
+        <v-text-field v-model="store.formDataItem.fullname" :rules="nullRules" label="Nhập họ và tên" variant="outlined" required></v-text-field>
 
-        <LabelInput label="So dien thoai" required/>
-        <v-text-field v-model="store.formDataItem.phone" :rules="nullRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
+        <LabelInput label="Số điện thoại" required/>
+        <v-text-field v-model="store.formDataItem.phone" :rules="nullRules" label="Nhập số điện thoại" variant="outlined" required></v-text-field>
 
-        <LabelInput label="Dia chi" required/>
-        <v-text-field v-model="store.formDataItem.address" :rules="nullRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
+        <LabelInput label="Địa chỉ" required/>
+        <v-text-field v-model="store.formDataItem.address" :rules="nullRules" label="Nhập địa chỉ" variant="outlined" required></v-text-field>
 
         <div class="flex gap-sm">
           <div class="flex-1">
@@ -47,7 +47,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
             />
           </div>
           <div class="flex-1">
-          <LabelInput label="Quan huyen" required/>
+          <LabelInput label="Quận/Huyện" required/>
             <v-autocomplete
             v-model="storeLocation.selectedDistrict"
               :items="storeLocation.getListDistricts ?? []"
@@ -58,7 +58,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
             />
           </div>
           <div class="flex-1">
-          <LabelInput label="Phuong xa" required/>
+          <LabelInput label="Phường/Xã" required/>
           <v-autocomplete
             v-model="storeLocation.selectedWard"
               :items="storeLocation.getListWards ?? []"
@@ -70,10 +70,10 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           </div>
         </div>
 
-        <LabelInput label="Ghi chu"/>
-        <v-text-field v-model="store.formDataItem.note" label="Nhap ten danh muc" variant="outlined"></v-text-field>
+        <LabelInput label="Ghi chú"/>
+        <v-text-field v-model="store.formDataItem.note" label="Nhập ghi chú" variant="outlined"></v-text-field>
    
-        <LabelInput label="Nhan" required/>
+        <LabelInput label="Nhãn" required/>
         <v-radio-group inline v-model="store.formDataItem.tag">
           <v-radio :label="ADDRESS_TAG.HOME" :value="ADDRESS_TAG.HOME"></v-radio>
           <v-radio :label="ADDRESS_TAG.OFFICE" :value="ADDRESS_TAG.OFFICE"></v-radio>
@@ -83,7 +83,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
     </v-form>
   </template>
   <template #footer>
-    <Button type="submit" color="primary" label="Luu moi" class="w-full" />
+    <Button type="submit" color="primary" label="Lưu địa chỉ" class="w-full" />
   </template>
 </Popup>
 </template>

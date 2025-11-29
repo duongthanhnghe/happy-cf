@@ -43,7 +43,7 @@ export const useCartShipping = (
         handleCalcTotalPriceCurrent();
       } else {
         shippingFee.value = 0;
-        showWarning('Khong tinh duoc phi van chuyen');
+        showWarning('Có lỗi khi tính phí vận chuyển, vui lòng chọn lại');
       }
     } catch (err: any) {
       showWarning(err.message);

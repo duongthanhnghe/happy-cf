@@ -35,7 +35,7 @@ export const useCartVoucher = (
     const orderCreatedAt = new Date().toISOString();
 
     if (!userId) {
-      return showWarning("Vui long dang nhap de su dung voucher");
+      return showWarning("Vui lòng đăng nhập để sử dụng voucher");
     }
 
     const existingVoucher = voucherUsage.value.find(v => v.code === code);

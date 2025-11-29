@@ -69,7 +69,7 @@ onBeforeUnmount(() => {
       <v-radio-group inline v-model="storeAccountEdit.formUserItem.gender">
         <v-radio :label="GLOBAL_TEXT_MALE" value="male"></v-radio>
         <v-radio :label="GLOBAL_TEXT_FEMALE" value="female"></v-radio>
-        <v-radio label="Khac" value="other"></v-radio>
+        <v-radio label="Khác" value="other"></v-radio>
       </v-radio-group>
     </v-form>
   </template>

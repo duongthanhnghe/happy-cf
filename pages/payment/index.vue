@@ -4,6 +4,7 @@ import { onMounted, onBeforeUnmount } from 'vue'
 import { downloadImage, formatCurrency } from '@/utils/global'
 import { usePaymentOrderStore } from '@/stores/client/product/usePaymentOrderStore'
 import { ROUTES } from '@/shared/constants/routes';
+import { useRuntimeConfig } from 'nuxt/app';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PAYMENT.middleware,
@@ -35,8 +36,8 @@ onBeforeUnmount(() => {
     <div class="container">
       <BreadcrumbDefault />
       <Card size="md" class="rd-xl max-width-800 m-auto">
-        <Text text="QR Thanh toan don hang" color="black" size="lg" weight="semibold" align="center" class="text-uppercase" />
-        <Text text="Vui long kiem tra so tien can thanh toan truoc khi chuyen khoan" color="gray8" align="center" class="mt-xs" />
+        <Text text="QR Thanh toán đơn hàng" color="black" size="lg" weight="semibold" align="center" class="text-uppercase" />
+        <Text text="Vui lòng kiểm tra số tiền cần thanh toán trước khi chuyển khoản" color="gray8" align="center" class="mt-xs" />
         <div class="row row-xs align-center ">
           <div class="col-12 col-lg-6">
             <div class="mt-ms">
@@ -47,29 +48,29 @@ onBeforeUnmount(() => {
           <div class="col-12 col-lg-6">
             <Card size="sm" bg="gray6" class="rd-lg shadow-1" border>
               <div class="flex gap-sm justify-between mb-xs">
-                <Text text="So tai khoan" color="gray5" />
+                <Text text="Số tài khoản" color="gray5" />
                 <Text :text="config.public.sepayAccountNo" color="black" weight="semibold" />
               </div>
               <div class="flex gap-sm justify-between mb-xs">
-                <Text text="Ten tai khoan" color="gray5" />
+                <Text text="Tên tài khoản" color="gray5" />
                 <Text :text="config.public.sepayAccountName" color="black" weight="semibold" />
               </div>
               <div class="flex gap-sm justify-between">
-                <Text text="Ten ngan hang" color="gray5" class="white-space" />
+                <Text text="Tên ngân hàng" color="gray5" class="white-space" />
                 <Text :text="config.public.sepayBankName" color="black" weight="semibold" align="right" class="text-uppercase" />
               </div>
             </Card>
             <Card size="sm" bg="gray6" class="rd-lg shadow-1 mt-sm" border>
               <div class="flex gap-sm justify-between mb-xs">
-                <Text text="So tien" color="gray5" />
+                <Text text="Số tiền" color="gray5" />
                 <Text :text="formatCurrency(route.query.amount)" color="black" weight="semibold" />
               </div>
               <div class="flex gap-sm justify-between mb-xs">
-                <Text text="Ma don hang" color="gray5" />
+                <Text text="Mã đơn hàng" color="gray5" />
                 <Text :text="route.query.orderCode" color="black" weight="semibold" />
               </div>
               <div class="flex gap-sm justify-between">
-                <Text text="Noi dung thanh toan" color="gray5" />
+                <Text text="Nội dung thanh toán" color="gray5" />
                 <Text :text="route.query.orderCode" color="black" weight="semibold" />
               </div>
             </Card>
@@ -80,7 +81,7 @@ onBeforeUnmount(() => {
         <Button
           color="black"
           icon="download"
-          label="Tai xuong QR"
+          label="Tải xuống QR"
           @click.prevent="downloadImage(store.qrCodeUrl)"
         />
       </div>

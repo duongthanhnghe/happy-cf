@@ -45,7 +45,7 @@ watchEffect(() => {
               <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
               <div class="text-size-xs">
                 <Heading weight="semibold"> {{ storeAccount.getDetailValue?.fullname || '' }} </Heading>
-                <span @click="storeAccount.handleTogglePopupMembershipInformation(true)" class="text-color-gray8 cursor-pointer">Hang {{ storeAccount.getDetailValue?.membership.level || '' }} </span>
+                <span @click="storeAccount.handleTogglePopupMembershipInformation(true)" class="text-color-gray8 cursor-pointer">Hạng {{ storeAccount.getDetailValue?.membership.level || '' }} </span>
               </div>
             </div>
             <div class="flex gap-sm">
@@ -73,18 +73,18 @@ watchEffect(() => {
                 <img v-if="storeAccount.getInformationMembershipLevel?.nextLevel.image" :src="storeAccount.getInformationMembershipLevel?.nextLevel.image" :alt="storeAccount.getInformationMembershipLevel?.nextLevel.name" width="50" />
               </div>
               <div v-if="storeAccount.getDetailValue?.membership.point < storeAccount.getInformationMembershipLevel?.nextLevel.minPoint" class="mt-xs">
-                Tich luy them <span class="weight-semibold">{{ formatCurrency(storeAccount.getInformationMembershipLevel?.nextLevel.minPoint - storeAccount.getDetailValue?.membership.point).replace('đ','') }} điểm</span> de thang hang {{ storeAccount.getInformationMembershipLevel?.nextLevel.name }}
+                Tích luỹ thêm <span class="weight-semibold">{{ formatCurrency(storeAccount.getInformationMembershipLevel?.nextLevel.minPoint - storeAccount.getDetailValue?.membership.point).replace('đ','') }} điểm</span> để thăng hạng {{ storeAccount.getInformationMembershipLevel?.nextLevel.name }}
               </div>
             </template>
           </div>
       </div>
-      <div v-else class="information-account-card text-center">
+      <!-- <div v-else class="information-account-card text-center">
         <Heading weight="semibold" class="text-center">Dang nhap</Heading>
         <div class="mt-sm mb-sm">Vui long dang nhap</div>
         <NuxtLink :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
           <Button color="black" label="Dang nhap" />
         </NuxtLink>
-      </div>
+      </div> -->
     </div>
   </div>
   </client-only>

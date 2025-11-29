@@ -1148,7 +1148,22 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"462d0-EzwzMYS75iKfAd58zOl3CIFydxY\"",
+    "mtime": "2025-11-29T08:02:05.510Z",
+    "size": 287440,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"10d721-O0f2RbWcE88uy7LasEZB9DBGuWE\"",
+    "mtime": "2025-11-29T08:02:05.514Z",
+    "size": 1103649,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -3160,6 +3175,7 @@ const CategoryProductSchema = new Schema(
     categoryName: { type: String, required: true, trim: true },
     description: { type: String },
     image: { type: String, required: true },
+    banner: { type: String },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
     parentId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", default: null },
@@ -3240,6 +3256,7 @@ function toCategoryProductDTO(entity) {
     categoryName: entity.categoryName,
     description: entity.description || "",
     image: entity.image,
+    banner: entity.banner,
     order: entity.order,
     isActive: entity.isActive,
     parentId: entity.parentId ? entity.parentId.toString() : "",

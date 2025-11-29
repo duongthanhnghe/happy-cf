@@ -40,12 +40,21 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
       <v-text-field v-model="store.updateCategoryItem.categoryName" :counter="50" :rules="store.nullAndSpecialRules" label="Nhap ten danh muc" variant="outlined" required></v-text-field>
       <LabelInput label="Mo ta"/>
       <v-textarea v-model="store.updateCategoryItem.description" :counter="500" label="Nhap mo ta" variant="outlined"></v-textarea>
+      
       <LabelInput label="Anh dai dien" required/>
       <v-img v-if="store.updateCategoryItem.image" :src="store.updateCategoryItem.image" class="mb-sm" alt="Hinh anh" :rules="store.nullRules" required />
       <div class="flex gap-sm">
         <v-text-field v-model="store.updateCategoryItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
-        <Button color="black" :label="store.updateCategoryItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
+        <Button color="black" :label="store.updateCategoryItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage('image')"/>
       </div>
+
+      <LabelInput label="Banner" required/>
+      <v-img v-if="store.updateCategoryItem.banner" :src="store.updateCategoryItem.banner" class="mb-sm" alt="Banner" />
+      <div class="flex gap-sm">
+        <v-text-field v-model="store.updateCategoryItem.banner" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
+        <Button color="black" :label="store.updateCategoryItem.banner ? 'Doi banner':'Chon banner'" @click.prevent="store.handleAddImage('banner')"/>
+      </div>
+
       <v-switch :label="`Tinh trang: ${store.updateCategoryItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.updateCategoryItem.isActive" inset
       ></v-switch>
 

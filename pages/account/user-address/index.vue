@@ -23,7 +23,7 @@ useLocationWatchers(storeLocation);
 <template>
   <Card size="md" :bg="storeDisplay.isMobileTable ? 'gray6':'white'" :heading="ROUTES.PUBLIC.ACCOUNT.children?.USER_ADDRESS.label" :class="storeDisplay.isMobileTable ? 'pd-0':'rd-xl'">
     <ListManageAddress />
-    <Button color="primary" label="Them dia chi" class="w-full" @click="store.handleTogglePopupAdd"/>
+    <Button color="primary" label="Thêm địa chỉ" class="w-full" @click="store.handleTogglePopupAdd"/>
   </Card>
 
   <PopupUpdateAddress />

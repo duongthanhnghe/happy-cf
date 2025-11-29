@@ -106,36 +106,36 @@ const {
       <div class="flex flex-direction-column gap-xs mt-xs">
       <div class="flex justify-between text-size-normal mt-sm weight-medium line-height-1">
         <div class="flex align-center gap-xs">
-          Tong cong
-          <span v-if="getDetailOrder?.totalPriceSave && getDetailOrder?.totalPriceSave !== 0" class="text-size-base text-color-green">(Tiet kiem: {{ formatCurrency(getDetailOrder?.totalPriceSave) }})</span>
+          Tổng cộng
+          <span v-if="getDetailOrder?.totalPriceSave && getDetailOrder?.totalPriceSave !== 0" class="text-size-base text-color-green">(Tiết kiệm: {{ formatCurrency(getDetailOrder?.totalPriceSave) }})</span>
         </div>
         <div class="weight-semibold text-color-danger text-right mb-xs">
           {{ formatCurrency(getDetailOrder?.totalPrice) }}
         </div>
       </div>
       <div class="flex justify-between text-color-gray5">
-        Don hang
+        Đơn hàng
         <span>
           {{ formatCurrency(getDetailOrder?.totalPriceCurrent) }}
         </span>
       </div>
       <div v-if="getDetailOrder?.shippingFee" class="flex justify-between text-color-gray5">
-        Phi van chuyen
+        Phí vận chuyển
         <span>
           {{ formatCurrency(getDetailOrder?.shippingFee) }}
         </span>
       </div>
       <div v-if="getDetailOrder?.totalDiscountOrder && getDetailOrder?.totalDiscountOrder != 0" class="flex justify-between text-color-gray5">
-        Giam don hang <span>-{{ formatCurrency(getDetailOrder?.totalDiscountOrder) }}</span>
+        Giảm đơn hàng <span>-{{ formatCurrency(getDetailOrder?.totalDiscountOrder) }}</span>
       </div>
       <div v-if="getDetailOrder?.usedPoints !== 0" class="flex justify-between text-color-gray5">
-        Diem thanh vien
+        Điểm sử dụng
         <span class="flex align-center gap-xs">
           <v-chip v-if="getDetailOrder?.pointsRefunded" size="small" label color="secondary">Đã hoàn</v-chip>  -{{ formatCurrency(getDetailOrder?.usedPoints) }}
         </span>
       </div>
       <div v-if="getDetailOrder?.membershipDiscountAmount !== 0" class="flex justify-between text-color-gray5">
-        Uu dai thanh vien
+        Ưu đãi thành viên
         <span>
           -{{ formatCurrency(getDetailOrder?.membershipDiscountAmount) }}
         </span>
@@ -156,7 +156,7 @@ const {
           {{ getDetailOrder.transaction.statusText }}
         </v-chip>
         <v-chip v-else label>
-          Chua thanh toan
+          Chưa thanh toán
         </v-chip>
       </div>
       </div>
@@ -166,7 +166,7 @@ const {
       <div class="flex flex-1 justify-between">
         <div>
           <div class="weight-medium text-color-black">
-            Nhan vien giao hang
+            Người giao hàng
           </div>
           <span class="text-color-gray5 text-size-xs">{{ storeSetting.getBaseInformation?.name }}</span>
         </div>
@@ -181,11 +181,11 @@ const {
       </div>
     </Card>
     <div class="text-center mt-sm">
-      Dat luc: {{ formatDateTime(getDetailOrder?.createdAt) }}
+      Thời gian đặt hàng: {{ formatDateTime(getDetailOrder?.createdAt) }}
     </div>
     <div v-if="getDetailOrder?.status.id === ORDER_STATUS.PENDING || getDetailOrder?.status.id === ORDER_STATUS.CANCELLED" class="mt-md">
-      <Button v-if="getDetailOrder.userId && !getDetailOrder?.cancelRequested && getDetailOrder?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="storeHistory.handleCancelOrder(getDetailOrder?.id, getDetailOrder.userId)" size="lg" color="black" label="Yeu cau huy don" icon="cancel" class="w-full rd-lg"/>
-      <Button v-else-if="getDetailOrder?.cancelRequested" tag="span" color="black" :border="false" label="Da yeu cau huy don" icon="partner_reports" class="w-full rd-lg" />
+      <Button v-if="getDetailOrder.userId && !getDetailOrder?.cancelRequested && getDetailOrder?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="storeHistory.handleCancelOrder(getDetailOrder?.id, getDetailOrder.userId)" size="lg" color="black" label="Yêu cầu huỷ đơn" icon="cancel" class="w-full rd-lg"/>
+      <Button v-else-if="getDetailOrder?.cancelRequested" tag="span" color="black" :border="false" label="Đã yêu cầu huỷ đơn" icon="partner_reports" class="w-full rd-lg" />
       <template v-else />
     </div>
   </template>

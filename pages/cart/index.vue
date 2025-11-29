@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
       <v-form v-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
         <!-- LIST PRODUCT -->
         <div class="rd-lg overflow-hidden">
-          <Text text="Gio hang" color="black" size="md" weight="semibold" class="mb-xs" />
+          <Text text="Giỏ hàng" color="black" size="md" weight="semibold" class="mb-xs" />
           <div class="flex flex-direction-column gap-xs">
             <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
           </div>
@@ -102,10 +102,9 @@ onBeforeUnmount(() => {
         <CartPaymentInfo :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint || 0"/>
       </v-form>
       <div v-else class="text-center">
-        <Heading weight="semibold" class="text-center">Gio hang</Heading>
-        <div class="mt-sm mb-sm">Khong co san pham trong gio hang</div>
-        <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }">
-          <Button color="black" label="Dat hang ngay" />
+        <NpData text="Không có sản phẩm nào trong giỏ hàng!" />
+        <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }" class="mt-sm">
+          <Button color="black" label="Đặt hàng ngay" />
         </NuxtLink>
       </div>
     </div>

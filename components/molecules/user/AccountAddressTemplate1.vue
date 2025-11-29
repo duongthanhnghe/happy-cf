@@ -27,13 +27,13 @@ const handleChooseAddress = (item: any) => {
           {{ item.tag }}
         </v-chip>
         <v-chip v-if="item.isDefault" label color="blue">
-          Mac dinh
+          Mặc định
         </v-chip>
       </div>
       <div class="flex gap-sm">
         <template v-if="store.getActionChangeAddress">
-          <Button v-if="props.idChoose === item.id" color="black" size="sm" label="Dang chon" :disabled="true" />
-          <Button v-else color="secondary" size="sm" label="Chon" @click.prevent="handleChooseAddress(item)" />
+          <Button v-if="props.idChoose === item.id" color="black" size="sm" label="Đang chọn" :disabled="true" />
+          <Button v-else color="secondary" size="sm" label="Chọn" @click.prevent="handleChooseAddress(item)" />
         </template>
         <Button v-else color="secondary" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
       </div>
@@ -43,11 +43,11 @@ const handleChooseAddress = (item: any) => {
     </div>
     <div class="flex gap-md">
       <div>
-        <Text text="Ten nguoi nhan" color="gray5" size="xs"/>
+        <Text text="Tên người nhận" color="gray5" size="xs"/>
         <Text :text="item.fullname" color="black" />
       </div>
       <div>
-        <Text text="So dien thoai" color="gray5" size="xs"/>
+        <Text text="Số điện thoại" color="gray5" size="xs"/>
         <Text :text="item.phone" color="black" />
       </div>
     </div>
