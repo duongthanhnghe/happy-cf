@@ -87,6 +87,12 @@ export const useCartStore = defineStore("Cart", () => {
     }
   };
 
+  const options = useCartOptions(
+    state.selectedOptionsData,
+    state.tempSelected,
+    state.priceOptions,
+  );
+
   const utilShared = useCartSharedUtils(
     state.quantity,
     state.priceTotal,
@@ -96,6 +102,7 @@ export const useCartStore = defineStore("Cart", () => {
     state.quantityEdit,
     state.priceTotalEdit,
     state.popups,
+    options.clearTempSelected,
   );
 
   // 5. Initialize utils
@@ -115,12 +122,7 @@ export const useCartStore = defineStore("Cart", () => {
     storeAddress,
     state.isTogglePopupVoucher,
     state.isTogglePopupPoint,
-  );
-
-  // 7. Initialize options
-  const options = useCartOptions(
-    state.selectedOptionsData,
-    state.tempSelected
+    options.clearTempSelected,
   );
 
   // 6. Initialize product operations
@@ -203,6 +205,7 @@ export const useCartStore = defineStore("Cart", () => {
       storeProduct.popups.order
     );
   };
+  
 
   const submitOrder = async () => {
     await order.submitOrder(
@@ -278,7 +281,8 @@ export const useCartStore = defineStore("Cart", () => {
     updateSelectedOptionsData: options.updateSelectedOptionsData,
     syncTempSelectedFromSelectedOptionsData: options.syncTempSelectedFromSelectedOptionsData,
     clearTempSelected: options.clearTempSelected,
-    
+    handleSelectVariant: options.handleSelectVariant,
+
     // Order
     submitOrder,
     

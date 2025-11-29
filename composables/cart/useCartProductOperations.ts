@@ -47,13 +47,20 @@ export const useCartProductOperations = (
     popupOrderState: boolean
   ) => {
 
-    // const productKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions))}`;
-    // const productKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions+note))}`;
-    const productKey = `${product.id}_${Base64.encode(JSON.stringify({
-      selectedOptions,
-      note
-    }))}`;
+    const sortedOptions = [...selectedOptions].sort((a, b) =>
+      a.optionName.localeCompare(b.optionName)
+    );
 
+    const rawEncodeData = {
+      selectedOptions: sortedOptions,
+      note
+    };
+    
+    const productKey = `${product.id}_${Base64.encode(JSON.stringify(rawEncodeData))}`;
+    // const productKey = `${product.id}_${Base64.encode(JSON.stringify({
+    //   selectedOptions,
+    //   note
+    // }))}`;
     const existingProduct = cartListItem.value?.find(
       (item) => item.productKey === productKey
     );
@@ -105,7 +112,7 @@ export const useCartProductOperations = (
     if(!product) return
     const selectedOptions = selectedOptionsData.value;
     try {
-      const newProductKey = `${product.id}_${Base64.encode(JSON.stringify(selectedOptions))}`;
+      const newProductKey = `${product.id}_${Base64.encode(JSON.stringify(note ? selectedOptions+note : selectedOptions))}`;
       
       const existingProductIndex = cartListItem.value?.findIndex(
         item => item.productKey === oldProductKey
@@ -129,7 +136,7 @@ export const useCartProductOperations = (
       }, 0) ?? 0;
 
       const updatedProduct = {
-        ...product,
+        // ...product,
         product: product.id,
         productKey: newProductKey,
         quantity: quantity,
@@ -144,6 +151,11 @@ export const useCartProductOperations = (
 
       cartListItem.value[existingProductIndex] = updatedProduct;
 
+      if (product.options) {
+        syncTempSelectedFromSelectedOptionsData(product.options);
+      }
+
+      updateCookie();
       resetValuePopupOrder();
 
     } catch (error) {
@@ -290,31 +302,26 @@ export const useCartProductOperations = (
 
   const getProductDetailEdit = async (id: string) => {
     productDetailEdit.value = cartListItem.value.find((item: CartDTO) => {
-      if (item.productKey && id.includes("_")) {
-        return item.productKey === id;
-      }
+      if (item.productKey && id.includes("_")) return item.productKey === id;
       return item.id === id;
     });
-
     if (!productDetailEdit.value) return;
 
     quantityEdit.value = productDetailEdit.value.quantity;
 
-    if (productDetailEdit.value.productKey && productDetailEdit.value.selectedOptionsPush) {
-      selectedOptionsDataEdit.value = productDetailEdit.value.selectedOptionsPush.map(
-        (obj) => Object.values(obj)[0]
-      );
-
-      const newOptions = productDetailEdit.value.selectedOptionsPush;
-
+    if (productDetailEdit.value.selectedOptionsPush) {
+      const newOptions = JSON.parse(JSON.stringify(productDetailEdit.value.selectedOptionsPush));
       updateSelectedOptionsData(newOptions as SelectedOptionDTO[]);
-
-      if (productDetailEdit.value.options) {
-        syncTempSelectedFromSelectedOptionsData(productDetailEdit.value.options);
-      }
     }
 
-    if(productDetailEdit.value.id) await fetchDetailProduct(productDetailEdit.value.id)
+    if (productDetailEdit.value.id) {
+      await fetchDetailProduct(productDetailEdit.value.id);
+
+      const productDetailFromServer = getDetailProduct.value;
+      if (productDetailFromServer && productDetailFromServer.options) {
+        syncTempSelectedFromSelectedOptionsData(productDetailFromServer.options);
+      }
+    }
 
     togglePopup("edit", true);
     calcTotalPrice("edit");

@@ -10,26 +10,17 @@ const storeProduct = useProductDetailStore();
 const storeCart = useCartStore();
 const storeDisplay = useDisplayStore()
 
-const handleChangeVariant = (idOption: string, idVariant: string, optionName: string, variantName: string, variantPrice: number) => {
-  storeCart.setSelectedOptionsData(idOption, idVariant, optionName, variantName, variantPrice);
-  storeProduct.priceOptions = storeCart.getSelectedOptionsData.reduce(
-    (total, item) => total + item.variantPrice,
-    0
-  );
-  storeCart.calcTotalPrice("edit");
-};
-
-watch(() => storeCart.getProductDetailDataEdit?.selectedOptionsPush, (newValue) => {
-  if (newValue && storeCart.getProductDetailDataEdit?.selectedOptionsPush) {
-    storeCart.getProductDetailDataEdit?.selectedOptionsPush.forEach(opt => {
-      const option = storeCart.getProductDetailDataEdit?.options?.find(o => o.name === opt.optionName)
-      const variant = option?.variants.find(v => v.name === opt.variantName)
-      if (option && variant) {
-        storeCart.selectedOptionsData[option.id] = variant.id
-      }
-    })
-  }
-}, { immediate: true })
+// watch(() => storeCart.getProductDetailDataEdit?.selectedOptionsPush, (newValue) => {
+//   if (newValue && storeCart.getProductDetailDataEdit?.selectedOptionsPush) {
+//     storeCart.getProductDetailDataEdit?.selectedOptionsPush.forEach(opt => {
+//       const option = storeCart.getProductDetailDataEdit?.options?.find(o => o.name === opt.optionName)
+//       const variant = option?.variants.find(v => v.name === opt.variantName)
+//       if (option && variant) {
+//         storeCart.selectedOptionsData[option.id] = variant.id
+//       }
+//     })
+//   }
+// }, { immediate: true })
 
 const detail = computed(() => storeCart.getProductDetailDataEdit);
 const detailProduct = computed(() => storeProduct.getDetailProduct);
@@ -68,6 +59,7 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
             </div>
           </div>
         </div>
+       
         <template v-if="detailProduct?.options && detailProduct?.options?.length > 0">
           <v-radio-group
             hide-details
@@ -77,10 +69,8 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
             :name="`radio-group-${item.id}`"
             class="mt-sm mb-sm popup-detail-product-card"
             @update:modelValue="(val) => {
-              const variant = item.variants.find(v => v.id === val)
-              if (variant && val && variant.priceModifier) {
-                handleChangeVariant(item.id, val, item.name, variant.name, variant.priceModifier)
-              }
+              const variant = item.variants.find(v => v.id === val);
+              if (variant && val) storeCart.handleSelectVariant(item.id, val, item.name, variant.name, variant.priceModifier || 0);
             }"
           >
             <Heading tag="div" size="md" weight="semibold" class="black pt-sm pl-ms pr-ms">
@@ -124,7 +114,7 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
       <template v-if="detail">
         <Button
           v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined"
-          :label="'Cập nhật - ' + formatCurrency(storeCart.priceTotalEdit)"
+          label="Cập nhật"
           class="w-full"
           color="primary"
           @handleOnClick="storeCart.updateProductWithOptions(detailProduct, storeCart.quantityEdit, detail.note, detail.productKey)"
@@ -132,7 +122,7 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
         <template v-else>
           <Button
             v-if="detail.id"
-            :label="'Cập nhật - ' + formatCurrency(storeCart.priceTotalEdit)"
+            label="Cập nhật"
             class="w-full"
             color="primary"
             @handleOnClick="storeCart.updateNormalProduct(detailProduct, storeCart.quantityEdit, detail.note, detail.id)"

@@ -22,23 +22,52 @@ export const useCartUtils = (
   storeAddress: any,
   isTogglePopupVoucher: Ref<boolean>,
   isTogglePopupPoint: Ref<boolean>,
+  clearTempSelected: () => void,
 ) => {
 
   const updateCookie = () => {
+    const cookieData = cartListItem.value.map(item => ({
+      product: item.product,
+      quantity: item.quantity,
+      selectedOptionsPush: item.selectedOptionsPush || [],
+      note: item.note || '',
+      finalPrice: item.finalPrice,
+      finalPriceDiscounts: item.finalPriceDiscounts,
+      productKey: item.productKey,
+    }));
+
+    setCookie("cartListItem", cookieData);
     setCookie("cartCount", cartCount.value);
-    setCookie("cartListItem", cartListItem.value);
+
     handleCalcTotalPriceCurrent();
     fetchProductCart();
   };
 
   const syncCartCookie = () => {
-    cartCount.value = getCookie("cartCount") || 0;
-    cartListItem.value = getCookie("cartListItem") || [];
+    const cookieCount = getCookie("cartCount");
+    const cookieList = getCookie("cartListItem");
+
+    cartCount.value = cookieCount ? Number(cookieCount) : 0;
+
+    cartListItem.value = Array.isArray(cookieList)
+      ? cookieList.map(c => ({
+          product: c.product,
+          quantity: c.quantity,
+          selectedOptionsPush: c.selectedOptionsPush || [],
+          note: c.note || '',
+          finalPrice: c.finalPrice,
+          finalPriceDiscounts: c.finalPriceDiscounts,
+          productKey: c.productKey,
+        }))
+      : [];
+
+    fetchProductCart();
     handleCalcTotalPriceCurrent();
   };
 
   const resetValuePopupOrder = () => {
     selectedOptionsData.value = [];
+    clearTempSelected();
     resetFormCart();
     updateCookie();
   };

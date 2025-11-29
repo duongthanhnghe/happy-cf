@@ -11,6 +11,7 @@ export const useCartSharedUtils = (
   quantityEdit: Ref<number>,
   priceTotalEdit: Ref<number>,
   popups: Ref<{order:boolean,edit:boolean}>,
+  clearTempSelected: () => void,
 ) => {
 
   const { getDetailProduct, fetchDetailProduct } = useProductDetail()
@@ -35,7 +36,8 @@ export const useCartSharedUtils = (
   };
 
   const togglePopup = (popupId: keyof typeof popups.value, value: any) => {
-    if (popups.value[popupId] !== undefined) popups.value[popupId] = value;
+    if(popupId === 'order' && popups.value[popupId] === false) clearTempSelected();
+    if(popups.value[popupId] !== undefined) popups.value[popupId] = value;
   };
 
   const getPopupState = (popupId: keyof typeof popups.value) => {

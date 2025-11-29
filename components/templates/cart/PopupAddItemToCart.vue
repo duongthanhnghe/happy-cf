@@ -51,7 +51,18 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
         </div>
 
         <template v-if="detail && detail.options.length > 0">
-          <v-radio-group hide-details v-model="storeCart.selectedOptionsData[item.id as any]" :name="`radio-group-${item.id}`" :key="item.id" v-for="item in detail?.options" class="mt-sm mb-sm popup-detail-product-card">
+          <v-radio-group
+              hide-details
+              v-model="storeCart.tempSelected[item.id]"
+              :name="`radio-group-${item.id}`"
+              :key="item.id"
+              @update:modelValue="(val) => {
+                const variant = item.variants.find(v => v.id === val);
+                if (variant && val) storeCart.handleSelectVariant(item.id, val, item.name, variant.name, variant.priceModifier || 0);
+              }"
+              v-for="item in detail?.options"
+              class="mt-sm mb-sm popup-detail-product-card"
+            >
             <Heading tag="div" size="md" weight="semibold" class="black pt-sm pl-ms pr-ms">
               {{ item.name }}
             </Heading>
@@ -66,7 +77,7 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
             </v-radio>
           </v-radio-group>
         </template>
-          
+       
           <div class="popup-detail-product-card pb-md">
             <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
               Them luu y cho quan
@@ -83,7 +94,7 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
 
       <template #footer>
         <Button
-          :label="'Đặt hàng - ' + formatCurrency(storeCart.priceTotal)"
+          label="Đặt hàng"
           class="w-full"
           color="primary"
           @handleOnClick="storeCart.addProductToCart(detail, storeCart.quantity, storeCart.note)"

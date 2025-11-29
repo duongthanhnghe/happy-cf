@@ -3,20 +3,20 @@ import type { SelectedOptionPushDTO, SelectedOptionDTO, OptionDTO } from '@/serv
 
 export const useCartOptions = (
   selectedOptionsData: Ref<SelectedOptionPushDTO[]>,
-  tempSelected: Record<string, string>
+  tempSelected: Record<string, string>,
+  priceOptions: Ref<number>,
 ) => {
 
   const buildSelectedOptions = (productOptions: OptionDTO[]) => {
     return productOptions.map(option => {
-      const selectedVariantId = selectedOptionsData.value[option.id];
-      const variant = option.variants.find(v => v.id === selectedVariantId);
+      const selected = selectedOptionsData.value.find(o => o.optionName === option.name);
 
-      if (!variant) return null;
+      if (!selected) return null;
 
       return {
         optionName: option.name,
-        variantName: variant?.name ?? "",
-        variantPrice: variant?.priceModifier ?? 0
+        variantName: selected.variantName,
+        variantPrice: selected.variantPrice
       };
     })
     .filter((opt): opt is SelectedOptionPushDTO => opt !== null);
@@ -28,10 +28,12 @@ export const useCartOptions = (
 
   const syncTempSelectedFromSelectedOptionsData = (productOptions: OptionDTO[]) => {
     clearTempSelected();
+
     productOptions.forEach(option => {
-      const selected = selectedOptionsData.value.find(o => o.optionName === option.name);
-      if (selected) {
-        const variant = option.variants.find(v => v.name === selected.variantName);
+      const foundSelected = selectedOptionsData.value.find(o => o.optionName === option.name);
+
+      if (foundSelected) {
+        const variant = option.variants.find(v => v.name === foundSelected.variantName);
         if (variant) tempSelected[option.id] = variant.id;
       }
     });
@@ -44,24 +46,43 @@ export const useCartOptions = (
     variantName: string,
     variantPrice: number
   ) => {
+    
     tempSelected[idOption] = idVariant;
 
-    const itemOptions: SelectedOptionPushDTO = {
+    const existIdx = selectedOptionsData.value.findIndex(
+      o => o.optionName === optionName
+    );
+
+    const newItem: SelectedOptionPushDTO = {
       optionName,
       variantName,
-      variantPrice,
+      variantPrice
     };
 
-    const existingIndex = selectedOptionsData.value.findIndex(o => o.optionName === optionName);
-    if (existingIndex !== -1) {
-      selectedOptionsData.value[existingIndex] = itemOptions;
+    if (existIdx >= 0) {
+      selectedOptionsData.value[existIdx] = newItem;
     } else {
-      selectedOptionsData.value.push(itemOptions);
+      selectedOptionsData.value.push(newItem);
     }
   };
 
   const updateSelectedOptionsData = (newData: SelectedOptionDTO[]) => {
     selectedOptionsData.value = JSON.parse(JSON.stringify(newData));
+  };
+
+  const handleSelectVariant = (
+    optionId: string,
+    variantId: string,
+    optionName: string,
+    variantName: string,
+    variantPrice: number
+  ) => {
+    tempSelected[optionId] = variantId;
+    setSelectedOptionsData(optionId, variantId, optionName, variantName, variantPrice);
+    // priceOptions.value = selectedOptionsData.value.reduce(
+    //   (total, item) => total + item.variantPrice,
+    //   0
+    // );
   };
 
   return {
@@ -70,5 +91,6 @@ export const useCartOptions = (
     syncTempSelectedFromSelectedOptionsData,
     setSelectedOptionsData,
     updateSelectedOptionsData,
+    handleSelectVariant,
   };
 };

@@ -12,7 +12,7 @@ export const useProductDetailOperations = (
     if(!getDetailProduct.value) return
 
     const product = getDetailProduct.value;
-    const selectedOptions = storeCart.selectedOptionsData;
+    const selectedOptions = storeCart.tempSelected;
 
     if (product.options && product.options.length > 0) {
       const isAllRequiredSelected = product.options.every(group => {
@@ -34,11 +34,11 @@ export const useProductDetailOperations = (
     }
   }
 
-  const setCheckedRadioEdit = (idVariant: string) => {
-    const result = storeCart.selectedOptionsDataEdit.value.includes(idVariant);
-    storeCart.calcTotalPrice("order");
-    return result;
-  }
+  // const setCheckedRadioEdit = (idVariant: string) => {
+  //   const result = storeCart.selectedOptionsDataEdit.value.includes(idVariant);
+  //   storeCart.calcTotalPrice("order");
+  //   return result;
+  // }
 
   watch(getDetailProduct, (newValue) => {
     if(newValue) {
@@ -48,6 +48,6 @@ export const useProductDetailOperations = (
 
   return {
     handleAddToCart,
-    setCheckedRadioEdit,
+    // setCheckedRadioEdit,
   };
 };
