@@ -24,7 +24,7 @@ if(storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
 if(storeProductSale.getListProductSales.length === 0) await storeProductSale.fetchProductStore()
 if(storeProductMostOrder.getListProductMostOrder.length === 0) await storeProductMostOrder.fetchProductStore()
 if(storeNewsLatest.getListNewsLatest.length === 0) await storeNewsLatest.fetchPostStore()
-if(storeProductCategory.getListData.length === 0) await storeProductCategory.fetchCategoryStore()
+if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCategory.fetchCategoryStore()
 
 </script>
 
@@ -43,7 +43,7 @@ if(storeProductCategory.getListData.length === 0) await storeProductCategory.fet
     <div :class="[storeDisplay.isLaptop ? 'container container-xxl pl-0 pr-0 pb-section':'', 'pt-section pb-sm']">
       <ProductCategoryAll 
         heading="Danh mục" 
-        :items="storeProductCategory.getListData" 
+        :items="storeProductCategory.getFlatCategoryList" 
         :loading="storeProductCategory.loading" 
       />
     </div>

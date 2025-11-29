@@ -27,11 +27,28 @@ export const useProductCategoryStore = defineStore("ProductCategoryStore", () =>
   }
 
   const getListData = computed(() => dataList.value);
+
+  const getFlatCategoryList = computed(() => {
+    const result: CategoryProductDTO[] = [];
+
+    const flatten = (nodes: CategoryProductDTO[]) => {
+      nodes.forEach(node => {
+        result.push(node);
+        if (node.children?.length) {
+          flatten(node.children);
+        }
+      });
+    };
+
+    flatten(dataList.value);
+    return result;
+  });
   
   return {
     dataList,
     fetchCategoryStore,
     getListData,
+    getFlatCategoryList,
     lastFetched,
     loading,
   };

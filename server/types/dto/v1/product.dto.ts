@@ -53,6 +53,7 @@ export interface CategoryProductDTO {
   order: number;
   isActive: boolean;
   parentId: string | null;
+  children?: CategoryProductDTO[];
   //SEO
   titleSEO: string;
   descriptionSEO: string;
