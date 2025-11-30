@@ -53,7 +53,7 @@ onMounted(async() => {
   <template #footer>
     <template v-if="store.getCartListItem && store.getCartListItem.length > 0">
       <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
-        <Button tag="div" label="Đặt hàng" color="primary" class="w-full" />
+        <Button tag="div" label="Tới trang đặt hàng" color="primary" class="w-full" />
       </NuxtLink>
     </template>
   </template>

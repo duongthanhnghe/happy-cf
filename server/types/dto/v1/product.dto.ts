@@ -120,4 +120,9 @@ export type SelectedOptionDTO = SelectedOptionPushDTO & {id: string}
 
 export type SelectedOptionMap = Record<string, string>;
 
-export type ProductSortType = "discount" | "popular" | "price_desc" | "price_asc"
+export type ProductSortType = ""|"discount" | "popular" | "price_desc" | "price_asc"
+
+export type ProductFilterOption = {
+  title: string
+  value: ProductSortType
+}

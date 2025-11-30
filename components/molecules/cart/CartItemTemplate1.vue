@@ -35,10 +35,10 @@ const getOriginalPrice = (item: any) => {
           <Text
             v-if="item.selectedOptionsPush"
             v-for="optionItem in item.selectedOptionsPush"
-            :text="`${ optionItem.variantName }(+${ formatCurrency(optionItem.variantPrice) })`"
-            color="gray4" size="xs"
+            :text="`${ optionItem.variantName } ${optionItem.variantPrice !== 0 ? `(+${ formatCurrency(optionItem.variantPrice) })`:''}`"
+            color="gray5" size="xs"
           />
-          <Text color="gray4" size="xs" :text="item.note" />
+          <Text color="gray5" size="xs" :text="item.note" />
         </div>
       </div>
       <div class="cart-template1-action">

@@ -74,8 +74,9 @@ onBeforeUnmount(() => {
   <div class="bg-gray6 cart-body">
     <div class="container">
       <BreadcrumbDefault />
-
-      <v-form v-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
+      
+      <LoadingData v-if="store.loadingCartProduct && !store.getCartListItem" />
+      <v-form v-else-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
         <!-- LIST PRODUCT -->
         <div class="rd-lg overflow-hidden">
           <Text text="Giỏ hàng" color="black" size="md" weight="semibold" class="mb-xs" />

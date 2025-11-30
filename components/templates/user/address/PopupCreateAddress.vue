@@ -1,17 +1,20 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch } from "vue";
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
-import type { SubmitEventPromise } from 'vuetify';
 import { ADDRESS_TAG } from "@/shared/constants/address-tag";
-import { nullRules } from '@/utils/validation';
+import { nullRules, phoneRules } from '@/utils/validation';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
+import type { VForm } from 'vuetify/lib/components';
+import { ref } from 'vue';
 
 const store = useAddressesManageStore();
 const storeLocation = useLocationStore();
+const formRef = ref<VForm | null>(null);
 
-const handleSubmitCreate = async (event: SubmitEventPromise) => {
-    const results = await event
-  if (!results.valid) return
+const handleSubmitCreate = async () => {
+  if (!formRef.value) return;
+  const { valid } = await formRef.value.validate();
+  if (!valid) return;
+
   await store.submitCreate();
 }
 </script>
@@ -23,13 +26,13 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
   footerFixed
   align="right">
   <template #body>
-    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+    <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
       
         <LabelInput label="Tên người nhận" required/>
         <v-text-field v-model="store.formDataItem.fullname" :rules="nullRules" label="Nhập họ và tên" variant="outlined" required></v-text-field>
 
         <LabelInput label="Số điện thoại" required/>
-        <v-text-field v-model="store.formDataItem.phone" :rules="nullRules" label="Nhập số điện thoại" variant="outlined" required></v-text-field>
+        <v-text-field type="tel" v-model="store.formDataItem.phone" :rules="phoneRules" label="Nhập số điện thoại" variant="outlined" required></v-text-field>
 
         <LabelInput label="Địa chỉ" required/>
         <v-text-field v-model="store.formDataItem.address" :rules="nullRules" label="Nhập địa chỉ" variant="outlined" required></v-text-field>
@@ -83,7 +86,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
     </v-form>
   </template>
   <template #footer>
-    <Button type="submit" color="primary" label="Lưu địa chỉ" class="w-full" />
+    <Button @click="handleSubmitCreate" color="primary" label="Lưu địa chỉ" class="w-full" />
   </template>
 </Popup>
 </template>

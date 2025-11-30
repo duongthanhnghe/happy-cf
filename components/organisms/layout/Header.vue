@@ -9,6 +9,7 @@ import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformat
 import { ROUTES } from '@/shared/constants/routes';
 import { useRoute } from 'vue-router'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
+import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
 import type { MenuItem } from '@/server/types/common/menu-item';
 
 const storeSetting = useBaseInformationStore();
@@ -18,6 +19,7 @@ const storeSearch = useSearchStore()
 const storeAddress = useAddressesManageStore()
 const route = useRoute()
 const storeDisplay = useDisplayStore()
+const storeProductCategory = useProductCategoryStore()
 
 const props = defineProps({
   typeLeft: {
@@ -30,8 +32,7 @@ const props = defineProps({
 const listMenu: MenuItem[] = [
   ROUTES.PUBLIC.HOME,
   ROUTES.PUBLIC.ORDER,
-  ROUTES.PUBLIC.ABOUT,
-  ROUTES.PUBLIC.NEWS.children!.MAIN,
+  ...storeProductCategory.getMenuItems,
 ]
 
 onMounted(async () => {

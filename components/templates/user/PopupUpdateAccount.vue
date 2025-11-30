@@ -59,13 +59,13 @@ onBeforeUnmount(() => {
       </AvatarEdit>
 
       <LabelInput :label="AUTH_TEXT_FULLNAME" required />
-      <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.fullname" :rules="nullRules" label="Ho va ten" required></v-text-field>
+      <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.fullname" :rules="nullRules" label="Họ và tên" required></v-text-field>
 
       <LabelInput :label="AUTH_TEXT_BIRTHDAY" required />
-      <v-text-field variant="outlined" v-model="storeAccountEdit.getBirthday" type="date" label="Ngay sinh" class="input-date-custom" append-inner-icon="mdi-calendar"></v-text-field>
+      <v-text-field variant="outlined" v-model="storeAccountEdit.getBirthday" type="date" label="Ngày sinh" class="input-date-custom" append-inner-icon="mdi-calendar"></v-text-field>
 
       <LabelInput :label="AUTH_TEXT_PHONE" required />
-      <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.phone" type="tel" :counter="11" maxlength="11" :rules="nullRules" label="So dien thoai"></v-text-field>
+      <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.phone" type="tel" :counter="11" maxlength="11" :rules="nullRules" label="Số điện thoại"></v-text-field>
       <v-radio-group inline v-model="storeAccountEdit.formUserItem.gender">
         <v-radio :label="GLOBAL_TEXT_MALE" value="male"></v-radio>
         <v-radio :label="GLOBAL_TEXT_FEMALE" value="female"></v-radio>

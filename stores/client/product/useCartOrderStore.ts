@@ -34,7 +34,7 @@ export const useCartStore = defineStore("Cart", () => {
   
   const { fetchAvailableVouchers, allVouchers } = useAvailableVouchersForOrder();
   const eventBus = useEventBus();
-  const { fetchCartProducts, getCartProducts } = useProductCartDetail();
+  const { fetchCartProducts, getCartProducts, loadingData: loadingCartProduct } = useProductCartDetail();
   const router = useRouter();
   const route = useRoute();
 
@@ -245,6 +245,7 @@ export const useCartStore = defineStore("Cart", () => {
   return {
     ...state,
     ...utilShared,
+    loadingCartProduct,
     // Product operations
     addProductToCart,
     updateQuantity: productOps.updateQuantity,

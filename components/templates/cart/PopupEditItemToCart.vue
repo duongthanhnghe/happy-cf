@@ -34,7 +34,7 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
     :bodySpace="false" footerFixed align="bottom" 
     popupId="popup-edit" 
     :modelValue="storeCart.getPopupState('edit')" 
-    :popupHeading="storeDisplay.isMobileTable ? '':'Sua san pham'" 
+    :popupHeading="storeDisplay.isMobileTable ? '':'Sửa sản phẩm'" 
     bodyClass="bg-gray2" 
     @update:modelValue="storeCart.togglePopup('edit', false)"
   >
@@ -74,7 +74,7 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
             }"
           >
             <Heading tag="div" size="md" weight="semibold" class="black pt-sm pl-ms pr-ms">
-              {{ item.name }} - {{ item.id }}
+              {{ item.name }}
             </Heading>
             <v-radio
               v-for="variant in item.variants"
@@ -96,7 +96,7 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
         
         <div class="popup-detail-product-card pb-md">
           <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
-            Them luu y cho quan
+            Thêm lưu ý
           </Heading>
           <v-textarea class="mb-0" :rows="5" v-model="detail.note" :value="detail.note"/>
 

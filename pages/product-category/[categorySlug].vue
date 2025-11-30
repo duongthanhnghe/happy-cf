@@ -23,7 +23,7 @@ onBeforeUnmount(() => {
 
 <template>
   <template v-if="detail" >
-    <Breadcrumb :heading="detail.categoryName" :description="`${storeCategoryMain.getTotalItems} Ket qua`" :image="storeCategoryMain.listBannerCategory">
+    <Breadcrumb :heading="detail.categoryName" :description="`${storeCategoryMain.getTotalItems} Sản phẩm`" :image="storeCategoryMain.listBannerCategory">
       <slot>
         <div v-if="storeDisplay.isMobileTable" id="filter-product">
           <ProductFilterMobile :categoryName="detail.categoryName" />

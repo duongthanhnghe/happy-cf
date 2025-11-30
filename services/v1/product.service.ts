@@ -5,7 +5,8 @@ import type {
   WishlistItem, 
   CreateProductDTO, 
   UpdateProductDTO,
-  ProductPaginationDTO
+  ProductPaginationDTO,
+  ProductSortType
 } from '@/server/types/dto/v1/product.dto'
 import type { ApiResponse } from '@/server/types/common/api-response'
 
@@ -96,7 +97,7 @@ export const productsAPI = {
     id: string,
     page: number,
     limit: number,
-    sort?: "discount" | "popular" | "price_desc" | "price_asc"
+    sort?: ProductSortType
   ) => {
     try {
       const url = new URL(

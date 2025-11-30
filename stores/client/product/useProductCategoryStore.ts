@@ -2,7 +2,8 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { useProductCategoryTree } from '@/composables/product/useProductCategoryTree';
-
+import { ROUTE_HELPERS } from "@/shared/constants/routes-helpers";
+import type { MenuItem } from "@/server/types/common/menu-item";
 const TTL_MS = 10 * 60 * 1000
 
 export const useProductCategoryStore = defineStore("ProductCategoryStore", () => {
@@ -43,12 +44,21 @@ export const useProductCategoryStore = defineStore("ProductCategoryStore", () =>
     flatten(dataList.value);
     return result;
   });
-  
+
+  const getMenuItems = computed((): MenuItem[] => {
+    return dataList.value.map((category): MenuItem => ({
+      label: category.categoryName,
+      path: ROUTE_HELPERS.productCategory(category.slug),
+      icon: 'category',
+    }))
+  })
+    
   return {
     dataList,
     fetchCategoryStore,
     getListData,
     getFlatCategoryList,
+    getMenuItems,
     lastFetched,
     loading,
   };

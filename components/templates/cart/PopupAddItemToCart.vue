@@ -23,7 +23,7 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
     align="bottom" 
     popupId="popup-order" 
     :modelValue="storeCart.getPopupState('order')" 
-    :popupHeading="storeDisplay.isMobileTable ? '':'Them gio hang'" 
+    :popupHeading="storeDisplay.isMobileTable ? '':'Thêm giỏ hàng'" 
     bodyClass="bg-gray2" 
     footerFixed 
     @update:modelValue="storeCart.togglePopup('order', false)"
@@ -80,7 +80,7 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
        
           <div class="popup-detail-product-card pb-md">
             <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
-              Them luu y cho quan
+              Thêm lưu ý
             </Heading>
             <v-textarea class="mb-0" :rows="5" v-model="storeCart.note"/>
             <div class="flex justify-center">
@@ -94,7 +94,7 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
 
       <template #footer>
         <Button
-          label="Đặt hàng"
+          label="Thêm vào giỏ hàng"
           class="w-full"
           color="primary"
           @handleOnClick="storeCart.addProductToCart(detail, storeCart.quantity, storeCart.note)"

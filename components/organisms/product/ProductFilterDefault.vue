@@ -5,7 +5,7 @@ const storeCategoryMain = useCategoryMainStore()
 <template>
   <v-select
     v-model="storeCategoryMain.filterType"
-    :items="[{title: 'Moi nhat',value:''},...storeCategoryMain.filterArray]"
+    :items="storeCategoryMain.filterArray"
     item-title="title"
     item-value="value"
     variant="outlined"

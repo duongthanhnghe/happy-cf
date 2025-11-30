@@ -5,7 +5,7 @@ import { useProductCategoryDetail } from '@/composables/product/useProductCatego
 import { useProductByCategory } from '@/composables/product/useProductByCategory'
 import { usePagination } from '@/utils/paginationHandle'
 import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren'
-import type { ProductDTO, ProductSortType } from '@/server/types/dto/v1/product.dto'
+import type { ProductDTO, ProductSortType, ProductFilterOption } from '@/server/types/dto/v1/product.dto'
 import { scrollIntoView } from "@/utils/global";
 import { IMAGE_AUTH_LOGIN } from "@/const/image";
 
@@ -19,25 +19,29 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   const page = ref('1')
   const limit = 24
   const filterCategory = ref<string>('')
-  const filterType = ref<ProductSortType>('discount')
-  const filterArray = ref([
+  const filterArray = ref<ProductFilterOption[]>([
     {
-      title: 'Khuyên mãi',
+      title: 'Mới nhất',
+      value: '',
+    },
+    {
+      title: 'Khuyến mãi',
       value: 'discount',
     },
     {
-      title: 'Mua nhieu',
+      title: 'Bán chạy',
       value: 'popular',
     },
     {
-      title: 'Cao den thap',
+      title: 'Giá cao đến thấp',
       value: 'price_desc',
     },
     {
-      title: 'Thap den cao',
+      title: 'Giá thấp đến cao',
       value: 'price_asc',
     },
   ])
+  const filterType = ref<ProductSortType>(filterArray.value[0].value)
   const maxPrice = ref(0)
   const rangePrice = ref([0, maxPrice.value])
   const isTogglePopupFilter = ref(false)
@@ -99,7 +103,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   const resetFilter = () => {
     isTogglePopupFilter.value = false
     page.value = '1'
-    filterType.value = 'discount'
+    filterType.value = ''
     maxPrice.value = listItems.value ? Math.max(...listItems.value.map(item => item.price)) : 0
     rangePrice.value = [0, maxPrice.value]
     filterCategory.value = ''
@@ -108,7 +112,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   const hasFilter = computed(() => {
     return (
       page.value !== '1' ||
-      filterType.value !== 'discount' ||
+      filterType.value !== '' ||
       filterCategory.value !== '' ||
       rangePrice.value[0] !== 0 || 
       rangePrice.value[1] !== maxPrice.value 
