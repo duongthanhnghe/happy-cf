@@ -2,29 +2,35 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { getBreadcrumbs } from '@/utils/breadcrumb'
-import MaterialIcon from './MaterialIcon.vue'
+
+const props = defineProps<{
+  customLabel?: string
+}>()
 
 const route = useRoute()
-const breadcrumbs = computed(() => getBreadcrumbs(route.path))
+const breadcrumbs = computed(() => getBreadcrumbs(route.path, props.customLabel))
 </script>
 
 <template>
   <v-breadcrumbs class="pl-0 pr-0">
-    <v-breadcrumbs-item
-      v-for="(item, index) in breadcrumbs"
-      :key="index"
-      :href="item.path"
-    >
+    <template v-for="(item, index) in breadcrumbs" :key="index">
+      <v-breadcrumbs-item>
+        <router-link 
+          v-if="index < breadcrumbs.length - 1 && item.path"
+          :to="item.path"
+        >
+          {{ item.label }}
+        </router-link>
+        
+        <h1 v-else>
+          {{ item.label }}
+        </h1>
+      </v-breadcrumbs-item>
       
-      <template v-if="index === breadcrumbs.length - 1">
-        <h1>{{ item.label }}</h1>
+      <v-breadcrumbs-divider v-if="index < breadcrumbs.length - 1">
         <MaterialIcon name="keyboard_arrow_right"/>
-      </template>
-      <template v-else>
-        {{ item.label }}
-      <MaterialIcon name="keyboard_arrow_right"/>
-      </template>
-    </v-breadcrumbs-item>
+      </v-breadcrumbs-divider>
+    </template>
   </v-breadcrumbs>
 </template>
 
@@ -33,18 +39,10 @@ const breadcrumbs = computed(() => getBreadcrumbs(route.path))
 
   .v-breadcrumbs-item {
     padding: 0;
-    .icon {
-      color: $cl-gray5;
-      margin: 0 4px;
-    }
     &--link {
       color: $cl-gray5;
       display: flex;
       align-items: center;
-      h1 {
-        font-size: $fz-base;
-        font-weight: 400;
-      }
     }
     &:last-child {
       .icon {
@@ -55,6 +53,17 @@ const breadcrumbs = computed(() => getBreadcrumbs(route.path))
           color: $cl-text;
         }
       }
+    }
+    h1 {
+      font-size: $fz-base;
+      font-weight: 400;
+    }
+  }
+  .v-breadcrumbs-divider {
+    display: flex;
+    padding: 0 4px;
+    .icon {
+      color: $cl-gray5;
     }
   }
 </style>

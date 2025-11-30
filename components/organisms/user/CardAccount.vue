@@ -37,9 +37,9 @@ watchEffect(() => {
 </script>
 <template>
   <client-only>
-  <div class="information-account">
+  <div class="information-account" v-if="storeAccount.getUserId">
     <div class="container">
-        <div v-if="storeAccount.getDetailValue?.id" class="information-account-card">
+        <div class="information-account-card">
           <div class="flex justify-between">
             <div class="flex align-center gap-sm">
               <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
@@ -78,14 +78,15 @@ watchEffect(() => {
             </template>
           </div>
       </div>
-      <!-- <div v-else class="information-account-card text-center">
-        <Heading weight="semibold" class="text-center">Dang nhap</Heading>
-        <div class="mt-sm mb-sm">Vui long dang nhap</div>
-        <NuxtLink :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
-          <Button color="black" label="Dang nhap" />
-        </NuxtLink>
-      </div> -->
     </div>
   </div>
+  <div v-else class="mt-ms"></div>
+   <!-- <div v-else class="information-account-card text-center">
+    <Heading weight="semibold" class="text-center">Dang nhap</Heading>
+    <div class="mt-sm mb-sm">Vui long dang nhap</div>
+    <NuxtLink :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
+      <Button color="black" label="Dang nhap" />
+    </NuxtLink>
+  </div> -->
   </client-only>
 </template>

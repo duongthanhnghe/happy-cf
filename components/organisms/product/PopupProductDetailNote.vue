@@ -15,15 +15,15 @@ const storeDisplay = useDisplayStore()
   variant="modal-center" 
   bodyClass="bg-gray6" 
   :align="storeDisplay.isLaptop ? 'center':'bottom'"
-  :popupHeading="storeDisplay.isLaptop ? 'Ghi chu don hang':''"
+  :popupHeading="storeDisplay.isLaptop ? 'Ghi chú đơn hàng':''"
   >
     <template #body >
         <LabelInput class="weight-medium"/>
-        <v-textarea placeholder="Them luu y" class="mb-0" :rows="5" v-model="storeCart.note" :hideDetails="true"/>
+        <v-textarea placeholder="Thêm lưu ý" class="mb-0" :rows="5" v-model="storeCart.note" :hideDetails="true"/>
     </template>
     <template #footer >
       <div class="mt-sm">
-        <Button color="black" class="w-full" label="Xac nhan" @click.prevent="store.handleTogglePopupNote(false)"/>
+        <Button color="black" class="w-full" label="Xác nhận" @click.prevent="store.handleTogglePopupNote(false)"/>
       </div>
     </template>
   </Popup>

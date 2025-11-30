@@ -19,12 +19,12 @@ onMounted(async () => {
 <template>
   <div class="bg-gray6">
     <div class="container pt-section pb-section">
-      <Text text="Mo ta san pham" size="md" weight="semibold" align="center" color="black" />
+      <Text text="Mô tả sản phẩm" size="md" weight="semibold" align="center" color="black" />
       <div class="mt-sm product-detail-description" :class="{active: store.toggleDescription}" :ref="el => store.descRef = el">
         {{ props.description }}
       </div>
       <div v-if="store.isLongDescription" class="text-center">
-        <Button color="secondary" :label="store.toggleDescription ? 'Thu gon':'Xem them'" class="weight-medium bg-transparent" @click="store.handleToggleDescription()" />
+        <Button color="secondary" :label="store.toggleDescription ? 'Thu gọn':'Xem thêm'" class="weight-medium bg-transparent" @click="store.handleToggleDescription()" />
       </div>
     </div>
   </div>

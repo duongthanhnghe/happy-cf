@@ -23,7 +23,7 @@ import {
   useAccountStore
 } from '@/stores/client/users/useAccountStore';
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
-import { ROUTES } from '@/shared/constants/routes';
+import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 
 const props = defineProps<{
   product: ProductDTO
@@ -48,7 +48,7 @@ const handleShowAction = () => {
 <template>
 <div v-if="product && product.isActive" :class="['product-template1-item', `variant-${variant}`, background ,listView ? 'product-template1-listView' : '' ,storeCart.getTemplate1Amount(product.id) != 0 ? 'active' : '']">
   <div class="product-template1-image">
-    <NuxtLink v-if="product.slug" :to="`${ROUTES.PUBLIC.PRODUCT.children?.DETAIL?.path}/${product.slug}`">
+    <NuxtLink v-if="product.slug" :to="ROUTE_HELPERS.productDetail(product.slug)">
       <img v-lazy="product.image" :alt="product.productName" class="product-template1-image-src">
     </NuxtLink>
     <client-only>
@@ -93,7 +93,11 @@ const handleShowAction = () => {
     </div>
   </div>
   <div class="product-template1-content">
-    <NuxtLink v-if="product.slug" class="product-template1-title text-limit text-limit-2" :to="`${ROUTES.PUBLIC.PRODUCT.children?.DETAIL?.path}/${product.slug}`">
+    <NuxtLink 
+      v-if="product.slug" 
+      class="product-template1-title text-limit text-limit-2" 
+      :to="ROUTE_HELPERS.productDetail(product.slug)"
+    >
       {{ product.productName }}
     </NuxtLink>
     <div class="product-template1-price">

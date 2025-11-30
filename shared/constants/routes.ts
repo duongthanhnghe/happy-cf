@@ -362,7 +362,6 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
     },
     PRODUCT: {
       label: 'Sản phẩm',
-      path: '/product',
       icon: 'shopping_cart',
       headerTypeLeft: 'logo',
       children: {
@@ -382,7 +381,7 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
           headerTypeLeft: 'address',
         },
         DETAIL: {
-          path: '/product',
+          path: '/product/:slug',
           label: 'Chi tiết sản phẩm',
           icon: 'info',
           middleware: ['auth-account','product-detail'],

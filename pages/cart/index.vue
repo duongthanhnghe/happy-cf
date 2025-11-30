@@ -102,8 +102,8 @@ onBeforeUnmount(() => {
         <CartPaymentInfo :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint || 0"/>
       </v-form>
       <div v-else class="text-center">
-        <NpData text="Không có sản phẩm nào trong giỏ hàng!" />
-        <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }" class="mt-sm">
+        <NoData text="Không có sản phẩm nào trong giỏ hàng!" class="mb-sm"/>
+        <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }" >
           <Button color="black" label="Đặt hàng ngay" />
         </NuxtLink>
       </div>

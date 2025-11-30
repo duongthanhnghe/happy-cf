@@ -100,7 +100,7 @@ const {
       </div>
       <div class="mt-ms">
       <div v-for="(items, index) in getDetailOrder?.productList" :key="index">
-        <CartItemTemplate2 v-bind="items" class="mt-xs"/>
+        <CartItemTemplate2 v-bind="items" class="mt-sm"/>
       </div>
       </div>
       <div class="flex flex-direction-column gap-xs mt-xs">
