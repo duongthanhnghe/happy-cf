@@ -16,12 +16,14 @@ const props = defineProps<{
 </script>
 <template>
   <Card class="rd-xl mt-sm shadow-1">
-    <Text color="black" size="md" weight="semibold" class="flex justify-between black mb-sm">
-      Thông tin đặt hàng
-      <slot v-if="props.userId">
-        <Button @click.prevent="storeAddress.handleTogglePopupList(true,true)" size="xs" color="secondary" icon="keyboard_arrow_right"/>
-      </slot>
-    </Text>
+    <div class="flex justify-between mb-sm">
+      <Text text="Thông tin đặt hàng" color="black" size="md" weight="semibold" class="flex justify-between black mb-sm" />
+      <div class="flex gap-xs cursor-pointer" v-if="props.userId" @click.prevent="storeAddress.handleTogglePopupList(true,true)">
+        <Button tag="span" size="xs" color="secondary" icon="edit_location" class="text-color-primary">
+        </Button>
+        <Text text="Sổ địa chỉ" color="primary" weight="medium" />
+      </div>
+    </div>
     <div class="row row-xs">
       <div class="col-6">
         <LabelInput label="Giờ lấy hàng" required/>

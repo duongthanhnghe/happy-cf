@@ -11,13 +11,17 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="voucher-item2">
-    <img src="/assets/icons/icon-voucher-secondary.svg" width="86" height="26" :alt="item.name" />
-    <span v-if="item.type === VOUCHER_TYPE.percentage.type || item.type === VOUCHER_TYPE.product.type" class="voucher-item2-title">
-      Giảm {{ props.item.value }}%
-    </span>
-    <span v-else class="voucher-item2-title">
-      Giảm {{ formatCurrency(props.item.value) }}
-    </span>
+  <div :class="['voucher-item2 rd-md bg-third pd-sm weight-semibold', item.type === VOUCHER_TYPE.freeship.type ? 'bg-freeship':'']">
+    <div :class="['pr-xs pl-xs', item.type === VOUCHER_TYPE.freeship.type ? 'text-color-freeship':'text-color-primary']">
+      <template v-if="item.type === VOUCHER_TYPE.percentage.type || item.type === VOUCHER_TYPE.product.type">
+        Giảm {{ props.item.value }}%
+      </template>
+      <template v-else-if="item.type === VOUCHER_TYPE.freeship.type">
+        Giảm {{ formatCurrency(props.item.maxShippingDiscount) }}
+      </template>
+      <template v-else>
+        Giảm {{ formatCurrency(props.item.value) }}
+      </template>
+    </div>
   </div>
 </template>

@@ -36,7 +36,7 @@ watch(valueChangePage, (newVal) => {
 
         <div v-if="store.getListReviewProduct && store.getListReviewProduct?.length > 0" :class="COLUMN.ROW">
         <template v-for="item in store.getListReviewProduct" :key="item.id" >
-          <div v-if="store.getListReviewProduct" :class="COLUMN.REVIEW_BY_PRODUCT">
+          <div v-if="store.getListReviewProduct" :class="COLUMN.REVIEW_BY_PRODUCT" class="mb-sm">
             <ProductReviewItemTemplate2 :item="item" />
           </div>
         </template>

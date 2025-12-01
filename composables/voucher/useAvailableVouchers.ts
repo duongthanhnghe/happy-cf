@@ -42,7 +42,8 @@ export const useAvailableVouchersForOrder = () => {
 
   const allVouchers = computed(() => vouchers.value);
 
-  const getVoucherProduct = computed(() => vouchers.value?.filter((item) => item.type !== VOUCHER_TYPE.freeship.type && item.disabledReason === null))
+  // const getVoucherProduct = computed(() => vouchers.value?.filter((item) => item.type !== VOUCHER_TYPE.freeship.type && item.disabledReason === null))
+  const getVoucherProduct = computed(() => vouchers.value?.filter((item) => item.disabledReason === null))
 
   return {
     loading,

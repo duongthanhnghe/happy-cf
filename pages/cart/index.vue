@@ -79,7 +79,10 @@ onBeforeUnmount(() => {
       <v-form v-else-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
         <!-- LIST PRODUCT -->
         <div class="rd-lg overflow-hidden">
-          <Text text="Giỏ hàng" color="black" size="md" weight="semibold" class="mb-xs" />
+          <div class="flex justify-between align-center mb-xs">
+            <Text text="Giỏ hàng" color="black" size="md" weight="semibold" />
+            <Text text="Xoá tất cả" color="gray5" class="cursor-pointer" @click.prevent="store.handleDeleteCartAll" />
+          </div>
           <div class="flex flex-direction-column gap-xs">
             <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
           </div>

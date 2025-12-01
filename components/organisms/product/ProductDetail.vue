@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
               </template>
             </div>
 
-            <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" />
+            <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" class="mt-ms" />
             <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" v-if="detail.priceDiscounts !== 0 && storeAccount.getUserId"/>
             <ProductDetailOptions v-if="detail.options.length > 0" :options="detail.options" />
             <div class="mt-md">
