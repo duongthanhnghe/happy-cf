@@ -1,4 +1,56 @@
 import type { PaginationDTO } from '../../common/pagination.dto'
+
+export interface VariantItemDTO {
+  id: string;
+  name: string;
+  isActive: boolean;
+}
+
+export interface VariantGroupDTO {
+  id: string;
+  groupName: string;
+  groupType?: string;
+  description?: string;
+  icon?: string;
+  variants: VariantItemDTO[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type VariantGroupPaginationDTO = PaginationDTO<VariantGroupDTO>
+
+export type CreateVariantGroupDTO = Omit<VariantGroupDTO, "id" | "createdAt" | "updatedAt">;
+
+export type UpdateVariantGroupDTO = Partial<CreateVariantGroupDTO> & { id: string };
+
+export interface AddVariantToGroupDTO {
+  groupId: string;
+  variantId: string;
+  variantName: string;
+}
+
+export interface RemoveVariantFromGroupDTO {
+  groupId: string;
+  variantId: string;
+}
+
+// ==================== PRODUCT VARIANT DTOs ====================
+export interface ProductSelectedVariantDTO {
+  variantId: string;
+  variantName: string;
+  priceModifier: number;
+  inStock: boolean;
+}
+
+export interface ProductVariantGroupDTO {
+  groupId: string;
+  groupName: string;
+  required: boolean;
+  selectedVariants: ProductSelectedVariantDTO[];
+}
+
+//old
 export interface VariantDTO {
   id: string;
   name: string;
@@ -30,6 +82,8 @@ export interface ProductDTO {
   image: string;
   listImage: ListImageDTO[];
   options: OptionDTO[];
+  // MỚI: Thay thế options
+  variantGroups: ProductVariantGroupDTO[];
   categoryId: string;
   weight: number;
   isActive: boolean;

@@ -1,6 +1,24 @@
 import { Schema, model, models, Types, Document } from "mongoose";
 
-// ------------------- INTERFACES -------------------
+
+// MỚI: Selected Variant trong Product
+export interface ProductSelectedVariant {
+  variantId: string;
+  variantName: string;
+  priceModifier: number;
+  inStock: boolean;
+}
+
+// MỚI: Variant Group được chọn trong Product
+export interface ProductVariantGroup {
+  groupId: string;
+  groupName: string;
+  required: boolean;
+  selectedVariants: ProductSelectedVariant[];
+}
+
+
+// oldddd
 
 export interface Variant {
   id: string;
@@ -33,6 +51,7 @@ export interface Product {
   image: string;
   listImage: ListImage[];
   options: Option[];
+  variantGroups: ProductVariantGroup[];
   categoryId: Types.ObjectId | null;
   weight: number;
   isActive: boolean;
@@ -93,6 +112,28 @@ const ListImageSchema = new Schema<ListImage>(
   { _id: false }
 );
 
+// MỚI: Schema cho Selected Variant
+const ProductSelectedVariantSchema = new Schema<ProductSelectedVariant>(
+  {
+    variantId: { type: String, required: true },
+    variantName: { type: String, required: true },
+    priceModifier: { type: Number, default: 0 },
+    inStock: { type: Boolean, default: true },
+  },
+  { _id: false }
+);
+
+// MỚI: Schema cho Variant Group trong Product
+const ProductVariantGroupSchema = new Schema<ProductVariantGroup>(
+  {
+    groupId: { type: String, required: true },
+    groupName: { type: String, required: true },
+    required: { type: Boolean, default: false },
+    selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
+  },
+  { _id: false }
+);
+
 const ProductSchema = new Schema<Product>(
   {
     productName: { type: String, required: true, trim: true },
@@ -105,6 +146,7 @@ const ProductSchema = new Schema<Product>(
     image: { type: String, required: true },
     listImage: { type: [ListImageSchema], default: [] },
     options: { type: [OptionSchema], default: [] },
+    variantGroups: { type: [ProductVariantGroupSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },

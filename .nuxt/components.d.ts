@@ -23,9 +23,11 @@ interface _GlobalComponents {
     'UpdatePost': typeof import("../components/admin/news/UpdatePost.vue")['default']
     'CreateCategoryProduct': typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']
     'CreateProduct': typeof import("../components/admin/products/CreateProduct.vue")['default']
+    'CreateVariantGroup': typeof import("../components/admin/products/CreateVariantGroup.vue")['default']
     'CreateVariantProduct': typeof import("../components/admin/products/CreateVariantProduct.vue")['default']
     'UpdateCategoryProduct': typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']
     'UpdateProduct': typeof import("../components/admin/products/UpdateProduct.vue")['default']
+    'UpdateVariantGroup': typeof import("../components/admin/products/UpdateVariantGroup.vue")['default']
     'CreateMembershipBenefit': typeof import("../components/admin/users/CreateMembershipBenefit.vue")['default']
     'DetailAccount': typeof import("../components/admin/users/DetailAccount.vue")['default']
     'UpdateMembership': typeof import("../components/admin/users/UpdateMembership.vue")['default']
@@ -185,9 +187,11 @@ interface _GlobalComponents {
     'LazyUpdatePost': LazyComponent<typeof import("../components/admin/news/UpdatePost.vue")['default']>
     'LazyCreateCategoryProduct': LazyComponent<typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']>
     'LazyCreateProduct': LazyComponent<typeof import("../components/admin/products/CreateProduct.vue")['default']>
+    'LazyCreateVariantGroup': LazyComponent<typeof import("../components/admin/products/CreateVariantGroup.vue")['default']>
     'LazyCreateVariantProduct': LazyComponent<typeof import("../components/admin/products/CreateVariantProduct.vue")['default']>
     'LazyUpdateCategoryProduct': LazyComponent<typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']>
     'LazyUpdateProduct': LazyComponent<typeof import("../components/admin/products/UpdateProduct.vue")['default']>
+    'LazyUpdateVariantGroup': LazyComponent<typeof import("../components/admin/products/UpdateVariantGroup.vue")['default']>
     'LazyCreateMembershipBenefit': LazyComponent<typeof import("../components/admin/users/CreateMembershipBenefit.vue")['default']>
     'LazyDetailAccount': LazyComponent<typeof import("../components/admin/users/DetailAccount.vue")['default']>
     'LazyUpdateMembership': LazyComponent<typeof import("../components/admin/users/UpdateMembership.vue")['default']>
@@ -353,9 +357,11 @@ export const UpdateCategoryNews: typeof import("../components/admin/news/UpdateC
 export const UpdatePost: typeof import("../components/admin/news/UpdatePost.vue")['default']
 export const CreateCategoryProduct: typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']
 export const CreateProduct: typeof import("../components/admin/products/CreateProduct.vue")['default']
+export const CreateVariantGroup: typeof import("../components/admin/products/CreateVariantGroup.vue")['default']
 export const CreateVariantProduct: typeof import("../components/admin/products/CreateVariantProduct.vue")['default']
 export const UpdateCategoryProduct: typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']
 export const UpdateProduct: typeof import("../components/admin/products/UpdateProduct.vue")['default']
+export const UpdateVariantGroup: typeof import("../components/admin/products/UpdateVariantGroup.vue")['default']
 export const CreateMembershipBenefit: typeof import("../components/admin/users/CreateMembershipBenefit.vue")['default']
 export const DetailAccount: typeof import("../components/admin/users/DetailAccount.vue")['default']
 export const UpdateMembership: typeof import("../components/admin/users/UpdateMembership.vue")['default']
@@ -515,9 +521,11 @@ export const LazyUpdateCategoryNews: LazyComponent<typeof import("../components/
 export const LazyUpdatePost: LazyComponent<typeof import("../components/admin/news/UpdatePost.vue")['default']>
 export const LazyCreateCategoryProduct: LazyComponent<typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']>
 export const LazyCreateProduct: LazyComponent<typeof import("../components/admin/products/CreateProduct.vue")['default']>
+export const LazyCreateVariantGroup: LazyComponent<typeof import("../components/admin/products/CreateVariantGroup.vue")['default']>
 export const LazyCreateVariantProduct: LazyComponent<typeof import("../components/admin/products/CreateVariantProduct.vue")['default']>
 export const LazyUpdateCategoryProduct: LazyComponent<typeof import("../components/admin/products/UpdateCategoryProduct.vue")['default']>
 export const LazyUpdateProduct: LazyComponent<typeof import("../components/admin/products/UpdateProduct.vue")['default']>
+export const LazyUpdateVariantGroup: LazyComponent<typeof import("../components/admin/products/UpdateVariantGroup.vue")['default']>
 export const LazyCreateMembershipBenefit: LazyComponent<typeof import("../components/admin/users/CreateMembershipBenefit.vue")['default']>
 export const LazyDetailAccount: LazyComponent<typeof import("../components/admin/users/DetailAccount.vue")['default']>
 export const LazyUpdateMembership: LazyComponent<typeof import("../components/admin/users/UpdateMembership.vue")['default']>

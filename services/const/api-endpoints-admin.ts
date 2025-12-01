@@ -43,6 +43,16 @@ export const API_ENDPOINTS_ADMIN = {
     CREATE: '/products',
     TOGGLE_ACTIVE: (id: string) => `/products/toggleActive/${id}`,
   },
+  VARIANT_GROUPS: {
+    LIST_ALL: '/variant-groups',
+    LIST_ACTIVE: '/variant-groups/active',
+    DETAIL: '/variant-groups/:id',
+    CREATE: '/variant-groups',
+    UPDATE: '/variant-groups/:id',
+    DELETE: '/variant-groups/:id',
+    TOGGLE_ACTIVE: '/variant-groups/:id/toggle-active',
+    BY_TYPE: '/variant-groups/type/:type',
+  },
   ORDERS: {
     LIST: '/orders',
     GET_BY_ID: (id: string) => `/orders/${id}`,

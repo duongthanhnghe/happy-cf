@@ -15,6 +15,20 @@ const ListImageSchema = new Schema({
     id: { type: String, required: true },
     src: { type: String, required: true },
 }, { _id: false });
+// MỚI: Schema cho Selected Variant
+const ProductSelectedVariantSchema = new Schema({
+    variantId: { type: String, required: true },
+    variantName: { type: String, required: true },
+    priceModifier: { type: Number, default: 0 },
+    inStock: { type: Boolean, default: true },
+}, { _id: false });
+// MỚI: Schema cho Variant Group trong Product
+const ProductVariantGroupSchema = new Schema({
+    groupId: { type: String, required: true },
+    groupName: { type: String, required: true },
+    required: { type: Boolean, default: false },
+    selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
+}, { _id: false });
 const ProductSchema = new Schema({
     productName: { type: String, required: true, trim: true },
     description: { type: String },
@@ -26,6 +40,7 @@ const ProductSchema = new Schema({
     image: { type: String, required: true },
     listImage: { type: [ListImageSchema], default: [] },
     options: { type: [OptionSchema], default: [] },
+    variantGroups: { type: [ProductVariantGroupSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },

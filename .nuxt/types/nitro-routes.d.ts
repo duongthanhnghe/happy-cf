@@ -45,6 +45,9 @@ declare module "nitropack/types" {
     '/v1/admin/users.router': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/users.router').default>>>>
     }
+    '/v1/admin/variant-group.routes': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/variant-group.routes').default>>>>
+    }
     '/v1/admin/voucher-usage.router': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/voucher-usage.router').default>>>>
     }

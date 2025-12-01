@@ -11,6 +11,7 @@ import postsNewsRoutes from './posts-news.router'
 import orderManageRoutes from './order-manage.router'
 import categoriesProductRoutes from './categories-product.router'
 import productRoutes from './product.router'
+import variantGroupRoutes from './variant-group.routes'
 // import addressRoutes from './addressesRouter'
 import paymentTransactionRoutes from './payment-transaction.routes'
 // import wishlistRoutes from './productRouter'
@@ -35,6 +36,7 @@ router.use('/orders', orderManageRoutes)
 router.use('/payment-transactions', paymentTransactionRoutes)
 router.use('/categories', categoriesProductRoutes)
 router.use('/products', productRoutes)
+router.use('/variant-groups', variantGroupRoutes)
 // router.use('/addresses', addressRoutes)
 router.use('/product-reviews', productReviewRouter)
 router.use('/voucher', voucherRouter)

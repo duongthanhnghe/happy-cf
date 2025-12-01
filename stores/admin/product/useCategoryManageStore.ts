@@ -258,8 +258,10 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     return Array.from({ length: maxOrder.value }, (_, i) => i + 1)
   })
 
+
   //upload image
   const handleAddImage = (type: 'image' | 'banner') => {
+    // storeFileManage.handleTogglePopup(true)
     currentImageType.value = type;
     storeFileManage.handleTogglePopup(true);
   }

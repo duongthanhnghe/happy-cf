@@ -10,6 +10,7 @@ import postsNewsRoutes from './posts-news.router.js';
 import orderManageRoutes from './order-manage.router.js';
 import categoriesProductRoutes from './categories-product.router.js';
 import productRoutes from './product.router.js';
+import variantGroupRoutes from './variant-group.routes.js';
 // import addressRoutes from './addressesRouter.js'
 import paymentTransactionRoutes from './payment-transaction.routes.js';
 // import wishlistRoutes from './productRouter.js'
@@ -32,6 +33,7 @@ router.use('/orders', orderManageRoutes);
 router.use('/payment-transactions', paymentTransactionRoutes);
 router.use('/categories', categoriesProductRoutes);
 router.use('/products', productRoutes);
+router.use('/variant-groups', variantGroupRoutes);
 // router.use('/addresses', addressRoutes)
 router.use('/product-reviews', productReviewRouter);
 router.use('/voucher', voucherRouter);
