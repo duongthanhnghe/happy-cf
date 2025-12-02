@@ -1,6 +1,6 @@
 import { VariantGroupEntity } from "../../../models/v1/variant-group.entity.js";
 import { toVariantGroupDTO, toVariantGroupListDTO, } from "../../../mappers/v1/variant-group.mapper.js";
-// Get all variant groups
+import { ProductEntity } from "../../../models/v1/product.entity.js";
 export const getAllVariantGroups = async (req, res) => {
     try {
         const groups = await VariantGroupEntity.find().sort({ createdAt: -1 }).lean();
@@ -15,7 +15,6 @@ export const getAllVariantGroups = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// Get active variant groups only
 export const getActiveVariantGroups = async (req, res) => {
     try {
         const groups = await VariantGroupEntity.find({ isActive: true })
@@ -32,7 +31,6 @@ export const getActiveVariantGroups = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// Get variant group by ID
 export const getVariantGroupById = async (req, res) => {
     try {
         if (!/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
@@ -49,7 +47,6 @@ export const getVariantGroupById = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// Create variant group
 export const createVariantGroup = async (req, res) => {
     try {
         const { groupName, groupType, description, icon, variants, isActive } = req.body;
@@ -100,7 +97,6 @@ export const createVariantGroup = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// Update variant group
 export const updateVariantGroup = async (req, res) => {
     try {
         const { id } = req.params;
@@ -170,7 +166,6 @@ export const updateVariantGroup = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// Delete variant group
 export const deleteVariantGroup = async (req, res) => {
     try {
         const { id } = req.params;
@@ -182,15 +177,15 @@ export const deleteVariantGroup = async (req, res) => {
             return res.status(404).json({ code: 1, message: "Nhóm biến thể không tồn tại" });
         }
         // TODO: Check if group is being used by any products
-        // const productsUsingGroup = await ProductEntity.findOne({
-        //   'variantGroups.groupId': id
-        // });
-        // if (productsUsingGroup) {
-        //   return res.status(400).json({ 
-        //     code: 1, 
-        //     message: "Không thể xóa nhóm biến thể đang được sử dụng bởi sản phẩm" 
-        //   });
-        // }
+        const productsUsingGroup = await ProductEntity.findOne({
+            'variantGroups.groupId': id
+        });
+        if (productsUsingGroup) {
+            return res.status(400).json({
+                code: 1,
+                message: "Không thể xóa nhóm biến thể đang được sử dụng bởi sản phẩm"
+            });
+        }
         await VariantGroupEntity.findByIdAndDelete(id);
         return res.json({
             code: 0,
@@ -202,7 +197,6 @@ export const deleteVariantGroup = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// Toggle active status
 export const toggleVariantGroupActive = async (req, res) => {
     try {
         const { id } = req.params;
@@ -226,7 +220,6 @@ export const toggleVariantGroupActive = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// Get variant groups by type
 export const getVariantGroupsByType = async (req, res) => {
     try {
         const { type } = req.params;

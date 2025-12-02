@@ -14,12 +14,12 @@ export const useProductDetailOperations = (
     const product = getDetailProduct.value;
     const selectedOptions = storeCart.tempSelected;
 
-    if (product.options && product.options.length > 0) {
-      const isAllRequiredSelected = product.options.every(group => {
-        const selectedVariant = selectedOptions[group.id as any]  as any;
+    if (product.variantGroups && product.variantGroups.length > 0) {
+      const isAllRequiredSelected = product.variantGroups.every(group => {
+        const selectedVariant = selectedOptions[group.groupId as any]  as any;
         
-        return selectedVariant && group.variants.some(variant => 
-          variant.id === selectedVariant
+        return selectedVariant && group.selectedVariants.some(variant => 
+          variant.variantId === selectedVariant
         );
       });
 

@@ -1,66 +1,156 @@
 <script lang="ts" setup>
+import { ref, reactive, watch } from 'vue';
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
+import { useVariantGroupStore } from '@/stores/admin/product/useVariantGroupManageStore'
+import type { VForm } from 'vuetify/components'
+import type { ProductVariantGroupDTO, VariantGroupDTO } from '@/server/types/dto/v1/product.dto';
+import { generateSKU } from '@/utils/global';
 import { showWarning } from '@/utils/toast';
-import type { SubmitEventPromise } from 'vuetify';
 
-const store = useProductManageStore();
+const productStore = useProductManageStore();
+const variantStore = useVariantGroupStore();
 
-const handleSubmitCreateOption = async (event: SubmitEventPromise) => {
-  const result = await event
-  if (!result.valid){
-    showWarning('Vui long nhap day du thong tin');
-    return
+const formRef = ref<VForm | null>(null);
+const selectedGroups = ref<VariantGroupDTO[]>([]);
+
+const productVariantGroups = reactive<ProductVariantGroupDTO[]>([]);
+
+async function initVariantPopup() {
+  productVariantGroups.splice(0);
+  selectedGroups.value = [];
+
+  if (variantStore.serverItems.length === 0) {
+    await variantStore.loadItemsVariant({ page: 1, itemsPerPage: 100 });
   }
-  await store.handleSubmitCreateOption()
+
+  const variants = productStore.updateProductItem?.variantGroups || [];
+  variants.forEach(g => {
+    selectedGroups.value.push({ id: g.groupId, groupName: g.groupName } as VariantGroupDTO);
+    productVariantGroups.push({
+      groupId: g.groupId,
+      groupName: g.groupName,
+      required: g.required,
+      selectedVariants: g.selectedVariants.map(v => ({ ...v }))
+    });
+  });
 }
 
+watch(() => productStore.isTogglePopupAddVariant, async (open) => {
+    if (!open) return;
+    await initVariantPopup();
+  }
+);
+
+watch(
+  selectedGroups,
+  async (newVal, oldVal) => {
+    if (!variantStore.serverItems || !variantStore.serverItems.length) return;
+
+    newVal.forEach(group => {
+      if (!productVariantGroups.find(g => g.groupId === group.id)) {
+        const groupData = variantStore.serverItems.find(v => String(v.id) === group.id);
+        if (groupData) {
+          productVariantGroups.push({
+            groupId: String(groupData.id),
+            groupName: groupData.groupName,
+            required: true,
+            selectedVariants: groupData.variants.map(v => ({
+              variantId: String(v.id),
+              variantName: v.name,
+              priceModifier: 0,
+              inStock: true,
+              stock: 1,
+              sku: generateSKU(productStore.updateProductItem.id, groupData.groupName, v.name)
+            }))
+          });
+        }
+      }
+    });
+
+    const removed = oldVal?.filter(o => !newVal.some(n => n.id === o.id));
+    removed?.forEach(r => {
+      const idx = productVariantGroups.findIndex(g => g.groupId === r.id);
+      if (idx !== -1) productVariantGroups.splice(idx, 1);
+    });
+  },
+  { deep: true }
+);
+
+const handleSubmitVariantProduct = async () => {
+  if (!formRef.value) return;
+
+  const valid = await formRef.value.validate();
+  if (!valid) {
+    showWarning('Vui lòng nhập đầy đủ thông tin');
+    return;
+  }
+
+  productStore.updateProductItem.variantGroups = productVariantGroups.map(g => ({
+    groupId: g.groupId,
+    groupName: g.groupName,
+    required: g.required,
+    selectedVariants: g.selectedVariants.map(v => ({ ...v }))
+  }));
+
+  productStore.handleTogglePopupAddVariant(false);
+}
 </script>
+
 <template>
-<Popup children popupId="popup-create-variant-product" v-model="store.isTogglePopupAddVariant" popupHeading="Bien the san pham" align="right">
+<Popup children v-model="productStore.isTogglePopupAddVariant" footerFixed popupHeading="Biến thể sản phẩm" align="right">
   <template #body>
-    <v-form v-model="store.validOptions" validate-on="submit lazy" @submit.prevent="handleSubmitCreateOption">
-        <div v-for="(optionItem, index) in store.updateProductItem.id != '' ? store.updateProductItem.options : store.formProductItem.options" :key="index" class="mb-md">
-          <Heading v-if="optionItem.name" tag="div" size="md" weight="semibold" class="black mb-xs">
-            Nhom: {{ optionItem.name }}
-          </Heading>
-          <div class="card card-md bg-gray2">
-            <div class="flex gap-sm align-anchor ">
-              <div class="flex-1">
-                <LabelInput label="Ten nhom bien the" required/>
-                <v-text-field v-model="optionItem.name" :counter="50" :rules="store.nullRules" label="Nhap ten nhom" variant="outlined" required></v-text-field>
-              </div>
-              <div>
-                <LabelInput label="Bat buoc?"/>
-                <v-switch v-model="optionItem.required" class="mt-0" inset></v-switch>
-              </div>
-              <Button icon="delete" :shadow="true" class="mt-xs" color="black" @click="store.handleRemoveOptionGroup(index)"/>
+    <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitVariantProduct">
+     
+      <LabelInput label="Chọn nhóm biến thể"/>
+      <v-combobox
+        v-model="selectedGroups"
+        :items="variantStore.serverItems"
+        item-title="groupName"
+        item-value="id"
+        multiple
+        chips
+        clearable
+      />
+
+      <div v-if="productVariantGroups.length > 0" v-for="group in productVariantGroups" :key="group.groupId" class="mb-md">
+        <Text v-if="productVariantGroups.length > 0" color="primary" size="normal" :text="`${group.groupName}`" weight="semibold" class="line-height-1 mb-sm"/>
+        <Card size="sm" bg="gray6" border class="rd-lg pb-0">
+          <div v-for="(variant, idx) in group.selectedVariants" :key="variant.variantId">
+            <div class="flex align-center justify-between">
+              <Text :text="variant.variantName" weight="semibold" class="mb-xs flex gap-xs" />
+              <Text color="gray5" :text="`SKU: ${variant.sku}`" />
             </div>
-            <div class="mb-md" style="border-bottom: 2px solid #ffffff;"></div>
-            <div v-for="(variantItem, indexVariant) in optionItem.variants" :key="indexVariant" class="flex justify-between align-anchor gap-sm">
+            <div class="flex gap-sm align-end">
               <div class="flex-1">
-              <LabelInput label="Ten bien the" required/>
-              <v-text-field v-model="variantItem.name" :counter="50" :rules="store.nullRules" label="Nhap ten" variant="outlined" required></v-text-field>
+                <LabelInput label="Giá cộng thêm"/>
+                <v-text-field
+                  v-model.number="variant.priceModifier"
+                  type="number"
+                  variant="outlined"
+                />
               </div>
               <div>
-                <LabelInput label="Gia cong them"/>
-                <v-text-field v-model="variantItem.priceModifier" type="number" label="0" variant="outlined"></v-text-field>
+                <LabelInput label="Tồn kho"/>
+                <v-text-field
+                  v-model.number="variant.stock"
+                  type="number"
+                  variant="outlined"
+                />
               </div>
               <div>
-                <LabelInput label="InStock"/>
-                <v-switch v-model="variantItem.inStock" class="mt-0" inset></v-switch>
+                <v-switch v-model="variant.inStock" label="Còn hàng" inset/>
               </div>
-              <Button icon="delete" color="secondary" class="mt-xs" @click="store.handleRemoveVariant(optionItem.id,variantItem.id)"/>
-            </div>
-            <div class="flex gap-sm">
-            <Button label="Them bien the" icon="add" color="secondary" @click.stop.prevent="store.handleAddVariant(index)"/>
             </div>
           </div>
-        </div>
-        <div class="portal-popup-footer">
-          <Button type="submit" color="primary" :shadow="true" label="Luu bien the" class="w-full" />
-        </div>
+        </Card>
+      </div>
+      <NoData v-else text="Không có biến thể nào đang được chọn"/>
+
     </v-form>
-    <Button color="black" :shadow="true" label="Them nhom" @click="store.handleAddOptionGroup"/>
+  </template>
+
+  <template #footer>
+    <Button v-if="productVariantGroups.length > 0" @click="handleSubmitVariantProduct" color="primary" label="Lưu" class="w-full"/>
   </template>
 </Popup>
 </template>

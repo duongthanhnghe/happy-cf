@@ -32,7 +32,7 @@ const props = defineProps({
   size: {
     type: String,
     default: '',
-    validator: (value) => ['xs','base','normal', 'md', 'lg','lg-2', 'xl', 'xxl',''].includes(value)
+    validator: (value) => ['xs','base','normal','sm','md', 'lg','lg-2', 'xl', 'xxl',''].includes(value)
   },
   lineHeight: {
     type: String,
@@ -42,7 +42,7 @@ const props = defineProps({
   color: {
     type: String,
     default: '',
-    validator: (value) => ['','white', 'black', 'primary', 'danger', 'green', 'gray','gray2','gray4','gray5','gray8'].includes(value)
+    validator: (value) => ['','white', 'black', 'primary','third', 'danger', 'green', 'gray','gray2','gray4','gray5','gray8'].includes(value)
   },
   hover: {
     type: String,

@@ -4,6 +4,7 @@ import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 import type { ApplyVoucherResponse, ApplyVoucherProduct } from "@/server/types/dto/v1/voucher.dto";
 import type { Ref } from 'vue';
 import type { CartDTO } from '@/server/types/dto/v1/product.dto';
+import { ROUTES } from "@/shared/constants/routes";
 
 export const useCartVoucher = (
   cartListItem: Ref<CartDTO[]>,
@@ -20,7 +21,7 @@ export const useCartVoucher = (
   allVouchers: any,
   eventBus: any,
   fetchAvailableVouchers: any,
-  route: any
+  getRoutePath: () => string
 ) => {
 
   const applyVoucher = async (code: string, userId?: string) => {
@@ -106,6 +107,7 @@ export const useCartVoucher = (
   };
 
   const listVoucher = async (userId: string, categoryIds: string[]) => {
+    if (getRoutePath() !== ROUTES.PUBLIC.CART.path) return;
     loadingAllVouchers.value = true;
     
     await new Promise(resolve => setTimeout(resolve, 500));

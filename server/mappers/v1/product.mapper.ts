@@ -1,37 +1,15 @@
 import type {
   Product,
   CategoryProduct,
-  Option,
-  Variant,
   ProductSelectedVariant,
   ProductVariantGroup,
 } from "../../models/v1/product.entity";
 import type {
   ProductDTO,
   CategoryProductDTO,
-  OptionDTO,
-  VariantDTO,
   ProductSelectedVariantDTO,
   ProductVariantGroupDTO,
 } from "../../types/dto/v1/product.dto";
-
-export function toVariantDTO(entity: Variant): VariantDTO {
-  return {
-    id: entity.id,
-    name: entity.name,
-    priceModifier: entity.priceModifier,
-    inStock: entity.inStock,
-  };
-}
-
-export function toOptionDTO(entity: Option): OptionDTO {
-  return {
-    id: entity.id,
-    name: entity.name,
-    required: entity.required,
-    variants: entity.variants.map(toVariantDTO),
-  };
-}
 
 export function toProductSelectedVariantDTO(
   variant: ProductSelectedVariant
@@ -41,12 +19,15 @@ export function toProductSelectedVariantDTO(
     variantName: variant.variantName,
     priceModifier: variant.priceModifier,
     inStock: variant.inStock,
+    stock: variant.stock ?? 0,
+    sku: variant.sku ?? "",
   };
 }
 
 export function toProductVariantGroupDTO(
   group: ProductVariantGroup
 ): ProductVariantGroupDTO {
+  
   return {
     groupId: group.groupId,
     groupName: group.groupName,
@@ -68,7 +49,6 @@ export function toProductDTO(entity: Product): ProductDTO {
     amountOrder: entity.amountOrder,
     image: entity.image,
     listImage: entity.listImage,
-    options: entity.options.map(toOptionDTO),
     variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
     categoryId: entity.categoryId ? entity.categoryId.toString() : "",
     weight: entity.weight,

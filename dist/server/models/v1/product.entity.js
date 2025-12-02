@@ -1,16 +1,4 @@
 import { Schema, model } from "mongoose";
-const VariantSchema = new Schema({
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    priceModifier: { type: Number, default: null },
-    inStock: { type: Boolean, default: true },
-}, { _id: false });
-const OptionSchema = new Schema({
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    required: { type: Boolean, default: false },
-    variants: { type: [VariantSchema], default: [] },
-}, { _id: false });
 const ListImageSchema = new Schema({
     id: { type: String, required: true },
     src: { type: String, required: true },
@@ -21,6 +9,8 @@ const ProductSelectedVariantSchema = new Schema({
     variantName: { type: String, required: true },
     priceModifier: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
+    stock: { type: Number, default: 0 },
+    sku: { type: String, required: true },
 }, { _id: false });
 // MỚI: Schema cho Variant Group trong Product
 const ProductVariantGroupSchema = new Schema({
@@ -39,7 +29,6 @@ const ProductSchema = new Schema({
     amountOrder: { type: Number, default: 0 },
     image: { type: String, required: true },
     listImage: { type: [ListImageSchema], default: [] },
-    options: { type: [OptionSchema], default: [] },
     variantGroups: { type: [ProductVariantGroupSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },

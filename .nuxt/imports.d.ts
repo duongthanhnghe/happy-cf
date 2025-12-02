@@ -30,7 +30,7 @@ export { requestIdleCallback, cancelIdleCallback } from '#app/compat/idle-callba
 export { setInterval } from '#app/compat/interval';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { getBreadcrumbs } from '../utils/breadcrumb';
-export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage, generateSlug } from '../utils/global';
+export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage, generateSlug, generateSKU } from '../utils/global';
 export { useForbiddenHandler } from '../utils/handle403';
 export { usePagination } from '../utils/paginationHandle';
 export { useSeoWatchers } from '../utils/seoHandle';

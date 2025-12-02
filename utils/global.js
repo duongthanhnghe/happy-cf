@@ -156,6 +156,7 @@ export const downloadImage = async (filename) => {
   }
 }
 
+
 export function generateSlug(text) {
   return text
     .toLowerCase()
@@ -170,4 +171,18 @@ export function generateSlug(text) {
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
+}
+
+
+function slugifySKU(text) {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toUpperCase();
+}
+
+export function generateSKU(productId, groupName, variantName) {
+  return `PRD${productId.slice(-5)}-${slugifySKU(groupName)}-${slugifySKU(variantName)}`;
 }

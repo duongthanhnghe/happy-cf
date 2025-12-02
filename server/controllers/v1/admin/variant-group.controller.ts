@@ -5,7 +5,7 @@ import {
   toVariantGroupListDTO,
 } from "../../../mappers/v1/variant-group.mapper";
 import type { CreateVariantGroupDTO, UpdateVariantGroupDTO } from "../../../types/dto/v1/product.dto";
-import { ProductEntity } from "@/server/models/v1/product.entity";
+import { ProductEntity } from "../../../models/v1/product.entity";
 
 export const getAllVariantGroups = async (req: Request, res: Response) => {
   try {

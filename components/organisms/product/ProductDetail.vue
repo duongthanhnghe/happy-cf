@@ -43,7 +43,9 @@ onBeforeUnmount(() => {
           <div :class="storeDisplay.isMobileTable ? 'container':''" >
             <div :class="['flex justify-between', storeDisplay.isMobileTable ? 'mt-ms' : '']">
               <Text :text="detail.productName" :size="storeDisplay.isMobileTable ? 'lg':'xl'" weight="semibold" color="black" class="line-height-1d4" />
-              <Button v-if="storeWishlist.loaded" :color="store.isFavorite ? 'black' : 'secondary'" size="sm" icon="favorite" :border="false"  @click.prevent="store.toggleLike(detail.id)"/>
+              <client-only>
+                <Button v-if="storeWishlist.loaded" :color="store.isFavorite ? 'black' : 'secondary'" size="sm" icon="favorite" :border="false" @click.prevent="store.toggleLike(detail.id)"/>
+              </client-only>
             </div>
             <div class="flex gap-sm align-center mt-xs">
               <Text :text="formatCurrency(detail.priceDiscounts)" size="md" weight="semibold" color="black" />
@@ -55,7 +57,7 @@ onBeforeUnmount(() => {
 
             <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" class="mt-ms" />
             <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" v-if="detail.priceDiscounts !== 0 && storeAccount.getUserId"/>
-            <ProductDetailOptions v-if="detail.options.length > 0" :options="detail.options" />
+            <ProductDetailOptions v-if="detail.variantGroups.length > 0" :variantGroups="detail.variantGroups" />
             <div class="mt-md">
               <ProductDetailButtonOrder v-if="detail.amount !== 0" />
             </div>

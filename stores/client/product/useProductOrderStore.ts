@@ -58,8 +58,8 @@ export const useProductStore = defineStore("Product", () => {
       storeCart.updateSelectedOptionsData(newOptions as SelectedOptionDTO[]);
 
       // 2. Đồng bộ tempSelected để v-radio-group tự checked
-      if (productDetailEdit.value.options) {
-        storeCart.syncTempSelectedFromSelectedOptionsData(productDetailEdit.value.options);
+      if (productDetailEdit.value.variantGroups) {
+        storeCart.syncTempSelectedFromSelectedOptionsData(productDetailEdit.value.variantGroups);
       }
     }
 

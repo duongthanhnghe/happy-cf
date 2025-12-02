@@ -6,6 +6,7 @@ import { formatCurrency } from '@/utils/global'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
+import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.PRODUCT.children?.LIST.layout,
@@ -86,11 +87,11 @@ onBeforeUnmount(() => {
       {{ formatCurrency(item.priceDiscounts) }}
     </template>
 
-    <template #item.options="{ item }">
-      <div v-if="item.options">
-        <div v-for="optionItem in item.options" :key="optionItem.id">
+    <template #item.variantGroups="{ item }">
+      <div v-if="item.variantGroups">
+        <div v-for="optionItem in item.variantGroups" :key="optionItem.groupId">
         <v-chip label class="mb-sm">
-          {{optionItem.name}}
+          {{optionItem.groupName}}
         </v-chip>
         </div>
       </div>
@@ -104,7 +105,7 @@ onBeforeUnmount(() => {
 
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
-        <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.DETAIL?.path}/${item.slug}`" target="_blank">
+        <NuxtLink :to="ROUTE_HELPERS.productDetail(item.slug)" target="_blank">
           <Button tag="div" :border="false" color="secondary" size="sm" icon="visibility" />
         </NuxtLink>
         <Button :border="false" color="secondary" size="sm" icon="edit" @click="store.handleEditProduct(item.id)" />

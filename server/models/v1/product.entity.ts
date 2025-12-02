@@ -7,6 +7,8 @@ export interface ProductSelectedVariant {
   variantName: string;
   priceModifier: number;
   inStock: boolean;
+  stock: number;
+  sku: string;
 }
 
 // MỚI: Variant Group được chọn trong Product
@@ -19,20 +21,6 @@ export interface ProductVariantGroup {
 
 
 // oldddd
-
-export interface Variant {
-  id: string;
-  name: string;
-  priceModifier: number | null;
-  inStock: boolean;
-}
-
-export interface Option {
-  id: string;
-  name: string;
-  required: boolean;
-  variants: Variant[];
-}
 
 export interface ListImage {
   id: string;
@@ -50,7 +38,6 @@ export interface Product {
   amountOrder: number;
   image: string;
   listImage: ListImage[];
-  options: Option[];
   variantGroups: ProductVariantGroup[];
   categoryId: Types.ObjectId | null;
   weight: number;
@@ -84,26 +71,6 @@ export interface CategoryProduct {
   updatedAt: Date;
 }
 
-const VariantSchema = new Schema<Variant>(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    priceModifier: { type: Number, default: null },
-    inStock: { type: Boolean, default: true },
-  },
-  { _id: false }
-);
-
-const OptionSchema = new Schema<Option>(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    required: { type: Boolean, default: false },
-    variants: { type: [VariantSchema], default: [] },
-  },
-  { _id: false }
-);
-
 const ListImageSchema = new Schema<ListImage>(
   {
     id: { type: String, required: true },
@@ -119,6 +86,8 @@ const ProductSelectedVariantSchema = new Schema<ProductSelectedVariant>(
     variantName: { type: String, required: true },
     priceModifier: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
+    stock: { type: Number, default: 0 },
+    sku: { type: String, required: true },
   },
   { _id: false }
 );
@@ -145,7 +114,6 @@ const ProductSchema = new Schema<Product>(
     amountOrder: { type: Number, default: 0 },
     image: { type: String, required: true },
     listImage: { type: [ListImageSchema], default: [] },
-    options: { type: [OptionSchema], default: [] },
     variantGroups: { type: [ProductVariantGroupSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },

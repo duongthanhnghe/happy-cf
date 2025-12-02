@@ -9,7 +9,7 @@ const props = defineProps<{
 <template>
   <div class="product-detail-fixed-mobile shadow-2">
     <div class="flex flex-direction-column gap-xs">
-      <ProductDetailOptions v-if="detail.options.length > 0" :options="detail.options" :showHeading="false" />
+      <ProductDetailOptions v-if="detail.variantGroups.length > 0" :variantGroups="detail.variantGroups" :showHeading="false" />
     </div>
     <div class="mt-sm">
       <ProductDetailButtonOrder v-if="detail.amount !== 0" />

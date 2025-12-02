@@ -104,7 +104,7 @@ onBeforeUnmount(() => {
       <!-- Giá trị giảm (value) -->
     <template #item.value="{ item }">
       <template v-if="item.type !== VOUCHER_TYPE.freeship.type"> <!-- Hiển thị nếu không phải freeship -->
-        <template v-if="item.type === VOUCHER_TYPE.percentage.type || item.type === VOUCHER_TYPE.product.type">
+        <template v-if="store.isDiscountVoucherType(item.type)">
           <v-chip label color="gray" small>{{ item.value }}%</v-chip>
         </template>
         <template v-else>

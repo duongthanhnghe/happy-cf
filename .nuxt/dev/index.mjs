@@ -1151,16 +1151,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"49157-L4sOWjp1SIxf2ajY4v/EjawKh10\"",
-    "mtime": "2025-12-01T08:16:52.014Z",
-    "size": 299351,
+    "etag": "\"495f4-SuDt40IOex6mjRfPUUX9OST8Nyc\"",
+    "mtime": "2025-12-02T07:17:52.724Z",
+    "size": 300532,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"118c81-eQAd9ru7zgxNffPQKdHePWqVu7g\"",
-    "mtime": "2025-12-01T08:16:52.018Z",
-    "size": 1150081,
+    "etag": "\"119ace-ZoeflVVEu6lXikt0oddhUsQjEHY\"",
+    "mtime": "2025-12-02T07:17:52.731Z",
+    "size": 1153742,
     "path": "index.mjs.map"
   }
 };
@@ -3108,24 +3108,6 @@ const categoriesNews_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.d
   default: router$r
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const VariantSchema = new Schema(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    priceModifier: { type: Number, default: null },
-    inStock: { type: Boolean, default: true }
-  },
-  { _id: false }
-);
-const OptionSchema = new Schema(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    required: { type: Boolean, default: false },
-    variants: { type: [VariantSchema], default: [] }
-  },
-  { _id: false }
-);
 const ListImageSchema = new Schema(
   {
     id: { type: String, required: true },
@@ -3138,7 +3120,9 @@ const ProductSelectedVariantSchema = new Schema(
     variantId: { type: String, required: true },
     variantName: { type: String, required: true },
     priceModifier: { type: Number, default: 0 },
-    inStock: { type: Boolean, default: true }
+    inStock: { type: Boolean, default: true },
+    stock: { type: Number, default: 0 },
+    sku: { type: String, required: true }
   },
   { _id: false }
 );
@@ -3162,7 +3146,6 @@ const ProductSchema = new Schema(
     amountOrder: { type: Number, default: 0 },
     image: { type: String, required: true },
     listImage: { type: [ListImageSchema], default: [] },
-    options: { type: [OptionSchema], default: [] },
     variantGroups: { type: [ProductVariantGroupSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
@@ -3227,28 +3210,15 @@ const CategoryProductSchema = new Schema(
 const ProductEntity = model("Product", ProductSchema, "products");
 const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");
 
-function toVariantDTO(entity) {
-  return {
-    id: entity.id,
-    name: entity.name,
-    priceModifier: entity.priceModifier,
-    inStock: entity.inStock
-  };
-}
-function toOptionDTO(entity) {
-  return {
-    id: entity.id,
-    name: entity.name,
-    required: entity.required,
-    variants: entity.variants.map(toVariantDTO)
-  };
-}
 function toProductSelectedVariantDTO(variant) {
+  var _a, _b;
   return {
     variantId: variant.variantId,
     variantName: variant.variantName,
     priceModifier: variant.priceModifier,
-    inStock: variant.inStock
+    inStock: variant.inStock,
+    stock: (_a = variant.stock) != null ? _a : 0,
+    sku: (_b = variant.sku) != null ? _b : ""
   };
 }
 function toProductVariantGroupDTO(group) {
@@ -3272,7 +3242,6 @@ function toProductDTO(entity) {
     amountOrder: entity.amountOrder,
     image: entity.image,
     listImage: entity.listImage,
-    options: entity.options.map(toOptionDTO),
     variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
     categoryId: entity.categoryId ? entity.categoryId.toString() : "",
     weight: entity.weight,
@@ -7340,6 +7309,34 @@ const isCategoryChainActive = async (categoryId, cache = /* @__PURE__ */ new Map
   cache.set(key, parentActive);
   return parentActive;
 };
+const filterActiveVariantGroupsForProduct = async (product) => {
+  if (Array.isArray(product)) {
+    return Promise.all(product.map((p) => filterActiveVariantGroupsForProduct(p)));
+  }
+  const groupIds = product.variantGroups.map((vg) => vg.groupId);
+  if (!groupIds.length) return product;
+  const activeGroups = await VariantGroupEntity.find({
+    _id: { $in: groupIds },
+    isActive: true
+  }).lean();
+  const activeGroupIds = new Set(activeGroups.map((g) => g._id.toString()));
+  product.variantGroups = product.variantGroups.filter((vg) => activeGroupIds.has(vg.groupId));
+  return product;
+};
+const filterActiveVariantGroupsForProducts = async (products) => {
+  if (!products.length) return products;
+  const allGroupIds = products.flatMap((p) => p.variantGroups.map((vg) => vg.groupId));
+  if (!allGroupIds.length) return products;
+  const activeGroups = await VariantGroupEntity.find({
+    _id: { $in: allGroupIds },
+    isActive: true
+  }).lean();
+  const activeGroupIds = new Set(activeGroups.map((g) => g._id.toString()));
+  products.forEach((p) => {
+    p.variantGroups = p.variantGroups.filter((vg) => activeGroupIds.has(vg.groupId));
+  });
+  return products;
+};
 const getProductById = async (req, res) => {
   try {
     let product;
@@ -7355,6 +7352,7 @@ const getProductById = async (req, res) => {
     if (!isActiveChain) {
       return res.status(404).json({ code: 1, message: "Danh m\u1EE5c c\u1EE7a s\u1EA3n ph\u1EA9m \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
     }
+    product = await filterActiveVariantGroupsForProduct(product);
     return res.json({ code: 0, data: toProductDTO(product) });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
@@ -7378,9 +7376,10 @@ const getRelatedProducts = async (req, res) => {
     for (const p of related) {
       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
+    const relatedWithVariants = await filterActiveVariantGroupsForProducts(filtered);
     return res.json({
       code: 0,
-      data: toProductListDTO(filtered),
+      data: toProductListDTO(relatedWithVariants),
       message: "Success"
     });
   } catch (err) {
@@ -7499,10 +7498,11 @@ const getPromotionalProducts = async (req, res) => {
     for (const p of products) {
       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
     res.json({
       code: 0,
       data: toProductListDTO(
-        filtered.map((p) => ({
+        productsWithVariants.map((p) => ({
           ...p,
           isPromotional: true,
           discountPercent: p.price && p.priceDiscounts ? Math.round((p.price - p.priceDiscounts) / p.price * 100) : 0
@@ -7518,43 +7518,46 @@ const getPromotionalProducts = async (req, res) => {
   }
 };
 const getMostOrderedProduct = async (req, res) => {
-  var _a;
   try {
     const limit = req.query.limit ? Number(req.query.limit) : 10;
-    const orders = await OrderEntity.find().lean();
-    const products = await ProductEntity.find({ isActive: true, amount: { $gt: 0 } }).lean();
-    const productMap = {};
-    for (const order of orders) {
-      for (const item of order.cartItems) {
-        const id = (_a = item.idProduct) == null ? void 0 : _a.toString();
-        if (!id) continue;
-        if (!productMap[id]) {
-          const productInfo = products.find(
-            (p) => p._id.toString() === id
-          );
-          if (!productInfo) continue;
-          productMap[id] = { product: productInfo, quantity: 0 };
+    const topProductsAgg = await OrderEntity.aggregate([
+      { $unwind: "$cartItems" },
+      { $match: { "cartItems.idProduct": { $exists: true } } },
+      {
+        $group: {
+          _id: "$cartItems.idProduct",
+          totalOrdered: { $sum: "$cartItems.quantity" }
         }
-        productMap[id].quantity += item.quantity || 1;
-      }
+      },
+      { $sort: { totalOrdered: -1 } },
+      { $limit: limit }
+    ]);
+    const productIds = topProductsAgg.map((p) => p._id).filter(Types.ObjectId.isValid);
+    if (!productIds.length) {
+      return res.json({ code: 0, data: [], message: "Success" });
     }
-    const topProducts = Object.values(productMap).sort((a, b) => b.quantity - a.quantity).slice(0, limit);
+    const products = await ProductEntity.find({
+      _id: { $in: productIds },
+      isActive: true,
+      amount: { $gt: 0 }
+    }).lean();
+    const productsWithQuantity = products.map((p) => {
+      const found = topProductsAgg.find((tp) => tp._id.toString() === p._id.toString());
+      return { ...p, totalOrdered: (found == null ? void 0 : found.totalOrdered) || 0 };
+    });
     const filtered = [];
-    for (const p of topProducts) {
-      if (await isCategoryChainActive(p.product.categoryId)) filtered.push(p);
+    for (const p of productsWithQuantity) {
+      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
-    res.json({
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+    return res.json({
       code: 0,
-      data: toProductListDTO(filtered.map(
-        (p) => ({
-          ...p.product,
-          totalOrdered: p.quantity
-        })
-      ))
+      data: toProductListDTO(productsWithVariants),
+      message: "Success"
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ code: 1, message: "Server error" });
+    console.error("getMostOrderedProduct error:", error);
+    return res.status(500).json({ code: 1, message: "Server error" });
   }
 };
 const getProductsByCategory = async (req, res) => {
@@ -7631,9 +7634,10 @@ const getProductsByCategory = async (req, res) => {
       { $skip: skip },
       { $limit: limit }
     ]);
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
     return res.json({
       code: 0,
-      data: toProductListDTO(products),
+      data: toProductListDTO(productsWithVariants),
       pagination: {
         page,
         limit,
@@ -7698,12 +7702,12 @@ const searchProducts = async (req, res) => {
     for (const p of products) {
       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
     res.json({
       code: 0,
       data: toProductListDTO(
-        filtered.map((p) => ({
-          ...p,
-          isPromotional: p.discountPercent > 0
+        productsWithVariants.map((p) => ({
+          ...p
         }))
       ),
       pagination: {
@@ -7736,9 +7740,10 @@ const getCartProducts = async (req, res) => {
     for (const p of products) {
       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
     return res.json({
       code: 0,
-      data: toProductListDTO(filtered),
+      data: toProductListDTO(productsWithVariants),
       message: "Load cart success"
     });
   } catch (error) {

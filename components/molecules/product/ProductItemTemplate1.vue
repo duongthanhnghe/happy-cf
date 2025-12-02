@@ -64,7 +64,7 @@ const handleShowAction = () => {
 
     <div v-else>
       <div v-if="storeCart.getTemplate1Amount(product.id) < 1">
-        <Button v-if="product.options.length > 0" color="primary" size="xs" class="product-template1-plus" @click="storeCart.getProductDetailApi(product.id)">
+        <Button v-if="product.variantGroups.length > 0" color="primary" size="xs" class="product-template1-plus" @click="storeCart.getProductDetailApi(product.id)">
           <MaterialIcon name="add" />
         </Button>
         <Button v-else class="product-template1-plus" color="primary" size="xs" @click="storeCart.addProductToCart(product, 1, '')">
@@ -72,7 +72,7 @@ const handleShowAction = () => {
         </Button>
       </div>
       <div v-else>
-        <div v-if="product.options.length > 0" class="product-template1-plus product-template1-plus-number" @click="storeCart.getProductDetailApi(product.id)">
+        <div v-if="product.variantGroups.length > 0" class="product-template1-plus product-template1-plus-number" @click="storeCart.getProductDetailApi(product.id)">
           {{ storeCart.getTemplate1Amount(product.id) }}
         </div>
         <div v-else class="product-template1-plus product-template1-plus-number" @click="handleShowAction()">

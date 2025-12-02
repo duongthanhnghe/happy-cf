@@ -3,6 +3,7 @@ import { ProductEntity, CategoryProductEntity } from "../../models/v1/product.en
 import { WishlistModel } from "../../models/v1/wishlist.entity.js";
 import { OrderEntity } from "../../models/v1/order.entity.js";
 import { toProductDTO, toProductListDTO, } from "../../mappers/v1/product.mapper.js";
+import { VariantGroupEntity } from "../../../server/models/v1/variant-group.entity.js";
 export const isCategoryChainActive = async (categoryId, cache = new Map()) => {
     if (!categoryId)
         return false;
@@ -26,6 +27,39 @@ export const isCategoryChainActive = async (categoryId, cache = new Map()) => {
     cache.set(key, parentActive);
     return parentActive;
 };
+// Dành cho Product (từ DB)
+export const filterActiveVariantGroupsForProduct = async (product) => {
+    if (Array.isArray(product)) {
+        return Promise.all(product.map(p => filterActiveVariantGroupsForProduct(p)));
+    }
+    const groupIds = product.variantGroups.map(vg => vg.groupId);
+    if (!groupIds.length)
+        return product;
+    const activeGroups = await VariantGroupEntity.find({
+        _id: { $in: groupIds },
+        isActive: true
+    }).lean();
+    const activeGroupIds = new Set(activeGroups.map(g => g._id.toString()));
+    product.variantGroups = product.variantGroups.filter(vg => activeGroupIds.has(vg.groupId));
+    return product;
+};
+// Chỉ nhận mảng Product
+export const filterActiveVariantGroupsForProducts = async (products) => {
+    if (!products.length)
+        return products;
+    const allGroupIds = products.flatMap(p => p.variantGroups.map(vg => vg.groupId));
+    if (!allGroupIds.length)
+        return products;
+    const activeGroups = await VariantGroupEntity.find({
+        _id: { $in: allGroupIds },
+        isActive: true
+    }).lean();
+    const activeGroupIds = new Set(activeGroups.map(g => g._id.toString()));
+    products.forEach(p => {
+        p.variantGroups = p.variantGroups.filter(vg => activeGroupIds.has(vg.groupId));
+    });
+    return products;
+};
 export const getProductById = async (req, res) => {
     try {
         let product;
@@ -42,6 +76,7 @@ export const getProductById = async (req, res) => {
         if (!isActiveChain) {
             return res.status(404).json({ code: 1, message: "Danh mục của sản phẩm đã bị vô hiệu hóa" });
         }
+        product = await filterActiveVariantGroupsForProduct(product);
         return res.json({ code: 0, data: toProductDTO(product) });
     }
     catch (err) {
@@ -70,9 +105,10 @@ export const getRelatedProducts = async (req, res) => {
             if (await isCategoryChainActive(p.categoryId))
                 filtered.push(p);
         }
+        const relatedWithVariants = await filterActiveVariantGroupsForProducts(filtered);
         return res.json({
             code: 0,
-            data: toProductListDTO(filtered),
+            data: toProductListDTO(relatedWithVariants),
             message: "Success"
         });
     }
@@ -197,9 +233,10 @@ export const getPromotionalProducts = async (req, res) => {
             if (await isCategoryChainActive(p.categoryId))
                 filtered.push(p);
         }
+        const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
         res.json({
             code: 0,
-            data: toProductListDTO(filtered.map(p => ({
+            data: toProductListDTO(productsWithVariants.map(p => ({
                 ...p,
                 isPromotional: true,
                 discountPercent: p.price && p.priceDiscounts
@@ -217,45 +254,48 @@ export const getPromotionalProducts = async (req, res) => {
     }
 };
 export const getMostOrderedProduct = async (req, res) => {
-    var _a;
     try {
         const limit = req.query.limit ? Number(req.query.limit) : 10;
-        const orders = await OrderEntity.find().lean();
-        const products = await ProductEntity.find({ isActive: true, amount: { $gt: 0 } }).lean();
-        const productMap = {};
-        for (const order of orders) {
-            for (const item of order.cartItems) {
-                const id = (_a = item.idProduct) === null || _a === void 0 ? void 0 : _a.toString();
-                if (!id)
-                    continue;
-                if (!productMap[id]) {
-                    const productInfo = products.find((p) => p._id.toString() === id);
-                    if (!productInfo)
-                        continue;
-                    productMap[id] = { product: productInfo, quantity: 0 };
+        const topProductsAgg = await OrderEntity.aggregate([
+            { $unwind: "$cartItems" },
+            { $match: { "cartItems.idProduct": { $exists: true } } },
+            {
+                $group: {
+                    _id: "$cartItems.idProduct",
+                    totalOrdered: { $sum: "$cartItems.quantity" }
                 }
-                productMap[id].quantity += item.quantity || 1;
-            }
+            },
+            { $sort: { totalOrdered: -1 } },
+            { $limit: limit }
+        ]);
+        const productIds = topProductsAgg.map(p => p._id).filter(Types.ObjectId.isValid);
+        if (!productIds.length) {
+            return res.json({ code: 0, data: [], message: "Success" });
         }
-        const topProducts = Object.values(productMap)
-            .sort((a, b) => b.quantity - a.quantity)
-            .slice(0, limit);
+        const products = await ProductEntity.find({
+            _id: { $in: productIds },
+            isActive: true,
+            amount: { $gt: 0 }
+        }).lean();
+        const productsWithQuantity = products.map(p => {
+            const found = topProductsAgg.find(tp => tp._id.toString() === p._id.toString());
+            return { ...p, totalOrdered: (found === null || found === void 0 ? void 0 : found.totalOrdered) || 0 };
+        });
         const filtered = [];
-        for (const p of topProducts) {
-            if (await isCategoryChainActive(p.product.categoryId))
+        for (const p of productsWithQuantity) {
+            if (await isCategoryChainActive(p.categoryId))
                 filtered.push(p);
         }
-        res.json({
+        const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+        return res.json({
             code: 0,
-            data: toProductListDTO(filtered.map((p) => ({
-                ...p.product,
-                totalOrdered: p.quantity,
-            }))),
+            data: toProductListDTO(productsWithVariants),
+            message: "Success"
         });
     }
     catch (error) {
-        console.error(error);
-        res.status(500).json({ code: 1, message: "Server error" });
+        console.error("getMostOrderedProduct error:", error);
+        return res.status(500).json({ code: 1, message: "Server error" });
     }
 };
 export const getProductsByCategory = async (req, res) => {
@@ -332,9 +372,10 @@ export const getProductsByCategory = async (req, res) => {
             { $skip: skip },
             { $limit: limit }
         ]);
+        const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
         return res.json({
             code: 0,
-            data: toProductListDTO(products),
+            data: toProductListDTO(productsWithVariants),
             pagination: {
                 page,
                 limit,
@@ -401,11 +442,11 @@ export const searchProducts = async (req, res) => {
             if (await isCategoryChainActive(p.categoryId))
                 filtered.push(p);
         }
+        const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
         res.json({
             code: 0,
-            data: toProductListDTO(filtered.map(p => ({
+            data: toProductListDTO(productsWithVariants.map(p => ({
                 ...p,
-                isPromotional: p.discountPercent > 0
             }))),
             pagination: {
                 total: totalCount,
@@ -442,9 +483,10 @@ export const getCartProducts = async (req, res) => {
             if (await isCategoryChainActive(p.categoryId))
                 filtered.push(p);
         }
+        const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
         return res.json({
             code: 0,
-            data: toProductListDTO(filtered),
+            data: toProductListDTO(productsWithVariants),
             message: "Load cart success"
         });
     }

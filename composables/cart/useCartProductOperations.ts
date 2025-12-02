@@ -1,6 +1,6 @@
 import { showWarning, showConfirm } from "@/utils/toast";
 import { Base64 } from "js-base64";
-import type { ProductDTO, CartDTO, SelectedOptionPushDTO, OptionDTO, SelectedOptionDTO } from '@/server/types/dto/v1/product.dto';
+import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, VariantGroupDTO, ProductVariantGroupDTO } from '@/server/types/dto/v1/product.dto';
 import type { Ref } from 'vue';
 import { useProductDetail } from '@/composables/product/useProductDetail'
 
@@ -69,18 +69,18 @@ export const useCartProductOperations = (
       existingProduct.quantity = existingProduct.quantity + quantity;
       cartCount.value += quantity;
     } else {
-      if (product.options.length > selectedOptions.length) {
+      if (product.variantGroups.length > selectedOptions.length) {
         showWarning("Vui lòng chọn đầy đủ options!");
         return;
       }
 
-      const optionsPrice = product.options?.reduce((total, option) => {
+      const optionsPrice = product.variantGroups?.reduce((total, option) => {
         const selectedOption = selectedOptions.find(
-          (so) => so.optionName === option.name
+          (so) => so.optionName === option.groupName
         );
 
-        const selectedVariant = option.variants?.find(
-          (v) => v.name === selectedOption?.variantName
+        const selectedVariant = option.selectedVariants?.find(
+          (v) => v.variantName === selectedOption?.variantName
         );
 
         return total + (selectedVariant?.priceModifier || 0);
@@ -122,13 +122,13 @@ export const useCartProductOperations = (
         return;
       }
 
-      const optionsPrice = product.options?.reduce((total, option) => {
+      const optionsPrice = product.variantGroups?.reduce((total, option) => {
         const selectedOption = selectedOptions.find(
-          (so) => so.optionName === option.name
+          (so) => so.optionName === option.groupName
         );
 
-        const selectedVariant = option.variants?.find(
-          (v) => v.name === selectedOption?.variantName
+        const selectedVariant = option.selectedVariants?.find(
+          (v) => v.variantName === selectedOption?.variantName
         );
 
         return total + (selectedVariant?.priceModifier || 0);
@@ -150,8 +150,8 @@ export const useCartProductOperations = (
 
       cartListItem.value[existingProductIndex] = updatedProduct;
 
-      if (product.options) {
-        syncTempSelectedFromSelectedOptionsData(product.options);
+      if (product.variantGroups) {
+        syncTempSelectedFromSelectedOptionsData(product.variantGroups);
       }
 
       updateCookie();
@@ -198,14 +198,14 @@ export const useCartProductOperations = (
     product: ProductDTO,
     quantity: number, 
     note: string,
-    buildSelectedOptions: (options: OptionDTO[]) => SelectedOptionPushDTO[],
+    buildSelectedOptions: (options: ProductVariantGroupDTO[]) => SelectedOptionPushDTO[],
     popupOrderState: boolean
   ) => {
     if (!product || product.amount <= 0) return false;
 
-    selectedOptionsData.value = buildSelectedOptions(product.options);
+    selectedOptionsData.value = buildSelectedOptions(product.variantGroups);
     
-    if (product.options.length > 0) {
+    if (product.variantGroups.length > 0) {
       addProductWithOptions(product, selectedOptionsData.value, quantity, note, popupOrderState);
     } else {
       addNormalProduct(product, quantity);
@@ -316,8 +316,8 @@ export const useCartProductOperations = (
       await fetchDetailProduct(productDetailEdit.value.id);
 
       const productDetailFromServer = getDetailProduct.value;
-      if (productDetailFromServer && productDetailFromServer.options) {
-        syncTempSelectedFromSelectedOptionsData(productDetailFromServer.options);
+      if (productDetailFromServer && productDetailFromServer.variantGroups) {
+        syncTempSelectedFromSelectedOptionsData(productDetailFromServer.variantGroups);
       }
     }
 

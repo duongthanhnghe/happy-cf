@@ -2,7 +2,7 @@ import { ref, reactive, computed, watch, watchEffect } from "vue";
 import { defineStore } from "pinia";
 import { productsAPI } from "@/services/v1/admin/product.service";
 import { Loading } from '@/utils/global'
-import type { ProductDTO, CategoryProductDTO, CreateProductDTO, UpdateProductDTO, OptionDTO } from '@/server/types/dto/v1/product.dto'
+import type { ProductDTO, CategoryProductDTO, CreateProductDTO, UpdateProductDTO } from '@/server/types/dto/v1/product.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { useAdminProductAll } from '@/composables/product/useAdminProductAll'
 import { useAdminProductCategory } from '@/composables/product/useAdminProductCategory'
@@ -21,9 +21,6 @@ const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
 const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
 const { getDetailProduct, fetchDetailProduct } = useAdminProductDetail()
 const storeFileManage = useFileManageFolderStore();
-
-//state global  
-const validOptions = ref(false)
 
 const productPriceDiscountRules = [
   (value: number) => {
@@ -60,7 +57,7 @@ const defaultForm: CreateProductDTO = {
   amount: 0,
   image: '',
   listImage: [],
-  options: [],
+  variantGroups: [],
   categoryId: '',
   weight: 0,
   isActive: false,
@@ -86,7 +83,7 @@ const dataList = ref<ProductDTO[]|null>(null);
     { title: 'Gia goc', key: 'price', sortable: false, },
     { title: 'Gia khuyen mai', key: 'priceDiscounts', sortable: false, },
     { title: 'So luong', key: 'amount', sortable: false, },
-    { title: 'Bien the', key: 'options', sortable: false, },
+    { title: 'Bien the', key: 'variantGroups', sortable: false, },
     {
       title: 'Danh muc',
       sortable: false,
@@ -208,19 +205,10 @@ const checkSelectImage = ref<boolean>(true)
     Loading(true);
     try {
 
-      const parseNumberOption = formProductItem.options.map(items => ({
-        ...items,
-        variants: items.variants.map(variantItem => ({
-          ...variantItem,
-          priceModifier: Number(variantItem.priceModifier)
-        }))
-      }));
-
       const newProduct = {
         ...formProductItem,
         price: Number(formProductItem.price),
         priceDiscounts: Number(formProductItem.priceDiscounts),
-        options: parseNumberOption
       }
 
       const data = await productsAPI.create(newProduct)
@@ -250,15 +238,6 @@ const checkSelectImage = ref<boolean>(true)
   async function submitUpdate() {
     Loading(true);
     try {
-      if(updateProductItem.options != null){
-        updateProductItem.options = updateProductItem.options.map(items => ({
-          ...items,
-          variants: items.variants.map(variantItem => ({
-            ...variantItem,
-            priceModifier: Number(variantItem.priceModifier)
-          }))
-        }));
-      }
 
       const newProduct = {...updateProductItem}
 
@@ -339,68 +318,6 @@ const checkSelectImage = ref<boolean>(true)
     isTogglePopupAddVariant.value = value;
   };
 
-  const handleAddOptionGroup = () => {
-    let formItemType : OptionDTO[] = formProductItem.options
-    if(updateProductItem.id != '' && updateProductItem.options) formItemType = updateProductItem.options
-
-    const groupId = `GROUP${formItemType.length + 1}`
-    formItemType.push({
-      id: groupId,
-      name: '',
-      required: true,
-      variants: [
-        {
-          id: `${groupId}VARIANT1`,
-          name: '',
-          priceModifier: 0,
-          inStock: true
-          }
-          ]
-    })
-  }
-
-  const handleAddVariant = (index: number) => {
-    let formItemType: OptionDTO[] = formProductItem.options
-    if(updateProductItem.id != '' && updateProductItem.options) formItemType = updateProductItem.options
-
-    const groupId = `${formItemType[index].id}`
-    const itemId = `VARIANT${formItemType[index].variants.length + 1}`
-    formItemType[index].variants.push({
-      id: `${groupId}${itemId}`,
-      name: '',
-      priceModifier: 0,
-      inStock: true
-    })
-  }
-
-  const handleRemoveOptionGroup = (index: number) => {
-    let formItemType: OptionDTO[] = formProductItem.options
-    if(updateProductItem.id != '' && updateProductItem.options) formItemType = updateProductItem.options
-
-    formItemType.splice(index, 1)
-  }
-
-  const handleRemoveVariant = (groupId: string,itemId: string) => {
-    let formItemType: OptionDTO[] = formProductItem.options
-    if(updateProductItem.id != '' && updateProductItem.options) formItemType = updateProductItem.options
-
-    const index = formItemType.find(option =>
-    option.id === groupId
-    )
-    if(index){
-      const variantItem = index.variants.findIndex(item =>
-      item.id === itemId
-      )
-      index.variants.splice(variantItem, 1)
-    } else {
-      console.log('khong ton tai index nhom bien the');
-    }
-  }
-
-  const handleSubmitCreateOption = async () => {
-    isTogglePopupAddVariant.value = false;
-  }
-
   // SEO
   useSeoWatchers(formProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
   useSeoWatchers(updateProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
@@ -447,7 +364,6 @@ const checkSelectImage = ref<boolean>(true)
   return {
     nullRules,
     nullAndSpecialRules,
-    validOptions,
     dataList,
     isTogglePopupAdd,
     isTogglePopupAddVariant,
@@ -479,11 +395,6 @@ const checkSelectImage = ref<boolean>(true)
     submitUpdate,
     handleReload,
     handleReset,
-    handleAddOptionGroup,
-    handleAddVariant,
-    handleRemoveOptionGroup,
-    handleRemoveVariant,
-    handleSubmitCreateOption,
     getCategoryName,
     handleDeleteListImage,
     handleAddListImage,

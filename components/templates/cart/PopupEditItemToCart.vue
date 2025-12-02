@@ -13,7 +13,7 @@ const storeDisplay = useDisplayStore()
 // watch(() => storeCart.getProductDetailDataEdit?.selectedOptionsPush, (newValue) => {
 //   if (newValue && storeCart.getProductDetailDataEdit?.selectedOptionsPush) {
 //     storeCart.getProductDetailDataEdit?.selectedOptionsPush.forEach(opt => {
-//       const option = storeCart.getProductDetailDataEdit?.options?.find(o => o.name === opt.optionName)
+//       const option = storeCart.getProductDetailDataEdit?.variantGroups?.find(o => o.name === opt.optionName)
 //       const variant = option?.variants.find(v => v.name === opt.variantName)
 //       if (option && variant) {
 //         storeCart.selectedOptionsData[option.id] = variant.id
@@ -48,10 +48,10 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
             <Heading tag="div" size="lg" weight="bold" class="black mb-sm">
               {{ detailProduct?.productName }}
             </Heading>
-            <div class="text-color-gray5 weight-semibold" v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined">
+            <!-- <div class="text-color-gray5 weight-semibold" v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined">
               {{ formatCurrency(detail.finalPriceDiscounts) }}
-            </div>
-            <div class="text-color-gray5 weight-semibold" v-else>
+            </div> -->
+            <div class="text-color-gray5 weight-semibold">
               {{ formatCurrency(detail.priceDiscounts) }}
             </div>
             <div class="mt-md text-size-xs pb-ms">
@@ -60,31 +60,32 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
           </div>
         </div>
        
-        <template v-if="detailProduct?.options && detailProduct?.options?.length > 0">
+        <template v-if="detailProduct?.variantGroups && detailProduct?.variantGroups?.length > 0">
           <v-radio-group
             hide-details
-            v-for="item in detail?.options"
-            :key="item.id"
-            v-model="storeCart.tempSelected[item.id]"
-            :name="`radio-group-${item.id}`"
+            v-for="item in detail?.variantGroups"
+            :key="item.groupId"
+            v-model="storeCart.tempSelected[item.groupId]"
+            :name="`radio-group-${item.groupId}`"
             class="mt-sm mb-sm popup-detail-product-card"
             @update:modelValue="(val) => {
-              const variant = item.variants.find(v => v.id === val);
-              if (variant && val) storeCart.handleSelectVariant(item.id, val, item.name, variant.name, variant.priceModifier || 0);
+              const variant = item.selectedVariants.find(v => v.variantId === val);
+              if (variant && val) storeCart.handleSelectVariant(item.groupId, val, item.groupName, variant.variantName, variant.priceModifier || 0);
             }"
           >
             <Heading tag="div" size="md" weight="semibold" class="black pt-sm pl-ms pr-ms">
-              {{ item.name }}
+              {{ item.groupName }}
             </Heading>
             <v-radio
-              v-for="variant in item.variants"
+              v-for="variant in item.selectedVariants"
               class="popup-detail-product-variant"
               rel="js-popup-detail-variant-item"
-              :value="variant.id"
+              :value="variant.variantId"
+              :disabled="!variant.inStock || !variant.stock || variant.stock === 0"
             >
               <template #label>
                 <div class="flex justify-between w-full">
-                  {{ variant.name }}
+                  {{ variant.variantName }}
                   <span v-if="variant.priceModifier !== 0">+{{ formatCurrency(variant.priceModifier) }}</span>
                   <span v-else>0</span>
                 </div>

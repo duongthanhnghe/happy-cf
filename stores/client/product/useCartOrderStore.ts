@@ -21,7 +21,6 @@ import { useCartShipping } from '@/composables/cart/useCartShipping';
 import { useCartOptions } from '@/composables/cart/useCartOptions';
 import { useCartUtils } from '@/composables/cart/useCartUtils';
 
-import { ROUTES } from '@/shared/constants/routes';
 import { useCartSharedUtils } from "@/composables/cart/useCartSharedUtils";
 import { useCartVoucherHandlers } from "@/composables/cart/useCartVoucherHandlers";
 
@@ -74,7 +73,7 @@ export const useCartStore = defineStore("Cart", () => {
     const userId = storeAccount.getDetailValue?.id || '';
     const categoryIds = [...new Set(state.cartListItem.value.map(item => item.categoryId || ''))];
     
-    if (categoryIds && state.totalPriceCurrent.value && route.path === ROUTES.PUBLIC.CART.path) {
+    if (categoryIds && state.totalPriceCurrent.value) {
       voucher.listVoucher(userId, categoryIds);
     }
   };
@@ -149,7 +148,7 @@ export const useCartStore = defineStore("Cart", () => {
     allVouchers,
     eventBus,
     fetchAvailableVouchers,
-    route
+    () => route.path   
   );
 
   const shipping = useCartShipping(

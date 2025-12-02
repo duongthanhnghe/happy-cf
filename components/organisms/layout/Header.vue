@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import '@/styles/molecules/layout/header.scss';
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useSearchStore } from '@/stores/client/product/useSearchStore'
@@ -10,7 +10,6 @@ import { ROUTES } from '@/shared/constants/routes';
 import { useRoute } from 'vue-router'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
-import type { MenuItem } from '@/server/types/common/menu-item';
 
 const storeSetting = useBaseInformationStore();
 const storeCart = useCartStore()
@@ -29,13 +28,19 @@ const props = defineProps({
   }
 })
 
-const listMenu: MenuItem[] = [
-  ROUTES.PUBLIC.HOME,
-  ROUTES.PUBLIC.ORDER,
-  ...storeProductCategory.getMenuItems,
-]
+const listMenu = computed(() => {
+  return [
+    ROUTES.PUBLIC.HOME,
+    ROUTES.PUBLIC.ORDER,
+    ...storeProductCategory.getMenuItems,
+  ]
+})
 
 onMounted(async () => {
+  if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0) {
+    await storeProductCategory.fetchCategoryStore()
+  }
+
   if(storeCart.getCartListItem.length > 0) {
     await storeCart.fetchProductCart();
   } 
@@ -87,7 +92,8 @@ onMounted(async () => {
               </div>
             </template>
           </div>
-          <div v-if="storeDisplay.isLaptop" class="header-center flex gap-xs">
+          <client-only>
+          <div v-if="storeDisplay.isLaptop && listMenu" class="header-center flex gap-xs">
             <template v-for="(item,index) in listMenu" :key="index">
               <router-link
                 v-if="item.path"
@@ -98,6 +104,7 @@ onMounted(async () => {
               </router-link>
             </template>
           </div>
+          </client-only>
           <div class="header-right flex gap-sm">
             <Button
               color="third"
@@ -106,6 +113,7 @@ onMounted(async () => {
               :label="storeDisplay.isLaptop ? 'Tìm kiếm':''"
               @click="storeSearch.handleTogglePopup(true)"
             />
+            <client-only>
             <template v-if="storeDisplay.isLaptop">
               <NuxtLink v-if="!storeAccount.getUserId" :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
                 <Button
@@ -122,6 +130,7 @@ onMounted(async () => {
                 @click="storeAccount.handleTogglePopupAccountMenuInfo(true)"
               />
             </template>
+            </client-only>
             <Button
               color="third"
               icon="shopping_cart"

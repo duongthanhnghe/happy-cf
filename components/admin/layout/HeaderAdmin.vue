@@ -20,6 +20,7 @@ const detailAccount = storeAccount.getDetailAccount
 </script>
 
 <template>
+  <client-only>
   <div :class="['header-admin', headerClass]">
     <div class="header-admin-left">
       <Heading v-if="props.label" class="line-height-1" tag="h2" weight="semibold" size="xl">{{props.label}}</Heading>
@@ -60,4 +61,5 @@ const detailAccount = storeAccount.getDetailAccount
       </v-menu>
     </div>
   </div>
+  </client-only>
 </template>

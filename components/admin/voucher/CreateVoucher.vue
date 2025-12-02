@@ -135,18 +135,17 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
         />
 
         <div class="card card-sm bg-gray2 pb-0 mb-md">
-
           <!-- Giá trị giảm -->
           <div :class="{ _hidden: !showValue }">
             <LabelInput
-              :label="type === VOUCHER_TYPE.percentage.type || type === VOUCHER_TYPE.product.type ? 'Giá trị giảm (%)' : 'Giá trị giảm (VNĐ)'"
+              :label="store.isDiscountVoucherType(type) ? 'Giá trị giảm (%)' : 'Giá trị giảm (VNĐ)'"
             />
 
             <v-text-field
               v-model.number="store.formItem.value"
               type="number"
-              :label="type === VOUCHER_TYPE.percentage.type || type === VOUCHER_TYPE.product.type ? 'Nhập phần trăm giảm (VD: 10 = 10%)' : 'Nhập số tiền giảm (VD: 50000 = 50.000đ)'"
-              :suffix="type === VOUCHER_TYPE.percentage.type || type === VOUCHER_TYPE.product.type ? '%' : '₫'"
+              :label="store.isDiscountVoucherType(type) ? 'Nhập phần trăm giảm (VD: 10 = 10%)' : 'Nhập số tiền giảm (VD: 50000 = 50.000đ)'"
+              :suffix="store.isDiscountVoucherType(type) ? '%' : '₫'"
               variant="outlined"
               min="0"
             />

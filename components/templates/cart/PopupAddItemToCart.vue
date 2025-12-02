@@ -29,7 +29,9 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
     @update:modelValue="storeCart.togglePopup('order', false)"
   >
       <template #header >
-        <Button v-if="detail?.id" :size="storeDisplay.isMobileTable ? 'sm':'md'" :color="storeWishlist.isInWishlist(detail?.id) ? 'black' : 'secondary'" icon="favorite" @click="storeProductDetail?.toggleLike(detail?.id)"/>
+        <client-only>
+          <Button v-if="detail?.id" :size="storeDisplay.isMobileTable ? 'sm':'md'" :color="storeWishlist.isInWishlist(detail?.id) ? 'black' : 'secondary'" icon="favorite" @click="storeProductDetail?.toggleLike(detail?.id)"/>
+        </client-only>
       </template>
       <template #body >
         <div class="popup-detail-product overflow-hidden">
@@ -50,26 +52,32 @@ const detail = computed(() => storeProductDetail.getDetailProduct);
             </div>
         </div>
 
-        <template v-if="detail && detail.options.length > 0">
+        <template v-if="detail && detail.variantGroups.length > 0">
           <v-radio-group
               hide-details
-              v-model="storeCart.tempSelected[item.id]"
-              :name="`radio-group-${item.id}`"
-              :key="item.id"
+              v-model="storeCart.tempSelected[item.groupId]"
+              :name="`radio-group-${item.groupId}`"
+              :key="item.groupId"
               @update:modelValue="(val) => {
-                const variant = item.variants.find(v => v.id === val);
-                if (variant && val) storeCart.handleSelectVariant(item.id, val, item.name, variant.name, variant.priceModifier || 0);
+                const variant = item.selectedVariants.find(v => v.variantId === val);
+                if (variant && val) storeCart.handleSelectVariant(item.groupId, val, item.groupName, variant.variantName, variant.priceModifier || 0);
               }"
-              v-for="item in detail?.options"
+              v-for="item in detail?.variantGroups"
               class="mt-sm mb-sm popup-detail-product-card"
             >
             <Heading tag="div" size="md" weight="semibold" class="black pt-sm pl-ms pr-ms">
-              {{ item.name }}
+              {{ item.groupName }}
             </Heading>
-            <v-radio v-for="variant in item.variants" class="popup-detail-product-variant" rel="js-popup-detail-variant-item" :value="variant.id">
+            <v-radio 
+              v-for="variant in item.selectedVariants" 
+              class="popup-detail-product-variant" 
+              rel="js-popup-detail-variant-item" 
+              :value="variant.variantId"
+              :disabled="!variant.inStock || !variant.stock || variant.stock === 0"
+              >
               <template #label>
                 <div class="flex justify-between w-full">
-                  {{ variant.name }}
+                  {{ variant.variantName }}
                   <span v-if="variant.priceModifier !== 0">+{{ formatCurrency(variant.priceModifier) }}</span>
                   <span v-else>0</span>
                 </div>

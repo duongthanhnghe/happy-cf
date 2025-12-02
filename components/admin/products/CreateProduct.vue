@@ -1,27 +1,30 @@
 <script lang="ts" setup>
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
 import { showWarning } from '@/utils/toast';
-import type { SubmitEventPromise } from 'vuetify';
-const store = useProductManageStore();
+import { ref } from 'vue';
+import type { VForm } from 'vuetify/components'
 
-const handleSubmitCreate = async (event: SubmitEventPromise) => {
-  const result = await event
-  if (!result.valid || store.selectedCategoryName.length === 0) {
-    showWarning('Vui long nhap day du thong tin!')
-    return
+const store = useProductManageStore();
+const formRef = ref<VForm | null>(null);
+
+const handleSubmitCreate = async () => {
+  if (!formRef.value) return;
+
+  const valid = await formRef.value.validate();
+  if (!valid || store.selectedCategoryName.length === 0) {
+    showWarning('Vui lòng nhập đầy đủ thông tin');
+    return;
   }
+
   store.submitCreate()
 }
 
 </script>
 <template>
 
-<Popup popupId="popup-create-product" v-model="store.isTogglePopupAdd" popupHeading="Them san pham" align="right">
+<Popup v-model="store.isTogglePopupAdd" footerFixed popupHeading="Them san pham" align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-      <div class="portal-popup-footer">
-        <Button type="submit" color="primary" label="Luu moi" class="w-full" />
-      </div>
         <LabelInput label="Ten san pham" required/>
         <v-text-field v-model="store.formProductItem.productName" :counter="100" :rules="store.nullAndSpecialRules" label="Nhap ten san pham" variant="outlined" required></v-text-field>
         <div class="row">
@@ -127,7 +130,9 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
         />
 
     </v-form>
-    <Button type="submit" label="Them bien the" class="w-full" @click.prevent="store.handleTogglePopupAddVariant" />
+  </template>
+  <template #footer>
+    <Button @click="handleSubmitCreate" color="primary" label="Luu" class="w-full" />
   </template>
 </Popup>
 </template>

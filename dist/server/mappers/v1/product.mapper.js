@@ -1,25 +1,12 @@
-export function toVariantDTO(entity) {
-    return {
-        id: entity.id,
-        name: entity.name,
-        priceModifier: entity.priceModifier,
-        inStock: entity.inStock,
-    };
-}
-export function toOptionDTO(entity) {
-    return {
-        id: entity.id,
-        name: entity.name,
-        required: entity.required,
-        variants: entity.variants.map(toVariantDTO),
-    };
-}
 export function toProductSelectedVariantDTO(variant) {
+    var _a, _b;
     return {
         variantId: variant.variantId,
         variantName: variant.variantName,
         priceModifier: variant.priceModifier,
         inStock: variant.inStock,
+        stock: (_a = variant.stock) !== null && _a !== void 0 ? _a : 0,
+        sku: (_b = variant.sku) !== null && _b !== void 0 ? _b : "",
     };
 }
 export function toProductVariantGroupDTO(group) {
@@ -43,7 +30,6 @@ export function toProductDTO(entity) {
         amountOrder: entity.amountOrder,
         image: entity.image,
         listImage: entity.listImage,
-        options: entity.options.map(toOptionDTO),
         variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
         categoryId: entity.categoryId ? entity.categoryId.toString() : "",
         weight: entity.weight,

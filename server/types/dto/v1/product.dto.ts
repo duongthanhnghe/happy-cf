@@ -41,6 +41,8 @@ export interface ProductSelectedVariantDTO {
   variantName: string;
   priceModifier: number;
   inStock: boolean;
+  stock: number;
+  sku: string;
 }
 
 export interface ProductVariantGroupDTO {
@@ -51,20 +53,6 @@ export interface ProductVariantGroupDTO {
 }
 
 //old
-export interface VariantDTO {
-  id: string;
-  name: string;
-  priceModifier: number | null;
-  inStock: boolean;
-}
-
-export interface OptionDTO {
-  id: string;
-  name: string;
-  required: boolean;
-  variants: VariantDTO[];
-}
-
 export interface ListImageDTO {
   id: string;
   src: string;
@@ -81,8 +69,6 @@ export interface ProductDTO {
   amountOrder: number;
   image: string;
   listImage: ListImageDTO[];
-  options: OptionDTO[];
-  // MỚI: Thay thế options
   variantGroups: ProductVariantGroupDTO[];
   categoryId: string;
   weight: number;
@@ -167,7 +153,7 @@ export interface CartDTO {
   productName?: string;
   image?: string;
   summaryContent?: string;
-  options?: OptionDTO[];
+  variantGroups?: ProductVariantGroupDTO[];
 }
 
 export type SelectedOptionDTO = SelectedOptionPushDTO & {id: string}

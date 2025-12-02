@@ -1,27 +1,30 @@
 <script lang="ts" setup>
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
-import type { SubmitEventPromise } from 'vuetify';
 import { showWarning } from '@/utils/toast';
+import { ref } from 'vue';
+import type { VForm } from 'vuetify/components'
 
 const store = useProductManageStore();
+const formRef = ref<VForm | null>(null);
 
-const handleSubmitUpdate = async (event: SubmitEventPromise) => {
-  const result = await event
-  if (!result.valid || store.selectedCategoryName.length === 0) {
-    showWarning('Vui long nhap day du thong tin!')
-    return
+const handleSubmitUpdate = async () => {
+  if (!formRef.value) return;
+
+  const valid = await formRef.value.validate();
+  if (!valid || store.selectedCategoryName.length === 0) {
+    showWarning('Vui lòng nhập đầy đủ thông tin');
+    return;
   }
+  
   store.submitUpdate()
 }
 
 </script>
 <template>
-<Popup popupId="popup-create-category" v-model="store.isTogglePopupUpdate" popupHeading="Sua san pham" align="right">
+<Popup v-model="store.isTogglePopupUpdate" footerFixed popupHeading="Sua san pham" align="right">
   <template #body>
-    <v-form  validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
-      <div class="portal-popup-footer">
-        <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
-      </div>
+    <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
+
         <LabelInput label="Ten san pham" required/>
         <v-text-field v-model="store.updateProductItem.productName" :counter="100" :rules="store.nullAndSpecialRules" label="Ten san pham" variant="outlined" required></v-text-field>
         <div class="row">
@@ -131,7 +134,12 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
         />
 
     </v-form>
-    <Button :label="`${store.updateProductItem.options?.length ? 'Sua bien the':'Them bien the'}`" class="w-full" @click="store.handleTogglePopupAddVariant" />
+  </template>
+  <template #footer>
+    <div class="flex gap-sm">
+      <Button v-if="store.updateProductItem?.variantGroups" color="gray" :label="`${store.updateProductItem?.variantGroups.length > 0 ? 'Sua bien the':'Them bien the'}`" class="w-full" @click.prevent="store.handleTogglePopupAddVariant(true)" />
+      <Button @click="handleSubmitUpdate" color="primary" label="Cap nhat" class="w-full" />
+    </div>
   </template>
 </Popup>
 </template>

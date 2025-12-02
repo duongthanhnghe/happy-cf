@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import type { SelectedOptionPushDTO, SelectedOptionDTO, OptionDTO } from '@/server/types/dto/v1/product.dto';
+import type { SelectedOptionPushDTO, SelectedOptionDTO, ProductVariantGroupDTO } from '@/server/types/dto/v1/product.dto';
 
 export const useCartOptions = (
   selectedOptionsData: Ref<SelectedOptionPushDTO[]>,
@@ -7,14 +7,14 @@ export const useCartOptions = (
   priceOptions: Ref<number>,
 ) => {
 
-  const buildSelectedOptions = (productOptions: OptionDTO[]) => {
+  const buildSelectedOptions = (productOptions: ProductVariantGroupDTO[]) => {
     return productOptions.map(option => {
-      const selected = selectedOptionsData.value.find(o => o.optionName === option.name);
+      const selected = selectedOptionsData.value.find(o => o.optionName === option.groupName);
 
       if (!selected) return null;
 
       return {
-        optionName: option.name,
+        optionName: option.groupName,
         variantName: selected.variantName,
         variantPrice: selected.variantPrice
       };
@@ -26,15 +26,15 @@ export const useCartOptions = (
     for (const key in tempSelected) delete tempSelected[key];
   };
 
-  const syncTempSelectedFromSelectedOptionsData = (productOptions: OptionDTO[]) => {
+  const syncTempSelectedFromSelectedOptionsData = (productOptions: ProductVariantGroupDTO[]) => {
     clearTempSelected();
 
     productOptions.forEach(option => {
-      const foundSelected = selectedOptionsData.value.find(o => o.optionName === option.name);
+      const foundSelected = selectedOptionsData.value.find(o => o.optionName === option.groupName);
 
       if (foundSelected) {
-        const variant = option.variants.find(v => v.name === foundSelected.variantName);
-        if (variant) tempSelected[option.id] = variant.id;
+        const variant = option.selectedVariants.find(v => v.variantName === foundSelected.variantName);
+        if (variant) tempSelected[option.groupId] = variant.variantId;
       }
     });
   };

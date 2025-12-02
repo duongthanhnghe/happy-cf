@@ -36,6 +36,7 @@ declare global {
   const formatBytes: typeof import('../../utils/global')['formatBytes']
   const formatCurrency: typeof import('../../utils/global')['formatCurrency']
   const formatDateTime: typeof import('../../utils/global')['formatDateTime']
+  const generateSKU: typeof import('../../utils/global')['generateSKU']
   const generateSlug: typeof import('../../utils/global')['generateSlug']
   const getAppManifest: typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']
   const getBreadcrumbs: typeof import('../../utils/breadcrumb')['getBreadcrumbs']
@@ -251,6 +252,7 @@ declare module 'vue' {
     readonly formatBytes: UnwrapRef<typeof import('../../utils/global')['formatBytes']>
     readonly formatCurrency: UnwrapRef<typeof import('../../utils/global')['formatCurrency']>
     readonly formatDateTime: UnwrapRef<typeof import('../../utils/global')['formatDateTime']>
+    readonly generateSKU: UnwrapRef<typeof import('../../utils/global')['generateSKU']>
     readonly generateSlug: UnwrapRef<typeof import('../../utils/global')['generateSlug']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
     readonly getBreadcrumbs: UnwrapRef<typeof import('../../utils/breadcrumb')['getBreadcrumbs']>

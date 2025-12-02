@@ -11,10 +11,12 @@ import { VOUCHER_TYPE } from '@/server/shared/constants/voucher-type';
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 import { useAdminProductCategoryTree } from '@/composables/product/useAdminProductCategoryTree'
+import { useVoucherUtils } from "@/composables/voucher/useVoucherUtils";
 
 export const useVoucherManageStore = defineStore("VoucherManage", () => {
 
   const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
+  const { isDiscountVoucherType } = useVoucherUtils()
 
   const defaultForm: CreateVoucherBody = {
     code: '',
@@ -408,6 +410,7 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     handleDelete,
     toggleActive,
     resetFilter,
+    isDiscountVoucherType,
     treeItems,
   };
 });
