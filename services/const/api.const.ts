@@ -23,6 +23,9 @@ export const API_ENDPOINTS = {
       `/users/${userId}/wishlist/${productId}`,
     CART_DETAIL: '/products/cart-detail',
   },
+  VARIANT_GROUPS: {
+    LIST_ALL: '/variant-groups',
+  },
   ORDERS: {
     CREATE: '/orders',
     LIST: '/orders',

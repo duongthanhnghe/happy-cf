@@ -44,8 +44,10 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   const filterType = ref<ProductSortType>(filterArray.value[0].value)
   const maxPrice = ref(0)
   const rangePrice = ref([0, maxPrice.value])
+  const selectedVariants = ref<string[]>([])
   const isTogglePopupFilter = ref(false)
   const valueChangePage = ref<boolean|null>(null)
+  const elFilterProduct = 'filter-product'
 
   watch(getProductByCategoryApi, (newValue) => {
     if (newValue && newValue.data) {
@@ -77,12 +79,12 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
         console.error('category-product error:', error)
       } finally {
         Loading(false)
-        if(window.innerWidth > 1024) scrollIntoView('filter-product')
+        if(window.innerWidth > 1024) scrollIntoView(elFilterProduct)
       }
     }
   })
 
-  watch([listItems, filterType], () => {
+  watch([listItems, filterType, selectedVariants], () => {
     if (!getProductCategoryDetail.value?.id) return
     if (listItems.value?.length) {
       rangePrice.value = [0, maxPrice.value]
@@ -107,6 +109,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     maxPrice.value = listItems.value ? Math.max(...listItems.value.map(item => item.price)) : 0
     rangePrice.value = [0, maxPrice.value]
     filterCategory.value = ''
+    selectedVariants.value = []
   }
 
   const hasFilter = computed(() => {
@@ -115,18 +118,26 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
       filterType.value !== '' ||
       filterCategory.value !== '' ||
       rangePrice.value[0] !== 0 || 
-      rangePrice.value[1] !== maxPrice.value 
+      rangePrice.value[1] !== maxPrice.value ||
+      selectedVariants.value.length > 0
     )
   })
 
   const getListItems = computed(() => {
     const [min, max] = rangePrice.value
-    if (maxPrice.value === 0) return listItems.value
+    if (!listItems.value) return []
 
-    return listItems.value?.filter(item => {
-      const price = item.price || 0
-      return price >= min && price <= max
-    })
+    return listItems.value
+      ?.filter(item => {
+        const price = item.price || 0
+        return price >= min && price <= max
+      })
+      .filter(item => {
+        if (selectedVariants.value.length === 0) return true
+
+        const itemVariantIds = item.variantGroups?.flatMap(group => group.selectedVariants.map(v => v.variantId)) || []
+        return selectedVariants.value.some(vId => itemVariantIds.includes(vId))
+      })
   })
 
   const getTotalItems = computed(() => { return pagination.value?.total })
@@ -161,6 +172,9 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     hasFilter,
     valueChangePage,
     listBannerCategory,
+    selectedVariants,
+    IMAGE_AUTH_LOGIN,
+    elFilterProduct,
     handleChangePage,
     handleTogglePopupFilter,
     resetFilter,

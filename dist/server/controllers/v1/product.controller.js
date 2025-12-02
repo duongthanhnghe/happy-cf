@@ -60,6 +60,7 @@ export const filterActiveVariantGroupsForProducts = async (products) => {
     });
     return products;
 };
+////// END HELPERS
 export const getProductById = async (req, res) => {
     try {
         let product;

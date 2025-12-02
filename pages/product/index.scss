@@ -62,6 +62,11 @@ $height-product-fixed-bottom: 180px;
       height: 2.5rem;
       padding: 0 0.85rem;
       min-width: 52px;
+      position: relative;
+      span {
+        position: relative;
+        z-index: 1;
+      }
     }
     &.v-selection-control--dirty .button {
       color: $cl-white;
@@ -69,6 +74,22 @@ $height-product-fixed-bottom: 180px;
     }
     &.v-selection-control {
       flex: none;
+    }
+    &.v-selection-control--disabled {
+      .button::before, .button::after {
+        content: '';
+        border: 1px dashed $cl-gray4;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+      }
+      .button::before {
+        rotate: 16deg;
+      }
+      .button::after {
+        rotate: -16deg;
+      }
     }
   }
   .v-selection-control-group {

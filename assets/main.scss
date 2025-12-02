@@ -167,6 +167,9 @@ a {
     &-200 {
       max-width: 200px;
     }
+    &-300 {
+      max-width: 300px;
+    }
     &-400 {
       max-width: 400px;
     }
@@ -189,6 +192,9 @@ a {
     }
     &-300 {
       max-height: 300px;
+    }
+    &-cover-header {
+      max-height: calc(100dvh - $height-header);
     }
   }
 }
@@ -441,6 +447,22 @@ body .bg {
       z-index: 1;
       opacity: 0;
       cursor: pointer;
+    }
+  }
+  &-control {
+    &-checkbox {
+      .v-selection-control {
+        min-height: inherit !important;
+      }
+      .v-selection-control__wrapper {
+        display: none;
+      }
+      .v-selection-control--dirty {
+        .button {
+          background-color: $cl-black;
+          color: $cl-white;
+        }
+      }
     }
   }
 }

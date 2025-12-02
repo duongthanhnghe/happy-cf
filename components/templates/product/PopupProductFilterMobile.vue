@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { VariantGroupDTO } from '@/server/types/dto/v1/product.dto';
 import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
 const storeCategoryMain = useCategoryMainStore()
 const props = defineProps<{
   categoryName: string;
+  variantGroups: VariantGroupDTO[];
 }>();
 </script>
 
@@ -16,6 +18,10 @@ const props = defineProps<{
         <Text text="Danh mục" color="black" size="normal" weight="semibold" class="mt-sm mb-sm" />
         <ProductFilterCategory :categoryName="props.categoryName" :list="storeCategoryMain.getListCategoryChildren"/>
       </template>
+
+      <div v-if="storeCategoryMain.getListCategoryChildren.length > 0" class="mt-md">
+        <ProductFilterVariantGroup :variantGroups="props.variantGroups"/>
+      </div>
 
       <Text text="Khoảng giá" color="black" size="normal" weight="semibold" class="mt-md mb-md" />
       <ProductFilterPrice />

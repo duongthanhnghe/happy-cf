@@ -113,6 +113,7 @@ interface _GlobalComponents {
     'ProductFilterCategory': typeof import("../components/organisms/product/ProductFilterCategory.vue")['default']
     'ProductFilterDefault': typeof import("../components/organisms/product/ProductFilterDefault.vue")['default']
     'ProductFilterPrice': typeof import("../components/organisms/product/ProductFilterPrice.vue")['default']
+    'ProductFilterVariantGroup': typeof import("../components/organisms/product/ProductFilterVariantGroup.vue")['default']
     'SectionProductList': typeof import("../components/organisms/product/SectionProductList.vue")['default']
     'SectionProductListColumn': typeof import("../components/organisms/product/SectionProductListColumn.vue")['default']
     'SectionProductListSwiper': typeof import("../components/organisms/product/SectionProductListSwiper.vue")['default']
@@ -277,6 +278,7 @@ interface _GlobalComponents {
     'LazyProductFilterCategory': LazyComponent<typeof import("../components/organisms/product/ProductFilterCategory.vue")['default']>
     'LazyProductFilterDefault': LazyComponent<typeof import("../components/organisms/product/ProductFilterDefault.vue")['default']>
     'LazyProductFilterPrice': LazyComponent<typeof import("../components/organisms/product/ProductFilterPrice.vue")['default']>
+    'LazyProductFilterVariantGroup': LazyComponent<typeof import("../components/organisms/product/ProductFilterVariantGroup.vue")['default']>
     'LazySectionProductList': LazyComponent<typeof import("../components/organisms/product/SectionProductList.vue")['default']>
     'LazySectionProductListColumn': LazyComponent<typeof import("../components/organisms/product/SectionProductListColumn.vue")['default']>
     'LazySectionProductListSwiper': LazyComponent<typeof import("../components/organisms/product/SectionProductListSwiper.vue")['default']>
@@ -447,6 +449,7 @@ export const ProductDetailFixedPC: typeof import("../components/organisms/produc
 export const ProductFilterCategory: typeof import("../components/organisms/product/ProductFilterCategory.vue")['default']
 export const ProductFilterDefault: typeof import("../components/organisms/product/ProductFilterDefault.vue")['default']
 export const ProductFilterPrice: typeof import("../components/organisms/product/ProductFilterPrice.vue")['default']
+export const ProductFilterVariantGroup: typeof import("../components/organisms/product/ProductFilterVariantGroup.vue")['default']
 export const SectionProductList: typeof import("../components/organisms/product/SectionProductList.vue")['default']
 export const SectionProductListColumn: typeof import("../components/organisms/product/SectionProductListColumn.vue")['default']
 export const SectionProductListSwiper: typeof import("../components/organisms/product/SectionProductListSwiper.vue")['default']
@@ -611,6 +614,7 @@ export const LazyProductDetailFixedPC: LazyComponent<typeof import("../component
 export const LazyProductFilterCategory: LazyComponent<typeof import("../components/organisms/product/ProductFilterCategory.vue")['default']>
 export const LazyProductFilterDefault: LazyComponent<typeof import("../components/organisms/product/ProductFilterDefault.vue")['default']>
 export const LazyProductFilterPrice: LazyComponent<typeof import("../components/organisms/product/ProductFilterPrice.vue")['default']>
+export const LazyProductFilterVariantGroup: LazyComponent<typeof import("../components/organisms/product/ProductFilterVariantGroup.vue")['default']>
 export const LazySectionProductList: LazyComponent<typeof import("../components/organisms/product/SectionProductList.vue")['default']>
 export const LazySectionProductListColumn: LazyComponent<typeof import("../components/organisms/product/SectionProductListColumn.vue")['default']>
 export const LazySectionProductListSwiper: LazyComponent<typeof import("../components/organisms/product/SectionProductListSwiper.vue")['default']>
