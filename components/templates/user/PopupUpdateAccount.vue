@@ -22,7 +22,7 @@ import type { VForm } from 'vuetify/components'
 const storeAccountEdit = useAccountEditStore()
 const accountStore = useAccountStore()
 const storeFileManage = useFileManageFolderStore();
-let folderName = FOLDER_UPLOAD.MEMBER
+const folderName = `${FOLDER_UPLOAD.MEMBER}${accountStore.getUserId}`;
 const formRef = ref<VForm | null>(null);
 
 const handleSubmitUpdate = async () => {
@@ -37,7 +37,6 @@ watch(() => storeFileManage.getSelectImage, (newValue) => {
   storeAccountEdit.formUserItem.avatar = newValue.url
 }, { immediate: true })
 
-folderName = `${FOLDER_UPLOAD.MEMBER}${accountStore.getDetailValue?.id}`;
 useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
@@ -46,7 +45,7 @@ onBeforeUnmount(() => {
 </script>
 <template>
 
-<PopupFileManageImage :folderName="folderName+accountStore.getDetailValue?.id" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <Popup bodyClass="bg-gray6" v-model="storeAccountEdit.isTogglePopupUpdate" footerFixed :popupHeading="AUTH_TEXT_UPDATE_INFO" align="right">
   <template #body>

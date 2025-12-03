@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
+import { ref } from 'vue';
 
 const store = useFileManageFolderStore()
+
 const props = defineProps({
   folderName: {
     type: String,
@@ -16,9 +18,18 @@ const props = defineProps({
     default: 'col-6 col-md-4 col-lg-3 col-xxl-2',
   }
 })
+const showReloadButton = ref(false)
 
-const handleFileChange = (event: Event) => {
-  store.uploadImage(event, props.folderName);
+const handleFileChange = async (event: Event) => {
+  const success = await store.uploadImage(event, props.folderName)
+  if (success) {
+    showReloadButton.value = true
+  }
+}
+
+const reloadData = () => {
+  store.getApiList(props.folderName)
+  showReloadButton.value = false
 }
 
 </script>
@@ -60,5 +71,14 @@ const handleFileChange = (event: Event) => {
     </template>
     <template v-else>
       <NoData />
+      <div class="flex justify-center">
+        <Button 
+          v-if="showReloadButton" 
+          color="secondary" 
+          label="Tải lại"
+          class="mt-ms"
+          @click.prevent="reloadData"
+        />
+      </div>
     </template>
   </template>

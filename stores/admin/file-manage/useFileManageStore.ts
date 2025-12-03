@@ -53,6 +53,8 @@ function load({ done }: { done: (status: 'ok' | 'empty') => void }) {
 
 const getApiList = async (folderName:string) => {
   Loading(true);
+  if(!folderName || folderName === '') return false
+
   try {
     const res = await fileManageAPI.getImages(folderName, pageSize)
     dataList.value = res.images
@@ -132,6 +134,7 @@ const uploadImage = async (event: Event, folderName: string) => {
         getApiList(folder)
       }, 2000);
       file.value = null
+      return true
     } else {
       showWarning('Upload thất bại!')
       Loading(false)

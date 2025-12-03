@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import '@/styles/molecules/file-manage/file-image-item.scss'
-import {
-  copyText, formatBytes, downloadImage
-} from '@/utils/global'
-
+import { copyText, formatBytes, downloadImage} from '@/utils/global'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 
 const store = useFileManageFolderStore()
@@ -22,8 +19,8 @@ const props = defineProps({
   <template v-if="props.item">
     <div class="file-image-item">
       <div class="file-image-overlay">
-        <div class="file-image-src">
-          <img :src="props.item.url" :alt="props.item.public_id" />
+        <div class="file-image-src cursor-pointer" @click="store.selectImage(props.item.url)">
+          <img class="cursor-pointer" :src="props.item.url" :alt="props.item.public_id" />
         </div>
         <div class="file-image-content text-right">
           {{formatBytes(props.item.bytes)}}

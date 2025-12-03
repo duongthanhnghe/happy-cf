@@ -12,6 +12,17 @@
     overflow: hidden;
     position: relative;
     transition: 0.3s all;
+    &:hover {
+      .file-image-content,
+      .file-image-actions {
+        opacity: 1;
+      }
+    }
+  }
+  &-src {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
     &:before {
       content: "";
       position: absolute;
@@ -28,16 +39,7 @@
       &:before {
         opacity: 1;
       }
-      .file-image-content,
-      .file-image-actions {
-        opacity: 1;
-      }
     }
-  }
-  &-src {
-    width: 100%;
-    padding-top: 100%;
-    position: relative;
     img {
       position: absolute;
       width: 100%;
@@ -47,9 +49,6 @@
       left: 0;
       max-width: 0 auto;
     }
-  }
-  &-size {
-   
   }
   &-content {
     color: $cl-white;
