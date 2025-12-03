@@ -53,9 +53,14 @@ interface _GlobalComponents {
     'PageProgress': typeof import("../components/atoms/PageProgress.vue")['default']
     'Popup': typeof import("../components/atoms/Popup.vue")['default']
     'SelectOrder': typeof import("../components/atoms/SelectOrder.vue")['default']
+    'ShareSocial': typeof import("../components/atoms/ShareSocial.vue")['default']
     'Text': typeof import("../components/atoms/Text.vue")['default']
     'VTreeChoose': typeof import("../components/atoms/VTreeChoose.vue")['default']
     'Facebook': typeof import("../components/atoms/icons/Facebook.vue")['default']
+    'IconFacebook2': typeof import("../components/atoms/icons/IconFacebook2.vue")['default']
+    'IconInternet': typeof import("../components/atoms/icons/IconInternet.vue")['default']
+    'IconLinkedin': typeof import("../components/atoms/icons/IconLinkedin.vue")['default']
+    'IconX': typeof import("../components/atoms/icons/IconX.vue")['default']
     'Instagram': typeof import("../components/atoms/icons/Instagram.vue")['default']
     'Tiktok': typeof import("../components/atoms/icons/Tiktok.vue")['default']
     'Breadcrumb': typeof import("../components/molecules/breadcrumb/Breadcrumb.vue")['default']
@@ -63,6 +68,7 @@ interface _GlobalComponents {
     'CartItemTemplate2': typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
     'FileImageItem': typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
     'Pagination': typeof import("../components/molecules/global/Pagination.vue")['default']
+    'NewsBoxSearch': typeof import("../components/molecules/news/NewsBoxSearch.vue")['default']
     'NewsItemTemplate1': typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']
     'NewsItemTemplate2': typeof import("../components/molecules/news/NewsItemTemplate2.vue")['default']
     'OrderItemTemplate1': typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']
@@ -95,7 +101,7 @@ interface _GlobalComponents {
     'Header': typeof import("../components/organisms/layout/Header.vue")['default']
     'MenuAccount': typeof import("../components/organisms/layout/MenuAccount.vue")['default']
     'MenuBottom': typeof import("../components/organisms/layout/MenuBottom.vue")['default']
-    'ListPostRelated': typeof import("../components/organisms/news/ListPostRelated.vue")['default']
+    'NewsBreadcrumb': typeof import("../components/organisms/news/NewsBreadcrumb.vue")['default']
     'PostDetail': typeof import("../components/organisms/news/PostDetail.vue")['default']
     'SectionNewsListSwiper': typeof import("../components/organisms/news/SectionNewsListSwiper.vue")['default']
     'OrderDetailTemplate': typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']
@@ -218,9 +224,14 @@ interface _GlobalComponents {
     'LazyPageProgress': LazyComponent<typeof import("../components/atoms/PageProgress.vue")['default']>
     'LazyPopup': LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
     'LazySelectOrder': LazyComponent<typeof import("../components/atoms/SelectOrder.vue")['default']>
+    'LazyShareSocial': LazyComponent<typeof import("../components/atoms/ShareSocial.vue")['default']>
     'LazyText': LazyComponent<typeof import("../components/atoms/Text.vue")['default']>
     'LazyVTreeChoose': LazyComponent<typeof import("../components/atoms/VTreeChoose.vue")['default']>
     'LazyFacebook': LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
+    'LazyIconFacebook2': LazyComponent<typeof import("../components/atoms/icons/IconFacebook2.vue")['default']>
+    'LazyIconInternet': LazyComponent<typeof import("../components/atoms/icons/IconInternet.vue")['default']>
+    'LazyIconLinkedin': LazyComponent<typeof import("../components/atoms/icons/IconLinkedin.vue")['default']>
+    'LazyIconX': LazyComponent<typeof import("../components/atoms/icons/IconX.vue")['default']>
     'LazyInstagram': LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
     'LazyTiktok': LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>
     'LazyBreadcrumb': LazyComponent<typeof import("../components/molecules/breadcrumb/Breadcrumb.vue")['default']>
@@ -228,6 +239,7 @@ interface _GlobalComponents {
     'LazyCartItemTemplate2': LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
     'LazyFileImageItem': LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
     'LazyPagination': LazyComponent<typeof import("../components/molecules/global/Pagination.vue")['default']>
+    'LazyNewsBoxSearch': LazyComponent<typeof import("../components/molecules/news/NewsBoxSearch.vue")['default']>
     'LazyNewsItemTemplate1': LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']>
     'LazyNewsItemTemplate2': LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate2.vue")['default']>
     'LazyOrderItemTemplate1': LazyComponent<typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']>
@@ -260,7 +272,7 @@ interface _GlobalComponents {
     'LazyHeader': LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
     'LazyMenuAccount': LazyComponent<typeof import("../components/organisms/layout/MenuAccount.vue")['default']>
     'LazyMenuBottom': LazyComponent<typeof import("../components/organisms/layout/MenuBottom.vue")['default']>
-    'LazyListPostRelated': LazyComponent<typeof import("../components/organisms/news/ListPostRelated.vue")['default']>
+    'LazyNewsBreadcrumb': LazyComponent<typeof import("../components/organisms/news/NewsBreadcrumb.vue")['default']>
     'LazyPostDetail': LazyComponent<typeof import("../components/organisms/news/PostDetail.vue")['default']>
     'LazySectionNewsListSwiper': LazyComponent<typeof import("../components/organisms/news/SectionNewsListSwiper.vue")['default']>
     'LazyOrderDetailTemplate': LazyComponent<typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']>
@@ -389,9 +401,14 @@ export const NoData: typeof import("../components/atoms/NoData.vue")['default']
 export const PageProgress: typeof import("../components/atoms/PageProgress.vue")['default']
 export const Popup: typeof import("../components/atoms/Popup.vue")['default']
 export const SelectOrder: typeof import("../components/atoms/SelectOrder.vue")['default']
+export const ShareSocial: typeof import("../components/atoms/ShareSocial.vue")['default']
 export const Text: typeof import("../components/atoms/Text.vue")['default']
 export const VTreeChoose: typeof import("../components/atoms/VTreeChoose.vue")['default']
 export const Facebook: typeof import("../components/atoms/icons/Facebook.vue")['default']
+export const IconFacebook2: typeof import("../components/atoms/icons/IconFacebook2.vue")['default']
+export const IconInternet: typeof import("../components/atoms/icons/IconInternet.vue")['default']
+export const IconLinkedin: typeof import("../components/atoms/icons/IconLinkedin.vue")['default']
+export const IconX: typeof import("../components/atoms/icons/IconX.vue")['default']
 export const Instagram: typeof import("../components/atoms/icons/Instagram.vue")['default']
 export const Tiktok: typeof import("../components/atoms/icons/Tiktok.vue")['default']
 export const Breadcrumb: typeof import("../components/molecules/breadcrumb/Breadcrumb.vue")['default']
@@ -399,6 +416,7 @@ export const CartItemTemplate1: typeof import("../components/molecules/cart/Cart
 export const CartItemTemplate2: typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
 export const FileImageItem: typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
 export const Pagination: typeof import("../components/molecules/global/Pagination.vue")['default']
+export const NewsBoxSearch: typeof import("../components/molecules/news/NewsBoxSearch.vue")['default']
 export const NewsItemTemplate1: typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']
 export const NewsItemTemplate2: typeof import("../components/molecules/news/NewsItemTemplate2.vue")['default']
 export const OrderItemTemplate1: typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']
@@ -431,7 +449,7 @@ export const Footer: typeof import("../components/organisms/layout/Footer.vue")[
 export const Header: typeof import("../components/organisms/layout/Header.vue")['default']
 export const MenuAccount: typeof import("../components/organisms/layout/MenuAccount.vue")['default']
 export const MenuBottom: typeof import("../components/organisms/layout/MenuBottom.vue")['default']
-export const ListPostRelated: typeof import("../components/organisms/news/ListPostRelated.vue")['default']
+export const NewsBreadcrumb: typeof import("../components/organisms/news/NewsBreadcrumb.vue")['default']
 export const PostDetail: typeof import("../components/organisms/news/PostDetail.vue")['default']
 export const SectionNewsListSwiper: typeof import("../components/organisms/news/SectionNewsListSwiper.vue")['default']
 export const OrderDetailTemplate: typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']
@@ -554,9 +572,14 @@ export const LazyNoData: LazyComponent<typeof import("../components/atoms/NoData
 export const LazyPageProgress: LazyComponent<typeof import("../components/atoms/PageProgress.vue")['default']>
 export const LazyPopup: LazyComponent<typeof import("../components/atoms/Popup.vue")['default']>
 export const LazySelectOrder: LazyComponent<typeof import("../components/atoms/SelectOrder.vue")['default']>
+export const LazyShareSocial: LazyComponent<typeof import("../components/atoms/ShareSocial.vue")['default']>
 export const LazyText: LazyComponent<typeof import("../components/atoms/Text.vue")['default']>
 export const LazyVTreeChoose: LazyComponent<typeof import("../components/atoms/VTreeChoose.vue")['default']>
 export const LazyFacebook: LazyComponent<typeof import("../components/atoms/icons/Facebook.vue")['default']>
+export const LazyIconFacebook2: LazyComponent<typeof import("../components/atoms/icons/IconFacebook2.vue")['default']>
+export const LazyIconInternet: LazyComponent<typeof import("../components/atoms/icons/IconInternet.vue")['default']>
+export const LazyIconLinkedin: LazyComponent<typeof import("../components/atoms/icons/IconLinkedin.vue")['default']>
+export const LazyIconX: LazyComponent<typeof import("../components/atoms/icons/IconX.vue")['default']>
 export const LazyInstagram: LazyComponent<typeof import("../components/atoms/icons/Instagram.vue")['default']>
 export const LazyTiktok: LazyComponent<typeof import("../components/atoms/icons/Tiktok.vue")['default']>
 export const LazyBreadcrumb: LazyComponent<typeof import("../components/molecules/breadcrumb/Breadcrumb.vue")['default']>
@@ -564,6 +587,7 @@ export const LazyCartItemTemplate1: LazyComponent<typeof import("../components/m
 export const LazyCartItemTemplate2: LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
 export const LazyFileImageItem: LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
 export const LazyPagination: LazyComponent<typeof import("../components/molecules/global/Pagination.vue")['default']>
+export const LazyNewsBoxSearch: LazyComponent<typeof import("../components/molecules/news/NewsBoxSearch.vue")['default']>
 export const LazyNewsItemTemplate1: LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']>
 export const LazyNewsItemTemplate2: LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate2.vue")['default']>
 export const LazyOrderItemTemplate1: LazyComponent<typeof import("../components/molecules/order/OrderItemTemplate1.vue")['default']>
@@ -596,7 +620,7 @@ export const LazyFooter: LazyComponent<typeof import("../components/organisms/la
 export const LazyHeader: LazyComponent<typeof import("../components/organisms/layout/Header.vue")['default']>
 export const LazyMenuAccount: LazyComponent<typeof import("../components/organisms/layout/MenuAccount.vue")['default']>
 export const LazyMenuBottom: LazyComponent<typeof import("../components/organisms/layout/MenuBottom.vue")['default']>
-export const LazyListPostRelated: LazyComponent<typeof import("../components/organisms/news/ListPostRelated.vue")['default']>
+export const LazyNewsBreadcrumb: LazyComponent<typeof import("../components/organisms/news/NewsBreadcrumb.vue")['default']>
 export const LazyPostDetail: LazyComponent<typeof import("../components/organisms/news/PostDetail.vue")['default']>
 export const LazySectionNewsListSwiper: LazyComponent<typeof import("../components/organisms/news/SectionNewsListSwiper.vue")['default']>
 export const LazyOrderDetailTemplate: LazyComponent<typeof import("../components/organisms/order/OrderDetailTemplate.vue")['default']>

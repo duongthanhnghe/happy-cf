@@ -19,7 +19,7 @@ const props = defineProps<{
       <ProductFilterCategory :categoryName="props.categoryName" :list="storeCategoryMain.getListCategoryChildren"/>
     </template>
 
-    <div v-if="storeCategoryMain.getListCategoryChildren.length > 0" class="mt-md">
+    <div v-if="props.variantGroups.length > 0" class="mt-md">
       <ProductFilterVariantGroup :variantGroups="props.variantGroups"/>
     </div> 
 

@@ -87,6 +87,7 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
       <SectionNewsListSwiper 
         :items="storeNewsLatest.getListNewsLatest" 
         :loading="storeNewsLatest.loading" 
+        pagination
         container="container container-xxl" 
         headingText="Tin mới nhất" 
         class="pb-section" 

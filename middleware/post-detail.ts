@@ -12,7 +12,7 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => 
   const storePostDetail = usePostDetailStore()
   const { setNewsSEO } = usePostNewsSEO()
 
-  const slug = to.params.postSlug as string | undefined
+  const slug = to.params.blogSlug as string | undefined
   const routePath = ROUTES.PUBLIC.NEWS.children?.DETAIL?.path ?? '/post'
 
   try {

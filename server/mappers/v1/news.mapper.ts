@@ -9,10 +9,10 @@ export function toPostNewsDTO(entity: any): PostNewsDTO {
     description: entity.description,
     image: entity.image,
     isActive: entity.isActive,
-    categoryId: entity.categoryId.toString(),
+    categoryId: typeof entity.categoryId === 'string' ? entity.categoryId : entity.categoryId?._id?.toString(),
     views: entity.views,
     author: entity.author,
-    categoryName: entity.categoryName || undefined,
+    categoryName: entity.categoryName || (typeof entity.categoryId !== 'string' ? entity.categoryId?.categoryName : undefined),
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,

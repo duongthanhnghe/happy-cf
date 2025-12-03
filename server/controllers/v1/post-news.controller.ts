@@ -37,7 +37,7 @@ export const getPostsById = async (req: Request, res: Response) => {
 export const getPostBySlug = async (req: Request, res: Response) => {
   try {
     const { slug } = req.params
-    const post = await PostNewsModel.findOne({ slug })
+    const post = await PostNewsModel.findOne({ slug }).populate('categoryId')
     if (!post) {
       return res.status(404).json({ code: 1, message: "Không tồn tại" })
     }
@@ -99,16 +99,17 @@ export const getPostsByCategory = async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string, 10) || 10
     const skip = (page - 1) * limit
 
-    const query = { categoryId }
-
     const isActiveCategory = await isNewsCategoryActive(new Types.ObjectId(categoryId))
     if (!isActiveCategory) {
       return res.status(404).json({ code: 1, message: "Danh mục đã bị vô hiệu hóa" })
     }
 
+    const query = { categoryId, isActive: true }
+
     const [total, posts] = await Promise.all([
       PostNewsModel.countDocuments(query),
-      PostNewsModel.find({...query, isActive: true})
+      PostNewsModel.find(query)
+        .populate('categoryId')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -147,6 +148,7 @@ export const getRelatedPostsBySlug = async (req: Request, res: Response) => {
       slug: { $ne: slug },
       isActive: true,
     })
+      .populate('categoryId')
       .limit(limit)
       .sort({ createdAt: -1 })
 
@@ -175,48 +177,6 @@ export const updateView = async (req: Request, res: Response) => {
   }
 }
 
-// export const getAllPostsPagination = async (req: Request, res: Response) => {
-//   try {
-//     const page = parseInt(req.query.page as string, 10) || 1
-//     let limit = parseInt(req.query.limit as string, 10) || 10
-//     const search = (req.query.search as string) || ""
-
-//     const query: any = { isActive: true }
-
-//     if (search) {
-//       query.$or = [
-//         { title: { $regex: search, $options: "i" } },
-//         { summaryContent: { $regex: search, $options: "i" } }
-//       ]
-//     }
-
-//     if (limit === -1) {
-//       limit = await PostNewsModel.countDocuments(query)
-//     }
-
-//     const skip = (page - 1) * limit
-
-//     const [total, posts] = await Promise.all([
-//       PostNewsModel.countDocuments(query),
-//       PostNewsModel.find(query)
-//         .sort({ createdAt: -1 })
-//         .skip(skip)
-//         .limit(limit)
-//     ])
-
-//     const totalPages = Math.ceil(total / limit)
-
-//     return res.json({
-//       code: 0,
-//       data: toPostNewsListDTO(posts),
-//       pagination: { page, limit, total, totalPages },
-//       message: "Success"
-//     })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
-
 export const getAllPostsPagination = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string, 10) || 1;
@@ -224,12 +184,9 @@ export const getAllPostsPagination = async (req: Request, res: Response) => {
     const search = (req.query.search as string) || "";
     const skip = (page - 1) * limit;
 
-    // Pipeline
     const pipeline: any[] = [
-      // 1. Lọc bài viết active
       { $match: { isActive: true } },
 
-      // 2. Join danh mục
       {
         $lookup: {
           from: "post_categories",
@@ -240,11 +197,11 @@ export const getAllPostsPagination = async (req: Request, res: Response) => {
       },
       { $unwind: { path: "$category", preserveNullAndEmptyArrays: false } },
 
-      // 3. Lọc danh mục active
-      { $match: { "category.isActive": true } }
+      { $match: { "category.isActive": true } },
+
+      { $addFields: { categoryName: "$category.categoryName" } },
     ];
 
-    // 4. Tìm kiếm
     if (search) {
       pipeline.push({
         $match: {
@@ -256,10 +213,8 @@ export const getAllPostsPagination = async (req: Request, res: Response) => {
       });
     }
 
-    // 5. Sắp xếp
     pipeline.push({ $sort: { createdAt: -1 } });
 
-    // 6. Tính tổng trước khi skip & limit
     const countPipeline = [...pipeline, { $count: "total" }];
     const totalResult = await PostNewsModel.aggregate(countPipeline);
     const total = totalResult[0]?.total || 0;
@@ -267,7 +222,6 @@ export const getAllPostsPagination = async (req: Request, res: Response) => {
     // 7. Skip & limit
     pipeline.push({ $skip: skip }, { $limit: limit });
 
-    // 8. Loại bỏ thông tin category khỏi kết quả
     pipeline.push({ $project: { category: 0 } });
 
     const posts = await PostNewsModel.aggregate(pipeline);

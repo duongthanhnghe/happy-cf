@@ -6,14 +6,14 @@ import { usePostByCategory } from '@/composables/news/usePostByCategory'
 import { usePagination } from '@/utils/paginationHandle'
 import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 
-export const useCategoryMainStore = defineStore("CategoryMainNewsStore", () => {
+export const useNewsMainStore = defineStore("MainNewsStore", () => {
   const { getDetailNewsCategoryApi } = useNewsCategoryDetail()
   const { getPostByCategoryApi, fetchPostByCategory, loading: loadingListPost } = usePostByCategory()
 
   const listItems = ref<PostNewsDTO[]|null>(null);
   const pagination = computed(() => getPostByCategoryApi.value?.pagination)
   const page = ref('1')
-  const limit = 10
+  const limit = 2
 
   watch(page, async (newValue) => {
     if(newValue && getDetailNewsCategoryApi.value) {

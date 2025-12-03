@@ -1151,16 +1151,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"4980f-pJI93VQ9itLwBIQvKZAIkkw3RS0\"",
-    "mtime": "2025-12-02T10:56:21.617Z",
-    "size": 301071,
+    "etag": "\"49b04-NjLCrJxP5RNt5W6S307eBVS4j+I\"",
+    "mtime": "2025-12-03T10:43:21.672Z",
+    "size": 301828,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"11a4c8-0JJ8wHvFAv0NsMbtuHjnTpNKyYQ\"",
-    "mtime": "2025-12-02T10:56:21.622Z",
-    "size": 1156296,
+    "etag": "\"11a996-IUieteeyqhy47hR75VZJHq+5dho\"",
+    "mtime": "2025-12-03T10:43:21.675Z",
+    "size": 1157526,
     "path": "index.mjs.map"
   }
 };
@@ -2928,6 +2928,7 @@ CategoryNewsSchema.pre("save", function(next) {
 const CategoryNewsModel = model("CategoryNews", CategoryNewsSchema, "post_categories");
 
 function toPostNewsDTO(entity) {
+  var _a, _b, _c;
   return {
     id: entity._id.toString(),
     title: entity.title,
@@ -2935,10 +2936,10 @@ function toPostNewsDTO(entity) {
     description: entity.description,
     image: entity.image,
     isActive: entity.isActive,
-    categoryId: entity.categoryId.toString(),
+    categoryId: typeof entity.categoryId === "string" ? entity.categoryId : (_b = (_a = entity.categoryId) == null ? void 0 : _a._id) == null ? void 0 : _b.toString(),
     views: entity.views,
     author: entity.author,
-    categoryName: entity.categoryName || void 0,
+    categoryName: entity.categoryName || (typeof entity.categoryId !== "string" ? (_c = entity.categoryId) == null ? void 0 : _c.categoryName : void 0),
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,
@@ -7086,7 +7087,7 @@ const getPostsById = async (req, res) => {
 const getPostBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
-    const post = await PostNewsModel.findOne({ slug });
+    const post = await PostNewsModel.findOne({ slug }).populate("categoryId");
     if (!post) {
       return res.status(404).json({ code: 1, message: "Kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
@@ -7138,14 +7139,14 @@ const getPostsByCategory = async (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;
-    const query = { categoryId };
     const isActiveCategory = await isNewsCategoryActive(new Types.ObjectId(categoryId));
     if (!isActiveCategory) {
       return res.status(404).json({ code: 1, message: "Danh m\u1EE5c \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
     }
+    const query = { categoryId, isActive: true };
     const [total, posts] = await Promise.all([
       PostNewsModel.countDocuments(query),
-      PostNewsModel.find({ ...query, isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit)
+      PostNewsModel.find(query).populate("categoryId").sort({ createdAt: -1 }).skip(skip).limit(limit)
     ]);
     const totalPages = Math.ceil(total / limit);
     return res.json({
@@ -7174,7 +7175,7 @@ const getRelatedPostsBySlug = async (req, res) => {
       categoryId: new mongoose.Types.ObjectId(post.categoryId),
       slug: { $ne: slug },
       isActive: true
-    }).limit(limit).sort({ createdAt: -1 });
+    }).populate("categoryId").limit(limit).sort({ createdAt: -1 });
     return res.json({
       code: 0,
       data: relatedPosts.map(toPostNewsDTO),
@@ -7206,9 +7207,7 @@ const getAllPostsPagination = async (req, res) => {
     const search = req.query.search || "";
     const skip = (page - 1) * limit;
     const pipeline = [
-      // 1. Lọc bài viết active
       { $match: { isActive: true } },
-      // 2. Join danh mục
       {
         $lookup: {
           from: "post_categories",
@@ -7218,8 +7217,8 @@ const getAllPostsPagination = async (req, res) => {
         }
       },
       { $unwind: { path: "$category", preserveNullAndEmptyArrays: false } },
-      // 3. Lọc danh mục active
-      { $match: { "category.isActive": true } }
+      { $match: { "category.isActive": true } },
+      { $addFields: { categoryName: "$category.categoryName" } }
     ];
     if (search) {
       pipeline.push({

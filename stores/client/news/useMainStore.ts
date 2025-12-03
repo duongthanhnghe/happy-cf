@@ -1,29 +1,21 @@
 import { ref, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { ROUTES } from '@/shared/constants/routes'
 import { usePostAllPagination } from '@/composables/news/usePostAllPagination'
 import { usePagination } from '@/utils/paginationHandle'
 import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
-import { Loading} from '@/utils/global'
 
 export const useMainStore = defineStore("NewsMainNewsStore", () => {
-  const { getListPostApi, fetchPostList } = usePostAllPagination()
+  const { loading, getListPostApi, fetchPostList } = usePostAllPagination()
 
   const listItems = ref<PostNewsDTO[]|null>(null);
   const pagination = ref(null)
   const page = ref('1')
-  const limit = 1
+  const limit = 10
 
   watch(page, async (newValue) => {
     if(newValue) {
-      Loading(true)
-      try {
-        await fetchPostList(newValue,limit, '')
-        listItems.value = getListPostApi.value?.data || []
-      } catch (error) {
-        console.error('news main error:', error)
-      }
-      Loading(false)
+      await fetchPostList(newValue,limit, '')
+      listItems.value = getListPostApi.value?.data || []
     }
   })
 
@@ -38,6 +30,7 @@ export const useMainStore = defineStore("NewsMainNewsStore", () => {
     listItems,
     getListItems,
     getTotalPages,
+    loading,
     handleChangePage
   };
 });

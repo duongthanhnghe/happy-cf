@@ -346,27 +346,34 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       middleware: ['auth-account'],
       children: {
         MAIN: {
-          path: '/news',
+          path: '/blog',
           label: 'Tin tức',
           icon: 'article',
           middleware: ['news-main','auth-account'],
           layout: 'default',
         },
         CATEGORY: {
-          path: '/news-category',
+          path: '/blog-category',
           label: 'Danh mục Blog',
           icon: 'description',
           middleware: ['category-news-detail','auth-account'],
           layout: 'default',
         },
+        SEARCH: {
+          path: '/blog/search',
+          label: 'Kết quả tìm kiếm',
+          icon: 'article',
+          middleware: ['news-main','auth-account'],
+          layout: 'default',
+        },
         DETAIL: {
           name: 'post-detail',
-          path: '/post',
+          path: '/blog/:slug',
           label: 'Chi tiết Blog',
           icon: 'description',
           middleware: ['post-detail','auth-account'],
           layout: 'default',
-        }
+        },
       }
     },
     PRODUCT: {

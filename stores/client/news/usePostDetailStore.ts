@@ -6,7 +6,7 @@ export const usePostDetailStore = defineStore("PostDetailStore", () => {
   const { getDetailPostApi } = usePostDetail()
   const { getListPostRelatedApi, loading: loadingListRelated } = usePostRelated()
 
-  const limitRelated = 12
+  const limitRelated = 6
 
   return {
     getDetailPostApi,
