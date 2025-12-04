@@ -15,13 +15,15 @@ export const useAddressesUtils = (
   isChildrenPopupManage: Ref<boolean>,
   actionChangeAddress: Ref<boolean>,
   loadingData: Ref<boolean>,
-  userId: string,
+  userId: string | null,
   storeLocation: any,
 ) => {
 
   const { getListAddressAllApi, fetchAddressAll } = useAddressAll()  
 
   const handleTogglePopupList = (value: boolean, action: boolean) => {
+    if (!userId) return
+
     isTogglePopupList.value = value;
     actionChangeAddress.value = action
     if(!dataList.value) loadItems();

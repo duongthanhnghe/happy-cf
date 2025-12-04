@@ -26,6 +26,7 @@
         :name="icon"
         size="lg-2"
         class="button-icon"
+        :weight="props.weightIcon"
       />
       <span v-if="!loading">{{ label }}</span>
       <slot v-if="!loading" ref="slotRef"></slot>
@@ -71,6 +72,9 @@ const props = defineProps({
   border: {
     type: Boolean,
     default: true,
+  },
+  weightIcon: {
+    type: String,
   },
 })
 

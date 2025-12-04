@@ -7,7 +7,7 @@ export function toAddressDTO(doc) {
         address: doc.address, // chi tiết: số nhà, đường
         note: doc.note,
         tag: doc.tag,
-        isDefault: doc.isDefault,
+        isDefault: doc.isDefault || false,
         provinceCode: doc.provinceCode,
         districtCode: doc.districtCode,
         wardCode: doc.wardCode,

@@ -8,7 +8,7 @@ export const useAccountDetailState = () => {
   const isTogglePopupBarcode = ref<boolean>(false);
   const isTogglePopupMembershipInformation = ref(false);
   const informationMembershipLevel = ref<InformationMembershipLevels | null>(null);
-  const token = useCookie<string | null>("token", { sameSite: "lax" });
+  const token = ref<string | null>(null);
   const userId = ref<string | null>(null);
   const lastVerifiedAt = ref<number>(0);
   const verifyCacheDuration = 15 * 60 * 1000; // 15 phút

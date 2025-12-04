@@ -55,5 +55,7 @@ onBeforeUnmount(() => {
     </div>
   </template>
 
-  <PopupManageAddress v-if="storeAccount.getUserId" />
+  <client-only>
+    <PopupManageAddress v-if="storeAccount.getUserId" />
+  </client-only>
 </template>

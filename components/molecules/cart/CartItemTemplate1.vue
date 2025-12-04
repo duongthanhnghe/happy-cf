@@ -53,8 +53,8 @@ const getOriginalPrice = (item: any) => {
         </div>
       </div>
       <div class="cart-template1-delete flex" v-if="item.id">
-        <Button color="secondary" :border="false" size="sm" icon="edit" @click.prevent="storeCart.getProductDetailEdit(item.productKey ? item.productKey : item.id)" />
-        <Button color="secondary" :border="false" size="sm" icon="delete" @click.prevent="storeCart.deleteCart(item.productKey ? item.productKey : item.id)" />
+        <Button color="secondary" :border="false" weightIcon="light" size="sm" icon="edit" @click.prevent="storeCart.getProductDetailEdit(item.productKey ? item.productKey : item.id)" />
+        <Button color="secondary" :border="false" weightIcon="light" size="sm" icon="delete" @click.prevent="storeCart.deleteCart(item.productKey ? item.productKey : item.id)" />
       </div>
     </div>
   </div>

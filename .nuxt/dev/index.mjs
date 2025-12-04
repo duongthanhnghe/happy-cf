@@ -1151,16 +1151,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"49b04-NjLCrJxP5RNt5W6S307eBVS4j+I\"",
-    "mtime": "2025-12-03T10:43:21.672Z",
-    "size": 301828,
+    "etag": "\"4a174-c6BumDvTdpPF8caTgGue3xa2ap8\"",
+    "mtime": "2025-12-04T11:22:36.369Z",
+    "size": 303476,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"11a996-IUieteeyqhy47hR75VZJHq+5dho\"",
-    "mtime": "2025-12-03T10:43:21.675Z",
-    "size": 1157526,
+    "etag": "\"11c560-Wze+fkO+KadY4sgIXWiHFsG6ssM\"",
+    "mtime": "2025-12-04T11:22:36.377Z",
+    "size": 1164640,
     "path": "index.mjs.map"
   }
 };
@@ -2001,7 +2001,7 @@ function toAddressDTO(doc) {
     // chi tiết: số nhà, đường
     note: doc.note,
     tag: doc.tag,
-    isDefault: doc.isDefault,
+    isDefault: doc.isDefault || false,
     provinceCode: doc.provinceCode,
     districtCode: doc.districtCode,
     wardCode: doc.wardCode,
@@ -2122,8 +2122,8 @@ const getDefaultAddressByUserId = async (req, res) => {
 };
 
 const authenticate = (req, res, next) => {
-  var _a;
-  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  const authHeader = req.headers.authorization;
+  const token = authHeader == null ? void 0 : authHeader.split(" ")[1];
   if (!token) {
     return res.status(401).json({ message: "Thi\u1EBFu token" });
   }
@@ -5621,8 +5621,8 @@ const sendResetPasswordEmail = async (to, resetLink) => {
 
 const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
 const verifyToken = async (req, res) => {
-  var _a;
-  const token = (_a = req.cookies) == null ? void 0 : _a.token;
+  const authHeader = req.headers.authorization;
+  const token = authHeader == null ? void 0 : authHeader.split(" ")[1];
   if (!token)
     return res.status(401).json({ code: 1, message: "Thi\u1EBFu token \u0111\u0103ng nh\u1EADp" });
   try {
@@ -5634,10 +5634,7 @@ const verifyToken = async (req, res) => {
     return res.status(200).json({
       code: 0,
       message: "X\xE1c th\u1EF1c th\xE0nh c\xF4ng",
-      data: {
-        id: user._id,
-        email: user.email
-      }
+      data: toUserDTO(user)
     });
   } catch (err) {
     return res.status(401).json({ code: 3, message: "Token kh\xF4ng h\u1EE3p l\u1EC7 ho\u1EB7c \u0111\xE3 h\u1EBFt h\u1EA1n" });
@@ -5694,22 +5691,65 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await UserModel.findOne({ email });
-    if (!user) return res.status(400).json({ code: 2, message: "Email khong dung, vui long nhap lai!" });
+    if (!user) return res.status(400).json({ code: 2, message: "Email kh\xF4ng \u0111\xFAng!" });
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ code: 1, message: "Mat khau khong dung, vui long nhap lai!" });
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
-    res.cookie("token", token, {
+    if (!isMatch) return res.status(400).json({ code: 1, message: "M\u1EADt kh\u1EA9u kh\xF4ng \u0111\xFAng!" });
+    const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    const refreshToken2 = jwt.sign(
+      { id: user._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "30d" }
+    );
+    res.cookie("refresh_token", refreshToken2, {
       httpOnly: true,
-      // FE không đọc trực tiếp
       secure: false,
-      // localhost => false
-      sameSite: "lax",
-      // thử 'none' nếu khác port
-      maxAge: 12 * 60 * 60 * 1e3
+      sameSite: "strict",
+      path: "/api/v1/auth/refresh-token",
+      maxAge: 10 * 24 * 60 * 60 * 1e3
+      // 10 ngày
     });
-    res.status(200).json({ code: 0, message: "\u0110\u0103ng nh\u1EADp th\xE0nh c\xF4ng", data: { token, user: toUserDTO(user) } });
+    return res.status(200).json({
+      code: 0,
+      message: "\u0110\u0103ng nh\u1EADp th\xE0nh c\xF4ng",
+      data: {
+        accessToken,
+        user: toUserDTO(user)
+      }
+    });
   } catch (err) {
-    res.status(500).json({ code: 500, message: "\u0110\u0103ng nh\u1EADp th\u1EA5t b\u1EA1i, vui l\xF2ng th\u1EED l\u1EA1i", error: err });
+    res.status(500).json({ code: 500, message: "\u0110\u0103ng nh\u1EADp th\u1EA5t b\u1EA1i", error: err });
+  }
+};
+const refreshToken = async (req, res) => {
+  var _a;
+  const token = (_a = req.cookies) == null ? void 0 : _a.refresh_token;
+  if (!token) {
+    return res.json({
+      code: 1,
+      message: "Kh\xF4ng t\xECm th\u1EA5y refresh token, vui l\xF2ng \u0111\u0103ng nh\u1EADp l\u1EA1i",
+      data: null
+    });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const user = await UserModel.findById(decoded.id);
+    if (!user) return res.status(403).json({ code: 2, message: "User not found" });
+    const newAccessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    return res.json({
+      code: 0,
+      message: "Refresh th\xE0nh c\xF4ng",
+      data: { accessToken: newAccessToken }
+    });
+  } catch (err) {
+    return res.status(401).json({ code: 3, message: "Refresh token h\u1EBFt h\u1EA1n" });
   }
 };
 const googleLogin = async (req, res) => {
@@ -5760,19 +5800,31 @@ const googleLogin = async (req, res) => {
         }
       });
     }
-    const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "12h"
-    });
-    res.cookie("token", jwtToken, {
+    const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    const refreshToken2 = jwt.sign(
+      { id: user._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "30d" }
+    );
+    res.cookie("refresh_token", refreshToken2, {
       httpOnly: true,
       secure: false,
-      sameSite: "lax",
-      maxAge: 12 * 60 * 60 * 1e3
+      sameSite: "strict",
+      path: "/api/v1/auth/refresh-token",
+      maxAge: 10 * 24 * 60 * 60 * 1e3
+      // 10 ngày
     });
     return res.status(200).json({
       code: 0,
-      message: "\u0110\u0103ng nh\u1EADp Google th\xE0nh c\xF4ng",
-      data: { token: jwtToken, user: toUserDTO(user) }
+      message: "\u0110\u0103ng nh\u1EADp th\xE0nh c\xF4ng",
+      data: {
+        accessToken,
+        user: toUserDTO(user)
+      }
     });
   } catch (err) {
     console.error("Google login error:", err);
@@ -5867,17 +5919,28 @@ const changePassword = async (req, res) => {
   await user.save();
   res.json({ code: 200, message: "Password updated" });
 };
+const logout = (req, res) => {
+  res.clearCookie("refresh_token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
+    path: "/api/v1/auth/refresh-token"
+  });
+  return res.status(200).json({ code: 0, message: "\u0110\u0103ng xu\u1EA5t th\xE0nh c\xF4ng" });
+};
 
 const router$f = express.Router();
 router$f.put("/users/me", authenticate, updateAccount);
 router$f.get("/users/:id", getUserById);
 router$f.get("/verify-token", verifyToken);
+router$f.post("/refresh-token", refreshToken);
 router$f.post("/register", register);
 router$f.post("/login", login);
 router$f.post("/google-login", googleLogin);
 router$f.post("/forgot-password", forgotPassword);
 router$f.post("/reset-password", resetPassword);
 router$f.post("/change-password", authenticate, changePassword);
+router$f.post("/logout", authenticate, logout);
 
 const auth_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

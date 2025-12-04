@@ -80,16 +80,18 @@ onMounted(async () => {
                   Giao hàng tới
                   <Text class="flex cursor-pointer" @click.prevent="storeAddress.handleTogglePopupList(true, true)">
                     <Text limit="1" :text="storeCart.getNameAddressChoose || 'Chưa nhập địa chỉ'" weight="semibold" />
-                    <MaterialIcon size="24" name="keyboard_arrow_down"/>
+                    <MaterialIcon v-if="storeAccount.getUserId" size="24" name="keyboard_arrow_down"/>
                   </Text>
                 </div>
               </div>
             </template>
             <template v-else>
-              <div>
-                {{ storeSetting.getBaseInformation?.name }}
-                <Text :text="`Xin chào ${storeAccount.getDetailValue?.fullname || 'Quý khách' }!`" weight="semibold" />
-              </div>
+              <client-only>
+                <div>
+                  {{ storeSetting.getBaseInformation?.name }}
+                  <Text :text="`Xin chào ${storeAccount.getDetailValue?.fullname || 'Quý khách' }!`" weight="semibold" />
+                </div>
+              </client-only>
             </template>
           </div>
           <client-only>

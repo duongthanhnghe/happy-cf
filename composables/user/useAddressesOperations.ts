@@ -10,7 +10,7 @@ export const useAddressesOperations = (
   detailData: Ref<AddressDTO | null>,
   isTogglePopupUpdate: Ref<boolean>,
   isTogglePopupAdd: Ref<boolean>,
-  userId: string,
+  userId: string | null,
   storeLocation: any,
   loadItems: () => void,
   handleResetForm: () => void,

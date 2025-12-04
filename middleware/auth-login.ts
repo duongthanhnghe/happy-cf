@@ -1,19 +1,25 @@
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
-import { ROUTES } from '@/shared/constants/routes';
+import { ROUTES } from '@/shared/constants/routes'
+import type { RouteLocationNormalized } from 'vue-router'
 
-export default defineNuxtRouteMiddleware(async () => {
+export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   const storeAccount = useAccountStore()
-  const token = useCookie("token")
 
-  if (!token.value) {
-    return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
+  if (process.client) {
+    await storeAccount.$hydrate?.()
   }
 
-  if (storeAccount.getUserId) return
+  if (!storeAccount.token) {
+    const res = await storeAccount.refreshToken()
+    if (!res && process.client && to.path.startsWith(`${ROUTES.PUBLIC.ACCOUNT.path}`)) {
+      return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
+    }
+  }
 
-  const res = await storeAccount.verifyToken(true)
-
-  if (res === false) {
-    return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
+  if (!storeAccount.getUserId) {
+    const verified = await storeAccount.verifyToken(true)
+    if (!verified && process.client && to.path.startsWith(`${ROUTES.PUBLIC.ACCOUNT.path}`)) {
+      return navigateTo(ROUTES.PUBLIC.LOGIN.path, { replace: true })
+    }
   }
 })

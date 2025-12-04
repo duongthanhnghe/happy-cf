@@ -84,5 +84,7 @@ watch(() => route.query.tab, (newVal) => {
     </v-tabs-window>
   </div>
 
-  <PopupManageAddress v-if="storeAccount.getUserId" />
+  <client-only>
+    <PopupManageAddress v-if="storeAccount.getUserId" />
+  </client-only>
 </template>

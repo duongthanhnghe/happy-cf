@@ -4,7 +4,6 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { formatDateTime } from '@/utils/global';
-import type { User } from '@/server/types/dto/v1/user.dto';
 
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
@@ -14,15 +13,15 @@ definePageMeta({
 const storeAccount = useAccountStore();
 const storeAccountEdit = useAccountEditStore()
 const storeDisplay = useDisplayStore()
-const user: User = storeAccount.getDetailValue
+const user = storeAccount.getDetailValue || null
 const classItem = storeDisplay.isLaptop ? 'flex gap-sm mb-ms':'bg-white mb-xs pt-ms pb-ms pl-ms pr-ms shadow-1 rd-lg position-relative';
 const classTitle = 'min-width-150';
 const infoItems = [
-  { label: 'Họ và tên', value: user.fullname, edit: true },
-  { label: 'Email', value: user.email, edit: false },
-  { label: 'Số điện thoại', value: user.phone, edit: true },
-  { label: 'Giới tính', value: user.gender, edit: true },
-  { label: 'Ngày sinh', value: formatDateTime(user.birthday,'vi-VN',false), edit: true },
+  { label: 'Họ và tên', value: user?.fullname, edit: true },
+  { label: 'Email', value: user?.email, edit: false },
+  { label: 'Số điện thoại', value: user?.phone, edit: true },
+  { label: 'Giới tính', value: user?.gender, edit: true },
+  { label: 'Ngày sinh', value: formatDateTime(user?.birthday,'vi-VN',false), edit: true },
 ]
 </script>
 <template>
@@ -50,7 +49,7 @@ const infoItems = [
 
     <div :class="classItem">
       <Text text="Email" color="gray5" :class="classTitle" />
-      <Text :text="user.email" color="black" size="normal" :class="classTitle" />
+      <Text :text="user?.email" color="black" size="normal" :class="classTitle" />
     </div>
 
     <div :class="classItem">
@@ -71,7 +70,7 @@ const infoItems = [
       @click="storeAccountEdit.handleTogglePopupChangePassword"
     />
 
-    <Text :text="`Tham gia ngày ${formatDateTime(user.membership.joinedAt,'vi-VN',false)}`" color="gray4" align="center" class="mt-sm" />
+    <Text :text="`Tham gia ngày ${formatDateTime(user?.membership.joinedAt,'vi-VN',false)}`" color="gray4" align="center" class="mt-sm" />
 
   </Card>
 

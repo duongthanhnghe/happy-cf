@@ -3,14 +3,11 @@ import { API_ENDPOINTS } from '@/services/const/api.const'
 import type {
   CreateOrderBody,
   OrderDTO,
-  OrderStatusDTO,
-  PaymentDTO,
   OrderPaginationDTO,
 } from '@/server/types/dto/v1/order.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
 import type { PendingRewardData } from '@/server/types/dto/v1/reward-history.dto';
-
-const APP_URL = process.env.DOMAIN || "http://localhost:3000";
+import { fetchWithAuth } from '../helpers/fetchWithAuth';
 
 export const ordersAPI = {
   
@@ -84,11 +81,8 @@ export const ordersAPI = {
 
       if (statusId) params.append("statusId", statusId)
 
-      const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_BY_USER(userId)}?${params}`,
-        {
-          credentials: 'include',
-        }
+      const response = await fetchWithAuth(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_BY_USER(userId)}?${params}`
       );
 
       if (!response.ok) {
@@ -136,10 +130,8 @@ export const ordersAPI = {
         limit: limit.toString(),
       })
 
-      const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_REWARDS_BY_USER(userId)}?${params}`,{
-          credentials: 'include',
-        }
+      const response = await fetchWithAuth(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.LIST_REWARDS_BY_USER(userId)}?${params}`
       )
 
       if (!response.ok) {
@@ -180,12 +172,11 @@ export const ordersAPI = {
     orderTotal: number
   ): Promise<ApiResponse<{ appliedPoint: number }>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.CHECK_POINT}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          credentials: 'include',
           body: JSON.stringify({ userId, usedPoint, orderTotal }),
         }
       )
@@ -244,11 +235,10 @@ export const ordersAPI = {
     userId: string,
   ): Promise<any> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.CANCEL_REQUEST}`, 
         {
           method: "POST",
-          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ orderId,userId })
         }
@@ -279,11 +269,8 @@ export const ordersAPI = {
     userId: string
   ): Promise<ApiResponse<PendingRewardData>> => {
     try {
-      const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.PENDING_REWARD(userId)}`,
-        {
-          credentials: 'include',
-        }
+      const response = await fetchWithAuth(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.PENDING_REWARD(userId)}`
       );
 
       const data = await response.json();

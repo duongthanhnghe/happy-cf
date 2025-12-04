@@ -6,7 +6,8 @@ import { useWishlistUtils } from "@/composables/user/useWishlistUtils";
 
 export const useWishlistStore = defineStore("WishlistStore", () => {
   const storeAccount = useAccountStore();
-
+  const userId = computed(() => storeAccount.getUserId);
+  
   const dataList = ref<WishlistItem[]|null>(null)
   const wishlistIds  = reactive(new Set<string>())
   const loadingData = ref<boolean>(false)
@@ -16,7 +17,7 @@ export const useWishlistStore = defineStore("WishlistStore", () => {
     dataList,
     wishlistIds,
     loadingData,
-    storeAccount.getUserId,
+    userId,
     loaded,
     () => { loaded.value = true }
   );

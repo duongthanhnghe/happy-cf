@@ -6,6 +6,7 @@ import type {
   VoucherAvailableDTO,
 } from '@/server/types/dto/v1/voucher.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
+import { fetchWithAuth } from '../helpers/fetchWithAuth'
 
 export const vouchersAPI = {
   apply: async (
@@ -18,12 +19,11 @@ export const vouchersAPI = {
     }
   ): Promise<ApiResponse<ApplyVoucherResponse>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${apiConfig.baseApiURL}${API_ENDPOINTS.VOUCHERS.APPLY}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
           body: JSON.stringify(payload),
         }
       )

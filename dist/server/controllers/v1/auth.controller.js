@@ -9,8 +9,8 @@ import { randomBytes } from 'crypto';
 import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
 export const verifyToken = async (req, res) => {
-    var _a;
-    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
+    const authHeader = req.headers.authorization;
+    const token = authHeader === null || authHeader === void 0 ? void 0 : authHeader.split(" ")[1];
     if (!token)
         return res.status(401).json({ code: 1, message: "Thiếu token đăng nhập" });
     try {
@@ -22,10 +22,7 @@ export const verifyToken = async (req, res) => {
         return res.status(200).json({
             code: 0,
             message: "Xác thực thành công",
-            data: {
-                id: user._id,
-                email: user.email,
-            },
+            data: toUserDTO(user),
         });
     }
     catch (err) {
@@ -85,21 +82,56 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
         const user = await UserModel.findOne({ email });
         if (!user)
-            return res.status(400).json({ code: 2, message: "Email khong dung, vui long nhap lai!" });
+            return res.status(400).json({ code: 2, message: "Email không đúng!" });
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch)
-            return res.status(400).json({ code: 1, message: "Mat khau khong dung, vui long nhap lai!" });
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
-        res.cookie('token', token, {
-            httpOnly: true, // FE không đọc trực tiếp
-            secure: false, // localhost => false
-            sameSite: 'lax', // thử 'none' nếu khác port
-            maxAge: 12 * 60 * 60 * 1000,
+            return res.status(400).json({ code: 1, message: "Mật khẩu không đúng!" });
+        const accessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" });
+        const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+        res.cookie("refresh_token", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            path: "/api/v1/auth/refresh-token",
+            maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
         });
-        res.status(200).json({ code: 0, message: "Đăng nhập thành công", data: { token, user: toUserDTO(user) } });
+        return res.status(200).json({
+            code: 0,
+            message: "Đăng nhập thành công",
+            data: {
+                accessToken,
+                user: toUserDTO(user)
+            }
+        });
     }
     catch (err) {
-        res.status(500).json({ code: 500, message: "Đăng nhập thất bại, vui lòng thử lại", error: err });
+        res.status(500).json({ code: 500, message: "Đăng nhập thất bại", error: err });
+    }
+};
+export const refreshToken = async (req, res) => {
+    var _a;
+    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refresh_token;
+    if (!token) {
+        return res.json({
+            code: 1,
+            message: "Không tìm thấy refresh token, vui lòng đăng nhập lại",
+            data: null
+        });
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+        const user = await UserModel.findById(decoded.id);
+        if (!user)
+            return res.status(403).json({ code: 2, message: "User not found" });
+        const newAccessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" });
+        return res.json({
+            code: 0,
+            message: "Refresh thành công",
+            data: { accessToken: newAccessToken }
+        });
+    }
+    catch (err) {
+        return res.status(401).json({ code: 3, message: "Refresh token hết hạn" });
     }
 };
 export const googleLogin = async (req, res) => {
@@ -151,19 +183,22 @@ export const googleLogin = async (req, res) => {
                 }
             });
         }
-        const jwtToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-            expiresIn: "12h",
-        });
-        res.cookie('token', jwtToken, {
+        const accessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" });
+        const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+        res.cookie("refresh_token", refreshToken, {
             httpOnly: true,
             secure: false,
-            sameSite: 'lax',
-            maxAge: 12 * 60 * 60 * 1000,
+            sameSite: "strict",
+            path: "/api/v1/auth/refresh-token",
+            maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
         });
         return res.status(200).json({
             code: 0,
-            message: "Đăng nhập Google thành công",
-            data: { token: jwtToken, user: toUserDTO(user) },
+            message: "Đăng nhập thành công",
+            data: {
+                accessToken,
+                user: toUserDTO(user)
+            }
         });
     }
     catch (err) {
@@ -245,58 +280,6 @@ export const updateAccount = async (req, res) => {
     }
     res.json({ code: 200, message: "Update success", data: toUserDTO(updated) });
 };
-// export const deleteUsers = async (req: Request, res: Response) => {
-//   const { id } = req.params;
-//   await UserModel.findByIdAndDelete(id);
-//   res.json({ code: 200, message: "Delete success" });
-// };
-// export const getAllUsers = async (req: Request, res: Response) => {
-//   try {
-//     const page = parseInt(req.query.page as string) || 1;
-//     const limit = parseInt(req.query.limit as string) || 10;
-//     const role = req.query.role ? parseInt(req.query.role as string) : undefined;
-//     const filter: any = {};
-//     if (role !== undefined) {
-//       filter.role = role;
-//     }
-//     if (limit === -1) {
-//       const users = await UserModel.find(filter).sort({ createdAt: -1 });
-//       return res.status(200).json({
-//         code: 0,
-//         data: toUserListDTO(users),
-//         pagination: {
-//           total: users.length,
-//           totalPages: 1,
-//           page: 1,
-//           limit: users.length,
-//         },
-//       });
-//     }
-//     const options = {
-//       page,
-//       limit,
-//       sort: { createdAt: -1 },
-//     };
-//     const result = await (UserModel as any).paginate(filter, options);
-//     return res.status(200).json({
-//       code: 0,
-//       data: toUserListDTO(result.docs),
-//       pagination: {
-//         total: result.totalDocs,
-//         totalPages: result.totalPages,
-//         page: result.page,
-//         limit: result.limit,
-//       },
-//     });
-//   } catch (error: any) {
-//     console.error("getAllUsers error:", error);
-//     return res.status(500).json({
-//       code: 500,
-//       message: "Internal server error",
-//       error: error.message,
-//     });
-//   }
-// };
 export const getUserById = async (req, res) => {
     const { id } = req.params;
     const user = await UserModel.findById(id);
@@ -316,209 +299,13 @@ export const changePassword = async (req, res) => {
     await user.save();
     res.json({ code: 200, message: "Password updated" });
 };
-// export const getAllMembershipLevel = async (_: Request, res: Response) => {
-//   try {
-//     const data = await MembershipLevelModel.find().populate("benefits")
-//     return res.status(200).json({
-//       code: 0,
-//       data: toMembershipLevelListDTO(data),
-//     })
-//   } catch (error: any) {
-//     console.error("getAllMembershipLevel error:", error)
-//     return res.status(500).json({
-//       code: 1,
-//       message: "Internal server error",
-//       error: error.message,
-//     })
-//   }
-// }
-// export const getMembershipLevelById = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params;
-//     const level = await MembershipLevelModel.findById(id).populate("benefits");
-//     if (!level) {
-//       return res.status(404).json({
-//         code: 1,
-//         message: "Membership level không tồn tại",
-//       });
-//     }
-//     return res.json({
-//       code: 0,
-//       data: toMembershipLevelDTO(level),
-//     });
-//   } catch (error: any) {
-//     console.error("getMembershipLevelById error:", error);
-//     return res.status(500).json({
-//       code: 1,
-//       message: "Internal server error",
-//       error: error.message,
-//     });
-//   }
-// };
-// export const updateMembershipLevel = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params
-//     const updateData = req.body
-//     const updated = await MembershipLevelModel.findByIdAndUpdate(
-//       id,
-//       updateData,
-//       { new: true }
-//     ).populate('benefits')
-//     if (!updated) {
-//       return res.status(404).json({
-//         code: 1,
-//         message: 'Membership level not found',
-//       })
-//     }
-//     return res.json({
-//       code: 0,
-//       message: 'Membership level updated successfully',
-//       data: updated,
-//     })
-//   } catch (error: any) {
-//     console.error('updateMembershipLevel error:', error)
-//     return res.status(500).json({
-//       code: 1,
-//       message: 'Internal server error',
-//       error: error.message,
-//     })
-//   }
-// }
-// export const setPoint = async (req: Request, res: Response) => {
-//   const { userId, point } = req.body;
-//   const user = await UserModel.findById(userId);
-//   if (!user) return res.status(404).json({ code: 1, message: "Không tìm thấy người dùng" });
-//   user.membership.point = point;
-//   user.membership.balancePoint = point;
-//   await user.save();
-//   res.json({ code: 0, message: "Tích điểm thành công", data: toUserDTO(user) });
-// };
-// export const getTopSearchKeyword = async (req: Request, res: Response) => {
-//   try {
-//     const limit = Number(req.query.limit) || 10
-//     const keywords = await SearchKeywordModel.find()
-//       .sort({ totalCount: -1 })
-//       .limit(limit)
-//     return res.json({
-//       code: 0,
-//       data: toSearchKeywordListDTO(keywords),
-//     })
-//   } catch (error) {
-//     console.error("getTopSearchKeyword error:", error)
-//     return res.status(500).json({ code: 1, message: "Internal server error" })
-//   }
-// }
-// export const logSearchKeyword = async (
-//   req: Request<{}, {}, { keyword: string }>,
-//   res: Response
-// ) => {
-//   try {
-//     const keyword = req.body.keyword?.trim().toLowerCase()
-//     if (!keyword) return res.status(400).json({ code: 1, message: "Keyword required" })
-//     const now = new Date()
-//     const existing = await SearchKeywordModel.findOne({ keyword })
-//     if (existing) {
-//       existing.totalCount += 1
-//       existing.lastSearchTime = now
-//       await existing.save()
-//     } else {
-//       await SearchKeywordModel.create({
-//         keyword,
-//         totalCount: 1,
-//         lastSearchTime: now,
-//       })
-//     }
-//     return res.status(200).json({ code: 0, message: "OK" })
-//   } catch (error) {
-//     console.error("logSearchKeyword error:", error)
-//     return res.status(500).json({ code: 1, message: "Internal server error" })
-//   }
-// }
-// export const toggleActive = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params
-//     const item = await UserModel.findById(id)
-//     if (!item) {
-//       return res.status(404).json({ code: 1, message: "User không tồn tại" })
-//     }
-//     item.active = !item.active
-//     await item.save()
-//     return res.json({
-//       code: 0,
-//       message: "Cập nhật trạng thái thành công",
-//       data: toUserDTO(item)
-//     })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
-// //benefits
-// export const createMembershipBenefit = async (req: Request, res: Response) => {
-//   try {
-//     const { name, description, icon } = req.body
-//     const existing = await MembershipBenefitModel.findOne({ name })
-//     if (existing) {
-//       return res.status(400).json({ code: 1, message: "Benefit đã tồn tại" })
-//     }
-//     const benefit = await MembershipBenefitModel.create({ name, description, icon })
-//     return res.status(201).json({
-//       code: 0,
-//       message: "Tạo benefit thành công",
-//       data: toMembershipBenefitDTO(benefit),
-//     })
-//   } catch (err: any) {
-//     console.error("createMembershipBenefit error:", err)
-//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-//   }
-// }
-// export const getAllMembershipBenefits = async (_: Request, res: Response) => {
-//   try {
-//     const benefits = await MembershipBenefitModel.find().sort({ createdAt: -1 })
-//     return res.json({
-//       code: 0,
-//       data: toMembershipBenefitListDTO(benefits),
-//     })
-//   } catch (err: any) {
-//     console.error("getAllMembershipBenefits error:", err)
-//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-//   }
-// }
-// export const getMembershipBenefitById = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params
-//     const benefit = await MembershipBenefitModel.findById(id)
-//     if (!benefit) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
-//     return res.json({ code: 0, data: toMembershipBenefitDTO(benefit) })
-//   } catch (err: any) {
-//     console.error("getMembershipBenefitById error:", err)
-//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-//   }
-// }
-// export const updateMembershipBenefit = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params
-//     const updateData = req.body
-//     const benefit = await MembershipBenefitModel.findByIdAndUpdate(id, updateData, { new: true })
-//     if (!benefit) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
-//     return res.json({
-//       code: 0,
-//       message: "Cập nhật benefit thành công",
-//       data: toMembershipBenefitDTO(benefit),
-//     })
-//   } catch (err: any) {
-//     console.error("updateMembershipBenefit error:", err)
-//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-//   }
-// }
-// export const deleteMembershipBenefit = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params
-//     const deleted = await MembershipBenefitModel.findByIdAndDelete(id)
-//     if (!deleted) return res.status(404).json({ code: 1, message: "Benefit không tồn tại" })
-//     return res.json({ code: 0, message: "Xóa benefit thành công" })
-//   } catch (err: any) {
-//     console.error("deleteMembershipBenefit error:", err)
-//     return res.status(500).json({ code: 1, message: "Internal server error", error: err.message })
-//   }
-// }
+export const logout = (req, res) => {
+    res.clearCookie('refresh_token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+        path: '/api/v1/auth/refresh-token',
+    });
+    return res.status(200).json({ code: 0, message: "Đăng xuất thành công" });
+};
 //# sourceMappingURL=auth.controller.js.map

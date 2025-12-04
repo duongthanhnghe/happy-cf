@@ -56,7 +56,9 @@ onBeforeUnmount(() => {
             </div>
 
             <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" class="mt-ms" />
+            <client-only>
             <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" v-if="detail.priceDiscounts !== 0 && storeAccount.getUserId"/>
+            </client-only>
             <ProductDetailOptions v-if="detail.variantGroups.length > 0" :variantGroups="detail.variantGroups" />
             <div class="mt-md">
               <ProductDetailButtonOrder v-if="detail.amount !== 0" />

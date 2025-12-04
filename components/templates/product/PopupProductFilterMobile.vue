@@ -14,12 +14,12 @@ const props = defineProps<{
       <Button v-if="storeCategoryMain.hasFilter" icon="filter_alt_off" color="secondary" @click.prevent="storeCategoryMain.resetFilter()" />
     </template>
     <template #body>
-      <template v-if="storeCategoryMain.getListCategoryChildren.length > 0">
+      <template v-if="storeCategoryMain.getListCategoryChildren.length > 0" class="mb-md">
         <Text text="Danh mục" color="black" size="normal" weight="semibold" class="mt-sm mb-sm" />
         <ProductFilterCategory :categoryName="props.categoryName" :list="storeCategoryMain.getListCategoryChildren"/>
       </template>
 
-      <div v-if="storeCategoryMain.getListCategoryChildren.length > 0" class="mt-md">
+      <div v-if="props.variantGroups.length > 0" >
         <ProductFilterVariantGroup :variantGroups="props.variantGroups"/>
       </div>
 

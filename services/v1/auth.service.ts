@@ -1,45 +1,33 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS } from '@/services/const/api.const'
-import type { User, UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword, MembershipBenefitDTO } from '@/server/types/dto/v1/user.dto.js'
+import type { UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword, MembershipBenefitDTO } from '@/server/types/dto/v1/user.dto.js'
 import type { ApiResponse } from '@server/types/common/api-response'
 import { useRequestHeaders } from 'nuxt/app'
+import { useAccountStore } from '@/stores/client/users/useAccountStore'
+import { fetchWithAuth } from '../helpers/fetchWithAuth'
 
 export const authAPI = {
-  // verifyToken: async (): Promise<ApiResponse<User>> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.VERIFY_TOKEN}`, {
-  //       method: 'GET',
-  //       credentials: 'include',
-  //     })
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     return {
-  //       code: 1,
-  //       message: (err as Error).message,
-  //       data: null as any
-  //     }
-  //   }
-  // },
-  verifyToken: async (): Promise<ApiResponse<User>> => {
+  verifyToken: async () => {
     try {
-      const headers = process.client
-        ? {}
-        : useRequestHeaders(['cookie'])
+      const token = useAccountStore().token;
+
+      const headers: any = {};
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
 
       const response = await fetch(
         `${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.VERIFY_TOKEN}`,
         {
-          method: 'GET',
-          credentials: 'include',
+          method: "GET",
+          credentials: "include",
           headers
         }
-      )
+      );
 
-      return await response.json()
+      return await response.json();
     } catch (err) {
-      return { code: 1, message: (err as Error).message, data: null as any }
+      return { code: 1, message: (err as Error).message, data: null };
     }
   },
   Login: async (loginData: UserLogin) => {
@@ -55,22 +43,35 @@ export const authAPI = {
 
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.LOGIN}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(resultData)
-      })
+        credentials: "include",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginData)
+      });
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      return data
+      return await response.json();
     } catch (err) {
-      console.error('Error creating category:', err)
+      console.error('Error login', err)
       throw err
+    }
+  },
+  refreshToken: async (): Promise<ApiResponse<{ accessToken: string }>> => {
+    try {
+      const headers = process.client
+        ? {}
+        : useRequestHeaders(['cookie'])
+
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.REFRESH_TOKEN}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers
+        }
+      )
+
+      return await response.json()
+    } catch (err) {
+      return { code: 1, message: (err as Error).message, data: null as any }
     }
   },
   googleLogin: async (googleToken: string) => {
@@ -84,6 +85,7 @@ export const authAPI = {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ token: googleToken }),
       })
 
@@ -107,6 +109,7 @@ export const authAPI = {
 
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.REGISTER}`, {
         method: 'POST',
+        credentials: "include",
         headers: {
           'Content-Type': 'application/json',
         },
@@ -130,6 +133,7 @@ export const authAPI = {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.FORGOT_PASSWORD}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify({ email })
       })
 
@@ -145,6 +149,7 @@ export const authAPI = {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.RESET_PASSWORD}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: "include",
         body: JSON.stringify({ email, token, newPassword })
       })
 
@@ -157,10 +162,9 @@ export const authAPI = {
   },
   ChangePassword: async ({ userId, oldPassword, newPassword } : ChangePassword) => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.CHANGE_PASSWORD}`, {
+      const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.CHANGE_PASSWORD}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ userId, oldPassword, newPassword })
       })
 
@@ -173,9 +177,8 @@ export const authAPI = {
   },
   getDetailAccount: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.GET_BY_ID(id)}`,{
+      const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.GET_BY_ID(id)}`,{
         method: 'GET',
-        credentials: 'include',
       })
       if (!response.ok) {
         throw new Error(`Failed to fetch user with ID ${id}`)
@@ -188,260 +191,26 @@ export const authAPI = {
     }
   },
   updateAccount: async (payload: UserEdit, token: string) => {
-    const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.UPDATE}`, {
+    const res = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.UPDATE}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        // Authorization: `Bearer ${token}`
       },
-      credentials: 'include',
       body: JSON.stringify(payload)
     })
 
     return await res.json()
   },
-  // getAllUsers: async (page: number = 1, limit: number = 10, role: number = 1) => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.LIST}?page=${page}&limit=${limit}&role=${role}`
-  //     );
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  //     const data = await response.json();
-  //     return data;
-  //   } catch (err) {
-  //     console.error("Error getAllUsers:", err);
-  //     return {
-  //       code: 1,
-  //       message: "Failed to fetch orders",
-  //       data: [],
-  //       pagination: {
-  //         total: 0,
-  //         totalPages: 0,
-  //         page: 1,
-  //         limit,
-  //       },
-  //     }
-  //   }
-  // },
-  // delete: async (id:string) => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.DELETE(id)}`, {
-  //       method: 'DELETE',
-  //     })
+  logout: async () => {
+    try {
+    const res = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.LOGOUT}`, {
+      method: 'POST',
+    })
 
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
-  //     }
-
-  //     return await response.json()
-  //   } catch (err) {
-  //     console.error(`Error deleting user with ID ${id}:`, err)
-  //     throw err
-  //   }
-  // },
-  // getAllMembershipLevel: async () => {
-  // try {
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.LIST_MEMBERSHIP_LEVEL}`)
-  //     const data = await response.json()
-  //     return data;
-  //   } catch (err) {
-  //     console.error('Error:', err)
-  //   }
-  // },
-  // getMembershipLevelById: async (id: string) => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.GET_MEMBERSHIP_LEVEL_BY_ID(id)}`)
-  //     if (!response.ok) {
-  //       throw new Error(`Failed to fetch membership level with ID ${id}`)
-  //     }
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error(`Error getting membership level with ID ${id}:`, err)
-  //     throw err
-  //   }
-  // },
-  // updateMembershipLevel: async (id: string, payload: any) => {
-  //   try {
-  //     const token = localStorage.getItem('token')
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.UPDATE_MEMBERSHIP_LEVEL(id)}`, {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify(payload),
-  //     })
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
-  //     }
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error(`Error updating membership level ${id}:`, err)
-  //     throw err
-  //   }
-  // },
-  // setMemberPoint: async (userId: string, point: number) => {
-  //   try {
-  //     const token = localStorage.getItem('token')
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.SET_POINT}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({ userId, point }),
-  //     })
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
-  //     }
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error(`Error adding point for user ${userId}:`, err)
-  //     throw err
-  //   }
-  // },
-  // getTopSearchKeyword: async (limit: number) => {
-  // try {
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.LIST_SEARCH_KEYWORD(limit)}`)
-  //     const data = await response.json()
-  //     return data;
-  //   } catch (err) {
-  //     console.error('Error:', err)
-  //   }
-  // },
-  // logSearchKeyword: async (keyword: string) => {
-  //   try {
-  //     const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.LOG_SEARCH_KEYWORD}`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ keyword }),
-  //     })
-
-  //     const result = await res.json()
-  //     return result
-  //   } catch (err) {
-  //     console.error('Error logging search keyword:', err)
-  //   }
-  // },
-  // toggleActive: async (id: string): Promise<ApiResponse<User>> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.TOGGLE_ACTIVE(id)}`, {
-  //       method: 'PATCH',
-  //     })
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       return {
-  //         code: 1,
-  //         message: errorData.message || 'Failed to toggle active status',
-  //         data: undefined as any
-  //       }
-  //     }
-
-  //     const data: ApiResponse<User> = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error(`Error toggling active status for user ID ${id}:`, err)
-  //     return {
-  //       code: 1,
-  //       message: 'Unexpected error while toggling active status',
-  //       data: undefined as any
-  //     }
-  //   }
-  // },
-
-  // createMembershipBenefit: async (payload: { name: string; description?: string; icon?: string }): Promise<ApiResponse<MembershipBenefitDTO>> => {
-  //   try {
-  //     const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.CREATE_MEMBERSHIP_BENEFIT}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(payload),
-  //     })
-  //     if (!res.ok) {
-  //       const errData = await res.json()
-  //       throw new Error(errData.message || `HTTP error! status: ${res.status}`)
-  //     }
-  //     return await res.json()
-  //   } catch (err) {
-  //     console.error('Error creating benefit:', err)
-  //     throw err
-  //   }
-  // },
-
-  // // Lấy tất cả benefit
-  // getAllMembershipBenefit: async (): Promise<ApiResponse<MembershipBenefitDTO[]>> => {
-  //   try {
-  //     const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.LIST_MEMBERSHIP_BENEFIT}`)
-  //     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-  //     return await res.json()
-  //   } catch (err) {
-  //     console.error('Error fetching all benefits:', err)
-  //     throw err
-  //   }
-  // },
-
-  // // Lấy chi tiết theo ID
-  // getMembershipBenefitById: async (id: string): Promise<ApiResponse<MembershipBenefitDTO>> => {
-  //   try {
-  //     const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.GET_MEMBERSHIP_BENEFIT_BY_ID(id)}`)
-  //     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-  //     return await res.json()
-  //   } catch (err) {
-  //     console.error(`Error fetching benefit ${id}:`, err)
-  //     throw err
-  //   }
-  // },
-
-  // // Cập nhật benefit
-  // updateMembershipBenefit: async (id: string, payload: { name?: string; description?: string; icon?: string }): Promise<ApiResponse<MembershipBenefitDTO>> => {
-  //   try {
-  //     const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.UPDATE_MEMBERSHIP_BENEFIT(id)}`, {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(payload),
-  //       credentials: 'include',
-  //     })
-  //     if (!res.ok) {
-  //       const errData = await res.json()
-  //       throw new Error(errData.message || `HTTP error! status: ${res.status}`)
-  //     }
-  //     return await res.json()
-  //   } catch (err) {
-  //     console.error(`Error updating benefit ${id}:`, err)
-  //     throw err
-  //   }
-  // },
-
-  // // Xóa benefit
-  // deleteMembershipBenefit: async (id: string): Promise<ApiResponse<null>> => {
-  //   try {
-  //     const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.USERS.DELETE_MEMBERSHIP_BENEFIT(id)}`, {
-  //       method: 'DELETE',
-  //     })
-  //     if (!res.ok) {
-  //       const errData = await res.json()
-  //       throw new Error(errData.message || `HTTP error! status: ${res.status}`)
-  //     }
-  //     return await res.json()
-  //   } catch (err) {
-  //     console.error(`Error deleting benefit ${id}:`, err)
-  //     throw err
-  //   }
-  // },
+    return await res.json()
+    } catch (err) {
+      console.error(`Error logout`, err)
+      throw err
+    }
+  },
 }

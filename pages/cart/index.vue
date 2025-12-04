@@ -98,7 +98,7 @@ onBeforeUnmount(() => {
       
         <!-- POINT AND VOUCHER -->
         <template v-if="!storeDisplay.isMobileTable">
-          <CartPointPC v-if="storeAccount.getUserId" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint"/>
+          <CartPointPC v-if="storeAccount.getUserId" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership.balancePoint"/>
           <CartVoucherPC />
         </template>
 
@@ -116,10 +116,12 @@ onBeforeUnmount(() => {
 
   <template v-if="storeDisplay.isMobileTable">
     <!-- POPUP USE POINT -->
-    <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
+    <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue?.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
     <!-- POPUP CHOOSE VOUCHER -->
     <CartVoucherMobile />
   </template>
 
-  <PopupManageAddress v-if="storeAccount.getUserId" :idChoose="store.getIdAddressChoose"/>
+  <client-only>
+    <PopupManageAddress v-if="storeAccount.getUserId" :idChoose="store.getIdAddressChoose"/>
+  </client-only>
 </template>

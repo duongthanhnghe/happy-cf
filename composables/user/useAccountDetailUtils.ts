@@ -4,6 +4,7 @@ import { authAPI } from "@/services/v1/auth.service";
 import { useRouter } from 'vue-router'
 import type { InformationMembershipLevels, MembershipLevels, User } from "@/server/types/dto/v1/user.dto";
 import { usePendingRewardPoints } from '../order/usePendingRewardPoints';
+import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
 
 export const useAccountDetailUtils = (state: {
   detailData: Ref<User | null>,
@@ -29,6 +30,7 @@ export const useAccountDetailUtils = (state: {
   } = state;
 
   const router = useRouter()
+  const storeWishList = useWishlistStore()
   const { fetchPendingRewardPoints, getPendingReward } = usePendingRewardPoints()
   
   const handleGetDetailAccount = async (id: string) => {
@@ -81,18 +83,22 @@ export const useAccountDetailUtils = (state: {
     return informationMembershipLevel.value = data
   }
 
-  const handleLogout = () => {
-    const tokenCookie = useCookie<string | null>('token')  
-    tokenCookie.value = null
+  const handleLogout = async () => {
+    const res = await authAPI.logout();
+    if(res.code === 0){
+      token.value = null
+      detailData.value = null
+      userId.value = null
 
-    token.value = null
-    detailData.value = null
-    userId.value = null
-    router.push({ path: ROUTES.PUBLIC.HOME.path })
+      router.push({ path: ROUTES.PUBLIC.HOME.path })
+    }
   }
 
   async function verifyToken(force = false): Promise<null|boolean> {
-    if (!token.value) return false
+    if (!token.value) {
+      const refreshed = await refreshToken();
+      if (!refreshed) return false;
+    }
 
     const now = Date.now()
     
@@ -101,14 +107,24 @@ export const useAccountDetailUtils = (state: {
     }
 
     const res = await authAPI.verifyToken()
-
     if (res.code === 0 && res.data) {
       lastVerifiedAt.value = now
       await handleGetDetailAccount(res.data.id);
+      storeWishList.fetchWishlist(res.data.id);
       return true
     }
 
     return false
+  }
+
+  async function refreshToken() {
+    const res = await authAPI.refreshToken();
+    if (res.code === 0 && res.data?.accessToken ) {
+      token.value = res.data?.accessToken
+      return true;
+    }
+
+    return false;
   }
 
   const handleTogglePopupAccountMenuInfo = (value: boolean) => {
@@ -122,6 +138,7 @@ export const useAccountDetailUtils = (state: {
     getNextMembershipLevel,
     handleLogout,
     verifyToken,
+    refreshToken,
     handleTogglePopupAccountMenuInfo,
     fetchPendingRewardPoints,
     getPendingReward,

@@ -9,6 +9,7 @@ import type {
   ProductSortType
 } from '@/server/types/dto/v1/product.dto'
 import type { ApiResponse } from '@/server/types/common/api-response'
+import { fetchWithAuth } from '../helpers/fetchWithAuth' 
 
 export const productsAPI = {
   
@@ -44,15 +45,13 @@ export const productsAPI = {
     }
   },
 
+  
   getWishlistByUserId: async (userId: string): Promise<ApiResponse<WishlistItem[]>> => {
     try {
-      const res = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_USER_WISHLIST(userId)}`, {
-          credentials: 'include',
-        }
+      const res = await fetchWithAuth(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_USER_WISHLIST(userId)}`
       )
-      const data = await res.json()
-      return data
+      return await res.json()
     } catch (err: any) {
       console.error(`Error fetching wishlist for user ${userId}:`, err)
       return {
@@ -151,12 +150,11 @@ export const productsAPI = {
 
   addToWishlist: async (userId: string, productId: string): Promise<ApiResponse<WishlistItem>> => {
     try {
-      const res = await fetch(
+      const res = await fetchWithAuth(
         `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.ADD_WISHLIST(userId)}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
           body: JSON.stringify({ productId }),
         }
       )
@@ -174,11 +172,10 @@ export const productsAPI = {
 
   removeFromWishlist: async (userId: string, productId: string): Promise<ApiResponse<null>> => {
     try {
-      const res = await fetch(
+      const res = await fetchWithAuth(
         `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.DELETE_WISHLIST(userId, productId)}`,
         {
           method: 'DELETE',
-          credentials: 'include',
         }
       )
       const data = await res.json()

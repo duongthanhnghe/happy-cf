@@ -1,4 +1,4 @@
-import { type Reactive, type Ref, watch } from 'vue';
+import { type Reactive, type Ref } from 'vue';
 import type { WishlistItem } from '@/server/types/dto/v1/product.dto';
 import { Loading } from '@/utils/global';
 import { productsAPI } from '@/services/v1/product.service';
@@ -7,26 +7,26 @@ export const useWishlistUtils = (
   dataList: Ref<WishlistItem[]|null>,
   wishlistIds: Reactive<Set<string>>,
   loadingData: Ref<boolean>,
-  userId: string,
+  userId: Ref<string | null>,
   loaded: Ref<boolean>,
   onLoaded?: () => void 
 ) => {
 
   const loadItems = async () => {
-    if(!userId) return
+    if(!userId.value) return
     
     loadingData.value = true
-    const data = await productsAPI.getWishlistByUserId(userId);
+    const data = await productsAPI.getWishlistByUserId(userId.value);
     if(data.code === 0) dataList.value = data.data
     loadingData.value = false
   }
 
   const handleAddWishlist = async (productId: string) => {
-    if(!userId || !productId) {
+    if(!userId.value || !productId) {
       return
     }
     Loading(true)
-    const data = await productsAPI.addToWishlist(userId, productId);
+    const data = await productsAPI.addToWishlist(userId.value, productId);
     if(data.code === 0) {
       loadItems()
       wishlistIds.add(productId)
@@ -35,10 +35,10 @@ export const useWishlistUtils = (
   }
 
   const handleDeleteWishlist = async (productId: string) => {
-    if(!userId || !productId) return
+    if(!userId.value || !productId) return
 
     Loading(true)
-    const data = await productsAPI.removeFromWishlist(userId, productId);
+    const data = await productsAPI.removeFromWishlist(userId.value, productId);
     if(data.code === 0) {
       loadItems()
       wishlistIds.delete(productId)
@@ -62,12 +62,6 @@ export const useWishlistUtils = (
     loaded.value = true
     if(onLoaded) onLoaded()
   }
-
-  watch(() => userId, id => {
-    if (id) fetchWishlist(id)
-  },
-  { immediate: true }
-  )
 
   return {
     loadItems,

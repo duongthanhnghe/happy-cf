@@ -49,7 +49,6 @@ export const updateAddress = async (req, res) => {
         if (!address) {
             return res.status(404).json({ code: 1, message: "address không tồn tại" });
         }
-        // Nếu set default
         if (dataBody.isDefault === true) {
             await AddressModel.updateMany({ userId: address.userId, _id: { $ne: id } }, { $set: { isDefault: false } });
         }

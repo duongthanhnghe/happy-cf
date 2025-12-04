@@ -56,6 +56,7 @@ export const API_ENDPOINTS = {
   },
   AUTH: {
     VERIFY_TOKEN: '/auth/verify-token',
+    REFRESH_TOKEN: '/auth/refresh-token',
     LOGIN: '/auth/login',
     GOOGLE_LOGIN: "/auth/google-login",
     REGISTER: '/auth/register',
@@ -64,6 +65,7 @@ export const API_ENDPOINTS = {
     CHANGE_PASSWORD: '/auth/change-password',
     GET_BY_ID: (id: string) => `/auth/users/${id}`,
     UPDATE: '/auth/users/me',
+    LOGOUT: '/auth/logout',
   },
   USERS: {
     SET_POINT: '/auth/set-point',

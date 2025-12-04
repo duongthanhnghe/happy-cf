@@ -1,11 +1,11 @@
 import { type Reactive, type Ref } from 'vue';
-import { setCookie } from '@/utils/global';
 import type { ResetPassword, UserLogin, UserRegister } from '@/server/types/dto/v1/user.dto';
 import { showSuccess, showWarning } from '@/utils/toast';
 import { useRouter } from 'vue-router'
 import { authAPI } from '@/services/v1/auth.service';
 import { ROUTES } from '@/shared/constants/routes';
 import { useRoute } from 'vue-router'
+import { useAccountStore } from '@/stores/client/users/useAccountStore';
 
 export const useAuthUtils = (
   emailForgot: Ref<string>,
@@ -15,7 +15,7 @@ export const useAuthUtils = (
   formUserLoginItem: Reactive<UserLogin>,
   loadingAuth: Ref<boolean>,
 ) => {
-
+  const accountStore = useAccountStore();
   const router = useRouter()
   const route = useRoute()
 
@@ -34,18 +34,20 @@ export const useAuthUtils = (
   async function submitLogin() {
     loadingAuth.value = true
     try {
-      const dataLogin = {...formUserLoginItem}
-    
+      const dataLogin = { ...formUserLoginItem }
       const data = await authAPI.Login(dataLogin)
-      if (data.code === 0 && data.data.token) {
-        setCookie('token', data.data.token, 7)
+
+      if (data.code === 0 && data.data.accessToken) {
+        accountStore.token = data.data.accessToken  
+        await accountStore.handleGetDetailAccount(data.data.user.id);
+
         handleResetFormLoginItem()
         router.push({ path: ROUTES.PUBLIC.HOME.path })
       } else {
-        showWarning(data.message);
+        showWarning(data.message)
       }
     } catch (err: any) {
-      showWarning(err.message);
+      showWarning(err.message)
       console.error('Error submitting form:', err)
     } finally {
       loadingAuth.value = false
@@ -139,7 +141,9 @@ export const useAuthUtils = (
 
       const data = await authAPI.googleLogin(googleToken)
       if (data.code === 0) {
-        setCookie('token', data.data.token, 7)
+        accountStore.token = data.data.accessToken  
+        await accountStore.handleGetDetailAccount(data.data.user.id);
+
         router.push({ path: ROUTES.PUBLIC.HOME.path })
       }
     } catch (err: any) {

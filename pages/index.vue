@@ -39,7 +39,7 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
     <div :class="storeDisplay.isMobileTable ? '':'pt-md'">
       <SectionBanner :items="storeBanner.getListBanner" :loading="storeBanner.loading" />
     </div>
-    
+
     <div :class="[storeDisplay.isLaptop ? 'container container-xxl pl-0 pr-0 pb-section':'', 'pt-section pb-sm']">
       <ProductCategoryAll 
         heading="Danh mục" 

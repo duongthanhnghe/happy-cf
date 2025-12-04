@@ -1,14 +1,13 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS } from '@/services/const/api.const'
 import type { AddressDTO, CreateAddressBody } from '@/server/types/dto/v1/address.dto'
+import { fetchWithAuth } from '../helpers/fetchWithAuth'
 
 export const addressesAPI = {
   getAll: async (userId: string) => {
     try {
-      const response = await fetch(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.LIST}/${userId}`, {
-          credentials: 'include',
-        }
+      const response = await fetchWithAuth(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.LIST}/${userId}`
       )
       const data = await response.json()
       return data
@@ -23,12 +22,11 @@ export const addressesAPI = {
         throw new Error('Missing required fields: categoryName, id, image')
       }
 
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.CREATE}`, {
+      const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.CREATE}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -46,9 +44,7 @@ export const addressesAPI = {
   },
   getDetail: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID(id)}`,{
-        credentials: 'include',
-      })
+      const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID(id)}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch category with ID ${id}`)
       }
@@ -61,10 +57,11 @@ export const addressesAPI = {
   },
   update: async (id: string, bodyData: CreateAddressBody) => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.UPDATE(id)}`, {
+      const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.UPDATE(id)}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(bodyData)
       })
 
@@ -81,9 +78,8 @@ export const addressesAPI = {
   },
   delete: async (id:string) => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.DELETE(id)}`, {
+      const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.DELETE(id)}`, {
         method: 'DELETE',
-        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -99,18 +95,12 @@ export const addressesAPI = {
   },
   setAddressDefault: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.SET_DEFAULT(id)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      })
+      const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.SET_DEFAULT(id)}`)
 
       if (!response.ok) {
         const errorData = await response.json()
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
       }
-
-      console.log(`Address with ID ${id} set as default successfully`)
 
       return await response.json()
     } catch (err) {
@@ -120,9 +110,7 @@ export const addressesAPI = {
   },
   getDefaultAddressByUserId: async (userId: string) => {
     try {
-      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID_DEFAULT(userId)}`,{
-        credentials: 'include',
-      })
+      const res = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID_DEFAULT(userId)}`)
 
       if (!res.ok) {
         throw new Error('Không thể lấy địa chỉ mặc định')
