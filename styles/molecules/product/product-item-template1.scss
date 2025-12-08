@@ -136,6 +136,9 @@
       width: 2.5rem;
       font-size: 18px;
     }
+    .product-template1-delete {
+      top: 6px;
+    }
   }
   &-favorite {
     position: absolute;
@@ -193,7 +196,7 @@
       }
     }
   }
-  @media (min-width:1025px){
+  @media (min-width: 1025px) {
     &-favorite {
       right: 12px;
       top: 12px;

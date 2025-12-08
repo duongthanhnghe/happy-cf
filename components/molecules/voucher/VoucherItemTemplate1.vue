@@ -2,7 +2,6 @@
 import '@/styles/molecules/voucher/voucher-item1.scss'
 import { computed } from "vue";
 import type { VoucherAvailableDTO } from "@/server/types/dto/v1/voucher.dto";
-import { VOUCHER_TYPE } from "@/shared/constants/voucher-type";
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { showWarning } from "@/utils/toast";
 import { formatDateTime} from "@/utils/global";
@@ -10,35 +9,22 @@ const storeAccount = useAccountStore();
 
 const props = defineProps<{
   item: VoucherAvailableDTO;
-  action: boolean;
-  selectedCode: string | null;  // dùng để check selected
+  action?: boolean;
+  selectedCode?: string | null;
   onSelect?: (voucher: VoucherAvailableDTO) => void;
 }>();
-
-// const emit = defineEmits<{
-//   (e: "update:modelValue", value: string | string[]): void;
-// }>();
 
 const emit = defineEmits<{
   (e: "select", voucher: VoucherAvailableDTO): void
 }>();
 
-// const isFreeship = computed(() => props.item.type === VOUCHER_TYPE.freeship.type);
-
-// const isSelected = computed(() => props.modelValue === props.item.code);
 const isSelected = computed(() => props.selectedCode === props.item.code);
-
-// const toggleSelection = () => {
-//   if(!storeAccount.getDetailValue?.id) return showWarning('Vui long dang nhap de su dung voucher!')
-//   if (props.item.isDisabled && !props.action) return;
-//   emit("update:modelValue", props.item.code);
-// };
 
 const handleClick = () => {
   if (!storeAccount.getDetailValue?.id) return showWarning('Vui lòng đăng nhập để sử dụng voucher!');
   if (props.item.isDisabled) return;
 
-  emit('select', props.item); // emit event
+  emit('select', props.item);
 };
 </script>
 

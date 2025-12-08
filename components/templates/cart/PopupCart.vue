@@ -10,7 +10,7 @@ const store = useCartStore();
 const storeAccount = useAccountStore();
 
 onMounted(async() => {
-  store.syncCartCookie();
+  if(store.cartListItem.length === 0) store.syncCartCookie();
   if(!storeAccount.getPendingReward && storeAccount.getUserId){
     await storeAccount.fetchPendingRewardPoints(storeAccount.getUserId)
   } 

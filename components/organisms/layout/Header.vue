@@ -40,10 +40,6 @@ onMounted(async () => {
   if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0) {
     await storeProductCategory.fetchCategoryStore()
   }
-
-  if(storeCart.getCartListItem.length > 0) {
-    await storeCart.fetchProductCart();
-  } 
 })
 
 </script>

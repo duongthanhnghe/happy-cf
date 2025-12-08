@@ -6,3 +6,7 @@ node_modules/
 storage/
 vtp_token_cache.json
 *.log
+
+# build output
+dist/
+build/
