@@ -55,6 +55,7 @@ export function toProductDTO(entity: Product): ProductDTO {
     isActive: entity.isActive,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
+    vouchers: entity.vouchers ?? null,
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,

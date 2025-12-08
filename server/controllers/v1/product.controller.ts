@@ -9,6 +9,7 @@ import {
   toProductListDTO,
 } from "../../mappers/v1/product.mapper"
 import { VariantGroupEntity } from "../../../server/models/v1/variant-group.entity"
+import { getApplicableVouchersForProduct } from "./voucher-controller"
 
 export const isCategoryChainActive = async (categoryId: Types.ObjectId | null, cache = new Map()): Promise<boolean> => {
   if (!categoryId) return false;
@@ -99,7 +100,12 @@ export const getProductById = async (req: Request<{ id: string }>, res: Response
 
     product = await filterActiveVariantGroupsForProduct(product) as Product;
 
-    return res.json({ code: 0, data: toProductDTO(product) })
+    const voucher = await getApplicableVouchersForProduct(product);
+
+    const finalResult = toProductDTO(product);
+    finalResult.vouchers = voucher;
+
+    return res.json({ code: 0, data: finalResult })
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message })
   }
@@ -135,9 +141,18 @@ export const getRelatedProducts = async (
 
     const relatedWithVariants = await filterActiveVariantGroupsForProducts(filtered);
 
+    const finalResult = [];
+    for (const p of relatedWithVariants) {
+      const voucher = await getApplicableVouchersForProduct(p);
+      finalResult.push({
+        ...p,
+        vouchers: voucher
+      });
+    }
+
     return res.json({
       code: 0,
-      data: toProductListDTO(relatedWithVariants),
+      data: toProductListDTO(finalResult),
       message: "Success"
     })
   } catch (err: any) {
@@ -287,18 +302,33 @@ export const getPromotionalProducts = async (
 
     const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
 
-    res.json({
+    const finalResult = [];
+    for (const p of productsWithVariants) {
+      const voucher = await getApplicableVouchersForProduct(p);
+
+      finalResult.push({
+        ...p,
+        vouchers: voucher,
+      });
+    }
+
+    return res.json({
       code: 0,
-      data: toProductListDTO(
-        productsWithVariants.map(p => ({
-          ...p,
-          isPromotional: true,
-          discountPercent: p.price && p.priceDiscounts
-            ? Math.round(((p.price - p.priceDiscounts) / p.price) * 100)
-            : 0
-        }))
-      )
-    })
+      data: toProductListDTO(finalResult)
+    });
+
+    // res.json({
+    //   code: 0,
+    //   data: toProductListDTO(
+    //     productsWithVariants.map(p => ({
+    //       ...p,
+    //       isPromotional: true,
+    //       discountPercent: p.price && p.priceDiscounts
+    //         ? Math.round(((p.price - p.priceDiscounts) / p.price) * 100)
+    //         : 0
+    //     }))
+    //   )
+    // })
   } catch (error) {
     console.error(error)
     res.status(500).json({
@@ -352,9 +382,18 @@ export const getMostOrderedProduct = async (
 
     const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
 
+    const finalResult = [];
+    for (const p of productsWithVariants) {
+      const voucher = await getApplicableVouchersForProduct(p);
+      finalResult.push({
+        ...p,
+        vouchers: voucher
+      });
+    }
+
     return res.json({
       code: 0,
-      data: toProductListDTO(productsWithVariants),
+      data: toProductListDTO(finalResult),
       message: "Success"
     });
 
@@ -460,9 +499,19 @@ export const getProductsByCategory = async (
 
     const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
 
+    const productResults = []
+
+    for (const p of productsWithVariants) {
+      const vouchers = await getApplicableVouchersForProduct(p)
+      productResults.push({
+        ...p,
+        vouchers,
+      })
+    }
+
     return res.json({
       code: 0,
-      data: toProductListDTO(productsWithVariants),
+      data: toProductListDTO(productResults),
       pagination: {
         page,
         limit,

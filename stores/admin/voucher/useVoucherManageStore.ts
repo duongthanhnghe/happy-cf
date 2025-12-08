@@ -12,15 +12,18 @@ import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 import { useAdminProductCategoryTree } from '@/composables/product/useAdminProductCategoryTree'
 import { useVoucherUtils } from "@/composables/voucher/useVoucherUtils";
+import { useFileManageFolderStore } from "../file-manage/useFileManageStore";
 
 export const useVoucherManageStore = defineStore("VoucherManage", () => {
 
   const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
   const { isDiscountVoucherType } = useVoucherUtils()
+  const storeFileManage = useFileManageFolderStore();
 
   const defaultForm: CreateVoucherBody = {
     code: '',
     name: '',
+    image: '',
     type: VOUCHER_TYPE.PERCENTAGE,
     value: 0,
     maxDiscount: 0,
@@ -374,6 +377,19 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
 
   const { toggleActive } = useToggleActiveStatus(vouchersAPI.toggleActive, serverItems);
 
+  //upload image
+  const handleAddImage = () => {
+    storeFileManage.handleTogglePopup(true);
+  }
+
+  watch(() => storeFileManage.getSelectImage, (newValue) => {
+    if (!newValue) return
+
+    const target = detailData.value?.id ? updateItem : formItem
+
+    target.image = newValue.url
+  })
+
   return {
     dataList,
     serverItems,
@@ -412,5 +428,6 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     resetFilter,
     isDiscountVoucherType,
     treeItems,
+    handleAddImage,
   };
 });

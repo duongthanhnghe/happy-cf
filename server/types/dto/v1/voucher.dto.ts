@@ -6,6 +6,7 @@ export interface VoucherDTO {
   code: string;
   name: string;
   description?: string;
+  image?: string;
 
   type: VOUCHER_TYPE;
   value: number;
@@ -38,6 +39,7 @@ export interface CreateVoucherBody {
   code: string;
   name: string;
   description?: string;
+  image?: string;
   type: VOUCHER_TYPE;
   value: number;
   maxDiscount?: number;

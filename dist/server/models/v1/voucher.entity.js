@@ -5,6 +5,7 @@ const VoucherSchema = new Schema({
     code: { type: String, required: true, unique: true }, // Mã voucher
     name: { type: String, required: true },
     description: { type: String },
+    image: { type: String },
     type: {
         type: String,
         required: true,

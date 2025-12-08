@@ -18,7 +18,7 @@ export function toProductVariantGroupDTO(group) {
     };
 }
 export function toProductDTO(entity) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     return {
         id: ((_a = entity._id) === null || _a === void 0 ? void 0 : _a.toString()) || "",
         productName: entity.productName,
@@ -36,6 +36,7 @@ export function toProductDTO(entity) {
         isActive: entity.isActive,
         createdAt: ((_b = entity.createdAt) === null || _b === void 0 ? void 0 : _b.toISOString()) || "",
         updatedAt: ((_c = entity.updatedAt) === null || _c === void 0 ? void 0 : _c.toISOString()) || "",
+        vouchers: (_d = entity.vouchers) !== null && _d !== void 0 ? _d : null,
         // SEO
         titleSEO: entity.titleSEO,
         descriptionSEO: entity.descriptionSEO,

@@ -60,6 +60,15 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           variant="outlined"
         />
 
+        <template v-if="store.formItem.type === VOUCHER_TYPE.product.type || store.formItem.type === VOUCHER_TYPE.percentage.type || store.formItem.type === VOUCHER_TYPE.fixed.type ">
+          <LabelInput label="Anh dai dien" required/>
+          <v-img v-if="store.formItem.image" :src="store.formItem.image" class="mb-sm" alt="Hinh anh" :rules="store.nullRules" required />
+          <div class="flex gap-sm">
+            <v-text-field v-model="store.formItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
+            <Button color="black" :label="store.formItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
+          </div>
+        </template>
+
         <!-- Ngày bắt đầu/kết thúc -->
         <div class="flex gap-sm">
           <div class="flex-1">

@@ -80,6 +80,10 @@ const handleShowAction = () => {
         </div>
       </div>
     </div>
+
+    <div v-if="product.vouchers">
+      <img class="product-template1-voucher" v-if="product.vouchers.image" :alt="product.productName" :src="product.vouchers.image" />
+    </div>
   </div>
   <div v-if="storeCart.getTemplate1Amount(product.id) > 0" :class="['product-template1-action',toggleAction ? 'active' : '']">
     <div class="product-template1-action-before" @click="handleShowAction()"></div>

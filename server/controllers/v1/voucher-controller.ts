@@ -267,3 +267,52 @@ export const getAllVouchers = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message })
   }
 }
+
+export const getApplicableVouchersForProduct = async (product: any) => {
+  const now = new Date();
+
+  const vouchers = await VoucherEntity.find({
+    isActive: true,
+    startDate: { $lte: now },
+    endDate: { $gte: now },
+    type: { $in: ["product", "percentage", "fixed"] }
+  }).sort({ createdAt: -1 });
+
+  const categoryId = product.categoryId?.toString();
+  const productPrice = product.priceDiscounts ?? 0;
+
+  const PRIORITY: any = {
+    product: 1,
+    percentage: 2,
+    fixed: 3
+  };
+
+  const sorted = vouchers.sort((a, b) => {
+    return PRIORITY[a.type] - PRIORITY[b.type];
+  });
+
+  for (const v of sorted) {
+    const minOrderValue = v.minOrderValue ?? 0;
+
+    if (["product"].includes(v.type)) {
+      const applicableCategories = (v.applicableCategories ?? []).map(String);
+      if (applicableCategories.length > 0) {
+        if (!categoryId || !applicableCategories.includes(categoryId)) continue;
+
+        if (productPrice < minOrderValue) continue;
+      }
+    } else {
+      if (["percentage", "fixed"].includes(v.type)) {
+        if (productPrice < minOrderValue) continue;
+      }
+    }
+
+    if (!v.image || v.image.trim() === "") continue;
+
+    return {
+      image: v.image,
+    };
+  }
+
+  return null;
+};

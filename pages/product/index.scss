@@ -39,6 +39,12 @@ $height-product-fixed-bottom: 180px;
       border-radius: $rd-lg;
     }
   }
+  &-voucher-src {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
   &-percent {
     border-radius: 8px;
     padding: 3px 10px 2px 10px;

@@ -8,6 +8,7 @@ export interface Voucher {
   code: string;                 // Mã voucher (VD: COOL10)
   name: string;                 // Tên voucher hiển thị
   description?: string;         // Mô tả (tùy chọn)
+  image?: string; 
 
   type: VOUCHER_TYPE;
   value: number;                // Giá trị giảm (% hoặc số tiền)
@@ -77,6 +78,7 @@ const VoucherSchema = new Schema(
     code: { type: String, required: true, unique: true }, // Mã voucher
     name: { type: String, required: true },
     description: { type: String },
+    image: { type: String },
 
     type: {
       type: String,

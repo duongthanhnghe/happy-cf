@@ -1,4 +1,5 @@
 import { Schema, model, models, Types, Document } from "mongoose";
+import type { VoucherDTO } from "@/server/types/dto/v1/voucher.dto";
 
 
 // MỚI: Selected Variant trong Product
@@ -44,6 +45,9 @@ export interface Product {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  vouchers: {
+  image: string;
+} | null;
   //SEO
   titleSEO: string;
   descriptionSEO: string;

@@ -1151,16 +1151,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"4b1db-QvEUhH3wVF4f44yjDznzvFYuv3k\"",
-    "mtime": "2025-12-08T02:34:07.034Z",
-    "size": 307675,
+    "etag": "\"4ba81-Rtg6C6MWi79/fmUpL0gG+Sw/QXM\"",
+    "mtime": "2025-12-08T06:07:01.686Z",
+    "size": 309889,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"12029a-FZ1nszmxluTZra2VrEF0J6kh4CA\"",
-    "mtime": "2025-12-08T02:34:07.041Z",
-    "size": 1180314,
+    "etag": "\"122615-xfKgM9jXCFOiEmVhE0YtuQwehfQ\"",
+    "mtime": "2025-12-08T06:07:01.693Z",
+    "size": 1189397,
     "path": "index.mjs.map"
   }
 };
@@ -3235,7 +3235,7 @@ function toProductVariantGroupDTO(group) {
   };
 }
 function toProductDTO(entity) {
-  var _a, _b, _c;
+  var _a, _b, _c, _d;
   return {
     id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
     productName: entity.productName,
@@ -3253,6 +3253,7 @@ function toProductDTO(entity) {
     isActive: entity.isActive,
     createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
     updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || "",
+    vouchers: (_d = entity.vouchers) != null ? _d : null,
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,
@@ -4523,6 +4524,7 @@ const VoucherSchema = new Schema(
     // Mã voucher
     name: { type: String, required: true },
     description: { type: String },
+    image: { type: String },
     type: {
       type: String,
       required: true,
@@ -5439,6 +5441,7 @@ function toVoucherDTO(entity) {
     code: entity.code,
     name: entity.name,
     description: entity.description,
+    image: entity.image,
     type: entity.type,
     value: entity.value,
     maxDiscount: entity.maxDiscount,
@@ -7467,6 +7470,249 @@ const WishlistSchema = new Schema(
 );
 const WishlistModel = model("Wishlist", WishlistSchema, "wishlists");
 
+const applyVoucher = async (req, res) => {
+  var _a, _b;
+  try {
+    const {
+      code,
+      orderTotal,
+      products = [],
+      orderCreatedAt,
+      userId
+    } = req.body;
+    if (!code || !orderTotal)
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu m\xE3 voucher ho\u1EB7c gi\xE1 tr\u1ECB \u0111\u01A1n h\xE0ng" });
+    if (!userId)
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\xF4ng tin ng\u01B0\u1EDDi d\xF9ng" });
+    const voucher = await VoucherEntity.findOne({ code, isActive: true });
+    if (!voucher)
+      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i ho\u1EB7c kh\xF4ng ho\u1EA1t \u0111\u1ED9ng" });
+    const now = /* @__PURE__ */ new Date();
+    if (voucher.startDate > now)
+      return res.status(400).json({ code: 1, message: "Ch\u01B0a \u0111\u1EBFn th\u1EDDi gian \xE1p d\u1EE5ng voucher" });
+    if (voucher.endDate < now)
+      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt h\u1EA1n" });
+    if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit)
+      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng" });
+    const userUsedCount = await VoucherUsageEntity.countDocuments({
+      voucherId: voucher._id,
+      userId
+    });
+    if (voucher.limitPerUser > 0 && userUsedCount >= voucher.limitPerUser)
+      return res.status(400).json({ code: 1, message: "B\u1EA1n \u0111\xE3 d\xF9ng h\u1EBFt l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y" });
+    if (voucher.minOrderValue && orderTotal < voucher.minOrderValue)
+      return res.status(400).json({
+        code: 1,
+        message: `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${voucher.minOrderValue.toLocaleString()}\u0111`
+      });
+    let applicableProducts = [];
+    if (voucher.type === "product") {
+      if (voucher.value < 0 || voucher.value > 100) {
+        return res.status(400).json({ code: 1, message: "Gi\xE1 tr\u1ECB gi\u1EA3m (%) kh\xF4ng h\u1EE3p l\u1EC7" });
+      }
+      const applicableProductIds = ((_a = voucher.applicableProducts) != null ? _a : []).map(String);
+      const applicableCategoryIds = ((_b = voucher.applicableCategories) != null ? _b : []).map(String);
+      applicableProducts = products.filter((p) => {
+        var _a2, _b2;
+        const pid = (_a2 = p.productId) == null ? void 0 : _a2.toString();
+        const cid = (_b2 = p.categoryId) == null ? void 0 : _b2.toString();
+        return applicableProductIds.includes(pid) || applicableCategoryIds.includes(cid);
+      });
+      if (applicableProducts.length === 0) {
+        return res.status(400).json({
+          code: 1,
+          message: "Voucher kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m n\xE0o trong \u0111\u01A1n h\xE0ng"
+        });
+      }
+    } else {
+      applicableProducts = products;
+    }
+    const subtotalApplicable = applicableProducts.reduce(
+      (sum, p) => sum + p.price * p.quantity,
+      0
+    );
+    let discount = 0;
+    let message = "\xC1p d\u1EE5ng voucher th\xE0nh c\xF4ng";
+    switch (voucher.type) {
+      case "percentage":
+        discount = Math.min(
+          subtotalApplicable * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
+        break;
+      case "fixed":
+        discount = Math.min(voucher.value, subtotalApplicable);
+        break;
+      case "freeship":
+        if (!voucher.maxShippingDiscount)
+          return res.status(400).json({
+            code: 1,
+            message: "Voucher freeship ch\u01B0a c\u1EA5u h\xECnh m\u1EE9c gi\u1EA3m ph\xED t\u1ED1i \u0111a"
+          });
+        discount = Math.min(voucher.maxShippingDiscount, orderTotal);
+        message = `\xC1p d\u1EE5ng mi\u1EC5n ph\xED v\u1EADn chuy\u1EC3n (t\u1ED1i \u0111a ${voucher.maxShippingDiscount.toLocaleString()}\u0111)`;
+        break;
+      case "product":
+        discount = Math.min(
+          subtotalApplicable * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
+        const productNames = applicableProducts.map((p) => p.name);
+        if (productNames.length === 1) {
+          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho s\u1EA3n ph\u1EA9m: ${productNames[0]}`;
+        } else {
+          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho ${productNames.length} s\u1EA3n ph\u1EA9m: ${productNames.map((name) => `<div>- ${name}</div>`).join("")}`;
+        }
+        break;
+      case "timed":
+        if (!orderCreatedAt)
+          return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\u1EDDi gian t\u1EA1o \u0111\u01A1n h\xE0ng" });
+        const createdAt = new Date(orderCreatedAt);
+        if (createdAt < voucher.startDate || createdAt > voucher.endDate)
+          return res.status(400).json({ code: 1, message: "Voucher kh\xF4ng h\u1EE3p l\u1EC7 \u1EDF th\u1EDDi \u0111i\u1EC3m n\xE0y" });
+        discount = Math.min(
+          subtotalApplicable * voucher.value / 100,
+          voucher.maxDiscount || Infinity
+        );
+        message = "\xC1p d\u1EE5ng voucher khung th\u1EDDi gian";
+        break;
+      default:
+        return res.status(400).json({ code: 1, message: "Lo\u1EA1i voucher kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    discount = Math.round(discount * 1e3) / 1e3;
+    return res.json({
+      code: 0,
+      message,
+      data: {
+        code: voucher.code,
+        type: voucher.type,
+        discount,
+        applicableProducts,
+        stackable: voucher.stackable,
+        expiresAt: voucher.endDate
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAvailableVouchers = async (req, res) => {
+  var _a;
+  try {
+    const { orderTotal = 0, categoryIds = [], userId } = req.body;
+    const now = /* @__PURE__ */ new Date();
+    const vouchers = await VoucherEntity.find({
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now }
+    }).sort({ createdAt: -1 });
+    const result = [];
+    for (const v of vouchers) {
+      const userUsedCount = userId ? await VoucherUsageEntity.countDocuments({
+        voucherId: v._id,
+        userId
+      }) : 0;
+      let isDisabled = false;
+      let disabledReason = null;
+      if (v.usageLimit > 0 && v.usedCount >= v.usageLimit) {
+        isDisabled = true;
+        disabledReason = "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng";
+      } else if (v.limitPerUser > 0 && userUsedCount >= v.limitPerUser) {
+        isDisabled = true;
+        disabledReason = "B\u1EA1n \u0111\xE3 s\u1EED d\u1EE5ng h\u1EBFt s\u1ED1 l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y";
+      } else if (orderTotal < (v.minOrderValue || 0)) {
+        isDisabled = true;
+        disabledReason = `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${(_a = v.minOrderValue) == null ? void 0 : _a.toLocaleString()}\u0111`;
+      } else if (v.type === "product") {
+        const hasApplicableCategories = Array.isArray(v.applicableCategories) && Array.isArray(categoryIds) && categoryIds.some(
+          (cid) => {
+            var _a2;
+            return ((_a2 = v.applicableCategories) != null ? _a2 : []).map(String).includes(cid.toString());
+          }
+        );
+        if (!hasApplicableCategories) {
+          isDisabled = true;
+          disabledReason = "Kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m ho\u1EB7c danh m\u1EE5c trong \u0111\u01A1n h\xE0ng";
+        }
+      }
+      result.push({
+        ...v.toObject(),
+        isDisabled,
+        disabledReason
+      });
+    }
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y danh s\xE1ch voucher th\xE0nh c\xF4ng",
+      data: result
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAllVouchers = async (req, res) => {
+  try {
+    const now = /* @__PURE__ */ new Date();
+    const vouchers = await VoucherEntity.find({
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+      $expr: {
+        $or: [
+          { $eq: ["$usageLimit", 0] },
+          { $lt: ["$usedCount", "$usageLimit"] }
+        ]
+      }
+    }).sort({ createdAt: -1 });
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y danh s\xE1ch voucher th\xE0nh c\xF4ng",
+      data: toVoucherListDTO(vouchers)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getApplicableVouchersForProduct = async (product) => {
+  var _a, _b, _c, _d;
+  const now = /* @__PURE__ */ new Date();
+  const vouchers = await VoucherEntity.find({
+    isActive: true,
+    startDate: { $lte: now },
+    endDate: { $gte: now },
+    type: { $in: ["product", "percentage", "fixed"] }
+  }).sort({ createdAt: -1 });
+  const categoryId = (_a = product.categoryId) == null ? void 0 : _a.toString();
+  const productPrice = (_b = product.priceDiscounts) != null ? _b : 0;
+  const PRIORITY = {
+    product: 1,
+    percentage: 2,
+    fixed: 3
+  };
+  const sorted = vouchers.sort((a, b) => {
+    return PRIORITY[a.type] - PRIORITY[b.type];
+  });
+  for (const v of sorted) {
+    const minOrderValue = (_c = v.minOrderValue) != null ? _c : 0;
+    if (["product"].includes(v.type)) {
+      const applicableCategories = ((_d = v.applicableCategories) != null ? _d : []).map(String);
+      if (applicableCategories.length > 0) {
+        if (!categoryId || !applicableCategories.includes(categoryId)) continue;
+        if (productPrice < minOrderValue) continue;
+      }
+    } else {
+      if (["percentage", "fixed"].includes(v.type)) {
+        if (productPrice < minOrderValue) continue;
+      }
+    }
+    if (!v.image || v.image.trim() === "") continue;
+    return {
+      image: v.image
+    };
+  }
+  return null;
+};
+
 const isCategoryChainActive = async (categoryId, cache = /* @__PURE__ */ new Map()) => {
   if (!categoryId) return false;
   const key = categoryId.toString();
@@ -7532,7 +7778,10 @@ const getProductById = async (req, res) => {
       return res.status(404).json({ code: 1, message: "Danh m\u1EE5c c\u1EE7a s\u1EA3n ph\u1EA9m \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
     }
     product = await filterActiveVariantGroupsForProduct(product);
-    return res.json({ code: 0, data: toProductDTO(product) });
+    const voucher = await getApplicableVouchersForProduct(product);
+    const finalResult = toProductDTO(product);
+    finalResult.vouchers = voucher;
+    return res.json({ code: 0, data: finalResult });
   } catch (err) {
     return res.status(500).json({ code: 1, message: err.message });
   }
@@ -7556,9 +7805,17 @@ const getRelatedProducts = async (req, res) => {
       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
     const relatedWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+    const finalResult = [];
+    for (const p of relatedWithVariants) {
+      const voucher = await getApplicableVouchersForProduct(p);
+      finalResult.push({
+        ...p,
+        vouchers: voucher
+      });
+    }
     return res.json({
       code: 0,
-      data: toProductListDTO(relatedWithVariants),
+      data: toProductListDTO(finalResult),
       message: "Success"
     });
   } catch (err) {
@@ -7678,15 +7935,17 @@ const getPromotionalProducts = async (req, res) => {
       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
     const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
-    res.json({
+    const finalResult = [];
+    for (const p of productsWithVariants) {
+      const voucher = await getApplicableVouchersForProduct(p);
+      finalResult.push({
+        ...p,
+        vouchers: voucher
+      });
+    }
+    return res.json({
       code: 0,
-      data: toProductListDTO(
-        productsWithVariants.map((p) => ({
-          ...p,
-          isPromotional: true,
-          discountPercent: p.price && p.priceDiscounts ? Math.round((p.price - p.priceDiscounts) / p.price * 100) : 0
-        }))
-      )
+      data: toProductListDTO(finalResult)
     });
   } catch (error) {
     console.error(error);
@@ -7729,9 +7988,17 @@ const getMostOrderedProduct = async (req, res) => {
       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
     const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+    const finalResult = [];
+    for (const p of productsWithVariants) {
+      const voucher = await getApplicableVouchersForProduct(p);
+      finalResult.push({
+        ...p,
+        vouchers: voucher
+      });
+    }
     return res.json({
       code: 0,
-      data: toProductListDTO(productsWithVariants),
+      data: toProductListDTO(finalResult),
       message: "Success"
     });
   } catch (error) {
@@ -7814,9 +8081,17 @@ const getProductsByCategory = async (req, res) => {
       { $limit: limit }
     ]);
     const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
+    const productResults = [];
+    for (const p of productsWithVariants) {
+      const vouchers = await getApplicableVouchersForProduct(p);
+      productResults.push({
+        ...p,
+        vouchers
+      });
+    }
     return res.json({
       code: 0,
-      data: toProductListDTO(productsWithVariants),
+      data: toProductListDTO(productResults),
       pagination: {
         page,
         limit,
@@ -8147,210 +8422,6 @@ const productReview_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defi
   __proto__: null,
   default: router$2
 }, Symbol.toStringTag, { value: 'Module' }));
-
-const applyVoucher = async (req, res) => {
-  var _a, _b;
-  try {
-    const {
-      code,
-      orderTotal,
-      products = [],
-      orderCreatedAt,
-      userId
-    } = req.body;
-    if (!code || !orderTotal)
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu m\xE3 voucher ho\u1EB7c gi\xE1 tr\u1ECB \u0111\u01A1n h\xE0ng" });
-    if (!userId)
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\xF4ng tin ng\u01B0\u1EDDi d\xF9ng" });
-    const voucher = await VoucherEntity.findOne({ code, isActive: true });
-    if (!voucher)
-      return res.status(404).json({ code: 1, message: "Voucher kh\xF4ng t\u1ED3n t\u1EA1i ho\u1EB7c kh\xF4ng ho\u1EA1t \u0111\u1ED9ng" });
-    const now = /* @__PURE__ */ new Date();
-    if (voucher.startDate > now)
-      return res.status(400).json({ code: 1, message: "Ch\u01B0a \u0111\u1EBFn th\u1EDDi gian \xE1p d\u1EE5ng voucher" });
-    if (voucher.endDate < now)
-      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt h\u1EA1n" });
-    if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit)
-      return res.status(400).json({ code: 1, message: "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng" });
-    const userUsedCount = await VoucherUsageEntity.countDocuments({
-      voucherId: voucher._id,
-      userId
-    });
-    if (voucher.limitPerUser > 0 && userUsedCount >= voucher.limitPerUser)
-      return res.status(400).json({ code: 1, message: "B\u1EA1n \u0111\xE3 d\xF9ng h\u1EBFt l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y" });
-    if (voucher.minOrderValue && orderTotal < voucher.minOrderValue)
-      return res.status(400).json({
-        code: 1,
-        message: `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${voucher.minOrderValue.toLocaleString()}\u0111`
-      });
-    let applicableProducts = [];
-    if (voucher.type === "product") {
-      if (voucher.value < 0 || voucher.value > 100) {
-        return res.status(400).json({ code: 1, message: "Gi\xE1 tr\u1ECB gi\u1EA3m (%) kh\xF4ng h\u1EE3p l\u1EC7" });
-      }
-      const applicableProductIds = ((_a = voucher.applicableProducts) != null ? _a : []).map(String);
-      const applicableCategoryIds = ((_b = voucher.applicableCategories) != null ? _b : []).map(String);
-      applicableProducts = products.filter((p) => {
-        var _a2, _b2;
-        const pid = (_a2 = p.productId) == null ? void 0 : _a2.toString();
-        const cid = (_b2 = p.categoryId) == null ? void 0 : _b2.toString();
-        return applicableProductIds.includes(pid) || applicableCategoryIds.includes(cid);
-      });
-      if (applicableProducts.length === 0) {
-        return res.status(400).json({
-          code: 1,
-          message: "Voucher kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m n\xE0o trong \u0111\u01A1n h\xE0ng"
-        });
-      }
-    } else {
-      applicableProducts = products;
-    }
-    const subtotalApplicable = applicableProducts.reduce(
-      (sum, p) => sum + p.price * p.quantity,
-      0
-    );
-    let discount = 0;
-    let message = "\xC1p d\u1EE5ng voucher th\xE0nh c\xF4ng";
-    switch (voucher.type) {
-      case "percentage":
-        discount = Math.min(
-          subtotalApplicable * voucher.value / 100,
-          voucher.maxDiscount || Infinity
-        );
-        break;
-      case "fixed":
-        discount = Math.min(voucher.value, subtotalApplicable);
-        break;
-      case "freeship":
-        if (!voucher.maxShippingDiscount)
-          return res.status(400).json({
-            code: 1,
-            message: "Voucher freeship ch\u01B0a c\u1EA5u h\xECnh m\u1EE9c gi\u1EA3m ph\xED t\u1ED1i \u0111a"
-          });
-        discount = Math.min(voucher.maxShippingDiscount, orderTotal);
-        message = `\xC1p d\u1EE5ng mi\u1EC5n ph\xED v\u1EADn chuy\u1EC3n (t\u1ED1i \u0111a ${voucher.maxShippingDiscount.toLocaleString()}\u0111)`;
-        break;
-      case "product":
-        discount = Math.min(
-          subtotalApplicable * voucher.value / 100,
-          voucher.maxDiscount || Infinity
-        );
-        const productNames = applicableProducts.map((p) => p.name);
-        if (productNames.length === 1) {
-          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho s\u1EA3n ph\u1EA9m: ${productNames[0]}`;
-        } else {
-          message = `M\xE3 gi\u1EA3m gi\xE1 <b>${voucher.code}</b> \xE1p d\u1EE5ng gi\u1EA3m ${voucher.value}% cho ${productNames.length} s\u1EA3n ph\u1EA9m: ${productNames.map((name) => `<div>- ${name}</div>`).join("")}`;
-        }
-        break;
-      case "timed":
-        if (!orderCreatedAt)
-          return res.status(400).json({ code: 1, message: "Thi\u1EBFu th\u1EDDi gian t\u1EA1o \u0111\u01A1n h\xE0ng" });
-        const createdAt = new Date(orderCreatedAt);
-        if (createdAt < voucher.startDate || createdAt > voucher.endDate)
-          return res.status(400).json({ code: 1, message: "Voucher kh\xF4ng h\u1EE3p l\u1EC7 \u1EDF th\u1EDDi \u0111i\u1EC3m n\xE0y" });
-        discount = Math.min(
-          subtotalApplicable * voucher.value / 100,
-          voucher.maxDiscount || Infinity
-        );
-        message = "\xC1p d\u1EE5ng voucher khung th\u1EDDi gian";
-        break;
-      default:
-        return res.status(400).json({ code: 1, message: "Lo\u1EA1i voucher kh\xF4ng h\u1EE3p l\u1EC7" });
-    }
-    discount = Math.round(discount * 1e3) / 1e3;
-    return res.json({
-      code: 0,
-      message,
-      data: {
-        code: voucher.code,
-        type: voucher.type,
-        discount,
-        applicableProducts,
-        stackable: voucher.stackable,
-        expiresAt: voucher.endDate
-      }
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getAvailableVouchers = async (req, res) => {
-  var _a;
-  try {
-    const { orderTotal = 0, categoryIds = [], userId } = req.body;
-    const now = /* @__PURE__ */ new Date();
-    const vouchers = await VoucherEntity.find({
-      isActive: true,
-      startDate: { $lte: now },
-      endDate: { $gte: now }
-    }).sort({ createdAt: -1 });
-    const result = [];
-    for (const v of vouchers) {
-      const userUsedCount = userId ? await VoucherUsageEntity.countDocuments({
-        voucherId: v._id,
-        userId
-      }) : 0;
-      let isDisabled = false;
-      let disabledReason = null;
-      if (v.usageLimit > 0 && v.usedCount >= v.usageLimit) {
-        isDisabled = true;
-        disabledReason = "Voucher \u0111\xE3 h\u1EBFt l\u01B0\u1EE3t s\u1EED d\u1EE5ng";
-      } else if (v.limitPerUser > 0 && userUsedCount >= v.limitPerUser) {
-        isDisabled = true;
-        disabledReason = "B\u1EA1n \u0111\xE3 s\u1EED d\u1EE5ng h\u1EBFt s\u1ED1 l\u01B0\u1EE3t c\u1EE7a voucher n\xE0y";
-      } else if (orderTotal < (v.minOrderValue || 0)) {
-        isDisabled = true;
-        disabledReason = `\u0110\u01A1n h\xE0ng ch\u01B0a \u0111\u1EA1t gi\xE1 tr\u1ECB t\u1ED1i thi\u1EC3u ${(_a = v.minOrderValue) == null ? void 0 : _a.toLocaleString()}\u0111`;
-      } else if (v.type === "product") {
-        const hasApplicableCategories = Array.isArray(v.applicableCategories) && Array.isArray(categoryIds) && categoryIds.some(
-          (cid) => {
-            var _a2;
-            return ((_a2 = v.applicableCategories) != null ? _a2 : []).map(String).includes(cid.toString());
-          }
-        );
-        if (!hasApplicableCategories) {
-          isDisabled = true;
-          disabledReason = "Kh\xF4ng \xE1p d\u1EE5ng cho s\u1EA3n ph\u1EA9m ho\u1EB7c danh m\u1EE5c trong \u0111\u01A1n h\xE0ng";
-        }
-      }
-      result.push({
-        ...v.toObject(),
-        isDisabled,
-        disabledReason
-      });
-    }
-    return res.json({
-      code: 0,
-      message: "L\u1EA5y danh s\xE1ch voucher th\xE0nh c\xF4ng",
-      data: result
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getAllVouchers = async (req, res) => {
-  try {
-    const now = /* @__PURE__ */ new Date();
-    const vouchers = await VoucherEntity.find({
-      isActive: true,
-      startDate: { $lte: now },
-      endDate: { $gte: now },
-      $expr: {
-        $or: [
-          { $eq: ["$usageLimit", 0] },
-          { $lt: ["$usedCount", "$usageLimit"] }
-        ]
-      }
-    }).sort({ createdAt: -1 });
-    return res.json({
-      code: 0,
-      message: "L\u1EA5y danh s\xE1ch voucher th\xE0nh c\xF4ng",
-      data: toVoucherListDTO(vouchers)
-    });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
 
 const router$1 = Router();
 router$1.post("/", getAvailableVouchers);

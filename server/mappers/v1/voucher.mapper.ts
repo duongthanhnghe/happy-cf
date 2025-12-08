@@ -7,6 +7,7 @@ export function toVoucherDTO(entity: Voucher): VoucherDTO {
     code: entity.code,
     name: entity.name,
     description: entity.description,
+    image: entity.image,
 
     type: entity.type,
     value: entity.value,

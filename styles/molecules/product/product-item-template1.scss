@@ -11,9 +11,16 @@
     text-align: center;
     position: relative;
     padding: 1rem;
-    img {
+    overflow: hidden;
+    &-src {
       border-radius: $rd-lg;
     }
+  }
+  &-voucher {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
   }
   &-amount {
     color: $cl-white;
@@ -31,6 +38,7 @@
     position: absolute;
     right: 6px;
     bottom: 6px;
+    z-index: 1;
     &-number {
       background-color: $cl-white;
       color: $cl-black;

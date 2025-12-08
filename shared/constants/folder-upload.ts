@@ -9,4 +9,5 @@ export const FOLDER_UPLOAD = {
   CONFIG: 'Config',
   POST: 'PostsNews',
   PRODUCT: 'Product',
+  VOUCHER: 'Voucher',
 }

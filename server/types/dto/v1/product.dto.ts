@@ -1,4 +1,5 @@
 import type { PaginationDTO } from '../../common/pagination.dto'
+import type { VoucherDTO } from './voucher.dto';
 
 export interface VariantItemDTO {
   id: string;
@@ -35,7 +36,6 @@ export interface RemoveVariantFromGroupDTO {
   variantId: string;
 }
 
-// ==================== PRODUCT VARIANT DTOs ====================
 export interface ProductSelectedVariantDTO {
   variantId: string;
   variantName: string;
@@ -73,6 +73,9 @@ export interface ProductDTO {
   categoryId: string;
   weight: number;
   isActive: boolean;
+  vouchers: {
+  image: string;
+} | null;
   createdAt: string;
   updatedAt: string;
   //SEO
