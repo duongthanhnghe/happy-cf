@@ -186,3 +186,11 @@ function slugifySKU(text) {
 export function generateSKU(productId, groupName, variantName) {
   return `PRD${productId.slice(-5)}-${slugifySKU(groupName)}-${slugifySKU(variantName)}`;
 }
+
+export function debounce(fn, delay = 300) {
+  let timer
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => fn(...args), delay)
+  }
+}

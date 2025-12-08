@@ -15,6 +15,8 @@ interface _GlobalComponents {
       'PopupAccountCreate': typeof import("../components/admin/account/PopupAccountCreate.vue")['default']
     'CreateBanner': typeof import("../components/admin/banners/CreateBanner.vue")['default']
     'UpdateBanner': typeof import("../components/admin/banners/UpdateBanner.vue")['default']
+    'CreateITranslation': typeof import("../components/admin/itranslation/CreateITranslation.vue")['default']
+    'UpdateITranslation': typeof import("../components/admin/itranslation/UpdateITranslation.vue")['default']
     'HeaderAdmin': typeof import("../components/admin/layout/HeaderAdmin.vue")['default']
     'Sidebar': typeof import("../components/admin/layout/Sidebar.vue")['default']
     'CreateCategoryNews': typeof import("../components/admin/news/CreateCategoryNews.vue")['default']
@@ -186,6 +188,8 @@ interface _GlobalComponents {
       'LazyPopupAccountCreate': LazyComponent<typeof import("../components/admin/account/PopupAccountCreate.vue")['default']>
     'LazyCreateBanner': LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
     'LazyUpdateBanner': LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
+    'LazyCreateITranslation': LazyComponent<typeof import("../components/admin/itranslation/CreateITranslation.vue")['default']>
+    'LazyUpdateITranslation': LazyComponent<typeof import("../components/admin/itranslation/UpdateITranslation.vue")['default']>
     'LazyHeaderAdmin': LazyComponent<typeof import("../components/admin/layout/HeaderAdmin.vue")['default']>
     'LazySidebar': LazyComponent<typeof import("../components/admin/layout/Sidebar.vue")['default']>
     'LazyCreateCategoryNews': LazyComponent<typeof import("../components/admin/news/CreateCategoryNews.vue")['default']>
@@ -363,6 +367,8 @@ declare module 'vue' {
 export const PopupAccountCreate: typeof import("../components/admin/account/PopupAccountCreate.vue")['default']
 export const CreateBanner: typeof import("../components/admin/banners/CreateBanner.vue")['default']
 export const UpdateBanner: typeof import("../components/admin/banners/UpdateBanner.vue")['default']
+export const CreateITranslation: typeof import("../components/admin/itranslation/CreateITranslation.vue")['default']
+export const UpdateITranslation: typeof import("../components/admin/itranslation/UpdateITranslation.vue")['default']
 export const HeaderAdmin: typeof import("../components/admin/layout/HeaderAdmin.vue")['default']
 export const Sidebar: typeof import("../components/admin/layout/Sidebar.vue")['default']
 export const CreateCategoryNews: typeof import("../components/admin/news/CreateCategoryNews.vue")['default']
@@ -534,6 +540,8 @@ export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/co
 export const LazyPopupAccountCreate: LazyComponent<typeof import("../components/admin/account/PopupAccountCreate.vue")['default']>
 export const LazyCreateBanner: LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
 export const LazyUpdateBanner: LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
+export const LazyCreateITranslation: LazyComponent<typeof import("../components/admin/itranslation/CreateITranslation.vue")['default']>
+export const LazyUpdateITranslation: LazyComponent<typeof import("../components/admin/itranslation/UpdateITranslation.vue")['default']>
 export const LazyHeaderAdmin: LazyComponent<typeof import("../components/admin/layout/HeaderAdmin.vue")['default']>
 export const LazySidebar: LazyComponent<typeof import("../components/admin/layout/Sidebar.vue")['default']>
 export const LazyCreateCategoryNews: LazyComponent<typeof import("../components/admin/news/CreateCategoryNews.vue")['default']>

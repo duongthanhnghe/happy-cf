@@ -2,6 +2,13 @@ export const API_ENDPOINTS_ADMIN = {
   SETTINGS: {
     UPDATE: '/settings/update',
   },
+  TRANSLATION: {
+    GET: "/itranslation",
+    CREATE: "/itranslation",
+    UPDATE: "/itranslation",
+    DELETE: "/itranslation",
+    DETAIL: "/itranslation",
+  },
   ACCOUNT: {
     VERIFY_TOKEN: '/account/verify-token',
     LOGIN: '/account/login',

@@ -30,13 +30,14 @@ export { requestIdleCallback, cancelIdleCallback } from '#app/compat/idle-callba
 export { setInterval } from '#app/compat/interval';
 export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { getBreadcrumbs } from '../utils/breadcrumb';
-export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage, generateSlug, generateSKU } from '../utils/global';
+export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage, generateSlug, generateSKU, debounce } from '../utils/global';
 export { useForbiddenHandler } from '../utils/handle403';
 export { usePagination } from '../utils/paginationHandle';
 export { useSeoWatchers } from '../utils/seoHandle';
 export { useStickyObserver } from '../utils/stickyObserver';
 export { storageWithTTL } from '../utils/storageWithTTL';
 export { Toast, showSuccess, showToastError, showWarning, showConfirm } from '../utils/toast';
+export { translationTypeMap } from '../utils/translationTypeMap';
 export { findItemInTree, markAllSelectable } from '../utils/treeHelpers';
 export { createNewPasswordRules, useNewPasswordRules, nullRules, nullAndSpecialRules } from '../utils/validation';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/@pinia/nuxt/dist/runtime/composables';

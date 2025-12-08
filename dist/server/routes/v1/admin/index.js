@@ -2,6 +2,7 @@ import { Router } from 'express';
 import settingRoutes from './setting.router.js';
 // import fileManageRoutes from './fileManageRouter.js'
 // import authRoutes from './authRouter.js'
+import iTranslationRoutes from './itranslation.routes.js';
 import aboutRoutes from './about.router.js';
 import usersRouter from './users.router.js';
 import bannerRoutes from './banner.router.js';
@@ -20,6 +21,7 @@ import voucherUsageRouter from './voucher-usage.router.js';
 import accountRouter from './account.router.js';
 // import locationRoutes from './locationRouter.js'
 const router = Router();
+router.use('/itranslation', iTranslationRoutes);
 router.use('/account', accountRouter);
 router.use('/settings', settingRoutes);
 // router.use('/fileManage', fileManageRoutes)

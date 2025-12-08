@@ -7,11 +7,14 @@ import { useProductMostOrderStore } from '@/stores/client/product/useProductMost
 import { usePostLatestStore } from '@/stores/client/news/usePostLatestStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.HOME.middleware,
   headerTypeLeft: ROUTES.PUBLIC.HOME.headerTypeLeft,
 })
+
+const { t } = useITranslations()
 
 const storeDisplay = useDisplayStore()
 const storeBanner = useBannerStore()
@@ -25,7 +28,6 @@ if(storeProductSale.getListProductSales.length === 0) await storeProductSale.fet
 if(storeProductMostOrder.getListProductMostOrder.length === 0) await storeProductMostOrder.fetchProductStore()
 if(storeNewsLatest.getListNewsLatest.length === 0) await storeNewsLatest.fetchPostStore()
 if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCategory.fetchCategoryStore()
-
 </script>
 
 <template>
@@ -36,13 +38,13 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
       </client-only>
     </template>
 
+
     <div :class="storeDisplay.isMobileTable ? '':'pt-md'">
       <SectionBanner :items="storeBanner.getListBanner" :loading="storeBanner.loading" />
     </div>
 
     <div :class="[storeDisplay.isLaptop ? 'container container-xxl pl-0 pr-0 pb-section':'', 'pt-section pb-sm']">
       <ProductCategoryAll 
-        heading="Danh mục" 
         :items="storeProductCategory.getFlatCategoryList" 
         :loading="storeProductCategory.loading" 
       />
@@ -72,7 +74,7 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
         :loading="storeProductSale.loading" 
         fullScreen 
         container="container container-xxl" 
-        headingText="Khuyến mãi" 
+        :headingText="t('product.promo.title')"
         class="pt-section pb-section"
       />
       <SectionProductListSwiper 
@@ -81,7 +83,7 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
         :loading="storeProductMostOrder.loading" 
         fullScreen 
         container="container container-xxl" 
-        headingText="Gợi ý cho bạn" 
+        :headingText="t('product.list.title1')" 
         class="pb-section"
       />
       <SectionNewsListSwiper 
@@ -89,7 +91,7 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
         :loading="storeNewsLatest.loading" 
         pagination
         container="container container-xxl" 
-        headingText="Tin mới nhất" 
+        :headingText="t('news.list.title1')" 
         class="pb-section" 
       />
     </div>

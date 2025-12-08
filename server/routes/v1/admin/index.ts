@@ -3,6 +3,7 @@ import { Router } from 'express'
 import settingRoutes from './setting.router'
 // import fileManageRoutes from './fileManageRouter'
 // import authRoutes from './authRouter'
+import iTranslationRoutes from './itranslation.routes'
 import aboutRoutes from './about.router'
 import usersRouter from './users.router'
 import bannerRoutes from './banner.router'
@@ -23,6 +24,7 @@ import accountRouter from './account.router'
 
 const router = Router()
 
+router.use('/itranslation', iTranslationRoutes)
 router.use('/account', accountRouter)
 router.use('/settings', settingRoutes)
 // router.use('/fileManage', fileManageRoutes)

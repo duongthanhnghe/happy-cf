@@ -6,16 +6,17 @@ import 'swiper/css/pagination';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
+import { NEWS_LIST_SWIPER_DEFAULT } from '@/shared/constants/breakpoints';
 import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
 import type { SwiperOptions } from 'swiper/types';
-import { NEWS_LIST_SWIPER_DEFAULT } from '@/shared/constants/breakpoints';
+import type { ITranslationText } from '@/server/types/dto/v1/itranslation.dto';
 
 const storeDisplay = useDisplayStore()
 
 const props = withDefaults(defineProps<{
   items?: PostNewsDTO[]
   loading?: boolean
-  headingText?: string
+  headingText: string | ITranslationText
   backgroundItem?: string
   breakpoints?: SwiperOptions['breakpoints']
   container?: string
@@ -32,9 +33,7 @@ const props = withDefaults(defineProps<{
     <div :class="[container]">
       <LoadingData v-if="props.loading && !items" />
       <template v-else-if="items.length > 0">
-        <Heading v-if="props.headingText" tag="h2" size="lg" weight="semibold" class="black mb-sm">
-          {{ props.headingText }}
-        </Heading>
+        <Text v-if="props.headingText" :text="props.headingText" tag="h2" size="md" weight="semibold" class="black mb-sm" />
         <client-only>
           <swiper :modules="[Pagination, Navigation, Autoplay]" :breakpoints='props.breakpoints ? props.breakpoints : NEWS_LIST_SWIPER_DEFAULT' :pagination="props.pagination ? { clickable: true }:false" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" >
             <swiper-slide v-for="(item, index) in props.items" :key="index">

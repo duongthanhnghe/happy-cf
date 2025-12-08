@@ -1151,16 +1151,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"4a174-c6BumDvTdpPF8caTgGue3xa2ap8\"",
-    "mtime": "2025-12-04T11:22:36.369Z",
-    "size": 303476,
+    "etag": "\"4b1db-QvEUhH3wVF4f44yjDznzvFYuv3k\"",
+    "mtime": "2025-12-08T02:34:07.034Z",
+    "size": 307675,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"11c560-Wze+fkO+KadY4sgIXWiHFsG6ssM\"",
-    "mtime": "2025-12-04T11:22:36.377Z",
-    "size": 1164640,
+    "etag": "\"12029a-FZ1nszmxluTZra2VrEF0J6kh4CA\"",
+    "mtime": "2025-12-08T02:34:07.041Z",
+    "size": 1180314,
     "path": "index.mjs.map"
   }
 };
@@ -1577,6 +1577,7 @@ const _lazy_xcMgXI = () => Promise.resolve().then(function () { return banner_ro
 const _lazy_qQgg3H = () => Promise.resolve().then(function () { return categoriesNews_router$1; });
 const _lazy_k4fO0v = () => Promise.resolve().then(function () { return categoriesProduct_router$1; });
 const _lazy_ZkwUyZ = () => Promise.resolve().then(function () { return index$2; });
+const _lazy_0O3oAB = () => Promise.resolve().then(function () { return itranslation_routes; });
 const _lazy_DX_tpS = () => Promise.resolve().then(function () { return orderManage_router$1; });
 const _lazy_PIlvNR = () => Promise.resolve().then(function () { return paymentTransaction_routes; });
 const _lazy_GxTKtg = () => Promise.resolve().then(function () { return postsNews_router$1; });
@@ -1614,6 +1615,7 @@ const handlers = [
   { route: '/v1/admin/categories-news.router', handler: _lazy_qQgg3H, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/categories-product.router', handler: _lazy_k4fO0v, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin', handler: _lazy_ZkwUyZ, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/itranslation.routes', handler: _lazy_0O3oAB, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/order-manage.router', handler: _lazy_DX_tpS, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/payment-transaction.routes', handler: _lazy_PIlvNR, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/posts-news.router', handler: _lazy_GxTKtg, lazy: true, middleware: false, method: undefined },
@@ -2136,18 +2138,18 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$w = Router();
-router$w.get("/default/:userId", authenticate, getDefaultAddressByUserId);
-router$w.get("/user/:userId", authenticate, getAllAddress);
-router$w.get("/:id", authenticate, getAddressById);
-router$w.post("/", authenticate, createAddress);
-router$w.put("/:id", authenticate, updateAddress);
-router$w.delete("/:id", authenticate, deleteAddress);
-router$w.post("/:id/set-default", authenticate, setAddressDefault);
+const router$x = Router();
+router$x.get("/default/:userId", authenticate, getDefaultAddressByUserId);
+router$x.get("/user/:userId", authenticate, getAllAddress);
+router$x.get("/:id", authenticate, getAddressById);
+router$x.post("/", authenticate, createAddress);
+router$x.put("/:id", authenticate, updateAddress);
+router$x.delete("/:id", authenticate, deleteAddress);
+router$x.post("/:id/set-default", authenticate, setAddressDefault);
 
 const addresses_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$w
+  default: router$x
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ListImageSchema$1 = new Schema(
@@ -2336,18 +2338,18 @@ const authenticateAdmin = async (req, res, next) => {
   }
 };
 
-const router$v = Router();
-router$v.get("/", authenticateAdmin, getAllAbout);
-router$v.get("/:id", getAboutById);
-router$v.post("/", authenticateAdmin, createAbout);
-router$v.put("/:id", authenticateAdmin, updateAbout);
-router$v.delete("/:id", authenticateAdmin, deleteAbout);
-router$v.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
-router$v.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
+const router$w = Router();
+router$w.get("/", authenticateAdmin, getAllAbout);
+router$w.get("/:id", getAboutById);
+router$w.post("/", authenticateAdmin, createAbout);
+router$w.put("/:id", authenticateAdmin, updateAbout);
+router$w.delete("/:id", authenticateAdmin, deleteAbout);
+router$w.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
+router$w.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
 
 const about_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$v
+  default: router$w
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function toAccountDTO(entity) {
@@ -2669,16 +2671,16 @@ const authorizeRoles = (...roles) => {
   };
 };
 
-const router$u = Router();
-router$u.post("/login", login$1);
-router$u.post("/reset-password", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), resetPassword$1);
-router$u.get("/verify-token", verifyToken$1);
-router$u.get("/list", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), getAccountList);
-router$u.get("/me/:id", authenticateAdmin, getAccount);
-router$u.put("/update", authenticateAdmin, updateAccount$1);
-router$u.post("/change-password", authenticateAdmin, changePassword$1);
-router$u.post("/create", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), createAccount);
-router$u.post("/logout", (req, res) => {
+const router$v = Router();
+router$v.post("/login", login$1);
+router$v.post("/reset-password", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), resetPassword$1);
+router$v.get("/verify-token", verifyToken$1);
+router$v.get("/list", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), getAccountList);
+router$v.get("/me/:id", authenticateAdmin, getAccount);
+router$v.put("/update", authenticateAdmin, updateAccount$1);
+router$v.post("/change-password", authenticateAdmin, changePassword$1);
+router$v.post("/create", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), createAccount);
+router$v.post("/logout", (req, res) => {
   res.clearCookie("admin_token", {
     httpOnly: true,
     path: "/",
@@ -2686,12 +2688,12 @@ router$u.post("/logout", (req, res) => {
   });
   res.json({ code: 0, message: "\u0110\u0103ng xu\u1EA5t th\xE0nh c\xF4ng" });
 });
-router$u.patch("/toggleActive/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), toggleActive$6);
-router$u.delete("/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), deleteAccount);
+router$v.patch("/toggleActive/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), toggleActive$6);
+router$v.delete("/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), deleteAccount);
 
 const account_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$u
+  default: router$v
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const BannerSchema = new Schema(
@@ -2824,18 +2826,18 @@ const toggleActive$5 = async (req, res) => {
   }
 };
 
-const router$t = Router();
-router$t.get("/", authenticateAdmin, getAllBanners$1);
-router$t.get("/:id", getBannerById);
-router$t.post("/", authenticateAdmin, createBanner);
-router$t.put("/:id", authenticateAdmin, updateBanner);
-router$t.delete("/:id", authenticateAdmin, deleteBanner);
-router$t.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
-router$t.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
+const router$u = Router();
+router$u.get("/", authenticateAdmin, getAllBanners$1);
+router$u.get("/:id", getBannerById);
+router$u.post("/", authenticateAdmin, createBanner);
+router$u.put("/:id", authenticateAdmin, updateBanner);
+router$u.delete("/:id", authenticateAdmin, deleteBanner);
+router$u.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
+router$u.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
 
 const banner_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$t
+  default: router$u
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function generateSlug(text) {
@@ -3097,18 +3099,18 @@ const toggleActive$4 = async (req, res) => {
   }
 };
 
-const router$s = Router();
-router$s.get("/", authenticateAdmin, getAllCategories$3);
-router$s.get("/:id", getCategoriesById$3);
-router$s.post("/", authenticateAdmin, createCategories$1);
-router$s.put("/:id", authenticateAdmin, updateCategories$1);
-router$s.delete("/:id", authenticateAdmin, deleteCategories$1);
-router$s.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
-router$s.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
+const router$t = Router();
+router$t.get("/", authenticateAdmin, getAllCategories$3);
+router$t.get("/:id", getCategoriesById$3);
+router$t.post("/", authenticateAdmin, createCategories$1);
+router$t.put("/:id", authenticateAdmin, updateCategories$1);
+router$t.delete("/:id", authenticateAdmin, deleteCategories$1);
+router$t.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
+router$t.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
 
 const categoriesNews_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$s
+  default: router$t
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ListImageSchema = new Schema(
@@ -3465,19 +3467,19 @@ const toggleActive$3 = async (req, res) => {
   }
 };
 
-const router$r = Router();
-router$r.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
-router$r.get("/", authenticateAdmin, getAllCategories$2);
-router$r.get("/:id", getCategoriesById$2);
-router$r.post("/", authenticateAdmin, createCategories);
-router$r.put("/:id", authenticateAdmin, updateCategories);
-router$r.delete("/:id", authenticateAdmin, deleteCategories);
-router$r.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
-router$r.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
+const router$s = Router();
+router$s.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
+router$s.get("/", authenticateAdmin, getAllCategories$2);
+router$s.get("/:id", getCategoriesById$2);
+router$s.post("/", authenticateAdmin, createCategories);
+router$s.put("/:id", authenticateAdmin, updateCategories);
+router$s.delete("/:id", authenticateAdmin, deleteCategories);
+router$s.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
+router$s.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
 
 const categoriesProduct_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$r
+  default: router$s
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const updateSettings = async (req, res) => {
@@ -3492,10 +3494,122 @@ const updateSettings = async (req, res) => {
   }
 };
 
-const router$q = Router();
-router$q.put("/update", authenticateAdmin, updateSettings);
+const router$r = Router();
+router$r.put("/update", authenticateAdmin, updateSettings);
 
 const setting_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$r
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const ITranslationSchema = new Schema({
+  key: { type: String, required: true, unique: true },
+  type: { type: String, enum: ["text", "html"], default: "text" },
+  translations: { type: Schema.Types.Mixed, default: {} }
+});
+const ITranslationModel = model("ITranslation", ITranslationSchema);
+
+const toTranslationDTO = (entity) => {
+  return {
+    id: entity._id.toString(),
+    key: entity.key,
+    type: entity.type,
+    translations: entity.translations || {}
+  };
+};
+const toTranslationListDTO = (items) => {
+  return items.map(toTranslationDTO);
+};
+
+const getTranslations = async (req, res) => {
+  var _a;
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    const search = ((_a = req.query.search) == null ? void 0 : _a.toString().trim()) || "";
+    const query = {};
+    if (search) {
+      query.$or = [
+        { key: { $regex: search, $options: "i" } },
+        { "translations.vi": { $regex: search, $options: "i" } },
+        { "translations.en": { $regex: search, $options: "i" } }
+      ];
+    }
+    const skip = (page - 1) * limit;
+    const [total, items] = await Promise.all([
+      ITranslationModel.countDocuments(query),
+      ITranslationModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
+    ]);
+    const totalPages = Math.ceil(total / limit);
+    return res.json({
+      code: 0,
+      data: toTranslationListDTO(items),
+      pagination: { page, limit, total, totalPages },
+      message: "Success"
+    });
+  } catch (err) {
+    console.error("Get translations error:", err);
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getTranslationDetail = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const item = await ITranslationModel.findById(id).lean();
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y translation" });
+    }
+    const dto = toTranslationDTO(item);
+    return res.json({ code: 0, data: dto });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createTranslation = async (req, res) => {
+  const { key, type, translations } = req.body;
+  try {
+    const existing = await ITranslationModel.findOne({ key });
+    if (existing) {
+      return res.status(400).json({ code: 1, message: "Key \u0111\xE3 t\u1ED3n t\u1EA1i" });
+    }
+    const t = await ITranslationModel.create({ key, type, translations });
+    return res.json({ code: 0, data: t });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateTranslation = async (req, res) => {
+  const { id } = req.params;
+  const { type, translations } = req.body;
+  try {
+    const t = await ITranslationModel.findById(id);
+    if (!t) return res.status(404).json({ code: 1, message: "Kh\xF4ng t\xECm th\u1EA5y translation" });
+    if (type) t.type = type;
+    if (translations) t.translations = { ...t.translations, ...translations };
+    await t.save();
+    return res.json({ code: 0, data: t });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deleteTranslation = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await ITranslationModel.findByIdAndDelete(id);
+    return res.json({ code: 0, message: "X\xF3a th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$q = Router();
+router$q.get("/", getTranslations);
+router$q.post("/", createTranslation);
+router$q.put("/:id", authenticateAdmin, updateTranslation);
+router$q.get("/:id", authenticateAdmin, getTranslationDetail);
+router$q.delete("/:id", authenticateAdmin, deleteTranslation);
+
+const itranslation_routes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$q
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5558,16 +5672,17 @@ const voucherUsage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defin
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const router$g = Router();
-router$g.use("/account", router$u);
-router$g.use("/settings", router$q);
-router$g.use("/about", router$v);
+router$g.use("/itranslation", router$q);
+router$g.use("/account", router$v);
+router$g.use("/settings", router$r);
+router$g.use("/about", router$w);
 router$g.use("/users", router$p);
-router$g.use("/banners", router$t);
-router$g.use("/categoriesNews", router$s);
+router$g.use("/banners", router$u);
+router$g.use("/categoriesNews", router$t);
 router$g.use("/newsPosts", router$o);
 router$g.use("/orders", router$n);
 router$g.use("/payment-transactions", router$k);
-router$g.use("/categories", router$r);
+router$g.use("/categories", router$s);
 router$g.use("/products", router$m);
 router$g.use("/variant-groups", router$l);
 router$g.use("/product-reviews", router$j);
@@ -6278,11 +6393,11 @@ const uploadImage = async (req, res) => {
 };
 
 const router$b = express.Router();
-router$b.get("/images", authenticate, getImages);
+router$b.get("/images", authenticateAdmin, getImages);
 router$b.get("/images/folders", authenticateAdmin, getFolders);
-router$b.delete("/images/delete", authenticate, deleteImage);
-router$b.get("/images/search", authenticate, searchImage);
-router$b.post("/images/upload", authenticate, uploadImageMulter.single("file"), uploadImage);
+router$b.delete("/images/delete", authenticateAdmin, deleteImage);
+router$b.get("/images/search", authenticateAdmin, searchImage);
+router$b.post("/images/upload", authenticateAdmin, uploadImageMulter.single("file"), uploadImage);
 
 const fileManage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -8259,7 +8374,7 @@ router.use("/orders", router$5);
 router.use("/categories", router$c);
 router.use("/products", router$4);
 router.use("/variant-groups", router$3);
-router.use("/addresses", router$w);
+router.use("/addresses", router$x);
 router.use("/product-reviews", router$2);
 router.use("/voucher", router$1);
 router.use("/", router$4);

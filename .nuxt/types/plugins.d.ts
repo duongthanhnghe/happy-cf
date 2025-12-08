@@ -24,6 +24,7 @@ type NuxtAppInjections =
   InjectionType<typeof import("../../node_modules/nuxt/dist/app/plugins/check-if-layout-used.js")> &
   InjectionType<typeof import("../../plugins/cloudinary.client")> &
   InjectionType<typeof import("../../plugins/floating-vue.client")> &
+  InjectionType<typeof import("../../plugins/i18n")> &
   InjectionType<typeof import("../../plugins/lazyload")> &
   InjectionType<typeof import("../../plugins/nprogress.client")> &
   InjectionType<typeof import("../../plugins/persistedState.client")> &

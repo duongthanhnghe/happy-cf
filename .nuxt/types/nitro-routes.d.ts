@@ -24,6 +24,9 @@ declare module "nitropack/types" {
     '/v1/admin': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/index').default>>>>
     }
+    '/v1/admin/itranslation.routes': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/itranslation.routes').default>>>>
+    }
     '/v1/admin/order-manage.router': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/order-manage.router').default>>>>
     }
