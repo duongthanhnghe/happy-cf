@@ -13,6 +13,7 @@ export const toVariantGroupDTO = (group: VariantGroup): VariantGroupDTO => {
       name: v.name,
       isActive: v.isActive
     })),
+    hasImage: group.hasImage,
     isActive: group.isActive,
     createdAt: group.createdAt.toISOString(),
     updatedAt: group.updatedAt.toISOString()

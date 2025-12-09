@@ -123,7 +123,7 @@ export const refreshToken = async (req, res) => {
         const user = await UserModel.findById(decoded.id);
         if (!user)
             return res.status(403).json({ code: 2, message: "User not found" });
-        const newAccessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "30s" });
+        const newAccessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" });
         return res.json({
             code: 0,
             message: "Refresh thành công",
@@ -183,7 +183,7 @@ export const googleLogin = async (req, res) => {
                 }
             });
         }
-        const accessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "30s" });
+        const accessToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" });
         const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
         res.cookie("refresh_token", refreshToken, {
             httpOnly: true,

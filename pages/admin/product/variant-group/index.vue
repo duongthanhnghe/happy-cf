@@ -78,6 +78,15 @@ const store = useVariantGroupStore();
       </div>
     </template>
 
+    <template #item.hasImage="{ item }">
+      <v-chip 
+        label 
+        :color="`${item.hasImage === true ? 'green' : 'orange'}`"
+      >
+        {{ item.hasImage === true ? 'Có' : 'Không' }}
+      </v-chip>
+    </template>
+
     <template #item.isActive="{ item }">
       <v-chip 
         label 

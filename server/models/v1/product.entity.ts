@@ -1,8 +1,5 @@
 import { Schema, model, models, Types, Document } from "mongoose";
-import type { VoucherDTO } from "@/server/types/dto/v1/voucher.dto";
 
-
-// MỚI: Selected Variant trong Product
 export interface ProductSelectedVariant {
   variantId: string;
   variantName: string;
@@ -10,9 +7,9 @@ export interface ProductSelectedVariant {
   inStock: boolean;
   stock: number;
   sku: string;
+  image: string;
 }
 
-// MỚI: Variant Group được chọn trong Product
 export interface ProductVariantGroup {
   groupId: string;
   groupName: string;
@@ -20,8 +17,6 @@ export interface ProductVariantGroup {
   selectedVariants: ProductSelectedVariant[];
 }
 
-
-// oldddd
 
 export interface ListImage {
   id: string;
@@ -83,7 +78,6 @@ const ListImageSchema = new Schema<ListImage>(
   { _id: false }
 );
 
-// MỚI: Schema cho Selected Variant
 const ProductSelectedVariantSchema = new Schema<ProductSelectedVariant>(
   {
     variantId: { type: String, required: true },
@@ -92,11 +86,11 @@ const ProductSelectedVariantSchema = new Schema<ProductSelectedVariant>(
     inStock: { type: Boolean, default: true },
     stock: { type: Number, default: 0 },
     sku: { type: String, required: true },
+    image: { type: String },
   },
   { _id: false }
 );
 
-// MỚI: Schema cho Variant Group trong Product
 const ProductVariantGroupSchema = new Schema<ProductVariantGroup>(
   {
     groupId: { type: String, required: true },

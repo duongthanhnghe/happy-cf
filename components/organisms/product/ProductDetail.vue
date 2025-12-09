@@ -30,7 +30,7 @@ onBeforeUnmount(() => {
     <div id="product-detail-info" :class="storeDisplay.isLaptop ? 'container pb-3xl':'overflow-hidden pb-section'">
       <div class="row">
         <div class="col-12 col-lg-6">
-          <template v-if="detail.listImage.length > 0">
+          <template v-if="store.galleryImages.length > 1">
             <client-only>
               <ProductDetailGallerySwiper :detail="detail" />
             </client-only>
@@ -38,8 +38,8 @@ onBeforeUnmount(() => {
           <div v-else class="product-detail-gallery bg-gray6">
             <div>
               <img :src="detail.image" :alt="detail.productName" />
-            </div>
-             <div v-if="detail.vouchers?.image" class="product-detail-voucher-src">
+             </div>
+              <div v-if="detail.vouchers?.image" class="product-detail-voucher-src">
               <img :src="detail.vouchers?.image" :alt="detail.productName" />
             </div>
           </div>

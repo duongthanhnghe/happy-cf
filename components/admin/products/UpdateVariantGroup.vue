@@ -90,6 +90,13 @@ const handleSubmitUpdate = async () => {
       />
 
       <v-switch
+        :label="`Ảnh đại diện biến thể: ${store.updateItem.hasImage ? 'Có' : 'Không'}`"
+        v-model="store.updateItem.hasImage"
+        hide-details
+        inset
+      />
+
+      <v-switch
         :label="`Tình trạng: ${store.updateItem.isActive ? 'Kích hoạt' : 'Tắt'}`"
         v-model="store.updateItem.isActive"
         hide-details

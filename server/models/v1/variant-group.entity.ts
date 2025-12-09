@@ -12,6 +12,7 @@ export interface VariantGroup {
   groupType?: string;
   description?: string;
   icon?: string;
+  hasImage: boolean;
   variants: VariantItem[];
   isActive: boolean;
   createdAt: Date;
@@ -34,6 +35,7 @@ const VariantGroupSchema = new Schema<VariantGroup>(
     description: { type: String, trim: true },
     icon: { type: String, trim: true },
     variants: { type: [VariantItemSchema], default: [] },
+    hasImage: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

@@ -19,6 +19,7 @@ export const useVariantGroupStore = defineStore("VariantGroupManage", () => {
     description: "",
     icon: "",
     isActive: true,
+    hasImage: false,
     variants: []
   };
 
@@ -39,6 +40,7 @@ export const useVariantGroupStore = defineStore("VariantGroupManage", () => {
     { title: 'Icon hiển thị', key: 'icon', sortable: false },
     { title: 'Mô tả', key: 'description', sortable: false },
     { title: 'Biến thể', key: 'variants', sortable: false },
+    { title: 'Ảnh biến thể', key: 'hasImage', sortable: false },
     { title: 'Trạng thái', key: 'isActive', sortable: false },
     { title: '', key: 'actions', sortable: false },
   ])

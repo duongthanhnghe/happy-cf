@@ -10,6 +10,7 @@ const VariantGroupSchema = new Schema({
     description: { type: String, trim: true },
     icon: { type: String, trim: true },
     variants: { type: [VariantItemSchema], default: [] },
+    hasImage: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 export const VariantGroupEntity = model("VariantGroup", VariantGroupSchema, "variant_groups");

@@ -1151,16 +1151,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"4ba81-5x5Rv0/EstZJ6iEFYcDTNxQ0Fdw\"",
-    "mtime": "2025-12-08T13:20:57.669Z",
-    "size": 309889,
+    "etag": "\"4bbd1-kM/ZcKDvBnsKKo6mPL6N68sscdE\"",
+    "mtime": "2025-12-09T04:12:10.105Z",
+    "size": 310225,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"122617-+htV3+f0ugja11conP3rW18E+zc\"",
-    "mtime": "2025-12-08T13:20:57.675Z",
-    "size": 1189399,
+    "etag": "\"122bac-ufrhA1ujBdKtlZYsDhJgPSfM/K0\"",
+    "mtime": "2025-12-09T04:12:10.107Z",
+    "size": 1190828,
     "path": "index.mjs.map"
   }
 };
@@ -3127,7 +3127,8 @@ const ProductSelectedVariantSchema = new Schema(
     priceModifier: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
     stock: { type: Number, default: 0 },
-    sku: { type: String, required: true }
+    sku: { type: String, required: true },
+    image: { type: String }
   },
   { _id: false }
 );
@@ -3216,14 +3217,15 @@ const ProductEntity = model("Product", ProductSchema, "products");
 const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");
 
 function toProductSelectedVariantDTO(variant) {
-  var _a, _b;
+  var _a, _b, _c;
   return {
     variantId: variant.variantId,
     variantName: variant.variantName,
     priceModifier: variant.priceModifier,
     inStock: variant.inStock,
     stock: (_a = variant.stock) != null ? _a : 0,
-    sku: (_b = variant.sku) != null ? _b : ""
+    sku: (_b = variant.sku) != null ? _b : "",
+    image: (_c = variant.image) != null ? _c : ""
   };
 }
 function toProductVariantGroupDTO(group) {
@@ -4936,6 +4938,7 @@ const VariantGroupSchema = new Schema(
     description: { type: String, trim: true },
     icon: { type: String, trim: true },
     variants: { type: [VariantItemSchema], default: [] },
+    hasImage: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true }
   },
   { timestamps: true }
@@ -4958,6 +4961,7 @@ const toVariantGroupDTO = (group) => {
       name: v.name,
       isActive: v.isActive
     })),
+    hasImage: group.hasImage,
     isActive: group.isActive,
     createdAt: group.createdAt.toISOString(),
     updatedAt: group.updatedAt.toISOString()
@@ -5010,7 +5014,7 @@ const getVariantGroupById = async (req, res) => {
 };
 const createVariantGroup = async (req, res) => {
   try {
-    const { groupName, groupType, description, icon, variants, isActive } = req.body;
+    const { groupName, groupType, description, icon, variants, isActive, hasImage } = req.body;
     if (!groupName || !groupName.trim()) {
       return res.status(400).json({ code: 1, message: "T\xEAn nh\xF3m bi\u1EBFn th\u1EC3 kh\xF4ng \u0111\u01B0\u1EE3c \u0111\u1EC3 tr\u1ED1ng" });
     }
@@ -5041,7 +5045,8 @@ const createVariantGroup = async (req, res) => {
           isActive: (_a = v.isActive) != null ? _a : true
         };
       }),
-      isActive: isActive != null ? isActive : true
+      isActive: isActive != null ? isActive : true,
+      hasImage: hasImage != null ? hasImage : false
     });
     return res.status(201).json({
       code: 0,
@@ -5063,7 +5068,7 @@ const updateVariantGroup = async (req, res) => {
     if (!group) {
       return res.status(404).json({ code: 1, message: "Nh\xF3m bi\u1EBFn th\u1EC3 kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
-    const { groupName, groupType, description, icon, variants, isActive } = req.body;
+    const { groupName, groupType, description, icon, variants, isActive, hasImage } = req.body;
     if (groupName !== void 0) {
       if (!groupName.trim()) {
         return res.status(400).json({ code: 1, message: "T\xEAn nh\xF3m bi\u1EBFn th\u1EC3 kh\xF4ng \u0111\u01B0\u1EE3c \u0111\u1EC3 tr\u1ED1ng" });
@@ -5106,6 +5111,9 @@ const updateVariantGroup = async (req, res) => {
     }
     if (isActive !== void 0) {
       group.isActive = isActive;
+    }
+    if (hasImage !== void 0) {
+      group.hasImage = hasImage;
     }
     await group.save();
     return res.json({

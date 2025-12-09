@@ -3,7 +3,6 @@ const ListImageSchema = new Schema({
     id: { type: String, required: true },
     src: { type: String, required: true },
 }, { _id: false });
-// MỚI: Schema cho Selected Variant
 const ProductSelectedVariantSchema = new Schema({
     variantId: { type: String, required: true },
     variantName: { type: String, required: true },
@@ -11,8 +10,8 @@ const ProductSelectedVariantSchema = new Schema({
     inStock: { type: Boolean, default: true },
     stock: { type: Number, default: 0 },
     sku: { type: String, required: true },
+    image: { type: String },
 }, { _id: false });
-// MỚI: Schema cho Variant Group trong Product
 const ProductVariantGroupSchema = new Schema({
     groupId: { type: String, required: true },
     groupName: { type: String, required: true },

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watch, computed } from 'vue';
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
 import { useVariantGroupStore } from '@/stores/admin/product/useVariantGroupManageStore'
 import type { VForm } from 'vuetify/components'
 import type { ProductVariantGroupDTO, VariantGroupDTO } from '@/server/types/dto/v1/product.dto';
 import { generateSKU } from '@/utils/global';
 import { showWarning } from '@/utils/toast';
+import { nullRules } from '@/utils/validation';
 
 const productStore = useProductManageStore();
 const variantStore = useVariantGroupStore();
@@ -60,6 +61,7 @@ watch(
               priceModifier: 0,
               inStock: true,
               stock: 1,
+              image: '',
               sku: generateSKU(productStore.updateProductItem.id, groupData.groupName, v.name)
             }))
           });
@@ -94,6 +96,14 @@ const handleSubmitVariantProduct = async () => {
 
   productStore.handleTogglePopupAddVariant(false);
 }
+
+const variantGroupMap = computed(() => {
+  const map: Record<string, { hasImage: boolean }> = {};
+  variantStore.serverItems.forEach(g => {
+    map[String(g.id)] = { hasImage: g.hasImage };
+  });
+  return map;
+});
 </script>
 
 <template>
@@ -122,23 +132,39 @@ const handleSubmitVariantProduct = async () => {
             </div>
             <div class="flex gap-sm align-end">
               <div class="flex-1">
-                <LabelInput label="Giá cộng thêm"/>
+                <LabelInput label="Giá cộng thêm" required/>
                 <v-text-field
                   v-model.number="variant.priceModifier"
                   type="number"
                   variant="outlined"
+                  :rules="nullRules"
+                  required
                 />
               </div>
               <div>
-                <LabelInput label="Tồn kho"/>
+                <LabelInput label="Tồn kho" required/>
                 <v-text-field
                   v-model.number="variant.stock"
                   type="number"
                   variant="outlined"
+                  :rules="nullRules"
+                  required
                 />
               </div>
               <div>
                 <v-switch v-model="variant.inStock" label="Còn hàng" inset/>
+              </div>
+            </div>
+            <div v-if="variantGroupMap[group.groupId]?.hasImage" class="flex align-start gap-sm mb-md">
+              <img v-if="variant.image" :src="variant.image" alt="Ảnh đại diện" class="width-70 object-fit-cover rd-xs" />
+              <div class="flex-1">
+                <LabelInput label="Ảnh đại diện"/>
+                <v-text-field
+                  v-model.number="variant.image"
+                  type="text"
+                  variant="outlined"
+                  hide-details
+                />
               </div>
             </div>
           </div>

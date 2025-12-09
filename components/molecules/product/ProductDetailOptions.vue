@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import type { ProductVariantGroupDTO } from '@/server/types/dto/v1/product.dto';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore';
 
 const storeCart = useCartStore()
+const storeProductDetail = useProductDetailStore()
 const props = withDefaults(defineProps<{
   variantGroups: ProductVariantGroupDTO[],
   showHeading?: boolean
@@ -20,7 +22,12 @@ const props = withDefaults(defineProps<{
     :key="item.groupId" v-for="item in props.variantGroups" 
     @update:modelValue="(val) => {
       const variant = item.selectedVariants.find(v => v.variantId === val);
-      if (variant && val) storeCart.handleSelectVariant(item.groupId, val, item.groupName, variant.variantName, variant.priceModifier || 0);
+      if (variant && val) {
+        storeCart.handleSelectVariant(item.groupId, val, item.groupName, variant.variantName, variant.priceModifier || 0);
+        if (variant.image && variant.image.trim() !== '') {
+          storeProductDetail.goToImageBySrc(variant.image);
+        }
+      } 
     }"
   >
     <Text 

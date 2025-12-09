@@ -1,5 +1,5 @@
 import { computed, nextTick, watch } from "vue";
-import type { Ref } from "vue";
+import type { Ref, ComputedRef } from "vue";
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
 import type { ProductReviewPaginationDTO } from '@/server/types/dto/v1/product-review.dto';
 import type { Swiper as SwiperClass } from 'swiper';
@@ -14,6 +14,7 @@ export const useProductDetailHandle = (
   isTogglePopupNote: Ref<boolean>,
   isDetailInfoActive: Ref<boolean>,
   elScrollInfo: string,
+  galleryImages: ComputedRef<{ src: string }[]> 
 ) => {
 
   const storeWishlist = useWishlistStore()
@@ -78,6 +79,21 @@ export const useProductDetailHandle = (
     }
   }
 
+  const goToImageBySrc = (imageUrl: string) => {
+    if (!imageUrl) return;
+
+    const index = galleryImages.value.findIndex(img => img.src === imageUrl);
+    if (index === -1) return;
+
+    if (mainSwiper.value) {
+      mainSwiper.value.slideTo(index);
+    }
+
+    if (thumbsSwiper.value) {
+      thumbsSwiper.value.slideTo(index);
+    }
+  }
+
   return {
     percentDiscount,
     getSummaryReview,
@@ -88,5 +104,6 @@ export const useProductDetailHandle = (
     onThumbSwiper,
     handleTogglePopupNote,
     onScroll,
+    goToImageBySrc,
   }
 }

@@ -23,14 +23,10 @@ const props = defineProps<{
       :navigation="true"
       :autoplay="{ delay: 5000, disableOnInteraction: false }"
       :loop="false"
-      class="mySwiper"
       @swiper="store.onMainSwiper"
     >
-      <swiper-slide>
-        <img :src="detail.image" :alt="detail.productName" />
-      </swiper-slide>
       <swiper-slide
-        v-for="(item, index) in detail.listImage"
+        v-for="(item, index) in store.galleryImages"
         :key="index"
       >
         <img :src="item.src" :alt="detail.productName" />
@@ -52,11 +48,8 @@ const props = defineProps<{
       class="product-detail-gallery-thumbs"
       @swiper="store.onThumbSwiper"
     >
-      <swiper-slide class="cursor-pointer">
-        <img class="rd-lg bg-gray6" :src="detail.image" :alt="detail.productName" />
-      </swiper-slide>
       <swiper-slide
-        v-for="(item, index) in detail.listImage"
+        v-for="(item, index) in store.galleryImages"
         :key="index"
         class="cursor-pointer"
       >

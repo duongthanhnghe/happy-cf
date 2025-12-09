@@ -1,5 +1,5 @@
 export function toProductSelectedVariantDTO(variant) {
-    var _a, _b;
+    var _a, _b, _c;
     return {
         variantId: variant.variantId,
         variantName: variant.variantName,
@@ -7,6 +7,7 @@ export function toProductSelectedVariantDTO(variant) {
         inStock: variant.inStock,
         stock: (_a = variant.stock) !== null && _a !== void 0 ? _a : 0,
         sku: (_b = variant.sku) !== null && _b !== void 0 ? _b : "",
+        image: (_c = variant.image) !== null && _c !== void 0 ? _c : "",
     };
 }
 export function toProductVariantGroupDTO(group) {

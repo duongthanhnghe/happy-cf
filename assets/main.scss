@@ -937,6 +937,15 @@ body .bg {
   }
 }
 
+.object-fit {
+  &-cover {
+    object-fit: cover;
+  }
+  &-contain {
+    object-fit: contain;
+  }
+}
+
 .list-disc {
   list-style-type: disc;
 }
@@ -1878,9 +1887,7 @@ body .swiper {
   max-height: 500px !important;
 }
 
-.v-field-date-filter .v-field__overlay {
-  border-color: transparent !important;
-}
+
 
 // vuetify custom
 .v-infinite-scroll__side {
@@ -1978,7 +1985,7 @@ body .swiper {
 .v-field-date-filter {
   background-color: $cl-gray2 !important;
   opacity: 1 !important;
-  border: 1px solid $cl-gray !important;
+  border: 1px solid $cl-gray6 !important;
   border-radius: $rd-lg !important;
 }
 .v-field--variant-outlined,
@@ -2045,6 +2052,10 @@ body .swiper {
   min-height: $space-xl !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+}
+
+.v-field-date-filter .v-field__overlay {
+  border-color: transparent !important;
 }
 
 .v-selection-control__input .mdi-radiobox-marked::before {

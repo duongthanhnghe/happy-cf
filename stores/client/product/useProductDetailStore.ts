@@ -19,6 +19,24 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   const { getVoucherProduct, loading: loadingListVoucher } = useAvailableVouchersForOrder();
   const storeCart = useCartStore();
   const storeAccount = useAccountStore();
+  const variantImages = computed(() => {
+    if (!getDetailProduct.value?.variantGroups) return [];
+
+    return getDetailProduct.value.variantGroups
+      .flatMap(group => group.selectedVariants)
+      .map(v => v.image)
+      .filter(img => img && img.trim() !== "");
+  });
+  const galleryImages = computed(() => {
+    const mainImg = getDetailProduct.value?.image ? [{ src: getDetailProduct.value.image }] : [];
+
+    const listImgs = getDetailProduct.value?.listImage?.map(i => ({ src: i.src })) || [];
+
+    const variantImgs = variantImages.value.map(img => ({ src: img }));
+
+    return [...mainImg, ...listImgs, ...variantImgs];
+  });
+  
 
   const state = useProductDetailState();
 
@@ -31,6 +49,7 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     state.isTogglePopupNote,
     state.isDetailInfoActive,
     state.elScrollInfo,
+    galleryImages,
   )
 
   const operations = useProductDetailOperations(
@@ -83,5 +102,7 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     getListProductRelated,
     getTotalPages,
     getTotalPoint,
+    variantImages,
+    galleryImages,
   };
 });

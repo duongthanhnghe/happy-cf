@@ -21,6 +21,7 @@ export function toProductSelectedVariantDTO(
     inStock: variant.inStock,
     stock: variant.stock ?? 0,
     sku: variant.sku ?? "",
+    image: variant.image ?? "",
   };
 }
 

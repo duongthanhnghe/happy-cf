@@ -14,6 +14,7 @@ export interface VariantGroupDTO {
   description?: string;
   icon?: string;
   variants: VariantItemDTO[];
+  hasImage: boolean;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -43,6 +44,7 @@ export interface ProductSelectedVariantDTO {
   inStock: boolean;
   stock: number;
   sku: string;
+  image: string;
 }
 
 export interface ProductVariantGroupDTO {
@@ -52,7 +54,6 @@ export interface ProductVariantGroupDTO {
   selectedVariants: ProductSelectedVariantDTO[];
 }
 
-//old
 export interface ListImageDTO {
   id: string;
   src: string;
@@ -108,7 +109,7 @@ export interface CategoryProductDTO {
   updatedAt: string;
 }
 
-export type CreateProductDTO = Omit<ProductDTO, "id" | "createdAt" | "updatedAt" | "amountOrder">;
+export type CreateProductDTO = Omit<ProductDTO, "id" | "createdAt" | "updatedAt" | "amountOrder" | "vouchers">;
 
 export type UpdateProductDTO = Partial<CreateProductDTO> & { id: string; };
 

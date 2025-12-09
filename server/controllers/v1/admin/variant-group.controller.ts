@@ -66,9 +66,8 @@ export const createVariantGroup = async (
   res: Response
 ) => {
   try {
-    const { groupName, groupType, description, icon, variants, isActive } = req.body;
+    const { groupName, groupType, description, icon, variants, isActive, hasImage } = req.body;
 
-    // Validation
     if (!groupName || !groupName.trim()) {
       return res.status(400).json({ code: 1, message: "Tên nhóm biến thể không được để trống" });
     }
@@ -77,14 +76,14 @@ export const createVariantGroup = async (
       return res.status(400).json({ code: 1, message: "Nhóm biến thể phải có ít nhất 1 biến thể" });
     }
 
-    // Check duplicate variant names within the group
+    // Check duplicate variant
     const variantNames = variants.map(v => v.name.trim().toLowerCase());
     const uniqueNames = new Set(variantNames);
     if (variantNames.length !== uniqueNames.size) {
       return res.status(400).json({ code: 1, message: "Tên biến thể không được trùng lặp" });
     }
 
-    // Check duplicate group name
+    // Check duplicate
     const existingGroup = await VariantGroupEntity.findOne({
       groupName: { $regex: new RegExp(`^${groupName.trim()}$`, 'i') }
     });
@@ -93,7 +92,6 @@ export const createVariantGroup = async (
       return res.status(400).json({ code: 1, message: "Tên nhóm biến thể đã tồn tại" });
     }
 
-    // Create new group
     const newGroup = await VariantGroupEntity.create({
       groupName: groupName.trim(),
       groupType: groupType?.trim() || undefined,
@@ -104,7 +102,8 @@ export const createVariantGroup = async (
         name: v.name.trim(),
         isActive: v.isActive ?? true
       })),
-      isActive: isActive ?? true
+      isActive: isActive ?? true,
+      hasImage: hasImage ?? false
     });
 
     return res.status(201).json({
@@ -135,15 +134,14 @@ export const updateVariantGroup = async (
       return res.status(404).json({ code: 1, message: "Nhóm biến thể không tồn tại" });
     }
 
-    const { groupName, groupType, description, icon, variants, isActive } = req.body;
+    const { groupName, groupType, description, icon, variants, isActive, hasImage } = req.body;
 
-    // Validation
     if (groupName !== undefined) {
       if (!groupName.trim()) {
         return res.status(400).json({ code: 1, message: "Tên nhóm biến thể không được để trống" });
       }
 
-      // Check duplicate group name (exclude current group)
+      // Check duplicate
       const existingGroup = await VariantGroupEntity.findOne({
         _id: { $ne: id },
         groupName: { $regex: new RegExp(`^${groupName.trim()}$`, 'i') }
@@ -173,7 +171,7 @@ export const updateVariantGroup = async (
         return res.status(400).json({ code: 1, message: "Nhóm biến thể phải có ít nhất 1 biến thể" });
       }
 
-      // Check duplicate variant names
+      // Check duplicate
       const variantNames = variants.map(v => v.name.trim().toLowerCase());
       const uniqueNames = new Set(variantNames);
       if (variantNames.length !== uniqueNames.size) {
@@ -189,6 +187,10 @@ export const updateVariantGroup = async (
 
     if (isActive !== undefined) {
       group.isActive = isActive;
+    }
+
+    if (hasImage !== undefined) {
+      group.hasImage = hasImage;
     }
 
     await group.save();

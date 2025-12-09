@@ -1,8 +1,17 @@
 import { computed } from 'vue'
 import type { Ref } from 'vue'
 
-function requiredRule(value: string) {
-  return !!value || 'Nội dung không được trống'
+// function requiredRule(value: string) {
+//   return !!value || 'Nội dung không được trống'
+// }
+
+function requiredRule(value: string | number) {
+  const isEmpty =
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "");
+
+  return !isEmpty || "Nội dung không được trống";
 }
 
 function noSpecialCharRule(value: string) {

@@ -172,6 +172,11 @@ const statusListToShow = (order: OrderDTO) => {
         <Button :border="false" color="secondary" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>
     </template>
+    <template #footer.prepend>
+      <div class="mr-md">
+        Tổng số: <Text tag="span" :text="store.totalItems" color="primary" size="lg" weight="semibold" /> đơn hàng
+      </div>
+    </template>
   </v-data-table-server>
 </v-container>
 </template>
