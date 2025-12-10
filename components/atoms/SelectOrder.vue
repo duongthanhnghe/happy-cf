@@ -28,7 +28,7 @@ const emit = defineEmits(["update:modelValue"])
       @update:model-value="emit('update:modelValue', $event)"
     >
       <template v-slot:append>
-        <MaterialIcon name="keyboard_arrow_down" :size="16"/>
+        <MaterialIcon name="keyboard_arrow_down" size="sm"/>
       </template>
     </v-select>
   </client-only>

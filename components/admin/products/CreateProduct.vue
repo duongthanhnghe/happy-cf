@@ -10,7 +10,7 @@ const formRef = ref<VForm | null>(null);
 const handleSubmitCreate = async () => {
   if (!formRef.value) return;
 
-  const valid = await formRef.value.validate();
+  const {valid} = await formRef.value.validate();
   if (!valid || store.selectedCategoryName.length === 0) {
     showWarning('Vui lòng nhập đầy đủ thông tin');
     return;
@@ -24,7 +24,7 @@ const handleSubmitCreate = async () => {
 
 <Popup v-model="store.isTogglePopupAdd" footerFixed popupHeading="Them san pham" align="right">
   <template #body>
-    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+    <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
         <LabelInput label="Ten san pham" required/>
         <v-text-field v-model="store.formProductItem.productName" :counter="100" :rules="store.nullAndSpecialRules" label="Nhap ten san pham" variant="outlined" required></v-text-field>
         <div class="row">

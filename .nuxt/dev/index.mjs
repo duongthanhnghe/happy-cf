@@ -1151,16 +1151,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"4c559-oOszlwhLEvpTVbZjMVF7JYAJ5wE\"",
-    "mtime": "2025-12-10T09:42:50.839Z",
-    "size": 312665,
+    "etag": "\"4c628-2zjs3zTpEgbDXr6BJ036Y510v/c\"",
+    "mtime": "2025-12-10T10:49:52.463Z",
+    "size": 312872,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"125491-6eFHOMw58I4wJLD1jYBImrLqxtA\"",
-    "mtime": "2025-12-10T09:42:50.841Z",
-    "size": 1201297,
+    "etag": "\"12580f-dryJjeW7l67FlxVK43hCx0f5IUI\"",
+    "mtime": "2025-12-10T10:49:52.465Z",
+    "size": 1202191,
     "path": "index.mjs.map"
   }
 };
@@ -3329,12 +3329,23 @@ const getAllCategoriesTree$1 = async (_, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
-const getAllCategories$2 = async (_, res) => {
+const getAllCategories$2 = async (req, res) => {
   try {
-    const categories = await CategoryProductEntity.find().lean().sort({ order: 1 });
-    return res.json({ code: 0, data: toCategoryProductListDTO(categories) });
+    const search = req.query.search || "";
+    const filter = {};
+    if (search.trim()) {
+      filter.categoryName = { $regex: search.trim(), $options: "i" };
+    }
+    const categories = await CategoryProductEntity.find(filter).lean().sort({ order: 1 });
+    return res.json({
+      code: 0,
+      data: toCategoryProductListDTO(categories)
+    });
   } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
+    return res.status(500).json({
+      code: 1,
+      message: err.message
+    });
   }
 };
 const getCategoriesById$2 = async (req, res) => {

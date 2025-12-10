@@ -81,7 +81,7 @@ watch(
 const handleSubmitVariantProduct = async () => {
   if (!formRef.value) return;
 
-  const valid = await formRef.value.validate();
+  const {valid} = await formRef.value.validate();
   if (!valid) {
     showWarning('Vui lòng nhập đầy đủ thông tin');
     return;

@@ -6,9 +6,9 @@ export const useAdminProductCategory = () => {
   
   const listCategory = ref<CategoryProductDTO[]>([])
   
-  const fetchCategoryList = async () => {
+  const fetchCategoryList = async (search: string) => {
     try {
-      const data = await categoriesAPI.getAll()
+      const data = await categoriesAPI.getAll(search)
       if(data.code === 0) listCategory.value = data.data
     } catch (error) {
       console.error("Error fetching categories:", error)

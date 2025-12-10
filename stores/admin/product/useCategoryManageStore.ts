@@ -48,22 +48,20 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
   })
   const dataListCategory = ref<CategoryProductDTO[] | null>(null);
   const maxOrder = ref<number>(0)
-  const itemsPerPage = 10
+  const itemsPerPage = 50
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
-    { title: 'Hinh anh', key: 'image', sortable: false, },
+    { title: 'Hình ảnh', key: 'image', sortable: false, },
     { title: 'Banner', key: 'banner', sortable: false, },
-    { title: 'Ten danh muc', sortable: false, key: 'categoryName'},
-    { title: 'Mo ta', key: 'description', sortable: false, },
-    { title: 'Danh muc cha', key: 'parentId', sortable: false, },
-    { title: 'Tinh trang', key: 'isActive', sortable: false, },
+    { title: 'Tên danh mục', sortable: false, key: 'categoryName'},
+    { title: 'Danh mục cha', key: 'parentId', sortable: false, },
+    { title: 'Tình trạng', key: 'isActive', sortable: false, },
     { title: '', key: 'actions', sortable: false, headerProps: { class: 'v-data-table-sticky-cl-right' },
     cellProps: { class: 'v-data-table-sticky-cl-right' }},
   ])
   const serverItems = ref<CategoryProductDTO[]>([])
   const loadingTable = ref<boolean>(true)
   const totalItems = ref<number>(0)
-  const name = ref<string>('')
   const search = ref<string>('')
   const currentTableOptions = ref<TableOpt>({
     page: 1,
@@ -71,11 +69,9 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     sortBy: [],
   })
   const isTogglePopupUpdate = ref<boolean>(false);
-  const detailData = ref<CategoryProductDTO | null>(null);
   const isTogglePopupAdd = ref<boolean>(false);
   const currentImageType = ref<'image' | 'banner' | null>(null)
 
-  //utils handle
   const handleTogglePopupAdd = (value: boolean) => {
     handleResetFormCategoryItem()
     updateCategoryItem.id = ''
@@ -83,6 +79,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
   };
 
   const handleTogglePopupUpdate = (value: boolean) => {
+    handleResetFormCategoryItem()
     isTogglePopupUpdate.value = value;
   };
 
@@ -104,38 +101,22 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     return getListCategoryAll.value.find(item => item.id === id)
   }
 
-  // LIST
   const getListAllCategory = async () => {
-    await fetchCategoryList()
+    await fetchCategoryList(search.value)
     if(getListCategoryAll.value) dataListCategory.value = getListCategoryAll.value
   }
 
   const ListAllCategoryApi = {
-    async fetch ({ page, itemsPerPage, sortBy, search }: {
+    async fetch ({ page, itemsPerPage }: {
       page: TableOpt['page'],
       itemsPerPage: TableOpt['itemsPerPage'],
-      sortBy: TableOpt['sortBy'],
-      search: { categoryName?: string }
     }) {
       return new Promise(resolve => {
         setTimeout(() => {
           const start = (page - 1) * itemsPerPage
           const end = start + itemsPerPage
-          const items = dataListCategory.value?.slice().filter(item => {
-            if (search.categoryName && !item.categoryName.toLowerCase().includes(search.categoryName.toLowerCase())) {
-              return false
-            }
-            return true
-          })
-          if (sortBy.length) {
-            const sortKey = sortBy[0].key
-            const sortOrder = sortBy[0].order
-            items?.sort((a:any, b:any) => {
-              const aValue = a[sortKey]
-              const bValue = b[sortKey]
-              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-            })
-          }
+          const items = dataListCategory.value
+         
           const paginated = items?.slice(start, end === -1 ? undefined : end)
           resolve({ items: paginated, total: items?.length })
         }, 500)
@@ -151,8 +132,6 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     const {items, total} = await ListAllCategoryApi.fetch({
       page: opt.page,
       itemsPerPage: opt.itemsPerPage,
-      sortBy: opt.sortBy,
-      search: { categoryName: name.value }
     }) as { items: CategoryProductDTO[], total: number }
      
     serverItems.value = items;
@@ -160,22 +139,18 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     loadingTable.value = false;
   }
 
-  watch(name, () => {
-    search.value = String(Date.now())
-  })
-
-  watch(dataListCategory, (newVal) => {
-    dataListCategory.value = newVal;
-
-    if(newVal && newVal.length > 0) {
-      maxOrder.value = Math.max(...newVal.map(item => item.order))
-    } else {
-      maxOrder.value = 0
+  watch(
+    async () => [search.value, currentTableOptions.value.page, currentTableOptions.value.itemsPerPage],
+    async () => {
+      await loadItemsCategory(currentTableOptions.value);
+      if(getListCategoryAll.value && getListCategoryAll.value.length > 0) {
+        maxOrder.value = Math.max(...getListCategoryAll.value.map(item => item.order))
+      } else {
+        maxOrder.value = 0
+      }
     }
-  })
+  );
 
-
-  //CRUD
   async function submitCreate() {
     Loading(true);
     try {
@@ -187,9 +162,9 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
         handleResetFormCategoryItem()
         handleReload()
       } else showWarning(data.message)
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
@@ -197,10 +172,9 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
   const handleEditCategory = async (id: string) => {
     if(!id) return
     await fetchProductCategoryDetail(id)
-    if(getProductCategoryDetail.value) detailData.value = getProductCategoryDetail.value
-    if(!detailData.value) return
+    if(!getProductCategoryDetail.value) return
     handleTogglePopupUpdate(true);
-    Object.assign(updateCategoryItem, detailData.value);
+    Object.assign(updateCategoryItem, getProductCategoryDetail.value);
     if(updateCategoryItem.parentId) setSelectedCategory(updateCategoryItem.parentId)
   }
 
@@ -216,9 +190,9 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
         handleResetFormCategoryItem()
         handleReload()
       } else showWarning(data.message)
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
@@ -232,24 +206,18 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
       const data = await categoriesAPI.delete(id)
       if(data.code === 1) showWarning(data.message)
       else {
-        if(dataListCategory.value){
-          dataListCategory.value = dataListCategory.value.filter(item => 
-            item.id !== id
-          )
-        }
         handleReload()
         showSuccess(data.message)
       }
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
 
   // chang active
   const { toggleActive } = useToggleActiveStatus(categoriesAPI.toggleActive, serverItems );
-
 
   // change order
   const { handleChangeOrder } = useChangeOrder(categoriesAPI.updateOrder, () => loadItemsCategory(currentTableOptions.value));
@@ -258,10 +226,8 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     return Array.from({ length: maxOrder.value }, (_, i) => i + 1)
   })
 
-
   //upload image
   const handleAddImage = (type: 'image' | 'banner') => {
-    // storeFileManage.handleTogglePopup(true)
     currentImageType.value = type;
     storeFileManage.handleTogglePopup(true);
   }
@@ -279,7 +245,6 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
 
     currentImageType.value = null
   })
-
 
   // SEO
   useSeoWatchers(formCategoryItem, { sourceKey: 'categoryName', autoSlug: true, autoTitleSEO: true })
@@ -324,13 +289,11 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     isTogglePopupUpdate,
     nullRules,
     nullAndSpecialRules,
-    detailData,
     formCategoryItem,
     updateCategoryItem,
     serverItems,
     loadingTable,
     totalItems,
-    name,
     search,
     itemsPerPage,
     headers,

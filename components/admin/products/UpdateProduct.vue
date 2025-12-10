@@ -10,7 +10,7 @@ const formRef = ref<VForm | null>(null);
 const handleSubmitUpdate = async () => {
   if (!formRef.value) return;
 
-  const valid = await formRef.value.validate();
+  const {valid} = await formRef.value.validate();
   if (!valid || store.selectedCategoryName.length === 0) {
     showWarning('Vui lòng nhập đầy đủ thông tin');
     return;

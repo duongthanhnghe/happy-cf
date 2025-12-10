@@ -1,23 +1,25 @@
 <script lang="ts" setup>
 import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManageStore'
-import type { SubmitEventPromise } from 'vuetify';
-
+import { ref } from 'vue';
+import type { VForm } from 'vuetify/components'
 const store = useCategoryManageStore();
+const formRef = ref<VForm | null>(null);
 
-const handleSubmitCreate = async (event: SubmitEventPromise) => {
-  const results = await event
-  if (!results.valid) return
+const handleSubmitCreate = async () => {
+  if (!formRef.value) return;
+  const { valid } = await formRef.value.validate();
+  if (!valid) {
+    return;
+  }
+
   await store.submitCreate();
 }
 
 </script>
 <template>
-<Popup popupId="popup-create-category" v-model="store.isTogglePopupAdd" popupHeading="Them danh muc" align="right">
+<Popup v-model="store.isTogglePopupAdd" footerFixed popupHeading="Them danh muc" align="right">
   <template #body>
-    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-      <div class="portal-popup-footer">
-        <Button type="submit" color="primary" label="Luu moi" class="w-full" />
-      </div>
+    <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
 
       <LabelInput label="Thuoc danh muc"/>
       <VTreeChoose :label="store.selectedCategoryName">
@@ -88,6 +90,9 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           variant="outlined"
         />
     </v-form>
+  </template>
+  <template #footer>
+    <Button @click="handleSubmitCreate" color="primary" label="Luu moi" class="w-full" />
   </template>
 </Popup>
 </template>
