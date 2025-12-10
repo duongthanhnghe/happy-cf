@@ -1,7 +1,6 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 import type {
-  CreateOrderBody,
   OrderDTO,
   OrderStatusDTO,
   PaymentDTO,
@@ -10,27 +9,79 @@ import type {
 import type { ApiResponse } from '@server/types/common/api-response'
 
 export const ordersAPI = {
+  // getAll: async (
+  //   page = 1,
+  //   limit = 10,
+  //   fromDate = "",
+  //   toDate = "",
+  //   search = "",
+  //   statusId = "",
+  //   transactionId = "",
+  // ): Promise<OrderPaginationDTO> => {
+  //   try {
+  //     const params = new URLSearchParams({
+  //       page: page.toString(),
+  //       limit: limit.toString(),
+  //     })
+
+  //     if (fromDate) params.append("fromDate", fromDate);
+  //     if (toDate) params.append("toDate", toDate);
+  //     if (search) params.append("search", search)
+  //     if (statusId) params.append("statusId", statusId)
+  //     if (transactionId) params.append("transactionId", transactionId)
+
+  //     const response = await fetch(
+  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST}?${params}`, {
+  //         credentials: 'include',
+  //       }
+  //     )
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error("Error:", err)
+  //     return {
+  //       code: 1,
+  //       message: "Failed to fetch orders",
+  //       data: [],
+  //       pagination: {
+  //         total: 0,
+  //         totalPages: 0,
+  //         page: 1,
+  //         limit,
+  //       },
+  //     }
+  //   }
+  // },
   getAll: async (
     page = 1,
     limit = 10,
-    search = ""
+    fromDate = "",
+    toDate = "",
+    search = "",
+    statusId = "",
+    transactionId = "",
   ): Promise<OrderPaginationDTO> => {
     try {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
-      })
-      if (search) params.append("search", search)
+      });
+
+      if (fromDate) params.append("fromDate", fromDate);
+      if (toDate) params.append("toDate", toDate);
+      if (search) params.append("search", search);
+      if (statusId) params.append("statusId", statusId);
+      if (transactionId) params.append("transactionId", transactionId);
 
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST}?${params}`, {
-          credentials: 'include',
-        }
-      )
-      const data = await response.json()
-      return data
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST}?${params}`,
+        { credentials: "include" }
+      );
+
+      const data = await response.json();
+      return data;
     } catch (err) {
-      console.error("Error:", err)
+      console.error("Error:", err);
       return {
         code: 1,
         message: "Failed to fetch orders",
@@ -41,7 +92,7 @@ export const ordersAPI = {
           page: 1,
           limit,
         },
-      }
+      };
     }
   },
 
@@ -136,116 +187,4 @@ export const ordersAPI = {
       }
     }
   },
-  
-  // getRewardHistoryByUserId: async (
-  //   userId: string,
-  //   page = 1,
-  //   limit = 10
-  // ): Promise<any> => {
-  //   try {
-  //     const params = new URLSearchParams({
-  //       page: page.toString(),
-  //       limit: limit.toString(),
-  //     })
-
-  //     const response = await fetch(
-  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST_REWARDS_BY_USER(userId)}?${params}`
-  //     )
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       return {
-  //         code: 1,
-  //         message: errorData.message || 'Failed to fetch reward history',
-  //         data: [],
-  //         pagination: {
-  //           page,
-  //           limit,
-  //           total: 0,
-  //           totalPages: 0
-  //         }
-  //       }
-  //     }
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error(`Error fetching reward history for user ${userId}:`, err)
-  //     return {
-  //       code: 1,
-  //       message: `Failed to fetch reward history for user ${userId}`,
-  //       data: [],
-  //       pagination: {
-  //         page,
-  //         limit,
-  //         total: 0,
-  //         totalPages: 0
-  //       }
-  //     }
-  //   }
-  // },
-  // checkPoint: async (
-  //   userId: string,
-  //   usedPoint: number,
-  //   orderTotal: number
-  // ): Promise<ApiResponse<{ appliedPoint: number }>> => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.CHECK_POINT}`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ userId, usedPoint, orderTotal }),
-  //       }
-  //     )
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error("Error checking point:", err)
-  //     return {
-  //       code: 1,
-  //       message: "Unexpected error while checking point",
-  //       data: { appliedPoint: 0 },
-  //     }
-  //   }
-  // },
-  // getFee: async (payload: {
-  //   PRODUCT_WEIGHT: number
-  //   PRODUCT_PRICE: number
-  //   MONEY_COLLECTION: number
-  //   SENDER_PROVINCE: number
-  //   SENDER_DISTRICT: number
-  //   RECEIVER_PROVINCE: number
-  //   RECEIVER_DISTRICT: number
-  // }) => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.SHIPPING_FEE}`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify(payload)
-  //     })
-
-  //     if (!response.ok) {
-  //       const errText = await response.text()
-  //       return {
-  //         code: 1,
-  //         message: `Failed to get shipping fee: ${errText}`,
-  //         data: null
-  //       }
-  //     }
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error("Error fetching shipping fee:", err)
-  //     return {
-  //       code: 1,
-  //       message: "Unexpected error while getting shipping fee",
-  //       data: null
-  //     }
-  //   }
-  // }
 }

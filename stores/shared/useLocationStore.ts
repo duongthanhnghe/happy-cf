@@ -78,7 +78,7 @@ export const useLocationStore = defineStore("LocationStore", () => {
   const resetLocation = () => {
     selectedProvince.value = null
     selectedDistrict.value = null
-    selectedWard.value = null
+    selectedWard.value = null 
     districts.value = []
     wards.value = []
   }
@@ -86,6 +86,18 @@ export const useLocationStore = defineStore("LocationStore", () => {
   const getListProvinces = computed(() => provinces.value || [])
   const getListDistricts = computed(() => districts.value || [])
   const getListWards = computed(() => wards.value || [])
+
+  const selectedProvinceObj = computed(() => {
+    return provinces.value.find(p => p.PROVINCE_ID === selectedProvince.value) || null
+  })
+
+  const selectedDistrictObj = computed(() => {
+    return districts.value.find(d => d.DISTRICT_ID === selectedDistrict.value) || null
+  })
+
+  const selectedWardObj = computed(() => {
+    return wards.value.find(w => w.WARDS_ID === selectedWard.value) || null
+  })
 
   return {
     provinces,
@@ -96,6 +108,9 @@ export const useLocationStore = defineStore("LocationStore", () => {
     selectedProvince,
     selectedDistrict,
     selectedWard,
+    selectedProvinceObj,
+    selectedDistrictObj,
+    selectedWardObj,
     isSetting,
     fetchProvincesStore,
     fetchDistrictsStore,

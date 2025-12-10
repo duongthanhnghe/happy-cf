@@ -3,10 +3,14 @@ import { formatCurrency, formatDateTime } from '@/utils/global'
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
 import { ORDER_STATUS } from '@/shared/constants/order-status';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
+import { useOrderHelpers } from '@/utils/orderHelpers';
+import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';
 import type { OrderDTO } from '@/server/types/dto/v1/order.dto';
 
-const store = useOrderHistoryStore();
+const store = useOrderHistoryStore()
 const storeDisplay = useDisplayStore()
+const storeDetailOrder = useSharedOrderDetailStore()
+const { remainingProductNames } = useOrderHelpers()
 const props = defineProps<{
   item: OrderDTO
 }>();
@@ -15,7 +19,7 @@ const props = defineProps<{
 <template>
   <Card :bg="storeDisplay.isLaptop ? 'gray6':'white'" class="rd-lg shadow-1 mb-ms">
     <div class="flex justify-between line-height-1">
-      <div class="flex gap-xs align-center weight-semibold cursor-pointer" @click="store.handleTogglePopupDetail(true, props.item?.id)">
+      <div class="flex gap-xs align-center weight-semibold cursor-pointer" @click="storeDetailOrder.handleTogglePopupDetail(true, props.item?.id)">
         <Button size="xs" color="secondary" icon="package_2" :disable="true"/>
         {{ props.item?.code }}
       </div>
@@ -24,8 +28,8 @@ const props = defineProps<{
     <div :class="['flex gap-sm border-bottom-dashed mt-md mb-sm pb-sm', storeDisplay.isLaptop ? 'border-color-gray':'border-color-gray2']">
       <div class="flex gap-xs position-relative">
         <template v-for="(itemImage, index) in props.item?.cartItems" :key="index" >
-          <img v-if="index < 3 && itemImage.idProduct.image" :class="[storeDisplay.isLaptop ? 'bg-white':'bg-gray6','rd-lg']" width="50" :src="itemImage.idProduct.image" :alt="itemImage.idProduct.productName" />
-          <span v-else-if="index < 4" class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ props.item?.cartItems.length - 3 }}</span>
+          <img v-tooltip="itemImage.idProduct.productName" v-if="index < 3 && itemImage.idProduct.image" :class="[storeDisplay.isLaptop ? 'bg-white':'bg-gray6','rd-lg']" width="50" :src="itemImage.idProduct.image" :alt="itemImage.idProduct.productName" />
+          <span v-tooltip.html="remainingProductNames(props.item?.cartItems)" v-else-if="index < 4" class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ props.item?.cartItems.length - 3 }}</span>
           <template v-else />
         </template>
       </div>

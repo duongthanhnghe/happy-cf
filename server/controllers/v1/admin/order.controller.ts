@@ -17,31 +17,75 @@ import { VoucherUsageEntity } from "../../../models/v1/voucher-usage.entity";
 import type { Order } from "../../../models/v1/order.entity";
 import mongoose from "mongoose";
 
-const VIETTEL_POST_API = "https://partner.viettelpost.vn/v2"
-
 export const getAllOrder = async (req: Request, res: Response) => {
   try {
-    let { page = 1, limit = 10 } = req.query;
+    let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId } = req.query;
 
     const numPage = Number(page);
     let numLimit = Number(limit);
 
+    const filter: any = {};
+
+    if (fromDate || toDate) {
+      filter.createdAt = {};
+
+      if (fromDate) filter.createdAt.$gte = new Date(fromDate as string);
+
+      if (toDate) {
+        const endDate = new Date(toDate as string);
+        endDate.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = endDate;
+      }
+    }
+
+    if (search) {
+      const keyword = search.toString().trim();
+      filter.$or = [
+        { code: { $regex: keyword, $options: "i" } },
+        { phone: { $regex: keyword, $options: "i" } },
+        { fullname: { $regex: keyword, $options: "i" } }
+      ];
+    }
+
+    if (statusId) {
+      filter.status = statusId;
+    }
+
+    let transactionMatch: any = {};
+
+    if (transactionId) {
+      transactionMatch.status = transactionId;
+    }
+
     if (numLimit === -1) {
-      const orders = await OrderEntity.find({})
+      const orders = await OrderEntity.find(filter)
         .sort({ createdAt: -1 })
         .populate("paymentId")
         .populate("status")
         .populate("userId")
-        .populate({ path: "transaction", model: "PaymentTransaction" })
+        .populate({
+          path: "transaction",
+          model: "PaymentTransaction",
+          match: transactionMatch
+        })
+        .populate({
+          path: "cartItems.idProduct",
+          model: "Product",
+          select: "image productName"
+        });
+
+      const filtered = transactionId
+        ? orders.filter(o => o.transaction !== null)
+        : orders;
 
       return res.json({
         code: 0,
-        data: toOrderListDTO(orders),
+        data: toOrderListDTO(filtered),
         pagination: {
           page: 1,
-          limit: orders.length,
+          limit: filtered.length,
           totalPages: 1,
-          total: orders.length
+          total: filtered.length
         }
       });
     }
@@ -54,11 +98,20 @@ export const getAllOrder = async (req: Request, res: Response) => {
         { path: "paymentId", model: "Payment" },
         { path: "status", model: "OrderStatus" },
         { path: "userId", model: "User" },
-        { path: "transaction", model: "PaymentTransaction" }
+        {
+          path: "transaction",
+          model: "PaymentTransaction",
+          match: transactionMatch
+        },
+        { path: "cartItems.idProduct", model: "Product", select: "image productName" }
       ]
     };
 
-    const result = await OrderEntity.paginate({}, options);
+    let result = await OrderEntity.paginate(filter, options);
+
+    if (transactionId) {
+      result.docs = result.docs.filter(doc => doc.transaction !== null);
+    }
 
     return res.json({
       code: 0,
@@ -70,6 +123,7 @@ export const getAllOrder = async (req: Request, res: Response) => {
         total: result.totalDocs
       }
     });
+
   } catch (error) {
     return res
       .status(500)
@@ -77,9 +131,234 @@ export const getAllOrder = async (req: Request, res: Response) => {
   }
 };
 
+// export const getAllOrder = async (req: Request, res: Response) => {
+//   try {
+//     let {
+//       page = 1,
+//       limit = 10,
+//       fromDate,
+//       toDate,
+//       search,
+//       statusId,
+//       transactionId,
+//     } = req.query;
+
+//     const numPage = Number(page);
+//     const numLimit = Number(limit);
+
+//     const preMatch: any = {};
+//     const postMatch: any = {};
+
+//     // --------------------------
+//     // PRE-MATCH
+//     // --------------------------
+//     if (fromDate || toDate) {
+//       preMatch.createdAt = {};
+//       if (fromDate) preMatch.createdAt.$gte = new Date(fromDate as string);
+//       if (toDate) {
+//         const end = new Date(toDate as string);
+//         end.setHours(23, 59, 59, 999);
+//         preMatch.createdAt.$lte = end;
+//       }
+//     }
+
+//     if (search) {
+//       const keyword = search.toString().trim();
+//       preMatch.$or = [
+//         { code: { $regex: keyword, $options: "i" } },
+//         { phone: { $regex: keyword, $options: "i" } },
+//         { fullname: { $regex: keyword, $options: "i" } },
+//       ];
+//     }
+
+//     if (statusId) {
+//       preMatch.status = new mongoose.Types.ObjectId(statusId as string);
+//     }
+
+//     if (transactionId) {
+//       postMatch["transactionData.status"] = transactionId;
+//     }
+
+//     // --------------------------
+//     // AGGREGATE PIPELINE
+//     // --------------------------
+//     const pipeline: any[] = [];
+
+//     if (Object.keys(preMatch).length) pipeline.push({ $match: preMatch });
+
+//     // --------------------------
+//     // POPULATE: Status
+//     // --------------------------
+//     pipeline.push(
+//       {
+//         $lookup: {
+//           from: "order_status",
+//           localField: "status",
+//           foreignField: "_id",
+//           as: "statusData",
+//         },
+//       },
+//       { $unwind: "$statusData" }
+//     );
+
+//     // --------------------------
+//     // POPULATE: Payment
+//     // --------------------------
+//     pipeline.push(
+//       {
+//         $lookup: {
+//           from: "payments",
+//           localField: "paymentId",
+//           foreignField: "_id",
+//           as: "paymentData",
+//         },
+//       },
+//       { $unwind: "$paymentData" }
+//     );
+
+//     // --------------------------
+//     // POPULATE: User
+//     // --------------------------
+//     pipeline.push(
+//       {
+//         $lookup: {
+//           from: "users",
+//           localField: "userId",
+//           foreignField: "_id",
+//           as: "userData",
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: "$userData",
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       }
+//     );
+
+//     // --------------------------
+//     // POPULATE: Payment Transaction
+//     // --------------------------
+//     pipeline.push(
+//       {
+//         $lookup: {
+//           from: "paymenttransactions",
+//           localField: "transaction",
+//           foreignField: "_id",
+//           as: "transactionData",
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: "$transactionData",
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       }
+//     );
+
+//     // Apply post-match
+//     if (Object.keys(postMatch).length) pipeline.push({ $match: postMatch });
+
+//     // --------------------------
+//     // POPULATE: Product (image, productName)
+//     // --------------------------
+//     pipeline.push({
+//       $lookup: {
+//         from: "products",
+//         localField: "cartItems.idProduct",
+//         foreignField: "_id",
+//         as: "productData",
+//       },
+//     });
+
+//     // --------------------------
+//     // Merge product vào cartItems
+//     // --------------------------
+//     pipeline.push({
+//       $addFields: {
+//         cartItems: {
+//           $map: {
+//             input: "$cartItems",
+//             as: "ci",
+//             in: {
+//               $mergeObjects: [
+//                 "$$ci",
+//                 {
+//                   product: {
+//                     $first: {
+//                       $filter: {
+//                         input: "$productData",
+//                         as: "pd",
+//                         cond: { $eq: ["$$pd._id", "$$ci.idProduct"] },
+//                       },
+//                     },
+//                   },
+//                 },
+//               ],
+//             },
+//           },
+//         },
+//       },
+//     });
+
+//     pipeline.push({ $project: { productData: 0 } });
+
+//     // SORT
+//     pipeline.push({ $sort: { createdAt: -1 } });
+
+//     // FACET: data + total
+//     pipeline.push({
+//       $facet: {
+//         data: [
+//           ...(numLimit === -1
+//             ? []
+//             : [
+//                 { $skip: (numPage - 1) * numLimit },
+//                 { $limit: numLimit },
+//               ]),
+//         ],
+//         totalCount: [{ $count: "total" }],
+//       },
+//     });
+
+//     // EXECUTE DB
+//     const result = await OrderEntity.aggregate(pipeline);
+
+//     const data = result[0]?.data || [];
+//     const total = result[0]?.totalCount?.[0]?.total || 0;
+
+//     return res.json({
+//       code: 0,
+//       data: toOrderListDTO(data),
+//       pagination: {
+//         page: numPage,
+//         limit: numLimit,
+//         total,
+//         totalPages: numLimit === -1 ? 1 : Math.ceil(total / numLimit),
+//       },
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       code: 1,
+//       message: "Lỗi lấy danh sách order",
+//       error,
+//     });
+//   }
+// };
+
 export const getOrderById = async (req: Request, res: Response) => {
   try {
-    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
+    const order = await OrderEntity.findById(req.params.id)
+      .populate("paymentId")
+      .populate("status")
+      .populate("userId")
+      .populate({ path: "transaction", model: "PaymentTransaction" })
+      .populate({
+        path: "cartItems.idProduct",
+        model: "Product",
+        select: "productName image",
+      });
+
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order không tồn tại" })
     }

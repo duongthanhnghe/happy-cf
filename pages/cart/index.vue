@@ -6,7 +6,7 @@ import { showWarning } from '@/utils/toast'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
-import { usePaymentStatusStore } from '@/stores/shared/usePaymentStatusStore'
+import { usePaymentStatusStore } from '@/stores/shared/order/usePaymentStatusStore'
 import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { useEventBus } from "@/composables/voucher/useEventBus";
 import { useLocationWatchers } from '@/composables/shared/location/useLocationWatchers';

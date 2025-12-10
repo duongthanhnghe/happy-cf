@@ -14,7 +14,17 @@ import { VoucherUsageEntity } from "../../models/v1/voucher-usage.entity";
 
 export const getOrderById = async (req: Request, res: Response) => {
   try {
-    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
+    const order = await OrderEntity.findById(req.params.id)
+      .populate("paymentId")
+      .populate("status")
+      .populate("userId")
+      .populate({ path: "transaction", model: "PaymentTransaction" })
+      .populate({
+        path: "cartItems.idProduct",
+        model: "Product",
+        select: "productName image",
+      });
+
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order không tồn tại" })
     }

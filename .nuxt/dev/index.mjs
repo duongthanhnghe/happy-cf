@@ -1148,22 +1148,7 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"4bbd1-kM/ZcKDvBnsKKo6mPL6N68sscdE\"",
-    "mtime": "2025-12-09T04:12:10.105Z",
-    "size": 310225,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"122bac-ufrhA1ujBdKtlZYsDhJgPSfM/K0\"",
-    "mtime": "2025-12-09T04:12:10.107Z",
-    "size": 1190828,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -3887,6 +3872,9 @@ const OrderSchema = new Schema(
     provinceCode: { type: Number, required: true },
     districtCode: { type: Number, required: true },
     wardCode: { type: Number, required: true },
+    provinceName: { type: String, required: true },
+    districtName: { type: String, required: true },
+    wardName: { type: String, required: true },
     fullname: { type: String, required: true },
     phone: { type: String, required: true },
     note: { type: String },
@@ -3988,6 +3976,9 @@ function toOrderDTO(entity) {
     provinceCode: entity.provinceCode,
     districtCode: entity.districtCode,
     wardCode: entity.wardCode,
+    provinceName: entity.provinceName,
+    districtName: entity.districtName,
+    wardName: entity.wardName,
     phone: entity.phone,
     note: entity.note || "",
     paymentId: toPaymentDTO(entity.paymentId),
@@ -4559,19 +4550,53 @@ const VoucherEntity = model("Voucher", VoucherSchema, "vouchers");
 
 const getAllOrder = async (req, res) => {
   try {
-    let { page = 1, limit = 10 } = req.query;
+    let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId } = req.query;
     const numPage = Number(page);
     let numLimit = Number(limit);
+    const filter = {};
+    if (fromDate || toDate) {
+      filter.createdAt = {};
+      if (fromDate) filter.createdAt.$gte = new Date(fromDate);
+      if (toDate) {
+        const endDate = new Date(toDate);
+        endDate.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = endDate;
+      }
+    }
+    if (search) {
+      const keyword = search.toString().trim();
+      filter.$or = [
+        { code: { $regex: keyword, $options: "i" } },
+        { phone: { $regex: keyword, $options: "i" } },
+        { fullname: { $regex: keyword, $options: "i" } }
+      ];
+    }
+    if (statusId) {
+      filter.status = statusId;
+    }
+    let transactionMatch = {};
+    if (transactionId) {
+      transactionMatch.status = transactionId;
+    }
     if (numLimit === -1) {
-      const orders = await OrderEntity.find({}).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
+      const orders = await OrderEntity.find(filter).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId").populate({
+        path: "transaction",
+        model: "PaymentTransaction",
+        match: transactionMatch
+      }).populate({
+        path: "cartItems.idProduct",
+        model: "Product",
+        select: "image productName"
+      });
+      const filtered = transactionId ? orders.filter((o) => o.transaction !== null) : orders;
       return res.json({
         code: 0,
-        data: toOrderListDTO(orders),
+        data: toOrderListDTO(filtered),
         pagination: {
           page: 1,
-          limit: orders.length,
+          limit: filtered.length,
           totalPages: 1,
-          total: orders.length
+          total: filtered.length
         }
       });
     }
@@ -4583,10 +4608,18 @@ const getAllOrder = async (req, res) => {
         { path: "paymentId", model: "Payment" },
         { path: "status", model: "OrderStatus" },
         { path: "userId", model: "User" },
-        { path: "transaction", model: "PaymentTransaction" }
+        {
+          path: "transaction",
+          model: "PaymentTransaction",
+          match: transactionMatch
+        },
+        { path: "cartItems.idProduct", model: "Product", select: "image productName" }
       ]
     };
-    const result = await OrderEntity.paginate({}, options);
+    let result = await OrderEntity.paginate(filter, options);
+    if (transactionId) {
+      result.docs = result.docs.filter((doc) => doc.transaction !== null);
+    }
     return res.json({
       code: 0,
       data: toOrderListDTO(result.docs),
@@ -4603,7 +4636,11 @@ const getAllOrder = async (req, res) => {
 };
 const getOrderById$1 = async (req, res) => {
   try {
-    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
+    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" }).populate({
+      path: "cartItems.idProduct",
+      model: "Product",
+      select: "productName image"
+    });
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
@@ -6422,7 +6459,11 @@ const PAYMENT_METHOD_STATUS = {
 
 const getOrderById = async (req, res) => {
   try {
-    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" });
+    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" }).populate({
+      path: "cartItems.idProduct",
+      model: "Product",
+      select: "productName image"
+    });
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
     }

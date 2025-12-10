@@ -1,6 +1,5 @@
 import type { ProductDTO } from './product.dto';
 import type { PaymentTransactionDTO, PaymentMethod } from './payment-transaction.dto';
-import { Types } from "mongoose";
 import type { PaginationDTO } from '../../common/pagination.dto'
 import type { ApplyVoucherResponse } from './voucher.dto';
 
@@ -13,8 +12,7 @@ export interface OrderMappingNew extends OrderDTO {
 }
 
 export interface cartItems {
-  // idProduct: string | Types.ObjectId
-  idProduct: string | ProductDTO | Types.ObjectId
+  idProduct: { image: string, productName: string}
   priceDiscounts: number
   quantity: number
   note: string | null
@@ -56,6 +54,9 @@ export interface OrderDTO {
   provinceCode: number;
   districtCode: number;
   wardCode: number;
+  provinceName: string;
+  districtName: string;
+  wardName: string;
   fullname: string;
   phone: string;
   note: string;
@@ -91,6 +92,9 @@ export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "up
   provinceCode: number;
   districtCode: number;
   wardCode: number;
+  provinceName: string;
+  districtName: string;
+  wardName: string;
 }
 
 export type OrderPaginationDTO = PaginationDTO<OrderDTO>

@@ -76,9 +76,12 @@ export const useCartOrder = (
       shippingFee: shippingFee.value,
       status: ORDER_STATUS.PENDING,
       userId: userId || null,
-      provinceCode: storeLocation.selectedProvince || 0,
-      districtCode: storeLocation.selectedDistrict || 0,
-      wardCode: storeLocation.selectedWard || 0,
+      provinceCode: storeLocation.selectedProvince,
+      districtCode: storeLocation.selectedDistrict,
+      wardCode: storeLocation.selectedWard,
+      provinceName: storeLocation.selectedProvinceObj.PROVINCE_NAME,
+      districtName: storeLocation.selectedDistrictObj.DISTRICT_NAME,
+      wardName: storeLocation.selectedWardObj.WARDS_NAME,
       voucherUsage: newVoucherUsage
     };
 
@@ -118,9 +121,9 @@ export const useCartOrder = (
 
         handleResetForm();
       }
-      Loading(false);
     } catch (err: any) {
       showWarning(err.message);
+    } finally {
       Loading(false);
     }
   };

@@ -1,17 +1,13 @@
 import { showSuccess, showWarning } from "@/utils/toast";
 import { Loading } from "@/utils/global";
 import { ordersAPI } from "@/services/v1/orders.service";
-import { watch, type Ref } from 'vue';
+import { type Ref } from 'vue';
 import { useRouter } from 'vue-router'
 import type { OrderPaginationDTO } from "@/server/types/dto/v1/order.dto";
 import { ROUTES } from "@/shared/constants/routes";
 
-export const useOrderDetailUtils = (
+export const useOrderAccountUtils = (
   items: Ref<OrderPaginationDTO|null>,
-  isTogglePopupDetail: Ref<boolean>,
-  checkPageDetail: Ref<boolean>,
-  idOrderPopupDetail: Ref<string>,
-  storeOrderStatus: any,
 ) => {
   const router = useRouter()
 
@@ -47,23 +43,8 @@ export const useOrderDetailUtils = (
     }
   }
 
-  const handleTogglePopupDetail = (value: boolean, id: string) => {
-    isTogglePopupDetail.value = value;
-    idOrderPopupDetail.value = id;
-  };
-
-  const setCheckPageDetail = (value: boolean) => {
-    checkPageDetail.value = value
-  }
-
-  watch(() => [isTogglePopupDetail.value,checkPageDetail.value], async (newValue) => {
-    if(newValue && storeOrderStatus.getListData.length === 0) await storeOrderStatus.fetchOrderStatusStore()
-  }, { immediate: true })
-
   return {
     handlePaymentOrder,
     handleCancelOrder,
-    handleTogglePopupDetail,
-    setCheckPageDetail,
   };
 };

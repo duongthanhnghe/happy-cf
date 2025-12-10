@@ -3,9 +3,9 @@ import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderD
 const storeDetailOrder = useSharedOrderDetailStore()
 </script>
 <template>
-  <Popup v-model="storeDetailOrder.togglePopupDetail" bodyClass="bg-gradient-1 pb-md" align="right">
-    <template #body>
-      <OrderDetailTemplate />
-    </template>
-  </Popup>
+<Popup v-model="storeDetailOrder.togglePopupDetail" bodyClass="bg-gradient-1 pb-md" align="right">
+  <template #body>
+    <AdminOrderDetailTemplate />
+  </template>
+</Popup>
 </template>

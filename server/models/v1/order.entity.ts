@@ -30,6 +30,9 @@ export interface Order {
   provinceCode: number;
   districtCode: number;
   wardCode: number;
+  provinceName: string;
+  districtName: string;
+  wardName: string;
   fullname: string;
   phone: string;
   note?: string;
@@ -109,6 +112,9 @@ const OrderSchema = new Schema<Order>(
     provinceCode: { type: Number, required: true },
     districtCode: { type: Number, required: true },
     wardCode: { type: Number, required: true },
+    provinceName: { type: String, required: true },
+    districtName: { type: String, required: true },
+    wardName: { type: String, required: true },
     fullname: { type: String, required: true },
     phone: { type: String, required: true },
     note: { type: String },

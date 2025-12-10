@@ -45,6 +45,9 @@ export function toOrderDTO(entity: Order): OrderDTO {
     provinceCode: entity.provinceCode,
     districtCode: entity.districtCode,
     wardCode: entity.wardCode,
+    provinceName: entity.provinceName,
+    districtName: entity.districtName,
+    wardName: entity.wardName,
     phone: entity.phone,
     note: entity.note || "",
     paymentId: toPaymentDTO(entity.paymentId as any),
@@ -111,15 +114,11 @@ export const toOrderListDTO = (orders: Order[]): OrderDTO[] =>
 function toCartItemDTO(entity: cartItems): cartItems {
   let idProduct: any = entity.idProduct;
 
-  // Nếu là string → convert sang objectId
   if (typeof idProduct === "string") {
     idProduct = new Types.ObjectId(idProduct);
   }
-  // Nếu là ObjectId → giữ nguyên
   else if (idProduct instanceof Types.ObjectId) {
-    // ok giữ nguyên
   }
-  // Nếu là object → ProductDTO
   else if (typeof idProduct === "object" && idProduct !== null) {
     // giữ nguyên object
   }

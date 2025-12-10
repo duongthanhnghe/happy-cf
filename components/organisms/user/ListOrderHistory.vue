@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore';
+import { useOrderStatusStore } from '@/stores/shared/order/useOrderStatusStore';
 import { useStickyObserver } from "@/utils/stickyObserver"
 
 const store = useOrderHistoryStore();
+const storeOrderStatus = useOrderStatusStore();
 const { isStuck } = useStickyObserver('tabsSticky')
 
 </script>
@@ -14,7 +16,7 @@ const { isStuck } = useStickyObserver('tabsSticky')
       :class="['sticky sticky-cover-header', isStuck ? 'bg-gray6':'bg-white rd-lg shadow-1']"
     >
       <v-tab
-        v-for="item in [{ id: '', name: 'Tất cả' }, ...store.getOrderStatus]"
+        v-for="item in [{ id: '', name: 'Tất cả' }, ...storeOrderStatus.getListData]"
         :key="item.id"
         :value="item.id"
         :text="item.name"
@@ -47,6 +49,6 @@ const { isStuck } = useStickyObserver('tabsSticky')
     </div>
   </div>
 
-  <PopupOrderDetail :typePopup="true" :idOrder="store.idOrderPopupDetail" />
+  <PopupOrderDetail />
 </template>
 

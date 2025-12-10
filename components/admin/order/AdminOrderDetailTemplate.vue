@@ -1,22 +1,16 @@
 <script lang="ts" setup>
 import '@/styles/molecules/order/order-item-detail-template1.scss'
-import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
 import { formatCurrency, formatDateTime } from '@/utils/global'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
-import { useOrderStatusStore } from '@/stores/shared/order/useOrderStatusStore';
-import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';
+import { useOrderStatusStore } from '@/stores/shared/order/useOrderStatusStore';
 
-const storeHistory = useOrderHistoryStore();
-const storeOrderStatus = useOrderStatusStore();
-const storeSetting = useBaseInformationStore();
-const storeAccount = useAccountStore();
+const storeOrderStatus = useOrderStatusStore()
 const storeDetailOrder = useSharedOrderDetailStore()
 
 </script>
 <template>
-  <template v-if="storeDetailOrder.getDetailOrder && (storeDetailOrder.getDetailOrder.userId === null || storeDetailOrder.getDetailOrder.userId === storeAccount.getUserId)">
+  <template v-if="storeDetailOrder.getDetailOrder">
     <div class="text-center text-color-white text-size-xl weight-semibold">
       <div class="text-size-large weight-normal">Đơn hàng</div>
       {{ storeDetailOrder.getDetailOrder?.code }}
@@ -127,31 +121,11 @@ const storeDetailOrder = useSharedOrderDetailStore()
       </div>
       </div>
     </Card>
-    <Card size="sm" class="rd-lg mt-sm flex gap-sm justify-between">
-      <img class="avatar-src" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" loading="lazy" /> 
-      <div class="flex flex-1 justify-between">
-        <div>
-          <div class="weight-medium text-color-black">
-            Người giao hàng
-          </div>
-          <span class="text-color-gray5 text-size-xs">{{ storeSetting.getBaseInformation?.name }}</span>
-        </div>
-        <div class="flex gap-sm">
-          <a v-if="storeSetting.getBaseInformation?.phone" :href="`tel:${Number(storeSetting.getBaseInformation?.phone.replace(/\s+/g, ''))}`">
-            <Button tag="span" color="gray" icon="phone" />
-          </a>
-          <a v-if="storeSetting.getBaseInformation?.socialLinks" :href="storeSetting.getBaseInformation?.socialLinks[0].src" target="_blank">
-            <Button tag="span" color="black" icon="chat" />
-          </a>
-        </div>
-      </div>
-    </Card>
     <div class="text-center mt-sm">
       Thời gian đặt hàng: {{ formatDateTime(storeDetailOrder.getDetailOrder?.createdAt) }}
     </div>
     <div v-if="storeDetailOrder.getDetailOrder?.status.id === ORDER_STATUS.PENDING || storeDetailOrder.getDetailOrder?.status.id === ORDER_STATUS.CANCELLED" class="mt-md">
-      <Button v-if="storeDetailOrder.getDetailOrder.userId && !storeDetailOrder.getDetailOrder?.cancelRequested && storeDetailOrder.getDetailOrder?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="storeHistory.handleCancelOrder(storeDetailOrder.getDetailOrder?.id, storeDetailOrder.getDetailOrder.userId)" size="lg" color="black" label="Yêu cầu huỷ đơn" icon="cancel" class="w-full rd-lg"/>
-      <Button v-else-if="storeDetailOrder.getDetailOrder?.cancelRequested" tag="span" color="black" :border="false" label="Đã yêu cầu huỷ đơn" icon="partner_reports" class="w-full rd-lg" />
+      <Button v-if="storeDetailOrder.getDetailOrder?.cancelRequested" tag="span" color="black" :border="false" label="Khách yêu cầu huỷ đơn" icon="partner_reports" class="w-full rd-lg" />
       <template v-else />
     </div>
   </template>
