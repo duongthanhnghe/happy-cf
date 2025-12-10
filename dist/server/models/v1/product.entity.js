@@ -84,6 +84,14 @@ const CategoryProductSchema = new Schema({
         default: []
     }
 }, { timestamps: true });
+ProductSchema.virtual("category", {
+    ref: "CategoryProduct",
+    localField: "categoryId",
+    foreignField: "_id",
+    justOne: true
+});
+ProductSchema.set("toObject", { virtuals: true });
+ProductSchema.set("toJSON", { virtuals: true });
 export const ProductEntity = model("Product", ProductSchema, "products");
 export const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");
 //# sourceMappingURL=product.entity.js.map

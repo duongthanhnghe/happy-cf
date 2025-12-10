@@ -32,7 +32,14 @@ export function toProductDTO(entity) {
         image: entity.image,
         listImage: entity.listImage,
         variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
-        categoryId: entity.categoryId ? entity.categoryId.toString() : "",
+        categoryId: entity.categoryId._id.toString(),
+        category: entity.category
+            ? {
+                id: entity.category._id.toString(),
+                categoryName: entity.category.categoryName,
+                slug: entity.category.slug
+            }
+            : null,
         weight: entity.weight,
         isActive: entity.isActive,
         createdAt: ((_b = entity.createdAt) === null || _b === void 0 ? void 0 : _b.toISOString()) || "",

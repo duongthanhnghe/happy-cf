@@ -6,9 +6,9 @@ export const useAdminProductAll = () => {
   
   const listProductAll = ref<ProductPaginationDTO>();
 
-  const fetchListProductAll = async (page: number, limit: number) => {
+  const fetchListProductAll = async (page: number, limit: number, search: string, categoryId: string) => {
     try {
-      const data: ProductPaginationDTO = await productsAPI.getAll(page, limit)
+      const data: ProductPaginationDTO = await productsAPI.getAll(page, limit, search, categoryId)
       if(data.code === 0) listProductAll.value = data
     } catch (err) {
       console.error('Error product all', err)

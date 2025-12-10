@@ -35,7 +35,8 @@ export interface Product {
   image: string;
   listImage: ListImage[];
   variantGroups: ProductVariantGroup[];
-  categoryId: Types.ObjectId | null;
+  categoryId: Types.ObjectId;
+  category?: CategoryProduct | null;
   weight: number;
   isActive: boolean;
   createdAt: Date;
@@ -174,6 +175,16 @@ const CategoryProductSchema = new Schema<CategoryProduct>(
   },
   { timestamps: true }
 );
+
+ProductSchema.virtual("category", {
+  ref: "CategoryProduct",
+  localField: "categoryId",
+  foreignField: "_id",
+  justOne: true
+});
+
+ProductSchema.set("toObject", { virtuals: true });
+ProductSchema.set("toJSON", { virtuals: true });
 
 export const ProductEntity = model("Product", ProductSchema, "products");
 

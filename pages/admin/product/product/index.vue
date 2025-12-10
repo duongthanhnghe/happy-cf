@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { formatCurrency } from '@/utils/global'
@@ -7,6 +7,7 @@ import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
+import { useAdminProductCategory } from '@/composables/product/useAdminProductCategory';
 
 definePageMeta({
   layout: ROUTES.ADMIN.PRODUCT.children?.LIST.layout,
@@ -15,9 +16,14 @@ definePageMeta({
 
 const store = useProductManageStore();
 const storeFileManage = useFileManageFolderStore();
+const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
 const folderName = FOLDER_UPLOAD.PRODUCT
 
 useFileManageWatchers(storeFileManage, folderName);
+
+onMounted(async () => {
+  if(!getListCategoryAll.value || getListCategoryAll.value.length === 0) await fetchCategoryList()
+})
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -27,22 +33,22 @@ onBeforeUnmount(() => {
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name" placeholder="Tìm kiếm tên..." variant="outlined" hide-details></v-text-field>
+    <v-text-field v-model="store.search" placeholder="Tìm kiếm tên..." variant="outlined" clearable hide-details @update:modelValue="value => store.search = value ?? ''"></v-text-field>
     <v-autocomplete
-      label="Chọn danh mục"
       v-model="store.categorySelectedFilter"
-      :items="[{ id: '', categoryName: 'Tất cả' }, ...store.getItemsCategory]"
+      :items="[{ id: '', categoryName: 'Danh mục SP' }, ...getListCategoryAll]"
       item-title="categoryName"
       item-value="id"
       hide-details
       clearable
       autocomplete="off" 
       variant="outlined"
+      @update:modelValue="value => store.categorySelectedFilter = value ?? ''"
     />
   </template>
 
   <template #right>
-    <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
+    <Button label="Thêm mới" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
   </template>
 </HeaderAdmin>
 
@@ -61,7 +67,7 @@ onBeforeUnmount(() => {
     :loading="store.loadingTable"
     :search="store.search"
     item-value="name"
-    :items-per-page-options="[10, 20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
+    :items-per-page-options="[50, 100, 200, { title: 'Tất cả', value: -1 }]"
     @update:options="options => {
         store.currentTableOptions = options
     }">
@@ -70,12 +76,19 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.image="{ item }">
-      <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
+      <div class="flex gap-xs position-relative white-space justify-between">
+        <img class="bg-gray2 rd-lg" width="50" :src="item.image" :alt="item.productName" />
+        <template v-if="item.listImage.length > 0" v-for="(itemImage, index) in item.listImage" :key="index" >
+          <img v-if="index < 2 && itemImage" class="bg-gray2 rd-lg" width="50" :src="itemImage.src" :alt="item.productName" />
+          <span v-else-if="index < 3" class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ item.listImage.length - 2 }}</span>
+          <template v-else />
+        </template>
+      </div>
     </template>
 
-    <template #item.categoryId="{ item }">
-      <v-chip label v-if="item.categoryId">
-        {{ store.getCategoryName(item.categoryId)?.categoryName }}
+    <template #item.category="{ item }">
+      <v-chip label color="blue">
+        {{ item.category?.categoryName }}
       </v-chip>
     </template>
 
@@ -85,6 +98,9 @@ onBeforeUnmount(() => {
 
     <template #item.priceDiscounts="{ item }">
       {{ formatCurrency(item.priceDiscounts) }}
+      <v-chip label color="red" class="ml-xs" v-if="item.priceDiscounts !== item.price">
+        {{ Math.round(((item.price - (item.priceDiscounts ?? 0)) / item.price) * 100) + "%" }}
+      </v-chip>
     </template>
 
     <template #item.variantGroups="{ item }">
@@ -98,8 +114,8 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.isActive="{ item }">
-      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Doi trang thai'" @click="store.toggleActive(item.id)">
-        {{ item.isActive === true ? 'Kich hoat' : 'Tat kich hoat' }}
+      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Đổi trạng thái'" @click="store.toggleActive(item.id)">
+        {{ item.isActive === true ? 'Kich hoat' : 'Tắt kích hoạt' }}
       </v-chip>
     </template>
 

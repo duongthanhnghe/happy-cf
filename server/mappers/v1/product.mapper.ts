@@ -37,7 +37,6 @@ export function toProductVariantGroupDTO(
   };
 }
 
-
 export function toProductDTO(entity: Product): ProductDTO {
   return {
     id: entity._id?.toString() || "",
@@ -51,7 +50,14 @@ export function toProductDTO(entity: Product): ProductDTO {
     image: entity.image,
     listImage: entity.listImage,
     variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
-    categoryId: entity.categoryId ? entity.categoryId.toString() : "",
+    categoryId: entity.categoryId._id.toString(),
+    category: entity.category
+    ? {
+        id: entity.category._id.toString(),
+        categoryName: entity.category.categoryName,
+        slug: entity.category.slug
+      }
+    : null,
     weight: entity.weight,
     isActive: entity.isActive,
     createdAt: entity.createdAt?.toISOString() || "",

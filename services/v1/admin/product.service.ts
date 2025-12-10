@@ -2,7 +2,6 @@ import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 import type { 
   ProductDTO, 
-  WishlistItem, 
   CreateProductDTO, 
   UpdateProductDTO,
   ProductPaginationDTO
@@ -10,9 +9,9 @@ import type {
 import type { ApiResponse } from '@/server/types/common/api-response'
 
 export const productsAPI = {
-  getAll: async (page: number, limit: number): Promise<ProductPaginationDTO> => {
+  getAll: async (page: number, limit: number, search: string, categoryId: string): Promise<ProductPaginationDTO> => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.LIST_ALL}?page=${page}&limit=${limit}`, {
+      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.LIST_ALL}?page=${page}&limit=${limit}&search=${search}&categoryId=${categoryId}`, {
         credentials: 'include',
       })
       const data = await res.json()
@@ -21,7 +20,7 @@ export const productsAPI = {
       console.error('Error fetching all products:', err)
       return {
         code: 1,
-        message: err.message ?? "Failed to fetch posts",
+        message: err.message ?? "Failed to fetch product",
         data: [],
         pagination: {
           page,

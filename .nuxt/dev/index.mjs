@@ -1148,7 +1148,22 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"4c559-oOszlwhLEvpTVbZjMVF7JYAJ5wE\"",
+    "mtime": "2025-12-10T09:42:50.839Z",
+    "size": 312665,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"125491-6eFHOMw58I4wJLD1jYBImrLqxtA\"",
+    "mtime": "2025-12-10T09:42:50.841Z",
+    "size": 1201297,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -3198,6 +3213,14 @@ const CategoryProductSchema = new Schema(
   },
   { timestamps: true }
 );
+ProductSchema.virtual("category", {
+  ref: "CategoryProduct",
+  localField: "categoryId",
+  foreignField: "_id",
+  justOne: true
+});
+ProductSchema.set("toObject", { virtuals: true });
+ProductSchema.set("toJSON", { virtuals: true });
 const ProductEntity = model("Product", ProductSchema, "products");
 const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");
 
@@ -3235,7 +3258,12 @@ function toProductDTO(entity) {
     image: entity.image,
     listImage: entity.listImage,
     variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
-    categoryId: entity.categoryId ? entity.categoryId.toString() : "",
+    categoryId: entity.categoryId._id.toString(),
+    category: entity.category ? {
+      id: entity.category._id.toString(),
+      categoryName: entity.category.categoryName,
+      slug: entity.category.slug
+    } : null,
     weight: entity.weight,
     isActive: entity.isActive,
     createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
@@ -4836,14 +4864,22 @@ const getAllProduct = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     let limit = parseInt(req.query.limit, 10) || 10;
+    const search = req.query.search || "";
+    const categoryId = req.query.categoryId;
     const query = {};
+    if (search.trim()) {
+      query.productName = { $regex: search.trim(), $options: "i" };
+    }
+    if (categoryId) {
+      query.categoryId = categoryId;
+    }
     if (limit === -1) {
       limit = await ProductEntity.countDocuments(query);
     }
     const skip = (page - 1) * limit;
     const [total, products] = await Promise.all([
       ProductEntity.countDocuments(query),
-      ProductEntity.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
+      ProductEntity.find(query).populate("category").sort({ createdAt: -1 }).skip(skip).limit(limit)
     ]);
     const totalPages = Math.ceil(total / limit);
     return res.json({

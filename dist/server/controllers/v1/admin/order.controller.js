@@ -7,96 +7,12 @@ import { ProductReviewEntity } from "../../../models/v1/product-review.entity.js
 import { VoucherEntity } from "../../../models/v1/voucher.entity.js";
 import { VoucherUsageEntity } from "../../../models/v1/voucher-usage.entity.js";
 import mongoose from "mongoose";
-// export const getAllOrder = async (req: Request, res: Response) => {
-//   try {
-//     let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId } = req.query;
-//     const numPage = Number(page);
-//     let numLimit = Number(limit);
-//     const filter: any = {};
-//     if (fromDate || toDate) {
-//       filter.createdAt = {};
-//       if (fromDate) {
-//         filter.createdAt.$gte = new Date(fromDate as string);
-//       }
-//       if (toDate) {
-//         const endDate = new Date(toDate as string);
-//         endDate.setHours(23, 59, 59, 999);
-//         filter.createdAt.$lte = endDate;
-//       }
-//     }
-//     if (search) {
-//       const keyword = search.toString().trim();
-//       filter.$or = [
-//         { code: { $regex: keyword, $options: "i" } },
-//         { phone: { $regex: keyword, $options: "i" } },
-//         { fullname: { $regex: keyword, $options: "i" } }
-//       ];
-//     }
-//     if (statusId) {
-//       filter.status = statusId;
-//     }
-//     if (transactionId) {
-//       filter["transaction.status"] = transactionId;
-//     }
-//     if (numLimit === -1) {
-//       const orders = await OrderEntity.find({})
-//         .sort({ createdAt: -1 })
-//         .populate("paymentId")
-//         .populate("status")
-//         .populate("userId")
-//         .populate({ path: "transaction", model: "PaymentTransaction" })
-//         .populate({
-//           path: "cartItems.idProduct",
-//           model: "Product",
-//           select: "image productName"
-//         })
-//       return res.json({
-//         code: 0,
-//         data: toOrderListDTO(orders),
-//         pagination: {
-//           page: 1,
-//           limit: orders.length,
-//           totalPages: 1,
-//           total: orders.length
-//         }
-//       });
-//     }
-//     const options = {
-//       page: numPage,
-//       limit: numLimit,
-//       sort: { createdAt: -1 },
-//       populate: [
-//         { path: "paymentId", model: "Payment" },
-//         { path: "status", model: "OrderStatus" },
-//         { path: "userId", model: "User" },
-//         { path: "transaction", model: "PaymentTransaction" },
-//         { path: "cartItems.idProduct", model: "Product", select: "image productName" }
-//       ]
-//     };
-//     const result = await OrderEntity.paginate(filter, options);
-//     return res.json({
-//       code: 0,
-//       data: toOrderListDTO(result.docs),
-//       pagination: {
-//         page: result.page,
-//         limit: result.limit,
-//         totalPages: result.totalPages,
-//         total: result.totalDocs
-//       }
-//     });
-//   } catch (error) {
-//     return res
-//       .status(500)
-//       .json({ code: 1, message: "Lỗi lấy danh sách order", error });
-//   }
-// };
 export const getAllOrder = async (req, res) => {
     try {
         let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId } = req.query;
         const numPage = Number(page);
         let numLimit = Number(limit);
         const filter = {};
-        // --- DATE ---
         if (fromDate || toDate) {
             filter.createdAt = {};
             if (fromDate)
@@ -107,7 +23,6 @@ export const getAllOrder = async (req, res) => {
                 filter.createdAt.$lte = endDate;
             }
         }
-        // --- SEARCH ---
         if (search) {
             const keyword = search.toString().trim();
             filter.$or = [
@@ -116,18 +31,13 @@ export const getAllOrder = async (req, res) => {
                 { fullname: { $regex: keyword, $options: "i" } }
             ];
         }
-        // --- STATUS ---
         if (statusId) {
             filter.status = statusId;
         }
-        // --- TRANSACTION FILTER ---
         let transactionMatch = {};
         if (transactionId) {
             transactionMatch.status = transactionId;
         }
-        //
-        // ====== LIMIT = -1 MODE ======
-        //
         if (numLimit === -1) {
             const orders = await OrderEntity.find(filter)
                 .sort({ createdAt: -1 })
@@ -137,14 +47,13 @@ export const getAllOrder = async (req, res) => {
                 .populate({
                 path: "transaction",
                 model: "PaymentTransaction",
-                match: transactionMatch // filter trong populate
+                match: transactionMatch
             })
                 .populate({
                 path: "cartItems.idProduct",
                 model: "Product",
                 select: "image productName"
             });
-            // ✨ CHỈ LẤY ORDER CÓ TRANSACTION KHÁC NULL & MATCH STATUS
             const filtered = transactionId
                 ? orders.filter(o => o.transaction !== null)
                 : orders;
@@ -159,9 +68,6 @@ export const getAllOrder = async (req, res) => {
                 }
             });
         }
-        //
-        // ====== PAGINATION MODE ======
-        //
         const options = {
             page: numPage,
             limit: numLimit,
@@ -173,13 +79,12 @@ export const getAllOrder = async (req, res) => {
                 {
                     path: "transaction",
                     model: "PaymentTransaction",
-                    match: transactionMatch // filter trong populate
+                    match: transactionMatch
                 },
                 { path: "cartItems.idProduct", model: "Product", select: "image productName" }
             ]
         };
         let result = await OrderEntity.paginate(filter, options);
-        // ✨ CHỈ LẤY ORDER ĐÚNG TRANSACTION.STATUS
         if (transactionId) {
             result.docs = result.docs.filter(doc => doc.transaction !== null);
         }

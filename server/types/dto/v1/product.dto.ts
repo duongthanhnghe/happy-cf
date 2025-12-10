@@ -72,6 +72,7 @@ export interface ProductDTO {
   listImage: ListImageDTO[];
   variantGroups: ProductVariantGroupDTO[];
   categoryId: string;
+  category?: CategoryProductLiteDTO | null;
   weight: number;
   isActive: boolean;
   vouchers: {
@@ -88,6 +89,12 @@ export interface ProductDTO {
 }
 
 export type ProductPaginationDTO = PaginationDTO<ProductDTO>
+
+export interface CategoryProductLiteDTO {
+  id: string;
+  categoryName: string;
+  slug: string;
+}
 
 export interface CategoryProductDTO {
   id: string;

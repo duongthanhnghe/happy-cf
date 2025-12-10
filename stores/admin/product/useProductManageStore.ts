@@ -1,11 +1,10 @@
-import { ref, reactive, computed, watch, watchEffect } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { productsAPI } from "@/services/v1/admin/product.service";
 import { Loading } from '@/utils/global'
 import type { ProductDTO, CategoryProductDTO, CreateProductDTO, UpdateProductDTO } from '@/server/types/dto/v1/product.dto'
 import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
 import { useAdminProductAll } from '@/composables/product/useAdminProductAll'
-import { useAdminProductCategory } from '@/composables/product/useAdminProductCategory'
 import { useAdminProductCategoryTree } from '@/composables/product/useAdminProductCategoryTree'
 import { useAdminProductDetail } from '@/composables/product/useAdminProductDetail'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
@@ -17,7 +16,6 @@ import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 
 export const useProductManageStore = defineStore("ProductManage", () => {
 const { getListProductAll, fetchListProductAll } = useAdminProductAll()
-const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
 const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
 const { getDetailProduct, fetchDetailProduct } = useAdminProductDetail()
 const storeFileManage = useFileManageFolderStore();
@@ -78,30 +76,30 @@ const treeItems = computed(() => {
 const dataList = ref<ProductDTO[]|null>(null);
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
-    { title: 'Hinh anh', key: 'image', sortable: false, },
-    { title: 'Ten san pham', key: 'productName', sortable: false, },
-    { title: 'Gia goc', key: 'price', sortable: false, },
-    { title: 'Gia khuyen mai', key: 'priceDiscounts', sortable: false, },
-    { title: 'So luong', key: 'amount', sortable: false, },
-    { title: 'Bien the', key: 'variantGroups', sortable: false, },
+    { title: 'Hình ảnh', key: 'image', sortable: false, headerProps: { class: 'white-space min-width-200' }, cellProps: { class: 'white-space min-width-200' }},
+    { title: 'Tên sản phẩm', key: 'productName', sortable: false, },
+    { title: 'Giá gốc', key: 'price', sortable: false, },
+    { title: 'Giá khuyến mãi', key: 'priceDiscounts', sortable: false, },
+    { title: 'Tồn kho', key: 'amount', sortable: false, },
+    { title: 'Lượt bán', key: 'amountOrder', sortable: false, },
+    { title: 'Biến thể', key: 'variantGroups', sortable: false, },
     {
-      title: 'Danh muc',
+      title: 'Danh mục',
       sortable: false,
-      key: 'categoryId',
+      key: 'category',
     },
-    { title: 'Tinh trang', key: 'isActive', sortable: false, },
+    { title: 'Tình trạng', key: 'isActive', sortable: false, },
     { title: '', key: 'actions', sortable: false , headerProps: { class: 'v-data-table-sticky-cl-right' },
     cellProps: { class: 'v-data-table-sticky-cl-right' }},
   ])
   const serverItems = ref<ProductDTO[]>([])
   const loadingTable = ref<boolean>(true)
   const totalItems = ref<number>(0)
-  const name = ref<string>('')
   const search = ref<string>('')
-  const categorySelectedFilter = ref<string>()
+  const categorySelectedFilter = ref<string>('')
   const currentTableOptions = ref<TableOpt>({
   page: 1,
-  itemsPerPage: 20,
+  itemsPerPage: 50,
   sortBy: [],
 })
 const isTogglePopupUpdate = ref<boolean>(false);
@@ -111,7 +109,7 @@ const isTogglePopupAddVariant = ref<boolean>(false);
 const checkSelectImage = ref<boolean>(true)
 
   const getListAllProduct = async () => {
-    await fetchListProductAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage)
+    await fetchListProductAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage, search.value, categorySelectedFilter.value)
    
     if(!getListProductAll.value) return
     dataList.value = getListProductAll.value.data
@@ -121,24 +119,12 @@ const checkSelectImage = ref<boolean>(true)
   }
 
   const ListDataApi = {
-    async fetch({ items, sortBy, search, filterCategory }: {
+    async fetch({ items}: {
       items: ProductDTO[],
-      sortBy: TableOpt["sortBy"],
-      search: { productName: string },
-      filterCategory?: string
     }) {
       return new Promise(resolve => {
         setTimeout(() => {
           let filtered = items.slice()
-
-          if (search.productName) {
-            filtered = filtered.filter(item =>
-              item.productName.toLowerCase().includes(search.productName.toLowerCase())
-            )
-          }
-          if (filterCategory) {
-            filtered = filtered.filter(item => item.categoryId === filterCategory)
-          }
 
           resolve({ items: filtered })
         }, 200)
@@ -153,9 +139,6 @@ const checkSelectImage = ref<boolean>(true)
 
     const { items } = await ListDataApi.fetch({
       items: dataList.value || [],
-      sortBy: opt.sortBy,
-      search: { productName: name.value },
-      filterCategory: categorySelectedFilter.value
     }) as { items: ProductDTO[] }
 
     serverItems.value = items
@@ -164,7 +147,7 @@ const checkSelectImage = ref<boolean>(true)
     loadingTable.value = false
   }
 
-  watch([name,categorySelectedFilter], () => {
+  watch([search,categorySelectedFilter], () => {
     loadItems(currentTableOptions.value);
   })
 
@@ -182,11 +165,6 @@ const checkSelectImage = ref<boolean>(true)
     isTogglePopupUpdate.value = value;
   };
 
-  const getCategoryName = (id: string) => {
-    if (!getListCategoryAll.value) return;
-    return getListCategoryAll.value.find(item => item.id === id)
-  }
-
   const handleReset = () => {
     Object.assign(formProductItem, defaultForm)
     Object.assign(updateProductItem, defaultForm)
@@ -200,11 +178,10 @@ const checkSelectImage = ref<boolean>(true)
     await loadItems(currentTableOptions.value);
   }
 
-  // actions add
   async function submitCreate() {
     Loading(true);
-    try {
 
+    try {
       const newProduct = {
         ...formProductItem,
         price: Number(formProductItem.price),
@@ -218,9 +195,9 @@ const checkSelectImage = ref<boolean>(true)
         handleReset()
         handleReload()
       } else showWarning(data.message ?? '')
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
@@ -250,9 +227,9 @@ const checkSelectImage = ref<boolean>(true)
         handleReset()
         handleReload()
       } else showWarning(data.message ?? '')
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
@@ -273,9 +250,9 @@ const checkSelectImage = ref<boolean>(true)
         }
         handleReload()
       } else showWarning(data.message ?? '')
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
@@ -322,10 +299,6 @@ const checkSelectImage = ref<boolean>(true)
   useSeoWatchers(formProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
   useSeoWatchers(updateProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
 
-  watch(() => getListCategoryAll.value, async (newValue) => {
-    if(newValue.length === 0) await fetchCategoryList()
-  }, { immediate: true })
-
   // Tree category
   const setSelectedCategory = (parentId: string | null) => {
     if (parentId) {
@@ -357,8 +330,6 @@ const checkSelectImage = ref<boolean>(true)
     if(newValue?.length === 0 && newValue) fetchCategoryListTree()
   }, { immediate: true})
 
-  //getters
-  const getItemsCategory = computed(() => getListCategoryAll.value);
   const getListImageAdd = computed(() => formProductItem.listImage);
 
   return {
@@ -376,14 +347,12 @@ const checkSelectImage = ref<boolean>(true)
     serverItems,
     loadingTable,
     totalItems,
-    name,
     search,
     headers,
     currentTableOptions,
     categorySelectedFilter,
     selectedCategoryName,
     selectedCategory,
-    // actions
     handleTogglePopupAdd,
     handleTogglePopupAddVariant,
     handleTogglePopupUpdate,
@@ -395,13 +364,10 @@ const checkSelectImage = ref<boolean>(true)
     submitUpdate,
     handleReload,
     handleReset,
-    getCategoryName,
     handleDeleteListImage,
     handleAddListImage,
     handleAddImage,
     toggleActive,
-    //getters
-    getItemsCategory,
     getListImageAdd,
     treeItems,
   };
