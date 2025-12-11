@@ -1,3 +1,4 @@
+import type { ImportDTO, ImportItemDTO } from '../../common/import.dto';
 import type { PaginationDTO } from '../../common/pagination.dto'
 import type { VoucherDTO } from './voucher.dto';
 
@@ -88,7 +89,30 @@ export interface ProductDTO {
   canonicalUrl?: string;
 }
 
+export interface ProductImportTableItem {
+  rowIndex?: string;
+  productName: string;
+  image: string;
+  categoryId: string;
+  price: number;
+  priceDiscounts: number;
+  amount: number;
+  isActive: boolean;
+  weight: number;
+  description: string;
+  summaryContent: string;
+  titleSEO?: string;
+  descriptionSEO?: string;
+  keywords?: string;
+  status?: string;
+  message?: string;
+}
+
 export type ProductPaginationDTO = PaginationDTO<ProductDTO>
+
+export type ProductImportDTO = ImportDTO<ProductDTO>
+
+export type ProductImportItemDTO = ImportItemDTO<ProductDTO> 
 
 export interface CategoryProductLiteDTO {
   id: string;

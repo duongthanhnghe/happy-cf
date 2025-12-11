@@ -1,4 +1,4 @@
-import type { CategoryProductDTO, CreateProductDTO, ProductDTO, UpdateProductDTO } from '@/server/types/dto/v1/product.dto';
+import type { CategoryProductDTO, CreateProductDTO, ProductDTO, ProductImportDTO, ProductImportItemDTO, ProductImportTableItem, UpdateProductDTO } from '@/server/types/dto/v1/product.dto';
 import { reactive, ref } from 'vue';
 import type { TableHeaders, TableOpt } from "@/server/types";
 
@@ -87,6 +87,28 @@ export const useAdminProductState = () => {
   const isTogglePopupAdd = ref<boolean>(false);
   const isTogglePopupAddVariant = ref<boolean>(false);
   const checkSelectImage = ref<boolean>(true)
+
+  //for import
+  const isTogglePopupImport = ref<boolean>(false);
+  const headersImport = [
+    { title: "STT", key: "rowIndex"},
+    { title: "Trạng thái", key: "status"},
+    { title: 'Hình ảnh', key: 'image'},
+    { title: "Tên sản phẩm", key: "productName"},
+    { title: 'Giá gốc', key: 'price' },
+    { title: 'Giá khuyến mãi', key: 'priceDiscounts' },
+    { title: 'Tồn kho', key: 'amount', sortable: false, },
+    { title: "Category ID", key: "categoryId"},
+    { title: 'Tình trạng', key: 'isActive', sortable: false, },
+    { title: 'Cân nặng', key: 'weight', sortable: false, },
+    { title: "Ghi chú", key: "message"},
+  ];
+  const serverItemsImport = ref<ProductImportTableItem[]>([])
+  const totalItemsImport = ref<number>(0)
+  const loadingTableImport = ref<boolean>(false)
+  const selectedImportFile = ref<File | null>(null);
+  const dataImport = ref<ProductImportDTO|null>(null)
+  const currentTypeImport = ref<'import' | 'updateImport'>('import')
   
   return {
     defaultForm,
@@ -109,5 +131,13 @@ export const useAdminProductState = () => {
     selectedCategoryName,
     selectedCategory,
     checkSelectImage,
+    headersImport,
+    serverItemsImport,
+    totalItemsImport,
+    loadingTableImport,
+    isTogglePopupImport,
+    selectedImportFile,
+    dataImport,
+    currentTypeImport,
   };
 };

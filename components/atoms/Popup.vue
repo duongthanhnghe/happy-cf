@@ -38,7 +38,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'modal-right',
-    validator: (value: string) => ['modal-center', 'modal-right'].includes(value)
+    validator: (value: string) => ['modal-center', 'modal-right', 'modal-left', 'modal-full-screen'].includes(value)
   },
   align: {
     type: String,
@@ -69,8 +69,8 @@ const handleClosePopup = () => {
       popupClass
     ]"
   >
-      <template v-if="variant === 'modal-right'">
-        <div class="portal-popup-main">
+      <template v-if="variant === 'modal-right' || variant === 'modal-full-screen'">
+        <div :class="['portal-popup-main', {'full-screen': variant === 'modal-full-screen'}]">
           <div class="portal-popup-header">
             <Button color="secondary" class="portal-popup-close" icon="arrow_back" @click="handleClosePopup" />
             <Text v-if="popupHeading" :size="storeDisplay.isMobileTable ? 'md':'lg'" weight="medium" :text="popupHeading" limit="1"/>

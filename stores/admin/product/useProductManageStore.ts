@@ -10,6 +10,8 @@ import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 import { useAdminProductOperations } from "@/composables/admin/product/useAdminProductOperations";
 import { useAdminProductUtils } from "@/composables/admin/product/useAdminProductUtils";
 import { useAdminProductState } from "@/composables/admin/product/useAdminProductState";
+import type { ProductImportItemDTO } from "@/server/types/dto/v1/product.dto";
+import { useAdminProductImport } from "@/composables/admin/product/useAdminProductImport";
 
 export const useProductManageStore = defineStore("ProductManage", () => {
   const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
@@ -122,10 +124,46 @@ export const useProductManageStore = defineStore("ProductManage", () => {
 
   const { toggleActive } = useToggleActiveStatus(productsAPI.toggleActive, state.serverItems );
 
+  const productImport = useAdminProductImport(
+    state.selectedImportFile,
+    state.loadingTableImport,
+    state.dataImport,
+    state.serverItemsImport,
+    state.totalItemsImport,
+    state.isTogglePopupImport,
+    state.currentTableOptions,
+    state.currentTypeImport,
+    productOps.loadItems,
+  )
+
+  const menuActions = computed(() => [
+    {
+      label: "Thêm mới",
+      icon: "add",
+      action: () => productUtils.handleTogglePopupAdd(true)
+    },
+    {
+      label: "Import mới",
+      icon: "upload",
+      action: () => productImport.handleTogglePopupImport(true, "import")
+    },
+    {
+      label: "Import chỉnh sửa",
+      icon: "swap_vert",
+      action: () => productImport.handleTogglePopupImport(true, "updateImport")
+    },
+    {
+      label: `Export (${state.totalItems.value})`,
+      icon: "download",
+      action: () => productImport.handleExport()
+    }
+  ]);
+
   return {
     ...state,
     ...productUtils,
     ...productOps,
+    ...productImport,
     handleDeleteListImage,
     handleAddListImage,
     handleAddImage,
@@ -134,5 +172,6 @@ export const useProductManageStore = defineStore("ProductManage", () => {
     treeItems,
     nullRules,
     nullAndSpecialRules,
+    menuActions,
   };
 });

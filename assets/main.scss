@@ -837,6 +837,9 @@ body .bg {
   &-uppercase {
     text-transform: uppercase;
   }
+  &-underline{
+    text-decoration: underline;
+  }
   &-hover {
     &-primary:hover {
       color: $cl-primary !important;
@@ -1128,6 +1131,9 @@ body .bg {
   }
   &-between {
     justify-content: space-between;
+  }
+  &-evenly {
+    justify-content: space-evenly;
   }
 }
 
@@ -1439,6 +1445,13 @@ body .bg {
         transform: translateY(0);
         -webkit-transform: translateX(100%);
         transform: translateX(100%);
+        &.full-screen {
+          width: 100%;
+          max-width: calc(100vw - 40px);
+          .portal-popup-header {
+            justify-content: center;
+          }
+        }
       }
       &-header {
         max-height: 70px;

@@ -48,6 +48,9 @@ export const API_ENDPOINTS_ADMIN = {
     DELETE: (id: string) => `/products/${id}`,
     UPDATE: (id: string) => `/products/${id}`,
     CREATE: '/products',
+    IMPORT: '/products/import',
+    EXPORT: '/products/export',
+    UPDATE_IMPORT: '/products/updateImport',
     TOGGLE_ACTIVE: (id: string) => `/products/toggleActive/${id}`,
   },
   VARIANT_GROUPS: {

@@ -49,13 +49,39 @@ onBeforeUnmount(() => {
   </template>
 
   <template #right>
-    <Button label="Thêm mới" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
+    <div>
+    <v-menu transition="slide-x-transition">
+      <template v-slot:activator="{ props }">
+        <Button
+          v-bind="props"
+          tag="span"
+          color="secondary"
+          label="Chỉnh sửa"
+        />
+      </template>
+      <v-list class="mt-sm">
+        <v-list-item
+          v-for="(item, i) in store.menuActions"
+          :key="i"
+          @click="item.action"
+        >
+          <v-list-item-title>
+            <div class="flex align-center gap-sm weight-medium cursor-pointer">
+              <MaterialIcon :name="item.icon" />
+              {{ item.label }}
+            </div>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+    </div>
   </template>
 </HeaderAdmin>
 
 <CreateProduct />
 <UpdateProduct />
 <CreateVariantProduct />
+<ImportProduct />
 <PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
