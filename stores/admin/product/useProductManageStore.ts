@@ -1,328 +1,86 @@
-import { ref, reactive, computed, watch } from "vue";
+import { computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { productsAPI } from "@/services/v1/admin/product.service";
-import { Loading } from '@/utils/global'
-import type { ProductDTO, CategoryProductDTO, CreateProductDTO, UpdateProductDTO } from '@/server/types/dto/v1/product.dto'
-import type { TableOpt, TableHeaders } from '@/server/types/dto/v1/table-vuetify.dto'
-import { useAdminProductAll } from '@/composables/product/useAdminProductAll'
-import { useAdminProductCategoryTree } from '@/composables/product/useAdminProductCategoryTree'
-import { useAdminProductDetail } from '@/composables/product/useAdminProductDetail'
-import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
+import { useAdminProductCategoryTree } from '@/composables/admin/product/category/useAdminProductCategoryTree'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 import { useSeoWatchers } from "@/utils/seoHandle";
 import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
+import { useAdminProductOperations } from "@/composables/admin/product/useAdminProductOperations";
+import { useAdminProductUtils } from "@/composables/admin/product/useAdminProductUtils";
+import { useAdminProductState } from "@/composables/admin/product/useAdminProductState";
 
 export const useProductManageStore = defineStore("ProductManage", () => {
-const { getListProductAll, fetchListProductAll } = useAdminProductAll()
-const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
-const { getDetailProduct, fetchDetailProduct } = useAdminProductDetail()
-const storeFileManage = useFileManageFolderStore();
+  const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
+  const storeFileManage = useFileManageFolderStore();
+  
+  const state = useAdminProductState()
 
-const productPriceDiscountRules = [
-  (value: number) => {
-    if (value) return true
-    return 'Gia khuyen mai khong duoc trong'
-  },
-  (value: number) => {
-    const discount = Number(value)
-    const price = Number(formProductItem.price)
-    if (discount <= price) return true
-    return 'Gia khuyen mai khong duoc lon hon gia goc'
-  },
-]
-
-const productPriceDiscountUpdateRules = [
-  (value: number) => {
-    if (value) return true
-    return 'Gia khuyen mai khong duoc trong'
-  },
-  (value: number) => {
-    const discount = Number(value)
-    const price = Number(updateProductItem.price)
-    if (discount <= price) return true
-    return 'Gia khuyen mai khong duoc lon hon gia goc'
-  },
-]
-
-const defaultForm: CreateProductDTO = {
-  productName: '',
-  description: '',
-  summaryContent: '',
-  price: 0,
-  priceDiscounts: 0,
-  amount: 0,
-  image: '',
-  listImage: [],
-  variantGroups: [],
-  categoryId: '',
-  weight: 0,
-  isActive: false,
-  // SEO
-  titleSEO: '',
-  descriptionSEO: '',
-  slug: '',
-  keywords: []
-};
-const formProductItem = reactive<CreateProductDTO>({ ...defaultForm })
-const updateProductItem = reactive<UpdateProductDTO>({ ...defaultForm, id: ''})
-const selectedCategory = ref<CategoryProductDTO[]>([])
-const selectedCategoryName = ref<string[]>([])
-const treeItems = computed(() => {
-  const items = getListCategoryAllTree.value ?? []
-  return markAllSelectable(items)
-})
-const dataList = ref<ProductDTO[]|null>(null);
-  const headers = ref<TableHeaders[]>([
-    { title: 'STT', key: 'index', sortable: false },
-    { title: 'Hình ảnh', key: 'image', sortable: false, headerProps: { class: 'white-space min-width-200' }, cellProps: { class: 'white-space min-width-200' }},
-    { title: 'Tên sản phẩm', key: 'productName', sortable: false, },
-    { title: 'Giá gốc', key: 'price', sortable: false, },
-    { title: 'Giá khuyến mãi', key: 'priceDiscounts', sortable: false, },
-    { title: 'Tồn kho', key: 'amount', sortable: false, },
-    { title: 'Lượt bán', key: 'amountOrder', sortable: false, },
-    { title: 'Biến thể', key: 'variantGroups', sortable: false, },
-    {
-      title: 'Danh mục',
-      sortable: false,
-      key: 'category',
-    },
-    { title: 'Tình trạng', key: 'isActive', sortable: false, },
-    { title: '', key: 'actions', sortable: false , headerProps: { class: 'v-data-table-sticky-cl-right' },
-    cellProps: { class: 'v-data-table-sticky-cl-right' }},
-  ])
-  const serverItems = ref<ProductDTO[]>([])
-  const loadingTable = ref<boolean>(true)
-  const totalItems = ref<number>(0)
-  const search = ref<string>('')
-  const categorySelectedFilter = ref<string>('')
-  const currentTableOptions = ref<TableOpt>({
-  page: 1,
-  itemsPerPage: 50,
-  sortBy: [],
-})
-const isTogglePopupUpdate = ref<boolean>(false);
-const detailData = ref<ProductDTO|null>(null);
-const isTogglePopupAdd = ref<boolean>(false);
-const isTogglePopupAddVariant = ref<boolean>(false);
-const checkSelectImage = ref<boolean>(true)
-
-  const getListAllProduct = async () => {
-    await fetchListProductAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage, search.value, categorySelectedFilter.value)
-   
-    if(!getListProductAll.value) return
-    dataList.value = getListProductAll.value.data
-    totalItems.value = getListProductAll.value.pagination.total
-    currentTableOptions.value.page = getListProductAll.value.pagination.page
-    currentTableOptions.value.itemsPerPage = getListProductAll.value.pagination.limit
-  }
-
-  const ListDataApi = {
-    async fetch({ items}: {
-      items: ProductDTO[],
-    }) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          let filtered = items.slice()
-
-          resolve({ items: filtered })
-        }, 200)
-      })
-    },
-  }
-
-  async function loadItems(opt: TableOpt) {
-    loadingTable.value = true
-
-    await getListAllProduct()
-
-    const { items } = await ListDataApi.fetch({
-      items: dataList.value || [],
-    }) as { items: ProductDTO[] }
-
-    serverItems.value = items
-    if(getListProductAll.value) totalItems.value = getListProductAll.value.pagination.total
-
-    loadingTable.value = false
-  }
-
-  watch([search,categorySelectedFilter], () => {
-    loadItems(currentTableOptions.value);
+  const treeItems = computed(() => {
+    const items = getListCategoryAllTree.value ?? []
+    return markAllSelectable(items)
   })
 
-  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
-    loadItems(currentTableOptions.value);
-  })
-
-  const handleTogglePopupAdd = (value: boolean) => {
-    handleReset()
-    updateProductItem.id = ''
-    isTogglePopupAdd.value = value;
-  };
-
-  const handleTogglePopupUpdate = (value: boolean) => {
-    isTogglePopupUpdate.value = value;
-  };
-
-  const handleReset = () => {
-    Object.assign(formProductItem, defaultForm)
-    Object.assign(updateProductItem, defaultForm)
-
-    selectedCategory.value = []
-    selectedCategoryName.value = []
-    fetchCategoryListTree()
-  }
-
-  const handleReload = async () => {
-    await loadItems(currentTableOptions.value);
-  }
-
-  async function submitCreate() {
-    Loading(true);
-
-    try {
-      const newProduct = {
-        ...formProductItem,
-        price: Number(formProductItem.price),
-        priceDiscounts: Number(formProductItem.priceDiscounts),
-      }
-
-      const data = await productsAPI.create(newProduct)
-      if(data.code === 0){
-        showSuccess(data.message ?? '')
-        isTogglePopupAdd.value = false;
-        handleReset()
-        handleReload()
-      } else showWarning(data.message ?? '')
-    } catch (err) {
-      console.error('Error submitting form:', err)
-    } finally {
-      Loading(false);
-    }
-  }
-
-  const handleEditProduct = async (productId: string) => {
-    if(!productId) return
-    await fetchDetailProduct(productId)
-    if(getDetailProduct.value) detailData.value = getDetailProduct.value
-    if(!detailData.value) return
-    handleTogglePopupUpdate(true)
-    Object.assign(updateProductItem, detailData.value);
-    if(updateProductItem.categoryId) setSelectedCategory(updateProductItem.categoryId)
-  }
-
-  async function submitUpdate() {
-    Loading(true);
-    try {
-
-      const newProduct = {...updateProductItem}
-
-      if(updateProductItem.id == '' && !updateProductItem.id) return
-
-      const data = await productsAPI.update(updateProductItem.id, newProduct)
-      if(data.code === 0){
-        showSuccess(data.message ?? '')
-        isTogglePopupUpdate.value = false;
-        handleReset()
-        handleReload()
-      } else showWarning(data.message ?? '')
-    } catch (err) {
-      console.error('Error submitting form:', err)
-    } finally {
-      Loading(false);
-    }
-  }
-
-  const handleDeleteProduct = async (productId: string) => {
-    const confirm = await showConfirm('Bạn có chắc xoá mục này?')
-    if (!confirm) return
-
-    Loading(true);
-    try {
-      const data = await productsAPI.delete(productId)
-      if(data.code === 0){
-        showSuccess(data.message ?? '')
-        if(dataList.value){
-          dataList.value = dataList.value.filter(item => 
-            item.id !== productId
-          )
-        }
-        handleReload()
-      } else showWarning(data.message ?? '')
-    } catch (err) {
-      console.error('Error submitting form:', err)
-    } finally {
-      Loading(false);
-    }
-  }
-
-  // doi kich hoat
-  const { toggleActive } = useToggleActiveStatus(productsAPI.toggleActive, serverItems );
-
+  // handles image
   const handleAddImage = () => {
     storeFileManage.handleTogglePopup(true)
   }
 
   const handleDeleteListImage = (id: string, formAdd: boolean) => {
     if (formAdd) {
-      formProductItem.listImage = formProductItem.listImage?.filter(item => item.id !== id)
+      state.formProductItem.listImage = state.formProductItem.listImage?.filter(item => item.id !== id)
     } else {
-      updateProductItem.listImage = updateProductItem.listImage?.filter(item => item.id !== id)
+      state.updateProductItem.listImage = state.updateProductItem.listImage?.filter(item => item.id !== id)
     }
   }
 
   const handleAddListImage = () => {
-    checkSelectImage.value = false
+    state.checkSelectImage.value = false
     storeFileManage.handleTogglePopup(true)
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {
     if (!newValue) return
 
-    const target = updateProductItem.id ? updateProductItem : formProductItem
+    const target = state.updateProductItem.id ? state.updateProductItem : state.formProductItem
 
-    if (checkSelectImage.value) {
+    if (state.checkSelectImage.value) {
       target.image = newValue.url
     } else {
       target.listImage?.push({ id: newValue.id, src: newValue.url })
-      checkSelectImage.value = true
+      state.checkSelectImage.value = true
     }
   })
 
-  //action options
-  const handleTogglePopupAddVariant = (value: boolean) => {
-    isTogglePopupAddVariant.value = value;
-  };
-
   // SEO
-  useSeoWatchers(formProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
-  useSeoWatchers(updateProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
+  useSeoWatchers(state.formProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
+  useSeoWatchers(state.updateProductItem, { sourceKey: 'productName', autoSlug: true, autoTitleSEO: true })
 
   // Tree category
   const setSelectedCategory = (parentId: string | null) => {
     if (parentId) {
-      const sourceTree = updateProductItem.id ? treeItems.value : []
+      const sourceTree = state.updateProductItem.id ? treeItems.value : []
       const parentCategory = findItemInTree(sourceTree, parentId)
       if (parentCategory) {
-        selectedCategory.value = [parentCategory]
-        selectedCategoryName.value = [parentCategory.categoryName]
+        state.selectedCategory.value = [parentCategory]
+        state.selectedCategoryName.value = [parentCategory.categoryName]
       }
     } else {
-      selectedCategory.value = []
-      selectedCategoryName.value = []
+      state.selectedCategory.value = []
+      state.selectedCategoryName.value = []
     }
   }
 
-  watch(selectedCategory, (val) => {
+  watch(state.selectedCategory, (val) => {
     if (val.length > 0) {
-      if(updateProductItem.id) updateProductItem.categoryId = val[0].id;
-      else formProductItem.categoryId = val[0].id;
-      selectedCategoryName.value = val.map(cat => cat.categoryName);
+      if(state.updateProductItem.id) state.updateProductItem.categoryId = val[0].id;
+      else state.formProductItem.categoryId = val[0].id;
+      state.selectedCategoryName.value = val.map(cat => cat.categoryName);
     } else {
-      formProductItem.categoryId = '';
-      updateProductItem.categoryId = '';
-      selectedCategoryName.value = [];
+      state.formProductItem.categoryId = '';
+      state.updateProductItem.categoryId = '';
+      state.selectedCategoryName.value = [];
     }
   })
 
@@ -330,45 +88,51 @@ const checkSelectImage = ref<boolean>(true)
     if(newValue?.length === 0 && newValue) fetchCategoryListTree()
   }, { immediate: true})
 
-  const getListImageAdd = computed(() => formProductItem.listImage);
+  const getListImageAdd = computed(() => state.formProductItem.listImage);
+
+  const productUtils = useAdminProductUtils(
+    state.defaultForm,
+    state.formProductItem,
+    state.updateProductItem,
+    state.isTogglePopupAdd,
+    state.isTogglePopupUpdate,
+    state.isTogglePopupAddVariant,
+    state.selectedCategory,
+    state.selectedCategoryName,
+    fetchCategoryListTree,
+  )
+
+  const productOps = useAdminProductOperations(
+    state.formProductItem,
+    state.updateProductItem,
+    state.dataList,
+    state.serverItems,
+    state.loadingTable,
+    state.totalItems,
+    state.search,
+    state.categorySelectedFilter,
+    state.currentTableOptions,
+    state.detailData,
+    state.isTogglePopupAdd,
+    state.isTogglePopupUpdate,
+    productUtils.handleReset,
+    productUtils.handleTogglePopupUpdate,
+    setSelectedCategory,
+  )
+
+  const { toggleActive } = useToggleActiveStatus(productsAPI.toggleActive, state.serverItems );
 
   return {
-    nullRules,
-    nullAndSpecialRules,
-    dataList,
-    isTogglePopupAdd,
-    isTogglePopupAddVariant,
-    isTogglePopupUpdate,
-    productPriceDiscountRules,
-    productPriceDiscountUpdateRules,
-    detailData,
-    formProductItem,
-    updateProductItem,
-    serverItems,
-    loadingTable,
-    totalItems,
-    search,
-    headers,
-    currentTableOptions,
-    categorySelectedFilter,
-    selectedCategoryName,
-    selectedCategory,
-    handleTogglePopupAdd,
-    handleTogglePopupAddVariant,
-    handleTogglePopupUpdate,
-    handleEditProduct,
-    handleDeleteProduct,
-    getListAllProduct,
-    loadItems,
-    submitCreate,
-    submitUpdate,
-    handleReload,
-    handleReset,
+    ...state,
+    ...productUtils,
+    ...productOps,
     handleDeleteListImage,
     handleAddListImage,
     handleAddImage,
     toggleActive,
     getListImageAdd,
     treeItems,
+    nullRules,
+    nullAndSpecialRules,
   };
 });

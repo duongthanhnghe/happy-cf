@@ -116,7 +116,7 @@ const { remainingProductNames } = useOrderHelpers()
             >
               <v-list-item-title>
                 <div class="flex align-center gap-sm">
-                  <MaterialIcon v-if="statusItem.icon" :size="24" :name="statusItem.icon" />
+                  <MaterialIcon v-if="statusItem.icon" :name="statusItem.icon" />
                   {{ statusItem.name }}
                 </div>
               </v-list-item-title>

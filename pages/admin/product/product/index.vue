@@ -7,7 +7,7 @@ import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
-import { useAdminProductCategory } from '@/composables/product/useAdminProductCategory';
+import { useAdminProductCategory } from '@/composables/admin/product/category/useAdminProductCategory';
 
 definePageMeta({
   layout: ROUTES.ADMIN.PRODUCT.children?.LIST.layout,
@@ -22,7 +22,7 @@ const folderName = FOLDER_UPLOAD.PRODUCT
 useFileManageWatchers(storeFileManage, folderName);
 
 onMounted(async () => {
-  if(!getListCategoryAll.value || getListCategoryAll.value.length === 0) await fetchCategoryList()
+  if(!getListCategoryAll.value || getListCategoryAll.value.data.length === 0) await fetchCategoryList(1,9999,'')
 })
 
 onBeforeUnmount(() => {
@@ -35,8 +35,9 @@ onBeforeUnmount(() => {
   <template #left>
     <v-text-field v-model="store.search" placeholder="Tìm kiếm tên..." variant="outlined" clearable hide-details @update:modelValue="value => store.search = value ?? ''"></v-text-field>
     <v-autocomplete
+      v-if="getListCategoryAll"
       v-model="store.categorySelectedFilter"
-      :items="[{ id: '', categoryName: 'Danh mục SP' }, ...getListCategoryAll]"
+      :items="[{ id: '', categoryName: 'Danh mục SP' }, ...getListCategoryAll.data]"
       item-title="categoryName"
       item-value="id"
       hide-details

@@ -1,15 +1,15 @@
 import { ref, computed } from "vue";
 import { categoriesAPI } from "@/services/v1/admin/categories-product.service";
-import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
+import type { CategoryProductPaginationDTO } from '@/server/types/dto/v1/product.dto'
 
 export const useAdminProductCategory = () => {
   
-  const listCategory = ref<CategoryProductDTO[]>([])
+  const listCategory = ref<CategoryProductPaginationDTO>()
   
-  const fetchCategoryList = async (search: string) => {
+  const fetchCategoryList = async (page:number,limit:number,search: string) => {
     try {
-      const data = await categoriesAPI.getAll(search)
-      if(data.code === 0) listCategory.value = data.data
+      const data = await categoriesAPI.getAll(page,limit,search)
+      if(data.code === 0) listCategory.value = data
     } catch (error) {
       console.error("Error fetching categories:", error)
     }

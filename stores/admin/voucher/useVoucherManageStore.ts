@@ -10,7 +10,7 @@ import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus
 import { VOUCHER_TYPE } from '@/server/shared/constants/voucher-type';
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
-import { useAdminProductCategoryTree } from '@/composables/product/useAdminProductCategoryTree'
+import { useAdminProductCategoryTree } from '@/composables/admin/product/category/useAdminProductCategoryTree'
 import { useVoucherUtils } from "@/composables/voucher/useVoucherUtils";
 import { useFileManageFolderStore } from "../file-manage/useFileManageStore";
 

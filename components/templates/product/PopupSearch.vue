@@ -28,7 +28,7 @@ const storeProductMostOrder = useProductMostOrderStore()
           hide-details
           required>
         </v-text-field>
-        <MaterialIcon v-if="store.txtSearch !== ''" @click="store.handleCancelSearch" name="cancel" size="24" class="popup-search-cancel" />
+        <MaterialIcon v-if="store.txtSearch !== ''" @click="store.handleCancelSearch" name="cancel" class="popup-search-cancel" />
       </div>
     </template>
     <template #body>

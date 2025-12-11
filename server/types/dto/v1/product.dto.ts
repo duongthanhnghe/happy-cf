@@ -105,6 +105,7 @@ export interface CategoryProductDTO {
   order: number;
   isActive: boolean;
   parentId: string | null;
+  parent?: CategoryProductLiteDTO | null;
   children?: CategoryProductDTO[] | null;
   //SEO
   titleSEO: string;
@@ -130,6 +131,8 @@ export interface WishlistItem {
   product: ProductDTO
   createdAt: Date
 }
+
+export type CategoryProductPaginationDTO = PaginationDTO<CategoryProductDTO>
 
 export type CreateCategoryProductDTO = Omit<CategoryProductDTO, "id" | "createdAt" | "updatedAt" | "order"> 
 

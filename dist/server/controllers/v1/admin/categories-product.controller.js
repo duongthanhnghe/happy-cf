@@ -34,19 +34,58 @@ export const getAllCategoriesTree = async (_, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
+// export const getAllCategories = async (req: Request, res: Response) => {
+//   try {
+//     const search = (req.query.search as string) || "";
+//     const filter: any = {};
+//     if (search.trim()) {
+//       filter.categoryName = { $regex: search.trim(), $options: "i" };
+//     }
+//     const categories = await CategoryProductEntity.find(filter)
+//       .lean()
+//       .sort({ order: 1 });
+//     return res.json({
+//       code: 0,
+//       data: toCategoryProductListDTO(categories),
+//     });
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       code: 1,
+//       message: err.message,
+//     });
+//   }
+// };
 export const getAllCategories = async (req, res) => {
     try {
         const search = req.query.search || "";
+        const page = Math.max(Number(req.query.page) || 1, 1);
+        const limit = Math.max(Number(req.query.limit) || 10, 1);
         const filter = {};
         if (search.trim()) {
             filter.categoryName = { $regex: search.trim(), $options: "i" };
         }
+        const total = await CategoryProductEntity.countDocuments(filter);
+        const totalPages = Math.ceil(total / limit);
+        const skip = (page - 1) * limit;
         const categories = await CategoryProductEntity.find(filter)
+            .populate({
+            path: "parentId",
+            select: "categoryName order slug", // chỉ chọn những field cần thiết
+        })
             .lean()
-            .sort({ order: 1 });
+            .sort({ order: 1 })
+            .skip(skip)
+            .limit(limit);
         return res.json({
             code: 0,
             data: toCategoryProductListDTO(categories),
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages,
+            },
+            message: "Success",
         });
     }
     catch (err) {

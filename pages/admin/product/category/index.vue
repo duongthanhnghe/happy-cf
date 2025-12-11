@@ -46,12 +46,13 @@ onBeforeUnmount(() => {
 
 <v-container>
   <v-data-table-server 
-    v-model:items-per-page="store.itemsPerPage" 
-    :headers="store.headers" 
-    :items="store.serverItems" 
-    :items-length="store.totalItems" 
-    :loading="store.loadingTable" 
-    :search="store.search" 
+    v-model:page="store.currentTableOptions.page"
+    v-model:items-per-page="store.currentTableOptions.itemsPerPage"
+    :headers="store.headers"
+    :items="store.serverItems"
+    :items-length="store.totalItems"
+    :loading="store.loadingTable"
+    :search="store.search"
     item-value="name" 
     @update:options="options => {
         store.currentTableOptions = options
@@ -68,9 +69,9 @@ onBeforeUnmount(() => {
       <v-img v-if="item.banner" :src="item.banner" max-height="60" class="rounded" />
     </template>
 
-    <template #item.parentId="{ item }">
-      <v-chip label v-if="item.parentId">
-        {{ store.getCategoryName(item.parentId)?.categoryName }}
+    <template #item.parent="{ item }">
+      <v-chip label v-if="item.parent">
+        {{ item.parent.categoryName }}
       </v-chip>
     </template>
 

@@ -61,6 +61,7 @@ export interface CategoryProduct {
   isActive: boolean;
   banner?: string;
   parentId?: Types.ObjectId | null;
+  parent?: CategoryProduct | null;
   //SEO
   titleSEO: string;
   descriptionSEO: string;

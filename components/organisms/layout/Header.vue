@@ -76,7 +76,9 @@ onMounted(async () => {
                   Giao hàng tới
                   <Text class="flex cursor-pointer" @click.prevent="storeAddress.handleTogglePopupList(true, true)">
                     <Text limit="1" :text="storeCart.getNameAddressChoose || 'Chưa nhập địa chỉ'" weight="semibold" />
-                    <MaterialIcon v-if="storeAccount.getUserId" size="24" name="keyboard_arrow_down"/>
+                    <client-only>
+                      <MaterialIcon v-if="storeAccount.getUserId" name="keyboard_arrow_down"/>
+                    </client-only>
                   </Text>
                 </div>
               </div>

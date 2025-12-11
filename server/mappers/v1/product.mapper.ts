@@ -75,6 +75,13 @@ export const toProductListDTO = (list: Product[]): ProductDTO[] =>
   list.map(toProductDTO);
 
 export function toCategoryProductDTO(entity: CategoryProduct): CategoryProductDTO {
+  const isPopulated =
+    entity.parentId &&
+    typeof entity.parentId === "object" &&
+    (entity.parentId as any)._id;
+
+  const parentObj = isPopulated ? (entity.parentId as any) : null;
+
   return {
     id: entity._id?.toString() || "",
     categoryName: entity.categoryName,
@@ -83,12 +90,25 @@ export function toCategoryProductDTO(entity: CategoryProduct): CategoryProductDT
     banner: entity.banner,
     order: entity.order,
     isActive: entity.isActive,
-    parentId: entity.parentId ? entity.parentId.toString() : "",
+    parentId: entity.parentId
+      ? (isPopulated
+          ? parentObj._id.toString()
+          : entity.parentId.toString())
+      : null,
+    parent: parentObj
+      ? {
+          id: parentObj._id.toString(),
+          categoryName: parentObj.categoryName,
+          slug: parentObj.slug,
+        }
+      : null,
+    children: null,
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,
     slug: entity.slug,
     keywords: entity.keywords,
+    canonicalUrl: entity.canonicalUrl,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
   };

@@ -4,15 +4,26 @@ import type { CategoryProductDTO, CreateCategoryProductDTO, UpdateCategoryProduc
 import type { ApiResponse } from '@server/types/common/api-response'
 
 export const categoriesAPI = {
-  getAll: async (search: string) => {
+  getAll: async (page: number, limit: number,search: string) => {
   try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.LIST}?search=${search}`, {
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES.LIST}?page=${page}&limit=${limit}&search=${search}`, {
         credentials: 'include',
       })
       const data = await response.json()
       return data;
-    } catch (err) {
-      console.error('Error:', err)
+    } catch (err: any) {
+      console.error('Error:', err);
+      return {
+        code: 1,
+        message: err.message ?? "Failed to fetch product",
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
+      }
     }
   },
   getAllTree: async () => {

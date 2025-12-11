@@ -45,7 +45,7 @@ const reloadData = () => {
           @keydown.enter="store.onChangeSearch(props.folderName)"
           required>
         </v-text-field>
-        <MaterialIcon v-if="store.txtSearch !== ''" @click="store.handleCancelSearch(props.folderName)" name="cancel" size="24" class="search-input-cancel" />
+        <MaterialIcon v-if="store.txtSearch !== ''" @click="store.handleCancelSearch(props.folderName)" name="cancel" class="search-input-cancel" />
       </div>
       <div class="button-upload-file">
         <v-file-input ref="inputUploadFile" v-model="store.file" label="Chon hinh anh" :rules="store.imageRules" chips accept=".jpg, .jpeg, .png, .avif" @change="handleFileChange"></v-file-input>

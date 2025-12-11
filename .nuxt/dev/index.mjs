@@ -1148,22 +1148,7 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"4c628-2zjs3zTpEgbDXr6BJ036Y510v/c\"",
-    "mtime": "2025-12-10T10:49:52.463Z",
-    "size": 312872,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"12580f-dryJjeW7l67FlxVK43hCx0f5IUI\"",
-    "mtime": "2025-12-10T10:49:52.465Z",
-    "size": 1202191,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -3279,6 +3264,8 @@ function toProductDTO(entity) {
 const toProductListDTO = (list) => list.map(toProductDTO);
 function toCategoryProductDTO(entity) {
   var _a, _b, _c;
+  const isPopulated = entity.parentId && typeof entity.parentId === "object" && entity.parentId._id;
+  const parentObj = isPopulated ? entity.parentId : null;
   return {
     id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
     categoryName: entity.categoryName,
@@ -3287,12 +3274,19 @@ function toCategoryProductDTO(entity) {
     banner: entity.banner,
     order: entity.order,
     isActive: entity.isActive,
-    parentId: entity.parentId ? entity.parentId.toString() : "",
+    parentId: entity.parentId ? isPopulated ? parentObj._id.toString() : entity.parentId.toString() : null,
+    parent: parentObj ? {
+      id: parentObj._id.toString(),
+      categoryName: parentObj.categoryName,
+      slug: parentObj.slug
+    } : null,
+    children: null,
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,
     slug: entity.slug,
     keywords: entity.keywords,
+    canonicalUrl: entity.canonicalUrl,
     createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
     updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || ""
   };
@@ -3332,14 +3326,30 @@ const getAllCategoriesTree$1 = async (_, res) => {
 const getAllCategories$2 = async (req, res) => {
   try {
     const search = req.query.search || "";
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.max(Number(req.query.limit) || 10, 1);
     const filter = {};
     if (search.trim()) {
       filter.categoryName = { $regex: search.trim(), $options: "i" };
     }
-    const categories = await CategoryProductEntity.find(filter).lean().sort({ order: 1 });
+    const total = await CategoryProductEntity.countDocuments(filter);
+    const totalPages = Math.ceil(total / limit);
+    const skip = (page - 1) * limit;
+    const categories = await CategoryProductEntity.find(filter).populate({
+      path: "parentId",
+      select: "categoryName order slug"
+      // chỉ chọn những field cần thiết
+    }).lean().sort({ order: 1 }).skip(skip).limit(limit);
     return res.json({
       code: 0,
-      data: toCategoryProductListDTO(categories)
+      data: toCategoryProductListDTO(categories),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages
+      },
+      message: "Success"
     });
   } catch (err) {
     return res.status(500).json({
