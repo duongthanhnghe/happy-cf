@@ -52,6 +52,7 @@ export const useAdminProductState = () => {
   };
   const formProductItem = reactive<CreateProductDTO>({ ...defaultForm })
   const updateProductItem = reactive<UpdateProductDTO>({ ...defaultForm, id: ''})
+  const selectedIdsDelete = ref<string[]>([])
   const selectedCategory = ref<CategoryProductDTO[]>([])
   const selectedCategoryName = ref<string[]>([])
   const dataList = ref<ProductDTO[]|null>(null);
@@ -142,5 +143,6 @@ export const useAdminProductState = () => {
     selectedImportFile,
     dataImport,
     currentTypeImport,
+    selectedIdsDelete,
   };
 };

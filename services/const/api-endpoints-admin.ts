@@ -46,6 +46,7 @@ export const API_ENDPOINTS_ADMIN = {
     LIST_ALL: '/products',
     GET_BY_ID: (id: string) => `/products/${id}`,
     DELETE: (id: string) => `/products/${id}`,
+    DELETE_MANY: '/products',
     UPDATE: (id: string) => `/products/${id}`,
     CREATE: '/products',
     IMPORT: '/products/import',

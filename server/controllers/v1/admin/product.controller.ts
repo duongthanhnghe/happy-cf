@@ -457,6 +457,26 @@ export const deleteProduct = async (req: Request<{ id: string }>, res: Response)
   }
 }
 
+export const deleteProducts = async (req: Request, res: Response) => {
+  try {
+    const ids: string[] = req.body.ids;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ code: 1, message: "Danh sách sản phẩm không hợp lệ" });
+    }
+
+    const result = await ProductEntity.deleteMany({ _id: { $in: ids } });
+
+    return res.json({
+      code: 0,
+      message: `Đã xoá ${result.deletedCount} sản phẩm`,
+      deletedCount: result.deletedCount
+    });
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
 export const toggleActive = async (req: Request, res: Response) => {
   try {
     const { id } = req.params

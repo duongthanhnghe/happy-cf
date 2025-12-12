@@ -49,31 +49,37 @@ onBeforeUnmount(() => {
   </template>
 
   <template #right>
+    <Button
+      v-if="store.selectedIdsDelete.length > 0"
+      color="secondary"
+      icon="delete"
+      @click="store.handleDeleteManyProducts()"
+    />
     <div>
-    <v-menu transition="slide-x-transition">
-      <template v-slot:activator="{ props }">
-        <Button
-          v-bind="props"
-          tag="span"
-          color="secondary"
-          label="Chỉnh sửa"
-        />
-      </template>
-      <v-list class="mt-sm">
-        <v-list-item
-          v-for="(item, i) in store.menuActions"
-          :key="i"
-          @click="item.action"
-        >
-          <v-list-item-title>
-            <div class="flex align-center gap-sm weight-medium cursor-pointer">
-              <MaterialIcon :name="item.icon" />
-              {{ item.label }}
-            </div>
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+      <v-menu transition="slide-x-transition">
+        <template v-slot:activator="{ props }">
+          <Button
+            v-bind="props"
+            tag="span"
+            color="secondary"
+            label="Chỉnh sửa"
+          />
+        </template>
+        <v-list class="mt-sm">
+          <v-list-item
+            v-for="(item, i) in store.menuActions"
+            :key="i"
+            @click="item.action"
+          >
+            <v-list-item-title>
+              <div class="flex align-center gap-sm weight-medium cursor-pointer">
+                <MaterialIcon :name="item.icon" />
+                {{ item.label }}
+              </div>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
   </template>
 </HeaderAdmin>
@@ -98,8 +104,16 @@ onBeforeUnmount(() => {
     @update:options="options => {
         store.currentTableOptions = options
     }">
-    <template #item.index="{ index }">
-      {{ (store.currentTableOptions.page - 1) * store.currentTableOptions.itemsPerPage + index + 1 }}
+    <template #item.index="{ item,index }">
+      <div class="flex gap-xs align-center">
+        <VCheckbox
+          :key="item.id"
+          v-model="store.selectedIdsDelete"
+          :value="item.id"
+          hide-details
+        />
+        {{ (store.currentTableOptions.page - 1) * store.currentTableOptions.itemsPerPage + index + 1 }}
+      </div>
     </template>
 
     <template #item.image="{ item }">

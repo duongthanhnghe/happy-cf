@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"11f3b2-1+jGEZM+20eDqvjAdABuJDWSM+Q\"",
-    "mtime": "2025-12-12T02:49:29.383Z",
-    "size": 1176498,
+    "etag": "\"11f637-+AJh2kklblRX++qflDYU5Ryytgw\"",
+    "mtime": "2025-12-12T03:43:57.043Z",
+    "size": 1177143,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"491de9-SBXzsAfVLyqOhfBuDeKT65sU6A8\"",
-    "mtime": "2025-12-12T02:49:29.394Z",
-    "size": 4791785,
+    "etag": "\"492846-WJJoGhzMNWYiTOu7ZzOdezrtKOQ\"",
+    "mtime": "2025-12-12T03:43:57.050Z",
+    "size": 4794438,
     "path": "index.mjs.map"
   }
 };
@@ -29636,6 +29636,22 @@ const deleteProduct = async (req, res) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+const deleteProducts = async (req, res) => {
+  try {
+    const ids = req.body.ids;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ code: 1, message: "Danh s\xE1ch s\u1EA3n ph\u1EA9m kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    const result = await ProductEntity.deleteMany({ _id: { $in: ids } });
+    return res.json({
+      code: 0,
+      message: `\u0110\xE3 xo\xE1 ${result.deletedCount} s\u1EA3n ph\u1EA9m`,
+      deletedCount: result.deletedCount
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
 const toggleActive = async (req, res) => {
   try {
     const { id } = req.params;
@@ -29682,6 +29698,7 @@ const uploadExcel = multer({
 const router$m = Router();
 router$m.get("/", authenticateAdmin, getAllProduct);
 router$m.post("/", authenticateAdmin, createProduct);
+router$m.delete("/", authenticateAdmin, deleteProducts);
 router$m.post("/import", uploadExcel, importProducts);
 router$m.post("/updateImport", uploadExcel, updateImportProducts);
 router$m.get("/export", exportProducts);

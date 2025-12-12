@@ -117,6 +117,7 @@ export const useProductManageStore = defineStore("ProductManage", () => {
     state.detailData,
     state.isTogglePopupAdd,
     state.isTogglePopupUpdate,
+    state.selectedIdsDelete,
     productUtils.handleReset,
     productUtils.handleTogglePopupUpdate,
     setSelectedCategory,

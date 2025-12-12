@@ -224,6 +224,30 @@ export const productsAPI = {
       }
     }
   },
+  
+  deleteMany: async (ids: string[]): Promise<ApiResponse<null>> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.adminApiURL}/products`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids })
+        }
+      )
+
+      const data = await response.json()
+      return data
+    } catch (err: any) {
+      return {
+        code: 1,
+        message: err.message ?? "Failed to delete products",
+        data: null
+      }
+    }
+  },
+
   toggleActive: async (id: string): Promise<ApiResponse<ProductDTO>> => {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.TOGGLE_ACTIVE(id)}`, {

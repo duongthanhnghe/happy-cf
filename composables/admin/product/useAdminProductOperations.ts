@@ -22,6 +22,7 @@ export const useAdminProductOperations = (
   detailData: Ref<ProductDTO|null>,
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
+  selectedIdsDelete: Ref<string[]>,
   handleReset: () => void,
   handleTogglePopupUpdate: (value: boolean) => void,
   setSelectedCategory: (parentId: string | null) => void,
@@ -147,11 +148,6 @@ export const useAdminProductOperations = (
       const data = await productsAPI.delete(productId)
       if(data.code === 0){
         showSuccess(data.message ?? '')
-        if(dataList.value){
-          dataList.value = dataList.value.filter(item => 
-            item.id !== productId
-          )
-        }
         handleReload()
       } else showWarning(data.message ?? '')
     } catch (err) {
@@ -161,6 +157,35 @@ export const useAdminProductOperations = (
     }
   }
 
+  const handleDeleteManyProducts = async () => {
+    if (!selectedIdsDelete.value || selectedIdsDelete.value.length === 0) {
+      showWarning("Không có sản phẩm nào được chọn để xoá");
+      return;
+    }
+
+    const confirm = await showConfirm(`Bạn có chắc xoá ${selectedIdsDelete.value.length} sản phẩm này?`)
+    if (!confirm) return;
+
+    Loading(true);
+
+    try {
+      const data = await productsAPI.deleteMany(selectedIdsDelete.value);
+
+      if (data.code === 0) {
+        showSuccess(data.message ?? '');
+        handleReload();
+      } else {
+        showWarning(data.message ?? '');
+      }
+
+    } catch (err) {
+      console.error('Error deleting products:', err);
+    } finally {
+      Loading(false);
+      selectedIdsDelete.value = []
+    }
+  };
+
   return {
     handleEditProduct,
     handleDeleteProduct,
@@ -169,5 +194,6 @@ export const useAdminProductOperations = (
     submitCreate,
     submitUpdate,
     handleReload,
+    handleDeleteManyProducts,
   };
 };

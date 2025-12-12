@@ -5,6 +5,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  deleteProducts,
   toggleActive,
   importProducts,
   exportProducts,
@@ -17,6 +18,7 @@ const router = Router()
 
 router.get('/', authenticateAdmin, getAllProduct)
 router.post('/', authenticateAdmin, createProduct)
+router.delete('/',    authenticateAdmin, deleteProducts)
 router.post("/import", uploadExcel, importProducts);
 router.post("/updateImport", uploadExcel, updateImportProducts);
 router.get("/export", exportProducts);
