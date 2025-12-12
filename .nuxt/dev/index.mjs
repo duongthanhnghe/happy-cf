@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"11f637-+AJh2kklblRX++qflDYU5Ryytgw\"",
-    "mtime": "2025-12-12T03:43:57.043Z",
-    "size": 1177143,
+    "etag": "\"11f6b4-boE5EOtpJ95pODIghBXK43d9z7U\"",
+    "mtime": "2025-12-12T04:37:21.189Z",
+    "size": 1177268,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"492846-WJJoGhzMNWYiTOu7ZzOdezrtKOQ\"",
-    "mtime": "2025-12-12T03:43:57.050Z",
-    "size": 4794438,
+    "etag": "\"492aa6-GyY8bz7qEAOXygRwJCERQz5eVMk\"",
+    "mtime": "2025-12-12T04:37:21.194Z",
+    "size": 4795046,
     "path": "index.mjs.map"
   }
 };
@@ -29265,7 +29265,12 @@ const getAllProduct = async (req, res) => {
     const categoryId = req.query.categoryId;
     const query = {};
     if (search.trim()) {
-      query.productName = { $regex: search.trim(), $options: "i" };
+      const regex = new RegExp(search.trim(), "i");
+      query.$or = [
+        { productName: regex },
+        { sku: regex },
+        { "variantGroups.selectedVariants.sku": regex }
+      ];
     }
     if (categoryId) {
       query.categoryId = categoryId;

@@ -4,7 +4,7 @@ import { useProductManageStore } from '@/stores/admin/product/useProductManageSt
 import { useVariantGroupStore } from '@/stores/admin/product/useVariantGroupManageStore'
 import type { VForm } from 'vuetify/components'
 import type { ProductVariantGroupDTO, VariantGroupDTO } from '@/server/types/dto/v1/product.dto';
-import { generateSKU } from '@/utils/global';
+import { generateSkuVariant } from '@/utils/global';
 import { showWarning } from '@/utils/toast';
 import { nullRules } from '@/utils/validation';
 
@@ -62,7 +62,7 @@ watch(
               inStock: true,
               stock: 1,
               image: '',
-              sku: generateSKU(productStore.updateProductItem.id, groupData.groupName, v.name)
+              sku: generateSkuVariant(productStore.updateProductItem.sku, groupData.groupName, v.name)
             }))
           });
         }

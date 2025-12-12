@@ -17,7 +17,13 @@ export const getAllProduct = async (req: Request, res: Response) => {
     const query: any = {};
 
     if (search.trim()) {
-      query.productName = { $regex: search.trim(), $options: "i" };
+      const regex = new RegExp(search.trim(), "i");
+
+      query.$or = [
+        { productName: regex },
+        { sku: regex },
+        { "variantGroups.selectedVariants.sku": regex }
+      ];
     }
 
     if (categoryId) {

@@ -177,14 +177,20 @@ export function generateSlug(text) {
 function slugifySKU(text) {
   return text
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d")
-    .replace(/[^a-zA-Z0-9]/g, "")
-    .toUpperCase();
+    .replace(/[\u0300-\u036f]/g, "") // remove accents
+    .replace(/đ/g, "d") // convert đ => d
+    .split(/\s+/) // split words
+    .filter(Boolean)
+    .map(word => word[0].toUpperCase()) // take first letter
+    .join("");
 }
 
 export function generateSKU(productId, groupName, variantName) {
   return `PRD${productId.slice(-5)}-${slugifySKU(groupName)}-${slugifySKU(variantName)}`;
+}
+
+export function generateSkuVariant(productSku, groupName, variantName) {
+  return `${productSku}-${slugifySKU(groupName)}-${slugifySKU(variantName)}`;
 }
 
 export async function generateSkuProduct(categoryCode) {

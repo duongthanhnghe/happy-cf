@@ -11,7 +11,12 @@ export const getAllProduct = async (req, res) => {
         const categoryId = req.query.categoryId;
         const query = {};
         if (search.trim()) {
-            query.productName = { $regex: search.trim(), $options: "i" };
+            const regex = new RegExp(search.trim(), "i");
+            query.$or = [
+                { productName: regex },
+                { sku: regex },
+                { "variantGroups.selectedVariants.sku": regex }
+            ];
         }
         if (categoryId) {
             query.categoryId = categoryId;
