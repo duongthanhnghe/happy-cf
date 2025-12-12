@@ -38,9 +38,11 @@ export const useCartOrder = (
 
     Loading(true);
 
+
     const newCartItems = cartListItem.value.map((item) => {
       return {
         idProduct: item.id,
+        sku: item.sku,
         priceDiscounts: item.priceDiscounts,
         quantity: item.quantity,
         note: item.note ? item.note : null,
@@ -48,6 +50,8 @@ export const useCartOrder = (
         finalPriceDiscounts: item.finalPriceDiscounts ? item.finalPriceDiscounts : null
       };
     });
+
+    console.log(newCartItems)
 
     const point = userId ? Math.round(totalPriceDiscount.value * 0.05) : 0;
     const newUsedPoint = usedPointOrder.checkBalancePoint ? usedPointOrder.usedPoint : 0;

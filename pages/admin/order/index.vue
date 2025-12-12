@@ -9,6 +9,8 @@ import { getTransactionNote } from '@/composables/admin/order/useGetTransactionN
 import { getFilteredTransactionStatus } from '@/composables/admin/order/useFilteredTransactionStatus';
 import { useOrderHelpers } from '@/utils/orderHelpers';
 import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';
+import { onMounted } from 'vue';
+import { useOrderStatus } from '@/composables/shared/order/useOrderStatus';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,
@@ -18,15 +20,20 @@ definePageMeta({
 const store = useOrderManageStore()
 const storeUser = useUserManageStore()
 const storeDetailOrder = useSharedOrderDetailStore()
+const { getListOrderStatus, fetchOrderStatus } = useOrderStatus();
 const { remainingProductNames } = useOrderHelpers()
 
+onMounted(async () => {
+  if(getListOrderStatus.value.length === 0) await fetchOrderStatus()
+})
+  
 </script>
 <template>
 
 <HeaderAdmin>
   <template #left>
     <v-text-field v-model="store.search"  placeholder="Tìm theo mã, tên, sđt..." variant="outlined" hide-details></v-text-field>
-    <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'TT đơn hàng' }, ...store.getListStatus]" item-title="name" item-value="id"  variant="outlined"hide-details />
+    <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'TT đơn hàng' }, ...getListOrderStatus]" item-title="name" item-value="id"  variant="outlined"hide-details />
     <v-select label="Thanh toan" v-model="store.filterStatusTransactionOrder" :items="[{ status: '', name: 'TT thanh toán' }, ...Object.values(PAYMENT_TRANSACTION_STATUS)
 ]" item-title="name" item-value="status" variant="outlined" hide-details />
     <DateFilter v-model:fromDay="store.fromDay" v-model:toDay="store.toDay" />

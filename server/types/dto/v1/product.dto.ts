@@ -178,6 +178,7 @@ export interface SelectedOptionPushDTO {
 
 export interface CartDTO {
   id?: string;
+  sku?: string;
   product: string | ProductDTO;
   productKey?: string;
   quantity: number;

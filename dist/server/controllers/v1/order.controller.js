@@ -65,6 +65,7 @@ export const createOrder = async (req, res) => {
             await user.save();
             deductedPoints = usedPoint;
         }
+        console.log('data server:', data);
         const newOrder = await OrderEntity.create({
             ...data,
             userId,

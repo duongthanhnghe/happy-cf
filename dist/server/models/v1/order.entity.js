@@ -11,6 +11,7 @@ const CartItemsSchema = new Schema({
     priceDiscounts: { type: Number, required: true },
     quantity: { type: Number, required: true },
     note: { type: String },
+    sku: { type: String },
     selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
     finalPriceDiscounts: { type: Number }
 }, { _id: false });

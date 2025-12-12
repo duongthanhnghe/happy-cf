@@ -31,8 +31,10 @@ export const useCartProductOperations = (
     if (existingProduct && existingProduct.quantity) {
       quantity ? existingProduct.quantity += quantity : existingProduct.quantity++;
     } else {
+      console.log('product.sku',product.sku)
       cartListItem.value?.push({
         product: product.id,
+        sku: product.sku,
         quantity: quantity ? quantity : 1,
       });
     }
@@ -57,10 +59,7 @@ export const useCartProductOperations = (
     };
     
     const productKey = `${product.id}_${Base64.encode(JSON.stringify(rawEncodeData))}`;
-    // const productKey = `${product.id}_${Base64.encode(JSON.stringify({
-    //   selectedOptions,
-    //   note
-    // }))}`;
+   
     const existingProduct = cartListItem.value?.find(
       (item) => item.productKey === productKey
     );
@@ -94,6 +93,7 @@ export const useCartProductOperations = (
         note: note,
         finalPrice: product.price + optionsPrice,
         finalPriceDiscounts: product.priceDiscounts + optionsPrice,
+        sku: product.sku,
       });
 
       cartCount.value += quantity;
@@ -143,6 +143,7 @@ export const useCartProductOperations = (
         note: note,
         finalPrice: product.price + optionsPrice,
         finalPriceDiscounts: product.priceDiscounts + optionsPrice,
+        sku: product.sku,
       };
 
       const oldQuantity = cartListItem.value[existingProductIndex].quantity || 0;
@@ -184,6 +185,7 @@ export const useCartProductOperations = (
       product: product.id,
       quantity: quantity,
       note: note,
+      sku: product.sku,
     };
 
     const oldQuantity = cartListItem.value[existingProduct].quantity;

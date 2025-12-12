@@ -131,6 +131,7 @@ function toCartItemDTO(entity: cartItems): cartItems {
     priceDiscounts: entity.priceDiscounts,
     quantity: entity.quantity,
     note: entity.note || "",
+    sku: entity.sku,
     selectedOptionsPush: Array.isArray(entity.selectedOptionsPush)
       ? entity.selectedOptionsPush.map(toSelectedOptionDTO)
       : [],

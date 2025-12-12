@@ -15,6 +15,7 @@ export interface cartItems {
   idProduct: { image: string, productName: string}
   priceDiscounts: number
   quantity: number
+  sku: string | null
   note: string | null
   selectedOptionsPush: selectedOptionsPush[] | null
   finalPriceDiscounts: number | null

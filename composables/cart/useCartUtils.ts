@@ -28,6 +28,7 @@ export const useCartUtils = (
   const updateCookie = () => {
     const cookieData = cartListItem.value.map(item => ({
       product: item.product,
+      sku: item.sku,
       quantity: item.quantity,
       selectedOptionsPush: item.selectedOptionsPush || [],
       note: item.note || '',
@@ -52,6 +53,7 @@ export const useCartUtils = (
     cartListItem.value = Array.isArray(cookieList)
       ? cookieList.map(c => ({
           product: c.product,
+          sku: c.sku,
           quantity: c.quantity,
           selectedOptionsPush: c.selectedOptionsPush || [],
           note: c.note || '',

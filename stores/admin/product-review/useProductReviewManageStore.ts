@@ -139,7 +139,6 @@ async function loadItems(opt:TableOpt) {
     loadItems(currentTableOptions.value);
   })
 
-  // actions global
   const handleTogglePopupAdd = (value: boolean) => {
     isTogglePopupAdd.value = value;
   };
@@ -148,7 +147,6 @@ async function loadItems(opt:TableOpt) {
     await loadItems(currentTableOptions.value);
   }
 
-  //actions delete
   const handleDelete = async (id: string) => {
     const confirmed = await showConfirm('Bạn có chắc xoá?')
     if (!confirmed) return
@@ -158,24 +156,18 @@ async function loadItems(opt:TableOpt) {
       const data = await productReviewAPI.delete(id)
       if(data.code === 0) {
         showSuccess(data.message ?? '')
-        if(dataList.value?.data){
-          dataList.value.data = dataList.value?.data?.filter(item => 
-            item.id !== id
-          )
-        }
         handleReload()
       } else {
         showWarning(data.message ?? '')
       }
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
 
   const handleUpdateStatusOrder = async (id:string, status:ReviewStatus) => {
-    console.log(status)
     Loading(true);
     try {
       const data = await productReviewAPI.updateStatus(id, status)
@@ -185,9 +177,9 @@ async function loadItems(opt:TableOpt) {
       } else {
         showWarning(data.message ?? '')
       }
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
@@ -214,11 +206,7 @@ async function loadItems(opt:TableOpt) {
     )
   })
 
-
-  //getters
-  
   return {
-    // state
     dataList,
     isTogglePopupAdd,
     serverItems,
@@ -233,7 +221,6 @@ async function loadItems(opt:TableOpt) {
     filterStatusOrder,
     filterNumberStar,
     hasFilter,
-    // actions
     handleTogglePopupAdd,
     getListData,
     loadItems,

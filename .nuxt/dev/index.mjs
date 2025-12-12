@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"11f6b4-boE5EOtpJ95pODIghBXK43d9z7U\"",
-    "mtime": "2025-12-12T04:37:21.189Z",
-    "size": 1177268,
+    "etag": "\"11f70b-kpw8m/eS7bbDeuy1MP8jn0BB5UI\"",
+    "mtime": "2025-12-12T05:40:48.432Z",
+    "size": 1177355,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"492aa6-GyY8bz7qEAOXygRwJCERQz5eVMk\"",
-    "mtime": "2025-12-12T04:37:21.194Z",
-    "size": 4795046,
+    "etag": "\"492be8-hNANzN/o7f3gK1zLvuPOHchiDj4\"",
+    "mtime": "2025-12-12T05:40:48.440Z",
+    "size": 4795368,
     "path": "index.mjs.map"
   }
 };
@@ -3911,6 +3911,7 @@ const CartItemsSchema = new Schema(
     priceDiscounts: { type: Number, required: true },
     quantity: { type: Number, required: true },
     note: { type: String },
+    sku: { type: String },
     selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
     finalPriceDiscounts: { type: Number }
   },
@@ -4113,6 +4114,7 @@ function toCartItemDTO(entity) {
     priceDiscounts: entity.priceDiscounts,
     quantity: entity.quantity,
     note: entity.note || "",
+    sku: entity.sku,
     selectedOptionsPush: Array.isArray(entity.selectedOptionsPush) ? entity.selectedOptionsPush.map(toSelectedOptionDTO) : [],
     finalPriceDiscounts: entity.finalPriceDiscounts
   };
