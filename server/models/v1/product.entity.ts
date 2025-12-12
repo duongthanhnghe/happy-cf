@@ -38,6 +38,7 @@ export interface Product {
   categoryId: Types.ObjectId;
   category?: CategoryProduct | null;
   weight: number;
+  sku: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -117,6 +118,7 @@ const ProductSchema = new Schema<Product>(
     variantGroups: { type: [ProductVariantGroupSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
+    sku: { type: String, required: true, unique: true },
     isActive: { type: Boolean, default: true },
     titleSEO: {
       type: String,

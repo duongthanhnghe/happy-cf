@@ -2,13 +2,14 @@ import { showWarning, showConfirm, showSuccess } from "@/utils/toast";
 import type { CreateProductDTO, ProductDTO, UpdateProductDTO } from '@/server/types/dto/v1/product.dto';
 import { unref, watch, type Ref } from 'vue';
 import type { TableOpt } from "@/server/types";
-import { Loading } from "@/utils/global";
+import { generateSkuProduct, Loading } from "@/utils/global";
 import { useAdminProductAll } from "./useAdminProductAll";
 import { useAdminProductDetail } from "./useAdminProductDetail";
 import { productsAPI } from "@/services/v1/admin/product.service";
 type MaybeRef<T> = T | Ref<T>;
 
 export const useAdminProductOperations = (
+  defaultForm: object,
   formProductItem: MaybeRef<CreateProductDTO>,
   updateProductItem: MaybeRef<UpdateProductDTO>,
   dataList: Ref<ProductDTO[] | null>,
@@ -84,6 +85,7 @@ export const useAdminProductOperations = (
 
     try {
       const newProduct = unref(formProductItem);
+      if(!newProduct.sku) newProduct.sku = await generateSkuProduct(newProduct.categoryId)
 
       const data = await productsAPI.create(newProduct)
       if(data.code === 0){
@@ -101,6 +103,8 @@ export const useAdminProductOperations = (
 
   const handleEditProduct = async (productId: string) => {
     if(!productId) return
+    Object.assign(updateProductItem, defaultForm);
+
     await fetchDetailProduct(productId)
     if(getDetailProduct.value) detailData.value = getDetailProduct.value
     if(!detailData.value) return
@@ -114,6 +118,9 @@ export const useAdminProductOperations = (
     Loading(true);
     try {
       const realUpdateItem = unref(updateProductItem);
+      if(!realUpdateItem.sku) {
+        realUpdateItem.sku = await generateSkuProduct(realUpdateItem.categoryId)
+      } 
 
       if(realUpdateItem.id == '' && !realUpdateItem.id) return
 

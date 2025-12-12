@@ -10,7 +10,6 @@ import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 import { useAdminProductOperations } from "@/composables/admin/product/useAdminProductOperations";
 import { useAdminProductUtils } from "@/composables/admin/product/useAdminProductUtils";
 import { useAdminProductState } from "@/composables/admin/product/useAdminProductState";
-import type { ProductImportItemDTO } from "@/server/types/dto/v1/product.dto";
 import { useAdminProductImport } from "@/composables/admin/product/useAdminProductImport";
 
 export const useProductManageStore = defineStore("ProductManage", () => {
@@ -105,6 +104,7 @@ export const useProductManageStore = defineStore("ProductManage", () => {
   )
 
   const productOps = useAdminProductOperations(
+    state.defaultForm,
     state.formProductItem,
     state.updateProductItem,
     state.dataList,

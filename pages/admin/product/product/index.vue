@@ -124,10 +124,12 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.priceDiscounts="{ item }">
+      <div class="white-space">
       {{ formatCurrency(item.priceDiscounts) }}
       <v-chip label color="red" class="ml-xs" v-if="item.priceDiscounts !== item.price">
         {{ Math.round(((item.price - (item.priceDiscounts ?? 0)) / item.price) * 100) + "%" }}
       </v-chip>
+      </div>
     </template>
 
     <template #item.variantGroups="{ item }">

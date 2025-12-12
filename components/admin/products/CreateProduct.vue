@@ -44,6 +44,10 @@ const handleSubmitCreate = async () => {
             <LabelInput label="Can nang (gram)" required/>
             <v-text-field v-model="store.formProductItem.weight" :rules="store.nullRules" type="number" label="Nhap can nang" variant="outlined"></v-text-field>
           </div>
+          <div class="col-12">
+            <LabelInput label="SKU" />
+            <v-text-field v-model="store.formProductItem.sku" type="text" label="Sku" variant="outlined"></v-text-field>
+          </div>
           <div class="col-12 flex gap-sm align-anchor">
             <div class="flex-1">
               <LabelInput label="Danh muc san pham" required/>

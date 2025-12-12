@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"11f2b6-KickxEe1YObw0nDDsoiuC0j7TdI\"",
-    "mtime": "2025-12-11T17:09:15.248Z",
-    "size": 1176246,
+    "etag": "\"11f3b2-1+jGEZM+20eDqvjAdABuJDWSM+Q\"",
+    "mtime": "2025-12-12T02:49:29.383Z",
+    "size": 1176498,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"491a17-KNRIQumfmq7Zw/oMw7ZNpCZfd9U\"",
-    "mtime": "2025-12-11T17:09:15.257Z",
-    "size": 4790807,
+    "etag": "\"491de9-SBXzsAfVLyqOhfBuDeKT65sU6A8\"",
+    "mtime": "2025-12-12T02:49:29.394Z",
+    "size": 4791785,
     "path": "index.mjs.map"
   }
 };
@@ -3159,6 +3159,7 @@ const ProductSchema = new Schema(
     variantGroups: { type: [ProductVariantGroupSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
+    sku: { type: String, required: true, unique: true },
     isActive: { type: Boolean, default: true },
     titleSEO: {
       type: String,
@@ -3269,6 +3270,7 @@ function toProductDTO(entity) {
       slug: entity.category.slug
     } : null,
     weight: entity.weight,
+    sku: entity.sku,
     isActive: entity.isActive,
     createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
     updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || "",
@@ -29393,6 +29395,7 @@ const importProducts = async (req, res) => {
           summaryContent: row.summaryContent || "",
           categoryId: new mongoose.Types.ObjectId(category._id),
           weight: Number(row.weight || 0),
+          sku: row.sku || `PRD-${new mongoose.Types.ObjectId(category._id).toString().slice(0, 5)}-${Date.now()}`,
           isActive: row.isActive || false,
           titleSEO: row.titleSEO || row.productName,
           descriptionSEO: row.descriptionSEO || "",
@@ -29457,6 +29460,7 @@ const exportProducts = async (req, res) => {
           summaryContent: p.summaryContent,
           isActive: p.isActive,
           weight: p.weight,
+          sku: p.sku,
           titleSEO: p.titleSEO,
           descriptionSEO: p.descriptionSEO,
           keywords: (_b = (_a = p.keywords) == null ? void 0 : _a.join(",")) != null ? _b : "",
@@ -29561,6 +29565,7 @@ const updateImportProducts = async (req, res) => {
         product.summaryContent = row.summaryContent || "";
         product.isActive = (_a = row.isActive) != null ? _a : product.isActive;
         product.weight = Number(row.weight || 0);
+        product.sku = row.sku || "";
         product.titleSEO = row.titleSEO || product.titleSEO;
         product.descriptionSEO = row.descriptionSEO || product.descriptionSEO;
         product.keywords = row.keywords ? row.keywords.split(",") : [];

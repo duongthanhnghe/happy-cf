@@ -187,6 +187,11 @@ export function generateSKU(productId, groupName, variantName) {
   return `PRD${productId.slice(-5)}-${slugifySKU(groupName)}-${slugifySKU(variantName)}`;
 }
 
+export async function generateSkuProduct(categoryCode) {
+  if(!categoryCode) return ''
+  return `PRD${categoryCode.slice(0, 5)}-${Date.now()}`;
+}
+
 export function debounce(fn, delay = 300) {
   let timer
   return (...args) => {

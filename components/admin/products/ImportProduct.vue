@@ -34,7 +34,7 @@ const handleSubmit = async () => {
           <Button
             tag="span"
             :border="false"
-            :color="store.currentTypeImport === 'import' ? 'black' : 'gray2'"
+            :color="store.currentTypeImport === 'import' ? 'black' : 'gray'"
             label="Import mới"
             class="flex-1 cursor-pointer"
             @click="store.currentTypeImport = 'import'"
@@ -43,7 +43,7 @@ const handleSubmit = async () => {
           <Button
             tag="span"
             :border="false"
-            :color="store.currentTypeImport === 'updateImport' ? 'black' : 'gray2'"
+            :color="store.currentTypeImport === 'updateImport' ? 'black' : 'gray'"
             label="Import chỉnh sửa"
             class="flex-1 cursor-pointer"
             @click="store.currentTypeImport = 'updateImport'"

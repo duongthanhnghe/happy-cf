@@ -179,6 +179,7 @@ export const importProducts = async (req: Request, res: Response) => {
           summaryContent: row.summaryContent || "",
           categoryId: new mongoose.Types.ObjectId(category._id),
           weight: Number(row.weight || 0),
+          sku: row.sku || `PRD-${new mongoose.Types.ObjectId(category._id).toString().slice(0, 5)}-${Date.now()}`,
           isActive: row.isActive || false,
           titleSEO: row.titleSEO || row.productName,
           descriptionSEO: row.descriptionSEO || "",
@@ -251,6 +252,7 @@ export const exportProducts = async (req: Request, res: Response) => {
           summaryContent: p.summaryContent,
           isActive: p.isActive,
           weight: p.weight,
+          sku: p.sku,
           titleSEO: p.titleSEO,
           descriptionSEO: p.descriptionSEO,
           keywords: p.keywords?.join(",") ?? "",
@@ -373,6 +375,7 @@ export const updateImportProducts = async (req: Request, res: Response) => {
         product.summaryContent = row.summaryContent || "";
         product.isActive = row.isActive ?? product.isActive;
         product.weight = Number(row.weight || 0);
+        product.sku = row.sku || "";
         product.titleSEO = row.titleSEO || product.titleSEO;
         product.descriptionSEO = row.descriptionSEO || product.descriptionSEO;
         product.keywords = row.keywords ? row.keywords.split(",") : [];

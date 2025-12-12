@@ -31,6 +31,7 @@ export const useAdminProductImport = (
       summaryContent: item.row.summaryContent,
       isActive: item.row.isActive,
       weight: item.row.weight,
+      sku: item.row.sku,
       status: item.status,
       message: item.message ?? "Thành công",
     }));

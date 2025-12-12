@@ -42,6 +42,7 @@ export const useAdminProductState = () => {
     variantGroups: [],
     categoryId: '',
     weight: 0,
+    sku: '',
     isActive: false,
     // SEO
     titleSEO: '',
@@ -69,6 +70,7 @@ export const useAdminProductState = () => {
         key: 'category',
       },
       { title: 'Tình trạng', key: 'isActive', sortable: false, },
+      { title: 'SKU', key: 'sku', sortable: false, },
       { title: '', key: 'actions', sortable: false , headerProps: { class: 'v-data-table-sticky-cl-right' },
       cellProps: { class: 'v-data-table-sticky-cl-right' }},
     ])
@@ -91,14 +93,15 @@ export const useAdminProductState = () => {
   //for import
   const isTogglePopupImport = ref<boolean>(false);
   const headersImport = [
-    { title: "STT", key: "rowIndex"},
-    { title: "Trạng thái", key: "status"},
-    { title: 'Hình ảnh', key: 'image'},
-    { title: "Tên sản phẩm", key: "productName"},
-    { title: 'Giá gốc', key: 'price' },
-    { title: 'Giá khuyến mãi', key: 'priceDiscounts' },
+    { title: "STT", key: "rowIndex",sortable: false,},
+    { title: "Trạng thái", key: "status",sortable: false,},
+    { title: 'Hình ảnh', key: 'image',sortable: false,},
+    { title: "Tên sản phẩm", key: "productName",sortable: false,},
+    { title: 'Giá gốc', key: 'price',sortable: false, },
+    { title: 'Giá khuyến mãi', key: 'priceDiscounts',sortable: false, },
     { title: 'Tồn kho', key: 'amount', sortable: false, },
     { title: "Category ID", key: "categoryId"},
+    { title: 'SKU', key: 'sku', sortable: false, },
     { title: 'Tình trạng', key: 'isActive', sortable: false, },
     { title: 'Cân nặng', key: 'weight', sortable: false, },
     { title: "Ghi chú", key: "message"},

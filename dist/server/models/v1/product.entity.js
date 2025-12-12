@@ -31,6 +31,7 @@ const ProductSchema = new Schema({
     variantGroups: { type: [ProductVariantGroupSchema], default: [] },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
+    sku: { type: String, required: true, unique: true },
     isActive: { type: Boolean, default: true },
     titleSEO: {
         type: String,

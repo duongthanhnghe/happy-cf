@@ -41,6 +41,7 @@ export function toProductDTO(entity) {
             }
             : null,
         weight: entity.weight,
+        sku: entity.sku,
         isActive: entity.isActive,
         createdAt: ((_b = entity.createdAt) === null || _b === void 0 ? void 0 : _b.toISOString()) || "",
         updatedAt: ((_c = entity.updatedAt) === null || _c === void 0 ? void 0 : _c.toISOString()) || "",

@@ -1,6 +1,5 @@
 import type { ImportDTO, ImportItemDTO } from '../../common/import.dto';
 import type { PaginationDTO } from '../../common/pagination.dto'
-import type { VoucherDTO } from './voucher.dto';
 
 export interface VariantItemDTO {
   id: string;
@@ -75,6 +74,7 @@ export interface ProductDTO {
   categoryId: string;
   category?: CategoryProductLiteDTO | null;
   weight: number;
+  sku: string;
   isActive: boolean;
   vouchers: {
   image: string;
@@ -98,6 +98,7 @@ export interface ProductImportTableItem {
   priceDiscounts: number;
   amount: number;
   isActive: boolean;
+  sku: string;
   weight: number;
   description: string;
   summaryContent: string;
