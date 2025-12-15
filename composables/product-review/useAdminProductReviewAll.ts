@@ -6,9 +6,9 @@ export const useAdminProductReviewAll = () => {
   
   const listData = ref<ProductReviewPaginationDTO>();
 
-  const fetchListReviewAll = async (page: number, limit: number) => {
+  const fetchListReviewAll = async (page: number, limit: number, fromDate: string, toDate: string, search: string, rating: number | null, status: string | null) => {
     try {
-      const data = await productReviewAPI.getAll(page, limit)
+      const data = await productReviewAPI.getAll(page, limit, fromDate, toDate, search, rating, status)
       if(data.code === 0) {
         listData.value = data
         return data

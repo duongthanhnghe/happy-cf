@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"11f70b-kpw8m/eS7bbDeuy1MP8jn0BB5UI\"",
-    "mtime": "2025-12-12T05:40:48.432Z",
-    "size": 1177355,
+    "etag": "\"11f9b4-DGhaYDIXVy/6vrE++nWrc7Rp41g\"",
+    "mtime": "2025-12-15T02:51:17.145Z",
+    "size": 1178036,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"492be8-hNANzN/o7f3gK1zLvuPOHchiDj4\"",
-    "mtime": "2025-12-12T05:40:48.440Z",
-    "size": 4795368,
+    "etag": "\"4936d4-N8ofCCamj1if86vgzF6Nf9anxzg\"",
+    "mtime": "2025-12-15T02:51:17.151Z",
+    "size": 4798164,
     "path": "index.mjs.map"
   }
 };
@@ -30137,11 +30137,41 @@ const toProductReviewListDTO = (entities) => entities.map(toProductReviewDTO);
 
 const getAllProductReviews = async (req, res) => {
   try {
-    let { page = 1, limit = 10 } = req.query;
+    let {
+      page = 1,
+      limit = 10,
+      fromDate,
+      toDate,
+      search,
+      rating,
+      status
+    } = req.query;
     const numPage = Number(page);
-    let numLimit = Number(limit);
+    const numLimit = Number(limit);
+    const filter = {};
+    if (fromDate || toDate) {
+      filter.createdAt = {};
+      if (fromDate) filter.createdAt.$gte = new Date(fromDate);
+      if (toDate) filter.createdAt.$lte = new Date(toDate);
+    }
+    if (rating !== void 0) {
+      filter.rating = Number(rating);
+    }
+    if (status) {
+      filter.status = status;
+    }
+    if (search) {
+      const users = await UserModel.find({
+        fullname: { $regex: search, $options: "i" }
+      }).select("_id");
+      const userIds = users.map((u) => u._id);
+      filter.$or = [
+        ...userIds.length > 0 ? [{ userId: { $in: userIds } }] : [],
+        { comment: { $regex: search, $options: "i" } }
+      ];
+    }
     if (numLimit === -1) {
-      const reviews = await ProductReviewEntity.find({}).sort({ createdAt: -1 }).populate("userId").populate("productId");
+      const reviews = await ProductReviewEntity.find(filter).sort({ createdAt: -1 }).populate("userId").populate("productId");
       return res.json({
         code: 0,
         data: toProductReviewListDTO(reviews),
@@ -30158,12 +30188,11 @@ const getAllProductReviews = async (req, res) => {
       limit: numLimit,
       sort: { createdAt: -1 },
       populate: [
-        // { path: "orderId", model: "Order" },
         { path: "userId", model: "User" },
         { path: "productId", model: "Product" }
       ]
     };
-    const result = await ProductReviewEntity.paginate({}, options);
+    const result = await ProductReviewEntity.paginate(filter, options);
     return res.json({
       code: 0,
       data: toProductReviewListDTO(result.docs),
@@ -30178,8 +30207,7 @@ const getAllProductReviews = async (req, res) => {
     console.error("\u{1F525} L\u1ED7i chi ti\u1EBFt getAllProductReviews:", error);
     return res.status(500).json({
       code: 1,
-      message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1",
-      error
+      message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\xE1nh gi\xE1"
     });
   }
 };

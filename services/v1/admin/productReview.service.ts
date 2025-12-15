@@ -6,11 +6,28 @@ import type { ApiResponse } from '@server/types/common/api-response';
 export const productReviewAPI = {
   getAll: async (
     page = 1,
-    limit = 10
+    limit = 10,
+    fromDate: '',
+    toDate: '',
+    search: '',
+    rating: 0,
+    status: '',
   ): Promise<ProductReviewPaginationDTO> => {
     try {
+
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      });
+
+      if (fromDate) params.append("fromDate", fromDate);
+      if (toDate) params.append("toDate", toDate);
+      if (search) params.append("search", search);
+      if (rating) params.append("rating", rating);
+      if (status) params.append("status", status);
+
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.LIST}?page=${page}&limit=${limit}`, {
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.LIST}?${params}`, {
           credentials: 'include',
         }
       );
@@ -121,87 +138,4 @@ export const productReviewAPI = {
       };
     }
   },
-
-  // submitReview: async (bodyData: SubmitProductReviewBody): Promise<ApiResponse<ProductReviewDTO>> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.SUBMIT}`, {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(bodyData),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       return {
-  //         code: 1,
-  //         message: errorData.message || "Failed to submit review",
-  //         data: undefined as any,
-  //       };
-  //     }
-
-  //     const data: ApiResponse<ProductReviewDTO> = await response.json();
-  //     return data;
-  //   } catch (err) {
-  //     console.error("Error submitting product review:", err);
-  //     return {
-  //       code: 1,
-  //       message: "Unexpected error while submitting product review",
-  //       data: undefined as any,
-  //     };
-  //   }
-  // },
-
-  // getReviewsByUser: async (userId: string, status: string, page: number = 1,
-  //   limit: number = 10): Promise<ProductReviewPaginationDTO> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.GET_BY_USER_PENDING(userId)}?status=${status}&page=${page}&limit=${limit}`);
-  //     const data = await response.json();
-  //     return data;
-  //   } catch (err) {
-  //     console.error(`Error fetching pending reviews for user ${userId}:`, err);
-  //     return {
-  //       code: 1,
-  //       message: "Failed to fetch orders",
-  //       data: [],
-  //       pagination: {
-  //         total: 0,
-  //         totalPages: 0,
-  //         page: 1,
-  //         limit,
-  //       },
-  //     }
-  //   }
-  // },
-
-  // getReviewsByProduct: async (
-  //   productId: string,
-  //   page: number = 1,
-  //   limit: number = 10
-  // ): Promise<ProductReviewPaginationDTO> => {
-  //   try {
-  //     let url = `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.GET_BY_PRODUCT_ID(productId)}?page=${page}&limit=${limit}`;
-     
-  //     const response = await fetch(url);
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch product reviews");
-  //     }
-
-  //     const data = await response.json();
-  //     return data;
-  //   } catch (err) {
-  //     console.error("Error fetching reviews by product:", err);
-  //     return {
-  //       code: 1,
-  //       message: "Failed to fetch product reviews",
-  //       data: [],
-  //       pagination: {
-  //         total: 0,
-  //         totalPages: 0,
-  //         page,
-  //         limit,
-  //       },
-  //     };
-  //   }
-  // },
-
 };

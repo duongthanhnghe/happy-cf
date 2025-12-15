@@ -18,11 +18,31 @@ const store = useProductReviewManageStore();
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name"  placeholder="Tên nguoi dung..." hide-details></v-text-field>
-    <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ status: '', name: 'Tất cả' }, ...Object.values(PRODUCT_REVIEW_STATUS)]" item-title="name" item-value="status" hide-details />
-    <v-select label="So sao" v-model="store.filterNumberStar" :items="ARRAY_RATING"
-    item-title="text"
-    item-value="value" hide-details />
+    <v-text-field 
+      v-model="store.search"  
+      placeholder="Tìm kiếm..." 
+      variant="outlined"
+      clearable 
+      hide-details 
+      @update:modelValue="value => store.search = value ?? ''">
+    </v-text-field>
+    <v-select 
+      label="Tình trạng" 
+      v-model="store.filterStatusOrder" 
+      :items="[{ status: '', name: 'Tất cả' }, ...Object.values(PRODUCT_REVIEW_STATUS)]" 
+      item-title="name" 
+      item-value="status" 
+      variant="outlined"
+      hide-details />
+    <v-select 
+      label="Số sao" 
+      v-model="store.filterNumberStar" 
+      :items="ARRAY_RATING"
+      item-title="text"
+      item-value="value" 
+      hide-details
+      variant="outlined"
+     />
     <DateFilter v-model:fromDay="store.fromDay" v-model:toDay="store.toDay" />
     <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
@@ -39,7 +59,7 @@ const store = useProductReviewManageStore();
     :items-length="store.totalItems"
     :loading="store.loadingTable"
     :search="store.search"
-    item-value="name"
+    item-value="search"
     :items-per-page-options="[20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
     @update:options="options => {
         store.currentTableOptions = options
@@ -79,7 +99,7 @@ const store = useProductReviewManageStore();
               :key="statusItem.status"
               :class="{ active: statusItem.status == item.status }"
               :disabled="statusItem.status === PRODUCT_REVIEW_STATUS.pending.status"
-              @click.prevent="store.handleUpdateStatusOrder(item.id, statusItem.status)"
+              @click.prevent="store.handleUpdateStatus(item.id, statusItem.status)"
             >
               <v-list-item-title>
                 {{ statusItem.name }}

@@ -33,7 +33,7 @@ onMounted(async () => {
 <HeaderAdmin>
   <template #left>
     <v-text-field v-model="store.search"  placeholder="Tìm theo mã, tên, sđt..." variant="outlined" hide-details></v-text-field>
-    <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'TT đơn hàng' }, ...getListOrderStatus]" item-title="name" item-value="id"  variant="outlined"hide-details />
+    <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'TT đơn hàng' }, ...getListOrderStatus]" item-title="name" item-value="id"  variant="outlined" hide-details />
     <v-select label="Thanh toan" v-model="store.filterStatusTransactionOrder" :items="[{ status: '', name: 'TT thanh toán' }, ...Object.values(PAYMENT_TRANSACTION_STATUS)
 ]" item-title="name" item-value="status" variant="outlined" hide-details />
     <DateFilter v-model:fromDay="store.fromDay" v-model:toDay="store.toDay" />
