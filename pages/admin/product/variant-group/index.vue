@@ -10,12 +10,11 @@ definePageMeta({
 const store = useVariantGroupStore();
 </script>
 
-
 <template>
 <HeaderAdmin>
   <template #left>
     <v-text-field
-      v-model="store.name"
+      v-model="store.search"
       placeholder="Tìm theo tên nhóm..."
       variant="outlined"
       hide-details

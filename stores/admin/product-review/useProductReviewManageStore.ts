@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { defineStore } from "pinia";
-import { useProductReviewManageOperations } from '@/composables/admin/product-review/useProductReviewManageOperations';
-import { useProductReviewManageState } from '@/composables/admin/product-review/useProductReviewManageState';
+import { useProductReviewManageOperations } from '@/composables/admin/product/review/useProductReviewManageOperations';
+import { useProductReviewManageState } from '@/composables/admin/product/review/useProductReviewManageState';
 
 export const useProductReviewManageStore = defineStore("ProductReviewManageStore", () => {
 
