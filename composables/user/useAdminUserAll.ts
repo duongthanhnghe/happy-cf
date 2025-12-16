@@ -5,9 +5,9 @@ import type { UserPaginationDTO } from '@/server/types/dto/v1/user.dto';
 export const useAdminUserAll = () => {
   const listUserAll = ref<UserPaginationDTO>();
 
-  const fetchListUserAll = async (page: number, limit: number) => {
+  const fetchListUserAll = async (page: number, limit: number, search?: string, membershipLevel?: string) => {
     try {
-      const data = await usersAPI.getAllUsers(page,limit)
+      const data = await usersAPI.getAllUsers(page,limit,search,membershipLevel)
       if(data.code === 0) listUserAll.value = data
     } catch (err) {
       console.error('Error product all', err)

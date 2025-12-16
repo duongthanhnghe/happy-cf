@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { watch } from "vue";
+import { onMounted } from "vue";
 import { formatDateTime } from '@/utils/global'
 import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
 import { useMembershipList } from '@/composables/user/useMembershipList'
 import { ROUTES } from '@/shared/constants/routes';
+import { useUserHelpers } from "@/utils/userHelpers";
+import { useAdminUserDetailStore } from "@/stores/admin/users/useUserDetailStore";
 
 definePageMeta({
   layout: ROUTES.ADMIN.USER.children?.CUSTOMER.layout,
@@ -11,35 +13,22 @@ definePageMeta({
 })
 
 const store = useUserManageStore();
+const storeDetailUser = useAdminUserDetailStore();
 const { getMembershipList, fetchMembershipList } = useMembershipList()
 
-const colorType = (color: string) => {
-  if (!color) return
-  switch (color) {
-    case 'Gold':
-      return 'yellow';
-    case 'Silver':
-      return 'grey';
-    case 'Bronze':
-      return 'brown';
-    default:
-      return 'primary';
-  }
-}
+const { colorType } = useUserHelpers()
 
-watch(() => getMembershipList.value, async (newValue) => {
- if(newValue.length === 0) await fetchMembershipList()
-}, { immediate: true })
+onMounted( async () => {
+ if(getMembershipList.value.length === 0) await fetchMembershipList()
+})
 
 </script>
 <template>
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name" density="compact" placeholder="Tìm kiếm tên..." hide-details></v-text-field>
-    <v-text-field v-model="store.phone" density="compact" placeholder="Tìm kiếm sdt..." hide-details></v-text-field>
-    <v-text-field v-model="store.email" density="compact" placeholder="Tìm kiếm email..." hide-details></v-text-field>
-    <v-select label="Loai member" v-model="store.filterTypeMember" :items="[{ id: null, name: null, text: 'Tat ca' }, ...getMembershipList ?? []]" :item-title="item => item.name ?? item.text" item-value="name" hide-details />
+    <v-text-field v-model="store.search" density="compact" placeholder="Tìm kiếm tên, email..." variant="outlined" hide-details></v-text-field>
+    <v-select v-model="store.filterTypeMember" variant="outlined" :items="[{ id: null, name: null, text: 'Tất cả' }, ...getMembershipList ?? []]" :item-title="item => item.name ?? item.text" item-value="name" hide-details />
   </template>
 </HeaderAdmin>
 
@@ -91,7 +80,7 @@ watch(() => getMembershipList.value, async (newValue) => {
     
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
-      <Button color="gray" size="sm" icon="visibility" @click="store.handleEdit(item.id)" />
+      <Button color="gray" size="sm" icon="visibility" @click="storeDetailUser.handleTogglePopup(true,item.id)" />
       <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>
     </template>

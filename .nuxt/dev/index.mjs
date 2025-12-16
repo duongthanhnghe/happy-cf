@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"11f9b4-DGhaYDIXVy/6vrE++nWrc7Rp41g\"",
-    "mtime": "2025-12-15T02:51:17.145Z",
-    "size": 1178036,
+    "etag": "\"11ff4f-XFANyE9UGChzYKpqrcJCndIioCw\"",
+    "mtime": "2025-12-16T10:32:45.123Z",
+    "size": 1179471,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"4936d4-N8ofCCamj1if86vgzF6Nf9anxzg\"",
-    "mtime": "2025-12-15T02:51:17.151Z",
-    "size": 4798164,
+    "etag": "\"494e9d-+zTgvGUCNpwWWlhduH2bWHRYqeQ\"",
+    "mtime": "2025-12-16T10:32:45.134Z",
+    "size": 4804253,
     "path": "index.mjs.map"
   }
 };
@@ -3979,164 +3979,29 @@ const PaymentEntity = model("Payment", PaymentSchema, "payments");
 const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
 const OrderEntity = model("Order", OrderSchema, "orders");
 
-const PAYMENT_TRANSACTION_STATUS = {
-  PENDING: "pending",
-  PAID: "paid",
-  FAILED: "failed",
-  REFUNDED: "refunded"
-};
-const PaymentTransactionStatusText = {
-  [PAYMENT_TRANSACTION_STATUS.PENDING]: "Ch\u1EDD thanh to\xE1n",
-  [PAYMENT_TRANSACTION_STATUS.PAID]: "\u0110\xE3 thanh to\xE1n",
-  [PAYMENT_TRANSACTION_STATUS.FAILED]: "Thanh to\xE1n th\u1EA5t b\u1EA1i",
-  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "\u0110\xE3 ho\xE0n ti\u1EC1n"
-};
-const PaymentTransactionStatusColor = {
-  [PAYMENT_TRANSACTION_STATUS.PENDING]: "orange",
-  [PAYMENT_TRANSACTION_STATUS.PAID]: "green",
-  [PAYMENT_TRANSACTION_STATUS.FAILED]: "red",
-  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "blue"
-};
-
-function toPaymentTransactionDTO(entity) {
-  var _a, _b, _c, _d;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    orderId: ((_b = entity.orderId) == null ? void 0 : _b.toString()) || "",
-    amount: entity.amount,
-    method: entity.method,
-    status: entity.status,
-    statusText: PaymentTransactionStatusText[entity.status],
-    statusColor: PaymentTransactionStatusColor[entity.status],
-    createdAt: ((_c = entity.createdAt) == null ? void 0 : _c.toISOString()) || "",
-    updatedAt: ((_d = entity.updatedAt) == null ? void 0 : _d.toISOString()) || ""
-  };
-}
-const toPaymentTransactionListDTO = (list) => list.map(toPaymentTransactionDTO);
-
-function toPaymentDTO(entity) {
-  var _a;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    name: entity.name,
-    description: entity.description || "",
-    image: entity.image || "",
-    method: entity.method || null
-  };
-}
-const toPaymentListDTO = (payments) => payments.map(toPaymentDTO);
-function toOrderStatusDTO(entity) {
-  var _a;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    name: entity.name,
-    status: entity.status,
-    icon: entity.icon || "",
-    index: entity.index
-  };
-}
-const toOrderStatusListDTO = (list) => list.map(toOrderStatusDTO);
-function toOrderDTO(entity) {
-  var _a, _b, _c, _d, _e;
-  return {
-    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
-    code: entity.code,
-    time: entity.time,
-    address: entity.address,
-    fullname: entity.fullname,
-    provinceCode: entity.provinceCode,
-    districtCode: entity.districtCode,
-    wardCode: entity.wardCode,
-    provinceName: entity.provinceName,
-    districtName: entity.districtName,
-    wardName: entity.wardName,
-    phone: entity.phone,
-    note: entity.note || "",
-    paymentId: toPaymentDTO(entity.paymentId),
-    cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map(toCartItemDTO) : [],
-    totalPrice: entity.totalPrice,
-    totalPriceSave: entity.totalPriceSave,
-    totalPriceCurrent: entity.totalPriceCurrent,
-    totalDiscountOrder: entity.totalDiscountOrder,
-    shippingFee: entity.shippingFee,
-    status: toOrderStatusDTO(entity.status),
-    userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
-    cancelRequested: entity.cancelRequested,
-    transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
-    reward: entity.reward ? {
-      points: (_b = entity.reward.points) != null ? _b : 0,
-      awarded: (_c = entity.reward.awarded) != null ? _c : false,
-      awardedAt: entity.reward.awardedAt ? new Date(entity.reward.awardedAt).toISOString() : null
-    } : {
-      points: 0,
-      awarded: false,
-      awardedAt: null
-    },
-    usedPoints: entity.usedPoints,
-    pointsRefunded: entity.pointsRefunded,
-    membershipDiscountRate: entity.membershipDiscountRate,
-    membershipDiscountAmount: entity.membershipDiscountAmount,
-    createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
-    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || "",
-    voucherRefunded: entity.voucherRefunded,
-    voucherUsage: Array.isArray(entity.voucherUsage) ? entity.voucherUsage.map((v) => {
-      var _a2, _b2;
-      return {
-        code: v.code,
-        type: v.type,
-        discount: (_a2 = v.discount) != null ? _a2 : 0,
-        expiresAt: v.expiresAt ? new Date(v.expiresAt).toISOString() : void 0,
-        stackable: (_b2 = v.stackable) != null ? _b2 : false,
-        applicableProducts: Array.isArray(v.applicableProducts) ? v.applicableProducts.map((p) => {
-          var _a3, _b3;
-          return {
-            productId: p.productId ? p.productId.toString() : "",
-            name: p.name,
-            categoryId: p.categoryId ? p.categoryId.toString() : "",
-            price: (_a3 = p.price) != null ? _a3 : 0,
-            quantity: (_b3 = p.quantity) != null ? _b3 : 0
-          };
-        }) : []
-      };
-    }) : []
-  };
-}
-const toOrderListDTO = (orders) => orders.map(toOrderDTO);
-function toCartItemDTO(entity) {
-  let idProduct = entity.idProduct;
-  if (typeof idProduct === "string") {
-    idProduct = new Types.ObjectId(idProduct);
-  } else if (idProduct instanceof Types.ObjectId) ; else if (typeof idProduct === "object" && idProduct !== null) ; else {
-    idProduct = new Types.ObjectId();
-  }
-  return {
-    idProduct,
-    priceDiscounts: entity.priceDiscounts,
-    quantity: entity.quantity,
-    note: entity.note || "",
-    sku: entity.sku,
-    selectedOptionsPush: Array.isArray(entity.selectedOptionsPush) ? entity.selectedOptionsPush.map(toSelectedOptionDTO) : [],
-    finalPriceDiscounts: entity.finalPriceDiscounts
-  };
-}
-function toSelectedOptionDTO(entity) {
-  return {
-    optionName: entity.optionName,
-    variantName: entity.variantName,
-    variantPrice: entity.variantPrice
-  };
-}
-
 const deleteUsers = async (req, res) => {
   const { id } = req.params;
   await UserModel.findByIdAndDelete(id);
   res.json({ code: 200, message: "Delete success" });
 };
 const getAllUsers = async (req, res) => {
+  var _a;
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const search = (_a = req.query.search) == null ? void 0 : _a.trim();
+    const membershipLevel = req.query.membershipLevel;
     const filter = {};
+    if (search) {
+      filter.$or = [
+        { fullname: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } }
+      ];
+    }
+    if (membershipLevel) {
+      filter["membership.level"] = membershipLevel;
+    }
     if (limit === -1) {
       const users = await UserModel.find(filter).sort({ createdAt: -1 });
       return res.status(200).json({
@@ -4347,7 +4212,15 @@ const deleteMembershipBenefit = async (req, res) => {
 };
 const getRewardHistory = async (req, res) => {
   try {
-    let { page = 1, limit = 20, userId } = req.query;
+    let {
+      page = 1,
+      limit = 20,
+      userId,
+      search,
+      historyType,
+      fromDate,
+      toDate
+    } = req.query;
     const numPage = Number(page);
     const numLimit = Number(limit);
     const query = {
@@ -4360,6 +4233,34 @@ const getRewardHistory = async (req, res) => {
     if (userId) {
       query.userId = userId;
     }
+    if (fromDate || toDate) {
+      query.createdAt = {};
+      if (fromDate) query.createdAt.$gte = new Date(fromDate);
+      if (toDate) query.createdAt.$lte = new Date(toDate);
+    }
+    if (search) {
+      const users = await UserModel.find({
+        $or: [
+          { fullname: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+          { phone: { $regex: search, $options: "i" } }
+        ]
+      }).select("_id");
+      const userIds = users.map((u) => u._id);
+      if (userIds.length === 0) {
+        return res.json({
+          code: 0,
+          data: [],
+          pagination: {
+            page: numPage,
+            limit: numLimit,
+            totalPages: 0,
+            total: 0
+          }
+        });
+      }
+      query.userId = { $in: userIds };
+    }
     const result = await OrderEntity.paginate(query, {
       page: numPage,
       limit: numLimit,
@@ -4371,24 +4272,24 @@ const getRewardHistory = async (req, res) => {
         { path: "transaction", model: "PaymentTransaction" }
       ]
     });
-    const history = result.docs.map((order) => {
-      var _a;
-      let historyType = "";
+    let history = result.docs.map((order) => {
+      var _a, _b, _c;
+      let type = "";
       let points = 0;
       if (order.usedPoints > 0 && order.pointsRefunded) {
-        historyType = "refunded";
+        type = "refunded";
         points = order.usedPoints;
       } else if (order.usedPoints > 0) {
-        historyType = "used";
+        type = "used";
         points = order.usedPoints;
-      } else if (order.reward.points > 0 && order.reward.awarded) {
-        historyType = "earned";
+      } else if (((_a = order.reward) == null ? void 0 : _a.points) > 0 && order.reward.awarded) {
+        type = "earned";
         points = order.reward.points;
-      } else if (order.reward.points > 0 && !order.reward.awarded) {
-        historyType = "pending_reward";
+      } else if (((_b = order.reward) == null ? void 0 : _b.points) > 0 && !order.reward.awarded) {
+        type = "pending_reward";
         points = order.reward.points;
       } else {
-        historyType = "none";
+        type = "none";
       }
       return {
         orderId: order._id,
@@ -4399,13 +4300,15 @@ const getRewardHistory = async (req, res) => {
           fullname: order.userId.fullname,
           email: order.userId.email,
           phone: order.userId.phone,
-          currentPoint: ((_a = order.userId.membership) == null ? void 0 : _a.balancePoint) || 0
+          currentPoint: ((_c = order.userId.membership) == null ? void 0 : _c.balancePoint) || 0
         } : null,
-        historyType,
-        points,
-        order: toOrderDTO(order)
+        historyType: type,
+        points
       };
     });
+    if (historyType) {
+      history = history.filter((item) => item.historyType === historyType);
+    }
     return res.json({
       code: 0,
       message: "L\u1EA5y l\u1ECBch s\u1EED t\xEDch \u0111i\u1EC3m th\xE0nh c\xF4ng",
@@ -4418,7 +4321,7 @@ const getRewardHistory = async (req, res) => {
       }
     });
   } catch (err) {
-    console.error("\u{1F4A5} getAllRewardHistoryForAdmin error:", err);
+    console.error("\u{1F4A5} getRewardHistory error:", err);
     return res.status(500).json({
       code: 1,
       message: "L\u1ED7i server khi l\u1EA5y l\u1ECBch s\u1EED t\xEDch \u0111i\u1EC3m"
@@ -4543,6 +4446,154 @@ const postsNews_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.define
   __proto__: null,
   default: router$o
 }, Symbol.toStringTag, { value: 'Module' }));
+
+const PAYMENT_TRANSACTION_STATUS = {
+  PENDING: "pending",
+  PAID: "paid",
+  FAILED: "failed",
+  REFUNDED: "refunded"
+};
+const PaymentTransactionStatusText = {
+  [PAYMENT_TRANSACTION_STATUS.PENDING]: "Ch\u1EDD thanh to\xE1n",
+  [PAYMENT_TRANSACTION_STATUS.PAID]: "\u0110\xE3 thanh to\xE1n",
+  [PAYMENT_TRANSACTION_STATUS.FAILED]: "Thanh to\xE1n th\u1EA5t b\u1EA1i",
+  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "\u0110\xE3 ho\xE0n ti\u1EC1n"
+};
+const PaymentTransactionStatusColor = {
+  [PAYMENT_TRANSACTION_STATUS.PENDING]: "orange",
+  [PAYMENT_TRANSACTION_STATUS.PAID]: "green",
+  [PAYMENT_TRANSACTION_STATUS.FAILED]: "red",
+  [PAYMENT_TRANSACTION_STATUS.REFUNDED]: "blue"
+};
+
+function toPaymentTransactionDTO(entity) {
+  var _a, _b, _c, _d;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    orderId: ((_b = entity.orderId) == null ? void 0 : _b.toString()) || "",
+    amount: entity.amount,
+    method: entity.method,
+    status: entity.status,
+    statusText: PaymentTransactionStatusText[entity.status],
+    statusColor: PaymentTransactionStatusColor[entity.status],
+    createdAt: ((_c = entity.createdAt) == null ? void 0 : _c.toISOString()) || "",
+    updatedAt: ((_d = entity.updatedAt) == null ? void 0 : _d.toISOString()) || ""
+  };
+}
+const toPaymentTransactionListDTO = (list) => list.map(toPaymentTransactionDTO);
+
+function toPaymentDTO(entity) {
+  var _a;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    name: entity.name,
+    description: entity.description || "",
+    image: entity.image || "",
+    method: entity.method || null
+  };
+}
+const toPaymentListDTO = (payments) => payments.map(toPaymentDTO);
+function toOrderStatusDTO(entity) {
+  var _a;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    name: entity.name,
+    status: entity.status,
+    icon: entity.icon || "",
+    index: entity.index
+  };
+}
+const toOrderStatusListDTO = (list) => list.map(toOrderStatusDTO);
+function toOrderDTO(entity) {
+  var _a, _b, _c, _d, _e;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    code: entity.code,
+    time: entity.time,
+    address: entity.address,
+    fullname: entity.fullname,
+    provinceCode: entity.provinceCode,
+    districtCode: entity.districtCode,
+    wardCode: entity.wardCode,
+    provinceName: entity.provinceName,
+    districtName: entity.districtName,
+    wardName: entity.wardName,
+    phone: entity.phone,
+    note: entity.note || "",
+    paymentId: toPaymentDTO(entity.paymentId),
+    cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map(toCartItemDTO) : [],
+    totalPrice: entity.totalPrice,
+    totalPriceSave: entity.totalPriceSave,
+    totalPriceCurrent: entity.totalPriceCurrent,
+    totalDiscountOrder: entity.totalDiscountOrder,
+    shippingFee: entity.shippingFee,
+    status: toOrderStatusDTO(entity.status),
+    userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
+    cancelRequested: entity.cancelRequested,
+    transaction: entity.transaction ? toPaymentTransactionDTO(entity.transaction) : null,
+    reward: entity.reward ? {
+      points: (_b = entity.reward.points) != null ? _b : 0,
+      awarded: (_c = entity.reward.awarded) != null ? _c : false,
+      awardedAt: entity.reward.awardedAt ? new Date(entity.reward.awardedAt).toISOString() : null
+    } : {
+      points: 0,
+      awarded: false,
+      awardedAt: null
+    },
+    usedPoints: entity.usedPoints,
+    pointsRefunded: entity.pointsRefunded,
+    membershipDiscountRate: entity.membershipDiscountRate,
+    membershipDiscountAmount: entity.membershipDiscountAmount,
+    createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
+    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || "",
+    voucherRefunded: entity.voucherRefunded,
+    voucherUsage: Array.isArray(entity.voucherUsage) ? entity.voucherUsage.map((v) => {
+      var _a2, _b2;
+      return {
+        code: v.code,
+        type: v.type,
+        discount: (_a2 = v.discount) != null ? _a2 : 0,
+        expiresAt: v.expiresAt ? new Date(v.expiresAt).toISOString() : void 0,
+        stackable: (_b2 = v.stackable) != null ? _b2 : false,
+        applicableProducts: Array.isArray(v.applicableProducts) ? v.applicableProducts.map((p) => {
+          var _a3, _b3;
+          return {
+            productId: p.productId ? p.productId.toString() : "",
+            name: p.name,
+            categoryId: p.categoryId ? p.categoryId.toString() : "",
+            price: (_a3 = p.price) != null ? _a3 : 0,
+            quantity: (_b3 = p.quantity) != null ? _b3 : 0
+          };
+        }) : []
+      };
+    }) : []
+  };
+}
+const toOrderListDTO = (orders) => orders.map(toOrderDTO);
+function toCartItemDTO(entity) {
+  let idProduct = entity.idProduct;
+  if (typeof idProduct === "string") {
+    idProduct = new Types.ObjectId(idProduct);
+  } else if (idProduct instanceof Types.ObjectId) ; else if (typeof idProduct === "object" && idProduct !== null) ; else {
+    idProduct = new Types.ObjectId();
+  }
+  return {
+    idProduct,
+    priceDiscounts: entity.priceDiscounts,
+    quantity: entity.quantity,
+    note: entity.note || "",
+    sku: entity.sku,
+    selectedOptionsPush: Array.isArray(entity.selectedOptionsPush) ? entity.selectedOptionsPush.map(toSelectedOptionDTO) : [],
+    finalPriceDiscounts: entity.finalPriceDiscounts
+  };
+}
+function toSelectedOptionDTO(entity) {
+  return {
+    optionName: entity.optionName,
+    variantName: entity.variantName,
+    variantPrice: entity.variantPrice
+  };
+}
 
 const ORDER_STATUS = {
   PENDING: "68a93304c9f7de47a9f3a7e2",

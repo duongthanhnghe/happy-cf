@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { ref } from "vue";
 import { formatDateTime } from '@/utils/global'
 import { useRewardHistoryStore } from '@/stores/admin/users/useRewardHistoryStore'
-import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { REWARD_HISTORY_TYPE } from '@/shared/constants/history-reward-type'
-import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
+import { useSharedOrderDetailStore } from "@/stores/shared/order/useSharedOrderDetailStore";
+import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 
 definePageMeta({
   layout: ROUTES.ADMIN.USER.children?.CUSTOMER.layout,
@@ -13,23 +12,15 @@ definePageMeta({
 })
 
 const store = useRewardHistoryStore();
-const storeUser = useUserManageStore();
-const storeHistory = useOrderHistoryStore();
-
-const idOrder = ref<string>('')
-
-const handleDetailPopup = (id:string) => {
-  storeHistory.handleTogglePopupDetail(true, id)
-  idOrder.value = id
-}
+const storeDetailUser = useAdminUserDetailStore();
+const storeDetailOrder = useSharedOrderDetailStore()
 
 </script>
 <template>
  
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name" density="compact" placeholder="Tìm kiếm tên..." variant="outlined" hide-details></v-text-field>
-    <v-text-field v-model="store.phone" density="compact" placeholder="Tìm kiếm sdt..." variant="outlined" hide-details></v-text-field>
+    <v-text-field v-model="store.search" density="compact" placeholder="Tìm kiếm tên, email, sdt..." variant="outlined" hide-details></v-text-field>
     <v-select
       label="Loại lịch sử"
       v-model="store.filterTypeReward"
@@ -42,11 +33,12 @@ const handleDetailPopup = (id:string) => {
       variant="outlined"
       hide-details
     />
+    <DateFilter v-model:fromDay="store.fromDay" v-model:toDay="store.toDay" />
     <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
 </HeaderAdmin>
 
-<PopupOrderDetail :idOrder="idOrder" />
+<AdminPopupOrderDetail />
 <DetailAccount />
 
 <v-container>
@@ -66,14 +58,14 @@ const handleDetailPopup = (id:string) => {
     
     <template #item.code="{ item }">
       <div class="flex gap-sm align-center">
-        <Button color="gray" size="sm" icon="visibility" @click="handleDetailPopup(item.orderId)" />
+        <Button color="gray" size="sm" icon="visibility" @click="storeDetailOrder.handleTogglePopupDetail(true,item.orderId)" />
         {{ item.code }}
       </div>
     </template>
 
     <template #item.user="{ item }">
       <div v-if="item.user" class="min-width-200 flex gap-sm align-center white-space">
-        <Button color="gray" size="sm" icon="person" @click="storeUser.handleEdit(item.user.id)" />
+        <Button color="gray" size="sm" icon="person" @click="storeDetailUser.handleTogglePopup(true,item.user.id)" />
         <div>
           <span class="text-limit">{{ item.user.fullname }}</span>
           <span class="text-limit text-color-gray5">{{ item.user.phone }}</span>

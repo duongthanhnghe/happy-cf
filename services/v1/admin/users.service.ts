@@ -1,6 +1,6 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
-import type { User, UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword, MembershipBenefitDTO, CreateMembershipBenefit, UpdateMembershipBenefit } from '@/server/types/dto/v1/user.dto'
+import type { User, MembershipBenefitDTO, CreateMembershipBenefit, UpdateMembershipBenefit } from '@/server/types/dto/v1/user.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
 import type { PaginationDTO } from '@server/types/common/pagination.dto'
 
@@ -18,10 +18,19 @@ export const usersAPI = {
       throw err
     }
   },
-  getAllUsers: async (page: number = 1, limit: number = 10) => {
+  getAllUsers: async (page: number = 1, limit: number = 10, search?: string, membershipLevel?: string) => {
     try {
+
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      });
+
+      if (search) params.append("search", search);
+      if (membershipLevel) params.append("membershipLevel", membershipLevel);
+
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST}?page=${page}&limit=${limit}`, {
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST}?${params}`, {
           credentials: 'include',
         }
       );
@@ -253,10 +262,66 @@ export const usersAPI = {
       }
     }
   },
+
+  // getAllRewardHistory: async (
+  //   page = 1,
+  //   limit = 20,
+  //   userId?: string
+  // ): Promise<PaginationDTO<any>> => {
+  //   try {
+  //     const params = new URLSearchParams({
+  //       page: page.toString(),
+  //       limit: limit.toString(),
+  //     })
+
+  //     if (userId) params.append('userId', userId)
+
+  //     const response = await fetch(
+  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params}`, {
+  //         credentials: 'include',
+  //       }
+  //     )
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json()
+  //       return {
+  //         code: 1,
+  //         message: errorData.message || 'Failed to fetch reward history for admin',
+  //         data: [],
+  //         pagination: {
+  //           page,
+  //           limit,
+  //           total: 0,
+  //           totalPages: 0,
+  //         },
+  //       }
+  //     }
+
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error('Error fetching admin reward history:', err)
+  //     return {
+  //       code: 1,
+  //       message: 'Unexpected error while fetching reward history for admin',
+  //       data: [],
+  //       pagination: {
+  //         page,
+  //         limit,
+  //         total: 0,
+  //         totalPages: 0,
+  //       },
+  //     }
+  //   }
+  // },
   getAllRewardHistory: async (
     page = 1,
     limit = 20,
-    userId?: string
+      userId?: string,
+      search?: string,
+      historyType?: "earned" | "used" | "refunded" | "pending_reward" | "none"| null,
+      fromDate?: string,
+      toDate?: string,
   ): Promise<PaginationDTO<any>> => {
     try {
       const params = new URLSearchParams({
@@ -265,9 +330,14 @@ export const usersAPI = {
       })
 
       if (userId) params.append('userId', userId)
+      if (search) params.append('search', search)
+      if (historyType) params.append('historyType', historyType)
+      if (fromDate) params.append('fromDate', fromDate)
+      if (toDate) params.append('toDate', toDate)
 
       const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params}`, {
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params.toString()}`,
+        {
           credentials: 'include',
         }
       )

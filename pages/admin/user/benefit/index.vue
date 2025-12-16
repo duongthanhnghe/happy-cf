@@ -2,6 +2,7 @@
 import { useBenefitStore } from '@/stores/admin/users/useBenefitStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDateTime } from '@/utils/global'
+import { onMounted } from 'vue';
 
 definePageMeta({
   layout: ROUTES.ADMIN.USER.children?.MEMBERSHIP_LEVEL.layout,
@@ -10,6 +11,9 @@ definePageMeta({
 
 const store = useBenefitStore();
 
+onMounted( async () => {
+  if(store.dataList.length === 0) await store.loadItems()
+})
 </script>
 <template>
 

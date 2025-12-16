@@ -1,14 +1,14 @@
 import { ref, computed } from "vue";
 import { usersAPI } from "@/services/v1/admin/users.service";
-import type { RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-history.dto";
+import type { HistoryType, RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-history.dto";
 
 export const useAdminHistoryReward = () => {
   
   const listData = ref<RewardHistoryPaginationDTO>();
 
-  const fetchListOrder = async (page: number, limit: number, userId: string) => {
+  const fetchListOrder = async (page: number, limit: number, userId: string, search: string, historyType: HistoryType | null, fromDate: string, toDate: string) => {
     try {
-      const data: RewardHistoryPaginationDTO = await usersAPI.getAllRewardHistory(page, limit, userId)
+      const data: RewardHistoryPaginationDTO = await usersAPI.getAllRewardHistory(page, limit, userId, search, historyType, fromDate, toDate)
       if(data.code === 0) {
         listData.value = data
         return data

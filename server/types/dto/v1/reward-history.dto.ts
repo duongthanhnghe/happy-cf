@@ -1,4 +1,3 @@
-import type { OrderDTO } from "./order.dto"
 import type { User } from "./user.dto"
 import type { PaginationDTO } from '../../common/pagination.dto'
 
@@ -16,7 +15,6 @@ export interface RewardHistoryDTO {
   createdAt: string
   historyType: HistoryType
   points: number
-  order: OrderDTO
   user?: User
 }
 

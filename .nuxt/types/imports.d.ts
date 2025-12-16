@@ -201,6 +201,7 @@ declare global {
   const useStickyObserver: typeof import('../../utils/stickyObserver')['useStickyObserver']
   const useTemplateRef: typeof import('vue')['useTemplateRef']
   const useTransitionState: typeof import('vue')['useTransitionState']
+  const useUserHelpers: typeof import('../../utils/userHelpers')['useUserHelpers']
   const watch: typeof import('vue')['watch']
   const watchEffect: typeof import('vue')['watchEffect']
   const watchPostEffect: typeof import('vue')['watchPostEffect']
@@ -422,6 +423,7 @@ declare module 'vue' {
     readonly useStickyObserver: UnwrapRef<typeof import('../../utils/stickyObserver')['useStickyObserver']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>
+    readonly useUserHelpers: UnwrapRef<typeof import('../../utils/userHelpers')['useUserHelpers']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
     readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>

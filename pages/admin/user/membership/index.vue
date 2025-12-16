@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount} from 'vue'
+import { onMounted, onBeforeUnmount} from 'vue'
 import { useMembershipStore } from '@/stores/admin/users/useMembershipStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
@@ -16,6 +16,10 @@ const storeFileManage = useFileManageFolderStore();
 const folderName = FOLDER_UPLOAD.CONFIG
 
 useFileManageWatchers(storeFileManage, folderName);
+
+onMounted( async () => {
+  if(store.dataList.length === 0) await store.loadItems()
+})
 
 onBeforeUnmount(() => {
   storeFileManage.items = null
@@ -47,7 +51,7 @@ onBeforeUnmount(() => {
       </template>
 
       <template #item.image="{ item }">
-        <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
+        <img :src="item.image" width="80" :alt="item.name" />
       </template>
 
       <template #item.actions="{ item }">

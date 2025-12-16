@@ -2,14 +2,23 @@
 import { useMembershipStore } from '@/stores/admin/users/useMembershipStore'
 import type { SubmitEventPromise } from 'vuetify'
 import { nullRules } from '@/utils/validation';
+import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
+import { watch } from 'vue';
 
 const store = useMembershipStore();
+const storeFileManage = useFileManageFolderStore();
 
 const handleSubmitUpdate = async (event: SubmitEventPromise) => {
   const results = await event
   if (!results.valid) return
   await store.submitUpdate();
 }
+
+watch(() => storeFileManage.getSelectImage, (newValue) => {
+  if (!newValue) return
+  const target = store.formItem
+  target.image = newValue.url
+})
 </script>
 <template>
 <Popup popupId="popup-update-membership" v-model="store.isTogglePopupUpdate" popupHeading="Sua level" align="right">
@@ -22,7 +31,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
       <LabelInput label="Loi ich thanh vien"/>
         <v-select
           v-model="store.selectedArray"
-          :items="store.getMembershipListStore"
+          :items="store.getMembershipBenefitList"
           item-title="name"
           item-value="id"
           multiple
@@ -57,7 +66,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
         <v-img v-if="store.formItem.image" :src="store.formItem.image" class="mb-sm" alt="Hinh anh" />
         <div class="flex gap-sm">
           <v-text-field v-model="store.formItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
-          <Button color="black" :label="store.formItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
+          <Button color="black" :label="store.formItem.image ? 'Doi anh':'Chon anh'" @click.prevent="storeFileManage.handleTogglePopup(true)"/>
         </div>
     </v-form>
   </template>

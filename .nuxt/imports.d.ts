@@ -40,6 +40,7 @@ export { storageWithTTL } from '../utils/storageWithTTL';
 export { Toast, showSuccess, showToastError, showWarning, showConfirm } from '../utils/toast';
 export { translationTypeMap } from '../utils/translationTypeMap';
 export { findItemInTree, markAllSelectable } from '../utils/treeHelpers';
+export { useUserHelpers } from '../utils/userHelpers';
 export { createNewPasswordRules, useNewPasswordRules, nullRules, nullAndSpecialRules } from '../utils/validation';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/@pinia/nuxt/dist/runtime/composables';
 export { useNuxtDevTools } from '../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
