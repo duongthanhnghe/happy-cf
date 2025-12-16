@@ -80,7 +80,6 @@ export const useAdminProductCategoryOperations = (
   async function submitCreate() {
     Loading(true);
     try {
-      // const newCategory = {...formCategoryItem}
       const newCategory = toValue(formCategoryItem);
       const data = await categoriesAPI.create(newCategory)
       if(data.code === 0) {
@@ -113,7 +112,6 @@ export const useAdminProductCategoryOperations = (
   async function submitUpdate() {
     Loading(true);
     try {
-      // const newCategory = {...updateCategoryItem}
       const newCategory = toValue(updateCategoryItem);
       
       const data = await categoriesAPI.update(newCategory.id, newCategory)

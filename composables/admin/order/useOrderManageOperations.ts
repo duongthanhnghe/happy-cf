@@ -71,13 +71,21 @@ export const useOrderOperations = (
     loadingTable.value = false;
   }
 
-  watch([search, fromDay, toDay, filterStatusOrder, filterStatusTransactionOrder], () => {
-    loadItemsProduct(currentTableOptions.value);
-  });
-
-  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
-    loadItemsProduct(currentTableOptions.value);
-  })
+   watch(
+    () => ({
+      search: search.value,
+      filterStatusOrder: filterStatusOrder.value,
+      filterStatusTransactionOrder: filterStatusTransactionOrder.value,
+      fromDay: fromDay.value,
+      toDay: toDay.value,
+      page: currentTableOptions.value.page,
+      limit: currentTableOptions.value.itemsPerPage,
+    }),
+    () => {
+      loadItemsProduct(currentTableOptions.value)
+    },
+    { deep: true }
+  )
 
   const handleTogglePopupAdd = (value: boolean) => {
     isTogglePopupAdd.value = value;

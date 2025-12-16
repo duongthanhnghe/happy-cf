@@ -59,13 +59,20 @@ export const useRewardHistoryOperations = (
     loadingTable.value = false
   }
 
-  watch([search,filterTypeReward, fromDay,toDay], () => {
-    loadItems(currentTableOptions.value);
-  })
-
-  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
-    loadItems(currentTableOptions.value);
-  })
+  watch(
+    () => ({
+      search: search.value,
+      filterTypeReward: filterTypeReward.value,
+      fromDay: fromDay.value,
+      toDay: toDay.value,
+      page: currentTableOptions.value.page,
+      limit: currentTableOptions.value.itemsPerPage,
+    }),
+    () => {
+      loadItems(currentTableOptions.value)
+    },
+    { deep: true }
+  )
 
   const handleReload = async () => {
     await loadItems(currentTableOptions.value);

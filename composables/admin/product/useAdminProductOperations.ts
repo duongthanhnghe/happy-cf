@@ -77,6 +77,19 @@ export const useAdminProductOperations = (
     loadItems(currentTableOptions.value);
   })
 
+  watch(
+    () => ({
+      search: search.value,
+      categorySelectedFilter: categorySelectedFilter.value,
+      page: currentTableOptions.value.page,
+      limit: currentTableOptions.value.itemsPerPage,
+    }),
+    () => {
+      loadItems(currentTableOptions.value)
+    },
+    { deep: true }
+  )
+
   const handleReload = async () => {
     await loadItems(currentTableOptions.value);
   }

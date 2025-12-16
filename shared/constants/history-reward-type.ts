@@ -22,7 +22,7 @@ export const REWARD_HISTORY_TYPE: Record<HistoryType, HistoryTypeItem> = {
     color: "orange",
   },
   none: {
-    name: "Không xac dinh",
+    name: "Không xác định",
     type: "none",
     color: "grey",
   },

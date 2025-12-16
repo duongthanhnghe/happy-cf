@@ -58,13 +58,18 @@ export const useUserManageOperations = (
     loadingTable.value = false
   }
 
-  watch([search,filterTypeMember], () => {
-    loadItems(currentTableOptions.value);
-  })
-
-  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
-    loadItems(currentTableOptions.value);
-  })
+  watch(
+    () => ({
+      search: search.value,
+      filterTypeMember: filterTypeMember.value,
+      page: currentTableOptions.value.page,
+      limit: currentTableOptions.value.itemsPerPage,
+    }),
+    () => {
+      loadItems(currentTableOptions.value)
+    },
+    { deep: true }
+  )
 
   const handleReload = async () => {
     await loadItems(currentTableOptions.value);

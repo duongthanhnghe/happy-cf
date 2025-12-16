@@ -1,14 +1,8 @@
 import type { Ref } from 'vue';
-import type { OrderDTO, OrderPaginationDTO } from "@/server/types/dto/v1/order.dto";
 import { watch } from 'vue';
 import { Loading } from '@/utils/global';
-import { ordersAPI } from '@/services/v1/admin/orders.service';
-import { ORDER_STATUS } from '@/shared/constants/order-status';
 import { showConfirm, showSuccess, showWarning } from '@/utils/toast';
-import { paymentTransactionsAPI } from '@/services/v1/admin/payment-transaction.service';
-import type { PaymentMethod, PaymentTransactionStatus } from '@/server/types/dto/v1/payment-transaction.dto';
 import type { TableOpt } from '@/server/types';
-import { useOrderStatus } from '@/composables/shared/order/useOrderStatus';
 import type { ProductReviewPaginationDTO, ProductReviewWithUserDTO, ReviewStatus } from '@/server/types/dto/v1/product-review.dto';
 import { useAdminProductReviewAll } from '@/composables/product-review/useAdminProductReviewAll';
 import { productReviewAPI } from '@/services/v1/admin/productReview.service';
@@ -74,13 +68,21 @@ export const useProductReviewManageOperations = (
     loadingTable.value = false;
   }
 
-  watch([search, fromDay, toDay, filterStatusOrder, filterNumberStar], () => {
-    loadItems(currentTableOptions.value);
-  });
-
-  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
-    loadItems(currentTableOptions.value);
-  })
+  watch(
+    () => ({
+      search: search.value,
+      filterStatusOrder: filterStatusOrder.value,
+      filterNumberStar: filterNumberStar.value,
+      fromDay: fromDay.value,
+      toDay: toDay.value,
+      page: currentTableOptions.value.page,
+      limit: currentTableOptions.value.itemsPerPage,
+    }),
+    () => {
+      loadItems(currentTableOptions.value)
+    },
+    { deep: true }
+  )
 
   const handleTogglePopupAdd = (value: boolean) => {
     isTogglePopupAdd.value = value;
