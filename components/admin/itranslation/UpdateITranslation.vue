@@ -50,7 +50,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 <template>
   <Popup
     v-model="store.isTogglePopupUpdate"
-    :popupHeading="`Cập nhật: ${store.updateItem.key}`"
+    :popupHeading="`Cập nhật`"
     align="right"
   >
     <template #body >
@@ -76,14 +76,16 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           variant="outlined"
           v-if="store.updateItem.type === 'text'"
         />
-        <client-only v-else>
-          <CKEditorCDN
-            ref="editorRef"
-            v-model="store.updateItem.translations.vi"
-            :uploadUrl="store.folderName"
-          />
-        </client-only>
-
+        <template v-else>
+          <client-only >
+            <CKEditorCDN
+              ref="editorRef"
+              v-model="store.updateItem.translations.vi"
+              :uploadUrl="store.folderName"
+            />
+          </client-only>
+        </template>
+        
         <LabelInput label="Tiếng Anh" />
         <v-textarea
           v-model="store.updateItem.translations.en"
@@ -91,13 +93,15 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           variant="outlined"
           v-if="store.updateItem.type === 'text'"
         />
-        <client-only v-else>
-          <CKEditorCDN
-            ref="editorRefEn"
-            v-model="store.updateItem.translations.en"
-            :uploadUrl="store.folderName"
-          />
-        </client-only>
+        <template v-else>
+          <client-only>
+            <CKEditorCDN
+              ref="editorRefEn"
+              v-model="store.updateItem.translations.en"
+              :uploadUrl="store.folderName"
+            />
+          </client-only>
+        </template>
 
         <div class="portal-popup-footer mt-4">
           <Button type="submit" color="primary" label="Cập nhật" class="w-full" />

@@ -6,6 +6,7 @@ import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileMana
 import { useAccountStore } from '@/stores/admin/account/useAccountStore';
 import { ACCOUNT_ROLE } from '@/shared/constants/account-role';
 import { copyText } from '@/utils/global';
+import { onBeforeUnmount } from 'vue';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ITRANSLATION.layout,
@@ -18,40 +19,48 @@ const storeAccount = useAccountStore()
 
 useFileManageWatchers(storeFileManage, store.folderName);
 
+onBeforeUnmount(() => {
+  storeFileManage.items = null
+})
 </script>
 
 <template>
   <HeaderAdmin>
     <template #left>
       <v-text-field
-        v-model="store.searchName"
+        v-model="store.search"
         placeholder="Tìm kiếm..."
         variant="outlined"
         hide-details
         clearable
-        @click:clear="store.searchName = ''"
+        @update:modelValue="value => store.search = value ?? ''"
       />
     </template>
 
     <template #right>
-      <Button v-if="storeAccount.getDetailAccount?.role === ACCOUNT_ROLE.superadmin.value" label="Thêm mới" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
+      <client-only>
+        <Button v-if="storeAccount.getDetailAccount?.role === ACCOUNT_ROLE.superadmin.value" label="Thêm mới" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
+      </client-only>
     </template>
   </HeaderAdmin>
   <PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
   <CreateITranslation />
-  <UpdateITranslation :isAdmin="storeAccount.getDetailAccount?.role === ACCOUNT_ROLE.superadmin.value" />
+  <client-only>
+    <UpdateITranslation :isAdmin="storeAccount.getDetailAccount?.role === ACCOUNT_ROLE.superadmin.value" />
+  </client-only>
 
   <v-container>
-    <v-data-table-server
-      v-model:items-per-page="store.itemsPerPage"
+    <v-data-table-server 
+      v-model:page="store.currentTableOptions.page"
+      v-model:items-per-page="store.currentTableOptions.itemsPerPage"
       :headers="store.headers"
       :items="store.serverItems"
       :items-length="store.totalItems"
       :loading="store.loadingTable"
-      item-value="key"
-      @update:options="opts => { store.currentTableOptions = opts; store.loadItems(opts) }"
-    >
+      @update:options="options => {
+        store.currentTableOptions = options
+      }">
       <template #item.translations="{ item }">
         <div class="flex gap-md">
         <Text limit="1" class="width-300">

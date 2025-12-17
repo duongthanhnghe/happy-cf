@@ -44,7 +44,7 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 <template>
   <Popup
     v-model="store.isTogglePopupAdd"
-    popupHeading="Thêm mới"
+    popupHeading="Tao bien"
     align="right"
   >
     <template #body>
@@ -76,13 +76,15 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           variant="outlined"
           v-if="store.formItem.type === 'text'"
         />
-        <client-only v-else>
-          <CKEditorCDN
-            ref="editorRef"
-            v-model="store.formItem.translations.vi"
-            :uploadUrl="store.folderName"
-          />
-        </client-only>
+        <template v-else>
+          <client-only >
+            <CKEditorCDN
+              ref="editorRef"
+              v-model="store.formItem.translations.vi"
+              :uploadUrl="store.folderName"
+            />
+          </client-only>
+        </template>
 
         <LabelInput label="Tiếng Anh" />
         <v-textarea
@@ -91,14 +93,15 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           variant="outlined"
           v-if="store.formItem.type === 'text'"
         />
-        <client-only v-else>
-          <CKEditorCDN
-            ref="editorRefEn"
-            v-model="store.formItem.translations.en"
-            :uploadUrl="store.folderName"
-          />
-        </client-only>
-
+         <template v-else>
+          <client-only>
+            <CKEditorCDN
+              ref="editorRefEn"
+              v-model="store.formItem.translations.en"
+              :uploadUrl="store.folderName"
+            />
+          </client-only>
+        </template>
         <Button type="submit" color="primary" label="Lưu mới" class="w-full" />
       </v-form>
     </template>
