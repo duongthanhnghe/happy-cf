@@ -12,14 +12,14 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 
 </script>
 <template>
-<Popup popupId="popup-create-banner" v-model="store.isTogglePopupAdd" popupHeading="Them banner" align="right">
+<Popup v-model="store.isTogglePopupAdd" popupHeading="Them banner" align="right">
   <template #body>
-    <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
       <div class="portal-popup-footer">
         <Button type="submit" color="primary" label="Luu" class="w-full" />
       </div>
         <LabelInput label="Tieu de" required/>
-        <v-text-field v-model="store.formBannerItem.title" :counter="200" :rules="store.titleRules" label="Nhap tieu de" variant="outlined" required></v-text-field>
+        <v-text-field v-model="store.formBannerItem.title" :counter="200" :rules="store.nullRules" label="Nhap tieu de" variant="outlined" required></v-text-field>
         <LabelInput label="Noi dung"/>
         <v-textarea v-model="store.formBannerItem.description" label="Nhap noi dung" variant="outlined"></v-textarea>
         <LabelInput label="Anh dai dien" required/>

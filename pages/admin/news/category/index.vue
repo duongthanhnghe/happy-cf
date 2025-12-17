@@ -36,7 +36,7 @@ onBeforeUnmount(() => {
   </template>
 
   <template #right>
-    <Button color="primary" label="Them moi" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
+    <Button color="primary" label="Thêm mới" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
   </template>
 </HeaderAdmin>
 

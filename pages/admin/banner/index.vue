@@ -24,12 +24,8 @@ onBeforeUnmount(() => {
 <template>
 
 <HeaderAdmin>
-  <template #left>
-    <v-text-field v-model="store.name" density="compact" placeholder="Tìm kiếm tên..." hide-details></v-text-field>
-  </template>
-
   <template #right>
-    <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
+    <Button label="Thêm mới" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
   </template>
 </HeaderAdmin>
 
@@ -38,10 +34,9 @@ onBeforeUnmount(() => {
 <PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
-  <v-data-table-server v-model:items-per-page="store.itemsPerPage" :headers="store.headers" :items="store.serverItems" :items-length="store.totalItems" :loading="store.loadingTable" :search="store.search" item-value="name"
+  <v-data-table-server v-model:items-per-page="store.itemsPerPage" :headers="store.headers" :items="store.serverItems" :items-length="store.totalItems" :loading="store.loadingTable" 
         @update:options="options => {
         store.currentTableOptions = options
-        store.loadItems(options)
     }">
      <template #item.index="{ item }">
       <SelectOrder :order="item.order" :listOrder="store.getListOrder" @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"/>
@@ -52,8 +47,8 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.isActive="{ item }">
-      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Doi trang thai'" @click="store.toggleActive(item.id)">
-        {{ item.isActive === true ? 'Kich hoat' : 'Tat kich hoat' }}
+      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Đổi trạng thái'" @click="store.toggleActive(item.id)">
+        {{ item.isActive === true ? 'Kích hoạt' : 'Tắt kích hoạt' }}
       </v-chip>
     </template>
 

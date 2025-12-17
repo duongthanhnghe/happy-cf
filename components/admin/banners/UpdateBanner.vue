@@ -11,15 +11,15 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 }
 </script>
 <template>
-<Popup popupId="popup-update-banner" v-model="store.isTogglePopupUpdate" popupHeading="Sua banner" align="right">
+<Popup v-model="store.isTogglePopupUpdate" popupHeading="Sua banner" align="right">
   <template #body>
-    <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
+    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
       <div class="portal-popup-footer">
         <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
       </div>
         
         <LabelInput label="Tieu de" required/>
-        <v-text-field v-model="store.formBannerItem.title" :counter="200" :rules="store.titleRules" label="Tieu de banner" variant="outlined" required></v-text-field>
+        <v-text-field v-model="store.formBannerItem.title" :counter="200" :rules="store.nullRules" label="Tieu de banner" variant="outlined" required></v-text-field>
         
         <LabelInput label="Noi dung"/>
         <v-textarea v-model="store.formBannerItem.description" label="Nhap noi dung" variant="outlined"></v-textarea>
