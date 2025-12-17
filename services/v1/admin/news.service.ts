@@ -7,24 +7,31 @@ import type {
   UpdateCategoryNewsDTO, 
   CategoryNewsDTO, 
   PostNewsDTO,
-  PostNewsPaginationDTO
+  PostNewsPaginationDTO,
+  CategoryNewsPaginationDTO
 } from "@/server/types/dto/v1/news.dto"
 import type { ApiResponse } from "@server/types/common/api-response"
 
 export const newsAPI = {
-  getAllCategories: async (): Promise<ApiResponse<CategoryNewsDTO[]>> => {
+  getAllCategories: async (page: number, limit: number,search: string): Promise<CategoryNewsPaginationDTO> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.LIST}`, {
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.LIST}?page=${page}&limit=${limit}&search=${search}`, {
         credentials: 'include',
       })
       const data = await response.json()
       return data
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error fetching categories:", err)
       return {
         code: 1,
-        message: "Failed to fetch categories news",
-        data: []
+        message: err.message ?? "Failed to fetch category news",
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
       }
     }
   },
@@ -72,16 +79,6 @@ export const newsAPI = {
       }
     }
   },
-
-  // getCategoryBySlug: async (slug: string): Promise<ApiResponse<CategoryNewsDTO>> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.GET_BY_SLUG(slug)}`)
-  //     return await response.json()
-  //   } catch (err: any) {
-  //     console.error(`Error fetching category with slug ${slug}:`, err)
-  //     return { code: 1, message: err.message ?? "Failed to fetch category by slug", data: null as any }
-  //   }
-  // },
 
   updateCategory: async (id: string, bodyData: UpdateCategoryNewsDTO): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
@@ -178,9 +175,9 @@ export const newsAPI = {
   },
 
   // ================== POSTS ==================
-  getAllPosts: async (page: number, limit: number ): Promise<PostNewsPaginationDTO> => {
+  getAllPosts: async (page: number, limit: number, search: string, categoryId:string ): Promise<PostNewsPaginationDTO> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.LIST}?page=${page}&limit=${limit}`,{
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.LIST}?page=${page}&limit=${limit}&search=${search}&categoryId=${categoryId}`,{
         credentials: 'include',
       })
       const data = await response.json()
@@ -244,21 +241,6 @@ export const newsAPI = {
     }
   },
 
-  // getPostBySlug: async (slug: string): Promise<ApiResponse<PostNewsDTO>> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.GET_BY_SLUG(slug)}`)
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err: any) {
-  //     console.error(`Error fetching post with slug ${slug}:`, err)
-  //     return {
-  //       code: 1,
-  //       message: err.message ?? `Failed to fetch post with slug ${slug}`,
-  //       data: null as any
-  //     }
-  //   }
-  // },
-
   updatePost: async (id: string, postData: UpdatePostNewsDTO): Promise<ApiResponse<PostNewsDTO>> => {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.UPDATE(id)}`, {
@@ -297,20 +279,6 @@ export const newsAPI = {
     }
   },
 
-  // getLatestPosts: async (limit: number): Promise<ApiResponse<PostNewsDTO[]>> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.LATEST(limit)}`)
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err: any) {
-  //     console.error("Error fetching latest posts:", err)
-  //     return {
-  //       code: 1,
-  //       message: err.message ?? "Failed to fetch latest posts",
-  //       data: []
-  //     }
-  //   }
-  // },
   toggleActivePost: async (id: string): Promise<ApiResponse<PostNewsDTO>> => {
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.TOGGLE_ACTIVE(id)}`, {
@@ -338,110 +306,4 @@ export const newsAPI = {
       }
     }
   },
-  
-  // getPostsByCategory: async (
-  //   id: string,
-  //   page: number,
-  //   limit: number
-  // ): Promise<ApiResponse<{ posts: PostNewsDTO[]; pagination: { page: number; limit: number; total: number; totalPages: number } }>> => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.GET_BY_CATEGORY(id)}?page=${page}&limit=${limit}`
-  //     )
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       return {
-  //         code: 1,
-  //         message: errorData.message || "Failed to fetch posts by category",
-  //         data: { posts: [], pagination: { page, limit, total: 0, totalPages: 0 } }
-  //       }
-  //     }
-
-  //     const data: ApiResponse<{ posts: PostNewsDTO[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> =
-  //       await response.json()
-
-  //     return data
-  //   } catch (err: any) {
-  //     console.error(`Error fetching posts by category slug "${id}":`, err)
-  //     return {
-  //       code: 1,
-  //       message: err.message || "Unexpected error while fetching posts by category",
-  //       data: { posts: [], pagination: { page, limit, total: 0, totalPages: 0 } }
-  //     }
-  //   }
-  // },
-  // getRelatedPosts: async (slug: string, limit: number): Promise<ApiResponse<PostNewsDTO[]>> => {
-  //   try {
-  //     const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.RELATED_BY_SLUG(slug)}?limit=${limit}`)
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err: any) {
-  //     return {
-  //       code: 1,
-  //       message: err.message ?? `Failed to fetch related posts for slug ${slug}`,
-  //       data: [],
-  //     }
-  //   }
-  // },
-  // updateViews: async (slug: string): Promise<ApiResponse<null>> => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.UPDATE_VIEWS(slug)}`,
-  //       {
-  //         method: "PATCH",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     )
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       return {
-  //         code: 1,
-  //         message: errorData.message || `Failed to update views for slug "${slug}"`,
-  //         data: null,
-  //       }
-  //     }
-
-  //     const data: ApiResponse<null> = await response.json()
-  //     return data
-  //   } catch (err: any) {
-  //     console.error(`Error updating views for slug "${slug}":`, err)
-  //     return {
-  //       code: 1,
-  //       message: err.message || "Unexpected error while updating views",
-  //       data: null,
-  //     }
-  //   }
-  // },
-
-  //client
-  // getAllPostsPagination: async (
-  //   page: number|string,
-  //   limit: number,
-  //   search: string = ""
-  // ): Promise<PostNewsPaginationDTO> => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.LIST_PAGINATION}?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
-  //     )
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err: any) {
-  //     console.error("Error fetching posts:", err)
-  //     return {
-  //       code: 1,
-  //       message: err.message ?? "Failed to fetch posts",
-  //       data: [],
-  //       pagination: {
-  //         page: 1,
-  //         limit,
-  //         total: 0,
-  //         totalPages: 0
-  //       }
-  //     }
-  //   }
-  // }
 }

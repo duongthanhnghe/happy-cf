@@ -23,6 +23,8 @@ export type UpdateCategoryNewsDTO = Partial<Omit<CreateCategoryNewsDTO, "created
 
 export type IdCategoryNews = { id: string }
 
+export type CategoryNewsPaginationDTO = PaginationDTO<CategoryNewsDTO>
+
 export interface PostNewsDTO {
   id: string
   title: string

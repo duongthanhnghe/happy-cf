@@ -25,7 +25,14 @@ onBeforeUnmount(() => {
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name" density="compact" placeholder="Tìm kiếm tên..." hide-details></v-text-field>
+    <v-text-field 
+      v-model="store.search" 
+      placeholder="Tìm kiếm tên..." 
+      variant="outlined" 
+      hide-details
+      clearable
+      @update:modelValue="value => store.search = value ?? ''"
+      ></v-text-field>
   </template>
 
   <template #right>
@@ -60,8 +67,8 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.isActive="{ item }">
-      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Doi trang thai'"  @click="store.toggleActive(item.id)">
-        {{ item.isActive === true ? 'Kich hoat' : 'Tat kich hoat' }}
+      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Đổi trạng thái'"  @click="store.toggleActive(item.id)">
+        {{ item.isActive === true ? 'Kích hoạt' : 'Tắt kích hoạt' }}
       </v-chip>
     </template>
 

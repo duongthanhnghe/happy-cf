@@ -1,32 +1,76 @@
 import { PostNewsModel } from "../../../models/v1/news.entity.js";
 import { toPostNewsDTO, toPostNewsListDTO } from "../../../mappers/v1/news.mapper.js";
+// export const getAllPosts = async (req: Request, res: Response) => {
+//   try {
+//     const page = parseInt(req.query.page as string, 10) || 1
+//     let limit = parseInt(req.query.limit as string, 10) || 10
+//     const query: any = {}
+//     if (limit === -1) {
+//       limit = await PostNewsModel.countDocuments(query)
+//     }
+//     const skip = (page - 1) * limit
+//     const [total, posts] = await Promise.all([
+//       PostNewsModel.countDocuments(),
+//       PostNewsModel.find()
+//         .sort({ createdAt: -1 })
+//         .skip(skip)
+//         .limit(limit)
+//     ])
+//     const totalPages = Math.ceil(total / limit)
+//     return res.json({
+//       code: 0,
+//       data: toPostNewsListDTO(posts),
+//       pagination: { page, limit, total, totalPages },
+//       message: "Success"
+//     })
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }
 export const getAllPosts = async (req, res) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
         let limit = parseInt(req.query.limit, 10) || 10;
-        //lay tat ca
+        const search = req.query.search || '';
+        const categoryId = req.query.categoryId;
         const query = {};
+        if (search) {
+            query.title = { $regex: search, $options: 'i' };
+        }
+        if (categoryId) {
+            query.categoryId = categoryId;
+        }
         if (limit === -1) {
             limit = await PostNewsModel.countDocuments(query);
         }
         const skip = (page - 1) * limit;
         const [total, posts] = await Promise.all([
-            PostNewsModel.countDocuments(),
-            PostNewsModel.find()
+            PostNewsModel.countDocuments(query),
+            PostNewsModel.find(query)
+                .populate('categoryId', 'categoryName slug')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
         ]);
-        const totalPages = Math.ceil(total / limit);
+        const totalPages = limit > 0 ? Math.ceil(total / limit) : 1;
         return res.json({
             code: 0,
+            message: 'Lấy danh sách bài viết thành công',
             data: toPostNewsListDTO(posts),
-            pagination: { page, limit, total, totalPages },
-            message: "Success"
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages,
+            },
         });
     }
     catch (err) {
-        return res.status(500).json({ code: 1, message: err.message });
+        console.error('💥 getAllPosts error:', err);
+        return res.status(500).json({
+            code: 1,
+            message: err.message || 'Lỗi server khi lấy danh sách bài viết',
+        });
     }
 };
 export const getPostsById = async (req, res) => {
@@ -41,18 +85,6 @@ export const getPostsById = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// export const getPostBySlug = async (req: Request, res: Response) => {
-//   try {
-//     const { slug } = req.params
-//     const post = await PostNewsModel.findOne({ slug })
-//     if (!post) {
-//       return res.status(404).json({ code: 1, message: "Không tồn tại" })
-//     }
-//     return res.json({ code: 0, data: toPostNewsDTO(post) })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
 export const createPosts = async (req, res) => {
     try {
         const newPost = new PostNewsModel(req.body);
@@ -87,17 +119,6 @@ export const deletePosts = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// export const getPostsLatest = async (req: Request, res: Response) => {
-//   try {
-//     const limit = parseInt(req.query.limit as string, 10) || 5
-//     const posts = await PostNewsModel.find()
-//       .sort({ createdAt: -1 })
-//       .limit(limit)
-//     return res.json({ code: 0, data: toPostNewsListDTO(posts) })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
 export const toggleActive = async (req, res) => {
     try {
         const { id } = req.params;
@@ -117,103 +138,4 @@ export const toggleActive = async (req, res) => {
         return res.status(500).json({ code: 1, message: err.message });
     }
 };
-// // // export const getPostsByCategory = async (req: Request, res: Response) => {
-// // //   try {
-// // //     const { categoryId } = req.params
-// // //     const page = parseInt(req.query.page as string, 10) || 1
-// // //     const limit = parseInt(req.query.limit as string, 10) || 10
-// // //     const skip = (page - 1) * limit
-// // //     const query = { categoryId }
-// // //     const [total, posts] = await Promise.all([
-// // //       PostNewsModel.countDocuments(query),
-// // //       PostNewsModel.find({...query, isActive: true})
-// // //         .sort({ createdAt: -1 })
-// // //         .skip(skip)
-// // //         .limit(limit)
-// // //     ])
-// // //     const totalPages = Math.ceil(total / limit)
-// // //     return res.json({
-// // //       code: 0,
-// // //       data: toPostNewsListDTO(posts),
-// // //       pagination: { page, limit, total, totalPages },
-// // //       message: 'Success'
-// // //     })
-// // //   } catch (err: any) {
-// // //     return res.status(500).json({ code: 1, message: err.message })
-// // //   }
-// // // }
-// // export const getRelatedPostsBySlug = async (req: Request, res: Response) => {
-// //   try {
-// //     const { slug } = req.params
-// //     const limit = parseInt(req.query.limit as string, 10) || 10
-// //     const post = await PostNewsModel.findOne({ slug })
-// //     if (!post) {
-// //       return res.status(404).json({ code: 1, message: "Bài viết không tồn tại" })
-// //     }
-// //     const relatedPosts = await PostNewsModel.find({
-// //       categoryId: new mongoose.Types.ObjectId(post.categoryId),
-// //       slug: { $ne: slug },
-// //       isActive: true,
-// //     })
-// //       .limit(limit)
-// //       .sort({ createdAt: -1 })
-// //     return res.json({
-// //       code: 0,
-// //       data: relatedPosts.map(toPostNewsDTO),
-// //       message: 'Success'
-// //     })
-// //   } catch (err: any) {
-// //     return res.status(500).json({ code: 1, message: err.message })
-// //   }
-// // }
-// export const updateView = async (req: Request, res: Response) => {
-//   try {
-//     const { slug } = req.params
-//     const post = await PostNewsModel.findOneAndUpdate(
-//       { slug, isActive: true },
-//       { $inc: { views: 1 } },
-//       { new: true }
-//     )
-//     if (!post) return res.status(404).json({ code: 1, message: "Bài viết không tồn tại" })
-//     return res.json({ code: 0, data: { views: post.views }, message: "Cập nhật lượt xem thành công" })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
-// //client
-// export const getAllPostsPagination = async (req: Request, res: Response) => {
-//   try {
-//     const page = parseInt(req.query.page as string, 10) || 1
-//     let limit = parseInt(req.query.limit as string, 10) || 10
-//     const search = (req.query.search as string) || ""
-//     const query: any = { isActive: true }
-//     if (search) {
-//       query.$or = [
-//         { title: { $regex: search, $options: "i" } },
-//         { summaryContent: { $regex: search, $options: "i" } }
-//       ]
-//     }
-//     // Nếu limit = -1 thì lấy tất cả
-//     if (limit === -1) {
-//       limit = await PostNewsModel.countDocuments(query)
-//     }
-//     const skip = (page - 1) * limit
-//     const [total, posts] = await Promise.all([
-//       PostNewsModel.countDocuments(query),
-//       PostNewsModel.find(query)
-//         .sort({ createdAt: -1 }) // mới nhất lên đầu
-//         .skip(skip)
-//         .limit(limit)
-//     ])
-//     const totalPages = Math.ceil(total / limit)
-//     return res.json({
-//       code: 0,
-//       data: toPostNewsListDTO(posts),
-//       pagination: { page, limit, total, totalPages },
-//       message: "Success"
-//     })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
 //# sourceMappingURL=post-news.controller.js.map

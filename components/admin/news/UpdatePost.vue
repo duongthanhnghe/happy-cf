@@ -53,7 +53,9 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
         </client-only>
        
         <LabelInput label="Danh muc bai viet" required/>
-        <v-select label="Chon danh muc"
+        <v-select 
+          v-if="store.getListCategory"
+          label="Chon danh muc"
           v-model="store.updatePostItem.categoryId"
           variant="solo"
           :items="store.getListCategory"

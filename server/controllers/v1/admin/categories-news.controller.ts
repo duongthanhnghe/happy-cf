@@ -2,15 +2,44 @@ import type { Request, Response } from "express";
 import { CategoryNewsModel, PostNewsModel } from "../../../models/v1/news.entity";
 import { toCategoryNewsDTO, toCategoryNewsListDTO } from "../../../mappers/v1/news.mapper";
 
-export const getAllCategories = async (_: Request, res: Response): Promise<Response> => {
+export const getAllCategories = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const categories = await CategoryNewsModel.find().sort({ order: 1 });
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.max(Number(req.query.limit) || 20, 1);
+    const search = (req.query.search as string) || '';
+
+    const skip = (page - 1) * limit;
+
+    const filter: any = {};
+
+    if (search) {
+      filter.categoryName = { $regex: search, $options: 'i' };
+    }
+
+    const [items, total] = await Promise.all([
+      CategoryNewsModel
+        .find(filter)
+        .sort({ order: 1, createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      CategoryNewsModel.countDocuments(filter),
+    ]);
+
     return res.json({
       code: 0,
-      data: toCategoryNewsListDTO(categories),
+      data: toCategoryNewsListDTO(items),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message });
+    return res.status(500).json({
+      code: 1,
+      message: err.message || 'Lỗi khi lấy danh sách danh mục',
+    });
   }
 };
 

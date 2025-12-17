@@ -4,6 +4,7 @@ import { usePostManageStore } from '@/stores/admin/news/usePostManageStore';
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
+import { ROUTE_HELPERS } from "@/shared/constants/routes-helpers";
 
 definePageMeta({
   layout: ROUTES.ADMIN.NEWS.children?.POST.layout,
@@ -23,12 +24,19 @@ onBeforeUnmount(() => {
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name" density="compact" placeholder="Tìm kiếm tên..."  hide-details></v-text-field>
-    <v-select label="Chon danh muc" v-model="store.filterCategory" :items="[{ id: null, categoryName: 'Tất cả' }, ...store.getListCategory]" item-title="categoryName" item-value="id" hide-details />
+    <v-text-field 
+      v-model="store.search" 
+      placeholder="Tìm kiếm tên..." 
+      variant="outlined"
+      hide-details
+      clearable
+      @update:modelValue="value => store.search = value ?? ''"
+      ></v-text-field>
+    <v-select v-if="store.getListCategory" label="Chon danh muc" v-model="store.filterCategory" :items="[{ id: '', categoryName: 'Tất cả' }, ...store.getListCategory]" item-title="categoryName" item-value="id" variant="outlined" hide-details />
   </template>
 
   <template #right>
-    <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
+    <Button label="Thêm mới" color="primary" :shadow="true" @click="store.handleTogglePopupAdd(true)" />
   </template>
 </HeaderAdmin>
 
@@ -58,15 +66,15 @@ onBeforeUnmount(() => {
       <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
     </template>
     
-    <template #item.categoryId="{ item }">
-      <v-chip v-if="item.categoryId" label>
-        {{ store.getCategoryName(item.categoryId)?.categoryName }}
+    <template #item.categoryName="{ item }">
+      <v-chip v-if="item.categoryName" label>
+        {{ item.categoryName }}
       </v-chip>
     </template>
 
     <template #item.isActive="{ item }">
-      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Doi trang thai'" @click="store.toggleActive(item.id)">
-        {{ item.isActive === true ? 'Kich hoat' : 'Tat kich hoat' }}
+      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Đổi trạng thái'" @click="store.toggleActive(item.id)">
+        {{ item.isActive === true ? 'Kích hoạt' : 'Tắt kích hoạt' }}
       </v-chip>
     </template>
 
@@ -76,7 +84,7 @@ onBeforeUnmount(() => {
 
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
-        <NuxtLink :to="`${ROUTES.PUBLIC.NEWS.children?.DETAIL?.path}/${item.slug}`" target="_blank">
+        <NuxtLink :to="ROUTE_HELPERS.newsDetail(item.slug)" target="_blank">
           <Button tag="div" color="gray" size="sm" icon="visibility" />
         </NuxtLink>
         <Button color="gray" size="sm" icon="edit" @click="store.handleEdit(item.id)" />

@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"11ff4f-XFANyE9UGChzYKpqrcJCndIioCw\"",
-    "mtime": "2025-12-16T10:32:45.123Z",
-    "size": 1179471,
+    "etag": "\"1203c7-plXWhasVhJn7iloM2Trc6zFu6w0\"",
+    "mtime": "2025-12-17T03:41:06.786Z",
+    "size": 1180615,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"494e9d-+zTgvGUCNpwWWlhduH2bWHRYqeQ\"",
-    "mtime": "2025-12-16T10:32:45.134Z",
-    "size": 4804253,
+    "etag": "\"49618d-eVoBUUr5fYO/IyV1LWQf1KfIm5M\"",
+    "mtime": "2025-12-17T03:41:06.791Z",
+    "size": 4809101,
     "path": "index.mjs.map"
   }
 };
@@ -2980,15 +2980,35 @@ const toCategoryNewsListDTO = (items) => {
   return items.map(toCategoryNewsDTO);
 };
 
-const getAllCategories$3 = async (_, res) => {
+const getAllCategories$3 = async (req, res) => {
   try {
-    const categories = await CategoryNewsModel.find().sort({ order: 1 });
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.max(Number(req.query.limit) || 20, 1);
+    const search = req.query.search || "";
+    const skip = (page - 1) * limit;
+    const filter = {};
+    if (search) {
+      filter.categoryName = { $regex: search, $options: "i" };
+    }
+    const [items, total] = await Promise.all([
+      CategoryNewsModel.find(filter).sort({ order: 1, createdAt: -1 }).skip(skip).limit(limit),
+      CategoryNewsModel.countDocuments(filter)
+    ]);
     return res.json({
       code: 0,
-      data: toCategoryNewsListDTO(categories)
+      data: toCategoryNewsListDTO(items),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
     });
   } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
+    return res.status(500).json({
+      code: 1,
+      message: err.message || "L\u1ED7i khi l\u1EA5y danh s\xE1ch danh m\u1EE5c"
+    });
   }
 };
 const getCategoriesById$3 = async (req, res) => {
@@ -4353,24 +4373,41 @@ const getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     let limit = parseInt(req.query.limit, 10) || 10;
+    const search = req.query.search || "";
+    const categoryId = req.query.categoryId;
     const query = {};
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
+    if (categoryId) {
+      query.categoryId = categoryId;
+    }
     if (limit === -1) {
       limit = await PostNewsModel.countDocuments(query);
     }
     const skip = (page - 1) * limit;
     const [total, posts] = await Promise.all([
-      PostNewsModel.countDocuments(),
-      PostNewsModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit)
+      PostNewsModel.countDocuments(query),
+      PostNewsModel.find(query).populate("categoryId", "categoryName slug").sort({ createdAt: -1 }).skip(skip).limit(limit)
     ]);
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = limit > 0 ? Math.ceil(total / limit) : 1;
     return res.json({
       code: 0,
+      message: "L\u1EA5y danh s\xE1ch b\xE0i vi\u1EBFt th\xE0nh c\xF4ng",
       data: toPostNewsListDTO(posts),
-      pagination: { page, limit, total, totalPages },
-      message: "Success"
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages
+      }
     });
   } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
+    console.error("\u{1F4A5} getAllPosts error:", err);
+    return res.status(500).json({
+      code: 1,
+      message: err.message || "L\u1ED7i server khi l\u1EA5y danh s\xE1ch b\xE0i vi\u1EBFt"
+    });
   }
 };
 const getPostsById$1 = async (req, res) => {
