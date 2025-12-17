@@ -34,9 +34,15 @@ onBeforeUnmount(() => {
 <PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
-  <v-data-table-server v-model:items-per-page="store.itemsPerPage" :headers="store.headers" :items="store.serverItems" :items-length="store.totalItems" :loading="store.loadingTable" 
-        @update:options="options => {
-        store.currentTableOptions = options
+  <v-data-table-server 
+    class="v-data-table-no-footer"
+    v-model:items-per-page="store.itemsPerPage" 
+    :headers="store.headers" 
+    :items="store.serverItems" 
+    :items-length="store.totalItems" 
+    :loading="store.loadingTable" 
+    @update:options="options => {
+      store.currentTableOptions = options
     }">
      <template #item.index="{ item }">
       <SelectOrder :order="item.order" :listOrder="store.getListOrder" @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"/>
@@ -58,6 +64,8 @@ onBeforeUnmount(() => {
         <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>
     </template>
+
+    <template #bottom />
   </v-data-table-server>
 </v-container>
 </template>
