@@ -11,33 +11,76 @@ import type {
 import type { ApiResponse } from '@server/types/common/api-response'
 
 export const vouchersAPI = {
-  // 📄 Lấy danh sách voucher
-  getAll: async (page = 1, limit = 10): Promise<VoucherPaginationDTO> => {
+  // getAll: async (page = 1, limit = 10): Promise<VoucherPaginationDTO> => {
+  //   try {
+  //     const params = new URLSearchParams({
+  //       page: page.toString(),
+  //       limit: limit.toString(),
+  //     })
+
+  //     const response = await fetch(
+  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.LIST}?${params}`,
+  //       { credentials: 'include' }
+  //     )
+
+  //     const data = await response.json()
+  //     return data
+  //   } catch (err) {
+  //     console.error('Error fetching vouchers:', err)
+  //     return {
+  //       code: 1,
+  //       message: 'Failed to fetch vouchers',
+  //       data: [],
+  //       pagination: { total: 0, totalPages: 0, page, limit },
+  //     }
+  //   }
+  // },
+  getAll: async (
+    page = 1,
+    limit = 10,
+    filters?: {
+      code?: string
+      type?: string | null
+      fromDate?: string
+      toDate?: string
+      reverted?: boolean
+    }
+  ): Promise<VoucherPaginationDTO> => {
     try {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
       })
 
+      if (filters?.code) params.append('code', filters.code)
+      if (filters?.type) params.append('type', filters.type)
+      if (filters?.fromDate) params.append('fromDate', filters.fromDate)
+      if (filters?.toDate) params.append('toDate', filters.toDate)
+      if (filters?.reverted !== undefined)
+        params.append('reverted', String(filters.reverted))
+
       const response = await fetch(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.LIST}?${params}`,
         { credentials: 'include' }
       )
 
-      const data = await response.json()
-      return data
+      return await response.json()
     } catch (err) {
       console.error('Error fetching vouchers:', err)
       return {
         code: 1,
         message: 'Failed to fetch vouchers',
         data: [],
-        pagination: { total: 0, totalPages: 0, page, limit },
+        pagination: {
+          total: 0,
+          totalPages: 0,
+          page,
+          limit,
+        },
       }
     }
   },
 
-  // 📄 Lấy chi tiết voucher theo ID
   getDetail: async (id: string): Promise<ApiResponse<VoucherDTO>> => {
     try {
       const response = await fetch(
@@ -55,7 +98,6 @@ export const vouchersAPI = {
     }
   },
 
-  // ➕ Tạo voucher mới
   create: async (body: CreateVoucherBody): Promise<ApiResponse<VoucherDTO>> => {
     try {
       const response = await fetch(
@@ -76,7 +118,6 @@ export const vouchersAPI = {
     }
   },
 
-  // ✏️ Cập nhật voucher
   update: async (
     id: string,
     body: Partial<CreateVoucherBody>
@@ -100,7 +141,6 @@ export const vouchersAPI = {
     }
   },
 
-  // 🗑️ Xóa voucher
   delete: async (id: string): Promise<ApiResponse<null>> => {
     try {
       const response = await fetch(
@@ -119,7 +159,6 @@ export const vouchersAPI = {
     }
   },
 
-  // 🔄 Toggle trạng thái hoạt động
   toggleActive: async (id: string): Promise<ApiResponse<VoucherDTO>> => {
     try {
       const response = await fetch(
@@ -137,62 +176,5 @@ export const vouchersAPI = {
       throw err
     }
   },
-
-  // // 💰 Áp dụng voucher để tính giảm giá
-  // apply: async (
-  //   payload: {
-  //     code: string
-  //     orderTotal: number
-  //     products?: ApplyVoucherProduct[]
-  //     orderCreatedAt?: string
-  //     userId: string
-  //   }
-  // ): Promise<ApiResponse<ApplyVoucherResponse>> => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.APPLY}`,
-  //       {
-  //         method: 'POST',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         credentials: 'include',
-  //         body: JSON.stringify(payload),
-  //       }
-  //     )
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error('Error applying voucher:', err)
-  //     throw err
-  //   }
-  // },
-
-  // getAvailableForOrder: async (body: {
-  //   orderTotal: number
-  //   categoryIds?: string[]
-  //   userId?: string
-  // }): Promise<ApiResponse<VoucherAvailableDTO[]>> => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.AVAILABLE}`,
-  //       {
-  //         method: 'POST',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         credentials: 'include',
-  //         body: JSON.stringify(body),
-  //       }
-  //     )
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error('Error fetching available vouchers for order:', err)
-  //     return {
-  //       code: 1,
-  //       message: 'Không thể lấy danh sách voucher khả dụng',
-  //       data: [],
-  //     } as ApiResponse<VoucherAvailableDTO[]>
-  //   }
-  // },
 
 }

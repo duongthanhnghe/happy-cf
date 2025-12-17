@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, onBeforeUnmount } from "vue";
+import { onBeforeUnmount } from "vue";
 import { useVoucherUsageManageStore } from '@/stores/admin/voucher/useVoucherUsageManageStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDateTime, formatCurrency, copyText } from '@/utils/global';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
-import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
-import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
+import { useSharedOrderDetailStore } from "@/stores/shared/order/useSharedOrderDetailStore";
+import { useAdminUserDetailStore } from "@/stores/admin/users/useUserDetailStore";
 
 definePageMeta({
   layout: ROUTES.ADMIN.VOUCHER.children?.USAGE.layout,
@@ -13,14 +13,8 @@ definePageMeta({
 });
 
 const store = useVoucherUsageManageStore();
-const storeUser = useUserManageStore();
-const storeHistory = useOrderHistoryStore();
-const idOrder = ref<string>('') 
-
-const handleDetailPopup = (id:string) => {
-  storeHistory.handleTogglePopupDetail(true, id)
-  idOrder.value = id
-}
+const storeDetailOrder = useSharedOrderDetailStore()
+const storeDetailUser = useAdminUserDetailStore();
 
 onBeforeUnmount(() => {
   store.resetFilter()
@@ -29,15 +23,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-
-
   <HeaderAdmin>
     <template #left>
-      <v-text-field v-model="store.code" density="compact" placeholder="Tìm mã..." variant="outlined" hide-details clearable></v-text-field>
+      <v-text-field v-model="store.search" placeholder="Tìm mã..." variant="outlined" hide-details clearable
+      @update:modelValue="value => store.search = value ?? ''"></v-text-field>
       <v-select
         v-model="store.filterType"
         label="Loại voucher"
-        density="compact"
         :items="[
           { type: null, name: 'Tất cả', color: 'grey' },
           ...Object.values(VOUCHER_TYPE)
@@ -53,7 +45,7 @@ onBeforeUnmount(() => {
     </template>
   </HeaderAdmin>
 
-  <PopupOrderDetail :idOrder="idOrder" />
+  <AdminPopupOrderDetail />
   <DetailAccount />
 
   <v-container>
@@ -93,7 +85,7 @@ onBeforeUnmount(() => {
 
       <template #item.userId="{ item }">
         <div class="min-width-200 flex gap-sm align-center white-space">
-          <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeUser.handleEdit(item.userId._id)" />
+          <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeDetailUser.handleTogglePopup(true,item.userId._id)" />
           <div>
             <span class="text-limit">{{ item.userId.fullname }}</span>
             <span class="text-limit text-color-gray5">{{ item.userId.phone }}</span>
@@ -102,7 +94,7 @@ onBeforeUnmount(() => {
       </template>
 
       <template #item.orderId="{ item }">
-        <div class="flex gap-sm align-center cursor-pointer white-space" @click="handleDetailPopup(item.orderId)">
+        <div class="flex gap-sm align-center cursor-pointer white-space" @click="storeDetailOrder.handleTogglePopupDetail(true,item.orderId)">
           <Button color="gray" size="sm" class="white-space" icon="visibility" />
           Chi tiet
         </div>
@@ -134,18 +126,6 @@ onBeforeUnmount(() => {
       <template #item.updatedAt="{ item }">
         {{ formatDateTime(item.updatedAt,'vi-VN') }}
       </template>
-
-      <!-- <template #item.actions="{ item }">
-        <div class="flex gap-sm justify-end">
-          <Button :border="false" color="secondary" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
-          <span v-tooltip.right="item.usedCount > 0 || new Date(item.startDate) <= new Date() ? 'Voucher đã được sử dụng hoặc đang diễn ra' : ''">
-          <Button 
-            :disabled="item.usedCount > 0 || new Date(item.startDate) <= new Date()"
-            :border="false" color="secondary" size="sm" icon="delete" @click="store.handleDelete(item.id)"
-          />
-          </span>
-        </div>
-      </template> -->
     </v-data-table-server>
   </v-container>
 </template>

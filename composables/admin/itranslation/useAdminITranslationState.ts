@@ -33,8 +33,8 @@ export const useAdminITranslationState = () => {
   });
   const headers = ref<TableHeaders[]>([
     { title: "Key", key: "key", sortable: false },
-    { title: "Type", key: "type", sortable: false },
-    { title: "Noi dung", key: "translations", sortable: false },
+    { title: "Loại", key: "type", sortable: false },
+    { title: "Nội dung", key: "translations", sortable: false },
     { title: "", key: "actions", sortable: false },
   ]);
 

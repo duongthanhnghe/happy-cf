@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"1203c7-plXWhasVhJn7iloM2Trc6zFu6w0\"",
-    "mtime": "2025-12-17T03:41:06.786Z",
-    "size": 1180615,
+    "etag": "\"120815-tno5looiOkSKVZwDDuzDITIyVLo\"",
+    "mtime": "2025-12-17T15:36:34.990Z",
+    "size": 1181717,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"49618d-eVoBUUr5fYO/IyV1LWQf1KfIm5M\"",
-    "mtime": "2025-12-17T03:41:06.791Z",
-    "size": 4809101,
+    "etag": "\"4973dc-kEoehjXBjzJy42wXtn3K+mPoElU\"",
+    "mtime": "2025-12-17T15:36:34.999Z",
+    "size": 4813788,
     "path": "index.mjs.map"
   }
 };
@@ -30392,11 +30392,34 @@ const toVoucherListDTO = (vouchers) => {
 
 const getAllVouchers$1 = async (req, res) => {
   try {
-    let { page = 1, limit = 10 } = req.query;
+    let {
+      page = 1,
+      limit = 10,
+      code,
+      type,
+      fromDate,
+      toDate,
+      reverted
+    } = req.query;
     const numPage = Number(page);
-    const numLimit = Number(limit);
+    let numLimit = Number(limit);
+    const filter = {};
+    if (code) {
+      filter.code = { $regex: code, $options: "i" };
+    }
+    if (type) {
+      filter.type = type;
+    }
+    if (reverted !== void 0) {
+      filter.reverted = reverted === "true";
+    }
+    if (fromDate || toDate) {
+      filter.createdAt = {};
+      if (fromDate) filter.createdAt.$gte = new Date(fromDate);
+      if (toDate) filter.createdAt.$lte = new Date(toDate);
+    }
     if (numLimit === -1) {
-      const vouchers = await VoucherEntity.find().sort({ createdAt: -1 });
+      const vouchers = await VoucherEntity.find(filter).sort({ createdAt: -1 });
       return res.json({
         code: 0,
         data: vouchers.map(toVoucherDTO),
@@ -30408,12 +30431,11 @@ const getAllVouchers$1 = async (req, res) => {
         }
       });
     }
-    const options = {
+    const result = await VoucherEntity.paginate(filter, {
       page: numPage,
       limit: numLimit,
       sort: { createdAt: -1 }
-    };
-    const result = await VoucherEntity.paginate({}, options);
+    });
     return res.json({
       code: 0,
       data: result.docs.map(toVoucherDTO),
@@ -30425,6 +30447,7 @@ const getAllVouchers$1 = async (req, res) => {
       }
     });
   } catch (err) {
+    console.error("\u274C getAllVouchers error:", err);
     return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch voucher", error: err.message });
   }
 };
@@ -30557,17 +30580,49 @@ const voucher_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePr
 
 const getAllVoucherUsage = async (req, res) => {
   try {
-    let { page = 1, limit = 10, userId, code, orderId, reverted } = req.query;
+    let {
+      page = 1,
+      limit = 10,
+      userId,
+      code,
+      orderId,
+      reverted,
+      type,
+      fromDate,
+      toDate
+    } = req.query;
     const numPage = Number(page);
     const numLimit = Number(limit);
-    const filter = {};
-    if (userId) filter.userId = new mongoose.Types.ObjectId(userId);
-    if (code) filter.code = code;
-    if (orderId) filter.orderId = new mongoose.Types.ObjectId(orderId);
-    if (reverted !== void 0) filter.reverted = reverted === "true";
     const skip = (numPage - 1) * numLimit;
+    const filter = {};
+    if (userId) {
+      filter.userId = new mongoose.Types.ObjectId(userId);
+    }
+    if (orderId) {
+      filter.orderId = new mongoose.Types.ObjectId(orderId);
+    }
+    if (reverted !== void 0) {
+      filter.reverted = reverted === "true";
+    }
+    if (code) {
+      filter.code = { $regex: code, $options: "i" };
+    }
+    if (type) {
+      filter.type = type;
+    }
+    if (fromDate || toDate) {
+      filter.usedAt = {};
+      if (fromDate) {
+        filter.usedAt.$gte = new Date(fromDate);
+      }
+      if (toDate) {
+        const endDate = new Date(toDate);
+        endDate.setHours(23, 59, 59, 999);
+        filter.usedAt.$lte = endDate;
+      }
+    }
     const [list, total] = await Promise.all([
-      VoucherUsageEntity.find(filter).populate("voucherId", "code name type value").populate("userId", "fullname phone").sort({ createdAt: -1 }).skip(skip).limit(numLimit),
+      VoucherUsageEntity.find(filter).populate("voucherId", "code name type value").populate("userId", "fullname phone email").populate("orderId", "code totalPrice").sort({ usedAt: -1 }).skip(skip).limit(numLimit),
       VoucherUsageEntity.countDocuments(filter)
     ]);
     return res.json({
@@ -30576,13 +30631,16 @@ const getAllVoucherUsage = async (req, res) => {
       pagination: {
         page: numPage,
         limit: numLimit,
-        totalPages: Math.ceil(total / numLimit),
-        total
+        total,
+        totalPages: Math.ceil(total / numLimit)
       }
     });
   } catch (err) {
-    console.error("\u274C L\u1ED7i getAllVoucherUsage:", err);
-    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch VoucherUsage", error: err.message });
+    console.error("getAllVoucherUsage error:", err);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i l\u1EA5y danh s\xE1ch l\u1ECBch s\u1EED s\u1EED d\u1EE5ng voucher"
+    });
   }
 };
 

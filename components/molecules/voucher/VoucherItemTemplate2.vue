@@ -3,7 +3,7 @@ import '@/styles/molecules/voucher/voucher-item2.scss'
 import type { VoucherAvailableDTO } from "@/server/types/dto/v1/voucher.dto";
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 import { formatCurrency } from '@/utils/global';
-import { useVoucherUtils } from '@/composables/voucher/useVoucherUtils';
+import { useVoucherUtils } from '@/composables/shared/voucher/useVoucherUtils';
 
 const props = defineProps<{
   item: VoucherAvailableDTO;

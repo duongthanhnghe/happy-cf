@@ -2,7 +2,7 @@
 import { useVoucherManageStore } from '@/stores/admin/voucher/useVoucherManageStore'
 import type { SubmitEventPromise } from 'vuetify'
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
-import { useVoucherForm } from '@/composables/voucher/useVoucherForm'
+import { useVoucherForm } from '@/composables/admin/voucher/useVoucherForm'
 
 const store = useVoucherManageStore()
 const { type, showValue, showMaxDiscount, showMaxShippingDiscount, showProduct, validateVoucher } = useVoucherForm(store.formItem)
@@ -20,7 +20,6 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 
 <template>
   <Popup
-    popupId="popup-create-voucher"
     v-model="store.isTogglePopupAdd"
     popupHeading="Thêm voucher"
     align="right"

@@ -4,26 +4,67 @@ import { VoucherUsageEntity } from "../../../models/v1/voucher-usage.entity";
 
 export const getAllVoucherUsage = async (req: Request, res: Response) => {
   try {
-    let { page = 1, limit = 10, userId, code, orderId, reverted } = req.query;
+    let {
+      page = 1,
+      limit = 10,
+      userId,
+      code,
+      orderId,
+      reverted,
+      type,
+      fromDate,
+      toDate,
+    } = req.query;
 
     const numPage = Number(page);
     const numLimit = Number(limit);
+    const skip = (numPage - 1) * numLimit;
 
-    // 🎯 Bộ lọc động
     const filter: any = {};
 
-    if (userId) filter.userId = new mongoose.Types.ObjectId(userId as string);
-    if (code) filter.code = code;
-    if (orderId) filter.orderId = new mongoose.Types.ObjectId(orderId as string);
-    if (reverted !== undefined) filter.reverted = reverted === "true";
+    if (userId) {
+      filter.userId = new mongoose.Types.ObjectId(userId as string);
+    }
 
-    const skip = (numPage - 1) * numLimit;
+    if (orderId) {
+      filter.orderId = new mongoose.Types.ObjectId(orderId as string);
+    }
+
+    if (reverted !== undefined) {
+      filter.reverted = reverted === "true";
+    }
+
+    // 🔍 Tìm theo code (LIKE)
+    if (code) {
+      filter.code = { $regex: code as string, $options: "i" };
+    }
+
+    // 🧩 Filter theo loại voucher
+    if (type) {
+      filter.type = type;
+    }
+
+    // 📅 Filter theo khoảng thời gian usedAt
+    if (fromDate || toDate) {
+      filter.usedAt = {};
+
+      if (fromDate) {
+        filter.usedAt.$gte = new Date(fromDate as string);
+      }
+
+      if (toDate) {
+        const endDate = new Date(toDate as string);
+        endDate.setHours(23, 59, 59, 999); // lấy hết ngày
+        filter.usedAt.$lte = endDate;
+      }
+    }
 
     const [list, total] = await Promise.all([
       VoucherUsageEntity.find(filter)
         .populate("voucherId", "code name type value")
-        .populate("userId", "fullname phone")
-        .sort({ createdAt: -1 })
+        .populate("userId", "fullname phone email")
+        .populate("orderId", "code totalPrice")
+        .sort({ usedAt: -1 })
         .skip(skip)
         .limit(numLimit),
 
@@ -36,14 +77,15 @@ export const getAllVoucherUsage = async (req: Request, res: Response) => {
       pagination: {
         page: numPage,
         limit: numLimit,
-        totalPages: Math.ceil(total / numLimit),
         total,
+        totalPages: Math.ceil(total / numLimit),
       },
     });
   } catch (err: any) {
-    console.error("❌ Lỗi getAllVoucherUsage:", err);
-    return res
-      .status(500)
-      .json({ code: 1, message: "Lỗi lấy danh sách VoucherUsage", error: err.message });
+    console.error("getAllVoucherUsage error:", err);
+    return res.status(500).json({
+      code: 1,
+      message: "Lỗi lấy danh sách lịch sử sử dụng voucher",
+    });
   }
 };
