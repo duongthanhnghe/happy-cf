@@ -4,7 +4,7 @@ import { Loading } from '@/utils/global';
 import { showConfirm, showSuccess, showWarning } from '@/utils/toast';
 import type { TableOpt } from '@/server/types';
 import type { ProductReviewPaginationDTO, ProductReviewWithUserDTO, ReviewStatus } from '@/server/types/dto/v1/product-review.dto';
-import { useAdminProductReviewAll } from '@/composables/product-review/useAdminProductReviewAll';
+import { useAdminProductReviewAll } from '@/composables/admin/product/review/useAdminProductReviewAll';
 import { productReviewAPI } from '@/services/v1/admin/productReview.service';
 
 export const useProductReviewManageOperations = (
@@ -17,7 +17,7 @@ export const useProductReviewManageOperations = (
   toDay: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
   filterStatusOrder: Ref<string|null>,
-  filterNumberStar:Ref<number|null>,
+  filterNumberStar:Ref<string|null>,
   isTogglePopupAdd: Ref<boolean>,
 ) => {
 

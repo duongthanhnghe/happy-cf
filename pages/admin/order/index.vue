@@ -11,6 +11,7 @@ import { useOrderHelpers } from '@/utils/orderHelpers';
 import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';
 import { onMounted } from 'vue';
 import { useOrderStatus } from '@/composables/shared/order/useOrderStatus';
+import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,
@@ -18,7 +19,7 @@ definePageMeta({
 })
 
 const store = useOrderManageStore()
-const storeUser = useUserManageStore()
+const storeDetailUser = useAdminUserDetailStore();
 const storeDetailOrder = useSharedOrderDetailStore()
 const { getListOrderStatus, fetchOrderStatus } = useOrderStatus();
 const { remainingProductNames } = useOrderHelpers()
@@ -69,7 +70,7 @@ onMounted(async () => {
 
     <template #item.fullname="{ item }">
       <div class="min-width-200 flex gap-sm align-center white-space">
-        <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeUser.handleEdit(item.userId)" />
+        <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeDetailUser.handleTogglePopup(true,item.userId)" />
         <div>
           <span v-tooltip="item.fullname" class="max-width-200 text-limit white-space-pre">{{ item.fullname }}</span>
           <span class="text-limit text-color-gray5">{{ item.phone }}</span>

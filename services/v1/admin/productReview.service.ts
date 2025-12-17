@@ -7,11 +7,11 @@ export const productReviewAPI = {
   getAll: async (
     page = 1,
     limit = 10,
-    fromDate: '',
-    toDate: '',
-    search: '',
-    rating: 0,
-    status: '',
+    fromDate: string,
+    toDate: string,
+    search: string,
+    rating: string | null,
+    status: string | null,
   ): Promise<ProductReviewPaginationDTO> => {
     try {
 

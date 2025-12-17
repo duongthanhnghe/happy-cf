@@ -27,7 +27,7 @@ export const useProductReviewManageState = () => {
     sortBy: [],
   })
   const filterStatusOrder = ref<string|null>(null)
-  const filterNumberStar = ref<number|null>(null)
+  const filterNumberStar = ref<string|null>(null)
   const isTogglePopupAdd = ref(false);
 
   return {
