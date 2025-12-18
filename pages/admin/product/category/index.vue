@@ -19,6 +19,7 @@ const folderName = FOLDER_UPLOAD.CATEGORY_PRODUCT
 useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
+  store.resetFilter()
   storeFileManage.items = null
 })
 </script>
@@ -33,6 +34,7 @@ onBeforeUnmount(() => {
       clearable
       @update:modelValue="value => store.search = value ?? ''"
       ></v-text-field>
+    <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
 
   <template #right>

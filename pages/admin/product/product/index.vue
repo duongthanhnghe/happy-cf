@@ -26,6 +26,7 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  store.resetFilter()
   storeFileManage.items = null
 })
 </script>
@@ -46,6 +47,7 @@ onBeforeUnmount(() => {
       variant="outlined"
       @update:modelValue="value => store.categorySelectedFilter = value ?? ''"
     />
+    <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
 
   <template #right>

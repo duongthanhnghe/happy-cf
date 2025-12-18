@@ -17,6 +17,7 @@ const storeFileManage = useFileManageFolderStore();
 useFileManageWatchers(storeFileManage, store.folderName);
 
 onBeforeUnmount(() => {
+  store.resetFilter()
   storeFileManage.items = null
 })
 </script>
@@ -33,6 +34,7 @@ onBeforeUnmount(() => {
       @update:modelValue="value => store.search = value ?? ''"
       ></v-text-field>
     <v-select v-if="store.getListCategory" label="Chon danh muc" v-model="store.filterCategory" :items="[{ id: '', categoryName: 'Tất cả' }, ...store.getListCategory]" item-title="categoryName" item-value="id" variant="outlined" hide-details />
+    <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
 
   <template #right>

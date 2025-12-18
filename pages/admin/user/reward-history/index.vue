@@ -5,6 +5,7 @@ import { ROUTES } from '@/shared/constants/routes';
 import { REWARD_HISTORY_TYPE } from '@/shared/constants/history-reward-type'
 import { useSharedOrderDetailStore } from "@/stores/shared/order/useSharedOrderDetailStore";
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
+import { onBeforeUnmount } from 'vue';
 
 definePageMeta({
   layout: ROUTES.ADMIN.USER.children?.CUSTOMER.layout,
@@ -15,6 +16,9 @@ const store = useRewardHistoryStore();
 const storeDetailUser = useAdminUserDetailStore();
 const storeDetailOrder = useSharedOrderDetailStore()
 
+onBeforeUnmount(() => {
+  store.resetFilter()
+})
 </script>
 <template>
  

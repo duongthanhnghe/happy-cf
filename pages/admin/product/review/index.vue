@@ -4,6 +4,7 @@ import { formatDateTime } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
 import { PRODUCT_REVIEW_STATUS, ARRAY_RATING } from '@/shared/constants/product-review-status'
 import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
+import { onBeforeUnmount } from 'vue';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,
@@ -13,6 +14,9 @@ definePageMeta({
 const storeUser = useUserManageStore();
 const store = useProductReviewManageStore();
 
+onBeforeUnmount(() => {
+  store.resetFilter()
+})
 </script>
 <template>
 

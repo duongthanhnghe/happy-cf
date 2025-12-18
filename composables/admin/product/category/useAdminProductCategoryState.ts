@@ -24,7 +24,7 @@ export const useAdminProductCategoryState = () => {
   const selectedCategoryName = ref<string[]>([])
   const dataListCategory = ref<CategoryProductDTO[] | null>(null);
   const maxOrder = ref<number>(0)
-  const itemsPerPage = 10
+  const itemsPerPage = 20
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Hình ảnh', key: 'image', sortable: false, },

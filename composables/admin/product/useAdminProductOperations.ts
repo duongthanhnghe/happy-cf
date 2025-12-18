@@ -1,6 +1,6 @@
 import { showWarning, showConfirm, showSuccess } from "@/utils/toast";
 import type { CreateProductDTO, ProductDTO, UpdateProductDTO } from '@/server/types/dto/v1/product.dto';
-import { unref, watch, type Ref } from 'vue';
+import { computed, unref, watch, type Ref } from 'vue';
 import type { TableOpt } from "@/server/types";
 import { generateSkuProduct, Loading } from "@/utils/global";
 import { useAdminProductAll } from "./useAdminProductAll";
@@ -199,6 +199,22 @@ export const useAdminProductOperations = (
     }
   };
 
+  const resetFilter = () => {
+    search.value = ''
+    categorySelectedFilter.value = ''
+    currentTableOptions.value.page = 1
+    currentTableOptions.value.itemsPerPage = 50
+  }
+
+  const hasFilter = computed(() => {
+    return (
+      search.value !== '' ||
+      categorySelectedFilter.value !== '' ||
+      currentTableOptions.value.page !== 1 ||
+      currentTableOptions.value.itemsPerPage !== 50
+    )
+  })
+
   return {
     handleEditProduct,
     handleDeleteProduct,
@@ -208,5 +224,7 @@ export const useAdminProductOperations = (
     submitUpdate,
     handleReload,
     handleDeleteManyProducts,
+    resetFilter,
+    hasFilter,
   };
 };

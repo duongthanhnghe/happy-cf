@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { onBeforeUnmount, onMounted } from "vue";
 import { formatDateTime } from '@/utils/global'
 import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
 import { useMembershipList } from '@/composables/user/useMembershipList'
@@ -22,6 +22,9 @@ onMounted( async () => {
  if(getMembershipList.value.length === 0) await fetchMembershipList()
 })
 
+onBeforeUnmount(() => {
+  store.resetFilter()
+})
 </script>
 <template>
 
@@ -29,6 +32,7 @@ onMounted( async () => {
   <template #left>
     <v-text-field v-model="store.search" density="compact" placeholder="Tìm kiếm tên, email..." variant="outlined" hide-details></v-text-field>
     <v-select v-model="store.filterTypeMember" variant="outlined" :items="[{ id: null, name: null, text: 'Tất cả' }, ...getMembershipList ?? []]" :item-title="item => item.name ?? item.text" item-value="name" hide-details />
+    <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
 </HeaderAdmin>
 

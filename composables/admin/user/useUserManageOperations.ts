@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import { watch } from 'vue';
+import { computed, watch } from 'vue';
 import { Loading } from '@/utils/global';
 import { showConfirm, showSuccess, showWarning } from '@/utils/toast';
 import type { TableOpt } from '@/server/types';
@@ -95,11 +95,29 @@ export const useUserManageOperations = (
 
   const { toggleActive } = useToggleActiveStatus(usersAPI.toggleActive, serverItems.value );
   
+  const resetFilter = () => {
+    search.value = ''
+    filterTypeMember.value = null
+    currentTableOptions.value.page = 1
+    currentTableOptions.value.itemsPerPage = 20
+  }
+
+  const hasFilter = computed(() => {
+    return (
+      search.value !== '' ||
+      filterTypeMember.value !== null ||
+      currentTableOptions.value.page !== 1 ||
+      currentTableOptions.value.itemsPerPage !== 20
+    )
+  })
+
   return {
     handleDelete,
     getListData,
     loadItems,
     handleReload,
     toggleActive,
+    resetFilter,
+    hasFilter,
   };
 };

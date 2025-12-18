@@ -21,7 +21,6 @@ useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   store.resetFilter()
-  store.serverItems = []
 })
 </script>
 

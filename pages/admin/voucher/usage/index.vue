@@ -18,7 +18,6 @@ const storeDetailUser = useAdminUserDetailStore();
 
 onBeforeUnmount(() => {
   store.resetFilter()
-  store.serverItems = []
 })
 </script>
 

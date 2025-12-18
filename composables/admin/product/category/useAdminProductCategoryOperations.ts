@@ -1,6 +1,6 @@
 import { showWarning, showConfirm, showSuccess } from "@/utils/toast";
 import type { CategoryProductDTO, CreateCategoryProductDTO, UpdateCategoryProductDTO } from '@/server/types/dto/v1/product.dto';
-import { toValue, unref, watch, type Ref } from 'vue';
+import { computed, toValue, unref, watch, type Ref } from 'vue';
 import type { TableOpt } from "@/server/types";
 import { useAdminProductCategory } from "@/composables/admin/product/category/useAdminProductCategory";
 import { Loading } from "@/utils/global";
@@ -147,6 +147,20 @@ export const useAdminProductCategoryOperations = (
     }
   }
 
+  const resetFilter = () => {
+    search.value = ''
+    currentTableOptions.value.page = 1
+    currentTableOptions.value.itemsPerPage = 20
+  }
+
+  const hasFilter = computed(() => {
+    return (
+      search.value !== '' ||
+      currentTableOptions.value.page !== 1 ||
+      currentTableOptions.value.itemsPerPage !== 20
+    )
+  })
+
   return {
     getListAllCategory,
     handleEditCategory,
@@ -154,5 +168,7 @@ export const useAdminProductCategoryOperations = (
     loadItemsCategory,
     submitCreate,
     submitUpdate,
+    resetFilter,
+    hasFilter,
   };
 };

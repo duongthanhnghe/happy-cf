@@ -8,7 +8,7 @@ import { getTransactionNote } from '@/composables/admin/order/useGetTransactionN
 import { getFilteredTransactionStatus } from '@/composables/admin/order/useFilteredTransactionStatus';
 import { useOrderHelpers } from '@/utils/orderHelpers';
 import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';
-import { onMounted } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import { useOrderStatus } from '@/composables/shared/order/useOrderStatus';
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 
@@ -26,7 +26,10 @@ const { remainingProductNames } = useOrderHelpers()
 onMounted(async () => {
   if(getListOrderStatus.value.length === 0) await fetchOrderStatus()
 })
-  
+
+onBeforeUnmount(() => {
+  store.resetFilter()
+})
 </script>
 <template>
 
