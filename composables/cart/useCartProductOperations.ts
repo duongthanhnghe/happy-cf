@@ -1,242 +1,319 @@
 import { showWarning, showConfirm } from "@/utils/toast";
 import { Base64 } from "js-base64";
-import type { ProductDTO, CartDTO, SelectedOptionPushDTO, SelectedOptionDTO, VariantGroupDTO, ProductVariantGroupDTO } from '@/server/types/dto/v1/product.dto';
-import type { Ref } from 'vue';
+import type { ProductDTO, CartDTO } from '@/server/types/dto/v1/product.dto';
+import { type Ref } from 'vue';
 import { useProductDetail } from '@/composables/product/useProductDetail'
+import type { ProductVariantCombinationDTO } from "@/server/types/dto/v1/product.dto"; 
+import { useProductCheckStock } from "../product/useProductCheckStock";
 
 export const useCartProductOperations = (
   cartListItem: Ref<CartDTO[]>,
   cartCount: Ref<number>,
-  selectedOptionsData: Ref<SelectedOptionPushDTO[]>,
   productDetailEdit: Ref<CartDTO|null|undefined>,
   quantityEdit: Ref<number>,
-  priceTotalEdit: Ref<number>,
-  selectedOptionsDataEdit: Ref<(string | number | boolean)[]>,
-  priceTotal: Ref<number>,
-  priceOptions: Ref<number>,
   quantity: Ref<number>,
   updateCookie: () => void,
   resetValuePopupOrder: () => void,
-  updateSelectedOptionsData: (newOptions: SelectedOptionDTO[]) => void,
-  syncTempSelectedFromSelectedOptionsData: (options: any) => void,
+  syncTempSelectedFromCombination: (options: any) => void,
   togglePopup: (popupId: string, value: boolean) => void,
+  getSelectedCombinationId: (variantCombinations: ProductVariantCombinationDTO[]) => string | undefined,
 ) => {
 
   const { getDetailProduct, fetchDetailProduct } = useProductDetail()
-  
-  const addNormalProduct = (product: ProductDTO, quantity?: number) => {
-    const existingProduct = cartListItem.value?.find(
-      (item) => item.id === product.id
-    );
-    if (existingProduct && existingProduct.quantity) {
-      quantity ? existingProduct.quantity += quantity : existingProduct.quantity++;
+  const { checkStock, availableStock } = useProductCheckStock()
+
+  const checkAvailableStock = async ({productId,nextQty,combinationId}: {
+    productId: string
+    nextQty: number
+    combinationId?: string
+  }) => {
+    await checkStock({
+      productId,
+      quantity: nextQty,
+      combinationId
+    })
+
+    if (!availableStock.value || availableStock.value === 0) {
+      showWarning('Sản phẩm đã hết hàng')
+      return false
+    }
+
+    if (nextQty > availableStock.value) {
+      showWarning(`Chỉ còn ${availableStock.value} sản phẩm trong kho`)
+      return false
+    }
+
+    return true
+  }
+
+  const findMatchedCombination = (
+    combinations: ProductVariantCombinationDTO[],
+    tempSelected: Record<string, string>
+  ) => {
+    return combinations.find(combo =>
+      combo.variants.every(v => tempSelected[v.groupId] === v.variantId)
+    )
+  }
+
+  const addNormalProduct = async (
+    product: ProductDTO,
+    quantity = 1
+  ) => {
+    const existingProduct = cartListItem.value.find(
+      item => item.id === product.id
+    )
+
+    const currentQty = existingProduct?.quantity ?? 0
+    const nextQty = currentQty + quantity
+
+    const ok = await checkAvailableStock({
+      productId: product.id,
+      nextQty
+    })
+    if (!ok) return
+
+    if (existingProduct) {
+      existingProduct.quantity = nextQty
     } else {
-      console.log('product.sku',product.sku)
-      cartListItem.value?.push({
+      cartListItem.value.push({
         product: product.id,
         sku: product.sku,
-        quantity: quantity ? quantity : 1,
-      });
+        quantity
+      })
     }
-    quantity ? cartCount.value += quantity : cartCount.value++;
-  };
-  
-  const addProductWithOptions = (
-    product: ProductDTO, 
-    selectedOptions: SelectedOptionPushDTO[], 
-    quantity: number, 
+
+    cartCount.value += quantity
+    updateCookie()
+  }
+
+  const addProductWithOptions = async (
+    product: ProductDTO,
+    quantity: number,
     note: string,
+    tempSelected: Record<string, string>,
     popupOrderState: boolean
   ) => {
+    const matchedCombination = findMatchedCombination(
+      product.variantCombinations,
+      tempSelected
+    )
 
-    const sortedOptions = [...selectedOptions].sort((a, b) =>
-      a.optionName.localeCompare(b.optionName)
-    );
+    if (!matchedCombination) {
+      showWarning('Vui lòng chọn đầy đủ phân loại')
+      return
+    }
 
-    const rawEncodeData = {
-      selectedOptions: sortedOptions,
+    const rawKeyData = {
+      combinationId: matchedCombination.id,
       note
-    };
-    
-    const productKey = `${product.id}_${Base64.encode(JSON.stringify(rawEncodeData))}`;
-   
-    const existingProduct = cartListItem.value?.find(
-      (item) => item.productKey === productKey
-    );
+    }
 
-    if (existingProduct && existingProduct.quantity) {
-      existingProduct.quantity = existingProduct.quantity + quantity;
-      cartCount.value += quantity;
+    const productKey = `${product.id}_${Base64.encode(
+      JSON.stringify(rawKeyData)
+    )}`
+
+    const existingProduct = cartListItem.value.find(
+      item => item.productKey === productKey
+    )
+
+    const currentQty = existingProduct?.quantity ?? 0
+    const nextQty = currentQty + quantity
+
+    const ok = await checkAvailableStock({
+      productId: product.id,
+      nextQty,
+      combinationId: matchedCombination.id
+    })
+    if (!ok) return
+
+    if (existingProduct) {
+      existingProduct.quantity = nextQty
     } else {
-      if (product.variantGroups.length > selectedOptions.length) {
-        showWarning("Vui lòng chọn đầy đủ options!");
-        return;
-      }
-
-      const optionsPrice = product.variantGroups?.reduce((total, option) => {
-        const selectedOption = selectedOptions.find(
-          (so) => so.optionName === option.groupName
-        );
-
-        const selectedVariant = option.selectedVariants?.find(
-          (v) => v.variantName === selectedOption?.variantName
-        );
-
-        return total + (selectedVariant?.priceModifier || 0);
-      }, 0) ?? 0;
-
-      cartListItem.value?.push({
+      cartListItem.value.push({
         product: product.id,
         productKey,
-        quantity: quantity,
-        selectedOptionsPush: [...selectedOptions],
-        note: note,
-        finalPrice: product.price + optionsPrice,
-        finalPriceDiscounts: product.priceDiscounts + optionsPrice,
-        sku: product.sku,
-      });
-
-      cartCount.value += quantity;
+        combinationId: matchedCombination.id,
+        quantity,
+        sku: matchedCombination.sku,
+        note,
+        variantCombination: {
+          id: matchedCombination.id,
+          sku: matchedCombination.sku,
+          priceModifier: matchedCombination.priceModifier,
+          variants: matchedCombination.variants
+        }
+      })
     }
 
-    resetValuePopupOrder();
-  };
+    cartCount.value += quantity
+    updateCookie()
+    resetValuePopupOrder()
+  }
 
-  const updateProductWithOptions = (
-    product: ProductDTO | null, 
-    quantity: number, 
-    note?: string, 
-    oldProductKey?: string
+  const updateProductWithOptions = async (
+    product: CartDTO | null,
+    quantity: number,
+    note: string | undefined,
+    oldProductKey: string | undefined,
+    tempSelected: Record<string, string>
   ) => {
-    if(!product) return
-    const selectedOptions = selectedOptionsData.value;
-    try {
-      const newProductKey = `${product.id}_${Base64.encode(JSON.stringify(note ? selectedOptions+note : selectedOptions))}`;
-      
-      const existingProductIndex = cartListItem.value?.findIndex(
-        item => item.productKey === oldProductKey
-      );
+    const index = cartListItem.value.findIndex(
+      item => item.productKey === oldProductKey
+    )
+    if (index === -1 || !product || !product.variantCombinations) return
 
-      if (existingProductIndex === -1) {
-        console.error('Khong ton tai san pham');
-        return;
-      }
+    const matchedCombination = findMatchedCombination(
+      product.variantCombinations,
+      tempSelected
+    )
 
-      const optionsPrice = product.variantGroups?.reduce((total, option) => {
-        const selectedOption = selectedOptions.find(
-          (so) => so.optionName === option.groupName
-        );
-
-        const selectedVariant = option.selectedVariants?.find(
-          (v) => v.variantName === selectedOption?.variantName
-        );
-
-        return total + (selectedVariant?.priceModifier || 0);
-      }, 0) ?? 0;
-
-      const updatedProduct = {
-        // ...product,
-        product: product.id,
-        productKey: newProductKey,
-        quantity: quantity,
-        selectedOptionsPush: [...selectedOptions],
-        note: note,
-        finalPrice: product.price + optionsPrice,
-        finalPriceDiscounts: product.priceDiscounts + optionsPrice,
-        sku: product.sku,
-      };
-
-      const oldQuantity = cartListItem.value[existingProductIndex].quantity || 0;
-      cartCount.value = cartCount.value - oldQuantity + quantity;
-
-      cartListItem.value[existingProductIndex] = updatedProduct;
-
-      if (product.variantGroups) {
-        syncTempSelectedFromSelectedOptionsData(product.variantGroups);
-      }
-
-      updateCookie();
-      resetValuePopupOrder();
-
-    } catch (error) {
-      console.error('Error updating product:', error);
+    if (!matchedCombination) {
+      showWarning('Vui lòng chọn đầy đủ phân loại')
+      return
     }
-  };
 
-  const updateNormalProduct = (
-    product: ProductDTO | null, 
-    quantity: number, 
-    note?: string, 
+    const newKey = `${product.id}_${Base64.encode(
+      JSON.stringify({ combinationId: matchedCombination.id, note })
+    )}`
+
+    const oldQty = cartListItem.value[index].quantity
+
+    //key không đổi → chỉ update
+    if (newKey === oldProductKey) {
+      cartListItem.value[index] = {
+        ...cartListItem.value[index],
+        quantity,
+        note
+      }
+
+      cartCount.value = cartCount.value - oldQty + quantity
+      updateCookie()
+      resetValuePopupOrder()
+      return
+    }
+
+    //key đổi → check trùng
+    const existedIndex = cartListItem.value.findIndex(
+      item => item.productKey === newKey
+    )
+
+    if (existedIndex !== -1) {
+      const existedItem = cartListItem.value[existedIndex]
+      const mergedQty = existedItem.quantity + quantity
+
+      if(!product.id) return
+      const ok = await checkAvailableStock({
+        productId: product.id,
+        nextQty: mergedQty,
+        combinationId: matchedCombination.id
+      })
+      if (!ok) return
+
+      existedItem.quantity = mergedQty
+      cartCount.value = cartCount.value - oldQty
+      cartListItem.value.splice(index, 1)
+    } else {
+      cartListItem.value[index] = {
+        ...cartListItem.value[index],
+        productKey: newKey,
+        quantity,
+        combinationId: matchedCombination.id,
+        sku: matchedCombination.sku,
+        note,
+        variantCombination: {
+          id: matchedCombination.id,
+          sku: matchedCombination.sku,
+          priceModifier: matchedCombination.priceModifier,
+          variants: matchedCombination.variants
+        }
+      }
+
+      cartCount.value = cartCount.value - oldQty + quantity
+    }
+
+    updateCookie()
+    resetValuePopupOrder()
+  }
+
+  const updateNormalProduct = async (
+    product: CartDTO | null,
+    quantity: number,
+    note?: string,
     oldProductKey?: string
   ) => {
-    if(!product || !oldProductKey) return;
-    
-    const existingProduct = cartListItem.value.findIndex(
+    if (!product || !oldProductKey) return
+
+    const index = cartListItem.value.findIndex(
       item => item.id === oldProductKey
-    );
+    )
+    if (index === -1) return
 
-    if (existingProduct === -1) {
-        console.error('Khong ton tai san pham');
-        return;
+    if(!product.id) return
+    const ok = await checkAvailableStock({
+      productId: product.id,
+      nextQty: quantity
+    })
+    if (!ok) return
+
+    const oldQty = cartListItem.value[index].quantity
+
+    cartListItem.value[index] = {
+      ...cartListItem.value[index],
+      quantity,
+      note
     }
-   
-    const updatedProduct = {
-      ...product,
-      product: product.id,
-      quantity: quantity,
-      note: note,
-      sku: product.sku,
-    };
 
-    const oldQuantity = cartListItem.value[existingProduct].quantity;
-    cartCount.value = cartCount.value - oldQuantity + quantity;
-
-    cartListItem.value[existingProduct] = updatedProduct;
-
-    resetValuePopupOrder();
-  };
+    cartCount.value = cartCount.value - oldQty + quantity
+    updateCookie()
+    resetValuePopupOrder()
+  }
 
   const addProductToCart = (
     product: ProductDTO,
-    quantity: number, 
+    quantity: number,
     note: string,
-    buildSelectedOptions: (options: ProductVariantGroupDTO[]) => SelectedOptionPushDTO[],
+    tempSelected: Record<string, string>,
     popupOrderState: boolean
   ) => {
-    if (!product || product.amount <= 0) return false;
+    if (!product || product.amount <= 0) return false
 
-    selectedOptionsData.value = buildSelectedOptions(product.variantGroups);
-    
-    if (product.variantGroups.length > 0) {
-      addProductWithOptions(product, selectedOptionsData.value, quantity, note, popupOrderState);
+    if (product.variantCombinations?.length > 0) {
+      addProductWithOptions(product, quantity, note, tempSelected, popupOrderState)
     } else {
-      addNormalProduct(product, quantity);
+      addNormalProduct(product, quantity)
     }
-    updateCookie();
-    return true;
-  };
 
-  const updateQuantity = (productKey: string, type: boolean) => {
-    const elProduct = cartListItem.value.find((item) => {
-      if (item.productKey && productKey.includes("_")) {
-        return item.productKey === productKey;
-      } else {
-        return item.id === productKey;
+    return true
+  }
+
+  const updateQuantity = async (productKey: string, isPlus: boolean) => {
+    const item = cartListItem.value.find(i =>
+      i.productKey ? i.productKey === productKey : i.id === productKey
+    )
+    if (!item || !item.id) return
+
+    if (!isPlus) {
+      if (item.quantity > 1) {
+        item.quantity--
+        cartCount.value--
+        updateCookie()
       }
-    });
-    
-    if (elProduct) {
-      if (type === false) {
-        if (elProduct.quantity == 1) return;
-        cartCount.value--;
-        elProduct.quantity--;
-      } else {
-        cartCount.value++;
-        elProduct.quantity++;
-      }
-      updateCookie();
+      return
     }
-  };
+
+    const nextQty = item.quantity + 1
+
+    const ok = await checkAvailableStock({
+      productId: item.id,
+      nextQty,
+      combinationId: item.variantCombination?.id
+    })
+    if (!ok) return
+
+    item.quantity++
+    cartCount.value++
+    updateCookie()
+  }
 
   const deleteCart = async (productKey: string) => {
     const confirm = await showConfirm('Bạn có chắc xoá?');
@@ -285,69 +362,73 @@ export const useCartProductOperations = (
     return totalQuantity;
   };
 
-  const calcTotalPrice = (formId: 'order'|'edit') => {
-    if(formId === "order") {
-      if(getDetailProduct.value) {
-        priceTotal.value = (getDetailProduct.value.priceDiscounts + priceOptions.value) * quantity.value;
-      }
-    }
-    else if(formId === "edit") {
-      if(productDetailEdit.value?.finalPriceDiscounts){
-        priceTotalEdit.value = productDetailEdit.value.finalPriceDiscounts * quantityEdit.value;
-      } else {
-        if(productDetailEdit.value && productDetailEdit.value.priceDiscounts) priceTotalEdit.value = productDetailEdit.value.priceDiscounts * quantityEdit.value;
-      }
-    }
-  };
-
   const getProductDetailEdit = async (id: string) => {
-    productDetailEdit.value = cartListItem.value.find((item: CartDTO) => {
-      if (item.productKey && id.includes("_")) return item.productKey === id;
-      return item.id === id;
-    });
-    if (!productDetailEdit.value) return;
+    productDetailEdit.value = cartListItem.value.find(item => {
+      if (item.productKey && id.includes('_')) return item.productKey === id
+      return item.id === id
+    })
 
-    quantityEdit.value = productDetailEdit.value.quantity;
+    if (!productDetailEdit.value || !productDetailEdit.value.id ) return
 
-    if (productDetailEdit.value.selectedOptionsPush) {
-      const newOptions = JSON.parse(JSON.stringify(productDetailEdit.value.selectedOptionsPush));
-      updateSelectedOptionsData(newOptions as SelectedOptionDTO[]);
+    quantityEdit.value = productDetailEdit.value.quantity
+
+    // await fetchDetailProduct(productDetailEdit.value?.id)
+
+    // SYNC VARIANT ĐÃ CHỌN
+    if (productDetailEdit.value.variantCombination?.variants) {
+      syncTempSelectedFromCombination(
+        productDetailEdit.value.variantCombination.variants
+      )
     }
 
-    if (productDetailEdit.value.id) {
-      await fetchDetailProduct(productDetailEdit.value.id);
+    togglePopup('edit', true)
+  }
 
-      const productDetailFromServer = getDetailProduct.value;
-      if (productDetailFromServer && productDetailFromServer.variantGroups) {
-        syncTempSelectedFromSelectedOptionsData(productDetailFromServer.variantGroups);
-      }
+  const inDecrementEdit = async (isPlus: boolean) => {
+    if (!isPlus) {
+      if (quantityEdit.value > 1) quantityEdit.value--
+      return
     }
 
-    togglePopup("edit", true);
-    calcTotalPrice("edit");
-  };
+    const item = productDetailEdit.value
+    if (!item || !item.id) return
 
-  const inDecrementEdit = (type: boolean) => {
-    if (type === false) {
-      if (quantityEdit.value == 1) return;
-      quantityEdit.value--;
-    } else {
-      quantityEdit.value++;
+    const nextQty = quantityEdit.value + 1
+
+    const ok = await checkAvailableStock({
+      productId: item.id,
+      nextQty,
+      combinationId: item.variantCombination?.id
+    })
+    if (!ok) return
+
+    quantityEdit.value = nextQty
+  }
+    
+  const inDecrement = async (isPlus: boolean) => {
+    if (!isPlus) {
+      if (quantity.value > 1) quantity.value--
+      return
     }
 
-    calcTotalPrice("edit");
-  };
+    const product = getDetailProduct.value
+    if (!product) return
 
-  const inDecrement = (type: boolean) => {
-    if (type === false) {
-      if (quantity.value == 1) return;
-      quantity.value--;
-    } else {
-      quantity.value++;
-    }
+    const combinationId = getSelectedCombinationId(
+      product.variantCombinations
+    )
 
-    calcTotalPrice("order");
-  };
+    const nextQty = quantity.value + 1
+
+    const ok = await checkAvailableStock({
+      productId: product.id,
+      nextQty,
+      combinationId
+    })
+    if (!ok) return
+
+    quantity.value = nextQty
+  }
 
   return {
     addNormalProduct,
@@ -363,6 +444,7 @@ export const useCartProductOperations = (
     getProductDetailEdit,
     inDecrementEdit,
     inDecrement,
-    calcTotalPrice,
+    // calcTotalPrice,
+    findMatchedCombination,
   };
 };

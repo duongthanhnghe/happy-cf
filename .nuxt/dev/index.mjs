@@ -13,7 +13,7 @@ import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/
 import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
 import * as cpexcel from '/Users/ttcenter/happy-cf/node_modules/xlsx/dist/cpexcel.js';
 import * as node_stream from 'node:stream';
-import slugify from 'slugify';
+import slugify from 'file:///Users/ttcenter/happy-cf/node_modules/slugify/slugify.js';
 import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
 import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
 import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"120815-Ao0PZnhZ4+PP0yTl4pG2NRClkFY\"",
-    "mtime": "2025-12-17T15:38:09.877Z",
-    "size": 1181717,
+    "etag": "\"120aee-HP5UvM4DyCCfzGkXTk7niJxgQSM\"",
+    "mtime": "2025-12-20T03:44:10.545Z",
+    "size": 1182446,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"4973dc-kEoehjXBjzJy42wXtn3K+mPoElU\"",
-    "mtime": "2025-12-17T15:38:09.886Z",
-    "size": 4813788,
+    "etag": "\"497d75-vXQCOH/xV1QPBlA8VkQpH2/DAPM\"",
+    "mtime": "2025-12-20T03:44:10.552Z",
+    "size": 4816245,
     "path": "index.mjs.map"
   }
 };
@@ -3144,7 +3144,7 @@ const ListImageSchema = new Schema(
   },
   { _id: false }
 );
-const ProductSelectedVariantSchema = new Schema(
+new Schema(
   {
     variantId: { type: String, required: true },
     variantName: { type: String, required: true },
@@ -3156,14 +3156,40 @@ const ProductSelectedVariantSchema = new Schema(
   },
   { _id: false }
 );
+const ProductVariantOptionSchema = new Schema(
+  //new
+  {
+    variantId: String,
+    variantName: String
+  },
+  { _id: false }
+);
 const ProductVariantGroupSchema = new Schema(
   {
     groupId: { type: String, required: true },
     groupName: { type: String, required: true },
     required: { type: Boolean, default: false },
-    selectedVariants: { type: [ProductSelectedVariantSchema], default: [] }
+    options: [ProductVariantOptionSchema]
+    // selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
   },
   { _id: false }
+);
+const VariantSchema = new Schema({
+  groupId: { type: String, required: true },
+  groupName: { type: String, required: true },
+  variantId: { type: String, required: true },
+  variantName: { type: String, required: true }
+});
+const VariantCombinationSchema = new Schema(
+  {
+    sku: { type: String, required: true },
+    priceModifier: { type: Number, default: 0 },
+    stock: { type: Number, default: 0 },
+    inStock: { type: Boolean, default: true },
+    image: String,
+    variants: { type: [VariantSchema], required: true }
+  },
+  { timestamps: true }
 );
 const ProductSchema = new Schema(
   {
@@ -3176,10 +3202,17 @@ const ProductSchema = new Schema(
     amountOrder: { type: Number, default: 0 },
     image: { type: String, required: true },
     listImage: { type: [ListImageSchema], default: [] },
-    variantGroups: { type: [ProductVariantGroupSchema], default: [] },
+    variantGroups: {
+      type: [ProductVariantGroupSchema],
+      default: []
+    },
+    variantCombinations: {
+      type: [VariantCombinationSchema],
+      default: []
+    },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
-    sku: { type: String, required: true, unique: true },
+    sku: { type: String, required: true },
     isActive: { type: Boolean, default: true },
     titleSEO: {
       type: String,
@@ -3246,31 +3279,23 @@ ProductSchema.virtual("category", {
 });
 ProductSchema.set("toObject", { virtuals: true });
 ProductSchema.set("toJSON", { virtuals: true });
+ProductSchema.index({ "variantCombinations.sku": 1 });
 const ProductEntity = model("Product", ProductSchema, "products");
 const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");
 
-function toProductSelectedVariantDTO(variant) {
-  var _a, _b, _c;
+function toVariantCombinationDTO(combo) {
   return {
-    variantId: variant.variantId,
-    variantName: variant.variantName,
-    priceModifier: variant.priceModifier,
-    inStock: variant.inStock,
-    stock: (_a = variant.stock) != null ? _a : 0,
-    sku: (_b = variant.sku) != null ? _b : "",
-    image: (_c = variant.image) != null ? _c : ""
-  };
-}
-function toProductVariantGroupDTO(group) {
-  return {
-    groupId: group.groupId,
-    groupName: group.groupName,
-    required: group.required,
-    selectedVariants: group.selectedVariants.map(toProductSelectedVariantDTO)
+    id: combo._id.toString(),
+    sku: combo.sku,
+    priceModifier: combo.priceModifier,
+    stock: combo.stock,
+    inStock: combo.inStock,
+    image: combo.image,
+    variants: combo.variants
   };
 }
 function toProductDTO(entity) {
-  var _a, _b, _c, _d;
+  var _a, _b, _c, _d, _e, _f;
   return {
     id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
     productName: entity.productName,
@@ -3282,7 +3307,10 @@ function toProductDTO(entity) {
     amountOrder: entity.amountOrder,
     image: entity.image,
     listImage: entity.listImage,
-    variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
+    variantGroups: (_b = entity.variantGroups) != null ? _b : [],
+    variantCombinations: ((_c = entity.variantCombinations) != null ? _c : []).map(
+      toVariantCombinationDTO
+    ),
     categoryId: entity.categoryId._id.toString(),
     category: entity.category ? {
       id: entity.category._id.toString(),
@@ -3292,9 +3320,9 @@ function toProductDTO(entity) {
     weight: entity.weight,
     sku: entity.sku,
     isActive: entity.isActive,
-    createdAt: ((_b = entity.createdAt) == null ? void 0 : _b.toISOString()) || "",
-    updatedAt: ((_c = entity.updatedAt) == null ? void 0 : _c.toISOString()) || "",
-    vouchers: (_d = entity.vouchers) != null ? _d : null,
+    createdAt: ((_d = entity.createdAt) == null ? void 0 : _d.toISOString()) || "",
+    updatedAt: ((_e = entity.updatedAt) == null ? void 0 : _e.toISOString()) || "",
+    vouchers: (_f = entity.vouchers) != null ? _f : null,
     // SEO
     titleSEO: entity.titleSEO,
     descriptionSEO: entity.descriptionSEO,
@@ -33187,9 +33215,57 @@ const getCartProducts = async (req, res) => {
     return res.status(500).json({ code: 1, message: "Server error" });
   }
 };
+const checkProductStock = async (req, res) => {
+  var _a;
+  try {
+    const { productId, combinationId, quantity } = req.body;
+    if (!productId || !quantity || quantity <= 0) {
+      return res.status(400).json({
+        code: 1,
+        message: "Thi\u1EBFu d\u1EEF li\u1EC7u ki\u1EC3m tra t\u1ED3n kho"
+      });
+    }
+    const product = await ProductEntity.findById(productId).select("amount variantCombinations");
+    if (!product) {
+      return res.status(404).json({
+        code: 1,
+        message: "S\u1EA3n ph\u1EA9m kh\xF4ng t\u1ED3n t\u1EA1i"
+      });
+    }
+    if (!combinationId) {
+      const stock2 = product.amount || 0;
+      return res.json({
+        code: 0,
+        ok: quantity <= stock2,
+        availableStock: stock2
+      });
+    }
+    const combination = (_a = product.variantCombinations) == null ? void 0 : _a.find(
+      (c) => c._id.toString() === combinationId
+    );
+    if (!combination) {
+      return res.status(404).json({
+        code: 1,
+        message: "Ph\xE2n lo\u1EA1i kh\xF4ng t\u1ED3n t\u1EA1i"
+      });
+    }
+    const stock = combination.stock || 0;
+    return res.json({
+      code: 0,
+      ok: quantity <= stock,
+      availableStock: stock
+    });
+  } catch (err) {
+    return res.status(500).json({
+      code: 1,
+      message: err.message
+    });
+  }
+};
 
 const router$4 = Router();
 router$4.post("/cart-detail", getCartProducts);
+router$4.post("/check-stock", checkProductStock);
 router$4.get("/promotion", getPromotionalProducts);
 router$4.get("/most-order", getMostOrderedProduct);
 router$4.get("/search", searchProducts);

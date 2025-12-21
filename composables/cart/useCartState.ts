@@ -60,10 +60,6 @@ export const useCartState = () => {
   });
   const productDetailEdit = ref<CartDTO|null|undefined>(null);
   const quantityEdit = ref(0);
-  const priceTotalEdit = ref(0);
-  const selectedOptionsDataEdit = ref<(string | number | boolean)[]>([]);
-  const priceTotal = ref(0);
-  const priceOptions = ref(0);
   const quantity = ref(1);
   const note = ref<string>('');
   const isTogglePopupVoucher = ref<boolean>(false);
@@ -71,6 +67,7 @@ export const useCartState = () => {
   const selectedFreeship = ref<string | null>(null);
   const selectedVoucher = ref<string | null>(null);
   const voucherCode = ref<string>('');
+  const needAutoSelect = ref(0)
 
   return {
     informationOrder,
@@ -100,10 +97,6 @@ export const useCartState = () => {
     popups,
     productDetailEdit,
     quantityEdit,
-    priceTotalEdit,
-    selectedOptionsDataEdit,
-    priceTotal,
-    priceOptions,
     quantity,
     note,
     isTogglePopupVoucher,
@@ -111,5 +104,6 @@ export const useCartState = () => {
     selectedFreeship,
     selectedVoucher,
     voucherCode,
+    needAutoSelect,
   };
 };

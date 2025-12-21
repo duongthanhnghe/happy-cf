@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted } from 'vue';
+import { onBeforeUnmount, onMounted, watch } from 'vue';
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { formatCurrency } from '@/utils/global';
 import { useAccountStore } from "@/stores/client/users/useAccountStore";
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
 import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
+import { useCartStore } from '@/stores/client/product/useCartOrderStore';
 
 const store = useProductDetailStore();
+const storeCart = useCartStore();
 const storeWishlist = useWishlistStore();
 const storeAccount = useAccountStore();
 const storeDisplay = useDisplayStore();
@@ -20,9 +22,50 @@ onMounted(async() => {
   window.addEventListener('scroll', store.onScroll);
 });
 
+// auto select variant lan dau vao trang
+watch(
+  () => store.getVariantGroupsUI,
+  (groups) => {
+    if (!groups?.length) return
+    if (Object.keys(storeCart.tempSelected).length > 0) return
+
+    storeCart.autoSelectFirstVariants(groups)
+  },
+  { immediate: true }
+)
+
+// auto select variant sau khi submit button order
+// watch(
+//   () => storeCart.needAutoSelect,
+//   () => {
+//     const groups = store.getVariantGroupsUI
+//     if (!groups?.length) return
+
+//     storeCart.autoSelectFirstVariants(groups)
+//   }
+// )
+
+watch(
+  () => storeCart.getPopupState('edit'),
+  (isOpen) => {
+    if (!isOpen) {
+      storeCart.clearTempSelected()
+
+      const groups = store.getVariantGroupsUI
+      if (!groups?.length) return
+
+      if (Object.keys(storeCart.tempSelected).length === 0) {
+        storeCart.autoSelectFirstVariants(groups)
+      }
+    }
+  }
+)
+
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', store.onScroll);
+  storeCart.clearTempSelected()
 });
+
 </script>
 
 <template>
@@ -52,11 +95,17 @@ onBeforeUnmount(() => {
                 <Button v-if="storeWishlist.loaded" :color="store.isFavorite ? 'black' : 'secondary'" size="sm" icon="favorite" :border="false" @click.prevent="store.toggleLike(detail.id)"/>
               </client-only>
             </div>
+
             <div class="flex gap-sm align-center mt-xs">
-              <Text :text="formatCurrency(detail.priceDiscounts)" size="md" weight="semibold" color="black" />
-              <template v-if="detail.priceDiscounts !== detail.price">
-                <Text :text="formatCurrency(detail.price)" size="md" color="gray5" class="text-line-through" />
-                <span class="product-detail-percent">{{ store.percentDiscount }}</span>
+              <template v-if="!detail.variantCombinations.length">
+                <Text :text="formatCurrency(detail.priceDiscounts)" size="md" weight="semibold" color="black" />
+                <template v-if="detail.priceDiscounts !== detail.price">
+                  <Text :text="formatCurrency(detail.price)" size="md" color="gray5" class="text-line-through" />
+                  <span class="product-detail-percent">{{ store.percentDiscount }}</span>
+                </template>
+              </template>
+              <template v-else>
+                <Text :text="formatCurrency(store.variantPrice)" size="md" weight="semibold" color="black" />
               </template>
             </div>
 
@@ -64,9 +113,13 @@ onBeforeUnmount(() => {
             <client-only>
             <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" v-if="detail.priceDiscounts !== 0 && storeAccount.getUserId"/>
             </client-only>
-            <ProductDetailOptions v-if="detail.variantGroups.length > 0" :variantGroups="detail.variantGroups" />
+
+            <div class="flex flex-direction-column gap-ms mt-ms" v-if="detail.variantCombinations.length">
+              <ProductDetailOptions :variantCombinations="detail.variantCombinations" showHeading showStock />
+            </div>
+           
             <div class="mt-md">
-              <ProductDetailButtonOrder v-if="detail.amount !== 0" />
+              <ProductDetailButtonOrder />
             </div>
           </div>
         </div>
@@ -75,7 +128,7 @@ onBeforeUnmount(() => {
 
     <ProductDetailDescription v-if="detail.description" :description="detail.description" />
     <ProductDetailFixedMobile v-if="storeDisplay.isMobileTable" :detail="detail" :class="{ hide: store.isDetailInfoActive }" />
-    <ProductDetailFixedPC v-else :detail="detail" :class="{ hide: store.isDetailInfoActive }" />
+    <ProductDetailFixedPC v-else :detail="detail" :variantPrice="store.variantPrice" :class="{ hide: store.isDetailInfoActive }" />
   </div>
 
   <PopupProductDetailNote />

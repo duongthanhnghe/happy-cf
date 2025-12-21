@@ -10,12 +10,14 @@ import {
   getRelatedProducts,
   getCartProducts,
   getProductsByCategory,
+  checkProductStock,
 } from '../../controllers/v1/product.controller'
 import { authenticate } from '../../middlewares/authenticate'
 
 const router = Router()
 
 router.post('/cart-detail', getCartProducts)
+router.post('/check-stock', checkProductStock)
 router.get('/promotion', getPromotionalProducts)
 router.get('/most-order', getMostOrderedProduct)
 router.get('/search', searchProducts)

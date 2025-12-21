@@ -17,61 +17,85 @@ export const useCartPricing = (
 
   const calculateTotalPriceCurrent = () => {
     return cartListItem.value.reduce((total, item) => {
-      if (item.selectedOptionsPush && item.finalPrice) {
-        return total + item.finalPrice * item.quantity;
+      if (item.variantCombination) {
+        return total + item.variantCombination.priceModifier * item.quantity;
       }
       return total + (item.price || 0) * item.quantity;
     }, 0);
   };
 
-  const calculateTotalPriceDiscount = (membershipDiscountRate?: number) => {
-    let discount = cartListItem.value.reduce((total, item) => {
-      if (item.selectedOptionsPush && item.finalPriceDiscounts) {
-        return total + item.finalPriceDiscounts * item.quantity;
+  const calculateOrderPriceDiscount = () => {
+    let value = cartListItem.value.reduce((total, item) => {
+      if (item.variantCombination) {
+        return 0
       }
-      return total + (item.priceDiscounts || 0) * item.quantity;
+      if(item.price && item.priceDiscounts) {
+        return total + (item.price - item.priceDiscounts || 0) * item.quantity;
+      }
+
+      return total
     }, 0);
 
-    if (usedPointOrder.usedPoint && usedPointOrder.usedPoint !== 0) {
-      discount = discount - usedPointOrder.usedPoint;
+    return value || 0
+  }
+
+  const calculatePriceSave = () => {
+    let value = orderPriceDiscount.value + totalDiscountRateMembership.value + discountVoucher.value + discountVoucherFreeship.value;
+
+    // su dung diem
+    if (usedPointOrder.usedPoint) {
+      value = value + usedPointOrder.usedPoint;
     }
 
-    if (membershipDiscountRate && membershipDiscountRate !== 0) {
-      totalDiscountRateMembership.value = totalPriceCurrent.value * (membershipDiscountRate / 100);
-      discount = discount - totalDiscountRateMembership.value;
+    return value || 0
+  }
+
+  const calculatePriceDiscountRateMembership = (membershipDiscountRate: number) => {
+    if (membershipDiscountRate <= 0) {
+      totalDiscountRateMembership.value = 0
+      return 0
     }
 
-    discount = discount + shippingFee.value - discountVoucher.value - discountVoucherFreeship.value;
+    const raw = totalPriceCurrent.value * (membershipDiscountRate / 100)
 
-    return discount;
-  };
+    const value = Math.round(raw)
+
+    totalDiscountRateMembership.value = value
+    return value
+  }
+
+  const calculatePriceTotalOrder = () => {
+    let value = totalPriceCurrent.value + shippingFee.value - totalPriceSave.value;
+
+    return value || 0
+  }
 
   const handleCalcTotalPriceCurrent = (membershipDiscountRate?: number) => {
     if (isCalculating.value) return;
-    
     isCalculating.value = true;
 
-    totalPriceCurrent.value = calculateTotalPriceCurrent();
+
+    // gia chua giam tong san pham
+    totalPriceCurrent.value = calculateTotalPriceCurrent(); 
+
+    // gia giam tong san pham
+    orderPriceDiscount.value = calculateOrderPriceDiscount(); 
+
+    // Ưu đãi thành viên theo %
+    totalDiscountRateMembership.value = calculatePriceDiscountRateMembership(membershipDiscountRate || 0)
+
+    // gia tiet kiem
+    totalPriceSave.value = calculatePriceSave()
     
-    totalPriceDiscount.value = cartListItem.value.reduce((total, item) => {
-      if (item.selectedOptionsPush && item.finalPriceDiscounts) {
-        return total + item.finalPriceDiscounts * item.quantity;
-      }
-      return total + (item.priceDiscounts || 0) * item.quantity;
-    }, 0);
-
-    orderPriceDiscount.value = totalPriceDiscount.value;
-
-    totalPriceDiscount.value = calculateTotalPriceDiscount(membershipDiscountRate);
-
-    totalPriceSave.value = totalPriceCurrent.value - totalPriceDiscount.value + shippingFee.value;
+    //tong tien da tru price save
+    totalPriceDiscount.value = calculatePriceTotalOrder()
+   
 
     isCalculating.value = false;
   };
 
   return {
     calculateTotalPriceCurrent,
-    calculateTotalPriceDiscount,
     handleCalcTotalPriceCurrent,
   };
 };

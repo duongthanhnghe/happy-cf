@@ -91,12 +91,12 @@ const handleSubmitCreate = async () => {
         @click.prevent="store.addVariant('form')"
       />
 
-      <v-switch
+      <!-- <v-switch
         :label="`Ảnh đại diện biến thể: ${store.formItem.hasImage ? 'Có' : 'Không'}`"
         v-model="store.formItem.hasImage"
         hide-details
         inset
-      />
+      /> -->
 
       <v-switch
         :label="`Tình trạng: ${store.formItem.isActive ? 'Kích hoạt' : 'Tắt'}`"

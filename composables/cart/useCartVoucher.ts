@@ -26,6 +26,7 @@ export const useCartVoucher = (
 
   const applyVoucher = async (code: string, userId?: string) => {
     const orderTotal = totalPriceDiscount.value;
+
     const products: ApplyVoucherProduct[] = cartListItem.value.map(item => ({
       productId: item.id || '',
       name: item.productName || '',

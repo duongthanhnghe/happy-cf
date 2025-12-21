@@ -212,4 +212,35 @@ export const productsAPI = {
     }
   },
 
+  checkProductStock: async (
+    payload: {
+      productId: string
+      combinationId?: string
+      quantity: number
+    }
+  ): Promise<any> => {
+    try {
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.CHECK_STOCK}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        }
+      )
+
+      const data = await response.json()
+      return data
+    } catch (err: any) {
+      console.error('Error checking product stock:', err)
+      return {
+        code: 1,
+        message: err.message ?? 'Failed to check product stock',
+        data: null as any
+      }
+    }
+  }
+
 }

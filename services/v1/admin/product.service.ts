@@ -186,6 +186,8 @@ export const productsAPI = {
   },
 
   update: async (id: string, bodyData: UpdateProductDTO): Promise<ApiResponse<ProductDTO>> => {
+    console.log(bodyData)
+
     try {
       const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.UPDATE(id)}`, {
         method: 'PUT',

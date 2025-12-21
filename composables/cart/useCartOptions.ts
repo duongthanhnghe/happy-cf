@@ -1,42 +1,16 @@
-import type { Ref } from 'vue';
-import type { SelectedOptionPushDTO, SelectedOptionDTO, ProductVariantGroupDTO } from '@/server/types/dto/v1/product.dto';
+import { unref, type Ref } from 'vue';
+import type { SelectedOptionPushDTO } from '@/server/types/dto/v1/product.dto';
+type MaybeRef<T> = T | Ref<T>;
 
 export const useCartOptions = (
   selectedOptionsData: Ref<SelectedOptionPushDTO[]>,
-  tempSelected: Record<string, string>,
-  priceOptions: Ref<number>,
+  tempSelected: MaybeRef<Record<string, string>>,
+  needAutoSelect: Ref<number>,
 ) => {
 
-  const buildSelectedOptions = (productOptions: ProductVariantGroupDTO[]) => {
-    return productOptions.map(option => {
-      const selected = selectedOptionsData.value.find(o => o.optionName === option.groupName);
-
-      if (!selected) return null;
-
-      return {
-        optionName: option.groupName,
-        variantName: selected.variantName,
-        variantPrice: selected.variantPrice
-      };
-    })
-    .filter((opt): opt is SelectedOptionPushDTO => opt !== null);
-  };
-
   const clearTempSelected = () => {
-    for (const key in tempSelected) delete tempSelected[key];
-  };
-
-  const syncTempSelectedFromSelectedOptionsData = (productOptions: ProductVariantGroupDTO[]) => {
-    clearTempSelected();
-
-    productOptions.forEach(option => {
-      const foundSelected = selectedOptionsData.value.find(o => o.optionName === option.groupName);
-
-      if (foundSelected) {
-        const variant = option.selectedVariants.find(v => v.variantName === foundSelected.variantName);
-        if (variant) tempSelected[option.groupId] = variant.variantId;
-      }
-    });
+    for (const key in tempSelected) delete unref(tempSelected)[key];
+    needAutoSelect.value++
   };
 
   const setSelectedOptionsData = (
@@ -47,7 +21,7 @@ export const useCartOptions = (
     variantPrice: number
   ) => {
     
-    tempSelected[idOption] = idVariant;
+    unref(tempSelected)[idOption] = idVariant;
 
     const existIdx = selectedOptionsData.value.findIndex(
       o => o.optionName === optionName
@@ -66,10 +40,6 @@ export const useCartOptions = (
     }
   };
 
-  const updateSelectedOptionsData = (newData: SelectedOptionDTO[]) => {
-    selectedOptionsData.value = JSON.parse(JSON.stringify(newData));
-  };
-
   const handleSelectVariant = (
     optionId: string,
     variantId: string,
@@ -77,20 +47,28 @@ export const useCartOptions = (
     variantName: string,
     variantPrice: number
   ) => {
-    tempSelected[optionId] = variantId;
+    unref(tempSelected)[optionId] = variantId;
     setSelectedOptionsData(optionId, variantId, optionName, variantName, variantPrice);
-    // priceOptions.value = selectedOptionsData.value.reduce(
-    //   (total, item) => total + item.variantPrice,
-    //   0
-    // );
   };
 
+ const syncTempSelectedFromCombination = (
+    variants: {
+      groupId: string
+      variantId: string
+    }[]
+  ) => {
+    Object.keys(tempSelected).forEach(k => delete unref(tempSelected)[k])
+
+    variants.forEach(v => {
+      unref(tempSelected)[v.groupId] = v.variantId
+    })
+
+  }
+
   return {
-    buildSelectedOptions,
     clearTempSelected,
-    syncTempSelectedFromSelectedOptionsData,
     setSelectedOptionsData,
-    updateSelectedOptionsData,
     handleSelectVariant,
+    syncTempSelectedFromCombination,
   };
 };

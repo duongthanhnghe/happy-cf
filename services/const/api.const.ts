@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
     DELETE_WISHLIST: (userId: string, productId: string) =>
       `/users/${userId}/wishlist/${productId}`,
     CART_DETAIL: '/products/cart-detail',
+    CHECK_STOCK: '/products/check-stock'
   },
   VARIANT_GROUPS: {
     LIST_ALL: '/variant-groups',

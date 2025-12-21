@@ -1,3 +1,4 @@
+import type { ProductVariantCombination, ProductVariantOption } from '@/server/models/v1/product.entity';
 import type { ImportDTO, ImportItemDTO } from '../../common/import.dto';
 import type { PaginationDTO } from '../../common/pagination.dto'
 
@@ -51,7 +52,23 @@ export interface ProductVariantGroupDTO {
   groupId: string;
   groupName: string;
   required: boolean;
-  selectedVariants: ProductSelectedVariantDTO[];
+  options: ProductVariantOption[];
+}
+
+export interface ProductVariantCombinationDTO {
+  id: string;
+  sku: string;
+  priceModifier: number;
+  stock?: number;
+  inStock?: boolean;
+  image?: string;
+  variants: {
+    groupId: string;
+    groupName: string;
+    variantId: string;
+    variantName: string;
+    // stock?: number;
+  }[];
 }
 
 export interface ListImageDTO {
@@ -70,7 +87,9 @@ export interface ProductDTO {
   amountOrder: number;
   image: string;
   listImage: ListImageDTO[];
+  // variantGroups: ProductVariantGroupDTO[];
   variantGroups: ProductVariantGroupDTO[];
+  variantCombinations: ProductVariantCombinationDTO[];
   categoryId: string;
   category?: CategoryProductLiteDTO | null;
   weight: number;
@@ -176,11 +195,23 @@ export interface SelectedOptionPushDTO {
   variantPrice: number
 }
 
+export interface VariantGroupUI {
+  groupId: string
+  groupName: string
+  variants: {
+    variantId: string
+    variantName: string
+    hasStock: boolean
+  }[]
+}
+
 export interface CartDTO {
   id?: string;
   sku?: string;
+  stock?: number
   product: string | ProductDTO;
   productKey?: string;
+  combinationId?: string
   quantity: number;
   note?: string;
   selectedOptionsPush?: SelectedOptionPushDTO[];
@@ -194,6 +225,8 @@ export interface CartDTO {
   image?: string;
   summaryContent?: string;
   variantGroups?: ProductVariantGroupDTO[];
+  variantCombination?: ProductVariantCombinationDTO;
+  variantCombinations?: ProductVariantCombinationDTO[];
 }
 
 export type SelectedOptionDTO = SelectedOptionPushDTO & {id: string}

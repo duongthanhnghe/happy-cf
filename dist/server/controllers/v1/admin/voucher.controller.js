@@ -1,51 +1,5 @@
 import { VoucherEntity } from "../../../models/v1/voucher.entity.js";
 import { toVoucherDTO } from "../../../mappers/v1/voucher.mapper.js";
-// export const getAllVouchers = async (req: Request, res: Response) => {
-//   try {
-//     let { 
-//       page = 1,
-//       limit = 10,
-//       code,
-//       type,
-//       fromDate,
-//       toDate,
-//       reverted,
-//      } = req.query
-//     const numPage = Number(page)
-//     const numLimit = Number(limit)
-//     if (numLimit === -1) {
-//       const vouchers = await VoucherEntity.find().sort({ createdAt: -1 })
-//       return res.json({
-//         code: 0,
-//         data: vouchers.map(toVoucherDTO),
-//         pagination: {
-//           page: 1,
-//           limit: vouchers.length,
-//           totalPages: 1,
-//           total: vouchers.length
-//         }
-//       })
-//     }
-//     const options = {
-//       page: numPage,
-//       limit: numLimit,
-//       sort: { createdAt: -1 }
-//     }
-//     const result = await VoucherEntity.paginate({}, options)
-//     return res.json({
-//       code: 0,
-//       data: result.docs.map(toVoucherDTO),
-//       pagination: {
-//         page: result.page,
-//         limit: result.limit,
-//         totalPages: result.totalPages,
-//         total: result.totalDocs
-//       }
-//     })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: "Lỗi lấy danh sách voucher", error: err.message })
-//   }
-// }
 export const getAllVouchers = async (req, res) => {
     try {
         let { page = 1, limit = 10, code, type, fromDate, toDate, reverted, } = req.query;

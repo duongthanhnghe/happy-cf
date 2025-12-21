@@ -19,7 +19,7 @@ const props = defineProps<{
 
     <div class="line-height-1 flex justify-between mt-sm">
       <Text color="gray5" text="Thành tiền" />
-      <Text size="md" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }} </Text>
+      <Text size="md" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceOrder) }} </Text>
     </div>
 
     <Text v-if="store.getTotalPriceSave != 0" color="gray5" class="flex justify-between mt-xs">
@@ -86,7 +86,7 @@ const props = defineProps<{
           <Text color="gray5" text="Thành tiền" />
           <Text color="green" :text="`Tiết kiệm: ${ formatCurrency(store.getTotalPriceSave) }`" />
           </div>
-          <Text size="md" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceDiscount) }} </Text>
+          <Text size="md" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceOrder) }} </Text>
         </div>
         <Button type="submit" label="Đặt hàng" color="primary" class="mt-xs w-full" />
       </div>

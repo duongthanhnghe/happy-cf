@@ -10,11 +10,17 @@ export interface ProductSelectedVariant {
   image: string;
 }
 
+export interface ProductVariantOption { //new
+  variantId: string;
+  variantName: string;
+}
+
 export interface ProductVariantGroup {
   groupId: string;
   groupName: string;
   required: boolean;
-  selectedVariants: ProductSelectedVariant[];
+  options: ProductVariantOption[];
+  // selectedVariants: ProductSelectedVariant[];
 }
 
 
@@ -35,6 +41,7 @@ export interface Product {
   image: string;
   listImage: ListImage[];
   variantGroups: ProductVariantGroup[];
+  variantCombinations: ProductVariantCombination[];
   categoryId: Types.ObjectId;
   category?: CategoryProduct | null;
   weight: number;
@@ -94,14 +101,57 @@ const ProductSelectedVariantSchema = new Schema<ProductSelectedVariant>(
   { _id: false }
 );
 
+const ProductVariantOptionSchema = new Schema( //new
+  {
+    variantId: String,
+    variantName: String,
+  },
+  { _id: false }
+);
+
 const ProductVariantGroupSchema = new Schema<ProductVariantGroup>(
   {
     groupId: { type: String, required: true },
     groupName: { type: String, required: true },
     required: { type: Boolean, default: false },
-    selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
+    options: [ProductVariantOptionSchema],
+    // selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
   },
   { _id: false }
+);
+
+export interface ProductVariantCombination {
+  _id: string;
+  sku: string;
+  priceModifier: number;
+  stock: number;
+  inStock: boolean;
+  image?: string;
+  variants: {
+    groupId: string;
+    groupName: string;
+    variantId: string;
+    variantName: string;
+  }[];
+}
+
+const VariantSchema = new Schema({
+  groupId: { type: String, required: true },
+  groupName: { type: String, required: true },
+  variantId: { type: String, required: true },
+  variantName: { type: String, required: true },
+});
+
+const VariantCombinationSchema = new Schema(
+  {
+    sku: { type: String, required: true },
+    priceModifier: { type: Number, default: 0 },
+    stock: { type: Number, default: 0 },
+    inStock: { type: Boolean, default: true },
+    image: String,
+    variants: { type: [VariantSchema], required: true },
+  },
+ { timestamps: true }
 );
 
 const ProductSchema = new Schema<Product>(
@@ -115,10 +165,17 @@ const ProductSchema = new Schema<Product>(
     amountOrder: { type: Number, default: 0 },
     image: { type: String, required: true },
     listImage: { type: [ListImageSchema], default: [] },
-    variantGroups: { type: [ProductVariantGroupSchema], default: [] },
+    variantGroups: {
+      type: [ProductVariantGroupSchema],
+      default: []
+    },
+    variantCombinations: {
+      type: [VariantCombinationSchema],
+      default: []
+    },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
-    sku: { type: String, required: true, unique: true },
+    sku: { type: String, required: true },
     isActive: { type: Boolean, default: true },
     titleSEO: {
       type: String,
@@ -188,7 +245,7 @@ ProductSchema.virtual("category", {
 
 ProductSchema.set("toObject", { virtuals: true });
 ProductSchema.set("toJSON", { virtuals: true });
-
+ProductSchema.index({ "variantCombinations.sku": 1 });
 export const ProductEntity = model("Product", ProductSchema, "products");
 
 export const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");

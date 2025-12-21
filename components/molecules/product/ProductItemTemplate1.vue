@@ -58,13 +58,13 @@ const handleShowAction = () => {
         <template v-else />
       </template>
     </client-only>
-    <div v-if="product.amount == 0" class="product-template1-amount">
+    <div v-if="product.amount === 0 && !product.variantCombinations.length" class="product-template1-amount">
       {{orderText.textStockNull}}
     </div>
 
     <div v-else>
       <div v-if="storeCart.getTemplate1Amount(product.id) < 1">
-        <Button v-if="product.variantGroups.length > 0" color="primary" size="xs" class="product-template1-plus" @click="storeCart.getProductDetailApi(product.id)">
+        <Button v-if="product.variantCombinations.length > 0" color="primary" size="xs" class="product-template1-plus" @click="storeCart.getProductDetailApi(product.id)">
           <MaterialIcon name="add" />
         </Button>
         <Button v-else class="product-template1-plus" color="primary" size="xs" @click="storeCart.addProductToCart(product, 1, '')">
@@ -72,7 +72,7 @@ const handleShowAction = () => {
         </Button>
       </div>
       <div v-else>
-        <div v-if="product.variantGroups.length > 0" class="product-template1-plus product-template1-plus-number" @click="storeCart.getProductDetailApi(product.id)">
+        <div v-if="product.variantCombinations.length > 0" class="product-template1-plus product-template1-plus-number" @click="storeCart.getProductDetailApi(product.id)">
           {{ storeCart.getTemplate1Amount(product.id) }}
         </div>
         <div v-else class="product-template1-plus product-template1-plus-number" @click="handleShowAction()">
@@ -88,7 +88,7 @@ const handleShowAction = () => {
   <div v-if="storeCart.getTemplate1Amount(product.id) > 0" :class="['product-template1-action',toggleAction ? 'active' : '']">
     <div class="product-template1-action-before" @click="handleShowAction()"></div>
     <div class="product-template1-input">
-      <div v-if="storeCart.getTemplate1Amount(product.id) == 1" class="product-template1-delete" @click="storeCart.deleteCart(product.id)">
+      <div v-if="storeCart.getTemplate1Amount(product.id) == 1" class="product-template1-delete cursor-pointer" @click="storeCart.deleteCart(product.id)">
         <MaterialIcon name="delete" />
       </div>
       <Button class="product-template1-input-btn" icon="add" @click.prevent="storeCart.updateQuantity(product.id,false)" />

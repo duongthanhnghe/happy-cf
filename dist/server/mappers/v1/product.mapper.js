@@ -1,25 +1,39 @@
-export function toProductSelectedVariantDTO(variant) {
-    var _a, _b, _c;
+// export function toProductSelectedVariantDTO(
+//   variant: ProductSelectedVariant
+// ): ProductSelectedVariantDTO {
+//   return {
+//     variantId: variant.variantId,
+//     variantName: variant.variantName,
+//     priceModifier: variant.priceModifier,
+//     inStock: variant.inStock,
+//     stock: variant.stock ?? 0,
+//     sku: variant.sku ?? "",
+//     image: variant.image ?? "",
+//   };
+// }
+// export function toProductVariantGroupDTO(
+//   group: ProductVariantGroup
+// ): ProductVariantGroupDTO {
+//   return {
+//     groupId: group.groupId,
+//     groupName: group.groupName,
+//     required: group.required,
+//     selectedVariants: group.selectedVariants.map(toProductSelectedVariantDTO),
+//   };
+// }
+export function toVariantCombinationDTO(combo) {
     return {
-        variantId: variant.variantId,
-        variantName: variant.variantName,
-        priceModifier: variant.priceModifier,
-        inStock: variant.inStock,
-        stock: (_a = variant.stock) !== null && _a !== void 0 ? _a : 0,
-        sku: (_b = variant.sku) !== null && _b !== void 0 ? _b : "",
-        image: (_c = variant.image) !== null && _c !== void 0 ? _c : "",
-    };
-}
-export function toProductVariantGroupDTO(group) {
-    return {
-        groupId: group.groupId,
-        groupName: group.groupName,
-        required: group.required,
-        selectedVariants: group.selectedVariants.map(toProductSelectedVariantDTO),
+        id: combo._id.toString(),
+        sku: combo.sku,
+        priceModifier: combo.priceModifier,
+        stock: combo.stock,
+        inStock: combo.inStock,
+        image: combo.image,
+        variants: combo.variants,
     };
 }
 export function toProductDTO(entity) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     return {
         id: ((_a = entity._id) === null || _a === void 0 ? void 0 : _a.toString()) || "",
         productName: entity.productName,
@@ -31,7 +45,8 @@ export function toProductDTO(entity) {
         amountOrder: entity.amountOrder,
         image: entity.image,
         listImage: entity.listImage,
-        variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
+        variantGroups: (_b = entity.variantGroups) !== null && _b !== void 0 ? _b : [],
+        variantCombinations: ((_c = entity.variantCombinations) !== null && _c !== void 0 ? _c : []).map(toVariantCombinationDTO),
         categoryId: entity.categoryId._id.toString(),
         category: entity.category
             ? {
@@ -43,9 +58,9 @@ export function toProductDTO(entity) {
         weight: entity.weight,
         sku: entity.sku,
         isActive: entity.isActive,
-        createdAt: ((_b = entity.createdAt) === null || _b === void 0 ? void 0 : _b.toISOString()) || "",
-        updatedAt: ((_c = entity.updatedAt) === null || _c === void 0 ? void 0 : _c.toISOString()) || "",
-        vouchers: (_d = entity.vouchers) !== null && _d !== void 0 ? _d : null,
+        createdAt: ((_d = entity.createdAt) === null || _d === void 0 ? void 0 : _d.toISOString()) || "",
+        updatedAt: ((_e = entity.updatedAt) === null || _e === void 0 ? void 0 : _e.toISOString()) || "",
+        vouchers: (_f = entity.vouchers) !== null && _f !== void 0 ? _f : null,
         // SEO
         titleSEO: entity.titleSEO,
         descriptionSEO: entity.descriptionSEO,

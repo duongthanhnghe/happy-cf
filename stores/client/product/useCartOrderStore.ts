@@ -23,6 +23,7 @@ import { useCartUtils } from '@/composables/cart/useCartUtils';
 
 import { useCartSharedUtils } from "@/composables/cart/useCartSharedUtils";
 import { useCartVoucherHandlers } from "@/composables/cart/useCartVoucherHandlers";
+import type { CartDTO, ProductVariantCombinationDTO, VariantGroupUI } from "@/server/types/dto/v1/product.dto";
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
@@ -38,20 +39,192 @@ export const useCartStore = defineStore("Cart", () => {
   const route = useRoute();
 
   const state = useCartState();
-
+  
   const fetchProductCart = async () => {
     const productIds = state.cartListItem.value.map((item: any) => item.product);
     await fetchCartProducts(productIds);
 
-    if (getCartProducts) {
-      state.cartListItem.value = state.cartListItem.value.map(item => {
-        const productDetail = getCartProducts.value.find(p => p.id === item.product);
-        return { ...item, ...productDetail };
-      });
+    if (!getCartProducts.value) return;
 
-      pricing.handleCalcTotalPriceCurrent(storeAccount.getDetailValue?.membership?.discountRate);
-    }
+    state.cartListItem.value = state.cartListItem.value.map(item => {
+      const productDetail = getCartProducts.value!.find(
+        p => p.id === item.product
+      );
+
+      if (!productDetail) return item;
+
+      let variantCombination: ProductVariantCombinationDTO | undefined;
+
+      if (item.combinationId && productDetail.variantCombinations?.length) {
+        variantCombination = productDetail.variantCombinations.find(
+          vc => vc.id === item.combinationId
+        );
+      }
+
+      const cartItem: CartDTO = {
+        ...item,
+        id: productDetail.id,
+        productName: productDetail.productName,
+        image: productDetail.image,
+        variantCombinations: productDetail.variantCombinations,
+        categoryId: productDetail.categoryId,
+        weight: productDetail.weight,
+        price: productDetail.price,
+        priceDiscounts: productDetail.priceDiscounts,
+        sku: variantCombination?.sku ?? productDetail.sku,
+        variantCombination,
+      };
+
+      return cartItem;
+    });
+
+    pricing.handleCalcTotalPriceCurrent(
+      storeAccount.getDetailValue?.membership?.discountRate
+    );
   };
+
+  const variantGroupsUI = computed(
+    () => (variantCombinations?: ProductVariantCombinationDTO[]): VariantGroupUI[] => {
+
+      if (!Array.isArray(variantCombinations) || variantCombinations.length === 0) {
+        return []
+      }
+
+      const map = new Map<string, VariantGroupUI>()
+
+      const validCombos = variantCombinations.filter(c => c?.inStock)
+
+      validCombos.forEach(combo => {
+        combo.variants?.forEach(v => {
+          if (!map.has(v.groupId)) {
+            map.set(v.groupId, {
+              groupId: v.groupId,
+              groupName: v.groupName,
+              variants: []
+            })
+          }
+
+          const group = map.get(v.groupId)!
+
+          const selected = state.tempSelected ?? {}
+
+          const hasStock = validCombos.some(c => {
+            if (c.stock <= 0) return false
+
+            const matchSelected = Object.entries(selected).every(
+              ([gId, vId]) =>
+                gId === v.groupId ||
+                c.variants?.some(
+                  x => x.groupId === gId && x.variantId === vId
+                )
+            )
+
+            return (
+              matchSelected &&
+              c.variants?.some(
+                x => x.groupId === v.groupId && x.variantId === v.variantId
+              )
+            )
+          })
+
+          if (!group.variants.some(x => x.variantId === v.variantId)) {
+            group.variants.push({
+              variantId: v.variantId,
+              variantName: v.variantName,
+              hasStock
+            })
+          }
+        })
+      })
+
+      return Array.from(map.values())
+    }
+  )
+
+  const getMatchedCombination = (
+    variantCombinations: ProductVariantCombinationDTO[]
+  ): ProductVariantCombinationDTO | undefined => {
+    return variantCombinations.find(combo =>
+      combo.variants.every(
+        v => state.tempSelected[v.groupId] === v.variantId
+      )
+    )
+  }
+
+  const getSelectedVariantPrice = (
+    variantCombinations: ProductVariantCombinationDTO[]
+  ): number => {
+    const matched = getMatchedCombination(variantCombinations)
+    return matched?.priceModifier ?? 0
+  }
+
+  const getSelectedVariantName = computed(
+    () =>
+      (
+        groupId: string,
+        variantCombinations: ProductVariantCombinationDTO[]
+      ): string => {
+        const selectedVariantId = state.tempSelected[groupId]
+        if (!selectedVariantId) return ''
+
+        for (const combo of variantCombinations) {
+          const found = combo.variants.find(
+            v =>
+              v.groupId === groupId &&
+              v.variantId === selectedVariantId
+          )
+          if (found) return found.variantName
+        }
+
+        return ''
+      }
+  )
+
+  const getSelectedVariantStock = (
+    variantCombinations: ProductVariantCombinationDTO[]
+  ): number => {
+    if (!variantCombinations?.length) return 0
+
+    const matched = variantCombinations.find(combo =>
+      combo.variants.every(
+        v => state.tempSelected[v.groupId] === v.variantId
+      )
+    )
+
+    return matched?.stock ?? 0
+  }
+
+  const autoSelectFirstVariants = (groups: VariantGroupUI[]) => {
+    groups.forEach(group => {
+      if (state.tempSelected[group.groupId]) return
+
+      const firstAvailable = group.variants.find(v => v.hasStock)
+
+      if (!firstAvailable) return
+
+      options.handleSelectVariant(
+        group.groupId,
+        firstAvailable.variantId,
+        group.groupName,
+        firstAvailable.variantName,
+        0
+      )
+    })
+  }
+
+  const getSelectedCombinationId = (
+    variantCombinations: ProductVariantCombinationDTO[]
+  ): string | undefined => {
+    if (!variantCombinations?.length) return undefined
+
+    const matched = variantCombinations.find(combo =>
+      combo.variants.every(
+        v => state.tempSelected[v.groupId] === v.variantId
+      )
+    )
+
+    return matched?.id
+  }
 
   const pricing = useCartPricing(
     state.cartListItem,
@@ -81,17 +254,15 @@ export const useCartStore = defineStore("Cart", () => {
   const options = useCartOptions(
     state.selectedOptionsData,
     state.tempSelected,
-    state.priceOptions,
+    state.needAutoSelect,
   );
 
   const utilShared = useCartSharedUtils(
     state.quantity,
-    state.priceTotal,
     state.note,
     state.productDetailEdit,
     state.selectedOptionsData,
     state.quantityEdit,
-    state.priceTotalEdit,
     state.popups,
     options.clearTempSelected,
   );
@@ -118,19 +289,14 @@ export const useCartStore = defineStore("Cart", () => {
   const productOps = useCartProductOperations(
     state.cartListItem,
     state.cartCount,
-    state.selectedOptionsData,
     state.productDetailEdit,
     state.quantityEdit,
-    state.priceTotalEdit,
-    state.selectedOptionsDataEdit,
-    state.priceTotal,
-    state.priceOptions,
     state.quantity,
     utils.updateCookie,
     utils.resetValuePopupOrder,
-    options.updateSelectedOptionsData,
-    options.syncTempSelectedFromSelectedOptionsData,
+    options.syncTempSelectedFromCombination,
     utilShared.togglePopup as (popupId: string, value: boolean) => void,
+    getSelectedCombinationId,
   );
 
   const voucher = useCartVoucher(
@@ -186,11 +352,11 @@ export const useCartStore = defineStore("Cart", () => {
       product,
       quantity,
       note,
-      options.buildSelectedOptions,
+      state.tempSelected,
       storeProduct.popups.order
     );
   };
-  
+
   const submitOrder = async () => {
     await order.submitOrder(
       storeAccount.getDetailValue?.id,
@@ -232,8 +398,10 @@ export const useCartStore = defineStore("Cart", () => {
     Math.round(state.totalPriceCurrent.value * (storeAccount.getDetailValue.membership.pointRate / 100)) : 0
   );
   const getTotalPriceSave = computed(() => state.totalPriceSave.value);
-  const getOrderPriceDiscount = computed(() => state.totalPriceCurrent.value - state.orderPriceDiscount.value);
+  const getOrderPriceDiscount = computed(() => state.orderPriceDiscount.value);
+  const getTotalPriceOrder = computed(() => state.totalPriceDiscount.value);
   const getShippingFee = computed(() => state.shippingFee.value);
+
   const getPaymentSelected = computed(() => state.paymentSelected.value);
   const getSelectedOptionsData = computed(() => state.selectedOptionsData.value);
   const getIdAddressChoose = computed(() => state.idAddressChoose.value);
@@ -257,12 +425,10 @@ export const useCartStore = defineStore("Cart", () => {
     getProductDetailEdit: productOps.getProductDetailEdit,
     inDecrementEdit: productOps.inDecrementEdit,
     inDecrement: productOps.inDecrement,
-    calcTotalPrice: productOps.calcTotalPrice,
+    findMatchedCombination: productOps.findMatchedCombination,
 
     // Options
     setSelectedOptionsData: options.setSelectedOptionsData,
-    updateSelectedOptionsData: options.updateSelectedOptionsData,
-    syncTempSelectedFromSelectedOptionsData: options.syncTempSelectedFromSelectedOptionsData,
     clearTempSelected: options.clearTempSelected,
     handleSelectVariant: options.handleSelectVariant,
 
@@ -277,6 +443,7 @@ export const useCartStore = defineStore("Cart", () => {
     handleTogglePopupPoint: utils.handleTogglePopupPoint,
     handleGetDefaultAddress,
     handleCheckPoint,
+    resetPoint: utils.resetPoint,
     
     // Shipping
     handleGetFee: shipping.handleGetFee,
@@ -298,6 +465,7 @@ export const useCartStore = defineStore("Cart", () => {
     getIsTogglePopup,
     getTotalPriceCurrent,
     getTotalPriceDiscount,
+    getTotalPriceOrder,
     getTotalPriceSave,
     getPaymentSelected,
     getSelectedOptionsData,
@@ -309,5 +477,11 @@ export const useCartStore = defineStore("Cart", () => {
     allVouchers,
     getProductDetailDataEdit,
     getMaxPointCanUse,
+    variantGroupsUI,
+    getSelectedVariantName,
+    getMatchedCombination,
+    getSelectedVariantPrice,
+    autoSelectFirstVariants,
+    getSelectedVariantStock,
   };
 });

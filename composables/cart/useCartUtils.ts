@@ -28,13 +28,10 @@ export const useCartUtils = (
   const updateCookie = () => {
     const cookieData = cartListItem.value.map(item => ({
       product: item.product,
-      sku: item.sku,
-      quantity: item.quantity,
-      selectedOptionsPush: item.selectedOptionsPush || [],
-      note: item.note || '',
-      finalPrice: item.finalPrice,
-      finalPriceDiscounts: item.finalPriceDiscounts,
       productKey: item.productKey,
+      quantity: item.quantity,
+      note: item.note || '',
+      combinationId: item.variantCombination?.id || null,
     }));
 
     setCookie("cartListItem", cookieData);
@@ -44,27 +41,26 @@ export const useCartUtils = (
     fetchProductCart();
   };
 
-  const syncCartCookie = () => {
-    const cookieCount = getCookie("cartCount");
-    const cookieList = getCookie("cartListItem");
+  const syncCartCookie = async () => {
+    const cookieCount = Number(getCookie('cartCount') || 0);
+    const cookieList = getCookie('cartListItem');
 
-    cartCount.value = cookieCount ? Number(cookieCount) : 0;
+    cartCount.value = cookieCount;
 
     cartListItem.value = Array.isArray(cookieList)
       ? cookieList.map(c => ({
           product: c.product,
-          sku: c.sku,
-          quantity: c.quantity,
-          selectedOptionsPush: c.selectedOptionsPush || [],
-          note: c.note || '',
-          finalPrice: c.finalPrice,
-          finalPriceDiscounts: c.finalPriceDiscounts,
           productKey: c.productKey,
+          quantity: Number(c.quantity) || 1,
+          note: c.note || '',
+          combinationId: c.combinationId || null,
         }))
       : [];
 
-    fetchProductCart();
-    handleCalcTotalPriceCurrent();
+    if (cartListItem.value.length > 0) {
+      await fetchProductCart();
+      handleCalcTotalPriceCurrent();
+    }
   };
 
   const resetValuePopupOrder = () => {
@@ -135,6 +131,11 @@ export const useCartUtils = (
     }
   };
 
+  const resetPoint = () => {
+    usedPointOrder.usedPoint = 0
+    usedPointOrder.pointInput = 0
+  }
+
   const handleTogglePopupVoucher = (value: boolean) => {
     isTogglePopupVoucher.value = value;
   };
@@ -153,5 +154,6 @@ export const useCartUtils = (
     handleCheckPoint,
     handleTogglePopupVoucher,
     handleTogglePopupPoint,
+    resetPoint,
   };
 };

@@ -1,39 +1,51 @@
 import type {
   Product,
   CategoryProduct,
-  ProductSelectedVariant,
-  ProductVariantGroup,
+  ProductVariantCombination,
 } from "../../models/v1/product.entity";
 import type {
   ProductDTO,
   CategoryProductDTO,
-  ProductSelectedVariantDTO,
-  ProductVariantGroupDTO,
+  ProductVariantCombinationDTO,
 } from "../../types/dto/v1/product.dto";
 
-export function toProductSelectedVariantDTO(
-  variant: ProductSelectedVariant
-): ProductSelectedVariantDTO {
-  return {
-    variantId: variant.variantId,
-    variantName: variant.variantName,
-    priceModifier: variant.priceModifier,
-    inStock: variant.inStock,
-    stock: variant.stock ?? 0,
-    sku: variant.sku ?? "",
-    image: variant.image ?? "",
-  };
-}
+// export function toProductSelectedVariantDTO(
+//   variant: ProductSelectedVariant
+// ): ProductSelectedVariantDTO {
+//   return {
+//     variantId: variant.variantId,
+//     variantName: variant.variantName,
+//     priceModifier: variant.priceModifier,
+//     inStock: variant.inStock,
+//     stock: variant.stock ?? 0,
+//     sku: variant.sku ?? "",
+//     image: variant.image ?? "",
+//   };
+// }
 
-export function toProductVariantGroupDTO(
-  group: ProductVariantGroup
-): ProductVariantGroupDTO {
+// export function toProductVariantGroupDTO(
+//   group: ProductVariantGroup
+// ): ProductVariantGroupDTO {
   
+//   return {
+//     groupId: group.groupId,
+//     groupName: group.groupName,
+//     required: group.required,
+//     selectedVariants: group.selectedVariants.map(toProductSelectedVariantDTO),
+//   };
+// }
+
+export function toVariantCombinationDTO(
+  combo: ProductVariantCombination
+): ProductVariantCombinationDTO {
   return {
-    groupId: group.groupId,
-    groupName: group.groupName,
-    required: group.required,
-    selectedVariants: group.selectedVariants.map(toProductSelectedVariantDTO),
+    id: combo._id.toString(),
+    sku: combo.sku,
+    priceModifier: combo.priceModifier,
+    stock: combo.stock,
+    inStock: combo.inStock,
+    image: combo.image,
+    variants: combo.variants,
   };
 }
 
@@ -49,7 +61,10 @@ export function toProductDTO(entity: Product): ProductDTO {
     amountOrder: entity.amountOrder,
     image: entity.image,
     listImage: entity.listImage,
-    variantGroups: entity.variantGroups.map(toProductVariantGroupDTO),
+    variantGroups: entity.variantGroups ?? [],
+    variantCombinations: (entity.variantCombinations ?? []).map(
+      toVariantCombinationDTO
+    ),
     categoryId: entity.categoryId._id.toString(),
     category: entity.category
     ? {

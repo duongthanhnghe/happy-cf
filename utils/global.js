@@ -189,8 +189,24 @@ export function generateSKU(productId, groupName, variantName) {
   return `PRD${productId.slice(-5)}-${slugifySKU(groupName)}-${slugifySKU(variantName)}`;
 }
 
-export function generateSkuVariant(productSku, groupName, variantName) {
-  return `${productSku}-${slugifySKU(groupName)}-${slugifySKU(variantName)}`;
+function safeSlug(text) {
+  if (!text) return '';
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(word => word[0].toUpperCase())
+    .join("");
+}
+
+export function generateSkuVariant(productSku, variants) {
+  const variantPart = variants
+    .map(v => safeSlug(v.variantName))
+    .join('-');
+
+  return `${productSku}-${variantPart}`;
 }
 
 export async function generateSkuProduct(categoryCode) {

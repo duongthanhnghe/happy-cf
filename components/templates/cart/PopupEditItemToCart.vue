@@ -1,29 +1,17 @@
 <script lang="ts" setup>
 import '@/styles/templates/cart/popup-add-item-to-cart.scss'
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
-import { formatCurrency } from '@/utils/global';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
+import { formatCurrency } from '@/utils/global';
 
 const storeProduct = useProductDetailStore();
 const storeCart = useCartStore();
 const storeDisplay = useDisplayStore()
 
-// watch(() => storeCart.getProductDetailDataEdit?.selectedOptionsPush, (newValue) => {
-//   if (newValue && storeCart.getProductDetailDataEdit?.selectedOptionsPush) {
-//     storeCart.getProductDetailDataEdit?.selectedOptionsPush.forEach(opt => {
-//       const option = storeCart.getProductDetailDataEdit?.variantGroups?.find(o => o.name === opt.optionName)
-//       const variant = option?.variants.find(v => v.name === opt.variantName)
-//       if (option && variant) {
-//         storeCart.selectedOptionsData[option.id] = variant.id
-//       }
-//     })
-//   }
-// }, { immediate: true })
-
 const detail = computed(() => storeCart.getProductDetailDataEdit);
-const detailProduct = computed(() => storeProduct.getDetailProduct);
+// const detailProduct = computed(() => storeProduct.getDetailProduct);
 
 </script>
 
@@ -32,69 +20,31 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
     :children="storeCart.isTogglePopup ? true: false" 
     :variant="storeDisplay.isMobileTable ? 'modal-center':'modal-right'" 
     :bodySpace="false" footerFixed align="bottom" 
-    popupId="popup-edit" 
     :modelValue="storeCart.getPopupState('edit')" 
     :popupHeading="storeDisplay.isMobileTable ? '':'Sửa sản phẩm'" 
-    bodyClass="bg-gray2" 
     @update:modelValue="storeCart.togglePopup('edit', false)"
+    bodyClass="bg-gray2" 
   >
     <template #body v-if="detail">
       <div class="popup-detail-product overflow-hidden">
         <div class="popup-detail-product-image">
-          <img :src="detailProduct?.image" :alt="detailProduct?.productName" />
+          <img :src="detail?.image" :alt="detail?.productName" />
         </div>
         <div class="popup-detail-product-card popup-detail-product-info">
           <div class="popup-detail-product-right">
-            <Heading tag="div" size="lg" weight="bold" class="black mb-sm">
-              {{ detailProduct?.productName }}
+            <Heading tag="div" size="lg" weight="semibold" class="black mb-xs">
+              {{ detail?.productName }}
             </Heading>
-            <!-- <div class="text-color-gray5 weight-semibold" v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined">
-              {{ formatCurrency(detail.finalPriceDiscounts) }}
-            </div> -->
-            <div class="text-color-gray5 weight-semibold">
-              {{ formatCurrency(detail.priceDiscounts) }}
-            </div>
-            <div class="mt-md text-size-xs pb-ms">
-              {{ detailProduct?.summaryContent }}
-            </div>
+            <Text v-if="storeProduct.variantPrice !== undefined && storeProduct.variantPrice !== null" :text="formatCurrency(storeProduct.variantPrice)" color="gray5" class="pb-md"/>
+          </div>
+          <div class="flex flex-direction-column gap-ms mb-sm pb-md" v-if="detail?.variantCombinations?.length">
+            <ProductDetailOptions 
+              :variantCombinations="detail.variantCombinations"
+              showHeading
+            />
           </div>
         </div>
-       
-        <template v-if="detailProduct?.variantGroups && detailProduct?.variantGroups?.length > 0">
-          <v-radio-group
-            hide-details
-            v-for="item in detail?.variantGroups"
-            :key="item.groupId"
-            v-model="storeCart.tempSelected[item.groupId]"
-            :name="`radio-group-${item.groupId}`"
-            class="mt-sm mb-sm popup-detail-product-card"
-            @update:modelValue="(val) => {
-              const variant = item.selectedVariants.find(v => v.variantId === val);
-              if (variant && val) storeCart.handleSelectVariant(item.groupId, val, item.groupName, variant.variantName, variant.priceModifier || 0);
-            }"
-          >
-            <Heading tag="div" size="md" weight="semibold" class="black pt-sm pl-ms pr-ms">
-              {{ item.groupName }}
-            </Heading>
-            <v-radio
-              v-for="variant in item.selectedVariants"
-              class="popup-detail-product-variant"
-              rel="js-popup-detail-variant-item"
-              :value="variant.variantId"
-              :disabled="!variant.inStock || !variant.stock || variant.stock === 0"
-            >
-              <template #label>
-                <div class="flex justify-between w-full">
-                  {{ variant.variantName }}
-                  <span v-if="variant.priceModifier !== 0">+{{ formatCurrency(variant.priceModifier) }}</span>
-                  <span v-else>0</span>
-                </div>
-              </template>
-            </v-radio>
-          </v-radio-group>
-        </template>
-        <div v-else class="mt-sm"></div>
-        
+
         <div class="popup-detail-product-card pb-md">
           <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
             Thêm lưu ý
@@ -114,19 +64,21 @@ const detailProduct = computed(() => storeProduct.getDetailProduct);
     <template #footer>
       <template v-if="detail">
         <Button
-          v-if="detail.finalPriceDiscounts && detail.finalPriceDiscounts != undefined"
-          label="Cập nhật"
+          v-if="detail.variantCombination?.variants"
+          :label="storeProduct.getCheckButtonOrder ? 'Cập nhật' : 'Không đủ hàng!'"
+          :disabled="!storeProduct.getCheckButtonOrder"
           class="w-full"
           color="primary"
-          @handleOnClick="storeCart.updateProductWithOptions(detailProduct, storeCart.quantityEdit, detail.note, detail.productKey)"
+          @handleOnClick="storeCart.updateProductWithOptions(detail, storeCart.quantityEdit, detail.note, detail.productKey, storeCart.tempSelected)"
         />
         <template v-else>
           <Button
             v-if="detail.id"
-            label="Cập nhật"
+            :label="storeProduct.getCheckButtonOrder ? 'Cập nhật' : 'Không đủ hàng!'"
+            :disabled="!storeProduct.getCheckButtonOrder"
             class="w-full"
             color="primary"
-            @handleOnClick="storeCart.updateNormalProduct(detailProduct, storeCart.quantityEdit, detail.note, detail.id)"
+            @handleOnClick="storeCart.updateNormalProduct(detail, storeCart.quantityEdit, detail.note, detail.id)"
           />
         </template>
       </template>

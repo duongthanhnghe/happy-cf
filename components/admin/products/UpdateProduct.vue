@@ -142,7 +142,7 @@ const handleSubmitUpdate = async () => {
   </template>
   <template #footer>
     <div class="flex gap-sm">
-      <Button v-if="store.updateProductItem?.variantGroups" color="gray" :label="`${store.updateProductItem?.variantGroups.length > 0 ? 'Sua bien the':'Them bien the'}`" class="w-full" @click.prevent="store.handleTogglePopupAddVariant(true)" />
+      <Button v-if="store.updateProductItem?.variantCombinations" color="gray" :label="`${store.updateProductItem?.variantCombinations.length ? 'Sua bien the':'Them bien the'}`" class="w-full" @click.prevent="store.handleTogglePopupAddVariant(true)" />
       <Button @click="handleSubmitUpdate" color="primary" label="Cap nhat" class="w-full" />
     </div>
   </template>

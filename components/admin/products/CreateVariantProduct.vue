@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, watch, computed } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
 import { useVariantGroupStore } from '@/stores/admin/product/useVariantGroupManageStore'
 import type { VForm } from 'vuetify/components'
@@ -7,16 +7,21 @@ import type { ProductVariantGroupDTO, VariantGroupDTO } from '@/server/types/dto
 import { generateSkuVariant } from '@/utils/global';
 import { showWarning } from '@/utils/toast';
 import { nullRules } from '@/utils/validation';
+import type { ProductVariantCombinationDTO } from "@/server/types/dto/v1/product.dto"; 
 
 const productStore = useProductManageStore();
 const variantStore = useVariantGroupStore();
 
 const formRef = ref<VForm | null>(null);
 const selectedGroups = ref<VariantGroupDTO[]>([]);
+const isInitPopup = ref(false)
 
 const productVariantGroups = reactive<ProductVariantGroupDTO[]>([]);
+const variantCombinations = ref<ProductVariantCombinationDTO[]>([]);
 
 async function initVariantPopup() {
+  isInitPopup.value = true
+
   productVariantGroups.splice(0);
   selectedGroups.value = [];
 
@@ -31,9 +36,19 @@ async function initVariantPopup() {
       groupId: g.groupId,
       groupName: g.groupName,
       required: g.required,
-      selectedVariants: g.selectedVariants.map(v => ({ ...v }))
+      options: g.options.map(o => ({
+      variantId: o.variantId,
+      variantName: o.variantName
+    }))
     });
   });
+
+  variantCombinations.value =
+  productStore.updateProductItem?.variantCombinations
+    ? [...productStore.updateProductItem.variantCombinations]
+    : []
+
+  isInitPopup.value = false
 }
 
 watch(() => productStore.isTogglePopupAddVariant, async (open) => {
@@ -55,14 +70,9 @@ watch(
             groupId: String(groupData.id),
             groupName: groupData.groupName,
             required: true,
-            selectedVariants: groupData.variants.map(v => ({
+            options: groupData.variants.map(v => ({
               variantId: String(v.id),
-              variantName: v.name,
-              priceModifier: 0,
-              inStock: true,
-              stock: 1,
-              image: '',
-              sku: generateSkuVariant(productStore.updateProductItem.sku, groupData.groupName, v.name)
+              variantName: v.name
             }))
           });
         }
@@ -78,32 +88,92 @@ watch(
   { deep: true }
 );
 
-const handleSubmitVariantProduct = async () => {
-  if (!formRef.value) return;
+function buildVariantCombinations() {
+  if (!productVariantGroups.length) {
+    variantCombinations.value = []
+    return
+  }
 
-  const {valid} = await formRef.value.validate();
+  const oldMap = new Map(
+    variantCombinations.value.map(v => [v.sku, v])
+  )
+
+  const groups = productVariantGroups.map(g => ({
+    groupId: g.groupId,
+    groupName: g.groupName,
+    options: g.options
+  }))
+
+  const result: ProductVariantCombinationDTO[] = []
+
+  function backtrack(index: number, current: any[]) {
+    if (index === groups.length) {
+      const sku = generateSkuVariant(
+        productStore.updateProductItem.sku,
+        current
+      )
+
+      const old = oldMap.get(sku)
+
+      result.push({
+        id: old?.id ?? '',
+        sku,
+        priceModifier: old?.priceModifier ?? 0,
+        stock: old?.stock ?? 0,
+        inStock: old?.inStock ?? true,
+        image: old?.image ?? '',
+        variants: current
+      })
+      return
+    }
+
+    for (const opt of groups[index].options) {
+      backtrack(index + 1, [
+        ...current,
+        {
+          groupId: groups[index].groupId,
+          groupName: groups[index].groupName,
+          variantId: opt.variantId,
+          variantName: opt.variantName
+        }
+      ])
+    }
+  }
+
+  backtrack(0, [])
+  variantCombinations.value = result
+}
+
+watch(
+  productVariantGroups,
+  () => {
+    if (isInitPopup.value) return
+    buildVariantCombinations()
+  },
+  { deep: true }
+)
+
+const handleSubmitVariantProduct = async () => {
+  if (!formRef.value) return
+
+  const { valid } = await formRef.value.validate()
   if (!valid) {
-    showWarning('Vui lòng nhập đầy đủ thông tin');
-    return;
+    showWarning('Vui lòng nhập đầy đủ thông tin')
+    return
   }
 
   productStore.updateProductItem.variantGroups = productVariantGroups.map(g => ({
     groupId: g.groupId,
     groupName: g.groupName,
     required: g.required,
-    selectedVariants: g.selectedVariants.map(v => ({ ...v }))
-  }));
+    options: g.options
+  }))
 
-  productStore.handleTogglePopupAddVariant(false);
+  productStore.updateProductItem.variantCombinations = variantCombinations.value
+
+  productStore.handleTogglePopupAddVariant(false)
 }
 
-const variantGroupMap = computed(() => {
-  const map: Record<string, { hasImage: boolean }> = {};
-  variantStore.serverItems.forEach(g => {
-    map[String(g.id)] = { hasImage: g.hasImage };
-  });
-  return map;
-});
 </script>
 
 <template>
@@ -122,50 +192,74 @@ const variantGroupMap = computed(() => {
         clearable
       />
 
-      <div v-if="productVariantGroups.length > 0" v-for="group in productVariantGroups" :key="group.groupId" class="mb-md">
-        <Text v-if="productVariantGroups.length > 0" color="primary" size="normal" :text="`${group.groupName}`" weight="semibold" class="line-height-1 mb-sm"/>
-        <Card size="sm" bg="gray6" border class="rd-lg pb-0">
-          <div v-for="(variant, idx) in group.selectedVariants" :key="variant.variantId">
-            <div class="flex align-center justify-between">
-              <Text :text="variant.variantName" weight="semibold" class="mb-xs flex gap-xs" />
-              <Text color="gray5" :text="`SKU: ${variant.sku}`" />
+      <div v-if="variantCombinations.length">
+        <Text color="primary" size="normal" text="Danh sách biến thể" weight="semibold" class="line-height-1 mb-sm"/>
+        <Card
+          v-for="combo in variantCombinations"
+          :key="combo.sku"
+          size="sm"
+          bg="gray6"
+          border
+          class="rd-lg mb-md"
+        >
+          <!-- Tên biến thể -->
+          <div class="flex align-center justify-between mb-xs">
+            <Text
+              :text="combo.variants.map(v => v.variantName).join(' / ')"
+              weight="semibold"
+            />
+            <Text color="gray5" :text="`SKU: ${combo.sku}`" />
+          </div>
+
+          <!-- Giá + tồn -->
+          <div class="flex gap-sm align-end">
+            <div class="flex-1">
+              <LabelInput label="Giá" required />
+              <v-text-field
+                v-model.number="combo.priceModifier"
+                type="number"
+                variant="outlined"
+                :rules="nullRules"
+                required
+              />
             </div>
-            <div class="flex gap-sm align-end">
-              <div class="flex-1">
-                <LabelInput label="Giá cộng thêm" required/>
-                <v-text-field
-                  v-model.number="variant.priceModifier"
-                  type="number"
-                  variant="outlined"
-                  :rules="nullRules"
-                  required
-                />
-              </div>
-              <div>
-                <LabelInput label="Tồn kho" required/>
-                <v-text-field
-                  v-model.number="variant.stock"
-                  type="number"
-                  variant="outlined"
-                  :rules="nullRules"
-                  required
-                />
-              </div>
-              <div>
-                <v-switch v-model="variant.inStock" label="Còn hàng" inset/>
-              </div>
+
+            <div>
+              <LabelInput label="Tồn kho" required />
+              <v-text-field
+                v-model.number="combo.stock"
+                type="number"
+                variant="outlined"
+                :rules="nullRules"
+                required
+              />
             </div>
-            <div v-if="variantGroupMap[group.groupId]?.hasImage" class="flex align-start gap-sm mb-md">
-              <img v-if="variant.image" :src="variant.image" alt="Ảnh đại diện" class="width-70 object-fit-cover rd-xs" />
-              <div class="flex-1">
-                <LabelInput label="Ảnh đại diện"/>
-                <v-text-field
-                  v-model.number="variant.image"
-                  type="text"
-                  variant="outlined"
-                  hide-details
-                />
-              </div>
+
+            <div>
+              <v-switch
+                v-model="combo.inStock"
+                label="Hiển thị"
+                inset
+              />
+            </div>
+          </div>
+
+          <!-- Ảnh SKU -->
+          <div class="flex align-start gap-sm">
+            <img
+              v-if="combo.image"
+              :src="combo.image"
+              alt="Ảnh SKU"
+              class="width-70 object-fit-cover rd-xs"
+            />
+            <div class="flex-1">
+              <LabelInput label="Ảnh đại diện" />
+              <v-text-field
+                v-model="combo.image"
+                type="text"
+                variant="outlined"
+                hide-details
+              />
             </div>
           </div>
         </Card>
@@ -176,7 +270,10 @@ const variantGroupMap = computed(() => {
   </template>
 
   <template #footer>
-    <Button v-if="productVariantGroups.length > 0" @click="handleSubmitVariantProduct" color="primary" label="Lưu" class="w-full"/>
+    <div class="flex gap-sm">
+      <Button v-if="variantCombinations.length" @click.prevent="productStore.handleTogglePopupAddVariant(false)" color="gray" label="Huy thay doi" class="w-full"/>
+      <Button @click="handleSubmitVariantProduct" color="primary" label="Lưu" class="w-full"/>
+    </div>
   </template>
 </Popup>
 </template>

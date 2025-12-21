@@ -12,12 +12,32 @@ const ProductSelectedVariantSchema = new Schema({
     sku: { type: String, required: true },
     image: { type: String },
 }, { _id: false });
+const ProductVariantOptionSchema = new Schema(//new
+{
+    variantId: String,
+    variantName: String,
+}, { _id: false });
 const ProductVariantGroupSchema = new Schema({
     groupId: { type: String, required: true },
     groupName: { type: String, required: true },
     required: { type: Boolean, default: false },
-    selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
+    options: [ProductVariantOptionSchema],
+    // selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
 }, { _id: false });
+const VariantSchema = new Schema({
+    groupId: { type: String, required: true },
+    groupName: { type: String, required: true },
+    variantId: { type: String, required: true },
+    variantName: { type: String, required: true },
+});
+const VariantCombinationSchema = new Schema({
+    sku: { type: String, required: true },
+    priceModifier: { type: Number, default: 0 },
+    stock: { type: Number, default: 0 },
+    inStock: { type: Boolean, default: true },
+    image: String,
+    variants: { type: [VariantSchema], required: true },
+}, { timestamps: true });
 const ProductSchema = new Schema({
     productName: { type: String, required: true, trim: true },
     description: { type: String },
@@ -28,10 +48,17 @@ const ProductSchema = new Schema({
     amountOrder: { type: Number, default: 0 },
     image: { type: String, required: true },
     listImage: { type: [ListImageSchema], default: [] },
-    variantGroups: { type: [ProductVariantGroupSchema], default: [] },
+    variantGroups: {
+        type: [ProductVariantGroupSchema],
+        default: []
+    },
+    variantCombinations: {
+        type: [VariantCombinationSchema],
+        default: []
+    },
     categoryId: { type: Schema.Types.ObjectId, ref: "CategoryProduct", required: true },
     weight: { type: Number, default: 0 },
-    sku: { type: String, required: true, unique: true },
+    sku: { type: String, required: true },
     isActive: { type: Boolean, default: true },
     titleSEO: {
         type: String,
@@ -93,6 +120,7 @@ ProductSchema.virtual("category", {
 });
 ProductSchema.set("toObject", { virtuals: true });
 ProductSchema.set("toJSON", { virtuals: true });
+ProductSchema.index({ "variantCombinations.sku": 1 });
 export const ProductEntity = model("Product", ProductSchema, "products");
 export const CategoryProductEntity = model("CategoryProduct", CategoryProductSchema, "product_categories");
 //# sourceMappingURL=product.entity.js.map

@@ -40,6 +40,7 @@ export const useAdminProductState = () => {
     image: '',
     listImage: [],
     variantGroups: [],
+    variantCombinations: [],
     categoryId: '',
     weight: 0,
     sku: '',

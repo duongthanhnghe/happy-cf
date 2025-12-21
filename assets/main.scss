@@ -124,8 +124,11 @@ a {
 
 .min {
   &-width {
+    &-40 {
+      min-width: 40px !important;
+    }
     &-50 {
-      min-width: 50px;
+      min-width: 50px !important;
     }
     &-70 {
       min-width: 70px;
@@ -467,6 +470,43 @@ body .bg {
         .button {
           background-color: $cl-black;
           color: $cl-white;
+        }
+      }
+    }
+    &-radiobox {
+      .v-selection-control {
+        min-height: inherit !important;
+      }
+      .v-selection-control__wrapper {
+        opacity: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+      .v-selection-control--dirty {
+        .button {
+          background-color: $cl-black2;
+          color: $cl-white;
+        }
+      }
+    }
+    &-variant {
+      .v-selection-control--disabled {
+        &::before, &::after {
+          content: '';
+          border: 1px dashed $cl-gray4;
+          position: absolute;
+          top: 50%;
+          left: 0;
+          width: 100%;
+          z-index: 1;
+        }
+        &::before {
+          rotate: 16deg;
+        }
+        &::after {
+          rotate: -16deg;
         }
       }
     }
@@ -1046,6 +1086,15 @@ body .bg {
   }
 }
 
+.top {
+  &-0 {
+    top: 0 !important;
+  }
+  &-1 {
+    top: 1rem !important;
+  }
+}
+
 .bottom {
   &-0 {
     bottom: 0 !important;
@@ -1116,7 +1165,9 @@ body .bg {
   &-direction-row {
     flex-direction: row !important;
   }
-
+  &-none {
+    flex: none !important;
+  }
 }
 
 .justify {
@@ -2138,9 +2189,6 @@ body .swiper {
   &:hover > .v-chip__overlay {
     opacity: 0.2 !important;
   }
-}
-.v-selection-control-group {
-  margin: -10px;
 }
 .v-select-order {
   max-width: calc($space-xl + 20px);

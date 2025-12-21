@@ -1,11 +1,10 @@
-import { watch, computed } from "vue";
+import { watch, computed, type ComputedRef } from "vue";
 import { defineStore } from "pinia";
 import { useProductDetail } from '@/composables/product/useProductDetail'
 import { useProductDetailHandle } from '@/composables/product/useProductDetailHandle'
 import { useProductRelated } from '@/composables/product/useProductRelated'
 import { useProductReviewByProduct } from '@/composables/product-review/useProductReviewByProduct'
 import { usePagination } from '@/utils/paginationHandle'
-import { Loading} from '@/utils/global'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
 import { useProductDetailOperations } from "@/composables/product/useProductDetailOperations";
@@ -17,16 +16,19 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   const { getListProductRelated, loading: loadingListRelated } = useProductRelated()
   const { getListReview, fetchListReview, loading: loadingListReviews } = useProductReviewByProduct()
   const { getVoucherProduct, loading: loadingListVoucher } = useAvailableVouchersForOrder();
+  
   const storeCart = useCartStore();
   const storeAccount = useAccountStore();
-  const variantImages = computed(() => {
-    if (!getDetailProduct.value?.variantGroups) return [];
+  const state = useProductDetailState();
 
-    return getDetailProduct.value.variantGroups
-      .flatMap(group => group.selectedVariants)
+  const variantImages = computed(() => {
+    if (!getDetailProduct.value?.variantCombinations) return [];
+    
+    return getDetailProduct.value.variantCombinations
+      .filter(item => item.stock !== 0 && item.inStock && item.image?.trim() !== '' )
       .map(v => v.image)
-      .filter(img => img && img.trim() !== "");
   });
+
   const galleryImages = computed(() => {
     const mainImg = getDetailProduct.value?.image ? [{ src: getDetailProduct.value.image }] : [];
 
@@ -35,10 +37,7 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     const variantImgs = variantImages.value.map(img => ({ src: img }));
 
     return [...mainImg, ...listImgs, ...variantImgs];
-  });
-  
-
-  const state = useProductDetailState();
+  }) as ComputedRef<{ src: string }[]>;
 
   const utils = useProductDetailHandle(
     getDetailProduct,
@@ -58,13 +57,11 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
 
   watch(state.pageReview, async (newValue) => {
     if(newValue && getListReview.value && getDetailProduct.value?.id) {
-      Loading(true)
       try {
         await fetchListReview(getDetailProduct.value?.id,Number(newValue), state.limitReview)
       } catch (error) {
         console.error('list reviews error:', error)
       }
-      Loading(false)
     }
   })
 
@@ -88,6 +85,47 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     )
   })
 
+  const variantPrice = computed<number|null>(() => {
+    if (!getDetailProduct.value?.variantCombinations.length){
+      if(getDetailProduct.value?.priceDiscounts && getDetailProduct.value?.price) {
+        if(getDetailProduct.value?.priceDiscounts !== getDetailProduct.value?.price) {
+         return getDetailProduct.value?.priceDiscounts
+        } else {
+         return getDetailProduct.value?.price
+        }
+      } else {
+        return null
+      }
+    }
+
+    return storeCart.getSelectedVariantPrice(
+      getDetailProduct.value.variantCombinations
+    )
+  })
+
+  const getVariantGroupsUI = computed(() => {
+    if (!getDetailProduct.value?.variantCombinations) return []
+    return storeCart.variantGroupsUI(
+      getDetailProduct.value.variantCombinations
+    )
+  })
+
+  const getSelectedStock = computed(() => {
+    if (!getDetailProduct.value?.variantCombinations) return 0
+
+    return storeCart.getSelectedVariantStock(
+      getDetailProduct.value.variantCombinations
+    )
+  })
+
+  const getCheckButtonOrder = computed(() => {
+    if (!getDetailProduct.value?.variantCombinations) {
+      if(getSelectedStock.value === 0) return false
+      return true
+    } else if (getDetailProduct.value.amount === 0) return false
+    else return true
+  })
+
   return {
     ...state,
     ...utils,
@@ -104,5 +142,9 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     getTotalPoint,
     variantImages,
     galleryImages,
+    variantPrice,
+    getVariantGroupsUI,
+    getSelectedStock,
+    getCheckButtonOrder,
   };
 });

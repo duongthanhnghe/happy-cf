@@ -4,12 +4,10 @@ import { useProductDetail } from '@/composables/product/useProductDetail'
 
 export const useCartSharedUtils = (
   quantity: Ref<number>,
-  priceTotal: Ref<number>,
   note: Ref<string>,
   productDetailEdit: Ref<any>,
   selectedOptionsData: Ref<SelectedOptionPushDTO[]>,
   quantityEdit: Ref<number>,
-  priceTotalEdit: Ref<number>,
   popups: Ref<{order:boolean,edit:boolean}>,
   clearTempSelected: () => void,
 ) => {
@@ -18,12 +16,10 @@ export const useCartSharedUtils = (
 
   const resetFormCart = () => {
     quantity.value = 1;
-    priceTotal.value = getDetailProduct.value?.priceDiscounts || 0;
     note.value = '';
     productDetailEdit.value = null;
     selectedOptionsData.value = [];
     quantityEdit.value = 0;
-    priceTotalEdit.value = 0;
     togglePopup("edit", false);
     togglePopup("order", false);
   };
