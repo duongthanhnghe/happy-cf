@@ -480,13 +480,13 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
       await order.save()
     }
 
-    if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
+    if (status.id === ORDER_STATUS.CANCELLED) {
       // hoàn kho
-      await restoreStockOrder(order)
-      order.stockDeducted = false
-
-      // hoàn voucher
-      await rollbackVoucherUsage(order)
+      if (order.stockDeducted) {
+        await restoreStockOrder(order)
+        order.stockDeducted = false
+      }
+      
       if(order.userId){
         const user = await UserModel.findById(order.userId);
 
@@ -506,6 +506,9 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
 
         await user?.save();
       }
+
+      // hoàn voucher
+      await rollbackVoucherUsage(order)
     }
 
     await order.save()

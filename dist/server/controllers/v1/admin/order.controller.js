@@ -415,12 +415,12 @@ export const updateOrderStatus = async (req, res) => {
             order.reward.awardedAt = new Date();
             await order.save();
         }
-        if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
+        if (status.id === ORDER_STATUS.CANCELLED) {
             // hoàn kho
-            await restoreStockOrder(order);
-            order.stockDeducted = false;
-            // hoàn voucher
-            await rollbackVoucherUsage(order);
+            if (order.stockDeducted) {
+                await restoreStockOrder(order);
+                order.stockDeducted = false;
+            }
             if (order.userId) {
                 const user = await UserModel.findById(order.userId);
                 // Refund điểm người dùng
@@ -437,6 +437,8 @@ export const updateOrderStatus = async (req, res) => {
                 }
                 await (user === null || user === void 0 ? void 0 : user.save());
             }
+            // hoàn voucher
+            await rollbackVoucherUsage(order);
         }
         await order.save();
         return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) });

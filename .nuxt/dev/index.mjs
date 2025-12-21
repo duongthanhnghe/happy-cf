@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"12149f-F2q1GXzoC+QR131dKt2SuXHBf3A\"",
-    "mtime": "2025-12-21T06:33:59.933Z",
-    "size": 1184927,
+    "etag": "\"1214fa-8ZrxEaCBrKd4q4vwfSRVeJCx/nQ\"",
+    "mtime": "2025-12-21T06:58:33.862Z",
+    "size": 1185018,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"49a31c-JTN9qBlhHbYkUqW1W5nw/9eA4m8\"",
-    "mtime": "2025-12-21T06:33:59.942Z",
-    "size": 4825884,
+    "etag": "\"49a46e-isAiYxhHxo50oO7D3riiG1ZgrB0\"",
+    "mtime": "2025-12-21T06:58:33.869Z",
+    "size": 4826222,
     "path": "index.mjs.map"
   }
 };
@@ -4930,10 +4930,11 @@ const updateOrderStatus = async (req, res) => {
       order.reward.awardedAt = /* @__PURE__ */ new Date();
       await order.save();
     }
-    if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
-      await restoreStockOrder(order);
-      order.stockDeducted = false;
-      await rollbackVoucherUsage(order);
+    if (status.id === ORDER_STATUS.CANCELLED) {
+      if (order.stockDeducted) {
+        await restoreStockOrder(order);
+        order.stockDeducted = false;
+      }
       if (order.userId) {
         const user = await UserModel.findById(order.userId);
         if (!order.pointsRefunded && order.usedPoints > 0 && user) {
@@ -4948,6 +4949,7 @@ const updateOrderStatus = async (req, res) => {
         }
         await (user == null ? void 0 : user.save());
       }
+      await rollbackVoucherUsage(order);
     }
     await order.save();
     return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
@@ -31555,6 +31557,7 @@ const createOrder = async (req, res) => {
     const newOrder = await OrderEntity.create({
       ...data,
       userId,
+      stockDeducted: true,
       reward: { points: point || 0, awarded: false, awardedAt: null },
       usedPoints: deductedPoints,
       pointsRefunded: false,

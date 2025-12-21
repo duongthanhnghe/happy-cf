@@ -91,6 +91,7 @@ export const createOrder = async (req, res) => {
         const newOrder = await OrderEntity.create({
             ...data,
             userId,
+            stockDeducted: true,
             reward: { points: point || 0, awarded: false, awardedAt: null },
             usedPoints: deductedPoints,
             pointsRefunded: false,
