@@ -3,17 +3,7 @@ const ListImageSchema = new Schema({
     id: { type: String, required: true },
     src: { type: String, required: true },
 }, { _id: false });
-const ProductSelectedVariantSchema = new Schema({
-    variantId: { type: String, required: true },
-    variantName: { type: String, required: true },
-    priceModifier: { type: Number, default: 0 },
-    inStock: { type: Boolean, default: true },
-    stock: { type: Number, default: 0 },
-    sku: { type: String, required: true },
-    image: { type: String },
-}, { _id: false });
-const ProductVariantOptionSchema = new Schema(//new
-{
+const ProductVariantOptionSchema = new Schema({
     variantId: String,
     variantName: String,
 }, { _id: false });
@@ -22,7 +12,6 @@ const ProductVariantGroupSchema = new Schema({
     groupName: { type: String, required: true },
     required: { type: Boolean, default: false },
     options: [ProductVariantOptionSchema],
-    // selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
 }, { _id: false });
 const VariantSchema = new Schema({
     groupId: { type: String, required: true },
@@ -30,14 +19,14 @@ const VariantSchema = new Schema({
     variantId: { type: String, required: true },
     variantName: { type: String, required: true },
 });
-const VariantCombinationSchema = new Schema({
+export const VariantCombinationSchema = new Schema({
     sku: { type: String, required: true },
     priceModifier: { type: Number, default: 0 },
     stock: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
     image: String,
     variants: { type: [VariantSchema], required: true },
-}, { timestamps: true });
+});
 const ProductSchema = new Schema({
     productName: { type: String, required: true, trim: true },
     description: { type: String },

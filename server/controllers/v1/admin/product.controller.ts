@@ -182,6 +182,7 @@ export const importProducts = async (req: Request, res: Response) => {
           image: row.image || "",
           listImage: [],
           variantGroups: [],
+          variantCombinations: [],
           summaryContent: row.summaryContent || "",
           categoryId: new mongoose.Types.ObjectId(category._id),
           weight: Number(row.weight || 0),

@@ -21,7 +21,7 @@ const storeCart = useCartStore();
         <div class="mb-xs" v-if="item.variantCombination?.variants">
           <Text
             v-for="optionItem in item.variantCombination.variants"
-            :text="optionItem.variantName"
+            :text="optionItem.groupName+': '+optionItem.variantName"
             color="gray5" size="xs"
           />
           <Text color="gray5" size="xs" :text="item.note" />

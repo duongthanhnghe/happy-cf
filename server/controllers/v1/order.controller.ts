@@ -11,6 +11,8 @@ import path from "path";
 import fs from "fs";
 import { VoucherEntity } from "../../models/v1/voucher.entity";
 import { VoucherUsageEntity } from "../../models/v1/voucher-usage.entity";
+import { checkProductStockService } from "../../utils/productStock"
+import { deductStockOrder } from "../../utils/deductStockOrder";
 
 export const getOrderById = async (req: Request, res: Response) => {
   try {
@@ -40,6 +42,30 @@ export const createOrder = async (req: Request, res: Response) => {
 
     if (!data?.fullname || !data?.phone || !data?.paymentId || !data?.cartItems) {
       return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" })
+    }
+
+    for (const item of data.cartItems) {
+      const productId =
+        typeof item.idProduct === 'string'
+          ? item.idProduct
+          : item.idProduct._id
+
+      const result = await checkProductStockService({
+        productId,
+        sku: item.sku,
+        quantity: item.quantity,
+      })
+
+      if (!result.ok) {
+        return res.status(400).json({
+          code: 1,
+          message: "Sản phẩm không đủ tồn kho",
+          data: {
+            productId: item.productId,
+            availableStock: result.availableStock,
+          },
+        })
+      }
     }
 
     let membershipDiscountRate = 0
@@ -77,6 +103,8 @@ export const createOrder = async (req: Request, res: Response) => {
 
       deductedPoints = usedPoint;
     }
+
+    await deductStockOrder(data.cartItems)
 
     const newOrder = await OrderEntity.create({
       ...data,

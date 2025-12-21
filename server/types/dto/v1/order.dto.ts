@@ -2,7 +2,7 @@ import type { ProductDTO } from './product.dto';
 import type { PaymentTransactionDTO, PaymentMethod } from './payment-transaction.dto';
 import type { PaginationDTO } from '../../common/pagination.dto'
 import type { ApplyVoucherResponse } from './voucher.dto';
-
+import type { ProductVariantCombinationDTO } from './product.dto';
 export interface ProductInOrder extends cartItems {
   data: ProductDTO
 }
@@ -12,19 +12,13 @@ export interface OrderMappingNew extends OrderDTO {
 }
 
 export interface cartItems {
-  idProduct: { image: string, productName: string}
-  priceDiscounts: number
+  idProduct: { image: string, productName: string} | string
+  price: number
   quantity: number
   sku: string | null
   note: string | null
-  selectedOptionsPush: selectedOptionsPush[] | null
-  finalPriceDiscounts: number | null
-}
-
-export interface selectedOptionsPush {
-  optionName: string
-  variantName: string
-  variantPrice: number
+  variantCombination: ProductVariantCombinationDTO
+  combinationId: string
 }
 
 export type IdOrder = { id: string }
@@ -63,6 +57,7 @@ export interface OrderDTO {
   note: string;
   paymentId: PaymentDTO;
   cartItems: cartItems[];
+  stockDeducted: boolean;
   totalPrice: number;
   totalPriceSave: number;
   totalPriceCurrent: number;
@@ -87,7 +82,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested"> {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted"> {
   paymentId: string;
   status: string;
   provinceCode: number;

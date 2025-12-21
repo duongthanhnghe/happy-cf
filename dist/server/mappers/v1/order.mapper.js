@@ -42,6 +42,7 @@ export function toOrderDTO(entity) {
         cartItems: Array.isArray(entity.cartItems)
             ? entity.cartItems.map(toCartItemDTO)
             : [],
+        stockDeducted: entity.stockDeducted,
         totalPrice: entity.totalPrice,
         totalPriceSave: entity.totalPriceSave,
         totalPriceCurrent: entity.totalPriceCurrent,
@@ -117,21 +118,12 @@ function toCartItemDTO(entity) {
     }
     return {
         idProduct,
-        priceDiscounts: entity.priceDiscounts,
+        price: entity.price,
         quantity: entity.quantity,
         note: entity.note || "",
         sku: entity.sku,
-        selectedOptionsPush: Array.isArray(entity.selectedOptionsPush)
-            ? entity.selectedOptionsPush.map(toSelectedOptionDTO)
-            : [],
-        finalPriceDiscounts: entity.finalPriceDiscounts,
-    };
-}
-function toSelectedOptionDTO(entity) {
-    return {
-        optionName: entity.optionName,
-        variantName: entity.variantName,
-        variantPrice: entity.variantPrice,
+        variantCombination: entity.variantCombination,
+        combinationId: entity.combinationId || "",
     };
 }
 //# sourceMappingURL=order.mapper.js.map

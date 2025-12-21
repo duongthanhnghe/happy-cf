@@ -7,6 +7,7 @@ import { ProductReviewEntity } from "../../../models/v1/product-review.entity.js
 import { VoucherEntity } from "../../../models/v1/voucher.entity.js";
 import { VoucherUsageEntity } from "../../../models/v1/voucher-usage.entity.js";
 import mongoose from "mongoose";
+import { restoreStockOrder } from "../../../utils/restoreStockOrder.js";
 export const getAllOrder = async (req, res) => {
     try {
         let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId } = req.query;
@@ -415,21 +416,27 @@ export const updateOrderStatus = async (req, res) => {
             await order.save();
         }
         if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
-            const user = await UserModel.findById(order.userId);
-            // Refund điểm người dùng
-            if (!order.pointsRefunded && order.usedPoints > 0 && user) {
-                user.membership.balancePoint += order.usedPoints; // cong lai điểm người dùng
-                user.membership.balancePoint -= order.reward.points; // tru di điểm order da cong
-                order.pointsRefunded = true;
-            }
-            // Nếu đơn này từng cộng điểm thưởng → rollback lại
-            if (((_b = order.reward) === null || _b === void 0 ? void 0 : _b.awarded) && order.reward.points > 0) {
-                await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
-                order.reward.awarded = false;
-                order.reward.awardedAt = new Date();
-            }
+            // hoàn kho
+            await restoreStockOrder(order);
+            order.stockDeducted = false;
+            // hoàn voucher
             await rollbackVoucherUsage(order);
-            await (user === null || user === void 0 ? void 0 : user.save());
+            if (order.userId) {
+                const user = await UserModel.findById(order.userId);
+                // Refund điểm người dùng
+                if (!order.pointsRefunded && order.usedPoints > 0 && user) {
+                    user.membership.balancePoint += order.usedPoints; // cong lai điểm người dùng
+                    user.membership.balancePoint -= order.reward.points; // tru di điểm order da cong
+                    order.pointsRefunded = true;
+                }
+                // Nếu đơn này từng cộng điểm thưởng → rollback lại
+                if (((_b = order.reward) === null || _b === void 0 ? void 0 : _b.awarded) && order.reward.points > 0) {
+                    await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
+                    order.reward.awarded = false;
+                    order.reward.awardedAt = new Date();
+                }
+                await (user === null || user === void 0 ? void 0 : user.save());
+            }
         }
         await order.save();
         return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) });

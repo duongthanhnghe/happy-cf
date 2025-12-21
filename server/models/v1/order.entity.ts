@@ -1,10 +1,11 @@
-import { Schema, model, Document, Types } from "mongoose";
-import type { selectedOptionsPush, cartItems } from "../../types/dto/v1/order.dto"
+import { Schema, model, Types } from "mongoose";
+import type { cartItems } from "../../types/dto/v1/order.dto"
 import mongoosePaginate from "mongoose-paginate-v2";
 import type { PaginateModel } from "mongoose";
 import type { PaymentMethod } from "../../types/dto/v1/payment-transaction.dto"
 import { VoucherUsageOrderSchema } from "./voucher-usage.entity";
 import type { VoucherUsageOrder } from "./voucher-usage.entity";
+import { VariantCombinationSchema } from "./product.entity";
 
 export interface Payment {
   _id: Types.ObjectId;
@@ -38,6 +39,7 @@ export interface Order {
   note?: string;
   paymentId: Types.ObjectId;
   cartItems: cartItems[];
+  stockDeducted: boolean;
   totalPrice: number;
   totalPriceSave: number;
   totalPriceCurrent: number;
@@ -63,24 +65,15 @@ export interface Order {
   updatedAt: Date;
 }
 
-const SelectedOptionsPushSchema = new Schema<selectedOptionsPush>(
-  {
-    optionName: { type: String, required: true },
-    variantName: { type: String, required: true },
-    variantPrice: { type: Number, required: true }
-  },
-  { _id: false }
-);
-
 const CartItemsSchema = new Schema<cartItems>(
   {
     idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-    priceDiscounts: { type: Number, required: true },
+    price: { type: Number, required: true },
     quantity: { type: Number, required: true },
     note: { type: String },
     sku: { type: String },
-    selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
-    finalPriceDiscounts: { type: Number }
+    combinationId: { type: String },
+    variantCombination: { type: VariantCombinationSchema },
   },
   { _id: false }
 );
@@ -121,6 +114,7 @@ const OrderSchema = new Schema<Order>(
     note: { type: String },
     paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
     cartItems: { type: [CartItemsSchema], required: true },
+    stockDeducted: {type: Boolean, default: false },
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },

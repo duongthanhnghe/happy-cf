@@ -5,6 +5,7 @@ import { OrderEntity } from "../../models/v1/order.entity.js";
 import { toProductDTO, toProductListDTO, } from "../../mappers/v1/product.mapper.js";
 import { VariantGroupEntity } from "../../../server/models/v1/variant-group.entity.js";
 import { getApplicableVouchersForProduct } from "./voucher-controller.js";
+import { checkProductStockService } from "../../utils/productStock.js";
 export const isCategoryChainActive = async (categoryId, cache = new Map()) => {
     if (!categoryId)
         return false;
@@ -538,53 +539,65 @@ export const getCartProducts = async (req, res) => {
         return res.status(500).json({ code: 1, message: "Server error" });
     }
 };
+// export const checkProductStock = async (
+//   req: Request,
+//   res: Response
+// ) => {
+//   try {
+//     const { productId, combinationId, quantity } = req.body
+//     if (!productId || !quantity || quantity <= 0) {
+//       return res.status(400).json({
+//         code: 1,
+//         message: 'Thiếu dữ liệu kiểm tra tồn kho'
+//       })
+//     }
+//     const product = await ProductEntity.findById(productId)
+//       .select('amount variantCombinations')
+//     if (!product) {
+//       return res.status(404).json({
+//         code: 1,
+//         message: 'Sản phẩm không tồn tại'
+//       })
+//     }
+//     // ✅ SẢN PHẨM KHÔNG VARIANT
+//     if (!combinationId) {
+//       const stock = product.amount || 0
+//       return res.json({
+//         code: 0,
+//         ok: quantity <= stock,
+//         availableStock: stock
+//       })
+//     }
+//     // ✅ SẢN PHẨM CÓ VARIANT
+//     const combination = product.variantCombinations?.find(
+//       c => c._id.toString() === combinationId
+//     )
+//     if (!combination) {
+//       return res.status(404).json({
+//         code: 1,
+//         message: 'Phân loại không tồn tại'
+//       })
+//     }
+//     const stock = combination.stock || 0
+//     return res.json({
+//       code: 0,
+//       ok: quantity <= stock,
+//       availableStock: stock
+//     })
+//   } catch (err: any) {
+//     return res.status(500).json({
+//       code: 1,
+//       message: err.message
+//     })
+//   }
+// }
 export const checkProductStock = async (req, res) => {
-    var _a;
     try {
-        const { productId, combinationId, quantity } = req.body;
-        if (!productId || !quantity || quantity <= 0) {
-            return res.status(400).json({
-                code: 1,
-                message: 'Thiếu dữ liệu kiểm tra tồn kho'
-            });
-        }
-        const product = await ProductEntity.findById(productId)
-            .select('amount variantCombinations');
-        if (!product) {
-            return res.status(404).json({
-                code: 1,
-                message: 'Sản phẩm không tồn tại'
-            });
-        }
-        // ✅ SẢN PHẨM KHÔNG VARIANT
-        if (!combinationId) {
-            const stock = product.amount || 0;
-            return res.json({
-                code: 0,
-                ok: quantity <= stock,
-                availableStock: stock
-            });
-        }
-        // ✅ SẢN PHẨM CÓ VARIANT
-        const combination = (_a = product.variantCombinations) === null || _a === void 0 ? void 0 : _a.find(c => c._id.toString() === combinationId);
-        if (!combination) {
-            return res.status(404).json({
-                code: 1,
-                message: 'Phân loại không tồn tại'
-            });
-        }
-        const stock = combination.stock || 0;
-        return res.json({
-            code: 0,
-            ok: quantity <= stock,
-            availableStock: stock
-        });
+        const result = await checkProductStockService(req.body);
+        return res.json({ code: 0, ...result });
     }
-    catch (err) {
-        return res.status(500).json({
-            code: 1,
-            message: err.message
-        });
+    catch (e) {
+        return res.status(400).json({ code: 1, message: e.message });
     }
 };
 //# sourceMappingURL=product.controller.js.map

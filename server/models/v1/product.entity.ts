@@ -88,20 +88,7 @@ const ListImageSchema = new Schema<ListImage>(
   { _id: false }
 );
 
-const ProductSelectedVariantSchema = new Schema<ProductSelectedVariant>(
-  {
-    variantId: { type: String, required: true },
-    variantName: { type: String, required: true },
-    priceModifier: { type: Number, default: 0 },
-    inStock: { type: Boolean, default: true },
-    stock: { type: Number, default: 0 },
-    sku: { type: String, required: true },
-    image: { type: String },
-  },
-  { _id: false }
-);
-
-const ProductVariantOptionSchema = new Schema( //new
+const ProductVariantOptionSchema = new Schema( 
   {
     variantId: String,
     variantName: String,
@@ -115,7 +102,6 @@ const ProductVariantGroupSchema = new Schema<ProductVariantGroup>(
     groupName: { type: String, required: true },
     required: { type: Boolean, default: false },
     options: [ProductVariantOptionSchema],
-    // selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
   },
   { _id: false }
 );
@@ -142,7 +128,7 @@ const VariantSchema = new Schema({
   variantName: { type: String, required: true },
 });
 
-const VariantCombinationSchema = new Schema(
+export const VariantCombinationSchema = new Schema(
   {
     sku: { type: String, required: true },
     priceModifier: { type: Number, default: 0 },
@@ -151,7 +137,6 @@ const VariantCombinationSchema = new Schema(
     image: String,
     variants: { type: [VariantSchema], required: true },
   },
- { timestamps: true }
 );
 
 const ProductSchema = new Schema<Product>(

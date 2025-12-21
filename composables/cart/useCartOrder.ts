@@ -38,20 +38,17 @@ export const useCartOrder = (
 
     Loading(true);
 
-
     const newCartItems = cartListItem.value.map((item) => {
       return {
         idProduct: item.id,
-        sku: item.sku,
-        priceDiscounts: item.priceDiscounts,
+        sku: item.variantCombination ? item.variantCombination.sku : item.sku,
+        price: item.variantCombination ? item.variantCombination.priceModifier : item.priceDiscounts,
         quantity: item.quantity,
-        note: item.note ? item.note : null,
-        selectedOptionsPush: item.selectedOptionsPush ? item.selectedOptionsPush : null,
-        finalPriceDiscounts: item.finalPriceDiscounts ? item.finalPriceDiscounts : null
+        note: item.note || null,
+        variantCombination: item.variantCombination || null,
+        combinationId: item.combinationId || ''
       };
     });
-
-    console.log(newCartItems)
 
     const point = userId ? Math.round(totalPriceDiscount.value * 0.05) : 0;
     const newUsedPoint = usedPointOrder.checkBalancePoint ? usedPointOrder.usedPoint : 0;

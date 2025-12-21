@@ -1,26 +1,3 @@
-// export function toProductSelectedVariantDTO(
-//   variant: ProductSelectedVariant
-// ): ProductSelectedVariantDTO {
-//   return {
-//     variantId: variant.variantId,
-//     variantName: variant.variantName,
-//     priceModifier: variant.priceModifier,
-//     inStock: variant.inStock,
-//     stock: variant.stock ?? 0,
-//     sku: variant.sku ?? "",
-//     image: variant.image ?? "",
-//   };
-// }
-// export function toProductVariantGroupDTO(
-//   group: ProductVariantGroup
-// ): ProductVariantGroupDTO {
-//   return {
-//     groupId: group.groupId,
-//     groupName: group.groupName,
-//     required: group.required,
-//     selectedVariants: group.selectedVariants.map(toProductSelectedVariantDTO),
-//   };
-// }
 export function toVariantCombinationDTO(combo) {
     return {
         id: combo._id.toString(),

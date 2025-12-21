@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"120aee-HP5UvM4DyCCfzGkXTk7niJxgQSM\"",
-    "mtime": "2025-12-20T03:44:10.545Z",
-    "size": 1182446,
+    "etag": "\"12149f-F2q1GXzoC+QR131dKt2SuXHBf3A\"",
+    "mtime": "2025-12-21T06:33:59.933Z",
+    "size": 1184927,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"497d75-vXQCOH/xV1QPBlA8VkQpH2/DAPM\"",
-    "mtime": "2025-12-20T03:44:10.552Z",
-    "size": 4816245,
+    "etag": "\"49a31c-JTN9qBlhHbYkUqW1W5nw/9eA4m8\"",
+    "mtime": "2025-12-21T06:33:59.942Z",
+    "size": 4825884,
     "path": "index.mjs.map"
   }
 };
@@ -3144,20 +3144,7 @@ const ListImageSchema = new Schema(
   },
   { _id: false }
 );
-new Schema(
-  {
-    variantId: { type: String, required: true },
-    variantName: { type: String, required: true },
-    priceModifier: { type: Number, default: 0 },
-    inStock: { type: Boolean, default: true },
-    stock: { type: Number, default: 0 },
-    sku: { type: String, required: true },
-    image: { type: String }
-  },
-  { _id: false }
-);
 const ProductVariantOptionSchema = new Schema(
-  //new
   {
     variantId: String,
     variantName: String
@@ -3170,7 +3157,6 @@ const ProductVariantGroupSchema = new Schema(
     groupName: { type: String, required: true },
     required: { type: Boolean, default: false },
     options: [ProductVariantOptionSchema]
-    // selectedVariants: { type: [ProductSelectedVariantSchema], default: [] },
   },
   { _id: false }
 );
@@ -3188,8 +3174,7 @@ const VariantCombinationSchema = new Schema(
     inStock: { type: Boolean, default: true },
     image: String,
     variants: { type: [VariantSchema], required: true }
-  },
-  { timestamps: true }
+  }
 );
 const ProductSchema = new Schema(
   {
@@ -3945,23 +3930,15 @@ const VoucherUsageSchema = new Schema(
 );
 const VoucherUsageEntity = model("VoucherUsage", VoucherUsageSchema);
 
-const SelectedOptionsPushSchema = new Schema(
-  {
-    optionName: { type: String, required: true },
-    variantName: { type: String, required: true },
-    variantPrice: { type: Number, required: true }
-  },
-  { _id: false }
-);
 const CartItemsSchema = new Schema(
   {
     idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-    priceDiscounts: { type: Number, required: true },
+    price: { type: Number, required: true },
     quantity: { type: Number, required: true },
     note: { type: String },
     sku: { type: String },
-    selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
-    finalPriceDiscounts: { type: Number }
+    combinationId: { type: String },
+    variantCombination: { type: VariantCombinationSchema }
   },
   { _id: false }
 );
@@ -3999,6 +3976,7 @@ const OrderSchema = new Schema(
     note: { type: String },
     paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
     cartItems: { type: [CartItemsSchema], required: true },
+    stockDeducted: { type: Boolean, default: false },
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
@@ -4587,6 +4565,7 @@ function toOrderDTO(entity) {
     note: entity.note || "",
     paymentId: toPaymentDTO(entity.paymentId),
     cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map(toCartItemDTO) : [],
+    stockDeducted: entity.stockDeducted,
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
@@ -4644,19 +4623,12 @@ function toCartItemDTO(entity) {
   }
   return {
     idProduct,
-    priceDiscounts: entity.priceDiscounts,
+    price: entity.price,
     quantity: entity.quantity,
     note: entity.note || "",
     sku: entity.sku,
-    selectedOptionsPush: Array.isArray(entity.selectedOptionsPush) ? entity.selectedOptionsPush.map(toSelectedOptionDTO) : [],
-    finalPriceDiscounts: entity.finalPriceDiscounts
-  };
-}
-function toSelectedOptionDTO(entity) {
-  return {
-    optionName: entity.optionName,
-    variantName: entity.variantName,
-    variantPrice: entity.variantPrice
+    variantCombination: entity.variantCombination,
+    combinationId: entity.combinationId || ""
   };
 }
 
@@ -4735,6 +4707,34 @@ const VoucherSchema = new Schema(
 );
 VoucherSchema.plugin(mongoosePaginate);
 const VoucherEntity = model("Voucher", VoucherSchema, "vouchers");
+
+const restoreStockOrder = async (order) => {
+  for (const item of order.cartItems) {
+    const productId = typeof item.idProduct === "string" ? item.idProduct : item.idProduct._id;
+    if (!item.sku) {
+      await ProductEntity.updateOne(
+        { _id: productId },
+        { $inc: { amount: item.quantity } }
+      );
+      continue;
+    }
+    await ProductEntity.updateOne(
+      {
+        _id: productId,
+        variantCombinations: {
+          $elemMatch: {
+            sku: item.sku
+          }
+        }
+      },
+      {
+        $inc: {
+          "variantCombinations.$.stock": item.quantity
+        }
+      }
+    );
+  }
+};
 
 const getAllOrder = async (req, res) => {
   try {
@@ -4931,19 +4931,23 @@ const updateOrderStatus = async (req, res) => {
       await order.save();
     }
     if (status.id === ORDER_STATUS.CANCELLED && order.userId) {
-      const user = await UserModel.findById(order.userId);
-      if (!order.pointsRefunded && order.usedPoints > 0 && user) {
-        user.membership.balancePoint += order.usedPoints;
-        user.membership.balancePoint -= order.reward.points;
-        order.pointsRefunded = true;
-      }
-      if (((_b = order.reward) == null ? void 0 : _b.awarded) && order.reward.points > 0) {
-        await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
-        order.reward.awarded = false;
-        order.reward.awardedAt = /* @__PURE__ */ new Date();
-      }
+      await restoreStockOrder(order);
+      order.stockDeducted = false;
       await rollbackVoucherUsage(order);
-      await (user == null ? void 0 : user.save());
+      if (order.userId) {
+        const user = await UserModel.findById(order.userId);
+        if (!order.pointsRefunded && order.usedPoints > 0 && user) {
+          user.membership.balancePoint += order.usedPoints;
+          user.membership.balancePoint -= order.reward.points;
+          order.pointsRefunded = true;
+        }
+        if (((_b = order.reward) == null ? void 0 : _b.awarded) && order.reward.points > 0) {
+          await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
+          order.reward.awarded = false;
+          order.reward.awardedAt = /* @__PURE__ */ new Date();
+        }
+        await (user == null ? void 0 : user.save());
+      }
     }
     await order.save();
     return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
@@ -29515,6 +29519,7 @@ const importProducts = async (req, res) => {
           image: row.image || "",
           listImage: [],
           variantGroups: [],
+          variantCombinations: [],
           summaryContent: row.summaryContent || "",
           categoryId: new mongoose.Types.ObjectId(category._id),
           weight: Number(row.weight || 0),
@@ -31418,6 +31423,69 @@ const PAYMENT_METHOD_STATUS = {
   CASH: "cash"
 };
 
+const checkProductStockService = async ({
+  productId,
+  sku,
+  quantity
+}) => {
+  const product = await ProductEntity.findById(productId).select("amount variantCombinations");
+  if (!product) {
+    throw new Error("S\u1EA3n ph\u1EA9m kh\xF4ng t\u1ED3n t\u1EA1i");
+  }
+  if (!sku) {
+    const stock2 = product.amount || 0;
+    return { ok: quantity <= stock2, availableStock: stock2 };
+  }
+  const combination = product.variantCombinations.find(
+    (c) => c.sku === sku
+  );
+  if (!combination) {
+    throw new Error(`Ph\xE2n lo\u1EA1i ${sku} kh\xF4ng t\u1ED3n t\u1EA1i`);
+  }
+  const stock = combination.stock || 0;
+  return { ok: quantity <= stock, availableStock: stock };
+};
+
+const deductStockOrder = async (cartItems) => {
+  for (const item of cartItems) {
+    const productId = typeof item.idProduct === "string" ? item.idProduct : item.idProduct._id;
+    if (!item.sku) {
+      const result2 = await ProductEntity.updateOne(
+        {
+          _id: productId,
+          amount: { $gte: item.quantity }
+        },
+        {
+          $inc: { amount: -item.quantity }
+        }
+      );
+      if (result2.modifiedCount === 0) {
+        throw new Error("S\u1EA3n ph\u1EA9m kh\xF4ng \u0111\u1EE7 t\u1ED3n kho");
+      }
+      continue;
+    }
+    const result = await ProductEntity.updateOne(
+      {
+        _id: productId,
+        variantCombinations: {
+          $elemMatch: {
+            sku: item.sku,
+            stock: { $gte: item.quantity }
+          }
+        }
+      },
+      {
+        $inc: {
+          "variantCombinations.$.stock": -item.quantity
+        }
+      }
+    );
+    if (result.modifiedCount === 0) {
+      throw new Error(`Ph\xE2n lo\u1EA1i ${item.sku} kh\xF4ng \u0111\u1EE7 t\u1ED3n kho`);
+    }
+  }
+};
+
 const getOrderById = async (req, res) => {
   try {
     const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" }).populate({
@@ -31439,6 +31507,24 @@ const createOrder = async (req, res) => {
     const { data, userId, point, usedPoint } = req.body;
     if (!(data == null ? void 0 : data.fullname) || !(data == null ? void 0 : data.phone) || !(data == null ? void 0 : data.paymentId) || !(data == null ? void 0 : data.cartItems)) {
       return res.status(400).json({ code: 1, message: "D\u1EEF li\u1EC7u \u0111\u01A1n h\xE0ng kh\xF4ng h\u1EE3p l\u1EC7" });
+    }
+    for (const item of data.cartItems) {
+      const productId = typeof item.idProduct === "string" ? item.idProduct : item.idProduct._id;
+      const result = await checkProductStockService({
+        productId,
+        sku: item.sku,
+        quantity: item.quantity
+      });
+      if (!result.ok) {
+        return res.status(400).json({
+          code: 1,
+          message: "S\u1EA3n ph\u1EA9m kh\xF4ng \u0111\u1EE7 t\u1ED3n kho",
+          data: {
+            productId: item.productId,
+            availableStock: result.availableStock
+          }
+        });
+      }
     }
     let membershipDiscountRate = 0;
     let membershipDiscountAmount = 0;
@@ -31465,6 +31551,7 @@ const createOrder = async (req, res) => {
       await user.save();
       deductedPoints = usedPoint;
     }
+    await deductStockOrder(data.cartItems);
     const newOrder = await OrderEntity.create({
       ...data,
       userId,
@@ -33216,50 +33303,11 @@ const getCartProducts = async (req, res) => {
   }
 };
 const checkProductStock = async (req, res) => {
-  var _a;
   try {
-    const { productId, combinationId, quantity } = req.body;
-    if (!productId || !quantity || quantity <= 0) {
-      return res.status(400).json({
-        code: 1,
-        message: "Thi\u1EBFu d\u1EEF li\u1EC7u ki\u1EC3m tra t\u1ED3n kho"
-      });
-    }
-    const product = await ProductEntity.findById(productId).select("amount variantCombinations");
-    if (!product) {
-      return res.status(404).json({
-        code: 1,
-        message: "S\u1EA3n ph\u1EA9m kh\xF4ng t\u1ED3n t\u1EA1i"
-      });
-    }
-    if (!combinationId) {
-      const stock2 = product.amount || 0;
-      return res.json({
-        code: 0,
-        ok: quantity <= stock2,
-        availableStock: stock2
-      });
-    }
-    const combination = (_a = product.variantCombinations) == null ? void 0 : _a.find(
-      (c) => c._id.toString() === combinationId
-    );
-    if (!combination) {
-      return res.status(404).json({
-        code: 1,
-        message: "Ph\xE2n lo\u1EA1i kh\xF4ng t\u1ED3n t\u1EA1i"
-      });
-    }
-    const stock = combination.stock || 0;
-    return res.json({
-      code: 0,
-      ok: quantity <= stock,
-      availableStock: stock
-    });
-  } catch (err) {
-    return res.status(500).json({
-      code: 1,
-      message: err.message
-    });
+    const result = await checkProductStockService(req.body);
+    return res.json({ code: 0, ...result });
+  } catch (e) {
+    return res.status(400).json({ code: 1, message: e.message });
   }
 };
 

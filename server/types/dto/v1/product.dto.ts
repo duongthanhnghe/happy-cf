@@ -1,4 +1,4 @@
-import type { ProductVariantCombination, ProductVariantOption } from '@/server/models/v1/product.entity';
+import type { ProductVariantOption } from '@/server/models/v1/product.entity';
 import type { ImportDTO, ImportItemDTO } from '../../common/import.dto';
 import type { PaginationDTO } from '../../common/pagination.dto'
 
@@ -27,27 +27,6 @@ export type CreateVariantGroupDTO = Omit<VariantGroupDTO, "id" | "createdAt" | "
 
 export type UpdateVariantGroupDTO = Partial<CreateVariantGroupDTO> & { id: string };
 
-export interface AddVariantToGroupDTO {
-  groupId: string;
-  variantId: string;
-  variantName: string;
-}
-
-export interface RemoveVariantFromGroupDTO {
-  groupId: string;
-  variantId: string;
-}
-
-export interface ProductSelectedVariantDTO {
-  variantId: string;
-  variantName: string;
-  priceModifier: number;
-  inStock: boolean;
-  stock: number;
-  sku: string;
-  image: string;
-}
-
 export interface ProductVariantGroupDTO {
   groupId: string;
   groupName: string;
@@ -67,7 +46,6 @@ export interface ProductVariantCombinationDTO {
     groupName: string;
     variantId: string;
     variantName: string;
-    // stock?: number;
   }[];
 }
 
@@ -87,7 +65,6 @@ export interface ProductDTO {
   amountOrder: number;
   image: string;
   listImage: ListImageDTO[];
-  // variantGroups: ProductVariantGroupDTO[];
   variantGroups: ProductVariantGroupDTO[];
   variantCombinations: ProductVariantCombinationDTO[];
   categoryId: string;
@@ -214,9 +191,6 @@ export interface CartDTO {
   combinationId?: string
   quantity: number;
   note?: string;
-  selectedOptionsPush?: SelectedOptionPushDTO[];
-  finalPrice?: number;
-  finalPriceDiscounts?: number;
   price?: number;
   priceDiscounts?: number;
   weight?: number;

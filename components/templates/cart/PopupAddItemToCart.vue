@@ -14,14 +14,6 @@ const storeWishlist = useWishlistStore();
 
 const detail = computed(() => storeProductDetail.getDetailProduct);
 
-// const selectedStock = computed(() => {
-//   if (!storeProductDetail.getDetailProduct?.variantCombinations) return 0
-
-//   return storeCart.getSelectedVariantStock(
-//     storeProductDetail.getDetailProduct.variantCombinations
-//   )
-// })
-
 const variantGroupsUI = computed(() => {
   if (!storeProductDetail.getDetailProduct?.variantCombinations) return []
   return storeCart.variantGroupsUI(
@@ -30,9 +22,12 @@ const variantGroupsUI = computed(() => {
 })
 
 watch(
-  [variantGroupsUI, () => storeCart.getPopupState('order')],
-  ([groups, isOpen]) => {
-    if (!isOpen || !groups.length) return
+  () => storeCart.getPopupState('order'),
+  (isOpen) => {
+    if (!isOpen) return
+
+    const groups = variantGroupsUI.value
+    if (!groups.length) return
 
     storeCart.autoSelectFirstVariants(groups)
   }

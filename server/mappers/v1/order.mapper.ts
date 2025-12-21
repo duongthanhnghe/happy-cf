@@ -2,7 +2,6 @@ import type {
   OrderDTO,
   OrderStatusDTO,
   PaymentDTO,
-  selectedOptionsPush,
   cartItems,
 } from "../../types/dto/v1/order.dto";
 import type { Order, OrderStatus, Payment } from "../../models/v1/order.entity";
@@ -54,6 +53,7 @@ export function toOrderDTO(entity: Order): OrderDTO {
     cartItems: Array.isArray(entity.cartItems)
       ? entity.cartItems.map(toCartItemDTO)
       : [],
+    stockDeducted: entity.stockDeducted,
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
@@ -128,22 +128,11 @@ function toCartItemDTO(entity: cartItems): cartItems {
 
   return {
     idProduct,
-    priceDiscounts: entity.priceDiscounts,
+    price: entity.price,
     quantity: entity.quantity,
     note: entity.note || "",
     sku: entity.sku,
-    selectedOptionsPush: Array.isArray(entity.selectedOptionsPush)
-      ? entity.selectedOptionsPush.map(toSelectedOptionDTO)
-      : [],
-    finalPriceDiscounts: entity.finalPriceDiscounts,
-  };
-}
-
-
-function toSelectedOptionDTO(entity: selectedOptionsPush): selectedOptionsPush {
-  return {
-    optionName: entity.optionName,
-    variantName: entity.variantName,
-    variantPrice: entity.variantPrice,
+    variantCombination: entity.variantCombination,
+    combinationId: entity.combinationId || "",
   };
 }

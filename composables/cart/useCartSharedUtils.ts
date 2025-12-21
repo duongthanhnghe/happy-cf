@@ -15,6 +15,7 @@ export const useCartSharedUtils = (
   const { getDetailProduct, fetchDetailProduct } = useProductDetail()
 
   const resetFormCart = () => {
+    clearTempSelected();
     quantity.value = 1;
     note.value = '';
     productDetailEdit.value = null;
@@ -32,8 +33,12 @@ export const useCartSharedUtils = (
   };
 
   const togglePopup = (popupId: keyof typeof popups.value, value: any) => {
-    if(popupId === 'order' && popups.value[popupId] === false) clearTempSelected();
-    if(popups.value[popupId] !== undefined) popups.value[popupId] = value;
+    const prev = popups.value[popupId]
+    popups.value[popupId] = value
+
+    if (popupId === 'order' && prev === true && value === false) {
+      resetFormCart()
+    }
   };
 
   const getPopupState = (popupId: keyof typeof popups.value) => {

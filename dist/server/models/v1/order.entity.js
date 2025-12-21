@@ -1,19 +1,15 @@
 import { Schema, model } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 import { VoucherUsageOrderSchema } from "./voucher-usage.entity.js";
-const SelectedOptionsPushSchema = new Schema({
-    optionName: { type: String, required: true },
-    variantName: { type: String, required: true },
-    variantPrice: { type: Number, required: true }
-}, { _id: false });
+import { VariantCombinationSchema } from "./product.entity.js";
 const CartItemsSchema = new Schema({
     idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-    priceDiscounts: { type: Number, required: true },
+    price: { type: Number, required: true },
     quantity: { type: Number, required: true },
     note: { type: String },
     sku: { type: String },
-    selectedOptionsPush: { type: [SelectedOptionsPushSchema], default: [] },
-    finalPriceDiscounts: { type: Number }
+    combinationId: { type: String },
+    variantCombination: { type: VariantCombinationSchema },
 }, { _id: false });
 const PaymentSchema = new Schema({
     name: { type: String, required: true },
@@ -42,6 +38,7 @@ const OrderSchema = new Schema({
     note: { type: String },
     paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
     cartItems: { type: [CartItemsSchema], required: true },
+    stockDeducted: { type: Boolean, default: false },
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },

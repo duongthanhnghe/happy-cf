@@ -31,7 +31,7 @@ export const useCartVoucher = (
       productId: item.id || '',
       name: item.productName || '',
       categoryId: item.categoryId || '',
-      price: item.finalPriceDiscounts ? item.finalPriceDiscounts : item.priceDiscounts || 0,
+      price: item.variantCombination ? item.variantCombination.priceModifier : item.priceDiscounts || 0,
       quantity: item.quantity,
     }));
     const orderCreatedAt = new Date().toISOString();
