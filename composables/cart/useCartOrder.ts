@@ -73,7 +73,7 @@ export const useCartOrder = (
       totalPrice: totalPriceDiscount.value,
       totalPriceSave: totalPriceSave.value,
       totalPriceCurrent: totalPriceCurrent.value,
-      totalDiscountOrder: totalPriceCurrent.value - orderPriceDiscount.value,
+      totalDiscountOrder: orderPriceDiscount.value,
       shippingFee: shippingFee.value,
       status: ORDER_STATUS.PENDING,
       userId: userId || null,

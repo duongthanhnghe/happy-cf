@@ -85,7 +85,7 @@ const storeDetailOrder = useSharedOrderDetailStore()
           {{ formatCurrency(storeDetailOrder.getDetailOrder?.shippingFee) }}
         </span>
       </div>
-      <div v-if="storeDetailOrder.getDetailOrder?.totalDiscountOrder && storeDetailOrder.getDetailOrder?.totalDiscountOrder != 0" class="flex justify-between text-color-gray5">
+      <div v-if="storeDetailOrder.getDetailOrder?.totalDiscountOrder && storeDetailOrder.getDetailOrder?.totalDiscountOrder !== 0" class="flex justify-between text-color-gray5">
         Giảm đơn hàng <span>-{{ formatCurrency(storeDetailOrder.getDetailOrder?.totalDiscountOrder) }}</span>
       </div>
       <div v-if="storeDetailOrder.getDetailOrder?.usedPoints !== 0" class="flex justify-between text-color-gray5">

@@ -114,6 +114,9 @@ a {
 }
 
 .height {
+  &-150 {
+    height: 150px;
+  }
   &-200 {
     height: 200px;
   }
