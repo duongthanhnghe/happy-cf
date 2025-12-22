@@ -132,7 +132,7 @@ const storeDetailOrder = useSharedOrderDetailStore()
       <div class="flex flex-1 justify-between">
         <div>
           <div class="weight-medium text-color-black">
-            Người giao hàng
+            Hỗ trợ đơn hàng
           </div>
           <span class="text-color-gray5 text-size-xs">{{ storeSetting.getBaseInformation?.name }}</span>
         </div>

@@ -14,7 +14,7 @@ export const useSearchStore = defineStore("SearchStore", () => {
 
   const txtSearch = ref('');
   const isTogglePopup = ref<boolean>(false);
-  const limit = 10
+  const limit = 12
   const limitSearchKeyword = (10);
   const items = ref<ProductPaginationDTO|null>(null)
 
@@ -32,14 +32,18 @@ export const useSearchStore = defineStore("SearchStore", () => {
     fetchSearchKeyword,
   );
 
-  const getListProductResult = computed(() => items.value?.data)
+  const getListProductResult = computed(() => items.value)
 
   return {
     txtSearch,
     isTogglePopup,
+    limit,
+    items,
     ...utils,
     getListProductResult,
     getListSearchKeyword,
     loadingProduct,
+    getListProductSearch,
+    fetchListProductSearch,
   };
 });

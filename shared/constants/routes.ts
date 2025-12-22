@@ -406,6 +406,13 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
           layout: 'default',
           headerTypeLeft: 'address',
         },
+        SEARCH: {
+          path: '/product/search',
+          label: 'Kết quả tìm kiếm',
+          icon: 'article',
+          middleware: ['product-search-result','auth-login'],
+          layout: 'default',
+        },
         DETAIL: {
           path: '/product/:slug',
           label: 'Chi tiết sản phẩm',

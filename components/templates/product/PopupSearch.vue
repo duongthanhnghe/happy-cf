@@ -33,27 +33,29 @@ const storeProductMostOrder = useProductMostOrderStore()
     </template>
     <template #body>
       <LoadingData v-if="store.loadingProduct" />
-      <v-infinite-scroll
-        v-else-if="store.getListProductResult && store.getListProductResult.length > 0"
-        height="auto"
-        mode="manual"
-        @load="store.load"
-      >
-        <div class="mb-sm">
-          <template v-for="(item, index) in store.getListProductResult" :key="index">
-            <div class="mt-sm">
-              <ProductItemTemplate1 :product="item" :listView="true"/>
-            </div>
-          </template>
+      <template  v-else-if="store.getListProductResult && store.getListProductResult.data.length > 0">
+        <v-infinite-scroll
+          height="auto"
+          mode="manual"
+          @load="store.load"
+        >
+          <div class="mb-sm">
+            <template v-for="(item, index) in store.getListProductResult.data" :key="index">
+              <div class="mt-sm">
+                <ProductItemTemplate1 :product="item" :listView="true"/>
+              </div>
+            </template>
+          </div>
+          <template #load-more="{ props }" />
+        </v-infinite-scroll>
+        <div class="text-center" v-if="store.txtSearch">
+          <Button @click="store.handleViewAll()" color="black" label="Xem tất cả"/>
         </div>
-        <template #load-more="{ props }">
-          <Button color="secondary" label="Xem thêm" @click="props.onClick" />
-        </template>
-      </v-infinite-scroll>
-      <NoData v-else-if="store.getListProductResult && store.getListProductResult.length === 0" class="mt-sm" text="Không có kết quả phù hợp" />
+      </template>
+      <NoData v-else-if="store.getListProductResult && store.getListProductResult.data.length === 0" class="mt-sm" text="Không có kết quả phù hợp" />
       <template v-else></template>
 
-      <div v-if="store.getListSearchKeyword && store.getListSearchKeyword.length > 0 && (!store.getListProductResult || store.getListProductResult.length === 0)" class="flex flex-wrap gap-xs mt-sm">
+      <div v-if="store.getListSearchKeyword && store.getListSearchKeyword.length > 0 && (!store.getListProductResult || store.getListProductResult.data.length === 0)" class="flex flex-wrap gap-xs mt-sm">
         <div v-for="(item, index) in store.getListSearchKeyword" :key="index">
           <Button size="sm" color="gray" :border="false" class="weight-normal" :label="item.keyword" @click="store.handleLabelSearchItem(item.keyword)"/>
         </div>

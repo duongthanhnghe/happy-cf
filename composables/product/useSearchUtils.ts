@@ -2,6 +2,8 @@ import { type Ref } from 'vue';
 import { showWarning } from '@/utils/toast';
 import type { ProductPaginationDTO } from '@/server/types/dto/v1/product.dto';
 import type { SearchKeywordDTO } from '@/server/types/dto/v1/search-keyword.dto';
+import { ROUTES } from '@/shared/constants/routes';
+import { useRouter } from 'vue-router';
 
 export const useSearchUtils = (
   txtSearch: Ref<string>,
@@ -16,6 +18,8 @@ export const useSearchUtils = (
   fetchLogSearchKeyword: (keyQuery: string) => Promise<void>,
   fetchSearchKeyword: (limit: number) => Promise<void>,
   ) => {
+
+  const router = useRouter()
 
   const handleTogglePopup = (value: boolean) => {
     isTogglePopup.value = value;
@@ -76,6 +80,16 @@ export const useSearchUtils = (
     if(getListProductSearch.value) items.value = getListProductSearch.value
   }
 
+  const handleViewAll = () => {
+    router.push({
+      path: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.path,
+      query: {
+        search: txtSearch.value,
+      },
+    })
+    isTogglePopup.value = false
+  }
+
   return {
    handleTogglePopup,
    handleCancelSearch,
@@ -83,5 +97,6 @@ export const useSearchUtils = (
    onChangeSearch,
    handleLabelSearchItem,
    getApiListProduct,
+   handleViewAll,
   };
 };
