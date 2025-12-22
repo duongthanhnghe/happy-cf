@@ -11,13 +11,13 @@ const storeCart = useCartStore();
 
 </script>
 <template>
-  <div class="bg-white border-default pd-xs flex rd-xl">
-    <div class="width-100 rd-lg bg-gray6 flex align-center">
+  <div class="bg-white border-default pd-xs flex align-start rd-xl">
+    <div class="width-100 rd-lg bg-gray6 flex">
       <img :src="item.image" :alt="item.productName" />
     </div>
     <div class="flex justify-between flex-direction-column position-relative flex-1 pd-xs pl-sm">
       <div>
-        <Text :text="item.productName" color="black" limit="2" class="mb-sm" />
+        <Text :text="item.productName" color="black" limit="2" class="mb-sm pr-xl" />
         <div class="mb-xs" v-if="item.variantCombination?.variants">
           <Text
             v-for="optionItem in item.variantCombination.variants"

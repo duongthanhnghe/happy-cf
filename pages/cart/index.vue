@@ -89,8 +89,8 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- LABEL POINT -->
-        <template v-if="store.getTotalPriceDiscount != 0 && storeAccount.getUserId">
-          <CartPointInfoLabel :getTotalPoint="store.getTotalPoint"/>
+        <template v-if="store.getTotalPriceDiscount != 0">
+          <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId"/>
         </template>
         
         <!-- PERSION INFO -->

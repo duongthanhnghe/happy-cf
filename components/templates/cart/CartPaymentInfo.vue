@@ -14,7 +14,7 @@ const props = defineProps<{
   <Card class="rd-xl mt-sm shadow-1 mt-ms">
     <div class="flex gap-xs align-baseline">
       <Text text="Chi tiết thanh toán" color="black" size="md" weight="semibold" />
-      <Text v-if="!storeDisplay.isMobileTable" color="green" :text="`(Tiết kiệm: ${ formatCurrency(store.getTotalPriceSave)})`" />
+      <Text v-if="!storeDisplay.isMobileTable && store.getTotalPriceSave !== 0" color="green" :text="`(Tiết kiệm: ${ formatCurrency(store.getTotalPriceSave)})`" />
     </div>
 
     <div class="line-height-1 flex justify-between mt-sm">
@@ -84,7 +84,7 @@ const props = defineProps<{
         <div class="flex justify-between">
           <div>
           <Text color="gray5" text="Thành tiền" />
-          <Text color="green" :text="`Tiết kiệm: ${ formatCurrency(store.getTotalPriceSave) }`" />
+          <Text v-if="store.getTotalPriceSave !== 0" color="green" :text="`Tiết kiệm: ${ formatCurrency(store.getTotalPriceSave) }`" />
           </div>
           <Text size="md" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceOrder) }} </Text>
         </div>

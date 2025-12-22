@@ -64,6 +64,7 @@ watch(
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', store.onScroll);
   storeCart.clearTempSelected()
+  store.isDetailInfoActive = true
 });
 
 </script>
@@ -111,7 +112,7 @@ onBeforeUnmount(() => {
 
             <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" class="mt-ms" />
             <client-only>
-            <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" v-if="detail.priceDiscounts !== 0 && storeAccount.getUserId"/>
+            <CartPointInfoLabel v-if="detail.priceDiscounts !== 0 && storeAccount.getUserId" :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId" />
             </client-only>
 
             <div class="flex flex-direction-column gap-ms mt-ms" v-if="detail.variantCombinations.length">
@@ -126,7 +127,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <ProductDetailDescription v-if="detail.description" :description="detail.description" />
+    <ProductDetailDescription :description="detail.description" />
     <ProductDetailFixedMobile v-if="storeDisplay.isMobileTable" :detail="detail" :class="{ hide: store.isDetailInfoActive }" />
     <ProductDetailFixedPC v-else :detail="detail" :variantPrice="store.variantPrice" :class="{ hide: store.isDetailInfoActive }" />
   </div>

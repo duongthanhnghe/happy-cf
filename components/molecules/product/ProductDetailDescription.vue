@@ -20,12 +20,15 @@ onMounted(async () => {
   <div class="bg-gray6">
     <div class="container pt-section pb-section">
       <Text text="Mô tả sản phẩm" size="md" weight="semibold" align="center" color="black" />
-      <div class="mt-sm product-detail-description" :class="{active: store.toggleDescription}" :ref="el => store.descRef = el">
-        {{ props.description }}
-      </div>
-      <div v-if="store.isLongDescription" class="text-center">
-        <Button color="secondary" :label="store.toggleDescription ? 'Thu gọn':'Xem thêm'" class="weight-medium bg-transparent" @click="store.handleToggleDescription()" />
-      </div>
+      <template v-if="props.description">
+        <div class="mt-sm product-detail-description" :class="{active: store.toggleDescription}" :ref="el => store.descRef = el">
+          {{ props.description }}
+        </div>
+        <div v-if="store.isLongDescription" class="text-center">
+          <Button color="secondary" :label="store.toggleDescription ? 'Thu gọn':'Xem thêm'" class="weight-medium bg-transparent" @click="store.handleToggleDescription()" />
+        </div>
+      </template>
+      <NoData v-else text="Nội dung đang được cập nhật!" class="mt-ms"/>
     </div>
   </div>
 </template>

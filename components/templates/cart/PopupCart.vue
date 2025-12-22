@@ -36,8 +36,8 @@ onMounted(async() => {
         <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
       </div>
 
-      <template v-if="store.getTotalPriceDiscount != 0 && storeAccount.getUserId">
-        <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" />
+      <template v-if="store.getTotalPriceDiscount != 0">
+        <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId" />
       </template>
     
       <Text color="gray5" textClass="mt-sm flex gap-xs justify-end align-baseline">
