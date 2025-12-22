@@ -10,20 +10,27 @@ export const useOrderStore = defineStore('order', () => {
   const filterType = ref<ProductSortType>('discount')
   const filterCategory = ref<Record<string, string>>({})
 
-  async function load(category:CategoryWithProductsDTO , { done }: { done: (status: 'ok' | 'empty') => void }) {
+  async function load(category: CategoryWithProductsDTO, { done }: { done: (status: 'ok' | 'empty') => void } ) {
     try {
-      const currentPage = category.products.pagination.page
-      const totalPages = category.products.pagination.totalPages
+      const pagination = category.products.pagination
+      const loadedCount = category.products.data.length
+      const totalItems = pagination.total
 
-      if (currentPage >= totalPages) {
+      if (loadedCount >= totalItems) {
         done('empty')
         return
       }
 
-      const nextPage = currentPage + 1
-      const res = await productsAPI.getListByCategory(category.id, nextPage, limit, filterType.value)
+      const nextPage = pagination.page + 1
 
-      if (res.data && res.data.length > 0) {
+      const res = await productsAPI.getListByCategory(
+        category.id,
+        nextPage,
+        limit,
+        filterType.value
+      )
+
+      if (res.data?.length) {
         category.products.data.push(...res.data)
         category.products.pagination = res.pagination
         done('ok')
@@ -31,7 +38,7 @@ export const useOrderStore = defineStore('order', () => {
         done('empty')
       }
     } catch (err) {
-      console.error('Error loading more products:', err)
+      console.error(err)
       done('empty')
     }
   }

@@ -2218,6 +2218,17 @@ body .swiper {
   }
 }
 
+.v-checkbox, .v-radio-group {
+  .v-selection-control__input, .v-selection-control__wrapper {
+    width: auto;
+    height: auto;
+    margin-right: 4px;
+  }
+  .v-selection-control {
+    min-height: 40px !important;
+  }
+}
+
 .v-rating-control {
   gap: $space-xs;
   .v-rating__wrapper {

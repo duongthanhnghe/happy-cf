@@ -42,7 +42,7 @@ onBeforeUnmount(() => {
 
     <div class="container container-xxl" >
       <div v-if="storeDisplay.isLaptop" class="flex gap-md align-start">
-        <ProductFilterPC v-show="storeCategoryMain.getListItems.length > 0"  :categoryName="detail.categoryName" :variantGroups="storeVariant.getListVariantGroup" />
+        <ProductFilterPC :categoryName="detail.categoryName" :variantGroups="storeVariant.getListVariantGroup" />
         <div class="flex-1 pt-section pb-section">
           <ProductCategoryMain :detail="detail"/>
         </div>

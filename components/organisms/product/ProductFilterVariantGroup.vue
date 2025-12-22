@@ -10,8 +10,8 @@ const props = defineProps<{
 
 <template>
   <div v-if="props.variantGroups.length">
-    <div v-for="group in props.variantGroups" :key="group.id" class="mb-ms">
-      <Text :text="group.groupName" color="black" size="normal" weight="semibold" class="mb-xs" />
+    <div v-for="group in props.variantGroups" :key="group.id" class="mb-md">
+      <Text :text="group.groupName" color="black" size="normal" weight="semibold" class="mb-sm" />
       <div class="flex flex-wrap gap-xs">
         <VCheckbox
           v-for="variant in group.variants"

@@ -1155,15 +1155,15 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"1214fa-8ZrxEaCBrKd4q4vwfSRVeJCx/nQ\"",
-    "mtime": "2025-12-21T06:58:33.862Z",
+    "etag": "\"1214fa-1lpAulWgeq5hSFgd0PgLMdRPPpI\"",
+    "mtime": "2025-12-21T11:08:20.652Z",
     "size": 1185018,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
     "etag": "\"49a46e-isAiYxhHxo50oO7D3riiG1ZgrB0\"",
-    "mtime": "2025-12-21T06:58:33.869Z",
+    "mtime": "2025-12-21T11:08:20.662Z",
     "size": 4826222,
     "path": "index.mjs.map"
   }
@@ -33139,44 +33139,60 @@ const getProductsByCategory = async (req, res) => {
       }
     }
     if (activeCategories.length === 0) {
-      return res.json({ code: 0, data: [], pagination: { page: 1, limit: 0, total: 0, totalPages: 0 } });
+      return res.json({
+        code: 0,
+        data: [],
+        pagination: { page: 1, limit: 0, total: 0, totalPages: 0 }
+      });
     }
     const match = {
       categoryId: { $in: activeCategories },
       isActive: true
     };
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.max(Number(req.query.limit) || 10, 1);
     const skip = (page - 1) * limit;
     const total = await ProductEntity.countDocuments(match);
-    let sortQuery = { updatedAt: -1 };
     const sort = req.query.sort;
+    let sortQuery = { updatedAt: -1, _id: 1 };
     switch (sort) {
       case "price_desc":
-        sortQuery = { price: -1 };
+        sortQuery = { price: -1, _id: 1 };
         break;
       case "price_asc":
-        sortQuery = { price: 1 };
+        sortQuery = { price: 1, _id: 1 };
         break;
       case "discount":
-        sortQuery = {
-          discountValue: -1
-        };
+        sortQuery = { discountValue: -1, _id: 1 };
         break;
       case "popular":
-        sortQuery = { amountOrder: -1 };
+        sortQuery = { amountOrder: -1, _id: 1 };
         break;
     }
     const products = await ProductEntity.aggregate([
       { $match: match },
+      // ✅ TẠO FIELD SORT ĐÚNG
       {
         $addFields: {
           price: { $toDouble: "$price" },
-          priceDiscount: { $toDouble: "$priceDiscounts" }
+          priceDiscount: { $toDouble: "$priceDiscounts" },
+          discountValue: {
+            $cond: [
+              {
+                $and: [
+                  { $gt: ["$price", 0] },
+                  { $gt: ["$priceDiscounts", 0] }
+                ]
+              },
+              { $subtract: ["$price", "$priceDiscounts"] },
+              0
+            ]
+          }
         }
       },
+      // ✅ SORT ỔN ĐỊNH
       { $sort: sortQuery },
-      // { $sort: { updatedAt: -1 } },
+      // ✅ PAGINATION
       { $skip: skip },
       { $limit: limit }
     ]);
@@ -33184,10 +33200,7 @@ const getProductsByCategory = async (req, res) => {
     const productResults = [];
     for (const p of productsWithVariants) {
       const vouchers = await getApplicableVouchersForProduct(p);
-      productResults.push({
-        ...p,
-        vouchers
-      });
+      productResults.push({ ...p, vouchers });
     }
     return res.json({
       code: 0,
@@ -33200,6 +33213,7 @@ const getProductsByCategory = async (req, res) => {
       }
     });
   } catch (err) {
+    console.error("getProductsByCategory error:", err);
     return res.status(500).json({ code: 1, message: err.message });
   }
 };

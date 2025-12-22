@@ -334,6 +334,105 @@ export const getMostOrderedProduct = async (req, res) => {
         return res.status(500).json({ code: 1, message: "Server error" });
     }
 };
+// export const getProductsByCategory = async (
+//   req: Request<{ id: string }>,
+//   res: Response
+// ) => {
+//   try {
+//     if (!Types.ObjectId.isValid(req.params.id)) {
+//       return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
+//     }
+//     const categoryId = new Types.ObjectId(req.params.id);
+//     const categories = await CategoryProductEntity.aggregate([
+//       { $match: { _id: categoryId } },
+//       {
+//         $graphLookup: {
+//           from: CategoryProductEntity.collection.name,
+//           startWith: "$_id",
+//           connectFromField: "_id",
+//           connectToField: "parentId",
+//           as: "descendants"
+//         }
+//       },
+//       {
+//         $project: {
+//           ids: { $concatArrays: [["$_id"], "$descendants._id"] }
+//         }
+//       }
+//     ]);
+//     const categoryIds = categories[0]?.ids || [categoryId];
+//     const activeCategories = [];
+//     const cache = new Map();
+//     for (const id of categoryIds) {
+//       if (await isCategoryChainActive(id, cache)) {
+//         activeCategories.push(id);
+//       }
+//     }
+//     if (activeCategories.length === 0) {
+//       return res.json({ code: 0, data: [], pagination: { page: 1, limit: 0, total: 0, totalPages: 0 } });
+//     }
+//     const match = {
+//       categoryId: { $in: activeCategories },
+//       isActive: true
+//     };
+//     const page = Number(req.query.page) || 1;
+//     const limit = Number(req.query.limit) || 10;
+//     const skip = (page - 1) * limit;
+//     const total = await ProductEntity.countDocuments(match);
+//     let sortQuery: any = { updatedAt: -1 }; // default
+//     const sort = req.query.sort as string;
+//     switch (sort) {
+//       case "price_desc":
+//         sortQuery = { price: -1 };
+//         break;
+//       case "price_asc":
+//         sortQuery = { price: 1 };
+//         break;
+//       case "discount":
+//         sortQuery = { 
+//           discountValue: -1 
+//         };
+//         break;
+//       case "popular":
+//         sortQuery = { amountOrder: -1 };
+//         break;
+//     }
+//     const products = await ProductEntity.aggregate([
+//       { $match: match },
+//       {
+//         $addFields: {
+//           price: { $toDouble: "$price" },
+//           priceDiscount: { $toDouble: "$priceDiscounts" }
+//         }
+//       },
+//       { $sort: sortQuery },
+//       // { $sort: { updatedAt: -1 } },
+//       { $skip: skip },
+//       { $limit: limit }
+//     ]);
+//     const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
+//     const productResults = []
+//     for (const p of productsWithVariants) {
+//       const vouchers = await getApplicableVouchersForProduct(p)
+//       productResults.push({
+//         ...p,
+//         vouchers,
+//       })
+//     }
+//     return res.json({
+//       code: 0,
+//       data: toProductListDTO(productResults),
+//       pagination: {
+//         page,
+//         limit,
+//         total,
+//         totalPages: Math.ceil(total / limit)
+//       }
+//     });
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
 export const getProductsByCategory = async (req, res) => {
     var _a;
     try {
@@ -341,6 +440,7 @@ export const getProductsByCategory = async (req, res) => {
             return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
         }
         const categoryId = new Types.ObjectId(req.params.id);
+        // 🔹 Lấy toàn bộ danh mục con
         const categories = await CategoryProductEntity.aggregate([
             { $match: { _id: categoryId } },
             {
@@ -359,6 +459,7 @@ export const getProductsByCategory = async (req, res) => {
             }
         ]);
         const categoryIds = ((_a = categories[0]) === null || _a === void 0 ? void 0 : _a.ids) || [categoryId];
+        // 🔹 Check chuỗi category active
         const activeCategories = [];
         const cache = new Map();
         for (const id of categoryIds) {
@@ -367,55 +468,73 @@ export const getProductsByCategory = async (req, res) => {
             }
         }
         if (activeCategories.length === 0) {
-            return res.json({ code: 0, data: [], pagination: { page: 1, limit: 0, total: 0, totalPages: 0 } });
+            return res.json({
+                code: 0,
+                data: [],
+                pagination: { page: 1, limit: 0, total: 0, totalPages: 0 }
+            });
         }
+        // 🔹 Match sản phẩm
         const match = {
             categoryId: { $in: activeCategories },
             isActive: true
         };
-        const page = Number(req.query.page) || 1;
-        const limit = Number(req.query.limit) || 10;
+        const page = Math.max(Number(req.query.page) || 1, 1);
+        const limit = Math.max(Number(req.query.limit) || 10, 1);
         const skip = (page - 1) * limit;
         const total = await ProductEntity.countDocuments(match);
-        let sortQuery = { updatedAt: -1 }; // default
+        // 🔹 SORT (LUÔN ỔN ĐỊNH)
         const sort = req.query.sort;
+        let sortQuery = { updatedAt: -1, _id: 1 }; // default
         switch (sort) {
             case "price_desc":
-                sortQuery = { price: -1 };
+                sortQuery = { price: -1, _id: 1 };
                 break;
             case "price_asc":
-                sortQuery = { price: 1 };
+                sortQuery = { price: 1, _id: 1 };
                 break;
             case "discount":
-                sortQuery = {
-                    discountValue: -1
-                };
+                sortQuery = { discountValue: -1, _id: 1 };
                 break;
             case "popular":
-                sortQuery = { amountOrder: -1 };
+                sortQuery = { amountOrder: -1, _id: 1 };
                 break;
         }
+        // 🔹 Aggregate products
         const products = await ProductEntity.aggregate([
             { $match: match },
+            // ✅ TẠO FIELD SORT ĐÚNG
             {
                 $addFields: {
                     price: { $toDouble: "$price" },
-                    priceDiscount: { $toDouble: "$priceDiscounts" }
+                    priceDiscount: { $toDouble: "$priceDiscounts" },
+                    discountValue: {
+                        $cond: [
+                            {
+                                $and: [
+                                    { $gt: ["$price", 0] },
+                                    { $gt: ["$priceDiscounts", 0] }
+                                ]
+                            },
+                            { $subtract: ["$price", "$priceDiscounts"] },
+                            0
+                        ]
+                    }
                 }
             },
+            // ✅ SORT ỔN ĐỊNH
             { $sort: sortQuery },
-            // { $sort: { updatedAt: -1 } },
+            // ✅ PAGINATION
             { $skip: skip },
             { $limit: limit }
         ]);
+        // 🔹 Lọc variant active
         const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
+        // 🔹 Gắn voucher
         const productResults = [];
         for (const p of productsWithVariants) {
             const vouchers = await getApplicableVouchersForProduct(p);
-            productResults.push({
-                ...p,
-                vouchers,
-            });
+            productResults.push({ ...p, vouchers });
         }
         return res.json({
             code: 0,
@@ -429,6 +548,7 @@ export const getProductsByCategory = async (req, res) => {
         });
     }
     catch (err) {
+        console.error("getProductsByCategory error:", err);
         return res.status(500).json({ code: 1, message: err.message });
     }
 };

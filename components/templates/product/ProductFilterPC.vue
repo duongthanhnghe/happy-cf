@@ -15,15 +15,15 @@ const props = defineProps<{
     <ProductFilterDefault />
 
     <template v-if="storeCategoryMain.getListCategoryChildren.length > 0">
-      <Text text="Danh mục" color="black" size="normal" weight="semibold" class="mt-md mb-sm" />
+      <Text text="Danh mục" color="black" size="normal" weight="semibold" class="mt-md mb-xs" />
       <ProductFilterCategory :categoryName="props.categoryName" :list="storeCategoryMain.getListCategoryChildren"/>
     </template>
 
-    <div v-if="props.variantGroups.length > 0" class="mt-md">
+    <div v-if="props.variantGroups.length > 0" class="mt-ms">
       <ProductFilterVariantGroup :variantGroups="props.variantGroups"/>
     </div> 
 
-    <Text text="Khoảng giá" color="black" size="normal" weight="semibold" class="mt-md mb-md" />
-    <ProductFilterPrice class="v-range-slider-custom" />
+    <Text text="Giá" color="black" size="normal" weight="semibold" class="mt-md mb-xs" />
+    <ProductFilterPrice />
   </div>
 </template>

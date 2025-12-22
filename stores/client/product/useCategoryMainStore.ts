@@ -41,9 +41,36 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
       value: 'price_asc',
     },
   ])
+
+  const PRICE_RANGES = [
+    {
+      key: '0-200',
+      label: '0 - 200.000đ',
+      min: 0,
+      max: 200_000,
+    },
+    {
+      key: '200-300',
+      label: '200.000đ - 300.000đ',
+      min: 200_000,
+      max: 300_000,
+    },
+    {
+      key: '300-500',
+      label: '300.000đ - 500.000đ',
+      min: 300_000,
+      max: 500_000,
+    },
+    {
+      key: '500+',
+      label: '> 500.000đ',
+      min: 500_000,
+      max: Infinity,
+    },
+  ]
+
   const filterType = ref<ProductSortType>(filterArray.value[0].value)
-  const maxPrice = ref(0)
-  const rangePrice = ref([0, maxPrice.value])
+  const selectedPriceRanges = ref<string[]>([])
   const selectedVariants = ref<string[]>([])
   const isTogglePopupFilter = ref(false)
   const valueChangePage = ref<boolean|null>(null)
@@ -52,44 +79,41 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   watch(getProductByCategoryApi, (newValue) => {
     if (newValue && newValue.data) {
       listItems.value = newValue.data
-      if(listItems.value && listItems.value.length > 0) {
-        maxPrice.value = Math.max(...listItems.value.map(item => item.price || 0))
-      }
     }
   }, { immediate: true })
 
-  watch([filterType, filterCategory], ([newFilterType, newFilterCategory]) => {
-    if (page.value !== '1') {
-      page.value = '1'
-    } else {
-      if (getProductCategoryDetail.value?.id) {
-        const categoryId = newFilterCategory || getProductCategoryDetail.value.id
-        fetchProductByCategory(categoryId, Number(page.value), limit, newFilterType)
-      }
-    }
-  })
+  watch([page, filterType, filterCategory,],
+    async ([newPage, newFilterType, newFilterCategory], [oldPage, oldFilterType, oldFilterCategory]) => {
 
-  watch(page, async (newValue) => {
-    if(newValue && getProductCategoryDetail.value) {
+      if ((newFilterType !== oldFilterType || newFilterCategory !== oldFilterCategory) && newPage !== '1') {
+        page.value = '1'
+        return
+      }
+
+      if (!getProductCategoryDetail.value?.id) return
+
+      const categoryId = filterCategory.value || getProductCategoryDetail.value.id
+
       Loading(true)
       try {
-        await fetchProductByCategory(getProductCategoryDetail.value?.id,Number(newValue), limit, filterType.value)
+        await fetchProductByCategory(
+          categoryId,
+          Number(page.value),
+          limit,
+          filterType.value
+        )
         listItems.value = getProductByCategoryApi.value?.data || []
-      } catch (error) {
-        console.error('category-product error:', error)
+      } catch (err) {
+        console.error('fetch category product error:', err)
       } finally {
         Loading(false)
-        if(window.innerWidth > 1024) scrollIntoView(elFilterProduct)
+        if (window.innerWidth > 1024) {
+          scrollIntoView(elFilterProduct)
+        }
       }
-    }
-  })
-
-  watch([listItems, filterType, selectedVariants], () => {
-    if (!getProductCategoryDetail.value?.id) return
-    if (listItems.value?.length) {
-      rangePrice.value = [0, maxPrice.value]
-    }
-  }, { immediate: true })
+    },
+    { immediate: true }
+  )
 
   watch(valueChangePage, (newVal) => {
     if(newVal !== null) handleChangePage(newVal)
@@ -106,8 +130,7 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     isTogglePopupFilter.value = false
     page.value = '1'
     filterType.value = ''
-    maxPrice.value = listItems.value ? Math.max(...listItems.value.map(item => item.price)) : 0
-    rangePrice.value = [0, maxPrice.value]
+    selectedPriceRanges.value = []
     filterCategory.value = ''
     selectedVariants.value = []
   }
@@ -117,26 +140,37 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
       page.value !== '1' ||
       filterType.value !== '' ||
       filterCategory.value !== '' ||
-      rangePrice.value[0] !== 0 || 
-      rangePrice.value[1] !== maxPrice.value ||
+      selectedPriceRanges.value.length > 0 ||
       selectedVariants.value.length > 0
     )
   })
 
   const getListItems = computed(() => {
-    const [min, max] = rangePrice.value
     if (!listItems.value) return []
 
     return listItems.value
-      ?.filter(item => {
-        const price = item.price || 0
-        return price >= min && price <= max
+      .filter(item => {
+        if (selectedPriceRanges.value.length === 0) return true
+
+        const price = Number(item.price) || 0
+
+        return selectedPriceRanges.value.some(key => {
+          const range = PRICE_RANGES.find(r => r.key === key)
+          if (!range) return false
+          return price >= range.min && price <= range.max
+        })
       })
       .filter(item => {
         if (selectedVariants.value.length === 0) return true
 
-        const itemVariantIds = item.variantGroups?.flatMap(group => group.selectedVariants.map(v => v.variantId)) || []
-        return selectedVariants.value.some(vId => itemVariantIds.includes(vId))
+        const itemVariantIds =
+          item.variantCombinations?.flatMap(g =>
+            g.variants?.map(v => v.variantId)
+          ) || []
+
+        return selectedVariants.value.some(vId =>
+          itemVariantIds.includes(vId)
+        )
       })
   })
 
@@ -163,8 +197,8 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     getListItems,
     getTotalPages,
     getTotalItems,
-    rangePrice,
-    maxPrice,
+    selectedVariants,
+    selectedPriceRanges,
     getListCategoryChildren,
     filterCategory,
     loadingData,
@@ -172,9 +206,9 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     hasFilter,
     valueChangePage,
     listBannerCategory,
-    selectedVariants,
     IMAGE_AUTH_LOGIN,
     elFilterProduct,
+    PRICE_RANGES,
     handleChangePage,
     handleTogglePopupFilter,
     resetFilter,

@@ -1,14 +1,16 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
+
 const storeCategoryMain = useCategoryMainStore()
 </script>
+
 <template>
-  <v-range-slider
-    v-model="storeCategoryMain.rangePrice"
-    step="10"
-    :min="0"
-    :max="storeCategoryMain.maxPrice"
-    thumb-label="always"
-    :thumb-label-props="{ teleport: 'body' }"
-  ></v-range-slider>
+  <v-checkbox
+    v-for="range in storeCategoryMain.PRICE_RANGES"
+    :key="range.key"
+    v-model="storeCategoryMain.selectedPriceRanges"
+    :label="range.label"
+    :value="range.key"
+    hide-details
+  />
 </template>
