@@ -6,16 +6,17 @@ import { toAccountDTO, toAccountListDTO } from "../../../mappers/v1/admin-auth.m
 import type { AccountJwtPayload } from "@/server/types/dto/v1/account.dto";
 
 export const verifyToken = async (req: Request, res: Response) => {
-  const token = req.cookies?.admin_token;
+  const authHeader = req.headers.authorization
+  const token = authHeader?.split(" ")[1]
 
   if (!token)
     return res.status(401).json({ code: 1, message: "Thiếu token đăng nhập" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "") as AccountJwtPayload;
-    const admin = await AccountModel.findById(decoded.id);
+    const account = await AccountModel.findById(decoded.id);
 
-    if (!admin || !admin.active) {
+    if (!account || !account.active) {
       return res.status(403).json({ code: 2, message: "Tài khoản không hợp lệ" });
     }
 
@@ -23,11 +24,11 @@ export const verifyToken = async (req: Request, res: Response) => {
       code: 0,
       message: "Xác thực thành công",
       data: {
-        id: admin._id,
-        avatar: admin.avatar,
-        fullname: admin.fullname,
-        email: admin.email,
-        role: admin.role,
+        id: account._id,
+        avatar: account.avatar,
+        fullname: account.fullname,
+        email: account.email,
+        role: account.role,
       },
     });
   } catch (err) {
@@ -38,47 +39,87 @@ export const verifyToken = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const admin = await AccountModel.findOne({ email });
-    if (!admin) {
+    const account = await AccountModel.findOne({ email });
+    if (!account) {
       return res.status(400).json({ code: 1, message: "Tài khoản không tồn tại" });
     }
 
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await bcrypt.compare(password, account.password);
     if (!isMatch) {
       return res.status(400).json({ code: 2, message: "Mật khẩu không đúng" });
     }
 
-    if (!admin.active) {
+    if (!account.active) {
       return res.status(403).json({ code: 3, message: "Tài khoản bị vô hiệu hóa" });
     }
 
-    const token = jwt.sign(
-      { id: admin._id, role: admin.role, email: admin.email, avatar: admin.avatar },
+    const accessToken = jwt.sign(
+      { id: account._id, email: account.email, avatar: account.avatar, role: account.role, fullname: account.fullname },
       process.env.JWT_SECRET!,
-      { expiresIn: "8h" }
+      { expiresIn: "15m" }
     );
 
-    admin.lastLogin = new Date();
-    await admin.save();
+    const refreshToken = jwt.sign(
+      { id: account._id },
+      process.env.JWT_REFRESH_SECRET!,
+      { expiresIn: "30d" }
+    );
 
-    res.cookie("admin_token", token, {
+    account.lastLogin = new Date();
+    await account.save();
+
+    res.cookie("admin_refresh_token", refreshToken, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false, // true khi deploy https
-      maxAge: 8 * 60 * 60 * 1000,
+      secure: false,
+      sameSite: "strict",
+      path: "/api/v1/admin",
+      maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
     });
 
     return res.status(200).json({
       code: 0,
       message: "Đăng nhập thành công",
       data: {
-        token,
-        admin: toAccountDTO(admin)
+        accessToken,
+        account: toAccountDTO(account)
       },
     });
   } catch (err: any) {
     console.error("Admin login error:", err);
     return res.status(500).json({ code: 500, message: "Lỗi hệ thống", error: err.message });
+  }
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
+  const token = req.cookies?.admin_refresh_token;
+  if (!token) {
+    return res.json({ 
+      code: 1, 
+      message: "Không tìm thấy refresh token, vui lòng đăng nhập lại", 
+      data: null 
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as any;
+
+    const account = await AccountModel.findById(decoded.id);
+    if (!account) return res.status(403).json({ code: 2, message: "Account not found" });
+
+    const newAccessToken = jwt.sign(
+      { id: account._id, email: account.email, avatar: account.avatar, role: account.role, fullname: account.fullname },
+      process.env.JWT_SECRET!,
+      { expiresIn: "15m" }
+    );
+
+    return res.json({
+      code: 0,
+      message: "Refresh thành công",
+      data: { accessToken: newAccessToken }
+    });
+
+  } catch (err) {
+    return res.status(401).json({ code: 3, message: "Refresh token hết hạn" });
   }
 };
 
@@ -212,6 +253,7 @@ export const getAccountList = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const search = (req.query.search as string)?.trim() || "";
+    const role = (req.query.role as string)?.trim();
 
     const filter: any = {};
 
@@ -220,6 +262,10 @@ export const getAccountList = async (req: Request, res: Response) => {
         { fullname: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
       ];
+    }
+
+    if (role) {
+      filter.role = role;
     }
 
     if (limit === -1) {

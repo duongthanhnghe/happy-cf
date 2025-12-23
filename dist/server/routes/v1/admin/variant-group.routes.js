@@ -3,8 +3,8 @@ import { getAllVariantGroups, getActiveVariantGroups, getVariantGroupById, creat
 import { authenticateAdmin } from '../../../middlewares/authenticate-admin.js';
 const router = Router();
 // Public routes (if needed)
-router.get('/active', getActiveVariantGroups);
-router.get('/type/:type', getVariantGroupsByType);
+router.get('/active', authenticateAdmin, getActiveVariantGroups);
+router.get('/type/:type', authenticateAdmin, getVariantGroupsByType);
 // Admin routes
 router.get('/', authenticateAdmin, getAllVariantGroups);
 router.get('/:id', authenticateAdmin, getVariantGroupById);

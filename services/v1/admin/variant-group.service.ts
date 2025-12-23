@@ -6,16 +6,13 @@ import type {
   UpdateVariantGroupDTO 
 } from '@/server/types/dto/v1/product.dto';
 import type { ApiResponse } from '@/server/types/common/api-response';
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin';
 
 export const variantGroupAPI = {
   getAll: async (): Promise<ApiResponse<VariantGroupDTO[]>> => {
     try {
-      const res = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.LIST_ALL}`,
-        {
-          credentials: 'include',
-        }
-      );
+      const res = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.LIST_ALL}`);
       const data = await res.json();
       return data;
     } catch (err: any) {
@@ -30,12 +27,8 @@ export const variantGroupAPI = {
 
   getActive: async (): Promise<ApiResponse<VariantGroupDTO[]>> => {
     try {
-      const res = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.LIST_ACTIVE}`,
-        {
-          credentials: 'include',
-        }
-      );
+      const res = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.LIST_ACTIVE}`);
       const data = await res.json();
       return data;
     } catch (err: any) {
@@ -50,12 +43,8 @@ export const variantGroupAPI = {
 
   getById: async (id: string): Promise<ApiResponse<VariantGroupDTO>> => {
     try {
-      const res = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.DETAIL.replace(':id', id)}`,
-        {
-          credentials: 'include',
-        }
-      );
+      const res = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.DETAIL.replace(':id', id)}`);
       const data = await res.json();
       return data;
     } catch (err: any) {
@@ -78,12 +67,11 @@ export const variantGroupAPI = {
         };
       }
 
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.CREATE}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
           body: JSON.stringify(bodyData)
         }
       );
@@ -102,12 +90,11 @@ export const variantGroupAPI = {
 
   update: async (id: string, bodyData: UpdateVariantGroupDTO): Promise<ApiResponse<VariantGroupDTO>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.UPDATE.replace(':id', id)}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
           body: JSON.stringify(bodyData)
         }
       );
@@ -126,11 +113,10 @@ export const variantGroupAPI = {
 
   delete: async (id: string): Promise<ApiResponse<void>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.DELETE.replace(':id', id)}`,
         {
           method: 'DELETE',
-          credentials: 'include',
         }
       );
 
@@ -148,11 +134,10 @@ export const variantGroupAPI = {
 
   toggleActive: async (id: string): Promise<ApiResponse<VariantGroupDTO>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.TOGGLE_ACTIVE.replace(':id', id)}`,
         {
           method: 'PATCH',
-          credentials: 'include',
         }
       );
 
@@ -170,12 +155,8 @@ export const variantGroupAPI = {
 
   getByType: async (type: string): Promise<ApiResponse<VariantGroupDTO[]>> => {
     try {
-      const res = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.BY_TYPE.replace(':type', type)}`,
-        {
-          credentials: 'include',
-        }
-      );
+      const res = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VARIANT_GROUPS.BY_TYPE.replace(':type', type)}`);
       const data = await res.json();
       return data;
     } catch (err: any) {

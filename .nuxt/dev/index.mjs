@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"1214fa-1lpAulWgeq5hSFgd0PgLMdRPPpI\"",
-    "mtime": "2025-12-21T11:08:20.652Z",
-    "size": 1185018,
+    "etag": "\"121cfe-ENh+gmgYZ8NDl1QOkc5nI4mlhJ4\"",
+    "mtime": "2025-12-23T09:24:18.969Z",
+    "size": 1187070,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"49a46e-isAiYxhHxo50oO7D3riiG1ZgrB0\"",
-    "mtime": "2025-12-21T11:08:20.662Z",
-    "size": 4826222,
+    "etag": "\"49c7ce-6jluQFIpL3oRyhB5z7ZAMsBgIBQ\"",
+    "mtime": "2025-12-23T09:24:18.976Z",
+    "size": 4835278,
     "path": "index.mjs.map"
   }
 };
@@ -2297,6 +2297,35 @@ const toggleActive$7 = async (req, res) => {
   }
 };
 
+const authenticateAdmin = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader == null ? void 0 : authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Thi\u1EBFu token" });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
+    req.account = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Token kh\xF4ng h\u1EE3p l\u1EC7" });
+  }
+};
+
+const router$w = Router();
+router$w.get("/", authenticateAdmin, getAllAbout);
+router$w.get("/:id", authenticateAdmin, getAboutById);
+router$w.post("/", authenticateAdmin, createAbout);
+router$w.put("/:id", authenticateAdmin, updateAbout);
+router$w.delete("/:id", authenticateAdmin, deleteAbout);
+router$w.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
+router$w.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
+
+const about_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$w
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const ACCOUNT_ROLES = ["superadmin", "editor"];
 const ACCOUNT_ROLES_CONST = {
   SUPERADMIN: ACCOUNT_ROLES[0],
@@ -2322,40 +2351,6 @@ const AccountModel = mongoose.model(
   "admin_accounts"
 );
 
-const authenticateAdmin = async (req, res, next) => {
-  var _a;
-  const token = (_a = req.cookies) == null ? void 0 : _a.admin_token;
-  if (!token) return res.status(401).json({ code: 1, message: "Thi\u1EBFu token 123?" });
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    const admin = await AccountModel.findById(decoded.id);
-    if (!admin) {
-      return res.status(401).json({ code: 2, message: "T\xE0i kho\u1EA3n admin kh\xF4ng t\u1ED3n t\u1EA1i ho\u1EB7c \u0111\xE3 b\u1ECB x\xF3a" });
-    }
-    if (!admin.active) {
-      return res.status(403).json({ code: 3, message: "T\xE0i kho\u1EA3n qu\u1EA3n tr\u1ECB \u0111\xE3 b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
-    }
-    req.admin = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ code: 1, message: "Token kh\xF4ng h\u1EE3p l\u1EC7 ho\u1EB7c \u0111\xE3 h\u1EBFt h\u1EA1n" });
-  }
-};
-
-const router$w = Router();
-router$w.get("/", authenticateAdmin, getAllAbout);
-router$w.get("/:id", getAboutById);
-router$w.post("/", authenticateAdmin, createAbout);
-router$w.put("/:id", authenticateAdmin, updateAbout);
-router$w.delete("/:id", authenticateAdmin, deleteAbout);
-router$w.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
-router$w.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
-
-const about_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$w
-}, Symbol.toStringTag, { value: 'Module' }));
-
 function toAccountDTO(entity) {
   var _a, _b, _c;
   return {
@@ -2375,25 +2370,25 @@ const toAccountListDTO = (admins) => {
 };
 
 const verifyToken$1 = async (req, res) => {
-  var _a;
-  const token = (_a = req.cookies) == null ? void 0 : _a.admin_token;
+  const authHeader = req.headers.authorization;
+  const token = authHeader == null ? void 0 : authHeader.split(" ")[1];
   if (!token)
     return res.status(401).json({ code: 1, message: "Thi\u1EBFu token \u0111\u0103ng nh\u1EADp" });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    const admin = await AccountModel.findById(decoded.id);
-    if (!admin || !admin.active) {
+    const account = await AccountModel.findById(decoded.id);
+    if (!account || !account.active) {
       return res.status(403).json({ code: 2, message: "T\xE0i kho\u1EA3n kh\xF4ng h\u1EE3p l\u1EC7" });
     }
     return res.status(200).json({
       code: 0,
       message: "X\xE1c th\u1EF1c th\xE0nh c\xF4ng",
       data: {
-        id: admin._id,
-        avatar: admin.avatar,
-        fullname: admin.fullname,
-        email: admin.email,
-        role: admin.role
+        id: account._id,
+        avatar: account.avatar,
+        fullname: account.fullname,
+        email: account.email,
+        role: account.role
       }
     });
   } catch (err) {
@@ -2403,42 +2398,76 @@ const verifyToken$1 = async (req, res) => {
 const login$1 = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const admin = await AccountModel.findOne({ email });
-    if (!admin) {
+    const account = await AccountModel.findOne({ email });
+    if (!account) {
       return res.status(400).json({ code: 1, message: "T\xE0i kho\u1EA3n kh\xF4ng t\u1ED3n t\u1EA1i" });
     }
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await bcrypt.compare(password, account.password);
     if (!isMatch) {
       return res.status(400).json({ code: 2, message: "M\u1EADt kh\u1EA9u kh\xF4ng \u0111\xFAng" });
     }
-    if (!admin.active) {
+    if (!account.active) {
       return res.status(403).json({ code: 3, message: "T\xE0i kho\u1EA3n b\u1ECB v\xF4 hi\u1EC7u h\xF3a" });
     }
-    const token = jwt.sign(
-      { id: admin._id, role: admin.role, email: admin.email, avatar: admin.avatar },
+    const accessToken = jwt.sign(
+      { id: account._id, email: account.email, avatar: account.avatar, role: account.role, fullname: account.fullname },
       process.env.JWT_SECRET,
-      { expiresIn: "8h" }
+      { expiresIn: "15m" }
     );
-    admin.lastLogin = /* @__PURE__ */ new Date();
-    await admin.save();
-    res.cookie("admin_token", token, {
+    const refreshToken2 = jwt.sign(
+      { id: account._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "30d" }
+    );
+    account.lastLogin = /* @__PURE__ */ new Date();
+    await account.save();
+    res.cookie("admin_refresh_token", refreshToken2, {
       httpOnly: true,
-      sameSite: "lax",
       secure: false,
-      // true khi deploy https
-      maxAge: 8 * 60 * 60 * 1e3
+      sameSite: "strict",
+      path: "/api/v1/admin",
+      maxAge: 10 * 24 * 60 * 60 * 1e3
+      // 10 ngày
     });
     return res.status(200).json({
       code: 0,
       message: "\u0110\u0103ng nh\u1EADp th\xE0nh c\xF4ng",
       data: {
-        token,
-        admin: toAccountDTO(admin)
+        accessToken,
+        account: toAccountDTO(account)
       }
     });
   } catch (err) {
     console.error("Admin login error:", err);
     return res.status(500).json({ code: 500, message: "L\u1ED7i h\u1EC7 th\u1ED1ng", error: err.message });
+  }
+};
+const refreshToken$1 = async (req, res) => {
+  var _a;
+  const token = (_a = req.cookies) == null ? void 0 : _a.admin_refresh_token;
+  if (!token) {
+    return res.json({
+      code: 1,
+      message: "Kh\xF4ng t\xECm th\u1EA5y refresh token, vui l\xF2ng \u0111\u0103ng nh\u1EADp l\u1EA1i",
+      data: null
+    });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const account = await AccountModel.findById(decoded.id);
+    if (!account) return res.status(403).json({ code: 2, message: "Account not found" });
+    const newAccessToken = jwt.sign(
+      { id: account._id, email: account.email, avatar: account.avatar, role: account.role, fullname: account.fullname },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    return res.json({
+      code: 0,
+      message: "Refresh th\xE0nh c\xF4ng",
+      data: { accessToken: newAccessToken }
+    });
+  } catch (err) {
+    return res.status(401).json({ code: 3, message: "Refresh token h\u1EBFt h\u1EA1n" });
   }
 };
 const resetPassword$1 = async (req, res) => {
@@ -2548,17 +2577,21 @@ const changePassword$1 = async (req, res) => {
   }
 };
 const getAccountList = async (req, res) => {
-  var _a;
+  var _a, _b;
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const search = ((_a = req.query.search) == null ? void 0 : _a.trim()) || "";
+    const role = (_b = req.query.role) == null ? void 0 : _b.trim();
     const filter = {};
     if (search) {
       filter.$or = [
         { fullname: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } }
       ];
+    }
+    if (role) {
+      filter.role = role;
     }
     if (limit === -1) {
       const admins = await AccountModel.find(filter).sort({ createdAt: -1 }).select("-password");
@@ -2665,10 +2698,10 @@ const createAccount = async (req, res) => {
 
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (!req.admin) {
+    if (!req.account) {
       return res.status(403).json({ code: 403, message: "Ch\u01B0a x\xE1c th\u1EF1c t\xE0i kho\u1EA3n qu\u1EA3n tr\u1ECB" });
     }
-    if (!roles.includes(req.admin.role)) {
+    if (!roles.includes(req.account.role)) {
       return res.status(403).json({ code: 403, message: "B\u1EA1n kh\xF4ng c\xF3 quy\u1EC1n truy c\u1EADp ch\u1EE9c n\u0103ng n\xE0y" });
     }
     next();
@@ -2679,13 +2712,14 @@ const router$v = Router();
 router$v.post("/login", login$1);
 router$v.post("/reset-password", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), resetPassword$1);
 router$v.get("/verify-token", verifyToken$1);
+router$v.post("/refresh-token", refreshToken$1);
 router$v.get("/list", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), getAccountList);
 router$v.get("/me/:id", authenticateAdmin, getAccount);
 router$v.put("/update", authenticateAdmin, updateAccount$1);
 router$v.post("/change-password", authenticateAdmin, changePassword$1);
 router$v.post("/create", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), createAccount);
 router$v.post("/logout", (req, res) => {
-  res.clearCookie("admin_token", {
+  res.clearCookie("admin_refresh_token", {
     httpOnly: true,
     path: "/",
     sameSite: "lax"
@@ -2832,7 +2866,7 @@ const toggleActive$5 = async (req, res) => {
 
 const router$u = Router();
 router$u.get("/", authenticateAdmin, getAllBanners$1);
-router$u.get("/:id", getBannerById);
+router$u.get("/:id", authenticateAdmin, getBannerById);
 router$u.post("/", authenticateAdmin, createBanner);
 router$u.put("/:id", authenticateAdmin, updateBanner);
 router$u.delete("/:id", authenticateAdmin, deleteBanner);
@@ -3125,7 +3159,7 @@ const toggleActive$4 = async (req, res) => {
 
 const router$t = Router();
 router$t.get("/", authenticateAdmin, getAllCategories$3);
-router$t.get("/:id", getCategoriesById$3);
+router$t.get("/:id", authenticateAdmin, getCategoriesById$3);
 router$t.post("/", authenticateAdmin, createCategories$1);
 router$t.put("/:id", authenticateAdmin, updateCategories$1);
 router$t.delete("/:id", authenticateAdmin, deleteCategories$1);
@@ -3561,7 +3595,7 @@ const toggleActive$3 = async (req, res) => {
 const router$s = Router();
 router$s.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
 router$s.get("/", authenticateAdmin, getAllCategories$2);
-router$s.get("/:id", getCategoriesById$2);
+router$s.get("/:id", authenticateAdmin, getCategoriesById$2);
 router$s.post("/", authenticateAdmin, createCategories);
 router$s.put("/:id", authenticateAdmin, updateCategories);
 router$s.delete("/:id", authenticateAdmin, deleteCategories);
@@ -4366,7 +4400,7 @@ router$p.post("/membership-benefit", authenticateAdmin, createMembershipBenefit)
 router$p.put("/membership-benefit/:id", authenticateAdmin, updateMembershipBenefit);
 router$p.delete("/membership-benefit/:id", authenticateAdmin, deleteMembershipBenefit);
 router$p.get("/", authenticateAdmin, getAllUsers);
-router$p.get("/:id", getUserById$1);
+router$p.get("/:id", authenticateAdmin, getUserById$1);
 router$p.patch("/toggleActive/:id", authenticateAdmin, toggleActive$2);
 router$p.delete("/:id", authenticateAdmin, deleteUsers);
 
@@ -4479,7 +4513,7 @@ const toggleActive$1 = async (req, res) => {
 
 const router$o = Router();
 router$o.get("/", authenticateAdmin, getAllPosts);
-router$o.get("/:id", getPostsById$1);
+router$o.get("/:id", authenticateAdmin, getPostsById$1);
 router$o.post("/", authenticateAdmin, createPosts);
 router$o.put("/:id", authenticateAdmin, updatePosts);
 router$o.delete("/:id", authenticateAdmin, deletePosts);
@@ -5017,7 +5051,7 @@ const router$n = Router();
 router$n.get("/", authenticateAdmin, getAllOrder);
 router$n.get("/status", getAllStatus);
 router$n.get("/payments", getAllPayment);
-router$n.get("/:id", getOrderById$1);
+router$n.get("/:id", authenticateAdmin, getOrderById$1);
 router$n.delete("/:id", authenticateAdmin, deleteOrder);
 router$n.put("/status", authenticateAdmin, updateOrderStatus);
 
@@ -29829,10 +29863,10 @@ const router$m = Router();
 router$m.get("/", authenticateAdmin, getAllProduct);
 router$m.post("/", authenticateAdmin, createProduct);
 router$m.delete("/", authenticateAdmin, deleteProducts);
-router$m.post("/import", uploadExcel, importProducts);
-router$m.post("/updateImport", uploadExcel, updateImportProducts);
-router$m.get("/export", exportProducts);
-router$m.get("/:id", getProductById$1);
+router$m.post("/import", authenticateAdmin, uploadExcel, importProducts);
+router$m.post("/updateImport", authenticateAdmin, uploadExcel, updateImportProducts);
+router$m.get("/export", authenticateAdmin, exportProducts);
+router$m.get("/:id", authenticateAdmin, getProductById$1);
 router$m.put("/:id", authenticateAdmin, updateProduct);
 router$m.delete("/:id", authenticateAdmin, deleteProduct);
 router$m.patch("/toggleActive/:id", authenticateAdmin, toggleActive);
@@ -30115,8 +30149,8 @@ const getVariantGroupsByType = async (req, res) => {
 };
 
 const router$l = Router();
-router$l.get("/active", getActiveVariantGroups);
-router$l.get("/type/:type", getVariantGroupsByType);
+router$l.get("/active", authenticateAdmin, getActiveVariantGroups);
+router$l.get("/type/:type", authenticateAdmin, getVariantGroupsByType);
 router$l.get("/", authenticateAdmin, getAllVariantGroups);
 router$l.get("/:id", authenticateAdmin, getVariantGroupById);
 router$l.post("/", authenticateAdmin, createVariantGroup);
@@ -30229,10 +30263,10 @@ const deletePaymentTransaction = async (req, res) => {
 };
 
 const router$k = Router();
-router$k.post("/", createPaymentTransaction);
-router$k.put("/status", updatePaymentTransactionStatus);
-router$k.get("/", getPaymentTransactions);
-router$k.delete("/:id", deletePaymentTransaction);
+router$k.post("/", authenticateAdmin, createPaymentTransaction);
+router$k.put("/status", authenticateAdmin, updatePaymentTransactionStatus);
+router$k.get("/", authenticateAdmin, getPaymentTransactions);
+router$k.delete("/:id", authenticateAdmin, deletePaymentTransaction);
 
 const paymentTransaction_routes = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -30380,7 +30414,7 @@ const deleteProductReview = async (req, res) => {
 
 const router$j = Router();
 router$j.get("/", authenticateAdmin, getAllProductReviews);
-router$j.get("/:id", getProductReviewById$1);
+router$j.get("/:id", authenticateAdmin, getProductReviewById$1);
 router$j.put("/status", authenticateAdmin, updateProductReviewStatus);
 router$j.delete("/:id", authenticateAdmin, deleteProductReview);
 
@@ -30601,12 +30635,12 @@ const toggleActiveVoucher = async (req, res) => {
 };
 
 const router$i = Router();
-router$i.get("/", getAllVouchers$1);
-router$i.get("/:id", getVoucherById);
-router$i.post("/", createVoucher);
-router$i.put("/:id", updateVoucher);
-router$i.delete("/:id", deleteVoucher);
-router$i.patch("/:id/toggle-active", toggleActiveVoucher);
+router$i.get("/", authenticateAdmin, getAllVouchers$1);
+router$i.get("/:id", authenticateAdmin, getVoucherById);
+router$i.post("/", authenticateAdmin, createVoucher);
+router$i.put("/:id", authenticateAdmin, updateVoucher);
+router$i.delete("/:id", authenticateAdmin, deleteVoucher);
+router$i.patch("/:id/toggle-active", authenticateAdmin, toggleActiveVoucher);
 
 const voucher_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
@@ -30680,7 +30714,7 @@ const getAllVoucherUsage = async (req, res) => {
 };
 
 const router$h = Router();
-router$h.get("/", getAllVoucherUsage);
+router$h.get("/", authenticateAdmin, getAllVoucherUsage);
 
 const voucherUsage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

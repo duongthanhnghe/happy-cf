@@ -2,6 +2,7 @@ import { apiConfig } from '@/services/config/api.config';
 import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 import type { ProductReviewPaginationDTO, ProductReviewDTO, SubmitProductReviewBody, ProductReviewWithProductDTO } from '@/server/types/dto/v1/product-review.dto';
 import type { ApiResponse } from '@server/types/common/api-response';
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin';
 
 export const productReviewAPI = {
   getAll: async (
@@ -26,11 +27,8 @@ export const productReviewAPI = {
       if (rating) params.append("rating", rating);
       if (status) params.append("status", status);
 
-      const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.LIST}?${params}`, {
-          credentials: 'include',
-        }
-      );
+      const response = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.LIST}?${params}`);
       const data = await response.json();
       return data;
     } catch (err) {
@@ -62,7 +60,7 @@ export const productReviewAPI = {
 
   getById: async (id: string): Promise<ApiResponse<ProductReviewWithProductDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.GET_BY_ID(id)}`);
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.GET_BY_ID(id)}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch product review with ID ${id}`);
       }
@@ -80,10 +78,9 @@ export const productReviewAPI = {
 
   updateStatus: async (id: string, status: string): Promise<ApiResponse<ProductReviewDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.UPDATE_STATUS}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.UPDATE_STATUS}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({id,status}),
       });
 
@@ -110,9 +107,8 @@ export const productReviewAPI = {
 
   delete: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.DELETE(id)}`, {
         method: 'DELETE',
-        credentials: 'include',
       });
 
       if (!response.ok) {

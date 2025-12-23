@@ -7,14 +7,15 @@ import {
   deleteVoucher,
   toggleActiveVoucher,
 } from "../../../controllers/v1/admin/voucher.controller"
+import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
 
 const router = Router()
 
-router.get("/", getAllVouchers)
-router.get("/:id", getVoucherById)
-router.post("/", createVoucher)
-router.put("/:id", updateVoucher)
-router.delete("/:id", deleteVoucher)
-router.patch("/:id/toggle-active", toggleActiveVoucher)
+router.get("/", authenticateAdmin, getAllVouchers)
+router.get("/:id", authenticateAdmin, getVoucherById)
+router.post("/", authenticateAdmin, createVoucher)
+router.put("/:id", authenticateAdmin, updateVoucher)
+router.delete("/:id", authenticateAdmin, deleteVoucher)
+router.patch("/:id/toggle-active", authenticateAdmin, toggleActiveVoucher)
 
 export default router

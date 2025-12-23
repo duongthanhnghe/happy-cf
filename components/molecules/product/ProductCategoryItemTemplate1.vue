@@ -14,8 +14,8 @@ const props = defineProps<{
 <template>
   <Card size="sm" bg="white" :class="[storeDisplay.isMobileTable ? 'rd-lg':'rd-xl' ,'shadow-1']">
     <div class="mb-md flex">
-      <div class="align-content-center text-center bg-gray2 rd-full min-height-70 min-width-70">
-        <img :src="item.image" :alt="item.categoryName" width="60" />
+      <div class="align-content-center text-center bg-gray2 rd-full height-70 width-70 object-fit-cover overflow-hidden">
+        <img :src="item.image" :alt="item.categoryName" width="70" />
       </div>
     </div>
     <div class="flex justify-between align-end">

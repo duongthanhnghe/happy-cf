@@ -10,7 +10,6 @@
     border-radius: $rd-lg;
     text-align: center;
     position: relative;
-    padding: 1rem;
     overflow: hidden;
     &-src {
       border-radius: $rd-lg;
@@ -53,7 +52,8 @@
     }
   }
   &-content {
-    padding: 1rem 1rem 0 1rem;
+    // padding: 1rem 1rem 0 1rem;
+    padding: 1rem 0 0 0;
   }
   &-title {
     line-height: 1.5;

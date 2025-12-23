@@ -13,7 +13,7 @@ import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
 const router = Router()
 
 router.get('/',          authenticateAdmin, getAllCategories)
-router.get('/:id',       getCategoriesById)
+router.get('/:id',       authenticateAdmin, getCategoriesById)
 router.post('/',         authenticateAdmin, createCategories)
 router.put('/:id',       authenticateAdmin, updateCategories)
 router.delete('/:id',    authenticateAdmin, deleteCategories)

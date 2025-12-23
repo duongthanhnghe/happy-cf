@@ -13,8 +13,8 @@ const props = defineProps<{
 <template>
   <Card :bg="storeDisplay.isLaptop ? 'gray6':'white'" class="rd-lg shadow-1">
     <div class="flex justify-between line-height-1">
-      <div class="flex gap-xs align-center weight-semibold cursor-pointer">
-        <Button size="xs" color="secondary" icon="package_2" :disable="true"/>
+      <div class="flex gap-xs align-center weight-semibold">
+        <Button tag="span" size="xs" color="secondary" icon="package_2" :disable="true"/>
         {{ props.item?.code }}
       </div>
       <Text :text="formatDateTime(props.item?.createdAt, 'vi-VN',false)" color="gray5" />

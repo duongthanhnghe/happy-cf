@@ -27,7 +27,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
         <LabelInput label="Anh dai dien" required/>
         <v-img v-if="store.formBannerItem.image" :src="store.formBannerItem.image" class="mb-sm" alt="Hinh anh" />
         <div class="flex gap-sm">
-          <v-text-field v-model="store.formBannerItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
+          <v-text-field v-model="store.formBannerItem.image" label="Duong dan anh..." variant="outlined" ></v-text-field>
           <Button color="black" :label="store.formBannerItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
         </div>
         <v-switch :label="`Tinh trang: ${store.formBannerItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.formBannerItem.isActive" inset

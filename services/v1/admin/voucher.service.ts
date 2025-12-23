@@ -6,6 +6,7 @@ import type {
   VoucherPaginationDTO,
 } from '@/server/types/dto/v1/voucher.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const vouchersAPI = {
   getAll: async (
@@ -32,10 +33,8 @@ export const vouchersAPI = {
       if (filters?.reverted !== undefined)
         params.append('reverted', String(filters.reverted))
 
-      const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.LIST}?${params}`,
-        { credentials: 'include' }
-      )
+      const response = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.LIST}?${params}`)
 
       return await response.json()
     } catch (err) {
@@ -56,10 +55,8 @@ export const vouchersAPI = {
 
   getDetail: async (id: string): Promise<ApiResponse<VoucherDTO>> => {
     try {
-      const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.GET_BY_ID(id)}`,
-        { credentials: 'include' }
-      )
+      const response = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.GET_BY_ID(id)}`)
 
       if (!response.ok) throw new Error(`Failed to fetch voucher with ID ${id}`)
 
@@ -73,12 +70,11 @@ export const vouchersAPI = {
 
   create: async (body: CreateVoucherBody): Promise<ApiResponse<VoucherDTO>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.CREATE}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
           body: JSON.stringify(body),
         }
       )
@@ -96,12 +92,11 @@ export const vouchersAPI = {
     body: Partial<CreateVoucherBody>
   ): Promise<ApiResponse<VoucherDTO>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.UPDATE(id)}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
           body: JSON.stringify(body),
         }
       )
@@ -116,11 +111,10 @@ export const vouchersAPI = {
 
   delete: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.DELETE(id)}`,
         {
           method: 'DELETE',
-          credentials: 'include',
         }
       )
 
@@ -134,11 +128,10 @@ export const vouchersAPI = {
 
   toggleActive: async (id: string): Promise<ApiResponse<VoucherDTO>> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS.TOGGLE_ACTIVE(id)}`,
         {
           method: 'PATCH',
-          credentials: 'include',
         }
       )
 

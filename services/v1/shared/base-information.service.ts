@@ -1,5 +1,6 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_SHARED } from '@/services/const/api.endpoints-shared'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin';
 
 export const baseInformationAPI = {
   getBaseInformation: async (): Promise<any> => {
@@ -23,10 +24,9 @@ export const baseInformationAPI = {
 
   updateBaseInformation: async (newData: any): Promise<any> => {
     try {
-      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.BASE_INFORMATION.UPDATE}`, {
+      const res = await fetchWithAuthAdmin(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.BASE_INFORMATION.UPDATE}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        credentials: 'include',
         body: JSON.stringify(newData),
       });
 

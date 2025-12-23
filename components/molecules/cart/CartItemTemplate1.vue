@@ -11,9 +11,9 @@ const storeCart = useCartStore();
 
 </script>
 <template>
-  <div class="bg-white border-default pd-xs flex align-start rd-xl">
+  <div class="bg-white border-default pd-xs flex rd-xl">
     <div class="width-100 rd-lg bg-gray6 flex">
-      <img :src="item.image" :alt="item.productName" />
+      <img :src="item.image" :alt="item.productName" class="rd-lg" />
     </div>
     <div class="flex justify-between flex-direction-column position-relative flex-1 pd-xs pl-sm">
       <div>

@@ -7,6 +7,7 @@ import type {
   OrderPaginationDTO,
 } from '@/server/types/dto/v1/order.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const ordersAPI = {
   // getAll: async (
@@ -73,10 +74,8 @@ export const ordersAPI = {
       if (statusId) params.append("statusId", statusId);
       if (transactionId) params.append("transactionId", transactionId);
 
-      const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST}?${params}`,
-        { credentials: "include" }
-      );
+      const response = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST}?${params}`);
 
       const data = await response.json();
       return data;
@@ -98,7 +97,7 @@ export const ordersAPI = {
 
   getDetail: async (id: string): Promise<ApiResponse<OrderDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.GET_BY_ID(id)}`)
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.GET_BY_ID(id)}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch order with ID ${id}`)
       }
@@ -112,9 +111,8 @@ export const ordersAPI = {
 
   delete: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.DELETE(id)}`, {
         method: 'DELETE',
-        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -131,7 +129,9 @@ export const ordersAPI = {
 
   getAllStatus: async (): Promise<ApiResponse<OrderStatusDTO[]>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST_STATUS}`)
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST_STATUS}`,{
+          credentials: "include",
+        })
       const data = await response.json()
       return data
     } catch (err) {
@@ -146,7 +146,9 @@ export const ordersAPI = {
 
   getAllPayment: async (): Promise<ApiResponse<PaymentDTO[]>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST_PAYMENTS}`)
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.LIST_PAYMENTS}`,{
+          credentials: "include",
+        })
       const data = await response.json()
       return data
     } catch (err) {
@@ -160,10 +162,9 @@ export const ordersAPI = {
   },
   updateStatusOrder: async (orderId: string, statusId: string): Promise<ApiResponse<OrderDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.UPDATE_STATUS}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.UPDATE_STATUS}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ orderId, statusId }),
       })
 

@@ -16,8 +16,16 @@ const store = useAccountListStore();
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.name" density="compact" placeholder="Tìm kiếm tên..." variant="outlined" clearable hide-details></v-text-field>
-    <v-select label="Loai member" v-model="store.filterTypeMember" :items="[{ value: null, label: 'Tat ca' }, ...Object.values(ACCOUNT_ROLE) ?? []]" item-title="label" item-value="value" variant="outlined" hide-details />
+    <v-text-field 
+      v-model="store.search" 
+      placeholder="Tìm kiếm tên, email..." 
+      variant="outlined" 
+      clearable 
+      hide-details
+      @update:modelValue="value => store.search = value ?? ''"
+      >
+      </v-text-field>
+    <v-select label="Loại người dùng" v-model="store.filterTypeMember" :items="[{ value: '', label: 'Tất cả' }, ...Object.values(ACCOUNT_ROLE) ?? []]" item-title="label" item-value="value" variant="outlined" hide-details />
   </template>
   <template #right>
     <Button label="Tao tai khoan" color="primary" @click="store.handleCreate()" />
@@ -34,8 +42,6 @@ const store = useAccountListStore();
     :items="store.serverItems"
     :items-length="store.totalItems"
     :loading="store.loadingTable"
-    :search="store.search"
-    item-value="name"
     :items-per-page-options="[20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
     @update:options="options => {
         store.currentTableOptions = options
@@ -73,7 +79,7 @@ const store = useAccountListStore();
     
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
-      <Button color="gray" size="sm" icon="lock_reset" v-tooltip.left="'Reset Password'" @click="store.handleResetPassword(item.email)" />
+      <Button color="gray" size="sm" icon="lock_reset" v-tooltip.left="`Đặt lại mật khẩu về: ${store.newPassword}`" @click="store.handleResetPassword(item.email)" />
       <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>
     </template>

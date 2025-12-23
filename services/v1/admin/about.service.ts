@@ -2,13 +2,12 @@ import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 import type { CreateAboutBody, UpdateAboutBody, AboutDTO } from '@/server/types/dto/v1/about.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const aboutAPI = {
   getAll: async (): Promise<ApiResponse<AboutDTO[]>> => {
   try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.LIST}`,{
-        credentials: 'include',
-      })
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.LIST}`)
       const data = await response.json()
       return data;
     } catch (err) {
@@ -30,12 +29,11 @@ export const aboutAPI = {
         }
       }
 
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.CREATE}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.CREATE}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -61,7 +59,7 @@ export const aboutAPI = {
   },
   getDetail: async (id:string): Promise<ApiResponse<AboutDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.GET_BY_ID(id)}`)
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.GET_BY_ID(id)}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch category with ID ${id}`)
       }
@@ -74,10 +72,9 @@ export const aboutAPI = {
   },
   update: async (id:string, bodyData:UpdateAboutBody): Promise<ApiResponse<AboutDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.UPDATE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.UPDATE(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
     
@@ -103,9 +100,8 @@ export const aboutAPI = {
   },
   delete: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.DELETE(id)}`, {
         method: 'DELETE',
-        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -121,10 +117,9 @@ export const aboutAPI = {
   },
   updateOrder: async (id: string, newOrder: number): Promise<ApiResponse<AboutDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.UPDATE_ORDER(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.UPDATE_ORDER(id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ order: newOrder })
       })
 
@@ -150,9 +145,8 @@ export const aboutAPI = {
   },
   toggleActive: async (id: string): Promise<ApiResponse<AboutDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.TOGGLE_ACTIVE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
-        credentials: 'include',
       })
 
       if (!response.ok) {

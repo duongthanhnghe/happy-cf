@@ -8,9 +8,9 @@ import type {
   PaymentTransactionPaginationDTO,
   PaymentTransactionStatus,
 } from '@/server/types/dto/v1/payment-transaction.dto'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const paymentTransactionsAPI = {
-  // 🔹 Lấy danh sách giao dịch có phân trang
   getAll: async (
     page = 1,
     limit = 10,
@@ -23,7 +23,7 @@ export const paymentTransactionsAPI = {
       })
       if (search) params.append("search", search)
 
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.LIST}?${params}`
       )
       const data = await response.json()
@@ -43,13 +43,11 @@ export const paymentTransactionsAPI = {
       }
     }
   },
-
-  // 🔹 Tạo transaction mới (thường khi admin CONFIRMED order)
   create: async (
     bodyData: CreatePaymentTransactionBody
   ): Promise<ApiResponse<PaymentTransactionDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.CREATE}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.CREATE}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bodyData),
@@ -75,8 +73,6 @@ export const paymentTransactionsAPI = {
       }
     }
   },
-
-  // 🔹 Update status transaction
   updateStatus: async (
     transactionId: string,
     status: PaymentTransactionStatus
@@ -84,7 +80,7 @@ export const paymentTransactionsAPI = {
     try {
       const bodyData: UpdatePaymentTransactionStatusBody = { transactionId, status }
 
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.UPDATE_STATUS}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.UPDATE_STATUS}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bodyData),
@@ -110,11 +106,9 @@ export const paymentTransactionsAPI = {
       }
     }
   },
-
-  // 🔹 Xoá transaction
   delete: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.DELETE(id)}`, {
         method: "DELETE",
       })
 
@@ -137,11 +131,9 @@ export const paymentTransactionsAPI = {
       }
     }
   },
-
-  // 🔹 Get detail transaction
   getDetail: async (id: string): Promise<ApiResponse<PaymentTransactionDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.GET_BY_ID(id)}`)
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.GET_BY_ID(id)}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch payment transaction with ID ${id}`)
       }

@@ -3,11 +3,12 @@ import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 import type { User, MembershipBenefitDTO, CreateMembershipBenefit, UpdateMembershipBenefit } from '@/server/types/dto/v1/user.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
 import type { PaginationDTO } from '@server/types/common/pagination.dto'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const usersAPI = {
   getDetailAccount: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.GET_BY_ID(id)}`)
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.GET_BY_ID(id)}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch user with ID ${id}`)
       }
@@ -29,11 +30,8 @@ export const usersAPI = {
       if (search) params.append("search", search);
       if (membershipLevel) params.append("membershipLevel", membershipLevel);
 
-      const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST}?${params}`, {
-          credentials: 'include',
-        }
-      );
+      const response = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST}?${params}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -56,9 +54,8 @@ export const usersAPI = {
   },
   delete: async (id:string) => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.DELETE(id)}`, {
         method: 'DELETE',
-        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -74,7 +71,9 @@ export const usersAPI = {
   },
   getAllMembershipLevel: async () => {
   try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST_MEMBERSHIP_LEVEL}`)
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST_MEMBERSHIP_LEVEL}`,{
+          credentials: "include",
+        })
       const data = await response.json()
       return data;
     } catch (err) {
@@ -83,7 +82,9 @@ export const usersAPI = {
   },
   getMembershipLevelById: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.GET_MEMBERSHIP_LEVEL_BY_ID(id)}`)
+      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.GET_MEMBERSHIP_LEVEL_BY_ID(id)}`,{
+          credentials: "include",
+        })
       if (!response.ok) {
         throw new Error(`Failed to fetch membership level with ID ${id}`)
       }
@@ -96,12 +97,11 @@ export const usersAPI = {
   },
   updateMembershipLevel: async (id: string, payload: any) => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_LEVEL(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_LEVEL(id)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify(payload),
       })
 
@@ -117,35 +117,10 @@ export const usersAPI = {
       throw err
     }
   },
-  // setMemberPoint: async (userId: string, point: number) => {
-  //   try {
-  //     const token = localStorage.getItem('token')
-  //     const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.SET_POINT}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({ userId, point }),
-  //     })
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
-  //     }
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error(`Error adding point for user ${userId}:`, err)
-  //     throw err
-  //   }
-  // },
   toggleActive: async (id: string): Promise<ApiResponse<User>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.TOGGLE_ACTIVE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
-        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -170,13 +145,12 @@ export const usersAPI = {
   },
   createMembershipBenefit: async (payload: CreateMembershipBenefit): Promise<ApiResponse<CreateMembershipBenefit>> => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.CREATE_MEMBERSHIP_BENEFIT}`, {
+      const res = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.CREATE_MEMBERSHIP_BENEFIT}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
-        credentials: 'include',
       })
       if (!res.ok) {
         const errData = await res.json()
@@ -190,7 +164,9 @@ export const usersAPI = {
   },
   getAllMembershipBenefit: async (): Promise<ApiResponse<MembershipBenefitDTO[]>> => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST_MEMBERSHIP_BENEFIT}`)
+      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.LIST_MEMBERSHIP_BENEFIT}`,{
+          credentials: "include",
+        })
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
       return await res.json()
     } catch (err) {
@@ -200,7 +176,9 @@ export const usersAPI = {
   },
   getMembershipBenefitById: async (id: string): Promise<ApiResponse<MembershipBenefitDTO>> => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.GET_MEMBERSHIP_BENEFIT_BY_ID(id)}`)
+      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.GET_MEMBERSHIP_BENEFIT_BY_ID(id)}`,{
+          credentials: "include",
+        })
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
       return await res.json()
     } catch (err) {
@@ -210,13 +188,12 @@ export const usersAPI = {
   },
   updateMembershipBenefit: async (id: string, payload: UpdateMembershipBenefit ): Promise<ApiResponse<UpdateMembershipBenefit>> => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_BENEFIT(id)}`, {
+      const res = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_BENEFIT(id)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
-        credentials: 'include',
       })
       if (!res.ok) {
         const errData = await res.json()
@@ -230,11 +207,10 @@ export const usersAPI = {
   },
   deleteMembershipBenefit: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      const res = await fetch(
+      const res = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.DELETE_MEMBERSHIP_BENEFIT(id)}`,
         {
           method: 'DELETE',
-          credentials: 'include',
          }
       )
 
@@ -262,58 +238,6 @@ export const usersAPI = {
       }
     }
   },
-
-  // getAllRewardHistory: async (
-  //   page = 1,
-  //   limit = 20,
-  //   userId?: string
-  // ): Promise<PaginationDTO<any>> => {
-  //   try {
-  //     const params = new URLSearchParams({
-  //       page: page.toString(),
-  //       limit: limit.toString(),
-  //     })
-
-  //     if (userId) params.append('userId', userId)
-
-  //     const response = await fetch(
-  //       `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params}`, {
-  //         credentials: 'include',
-  //       }
-  //     )
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       return {
-  //         code: 1,
-  //         message: errorData.message || 'Failed to fetch reward history for admin',
-  //         data: [],
-  //         pagination: {
-  //           page,
-  //           limit,
-  //           total: 0,
-  //           totalPages: 0,
-  //         },
-  //       }
-  //     }
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error('Error fetching admin reward history:', err)
-  //     return {
-  //       code: 1,
-  //       message: 'Unexpected error while fetching reward history for admin',
-  //       data: [],
-  //       pagination: {
-  //         page,
-  //         limit,
-  //         total: 0,
-  //         totalPages: 0,
-  //       },
-  //     }
-  //   }
-  // },
   getAllRewardHistory: async (
     page = 1,
     limit = 20,
@@ -335,12 +259,8 @@ export const usersAPI = {
       if (fromDate) params.append('fromDate', fromDate)
       if (toDate) params.append('toDate', toDate)
 
-      const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params.toString()}`,
-        {
-          credentials: 'include',
-        }
-      )
+      const response = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY}?${params.toString()}`)
 
       if (!response.ok) {
         const errorData = await response.json()

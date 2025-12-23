@@ -2,13 +2,12 @@ import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 import type { CreateBannerBody, UpdateBannerBody, BannerDTO } from '@/server/types/dto/v1/banner.dto'
 import type { ApiResponse } from '@server/types/common/api-response'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const bannersAPI = {
   getAll: async (): Promise<ApiResponse<BannerDTO[]>> => {
   try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.LIST}`,{
-        credentials: 'include',
-      })
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.LIST}`)
       const data = await response.json()
       return data;
     } catch (err) {
@@ -30,12 +29,11 @@ export const bannersAPI = {
         }
       }
 
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.CREATE}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.CREATE}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -61,7 +59,7 @@ export const bannersAPI = {
   },
   getDetail: async (id:string): Promise<ApiResponse<BannerDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.GET_BY_ID(id)}`)
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.GET_BY_ID(id)}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch category with ID ${id}`)
       }
@@ -74,10 +72,9 @@ export const bannersAPI = {
   },
   update: async (id:string, bodyData:UpdateBannerBody): Promise<ApiResponse<BannerDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.UPDATE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.UPDATE(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
     
@@ -103,9 +100,8 @@ export const bannersAPI = {
   },
   delete: async (id: string) => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.DELETE(id)}`, {
         method: 'DELETE',
-        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -121,10 +117,9 @@ export const bannersAPI = {
   },
   updateOrder: async (id: string, newOrder: number): Promise<ApiResponse<BannerDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.UPDATE_ORDER(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.UPDATE_ORDER(id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ order: newOrder })
       })
 
@@ -150,9 +145,8 @@ export const bannersAPI = {
   },
   toggleActive: async (id: string): Promise<ApiResponse<BannerDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.TOGGLE_ACTIVE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
-        credentials: 'include',
       })
 
       if (!response.ok) {

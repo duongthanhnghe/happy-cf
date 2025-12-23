@@ -3,7 +3,7 @@ import { getAllAbout, getAboutById, createAbout, updateAbout, deleteAbout, updat
 import { authenticateAdmin } from '../../../middlewares/authenticate-admin.js';
 const router = Router();
 router.get('/', authenticateAdmin, getAllAbout);
-router.get('/:id', getAboutById);
+router.get('/:id', authenticateAdmin, getAboutById);
 router.post('/', authenticateAdmin, createAbout);
 router.put('/:id', authenticateAdmin, updateAbout);
 router.delete('/:id', authenticateAdmin, deleteAbout);

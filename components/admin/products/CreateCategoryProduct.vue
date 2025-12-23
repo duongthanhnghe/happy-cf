@@ -45,14 +45,14 @@ const handleSubmitCreate = async () => {
         <LabelInput label="Anh dai dien" required/>
         <v-img v-if="store.formCategoryItem.image" :src="store.formCategoryItem.image" class="mb-sm" alt="Hinh anh" :rules="store.nullRules" required />
         <div class="flex gap-sm">
-          <v-text-field v-model="store.formCategoryItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
+          <v-text-field v-model="store.formCategoryItem.image" label="Duong dan anh..." variant="outlined" ></v-text-field>
           <Button color="black" :label="store.formCategoryItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage('image')"/>
         </div>
 
         <LabelInput label="Banner" required/>
         <v-img v-if="store.formCategoryItem.banner" :src="store.formCategoryItem.banner" class="mb-sm" alt="Banner" />
         <div class="flex gap-sm">
-          <v-text-field v-model="store.formCategoryItem.banner" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
+          <v-text-field v-model="store.formCategoryItem.banner" label="Duong dan anh..." variant="outlined" ></v-text-field>
           <Button color="black" :label="store.formCategoryItem.banner ? 'Doi banner':'Chon banner'" @click.prevent="store.handleAddImage('banner')"/>
         </div>
 

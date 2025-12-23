@@ -52,14 +52,15 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
 
     <div :class="[storeDisplay.isMobileTable ? 'pb-section':'' ,'container container-xxl']" >
       <div :class="[storeDisplay.isMobileTable ? 'flex-direction-column gap-ms':'flex-direction-row gap-md' ,'flex']">
+        <!-- https://res.cloudinary.com/dl8wwezqp/image/upload/v1764155287/BANNER/slide_3_img.jpg -->
         <BoxImage 
-          image="https://res.cloudinary.com/dl8wwezqp/image/upload/v1764155287/BANNER/slide_3_img.jpg"
+          image="https://n7media.coolmate.me/uploads/September2025/pro_nam_Frame_88042_(2)-min.jpg?aio=w-1069"
           heading="Khuyến mãi"
           textBtn="Khám phá"
           linkHref="/order?tab=3"
         />
         <BoxImage 
-          image="https://res.cloudinary.com/dl8wwezqp/image/upload/v1764155405/BANNER/slide_1_img.jpg"
+          image="https://n7media.coolmate.me/uploads/September2025/pro_nu_Frame_88041_(2)-min.jpg?aio=w-1069"
           heading="Bán chạy"
           textBtn="Khám phá"
           linkHref="/order?tab=2"

@@ -11,7 +11,6 @@ import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
 const router = Router();
 
 router.get("/", getTranslations);
-
 router.post("/", createTranslation);
 router.put("/:id", authenticateAdmin, updateTranslation);
 router.get("/:id", authenticateAdmin, getTranslationDetail);

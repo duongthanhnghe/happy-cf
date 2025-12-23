@@ -7,6 +7,7 @@ import type {
   TranslationUpdateDTO, 
   TranslationPaginationDTO
 } from '@/server/types/dto/v1/itranslation.dto';
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin';
 
 export const iTranslationAPI = {
   getTranslations: async (page: number, limit: number, search: string = '') => {
@@ -35,7 +36,6 @@ export const iTranslationAPI = {
     }
   },
 
-
   getTranslationDetail: async (id: string) => {
     try {
       const response = await fetch(
@@ -53,9 +53,8 @@ export const iTranslationAPI = {
 
   createTranslation: async (payload: TranslationCreateDTO) => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.TRANSLATION.CREATE}`, {
+      const res = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.TRANSLATION.CREATE}`, {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -70,9 +69,8 @@ export const iTranslationAPI = {
 
   updateTranslation: async (id: string, payload: TranslationUpdateDTO) => {
     try {
-    const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.TRANSLATION.UPDATE}/${id}`, {
+    const res = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.TRANSLATION.UPDATE}/${id}`, {
       method: 'PUT',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -87,9 +85,8 @@ export const iTranslationAPI = {
 
   deleteTranslation: async (id: string) => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.TRANSLATION.DELETE}/${id}`, {
+      const res = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.TRANSLATION.DELETE}/${id}`, {
         method: 'DELETE',
-        credentials: 'include',
       });
       return await res.json();
     } catch (err) {

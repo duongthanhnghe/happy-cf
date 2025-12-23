@@ -11,13 +11,12 @@ import type {
   CategoryNewsPaginationDTO
 } from "@/server/types/dto/v1/news.dto"
 import type { ApiResponse } from "@server/types/common/api-response"
+import { fetchWithAuthAdmin } from "@/services/helpers/fetchWithAuthAdmin"
 
 export const newsAPI = {
   getAllCategories: async (page: number, limit: number,search: string): Promise<CategoryNewsPaginationDTO> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.LIST}?page=${page}&limit=${limit}&search=${search}`, {
-        credentials: 'include',
-      })
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.LIST}?page=${page}&limit=${limit}&search=${search}`)
       const data = await response.json()
       return data
     } catch (err: any) {
@@ -46,10 +45,9 @@ export const newsAPI = {
         }
       }
 
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.CREATE}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.CREATE}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -67,7 +65,7 @@ export const newsAPI = {
 
   getCategoryById: async (id: string): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.GET_BY_ID(id)}`)
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.GET_BY_ID(id)}`)
       const data = await response.json()
       return data
     } catch (err: any) {
@@ -82,10 +80,9 @@ export const newsAPI = {
 
   updateCategory: async (id: string, bodyData: UpdateCategoryNewsDTO): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.UPDATE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.UPDATE(id)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
       const data = await response.json()
@@ -102,9 +99,8 @@ export const newsAPI = {
 
   deleteCategory: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.DELETE(id)}`, {
         method: "DELETE",
-        credentials: 'include',
       })
       const data = await response.json()
       return data
@@ -119,9 +115,8 @@ export const newsAPI = {
   },
   toggleActiveCategory: async (id: string): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.TOGGLE_ACTIVE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
-        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -146,10 +141,9 @@ export const newsAPI = {
   },
   updateOrderCategory: async (id: string, newOrder: number): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.UPDATE_ORDER(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.UPDATE_ORDER(id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ order: newOrder })
       })
 
@@ -177,9 +171,7 @@ export const newsAPI = {
   // ================== POSTS ==================
   getAllPosts: async (page: number, limit: number, search: string, categoryId:string ): Promise<PostNewsPaginationDTO> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.LIST}?page=${page}&limit=${limit}&search=${search}&categoryId=${categoryId}`,{
-        credentials: 'include',
-      })
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.LIST}?page=${page}&limit=${limit}&search=${search}&categoryId=${categoryId}`)
       const data = await response.json()
       return data
     } catch (err: any) {
@@ -208,10 +200,9 @@ export const newsAPI = {
         }
       }
 
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.CREATE}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.CREATE}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
       const data = await response.json()
@@ -228,7 +219,7 @@ export const newsAPI = {
 
   getPostById: async (id: string): Promise<ApiResponse<PostNewsDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.GET_BY_ID(id)}`)
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.GET_BY_ID(id)}`)
       const data = await response.json()
       return data
     } catch (err: any) {
@@ -243,10 +234,9 @@ export const newsAPI = {
 
   updatePost: async (id: string, postData: UpdatePostNewsDTO): Promise<ApiResponse<PostNewsDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.UPDATE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.UPDATE(id)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        credentials: 'include',
         body: JSON.stringify(postData)
       })
       const data = await response.json()
@@ -263,9 +253,8 @@ export const newsAPI = {
 
   deletePost: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.DELETE(id)}`, {
         method: "DELETE",
-        credentials: 'include',
       })
       const data = await response.json()
       return data
@@ -281,9 +270,8 @@ export const newsAPI = {
 
   toggleActivePost: async (id: string): Promise<ApiResponse<PostNewsDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.TOGGLE_ACTIVE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
-        credentials: 'include',
       })
 
       if (!response.ok) {

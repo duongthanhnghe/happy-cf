@@ -5,12 +5,13 @@ import {
   getPaymentTransactions,
   deletePaymentTransaction
 } from '../../../controllers/v1/admin/payment-transaction.controller'
+import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
 
 const router = Router()
 
-router.post("/", createPaymentTransaction)
-router.put("/status", updatePaymentTransactionStatus) 
-router.get("/", getPaymentTransactions)
-router.delete("/:id", deletePaymentTransaction)
+router.post("/", authenticateAdmin, createPaymentTransaction)
+router.put("/status", authenticateAdmin, updatePaymentTransactionStatus) 
+router.get("/", authenticateAdmin, getPaymentTransactions)
+router.delete("/:id", authenticateAdmin, deletePaymentTransaction)
 
 export default router

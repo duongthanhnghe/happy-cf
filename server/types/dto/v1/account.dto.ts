@@ -49,8 +49,8 @@ export interface AccountUpdateDTO {
 export type AccountCreateDTO = Omit<AccountDTO, "id" | "createdAt" | "updatedAt" | "lastLogin" | "active" | "avatar"> & { password: string };
 
 export interface AccountLoginResponse {
-  token: string
-  admin: {
+  accessToken: string
+  account: {
     id: string
     avatar: string
     fullname: string
@@ -68,5 +68,5 @@ export interface AccountJwtPayload {
 }
 
 export interface AccountRequest extends Request {
-  admin?: AccountJwtPayload;
+  account?: AccountJwtPayload;
 }

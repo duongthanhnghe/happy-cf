@@ -11,6 +11,7 @@ export const API_ENDPOINTS_ADMIN = {
   },
   ACCOUNT: {
     VERIFY_TOKEN: '/account/verify-token',
+    REFRESH_TOKEN: '/account/refresh-token',
     LOGIN: '/account/login',
     RESET_PASSWORD: '/account/reset-password',
     GET_ME: (id: string) => `/account/me/${id}`,

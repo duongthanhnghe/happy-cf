@@ -7,13 +7,12 @@ import type {
   ProductPaginationDTO
 } from '@/server/types/dto/v1/product.dto'
 import type { ApiResponse } from '@/server/types/common/api-response'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const productsAPI = {
   getAll: async (page: number, limit: number, search: string, categoryId: string): Promise<ProductPaginationDTO> => {
     try {
-      const res = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.LIST_ALL}?page=${page}&limit=${limit}&search=${search}&categoryId=${categoryId}`, {
-        credentials: 'include',
-      })
+      const res = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.LIST_ALL}?page=${page}&limit=${limit}&search=${search}&categoryId=${categoryId}`)
       const data = await res.json()
       return data
     } catch (err: any) {
@@ -42,10 +41,9 @@ export const productsAPI = {
         }
       }
 
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.CREATE}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.CREATE}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -66,11 +64,10 @@ export const productsAPI = {
       const formData = new FormData()
       formData.append("file", file)
 
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.IMPORT}`,
         {
           method: 'POST',
-          credentials: 'include',
           // headers: { 'Content-Type': 'application/json' },
           body: formData
         }
@@ -91,11 +88,10 @@ export const productsAPI = {
 
   exportProducts: async (): Promise<{ code: number; message: string }> => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.EXPORT}`,
         {
           method: "GET",
-          credentials: "include",
         }
       );
 
@@ -149,11 +145,10 @@ export const productsAPI = {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch(
+      const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.UPDATE_IMPORT}`,
         {
           method: "POST",
-          credentials: "include",
           body: formData,
         }
       );
@@ -169,10 +164,9 @@ export const productsAPI = {
     }
   },
 
-
   getDetail: async (id: string): Promise<ApiResponse<ProductDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.GET_BY_ID(id)}`)
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.GET_BY_ID(id)}`)
       const data = await response.json()
       return data
     } catch (err: any) {
@@ -189,10 +183,9 @@ export const productsAPI = {
     console.log(bodyData)
 
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.UPDATE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.UPDATE(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(bodyData)
       })
 
@@ -210,9 +203,8 @@ export const productsAPI = {
 
   delete: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.DELETE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.DELETE(id)}`, {
         method: 'DELETE',
-        credentials: 'include',
       })
 
       const data = await response.json()
@@ -229,11 +221,10 @@ export const productsAPI = {
   
   deleteMany: async (ids: string[]): Promise<ApiResponse<null>> => {
     try {
-      const response = await fetch(
-        `${apiConfig.adminApiURL}/products`,
+      const response = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.DELETE_MANY}`,
         {
           method: 'DELETE',
-          credentials: 'include',
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ids })
         }
@@ -252,9 +243,8 @@ export const productsAPI = {
 
   toggleActive: async (id: string): Promise<ApiResponse<ProductDTO>> => {
     try {
-      const response = await fetch(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.TOGGLE_ACTIVE(id)}`, {
+      const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.TOGGLE_ACTIVE(id)}`, {
         method: 'PATCH',
-        credentials: 'include',
       })
 
       if (!response.ok) {

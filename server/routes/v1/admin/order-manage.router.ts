@@ -14,7 +14,7 @@ const router = Router()
 router.get('/',         authenticateAdmin, getAllOrder)
 router.get('/status',          getAllStatus)
 router.get('/payments',          getAllPayment)
-router.get('/:id',       getOrderById)
+router.get('/:id',       authenticateAdmin, getOrderById)
 router.delete('/:id',   authenticateAdmin, deleteOrder)
 router.put('/status',              authenticateAdmin, updateOrderStatus)
 

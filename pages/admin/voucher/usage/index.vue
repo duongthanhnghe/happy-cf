@@ -93,7 +93,7 @@ onBeforeUnmount(() => {
       </template>
 
       <template #item.orderId="{ item }">
-        <div class="flex gap-sm align-center cursor-pointer white-space" @click="storeDetailOrder.handleTogglePopupDetail(true,item.orderId)">
+        <div class="flex gap-sm align-center cursor-pointer white-space" @click="storeDetailOrder.handleTogglePopupDetail(true,item.orderId._id.toString())">
           <Button color="gray" size="sm" class="white-space" icon="visibility" />
           Chi tiet
         </div>

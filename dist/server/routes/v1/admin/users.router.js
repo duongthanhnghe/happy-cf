@@ -12,7 +12,7 @@ router.post('/membership-benefit', authenticateAdmin, createMembershipBenefit);
 router.put('/membership-benefit/:id', authenticateAdmin, updateMembershipBenefit);
 router.delete('/membership-benefit/:id', authenticateAdmin, deleteMembershipBenefit);
 router.get('/', authenticateAdmin, getAllUsers);
-router.get('/:id', getUserById);
+router.get('/:id', authenticateAdmin, getUserById);
 router.patch('/toggleActive/:id', authenticateAdmin, toggleActive);
 router.delete('/:id', authenticateAdmin, deleteUsers);
 export default router;

@@ -1,6 +1,7 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 import type { VoucherUsagePaginationDTO } from '@/server/types/dto/v1/voucher-usage.dto'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const vouchersUsageAPI = {
   getAll: async (
@@ -29,10 +30,8 @@ export const vouchersUsageAPI = {
         params.append('reverted', String(options.reverted))
       if (options?.userId) params.append('userId', options.userId)
 
-      const response = await fetch(
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS_USAGE.LIST}?${params}`,
-        { credentials: 'include' }
-      )
+      const response = await fetchWithAuthAdmin(
+        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.VOUCHERS_USAGE.LIST}?${params}`)
 
       return await response.json()
     } catch (err) {
