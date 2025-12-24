@@ -24,7 +24,7 @@ export const useSearchUtils = (
   const handleTogglePopup = (value: boolean) => {
     isTogglePopup.value = value;
     if(getListSearchKeyword.value.length === 0) fetchSearchKeyword(limitSearchKeyword)
-    if(storeProductMostOrder.getListProductMostOrder.length === 0) storeProductMostOrder.fetchProductStore()
+    if(!storeProductMostOrder.getListProductMostOrder) storeProductMostOrder.fetchListProductMostOrder('',storeProductMostOrder.page,storeProductMostOrder.limit,'')
   };
 
   const handleCancelSearch = () => {

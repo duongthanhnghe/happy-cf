@@ -1,28 +1,35 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { productsAPI } from "@/services/v1/product.service";
-import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
+import type { ProductPaginationDTO, ProductSortType } from '@/server/types/dto/v1/product.dto';
+import { useState } from "nuxt/app";
 
 export const useProductSales = () => {
-  const listProductSales = ref<ProductDTO[]|[]>([]);
-  const limitProductSales = ref<number>(12);
+  const listData = useState<ProductPaginationDTO | null>('product-sale-list', () => null)
+  const loadingData = useState<boolean>(
+  'product-sale-loading',
+  () => false
+)
 
-  const fetchListProductSales = async () => {
+  const fetchListProductSales = async (categoryId: string, page: number, limit: number, filter: ProductSortType) => {
     try {
-      const data = await productsAPI.getPromotional(limitProductSales.value)
+      loadingData.value = true
+      const data = await productsAPI.getPromotional(categoryId, page, limit, filter)
       if(data.code === 0) {
-        listProductSales.value = data.data
+        listData.value = data
       }
     } catch (err) {
-      console.error('Error most order', err)
+      console.error('Error most promotion', err)
+    } finally {
+      loadingData.value = false
     }
   }
 
-  const getListProductSales = computed(() => listProductSales.value);
+  const getListProductSales = computed(() => listData.value);
 
   return {
-    listProductSales,
-    limitProductSales,
     fetchListProductSales,
-    getListProductSales
+    getListProductSales,
+    listData,
+    loadingData
   }
 }

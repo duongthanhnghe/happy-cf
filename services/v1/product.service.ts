@@ -3,8 +3,6 @@ import { API_ENDPOINTS } from '@/services/const/api.const'
 import type { 
   ProductDTO, 
   WishlistItem, 
-  CreateProductDTO, 
-  UpdateProductDTO,
   ProductPaginationDTO,
   ProductSortType
 } from '@/server/types/dto/v1/product.dto'
@@ -62,33 +60,69 @@ export const productsAPI = {
     }
   },
 
-  getMostOrdered: async (limit: number): Promise<ApiResponse<ProductDTO[]>> => {
+  getMostOrdered: async (
+    categoryId: string,
+    page: number,
+    limit: number,
+    sort?: ProductSortType
+  ) => {
     try {
-      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_MOST_ORDER(limit)}`)
-      const data = await res.json()
-      return data
-    } catch (err: any) {
-      console.error('Error fetching most ordered product:', err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch most ordered products",
-        data: []
+      const url = new URL(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_MOST_ORDER}`
+      )
+      url.searchParams.set('page', String(page))
+      url.searchParams.set('limit', String(limit))
+      if (sort) url.searchParams.set('sort', sort)
+      if (categoryId) url.searchParams.set('categoryId', categoryId)
+      
+      const res = await fetch(url.toString())
+      const result = await res.json()
+
+      if (result.code !== 0) {
+        throw new Error(result.message || "Lỗi khi lấy sản phẩm theo danh mục")
       }
+
+      return {
+        code: 0,
+        data: result.data,
+        pagination: result.pagination,
+      }
+    } catch (err) {
+      console.error("Error fetching products by category:", err)
+      throw err
     }
   },
 
-  getPromotional: async (limit: number): Promise<ApiResponse<ProductDTO[]>> => {
+  getPromotional: async (
+    categoryId: string,
+    page: number,
+    limit: number,
+    sort?: ProductSortType
+  ) => {
     try {
-      const res = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_PROMOTION(limit)}`)
-      const data = await res.json()
-      return data
-    } catch (err: any) {
-      console.error('Error fetching promotional products:', err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch promotional products",
-        data: []
+      const url = new URL(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_PROMOTION}`
+      )
+      url.searchParams.set('page', String(page))
+      url.searchParams.set('limit', String(limit))
+      if (sort) url.searchParams.set('sort', sort)
+      if (categoryId) url.searchParams.set('categoryId', categoryId)
+      
+      const res = await fetch(url.toString())
+      const result = await res.json()
+
+      if (result.code !== 0) {
+        throw new Error(result.message || "Lỗi khi lấy sản phẩm theo danh mục")
       }
+
+      return {
+        code: 0,
+        data: result.data,
+        pagination: result.pagination,
+      }
+    } catch (err) {
+      console.error("Error fetching products by category:", err)
+      throw err
     }
   },
 

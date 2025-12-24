@@ -1,6 +1,5 @@
 export const authorizeRoles = (...roles) => {
     return (req, res, next) => {
-        console.log('req12312', req);
         if (!req.account) {
             return res.status(403).json({ code: 403, message: "Chưa xác thực tài khoản quản trị" });
         }

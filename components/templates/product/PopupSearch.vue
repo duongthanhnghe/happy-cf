@@ -61,8 +61,8 @@ const storeProductMostOrder = useProductMostOrderStore()
         </div>
       </div>
 
-      <div v-if="storeProductMostOrder.getListProductMostOrder.length > 0" class="mt-md pb-mt">
-        <SectionProductListSwiper :items="storeProductMostOrder.getListProductMostOrder" :loading="storeProductMostOrder.loading" :breakpoints="POPUP_HEADER_SEARCH" headingText="Gợi ý cho bạn" />
+      <div v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0" class="mt-md pb-mt">
+        <SectionProductListSwiper :items="storeProductMostOrder.getListProductMostOrder.data" :loading="storeProductMostOrder.loadingData" :breakpoints="POPUP_HEADER_SEARCH" headingText="Gợi ý cho bạn" />
       </div>
 
     </template>

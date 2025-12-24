@@ -1,34 +1,35 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { productsAPI } from "@/services/v1/product.service";
-import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
+import type { ProductPaginationDTO, ProductSortType } from '@/server/types/dto/v1/product.dto';
+import { useState } from "nuxt/app";
 
 export const useProductMostOrder = () => {
-  const listProductMostOrder = ref<ProductDTO[]>([]);
-  const limitProductMostOrder = ref<number>(12);
-  const loading = ref(false)
+  const listData = useState<ProductPaginationDTO | null>('product-most-order-list', () => null)
+  const loadingData = useState<boolean>(
+  'product-most-order-loading',
+  () => false
+)
 
-  const fetchListProductMostOrder = async () => {
-    loading.value = true
+  const fetchListProductMostOrder = async (categoryId: string, page: number, limit: number, filter: ProductSortType) => {
     try {
-      const data = await productsAPI.getMostOrdered(limitProductMostOrder.value)
+      loadingData.value = true
+      const data = await productsAPI.getMostOrdered(categoryId, page, limit, filter)
       if(data.code === 0) {
-        listProductMostOrder.value = data.data
-        return data
+        listData.value = data
       }
     } catch (err) {
-      console.error('Error most order', err)
+      console.error('Error most promotion', err)
     } finally {
-      loading.value = false
+      loadingData.value = false
     }
   }
 
-  const getListProductMostOrder = computed(() => listProductMostOrder.value);
+  const getListProductMostOrder = computed(() => listData.value);
 
   return {
-    listProductMostOrder,
-    limitProductMostOrder,
     fetchListProductMostOrder,
     getListProductMostOrder,
-    loading
+    listData,
+    loadingData
   }
 }

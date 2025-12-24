@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
-
-const storeCategoryMain = useCategoryMainStore()
+defineProps<{
+  priceRanges: {
+    key: string
+    label: string
+  }[]
+  selectedPriceRanges: string[]
+  onTogglePrice: (key: string) => void
+}>()
 </script>
 
 <template>
   <v-checkbox
-    v-for="range in storeCategoryMain.PRICE_RANGES"
+    v-for="range in priceRanges"
     :key="range.key"
-    v-model="storeCategoryMain.selectedPriceRanges"
+    :model-value="selectedPriceRanges.includes(range.key)"
     :label="range.label"
-    :value="range.key"
     hide-details
+    @click="onTogglePrice(range.key)"
   />
 </template>

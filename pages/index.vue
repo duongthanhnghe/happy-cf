@@ -24,8 +24,8 @@ const storeNewsLatest = usePostLatestStore()
 const storeProductCategory = useProductCategoryStore()
 
 if(storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
-if(storeProductSale.getListProductSales.length === 0) await storeProductSale.fetchProductStore()
-if(storeProductMostOrder.getListProductMostOrder.length === 0) await storeProductMostOrder.fetchProductStore()
+if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',storeProductSale.page,storeProductSale.limit,'')
+if(!storeProductMostOrder.getListProductMostOrder) await storeProductMostOrder.fetchListProductMostOrder('',storeProductMostOrder.page,storeProductMostOrder.limit,'')
 if(storeNewsLatest.getListNewsLatest.length === 0) await storeNewsLatest.fetchPostStore()
 if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCategory.fetchCategoryStore()
 </script>
@@ -70,18 +70,18 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
 
     <div :class="storeDisplay.isMobileTable ? 'home-page-content':''">
       <SectionProductListSwiper 
-        v-if="storeProductSale.getListProductSales.length > 0" 
-        :items="storeProductSale.getListProductSales" 
-        :loading="storeProductSale.loading" 
+        v-if="storeProductSale.getListProductSales && storeProductSale.getListProductSales.data.length > 0" 
+        :items="storeProductSale.getListProductSales.data" 
+        :loading="storeProductSale.loadingData" 
         fullScreen 
         container="container container-xxl" 
         :headingText="t('product.promo.title')"
         class="pt-section pb-section"
       />
       <SectionProductListSwiper 
-        v-if="storeProductMostOrder.getListProductMostOrder.length > 0" 
-        :items="storeProductMostOrder.getListProductMostOrder" 
-        :loading="storeProductMostOrder.loading" 
+        v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0" 
+        :items="storeProductMostOrder.getListProductMostOrder.data" 
+        :loading="storeProductMostOrder.loadingData" 
         fullScreen 
         container="container container-xxl" 
         :headingText="t('product.list.title1')" 

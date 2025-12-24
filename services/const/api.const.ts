@@ -13,8 +13,8 @@ export const API_ENDPOINTS = {
   PRODUCTS: {
     GET_BY_ID: (id: string) => `/products/${id}`,
     RELATED_BY_SLUG: (slug: string) => `/products/related/${slug}`,
-    LIST_MOST_ORDER: (limit: number) => `/products/most-order?limit=${limit}`,
-    LIST_PROMOTION: (limit: number) => `/products/promotion?limit=${limit}`,
+    LIST_MOST_ORDER: '/products/most-order',
+    LIST_PROMOTION: '/products/promotion',
     SEARCH: '/products/search',
     LIST_BY_CATEGORY: (categoryId: string) => `/products/category/${categoryId}`,
     LIST_BY_USER_WISHLIST: (id: string) => `/users/${id}/wishlist`,

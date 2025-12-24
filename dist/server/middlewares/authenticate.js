@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 export const authenticate = (req, res, next) => {
     const authHeader = req.headers.authorization;
-    const token = authHeader === null || authHeader === void 0 ? void 0 : authHeader.split(" ")[1]; // lấy Bearer token
+    const token = authHeader === null || authHeader === void 0 ? void 0 : authHeader.split(" ")[1];
     if (!token) {
         return res.status(401).json({ message: 'Thiếu token' });
     }

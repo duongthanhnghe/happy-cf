@@ -391,6 +391,22 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       icon: 'shopping_cart',
       headerTypeLeft: 'logo',
       children: {
+        SALE: {
+          path: '/product/giam-gia',
+          label: 'Khuyến mãi',
+          icon: 'list',
+          middleware: ['product-sale','auth-login'],
+          layout: 'default',
+          headerTypeLeft: 'address',
+        },
+        MOST_ORDER: {
+          path: '/product/ban-chay',
+          label: 'Bán chạy',
+          icon: 'list',
+          middleware: ['product-most-order','auth-login'],
+          layout: 'default',
+          headerTypeLeft: 'address',
+        },
         LIST: {
           path: '/products',
           label: 'Danh sách sản phẩm',

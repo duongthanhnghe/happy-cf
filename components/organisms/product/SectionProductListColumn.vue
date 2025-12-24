@@ -11,10 +11,12 @@ const props = withDefaults(defineProps<{
   column?: string
   variant?: string
   deleteFavorite?: boolean
+  showNoData?: boolean
 }>(), {
   items: () => [],
   loading: false,
   deleteFavorite: false,
+  showNoData: false,
 })
 </script>
 
@@ -22,7 +24,7 @@ const props = withDefaults(defineProps<{
   <div>
     <div :class="container">
       <LoadingData v-if="props.loading" />
-      <template v-else>
+      <template v-else-if="!props.loading && items.length > 0">
         <Heading v-if="props.headingText" tag="h2" size="lg" weight="semibold" class="black mb-sm">
           {{ props.headingText }}
         </Heading>
@@ -31,6 +33,9 @@ const props = withDefaults(defineProps<{
             <ProductItemTemplate1 :product="product" :background="props.backgroundItem" :variant="props.variant" :deleteFavorite="props.deleteFavorite" />
           </div>
         </div>
+      </template>
+      <template v-else>
+        <NoData v-if="showNoData" />
       </template>
     </div>
   </div>

@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"121cfe-ENh+gmgYZ8NDl1QOkc5nI4mlhJ4\"",
-    "mtime": "2025-12-23T09:24:18.969Z",
-    "size": 1187070,
+    "etag": "\"123054-qw9En2NlOLn+paUQJXsMvqUrGDI\"",
+    "mtime": "2025-12-24T09:32:53.273Z",
+    "size": 1192020,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"49c7ce-6jluQFIpL3oRyhB5z7ZAMsBgIBQ\"",
-    "mtime": "2025-12-23T09:24:18.976Z",
-    "size": 4835278,
+    "etag": "\"4a1851-7RUg+ZTCEPvDRp6A4+W0zW3dh8k\"",
+    "mtime": "2025-12-24T09:32:53.283Z",
+    "size": 4855889,
     "path": "index.mjs.map"
   }
 };
@@ -32847,6 +32847,29 @@ const getApplicableVouchersForProduct = async (product) => {
   return null;
 };
 
+const getAllActiveCategoryIds = async () => {
+  const categories = await CategoryProductEntity.find({ isActive: true }).select("_id parentId").lean();
+  const map = /* @__PURE__ */ new Map();
+  categories.forEach((c) => map.set(c._id.toString(), c));
+  const cache = /* @__PURE__ */ new Map();
+  const isChainActiveSync = (id) => {
+    const key = id.toString();
+    if (cache.has(key)) return cache.get(key);
+    const cat = map.get(key);
+    if (!cat) {
+      cache.set(key, false);
+      return false;
+    }
+    if (!cat.parentId) {
+      cache.set(key, true);
+      return true;
+    }
+    const parentActive = isChainActiveSync(cat.parentId);
+    cache.set(key, parentActive);
+    return parentActive;
+  };
+  return categories.filter((c) => isChainActiveSync(c._id)).map((c) => c._id);
+};
 const isCategoryChainActive = async (categoryId, cache = /* @__PURE__ */ new Map()) => {
   if (!categoryId) return false;
   const key = categoryId.toString();
@@ -33035,109 +33058,256 @@ const deleteWishlistItem = async (req, res) => {
   }
 };
 const getPromotionalProducts = async (req, res) => {
+  var _a;
   try {
-    const limit = req.query.limit ? Number(req.query.limit) : 20;
-    const products = await ProductEntity.aggregate([
-      {
-        $match: {
-          isActive: true,
-          amount: { $gt: 0 },
-          $expr: { $lt: ["$priceDiscounts", "$price"] }
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.max(Number(req.query.limit) || 20, 1);
+    const skip = (page - 1) * limit;
+    let activeCategories = null;
+    if (req.query.categoryId) {
+      if (!Types.ObjectId.isValid(req.query.categoryId)) {
+        return res.status(400).json({
+          code: 1,
+          message: "Category ID kh\xF4ng h\u1EE3p l\u1EC7"
+        });
+      }
+      const categoryId = new Types.ObjectId(req.query.categoryId);
+      const categories = await CategoryProductEntity.aggregate([
+        { $match: { _id: categoryId } },
+        {
+          $graphLookup: {
+            from: CategoryProductEntity.collection.name,
+            startWith: "$_id",
+            connectFromField: "_id",
+            connectToField: "parentId",
+            as: "descendants"
+          }
+        },
+        {
+          $project: {
+            ids: { $concatArrays: [["$_id"], "$descendants._id"] }
+          }
         }
-      },
+      ]);
+      const ids = ((_a = categories[0]) == null ? void 0 : _a.ids) || [categoryId];
+      const allActive = await getAllActiveCategoryIds();
+      activeCategories = ids.filter(
+        (id) => allActive.some((a) => a.equals(id))
+      );
+      if (!(activeCategories == null ? void 0 : activeCategories.length)) {
+        return res.json({
+          code: 0,
+          data: [],
+          pagination: { page, limit, total: 0, totalPages: 0 }
+        });
+      }
+    } else {
+      activeCategories = await getAllActiveCategoryIds();
+    }
+    const match = {
+      isActive: true,
+      amount: { $gt: 0 },
+      $expr: { $lt: ["$priceDiscounts", "$price"] },
+      categoryId: { $in: activeCategories }
+    };
+    if (activeCategories) {
+      match.categoryId = { $in: activeCategories };
+    }
+    const total = await ProductEntity.countDocuments(match);
+    const sortParam = req.query.sort;
+    let sortQuery = { updatedAt: -1, _id: 1 };
+    switch (sortParam) {
+      case "discount":
+        sortQuery = { discountValue: -1, _id: 1 };
+        break;
+      case "price_desc":
+        sortQuery = { price: -1, _id: 1 };
+        break;
+      case "price_asc":
+        sortQuery = { price: 1, _id: 1 };
+        break;
+      case "popular":
+        sortQuery = { amountOrder: -1, _id: 1 };
+        break;
+    }
+    const products = await ProductEntity.aggregate([
+      { $match: match },
       {
         $addFields: {
-          discountPercent: {
+          price: { $toDouble: "$price" },
+          priceDiscount: { $toDouble: "$priceDiscounts" },
+          discountValue: {
             $cond: [
-              { $and: [{ $ifNull: ["$price", false] }, { $ifNull: ["$priceDiscounts", false] }] },
               {
-                $round: [
-                  { $multiply: [{ $divide: [{ $subtract: ["$price", "$priceDiscounts"] }, "$price"] }, 100] },
-                  0
+                $and: [
+                  { $gt: ["$price", 0] },
+                  { $gt: ["$priceDiscounts", 0] }
                 ]
               },
+              { $subtract: ["$price", "$priceDiscounts"] },
               0
             ]
           }
         }
       },
-      { $sort: { discountPercent: -1 } },
+      { $sort: sortQuery },
+      { $skip: skip },
       { $limit: limit }
     ]);
-    const filtered = [];
-    for (const p of products) {
-      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
-    }
-    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
     const finalResult = [];
     for (const p of productsWithVariants) {
-      const voucher = await getApplicableVouchersForProduct(p);
-      finalResult.push({
-        ...p,
-        vouchers: voucher
-      });
-    }
-    return res.json({
-      code: 0,
-      data: toProductListDTO(finalResult)
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      code: 1,
-      message: "Server error"
-    });
-  }
-};
-const getMostOrderedProduct = async (req, res) => {
-  try {
-    const limit = req.query.limit ? Number(req.query.limit) : 10;
-    const topProductsAgg = await OrderEntity.aggregate([
-      { $unwind: "$cartItems" },
-      { $match: { "cartItems.idProduct": { $exists: true } } },
-      {
-        $group: {
-          _id: "$cartItems.idProduct",
-          totalOrdered: { $sum: "$cartItems.quantity" }
-        }
-      },
-      { $sort: { totalOrdered: -1 } },
-      { $limit: limit }
-    ]);
-    const productIds = topProductsAgg.map((p) => p._id).filter(Types.ObjectId.isValid);
-    if (!productIds.length) {
-      return res.json({ code: 0, data: [], message: "Success" });
-    }
-    const products = await ProductEntity.find({
-      _id: { $in: productIds },
-      isActive: true,
-      amount: { $gt: 0 }
-    }).lean();
-    const productsWithQuantity = products.map((p) => {
-      const found = topProductsAgg.find((tp) => tp._id.toString() === p._id.toString());
-      return { ...p, totalOrdered: (found == null ? void 0 : found.totalOrdered) || 0 };
-    });
-    const filtered = [];
-    for (const p of productsWithQuantity) {
-      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
-    }
-    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
-    const finalResult = [];
-    for (const p of productsWithVariants) {
-      const voucher = await getApplicableVouchersForProduct(p);
-      finalResult.push({
-        ...p,
-        vouchers: voucher
-      });
+      const vouchers = await getApplicableVouchersForProduct(p);
+      finalResult.push({ ...p, vouchers });
     }
     return res.json({
       code: 0,
       data: toProductListDTO(finalResult),
-      message: "Success"
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
-    console.error("getMostOrderedProduct error:", error);
-    return res.status(500).json({ code: 1, message: "Server error" });
+    console.error("getPromotionalProducts error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: error.message || "Server error"
+    });
+  }
+};
+const getMostOrderedProduct = async (req, res) => {
+  var _a;
+  try {
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.max(Number(req.query.limit) || 20, 1);
+    const skip = (page - 1) * limit;
+    let activeCategories = null;
+    if (req.query.categoryId) {
+      if (!Types.ObjectId.isValid(req.query.categoryId)) {
+        return res.status(400).json({
+          code: 1,
+          message: "Category ID kh\xF4ng h\u1EE3p l\u1EC7"
+        });
+      }
+      const categoryId = new Types.ObjectId(req.query.categoryId);
+      const categories = await CategoryProductEntity.aggregate([
+        { $match: { _id: categoryId } },
+        {
+          $graphLookup: {
+            from: CategoryProductEntity.collection.name,
+            startWith: "$_id",
+            connectFromField: "_id",
+            connectToField: "parentId",
+            as: "descendants"
+          }
+        },
+        {
+          $project: {
+            ids: { $concatArrays: [["$_id"], "$descendants._id"] }
+          }
+        }
+      ]);
+      const ids = ((_a = categories[0]) == null ? void 0 : _a.ids) || [categoryId];
+      const allActive = await getAllActiveCategoryIds();
+      activeCategories = ids.filter(
+        (id) => allActive.some((a) => a.equals(id))
+      );
+      if (!(activeCategories == null ? void 0 : activeCategories.length)) {
+        return res.json({
+          code: 0,
+          data: [],
+          pagination: { page, limit, total: 0, totalPages: 0 }
+        });
+      }
+    } else {
+      activeCategories = await getAllActiveCategoryIds();
+    }
+    const match = {
+      isActive: true,
+      amount: { $gt: 0 },
+      categoryId: { $in: activeCategories }
+    };
+    const total = await ProductEntity.countDocuments(match);
+    const sortParam = req.query.sort;
+    let sortQuery = { totalOrdered: -1, _id: 1 };
+    switch (sortParam) {
+      case "price_desc":
+        sortQuery = { price: -1, _id: 1 };
+        break;
+      case "price_asc":
+        sortQuery = { price: 1, _id: 1 };
+        break;
+      case "popular":
+      case "discount":
+        sortQuery = { discountValue: -1, _id: 1 };
+        break;
+      default:
+        sortQuery = { totalOrdered: -1, _id: 1 };
+        break;
+    }
+    const products = await ProductEntity.aggregate([
+      { $match: match },
+      /* join order để tính số lượng bán */
+      {
+        $lookup: {
+          from: OrderEntity.collection.name,
+          let: { productId: "$_id" },
+          pipeline: [
+            { $unwind: "$cartItems" },
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$cartItems.idProduct", "$$productId"]
+                }
+              }
+            },
+            {
+              $group: {
+                _id: null,
+                totalOrdered: { $sum: "$cartItems.quantity" }
+              }
+            }
+          ],
+          as: "orderStats"
+        }
+      },
+      {
+        $addFields: {
+          totalOrdered: {
+            $ifNull: [{ $arrayElemAt: ["$orderStats.totalOrdered", 0] }, 0]
+          },
+          price: { $toDouble: "$price" }
+        }
+      },
+      { $sort: sortQuery },
+      { $skip: skip },
+      { $limit: limit }
+    ]);
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
+    const finalResult = [];
+    for (const p of productsWithVariants) {
+      const vouchers = await getApplicableVouchersForProduct(p);
+      finalResult.push({ ...p, vouchers });
+    }
+    return res.json({
+      code: 0,
+      data: toProductListDTO(finalResult),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    console.error("getMostOrderedProducts error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: error.message || "Server error"
+    });
   }
 };
 const getProductsByCategory = async (req, res) => {
@@ -33205,7 +33375,6 @@ const getProductsByCategory = async (req, res) => {
     }
     const products = await ProductEntity.aggregate([
       { $match: match },
-      // ✅ TẠO FIELD SORT ĐÚNG
       {
         $addFields: {
           price: { $toDouble: "$price" },
@@ -33224,9 +33393,7 @@ const getProductsByCategory = async (req, res) => {
           }
         }
       },
-      // ✅ SORT ỔN ĐỊNH
       { $sort: sortQuery },
-      // ✅ PAGINATION
       { $skip: skip },
       { $limit: limit }
     ]);

@@ -1,185 +1,84 @@
-import { ref, watch, computed } from "vue";
+import { watch, computed } from "vue";
 import { defineStore } from "pinia";
 import { Loading} from '@/utils/global'
 import { useProductCategoryDetail } from '@/composables/product/useProductCategoryDetail'
 import { useProductByCategory } from '@/composables/product/useProductByCategory'
-import { usePagination } from '@/utils/paginationHandle'
 import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren'
-import type { ProductDTO, ProductSortType, ProductFilterOption } from '@/server/types/dto/v1/product.dto'
 import { scrollIntoView } from "@/utils/global";
-import { IMAGE_AUTH_LOGIN } from "@/const/image";
+import { useProductFilterState } from "@/composables/product/filter/useProductFilterState";
+import { useProductFilterUtils } from "@/composables/product/filter/useProductFilterUtils";
+import { useProductMainState } from "@/composables/product/category/useProductMainState";
+import { useProductMainOperation } from "@/composables/product/category/useProductMainOperation";
 
 export const useCategoryMainStore = defineStore("CategoryMainProductStore", () => {
   const { getProductCategoryDetail } = useProductCategoryDetail()
   const { loadingData, getProductByCategoryApi, fetchProductByCategory } = useProductByCategory()
   const { getListCategoryChildren } = useProductCategoryChildren()
 
-  const listItems = ref<ProductDTO[]|null>(null);
-  const pagination = computed(() => getProductByCategoryApi.value?.pagination)
-  const page = ref('1')
-  const limit = 24
-  const filterCategory = ref<string>('')
-  const filterArray = ref<ProductFilterOption[]>([
-    {
-      title: 'Mới nhất',
-      value: '',
-    },
-    {
-      title: 'Khuyến mãi',
-      value: 'discount',
-    },
-    {
-      title: 'Bán chạy',
-      value: 'popular',
-    },
-    {
-      title: 'Giá cao đến thấp',
-      value: 'price_desc',
-    },
-    {
-      title: 'Giá thấp đến cao',
-      value: 'price_asc',
-    },
-  ])
+  const stateFilter = useProductFilterState()
+  const state = useProductMainState()
 
-  const PRICE_RANGES = [
-    {
-      key: '0-200',
-      label: '0 - 200.000đ',
-      min: 0,
-      max: 200_000,
-    },
-    {
-      key: '200-300',
-      label: '200.000đ - 300.000đ',
-      min: 200_000,
-      max: 300_000,
-    },
-    {
-      key: '300-500',
-      label: '300.000đ - 500.000đ',
-      min: 300_000,
-      max: 500_000,
-    },
-    {
-      key: '500+',
-      label: '> 500.000đ',
-      min: 500_000,
-      max: Infinity,
-    },
-  ]
+  const utilsFilter = useProductFilterUtils (
+    stateFilter.isTogglePopupFilter,
+    stateFilter.filterType,
+    stateFilter.selectedPriceRanges,
+    stateFilter.selectedVariants,
+    stateFilter.filterCategory,
+    state.page,
+  )
 
-  const filterType = ref<ProductSortType>(filterArray.value[0].value)
-  const selectedPriceRanges = ref<string[]>([])
-  const selectedVariants = ref<string[]>([])
-  const isTogglePopupFilter = ref(false)
-  const valueChangePage = ref<boolean|null>(null)
-  const elFilterProduct = 'filter-product'
+  const operation = useProductMainOperation(
+    state.listItems,
+    state.page,
+    state.valueChangePage,
+    stateFilter.selectedPriceRanges,
+    stateFilter.selectedVariants,
+    stateFilter.PRICE_RANGES,
+    state.pagination,
+  )
 
   watch(getProductByCategoryApi, (newValue) => {
     if (newValue && newValue.data) {
-      listItems.value = newValue.data
+      state.listItems.value = newValue.data
+      state.pagination.value = newValue.pagination
     }
   }, { immediate: true })
 
-  watch([page, filterType, filterCategory,],
+  watch([state.page, stateFilter.filterType, stateFilter.filterCategory,],
     async ([newPage, newFilterType, newFilterCategory], [oldPage, oldFilterType, oldFilterCategory]) => {
 
       if ((newFilterType !== oldFilterType || newFilterCategory !== oldFilterCategory) && newPage !== '1') {
-        page.value = '1'
+        state.page.value = '1'
         return
       }
 
       if (!getProductCategoryDetail.value?.id) return
 
-      const categoryId = filterCategory.value || getProductCategoryDetail.value.id
+      const categoryId = stateFilter.filterCategory.value || getProductCategoryDetail.value.id
 
       Loading(true)
       try {
         await fetchProductByCategory(
           categoryId,
-          Number(page.value),
-          limit,
-          filterType.value
+          Number(state.page.value),
+          state.limit,
+          stateFilter.filterType.value
         )
-        listItems.value = getProductByCategoryApi.value?.data || []
       } catch (err) {
         console.error('fetch category product error:', err)
       } finally {
         Loading(false)
         if (window.innerWidth > 1024) {
-          scrollIntoView(elFilterProduct)
+          scrollIntoView(stateFilter.elFilterProduct)
         }
       }
     },
-    { immediate: true }
   )
-
-  watch(valueChangePage, (newVal) => {
-    if(newVal !== null) handleChangePage(newVal)
-    valueChangePage.value = null
-  })
-
-  const { handleChangePage, getTotalPages } = usePagination(page, computed(() => pagination.value?.totalPages ?? 0))
-
-  const handleTogglePopupFilter = (value: boolean) => {
-    isTogglePopupFilter.value = value;
-  };
-
-  const resetFilter = () => {
-    isTogglePopupFilter.value = false
-    page.value = '1'
-    filterType.value = ''
-    selectedPriceRanges.value = []
-    filterCategory.value = ''
-    selectedVariants.value = []
-  }
-
-  const hasFilter = computed(() => {
-    return (
-      page.value !== '1' ||
-      filterType.value !== '' ||
-      filterCategory.value !== '' ||
-      selectedPriceRanges.value.length > 0 ||
-      selectedVariants.value.length > 0
-    )
-  })
-
-  const getListItems = computed(() => {
-    if (!listItems.value) return []
-
-    return listItems.value
-      .filter(item => {
-        if (selectedPriceRanges.value.length === 0) return true
-
-        const price = Number(item.price) || 0
-
-        return selectedPriceRanges.value.some(key => {
-          const range = PRICE_RANGES.find(r => r.key === key)
-          if (!range) return false
-          return price >= range.min && price <= range.max
-        })
-      })
-      .filter(item => {
-        if (selectedVariants.value.length === 0) return true
-
-        const itemVariantIds =
-          item.variantCombinations?.flatMap(g =>
-            g.variants?.map(v => v.variantId)
-          ) || []
-
-        return selectedVariants.value.some(vId =>
-          itemVariantIds.includes(vId)
-        )
-      })
-  })
-
-  const getTotalItems = computed(() => { return pagination.value?.total })
 
   const listBannerCategory = computed(() => {
     if (!getListCategoryChildren.value || getListCategoryChildren.value.length === 0) {
       if(!getProductCategoryDetail) return
-      return getProductCategoryDetail.value?.banner ? getProductCategoryDetail.value?.banner : IMAGE_AUTH_LOGIN
+      return getProductCategoryDetail.value?.banner ? getProductCategoryDetail.value?.banner : state.IMAGE_AUTH_LOGIN
     }
 
     return getListCategoryChildren.value
@@ -188,29 +87,13 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
   })
 
   return {
-    listItems,
-    filterType,
-    filterArray,
-    limit,
-    page,
+    ...state,
+    ...stateFilter,
     getProductCategoryDetail,
-    getListItems,
-    getTotalPages,
-    getTotalItems,
-    selectedVariants,
-    selectedPriceRanges,
     getListCategoryChildren,
-    filterCategory,
     loadingData,
-    isTogglePopupFilter,
-    hasFilter,
-    valueChangePage,
     listBannerCategory,
-    IMAGE_AUTH_LOGIN,
-    elFilterProduct,
-    PRICE_RANGES,
-    handleChangePage,
-    handleTogglePopupFilter,
-    resetFilter,
+    ...utilsFilter,
+    ...operation,
   };
 });

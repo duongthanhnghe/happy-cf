@@ -1,32 +1,80 @@
-import { ref } from "vue";
 import { defineStore } from "pinia";
+import { useProductFilterState } from "@/composables/product/filter/useProductFilterState";
+import { useProductFilterUtils } from "@/composables/product/filter/useProductFilterUtils";
+import { useProductMainState } from "@/composables/product/category/useProductMainState";
+import { useProductMainOperation } from "@/composables/product/category/useProductMainOperation";
+import { watch } from 'vue';
+import { Loading, scrollIntoView } from '@/utils/global';
 import { useProductMostOrder } from '@/composables/product/useProductMostOrder'
 
-const TTL_MS = 10 * 60 * 1000
-
 export const useProductMostOrderStore = defineStore("ProductMostOrderStore", () => {
-  const { fetchListProductMostOrder, getListProductMostOrder, loading } = useProductMostOrder()
+  const { fetchListProductMostOrder, getListProductMostOrder, loadingData } = useProductMostOrder()
 
-  const lastFetched = ref<number | null>(null)
+  const stateFilter = useProductFilterState()
+  const state = useProductMainState()
 
-  const fetchProductStore = async () => {
-    const now = Date.now()
-    if (getListProductMostOrder.value.length > 0 && lastFetched.value && now - lastFetched.value < TTL_MS) return
+  const utilsFilter = useProductFilterUtils (
+    stateFilter.isTogglePopupFilter,
+    stateFilter.filterType,
+    stateFilter.selectedPriceRanges,
+    stateFilter.selectedVariants,
+    stateFilter.filterCategory,
+    state.page,
+  )
 
-    await fetchListProductMostOrder()
-    lastFetched.value = now
-  }
+  const operation = useProductMainOperation(
+    state.listItems,
+    state.page,
+    state.valueChangePage,
+    stateFilter.selectedPriceRanges,
+    stateFilter.selectedVariants,
+    stateFilter.PRICE_RANGES,
+    state.pagination,
+  )
+
+  watch(getListProductMostOrder, (newValue) => {
+    if (newValue && newValue.data) {
+      state.listItems.value = newValue.data
+      state.pagination.value = newValue.pagination
+    }
+  }, { immediate: true })
+
+  watch([state.page, stateFilter.filterType, stateFilter.filterCategory,],
+    async ([newPage, newFilterType, newFilterCategory], [oldPage, oldFilterType, oldFilterCategory]) => {
+
+      if ((newFilterType !== oldFilterType || newFilterCategory !== oldFilterCategory) && newPage !== '1') {
+        state.page.value = '1'
+        return
+      }
+
+      const categoryId = stateFilter.filterCategory.value || ''
+
+      Loading(true)
+      try {
+        await fetchListProductMostOrder(
+          categoryId,
+          Number(state.page.value),
+          state.limit,
+          stateFilter.filterType.value
+        )
+      } catch (err) {
+        console.error('fetch category product error:', err)
+      } finally {
+        Loading(false)
+        if (window.innerWidth > 1024) {
+          scrollIntoView(stateFilter.elFilterProduct)
+        }
+      }
+    },
+  )
 
   return {
-    fetchProductStore,
-    lastFetched,
-    loading,
+    ...state,
+    ...stateFilter,
+    loadingData,
     getListProductMostOrder,
+    fetchListProductMostOrder,
+    ...utilsFilter,
+    ...operation,
   };
-}, {
-  persist: {
-    key: 'ProductMostOrderPinia',
-    storage: typeof window !== 'undefined' ? sessionStorage : undefined,
-    paths: ['getListProductMostOrder','lastFetched'],
-  }
 })

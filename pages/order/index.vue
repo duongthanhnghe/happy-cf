@@ -62,24 +62,48 @@ watch(() => route.query.tab, (newVal) => {
         </div>
       </v-tabs-window-item>
       <v-tabs-window-item :value="2">
-        <SectionProductListColumn
-          :items="storeProductMostOrder.getListProductMostOrder"
-          :loading="storeProductMostOrder.loading" 
-          :column="COLUMN.PRODUCT_XL"
-          container="container container-xxl"
-          class="pt-section order-main-content-scroll scroll-hide"
-          headingText="Top bán chay"
-        />
+        <div 
+          v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0"
+          class="pt-lg order-main-content-scroll scroll-hide"
+          >
+          <SectionProductListColumn
+            :items="storeProductMostOrder.getListProductMostOrder.data"
+            :loading="storeProductMostOrder.loadingData" 
+            :column="COLUMN.PRODUCT_XL"
+            container="container container-xxl"
+            headingText="Top bán chay"
+            showNoData
+          />
+          <div class="text-center pb-lg" v-if="storeProductMostOrder.getTotalItems > storeProductMostOrder.getListProductMostOrder.data?.length">
+            <NuxtLink
+              :to="{ path: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.path }"
+            >
+              <Button color="black" label="Xem tất cả"/>
+            </NuxtLink>
+          </div>
+        </div>
       </v-tabs-window-item>
       <v-tabs-window-item :value="3">
-        <SectionProductListColumn
-          :items="storeProductSale.getListProductSales"
-          :loading="storeProductSale.loading" 
-          :column="COLUMN.PRODUCT_XL"
-          container="container container-xxl"
-          class="pt-section order-main-content-scroll scroll-hide"
-          headingText="Top khuyến mãi"
-        />
+        <div 
+          v-if="storeProductSale.getListProductSales && storeProductSale.getListProductSales.data.length > 0"
+          class="pt-lg order-main-content-scroll scroll-hide"
+          >
+          <SectionProductListColumn
+            :items="storeProductSale.getListProductSales.data"
+            :loading="storeProductSale.loadingData" 
+            :column="COLUMN.PRODUCT_XL"
+            container="container container-xxl"
+            headingText="Top khuyến mãi"
+            showNoData
+          />
+          <div class="text-center pb-lg" v-if="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length">
+            <NuxtLink
+              :to="{ path: ROUTES.PUBLIC.PRODUCT.children?.SALE.path }"
+            >
+              <Button color="black" label="Xem tất cả"/>
+            </NuxtLink>
+          </div>
+        </div>
       </v-tabs-window-item>
     </v-tabs-window>
   </div>

@@ -155,6 +155,7 @@ interface _GlobalComponents {
     'ProductCategoryMain': typeof import("../components/templates/product/ProductCategoryMain.vue")['default']
     'ProductFilterMobile': typeof import("../components/templates/product/ProductFilterMobile.vue")['default']
     'ProductFilterPC': typeof import("../components/templates/product/ProductFilterPC.vue")['default']
+    'ProductSaleMain': typeof import("../components/templates/product/sale/ProductSaleMain.vue")['default']
     'PopupAccountMenuInfo': typeof import("../components/templates/user/PopupAccountMenuInfo.vue")['default']
     'PopupChangePassword': typeof import("../components/templates/user/PopupChangePassword.vue")['default']
     'PopupHistoryReward': typeof import("../components/templates/user/PopupHistoryReward.vue")['default']
@@ -331,6 +332,7 @@ interface _GlobalComponents {
     'LazyProductCategoryMain': LazyComponent<typeof import("../components/templates/product/ProductCategoryMain.vue")['default']>
     'LazyProductFilterMobile': LazyComponent<typeof import("../components/templates/product/ProductFilterMobile.vue")['default']>
     'LazyProductFilterPC': LazyComponent<typeof import("../components/templates/product/ProductFilterPC.vue")['default']>
+    'LazyProductSaleMain': LazyComponent<typeof import("../components/templates/product/sale/ProductSaleMain.vue")['default']>
     'LazyPopupAccountMenuInfo': LazyComponent<typeof import("../components/templates/user/PopupAccountMenuInfo.vue")['default']>
     'LazyPopupChangePassword': LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
     'LazyPopupHistoryReward': LazyComponent<typeof import("../components/templates/user/PopupHistoryReward.vue")['default']>
@@ -513,6 +515,7 @@ export const PopupSearch: typeof import("../components/templates/product/PopupSe
 export const ProductCategoryMain: typeof import("../components/templates/product/ProductCategoryMain.vue")['default']
 export const ProductFilterMobile: typeof import("../components/templates/product/ProductFilterMobile.vue")['default']
 export const ProductFilterPC: typeof import("../components/templates/product/ProductFilterPC.vue")['default']
+export const ProductSaleMain: typeof import("../components/templates/product/sale/ProductSaleMain.vue")['default']
 export const PopupAccountMenuInfo: typeof import("../components/templates/user/PopupAccountMenuInfo.vue")['default']
 export const PopupChangePassword: typeof import("../components/templates/user/PopupChangePassword.vue")['default']
 export const PopupHistoryReward: typeof import("../components/templates/user/PopupHistoryReward.vue")['default']
@@ -689,6 +692,7 @@ export const LazyPopupSearch: LazyComponent<typeof import("../components/templat
 export const LazyProductCategoryMain: LazyComponent<typeof import("../components/templates/product/ProductCategoryMain.vue")['default']>
 export const LazyProductFilterMobile: LazyComponent<typeof import("../components/templates/product/ProductFilterMobile.vue")['default']>
 export const LazyProductFilterPC: LazyComponent<typeof import("../components/templates/product/ProductFilterPC.vue")['default']>
+export const LazyProductSaleMain: LazyComponent<typeof import("../components/templates/product/sale/ProductSaleMain.vue")['default']>
 export const LazyPopupAccountMenuInfo: LazyComponent<typeof import("../components/templates/user/PopupAccountMenuInfo.vue")['default']>
 export const LazyPopupChangePassword: LazyComponent<typeof import("../components/templates/user/PopupChangePassword.vue")['default']>
 export const LazyPopupHistoryReward: LazyComponent<typeof import("../components/templates/user/PopupHistoryReward.vue")['default']>
