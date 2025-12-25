@@ -4,6 +4,8 @@ import { ROUTES } from '@/shared/constants/routes'
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore';
 import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
+import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
+import { watch } from 'vue';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.DETAIL.middleware ?? { middleware: ['product-detail'] },
@@ -11,9 +13,22 @@ definePageMeta({
 
 const store = useProductDetailStore()
 const storeProductSale = useProductSaleStore()
+const storeViewed = useProductViewedStore()
 const detail: ProductDTO | null = store.getDetailProduct
 
 if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',storeProductSale.page,storeProductSale.limit,'')
+
+watch(
+  () => store.getDetailProduct?.id,
+  async (id, oldId) => {
+    if (!id || id === oldId) return
+
+    storeViewed.addViewedProduct(id)
+
+    await storeViewed.fetchViewedProducts(storeViewed.limit)
+  },
+  { immediate: true }
+)
 
 </script>
 
@@ -39,8 +54,16 @@ if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProduc
         :loading="storeProductSale.loading" 
         container="container container-xxl" 
         headingText="Khuyến mãi" 
-        class="pt-section pb-section"
+        class="pt-section"
         :slug="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length ? ROUTES.PUBLIC.PRODUCT.children?.SALE.path: ''"
+      />
+      <SectionProductListSwiper 
+        v-if="storeViewed.listItems && storeViewed.listItems.length > 0" 
+        :items="storeViewed.listItems" 
+        :loading="storeViewed.loading" 
+        container="container container-xxl" 
+        headingText="Bạn đã xem" 
+        class="pt-section pb-section"
       />
     </div>
   </template>

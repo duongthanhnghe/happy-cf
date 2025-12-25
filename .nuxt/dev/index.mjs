@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"123054-xqWYXZzz975e97O913XUD3/Q2UM\"",
-    "mtime": "2025-12-24T09:58:59.117Z",
-    "size": 1192020,
+    "etag": "\"1236c3-T7fU/d8S3Q/IvJqFgd7VyaMKHP4\"",
+    "mtime": "2025-12-25T06:25:49.092Z",
+    "size": 1193667,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"4a184e-S81EIemGc4es+gfNjlvKXd/4jJ8\"",
-    "mtime": "2025-12-24T09:58:59.130Z",
-    "size": 4855886,
+    "etag": "\"4a323f-VdXhvZ6yQBkGZ+Qv0tk0MEOBF9E\"",
+    "mtime": "2025-12-25T06:25:49.098Z",
+    "size": 4862527,
     "path": "index.mjs.map"
   }
 };
@@ -32958,8 +32958,7 @@ const getRelatedProducts = async (req, res) => {
     const related = await ProductEntity.find({
       _id: { $ne: product._id },
       categoryId: product.categoryId,
-      isActive: true,
-      amount: { $gt: 0 }
+      isActive: true
     }).limit(limit).sort({ createdAt: -1 }).lean();
     const filtered = [];
     for (const p of related) {
@@ -32982,6 +32981,51 @@ const getRelatedProducts = async (req, res) => {
   } catch (err) {
     console.error("Get related products error:", err);
     return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getProductsByIds = async (req, res) => {
+  try {
+    const { ids, limit } = req.query;
+    if (!ids || !Array.isArray(ids) || !ids.length) {
+      return res.json({
+        code: 0,
+        data: [],
+        message: "Empty"
+      });
+    }
+    const idList = ids.map((id) => id.toString()).filter(Types.ObjectId.isValid);
+    const finalLimit = limit ? Number(limit) : idList.length;
+    const products = await ProductEntity.find({
+      _id: { $in: idList },
+      isActive: true
+    }).limit(finalLimit).lean();
+    const filtered = [];
+    for (const p of products) {
+      if (await isCategoryChainActive(p.categoryId)) {
+        filtered.push(p);
+      }
+    }
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+    const finalResult = [];
+    for (const p of productsWithVariants) {
+      const voucher = await getApplicableVouchersForProduct(p);
+      finalResult.push({
+        ...p,
+        vouchers: voucher
+      });
+    }
+    const orderedResult = idList.map((id) => finalResult.find((p) => p._id.toString() === id)).filter(Boolean);
+    return res.json({
+      code: 0,
+      data: toProductListDTO(orderedResult),
+      message: "Success"
+    });
+  } catch (err) {
+    console.error("Get products by ids error:", err);
+    return res.status(500).json({
+      code: 1,
+      message: err.message
+    });
   }
 };
 const getWishlistByUserId = async (req, res) => {
@@ -33538,6 +33582,7 @@ router$4.post("/cart-detail", getCartProducts);
 router$4.post("/check-stock", checkProductStock);
 router$4.get("/promotion", getPromotionalProducts);
 router$4.get("/most-order", getMostOrderedProduct);
+router$4.get("/by-ids", getProductsByIds);
 router$4.get("/search", searchProducts);
 router$4.get("/related/:slug", getRelatedProducts);
 router$4.get("/category/:id", getProductsByCategory);

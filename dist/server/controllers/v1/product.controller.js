@@ -129,7 +129,6 @@ export const getRelatedProducts = async (req, res) => {
             _id: { $ne: product._id },
             categoryId: product.categoryId,
             isActive: true,
-            amount: { $gt: 0 }
         })
             .limit(limit)
             .sort({ createdAt: -1 })
@@ -157,6 +156,58 @@ export const getRelatedProducts = async (req, res) => {
     catch (err) {
         console.error("Get related products error:", err);
         return res.status(500).json({ code: 1, message: err.message });
+    }
+};
+export const getProductsByIds = async (req, res) => {
+    try {
+        const { ids, limit } = req.query;
+        if (!ids || !Array.isArray(ids) || !ids.length) {
+            return res.json({
+                code: 0,
+                data: [],
+                message: 'Empty'
+            });
+        }
+        const idList = ids
+            .map(id => id.toString())
+            .filter(Types.ObjectId.isValid);
+        const finalLimit = limit ? Number(limit) : idList.length;
+        const products = await ProductEntity.find({
+            _id: { $in: idList },
+            isActive: true,
+        })
+            .limit(finalLimit)
+            .lean();
+        const filtered = [];
+        for (const p of products) {
+            if (await isCategoryChainActive(p.categoryId)) {
+                filtered.push(p);
+            }
+        }
+        const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+        const finalResult = [];
+        for (const p of productsWithVariants) {
+            const voucher = await getApplicableVouchersForProduct(p);
+            finalResult.push({
+                ...p,
+                vouchers: voucher
+            });
+        }
+        const orderedResult = idList
+            .map(id => finalResult.find(p => p._id.toString() === id))
+            .filter(Boolean);
+        return res.json({
+            code: 0,
+            data: toProductListDTO(orderedResult),
+            message: 'Success'
+        });
+    }
+    catch (err) {
+        console.error('Get products by ids error:', err);
+        return res.status(500).json({
+            code: 1,
+            message: err.message
+        });
     }
 };
 export const getWishlistByUserId = async (req, res) => {

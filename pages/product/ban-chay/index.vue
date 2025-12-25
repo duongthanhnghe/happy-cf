@@ -7,6 +7,8 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useVariantGroupStore } from '@/stores/client/product/useVariantGroupStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
+import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.middleware || '',
@@ -18,6 +20,8 @@ const storeAccount = useAccountStore()
 const storeVariant = useVariantGroupStore()
 const storeProductCategory = useProductCategoryStore()
 const storeProductMostOrder = useProductMostOrderStore()
+const storeViewed = useProductViewedStore()
+const { t } = useITranslations()
 
 if (storeVariant.listVariantGroup.length === 0) {
   await storeVariant.fetchVariantGroupStore()
@@ -93,6 +97,22 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
+  <div class="pt-section" v-if="t('bestseller.desc.main')">
+    <div class="bg-gray6">
+      <div class="container pt-lg pb-lg">
+        <Text color="gray5" :text="t('bestseller.desc.main')" />
+      </div>
+    </div>
+  </div>
+
+  <SectionProductListSwiper 
+    v-if="storeViewed.listItems && storeViewed.listItems.length > 0" 
+    :items="storeViewed.listItems" 
+    :loading="storeViewed.loading" 
+    container="container container-xxl" 
+    headingText="Bạn đã xem" 
+    class="pt-section pb-section"
+  />
   <client-only>
     <PopupManageAddress v-if="storeAccount.getUserId" />
   </client-only>

@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
     RELATED_BY_SLUG: (slug: string) => `/products/related/${slug}`,
     LIST_MOST_ORDER: '/products/most-order',
     LIST_PROMOTION: '/products/promotion',
+    LIST_BY_IDS: '/products/by-ids',
     SEARCH: '/products/search',
     LIST_BY_CATEGORY: (categoryId: string) => `/products/category/${categoryId}`,
     LIST_BY_USER_WISHLIST: (id: string) => `/users/${id}/wishlist`,

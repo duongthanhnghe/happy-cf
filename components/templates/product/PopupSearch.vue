@@ -4,9 +4,11 @@ import { globalText } from '@/const/text.js';
 import { useSearchStore } from '@/stores/client/product/useSearchStore'
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 import { POPUP_HEADER_SEARCH } from '@/shared/constants/breakpoints';
+import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
 
 const store = useSearchStore()
 const storeProductMostOrder = useProductMostOrderStore()
+const storeViewed = useProductViewedStore()
 
 </script>
 
@@ -64,6 +66,15 @@ const storeProductMostOrder = useProductMostOrderStore()
       <div v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0" class="mt-md pb-mt">
         <SectionProductListSwiper :items="storeProductMostOrder.getListProductMostOrder.data" :loading="storeProductMostOrder.loadingData" :breakpoints="POPUP_HEADER_SEARCH" headingText="Gợi ý cho bạn" />
       </div>
+
+      <SectionProductListSwiper 
+        v-if="storeViewed.listItems && storeViewed.listItems.length > 0" 
+        :items="storeViewed.listItems" 
+        :loading="storeViewed.loading"
+        :breakpoints="POPUP_HEADER_SEARCH"
+        headingText="Bạn đã xem" 
+        class="pt-md"
+      />
 
     </template>
   </Popup>

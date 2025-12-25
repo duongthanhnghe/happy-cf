@@ -43,7 +43,30 @@ export const productsAPI = {
     }
   },
 
-  
+  getProductsByIds: async (
+    ids: string[],
+    limit: number
+  ): Promise<ApiResponse<ProductDTO[]>> => {
+    try {
+      const query = new URLSearchParams()
+      ids.forEach(id => query.append('ids', id))
+      query.append('limit', String(limit))
+
+      const res = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_IDS}?${query.toString()}`
+      )
+
+      return await res.json()
+    } catch (err: any) {
+      console.error('Error fetching products by ids:', err)
+      return {
+        code: 1,
+        message: err.message ?? 'Failed to fetch by ids products',
+        data: []
+      }
+    }
+  },
+
   getWishlistByUserId: async (userId: string): Promise<ApiResponse<WishlistItem[]>> => {
     try {
       const res = await fetchWithAuth(
