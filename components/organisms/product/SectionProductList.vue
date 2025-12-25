@@ -71,7 +71,7 @@ watch(mappedData, (val) => {
               :size="storeDisplay.isLaptop ? 'md':'sm'"
               @click="store.filterCategory[category.id] = item.id"
             />
-            <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`">
+            <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`" class="position-sticky right-0" v-tooltip.right="'Xem tất cả'">
               <Button color="secondary" :size="storeDisplay.isLaptop ? 'md':'sm'" icon="keyboard_arrow_right" />
             </NuxtLink>
           </div>

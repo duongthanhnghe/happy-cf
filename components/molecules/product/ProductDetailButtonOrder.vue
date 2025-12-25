@@ -8,10 +8,9 @@ const storeCart = useCartStore()
 </script>
 
 <template>
-  
   <div class="flex gap-sm">
     <div class="product-detail-button-order flex-1">
-      <div v-if="store.getCheckButtonOrder" class="product-detail-button-order-action flex justify-center">
+      <div v-if="store.getCheckButtonOrder" class="product-detail-button-order-action bg-white-20 rd-lg flex justify-center">
         <Button color="transparent" icon="check_indeterminate_small" @click="storeCart.inDecrement(false)" />
         <Button :disabled="true" :border="false" color="transparent" class="pd-0 text-size-normal opacity-1 weight-normal">{{ storeCart.quantity }}</Button>
         <Button color="transparent" icon="add" @click="storeCart.inDecrement(true)" />

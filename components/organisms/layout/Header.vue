@@ -32,7 +32,9 @@ const listMenu = computed(() => {
   return [
     ROUTES.PUBLIC.HOME,
     ROUTES.PUBLIC.ORDER,
+    ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER,
     ...storeProductCategory.getMenuItems,
+    ROUTES.PUBLIC.PRODUCT.children?.SALE,
   ]
 })
 
@@ -44,11 +46,11 @@ onMounted(async () => {
 
 </script>
 <template>
-  <PopupSearch />
   <PopupCart />
   <PopupEditItemToCart v-if="storeCart.getCartListItem.length > 0" />
   <PopupAddItemToCart />
   <client-only>
+    <PopupSearch />
     <template v-if="storeAccount.getUserId">
     <PopupAccountMenuInfo />
     <PopupMembershipInfo />

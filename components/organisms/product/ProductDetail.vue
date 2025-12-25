@@ -82,8 +82,8 @@ onBeforeUnmount(() => {
           <div v-else class="product-detail-gallery bg-gray6">
             <div>
               <img :src="detail.image" :alt="detail.productName" />
-             </div>
-              <div v-if="detail.vouchers?.image" class="product-detail-voucher-src">
+            </div>
+            <div v-if="detail.vouchers?.image" class="w-full">
               <img :src="detail.vouchers?.image" :alt="detail.productName" />
             </div>
           </div>

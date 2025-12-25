@@ -61,6 +61,7 @@ export interface ProductDTO {
   summaryContent: string;
   price: number
   priceDiscounts: number
+  percentDiscount?: number;
   amount: number
   amountOrder: number;
   image: string;

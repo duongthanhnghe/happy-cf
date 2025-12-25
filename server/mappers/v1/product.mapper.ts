@@ -25,6 +25,14 @@ export function toVariantCombinationDTO(
 }
 
 export function toProductDTO(entity: Product): ProductDTO {
+  const price = Number(entity.price) || 0
+  const priceDiscount = Number(entity.priceDiscounts) || 0
+
+  const percentDiscount =
+    price > 0 && priceDiscount > 0 && priceDiscount < price
+      ? Math.round(((price - priceDiscount) / price) * 100)
+      : 0
+
   return {
     id: entity._id?.toString() || "",
     productName: entity.productName,
@@ -32,6 +40,7 @@ export function toProductDTO(entity: Product): ProductDTO {
     summaryContent: entity.summaryContent || "",
     price: entity.price,
     priceDiscounts: entity.priceDiscounts,
+    percentDiscount,
     amount: entity.amount,
     amountOrder: entity.amountOrder,
     image: entity.image,

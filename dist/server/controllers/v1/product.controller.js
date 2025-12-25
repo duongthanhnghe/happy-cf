@@ -361,60 +361,6 @@ export const getPromotionalProducts = async (req, res) => {
         });
     }
 };
-// export const getMostOrderedProduct = async (
-//   req: Request<{}, {}, {}, { limit?: number }>,
-//   res: Response
-// ) => {
-//   try {
-//     const limit = req.query.limit ? Number(req.query.limit) : 10;
-//     const topProductsAgg = await OrderEntity.aggregate([
-//       { $unwind: "$cartItems" },
-//       { $match: { "cartItems.idProduct": { $exists: true } } },
-//       {
-//         $group: {
-//           _id: "$cartItems.idProduct",
-//           totalOrdered: { $sum: "$cartItems.quantity" }
-//         }
-//       },
-//       { $sort: { totalOrdered: -1 } },
-//       { $limit: limit }
-//     ]);
-//     const productIds = topProductsAgg.map(p => p._id).filter(Types.ObjectId.isValid);
-//     if (!productIds.length) {
-//       return res.json({ code: 0, data: [], message: "Success" });
-//     }
-//     const products = await ProductEntity.find({
-//       _id: { $in: productIds },
-//       isActive: true,
-//       amount: { $gt: 0 }
-//     }).lean();
-//     const productsWithQuantity = products.map(p => {
-//       const found = topProductsAgg.find(tp => tp._id.toString() === p._id.toString());
-//       return { ...p, totalOrdered: found?.totalOrdered || 0 };
-//     });
-//     const filtered: Product[] = [];
-//     for (const p of productsWithQuantity) {
-//       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
-//     }
-//     const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
-//     const finalResult = [];
-//     for (const p of productsWithVariants) {
-//       const voucher = await getApplicableVouchersForProduct(p);
-//       finalResult.push({
-//         ...p,
-//         vouchers: voucher
-//       });
-//     }
-//     return res.json({
-//       code: 0,
-//       data: toProductListDTO(finalResult),
-//       message: "Success"
-//     });
-//   } catch (error: any) {
-//     console.error("getMostOrderedProduct error:", error);
-//     return res.status(500).json({ code: 1, message: "Server error" });
-//   }
-// };
 export const getMostOrderedProduct = async (req, res) => {
     var _a;
     try {

@@ -20,7 +20,7 @@ const props = defineProps<{
     </div>
     <div class="flex justify-between align-end">
       <div>
-        <Text :text="item.categoryName" :size="storeDisplay.isMobileTable ? 'base':'normal'" color="black" weight="medium" limit="1" class="mb-xs line-height-1"/>
+        <Text :text="item.categoryName" :size="storeDisplay.isMobileTable ? 'base':'normal'" color="black" weight="medium" limit="1" class="mb-xs line-height-1d2"/>
         <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${item.slug}`">
           <Text text="Xem thêm" :size="storeDisplay.isMobileTable ? 'xs':'base'" color="gray5" hover="primary" />
         </NuxtLink>

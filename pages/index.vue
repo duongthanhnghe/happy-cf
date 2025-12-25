@@ -77,6 +77,7 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
         container="container container-xxl" 
         :headingText="t('product.promo.title')"
         class="pt-section pb-section"
+        :slug="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length ? ROUTES.PUBLIC.PRODUCT.children?.SALE.path: ''"
       />
       <SectionProductListSwiper 
         v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0" 
@@ -86,6 +87,7 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
         container="container container-xxl" 
         :headingText="t('product.list.title1')" 
         class="pb-section"
+        :slug="storeProductMostOrder.getTotalItems > storeProductMostOrder.getListProductMostOrder.data?.length ? ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.path: ''"
       />
       <SectionNewsListSwiper 
         :items="storeNewsLatest.getListNewsLatest" 

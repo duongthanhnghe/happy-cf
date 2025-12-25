@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"123054-qw9En2NlOLn+paUQJXsMvqUrGDI\"",
-    "mtime": "2025-12-24T09:32:53.273Z",
+    "etag": "\"123054-xqWYXZzz975e97O913XUD3/Q2UM\"",
+    "mtime": "2025-12-24T09:58:59.117Z",
     "size": 1192020,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"4a1851-7RUg+ZTCEPvDRp6A4+W0zW3dh8k\"",
-    "mtime": "2025-12-24T09:32:53.283Z",
-    "size": 4855889,
+    "etag": "\"4a184e-S81EIemGc4es+gfNjlvKXd/4jJ8\"",
+    "mtime": "2025-12-24T09:58:59.130Z",
+    "size": 4855886,
     "path": "index.mjs.map"
   }
 };
@@ -3315,6 +3315,9 @@ function toVariantCombinationDTO(combo) {
 }
 function toProductDTO(entity) {
   var _a, _b, _c, _d, _e, _f;
+  const price = Number(entity.price) || 0;
+  const priceDiscount = Number(entity.priceDiscounts) || 0;
+  const percentDiscount = price > 0 && priceDiscount > 0 && priceDiscount < price ? Math.round((price - priceDiscount) / price * 100) : 0;
   return {
     id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
     productName: entity.productName,
@@ -3322,6 +3325,7 @@ function toProductDTO(entity) {
     summaryContent: entity.summaryContent || "",
     price: entity.price,
     priceDiscounts: entity.priceDiscounts,
+    percentDiscount,
     amount: entity.amount,
     amountOrder: entity.amountOrder,
     image: entity.image,

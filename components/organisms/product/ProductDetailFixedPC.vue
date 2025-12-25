@@ -14,7 +14,7 @@ const props = defineProps<{
       <div class="product-detail-fixed-pc-item">
         <div class="flex gap-sm">
           <div class="bg-gray2 rd-lg">
-            <img :src="detail.image" :alt="detail.productName" width="75"/>
+            <img :src="detail.image" :alt="detail.productName" width="75" class="rd-md"/>
           </div>
           <div>
             <Text :text="detail.productName" size="normal" limit="2" weight="semibold" color="black" />

@@ -13,7 +13,7 @@ const store = useProductDetailStore()
 const storeProductSale = useProductSaleStore()
 const detail: ProductDTO | null = store.getDetailProduct
 
-if(storeProductSale.getListProductSales.length === 0) await storeProductSale.fetchProductStore()
+if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',storeProductSale.page,storeProductSale.limit,'')
 
 </script>
 
@@ -34,12 +34,13 @@ if(storeProductSale.getListProductSales.length === 0) await storeProductSale.fet
       />
       <ListReviewByProduct />
       <SectionProductListSwiper 
-        v-if="storeProductSale.getListProductSales.length > 0" 
-        :items="storeProductSale.getListProductSales" 
+        v-if="storeProductSale.getListProductSales && storeProductSale.getListProductSales.data.length > 0" 
+        :items="storeProductSale.getListProductSales.data" 
         :loading="storeProductSale.loading" 
         container="container container-xxl" 
         headingText="Khuyến mãi" 
         class="pt-section pb-section"
+        :slug="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length ? ROUTES.PUBLIC.PRODUCT.children?.SALE.path: ''"
       />
     </div>
   </template>

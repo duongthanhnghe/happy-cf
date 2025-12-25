@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<{
   container?: string
   showNoData?: boolean
   fullScreen?: boolean
+  slug?: string
 }>(), {
   items: () => [],
   showNoData: false,
@@ -32,7 +33,12 @@ const props = withDefaults(defineProps<{
     <div :class="[container, fullScreen ? 'pl-0 pr-0':'']">
       <LoadingData v-if="props.loading && !items" />
       <template v-else-if="items.length > 0">
-        <Text v-if="props.headingText" :text="props.headingText" tag="h2" size="md" weight="semibold" :class="['black mb-sm',fullScreen ? 'pl-ms pr-ms':'']" />
+        <div :class="['flex gap-sm mb-sm justify-between', fullScreen ? 'pl-ms pr-ms':'']">
+          <Text v-if="props.headingText" :text="props.headingText" tag="h2" size="md" weight="semibold" />
+          <NuxtLink v-if="props.slug"  :to="{ path: props.slug }">
+            <Button tag="span" color="secondary" size="sm" icon="keyboard_arrow_right" class="rd-full" />
+          </NuxtLink>
+        </div>
         <client-only>
           <swiper :modules="[Navigation, Autoplay]" :breakpoints='props.breakpoints ? props.breakpoints : PRODUCT_LIST_SWIPER_DEFAULT' :space-between="10" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" :class="fullScreen ? 'pl-ms pr-ms':''">
             <swiper-slide v-for="(product, index) in props.items" :key="index">

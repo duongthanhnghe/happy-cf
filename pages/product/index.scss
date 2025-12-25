@@ -28,20 +28,23 @@ $height-product-fixed-bottom: 180px;
       }
     }
     &-thumbs {
-      .swiper-slide img {
+      &-slide {
         border: 1px solid transparent;
-      }
-      .swiper-slide-thumb-active img {
-        border: 1px solid $cl-primary;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        overflow: hidden;
+        aspect-ratio: 1 / 1;
+        &.swiper-slide-thumb-active {
+          border: 1px solid $cl-primary;
+        }
       }
     }
     @media (min-width: 1025px){
       overflow: hidden;
       border-radius: $rd-lg;
     }
-  }
-  &-voucher-src {
-    width: 100%;
   }
   &-percent {
     border-radius: 8px;
@@ -105,8 +108,6 @@ $height-product-fixed-bottom: 180px;
       position: absolute;
       left: 0;
       top: 0;
-      background-color: #ff798c;
-      border-radius: $rd-lg;
       z-index: 1;
     }
     &-add {

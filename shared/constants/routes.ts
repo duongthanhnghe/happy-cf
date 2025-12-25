@@ -234,7 +234,7 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
     },
     ORDER: {
       path: '/order',
-      label: 'Đặt hàng',
+      label: 'Mới nhất',
       icon: 'inventory_2',
       middleware: ['auth-login'],
       layout: 'default',

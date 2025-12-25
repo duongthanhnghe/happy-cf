@@ -21,8 +21,9 @@ const props = defineProps<{
     <swiper
       :modules="[Navigation, Autoplay, Thumbs]"
       :navigation="true"
-      :autoplay="{ delay: 5000, disableOnInteraction: false }"
       :loop="false"
+      :auto-height="true"
+      :autoplay="{ delay: 5000, disableOnInteraction: false }"
       @swiper="store.onMainSwiper"
     >
       <swiper-slide
@@ -32,7 +33,7 @@ const props = defineProps<{
         <img :src="item.src" :alt="detail.productName" />
       </swiper-slide>
     </swiper>
-    <div v-if="detail.vouchers?.image" class="product-detail-voucher-src">
+    <div v-if="detail.vouchers?.image" class="w-full">
       <img :src="detail.vouchers?.image" :alt="detail.productName" />
     </div>
   </div>
@@ -51,7 +52,7 @@ const props = defineProps<{
       <swiper-slide
         v-for="(item, index) in store.galleryImages"
         :key="index"
-        class="cursor-pointer"
+        class="cursor-pointer product-detail-gallery-thumbs-slide"
       >
         <img class="rd-lg bg-gray6" :src="item.src" :alt="detail.productName" />
       </swiper-slide>

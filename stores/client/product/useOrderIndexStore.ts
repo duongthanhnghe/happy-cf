@@ -7,7 +7,7 @@ export const useOrderStore = defineStore('order', () => {
   
   const resultData = ref<CategoryWithProductsDTO[]|null>(null)
   const limit = 12
-  const filterType = ref<ProductSortType>('discount')
+  const filterType = ref<ProductSortType>('') // moi nhat
   const filterCategory = ref<Record<string, string>>({})
 
   async function load(category: CategoryWithProductsDTO, { done }: { done: (status: 'ok' | 'empty') => void } ) {

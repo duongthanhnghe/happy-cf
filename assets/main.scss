@@ -95,7 +95,17 @@ a {
   padding-left: $gutter-x;
 }
 
+.el-absolute {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
 .width {
+  &-auto {
+    width: auto;
+  }
   &-70 {
     width: 70px;
   }
@@ -114,6 +124,9 @@ a {
 }
 
 .height {
+  &-auto {
+    height: auto !important;
+  }
   &-70 {
     height: 70px;
   }
@@ -243,9 +256,18 @@ body .bg {
   }
   &-white {
     background-color: $cl-white;
+    &-20 {
+      background-color: rgba($cl-white, 0.2);
+    }
+    &-70 {
+      background-color: rgba($cl-white, 0.7);
+    }
   }
   &-black {
     background-color: $cl-black;
+    &-20 {
+      background-color: rgba($cl-black, 0.2);
+    }
     &-40 {
       background-color: rgba($cl-black, 0.4);
     }
@@ -531,6 +553,9 @@ body .bg {
 .pd {
   &-0 {
     padding: 0 !important;
+  }
+  &-05 {
+    padding: 0.5rem !important;
   }
   &-xs {
     padding: $space-xs;
@@ -1090,6 +1115,9 @@ body .bg {
   &-absolute {
     position: absolute;    
   }
+  &-sticky {
+    position: sticky;
+  }
 }
 
 .top {
@@ -1098,6 +1126,12 @@ body .bg {
   }
   &-1 {
     top: 1rem !important;
+  }
+  &-xs {
+    top: $space-xs !important;
+  }
+  &-sm {
+    top: $space-sm !important;
   }
 }
 
@@ -1108,6 +1142,12 @@ body .bg {
   &-1 {
     bottom: 1rem !important;
   }
+  &-xs {
+    bottom: $space-xs !important;
+  }
+  &-sm {
+    bottom: $space-sm !important;
+  }
 }
 
 .right {
@@ -1116,6 +1156,12 @@ body .bg {
   }
   &-1 {
     right: 1rem !important;
+  }
+  &-xs {
+    right: $space-xs !important;
+  }
+  &-sm {
+    right: $space-sm !important;
   }
 }
 
@@ -1128,12 +1174,7 @@ body .bg {
   }
 }
 
-.el-absolute {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
+
 
 .disable {
   cursor: not-allowed;
@@ -1233,6 +1274,33 @@ body .bg {
   }
   &-xl {
     gap: $space-xl;
+  }
+}
+
+.transform {
+  &-scale {
+    &-0 {
+      transform: scale(0)
+    }
+    &-1 {
+      transform: scale(1)
+    }
+  }
+}
+
+.hover {
+  &-visible {
+    &-overlay {
+      &:hover &-el, &.active &-el {
+        opacity: 1;
+        visibility: visible;
+      }
+      &-el {
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.3s all;
+      }
+    }
   }
 }
 
