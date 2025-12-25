@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import '@/styles/molecules/layout/header.scss';
-import { computed, onMounted } from 'vue'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useSearchStore } from '@/stores/client/product/useSearchStore'
@@ -10,6 +9,8 @@ import { ROUTES } from '@/shared/constants/routes';
 import { useRoute } from 'vue-router'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
+import type { MenuItem } from '@/server/types/common/menu-item';
+import { useHeaderStore } from '@/stores/client/layout/useHeaderStore';
 
 const storeSetting = useBaseInformationStore();
 const storeCart = useCartStore()
@@ -19,6 +20,7 @@ const storeAddress = useAddressesManageStore()
 const route = useRoute()
 const storeDisplay = useDisplayStore()
 const storeProductCategory = useProductCategoryStore()
+const storeHeader = useHeaderStore()
 
 const props = defineProps({
   typeLeft: {
@@ -28,27 +30,23 @@ const props = defineProps({
   }
 })
 
-const listMenu = computed(() => {
-  return [
-    ROUTES.PUBLIC.HOME,
-    ROUTES.PUBLIC.ORDER,
-    ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER,
-    ...storeProductCategory.getMenuItems,
-    ROUTES.PUBLIC.PRODUCT.children?.SALE,
-  ]
-})
-
-onMounted(async () => {
-  if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0) {
-    await storeProductCategory.fetchCategoryStore()
-  }
-})
+if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0) {
+  await storeProductCategory.fetchCategoryStore()
+}
 
 </script>
 <template>
   <PopupCart />
   <PopupEditItemToCart v-if="storeCart.getCartListItem.length > 0" />
   <PopupAddItemToCart />
+  <PopupMenuHeader 
+    v-model:isTogglePopupMenu="storeHeader.isTogglePopupMenu"
+    :logo="storeSetting.getBaseInformation?.logoUrl"
+    :listMenu="storeHeader.listMenu"
+    :listMenuMore="storeHeader.listMenuMore"
+    :phone="storeSetting.getBaseInformation?.phone"
+    :socialLinks="storeSetting.getBaseInformation?.socialLinks"
+  />
   <client-only>
     <PopupSearch />
     <template v-if="storeAccount.getUserId">
@@ -95,8 +93,8 @@ onMounted(async () => {
             </template>
           </div>
           <client-only>
-          <div v-if="storeDisplay.isLaptop && listMenu" class="header-center flex gap-xs">
-            <template v-for="(item,index) in listMenu" :key="index">
+          <div v-if="storeDisplay.isLaptop && storeHeader.listMenu" class="header-center flex gap-xs">
+            <template v-for="(item,index) in storeHeader.listMenu as MenuItem[]" :key="index">
               <router-link
                 v-if="item.path"
                 :to="{ path: item.path }"

@@ -1,4 +1,6 @@
 import { watchEffect, ref } from 'vue';
+import { ROUTES } from '@/shared/constants/routes';
+
 export const useOrderMainHandlers = async (
   storeProductMostOrder: any,
   storeProductSale: any,
@@ -7,9 +9,9 @@ export const useOrderMainHandlers = async (
 
   const tab = ref<number|null>(null)
   const tabs = [
-    { value: 1, icon: 'category', label: 'Nổi bật' },
-    { value: 2, icon: 'local_fire_department', label: 'Bán chạy' },
-    { value: 3, icon: 'percent', label: 'Khuyến mãi' },
+    { value: 1, icon: ROUTES.PUBLIC.ORDER.icon, label: ROUTES.PUBLIC.ORDER.label },
+    { value: 2, icon: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.icon, label: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.label },
+    { value: 3, icon: ROUTES.PUBLIC.PRODUCT.children?.SALE.icon, label: ROUTES.PUBLIC.PRODUCT.children?.SALE.label },
   ]
 
   await storeProductCategory.fetchCategoryStore()

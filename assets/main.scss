@@ -215,6 +215,9 @@ a {
     &-25 {
       max-height: 25px;
     }
+    &-40 {
+      max-height: 40px;
+    }
     &-200 {
       max-height: 200px;
     }
@@ -969,6 +972,12 @@ body .bg {
 .transition {
   &-0d3 {
    transition: 0.3s all; 
+  }
+}
+
+.rotate {
+  &-90 {
+    rotate: 90deg;
   }
 }
 

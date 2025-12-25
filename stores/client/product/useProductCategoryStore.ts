@@ -45,13 +45,30 @@ export const useProductCategoryStore = defineStore("ProductCategoryStore", () =>
     return result;
   });
 
-  const getMenuItems = computed((): MenuItem[] => {
-    return dataList.value.map((category): MenuItem => ({
+  
+
+  const mapCategoryToMenu = (category: any): MenuItem => {
+    return {
       label: category.categoryName,
       path: ROUTE_HELPERS.productCategory(category.slug),
       icon: 'category',
-    }))
+      children: category.children?.length
+        ? category.children.map((child: any) => mapCategoryToMenu(child))
+        : undefined
+    }
+  }
+
+  const getMenuItems = computed((): MenuItem[] => {
+    return dataList.value.map(category => mapCategoryToMenu(category))
   })
+
+  // const getMenuItems = computed((): MenuItem[] => {
+  //   return dataList.value.map((category): MenuItem => ({
+  //     label: category.categoryName,
+  //     path: ROUTE_HELPERS.productCategory(category.slug),
+  //     icon: 'category',
+  //   }))
+  // })
     
   return {
     dataList,

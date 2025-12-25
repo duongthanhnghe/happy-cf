@@ -3,15 +3,17 @@ import '@/styles/molecules/layout/menu-bottom.scss';
 import { useRoute } from 'vue-router'
 import { ROUTES } from '@/shared/constants/routes';
 import type { MenuItem } from 'server/types/common/menu-item';
+import { useHeaderStore } from '@/stores/client/layout/useHeaderStore';
 
+const storeHeader = useHeaderStore()
 const route = useRoute()
 
 const listMenu: MenuItem[] = [
   ROUTES.PUBLIC.HOME,
   ROUTES.PUBLIC.ORDER,
-  ROUTES.PUBLIC.ACCOUNT.children!.ORDERS,
   ROUTES.PUBLIC.ACCOUNT.children!.WALLET_VOUCHER,
   ROUTES.PUBLIC.MENU_ACCOUNT,
+  { label: 'Menu', action: () => storeHeader.handleTogglePopupMenu(true), icon: 'menu_open' }
 ]
 
 </script>

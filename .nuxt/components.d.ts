@@ -73,6 +73,8 @@ interface _GlobalComponents {
     'CartItemTemplate2': typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
     'FileImageItem': typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
     'Pagination': typeof import("../components/molecules/global/Pagination.vue")['default']
+    'HeaderBoxSearch': typeof import("../components/molecules/layout/HeaderBoxSearch.vue")['default']
+    'HeaderMenuItemTemplate1': typeof import("../components/molecules/layout/HeaderMenuItemTemplate1.vue")['default']
     'NewsBoxSearch': typeof import("../components/molecules/news/NewsBoxSearch.vue")['default']
     'NewsItemTemplate1': typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']
     'NewsItemTemplate2': typeof import("../components/molecules/news/NewsItemTemplate2.vue")['default']
@@ -148,6 +150,7 @@ interface _GlobalComponents {
     'FileManageFolder': typeof import("../components/templates/file-manage/FileManageFolder.vue")['default']
     'FileManageImage': typeof import("../components/templates/file-manage/FileManageImage.vue")['default']
     'PopupFileManageImage': typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']
+    'PopupMenuHeader': typeof import("../components/templates/layout/PopupMenuHeader.vue")['default']
     'PopupOrderDetail': typeof import("../components/templates/order/PopupOrderDetail.vue")['default']
     'PopupProductReviewSubmit': typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']
     'PopupProductFilterMobile': typeof import("../components/templates/product/PopupProductFilterMobile.vue")['default']
@@ -250,6 +253,8 @@ interface _GlobalComponents {
     'LazyCartItemTemplate2': LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
     'LazyFileImageItem': LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
     'LazyPagination': LazyComponent<typeof import("../components/molecules/global/Pagination.vue")['default']>
+    'LazyHeaderBoxSearch': LazyComponent<typeof import("../components/molecules/layout/HeaderBoxSearch.vue")['default']>
+    'LazyHeaderMenuItemTemplate1': LazyComponent<typeof import("../components/molecules/layout/HeaderMenuItemTemplate1.vue")['default']>
     'LazyNewsBoxSearch': LazyComponent<typeof import("../components/molecules/news/NewsBoxSearch.vue")['default']>
     'LazyNewsItemTemplate1': LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']>
     'LazyNewsItemTemplate2': LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate2.vue")['default']>
@@ -325,6 +330,7 @@ interface _GlobalComponents {
     'LazyFileManageFolder': LazyComponent<typeof import("../components/templates/file-manage/FileManageFolder.vue")['default']>
     'LazyFileManageImage': LazyComponent<typeof import("../components/templates/file-manage/FileManageImage.vue")['default']>
     'LazyPopupFileManageImage': LazyComponent<typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']>
+    'LazyPopupMenuHeader': LazyComponent<typeof import("../components/templates/layout/PopupMenuHeader.vue")['default']>
     'LazyPopupOrderDetail': LazyComponent<typeof import("../components/templates/order/PopupOrderDetail.vue")['default']>
     'LazyPopupProductReviewSubmit': LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']>
     'LazyPopupProductFilterMobile': LazyComponent<typeof import("../components/templates/product/PopupProductFilterMobile.vue")['default']>
@@ -433,6 +439,8 @@ export const CartItemTemplate1: typeof import("../components/molecules/cart/Cart
 export const CartItemTemplate2: typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
 export const FileImageItem: typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
 export const Pagination: typeof import("../components/molecules/global/Pagination.vue")['default']
+export const HeaderBoxSearch: typeof import("../components/molecules/layout/HeaderBoxSearch.vue")['default']
+export const HeaderMenuItemTemplate1: typeof import("../components/molecules/layout/HeaderMenuItemTemplate1.vue")['default']
 export const NewsBoxSearch: typeof import("../components/molecules/news/NewsBoxSearch.vue")['default']
 export const NewsItemTemplate1: typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']
 export const NewsItemTemplate2: typeof import("../components/molecules/news/NewsItemTemplate2.vue")['default']
@@ -508,6 +516,7 @@ export const PopupEditItemToCart: typeof import("../components/templates/cart/Po
 export const FileManageFolder: typeof import("../components/templates/file-manage/FileManageFolder.vue")['default']
 export const FileManageImage: typeof import("../components/templates/file-manage/FileManageImage.vue")['default']
 export const PopupFileManageImage: typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']
+export const PopupMenuHeader: typeof import("../components/templates/layout/PopupMenuHeader.vue")['default']
 export const PopupOrderDetail: typeof import("../components/templates/order/PopupOrderDetail.vue")['default']
 export const PopupProductReviewSubmit: typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']
 export const PopupProductFilterMobile: typeof import("../components/templates/product/PopupProductFilterMobile.vue")['default']
@@ -610,6 +619,8 @@ export const LazyCartItemTemplate1: LazyComponent<typeof import("../components/m
 export const LazyCartItemTemplate2: LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
 export const LazyFileImageItem: LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
 export const LazyPagination: LazyComponent<typeof import("../components/molecules/global/Pagination.vue")['default']>
+export const LazyHeaderBoxSearch: LazyComponent<typeof import("../components/molecules/layout/HeaderBoxSearch.vue")['default']>
+export const LazyHeaderMenuItemTemplate1: LazyComponent<typeof import("../components/molecules/layout/HeaderMenuItemTemplate1.vue")['default']>
 export const LazyNewsBoxSearch: LazyComponent<typeof import("../components/molecules/news/NewsBoxSearch.vue")['default']>
 export const LazyNewsItemTemplate1: LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate1.vue")['default']>
 export const LazyNewsItemTemplate2: LazyComponent<typeof import("../components/molecules/news/NewsItemTemplate2.vue")['default']>
@@ -685,6 +696,7 @@ export const LazyPopupEditItemToCart: LazyComponent<typeof import("../components
 export const LazyFileManageFolder: LazyComponent<typeof import("../components/templates/file-manage/FileManageFolder.vue")['default']>
 export const LazyFileManageImage: LazyComponent<typeof import("../components/templates/file-manage/FileManageImage.vue")['default']>
 export const LazyPopupFileManageImage: LazyComponent<typeof import("../components/templates/file-manage/PopupFileManageImage.vue")['default']>
+export const LazyPopupMenuHeader: LazyComponent<typeof import("../components/templates/layout/PopupMenuHeader.vue")['default']>
 export const LazyPopupOrderDetail: LazyComponent<typeof import("../components/templates/order/PopupOrderDetail.vue")['default']>
 export const LazyPopupProductReviewSubmit: LazyComponent<typeof import("../components/templates/product-review/PopupProductReviewSubmit.vue")['default']>
 export const LazyPopupProductFilterMobile: LazyComponent<typeof import("../components/templates/product/PopupProductFilterMobile.vue")['default']>

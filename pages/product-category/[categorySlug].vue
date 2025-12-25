@@ -48,6 +48,13 @@ onBeforeUnmount(() => {
             :onResetFilter="storeCategoryMain.resetFilter"
             :isTogglePopupFilter="storeCategoryMain.isTogglePopupFilter"
             :onHandleTogglePopupFilter="storeCategoryMain.handleTogglePopupFilter"
+
+            :price-ranges="storeCategoryMain.PRICE_RANGES"
+            :selected-price-ranges="storeCategoryMain.selectedPriceRanges"
+            :on-toggle-price="storeCategoryMain.togglePriceRange"
+            
+            :selected-variants="storeCategoryMain.selectedVariants"
+            :on-toggle-variant="storeCategoryMain.toggleVariant"
           />
         </div>
         <div v-if="storeCategoryMain.getListCategoryChildren.length > 0" class="mt-ms">
@@ -60,6 +67,7 @@ onBeforeUnmount(() => {
       <div :class="[{ 'flex gap-md align-start': storeDisplay.isLaptop }]">
         <client-only>
         <ProductFilterPC 
+          v-if="storeDisplay.isLaptop"
           :categoryName="detail.categoryName" 
           :variantGroups="storeVariant.getListVariantGroup"
           :hasFilter="storeCategoryMain.hasFilter"

@@ -42,7 +42,7 @@ watch(() => route.query.tab, (newVal) => {
           :value="item.value"
           class="flex-1 text-color-gray5"
         >
-          <div class="flex flex-direction-column">
+          <div class="flex gap-xs">
             <MaterialIcon :name="item.icon" class="text-color-primary" />
             {{ item.label }}
           </div>

@@ -22,7 +22,13 @@ const props = defineProps<{
 </script>
 
 <template>
-  <Popup v-model="props.isTogglePopupFilter" popupHeading="Bộ lọc" bodyClass="bg-gray6" footerFixed align="right">
+  <Popup 
+    :model-value="props.isTogglePopupFilter"
+    @update:modelValue="props.onHandleTogglePopupFilter"
+    popupHeading="Bộ lọc" 
+    bodyClass="bg-gray6" 
+    footerFixed 
+    align="right">
     <template #header >
       <Button v-if="props.hasFilter" icon="filter_alt_off" color="secondary" @click.prevent="props.onResetFilter()" />
     </template>

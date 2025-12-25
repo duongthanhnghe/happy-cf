@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import '@/styles/templates/product/popup-search.scss'
-import { globalText } from '@/const/text.js';
 import { useSearchStore } from '@/stores/client/product/useSearchStore'
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 import { POPUP_HEADER_SEARCH } from '@/shared/constants/breakpoints';
@@ -20,18 +19,11 @@ const storeViewed = useProductViewedStore()
     bodyClass="pt-0"
     >
     <template #header >
-      <div class="position-relative flex-1">
-        <v-text-field
-          v-model="store.txtSearch"
-          :label="globalText.search + '...'"
-          variant="outlined"
-          prepend-inner-icon="mdi-magnify"
-          @keydown.enter="store.onChangeSearch"
-          hide-details
-          required>
-        </v-text-field>
-        <MaterialIcon v-if="store.txtSearch !== ''" @click="store.handleCancelSearch" name="cancel" class="popup-search-cancel" />
-      </div>
+      <HeaderBoxSearch
+        v-model="store.txtSearch"
+        @submit="store.onChangeSearch"
+        @cancel="store.handleCancelSearch"
+      />
     </template>
     <template #body>
       <LoadingData v-if="store.loadingProduct" />
