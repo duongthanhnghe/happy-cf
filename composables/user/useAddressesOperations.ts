@@ -33,9 +33,9 @@ export const useAddressesOperations = (
       } else {
         showWarning(data.message)
       }
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
@@ -57,9 +57,9 @@ export const useAddressesOperations = (
       } else {
         showWarning(data.message)
       }
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
@@ -87,9 +87,9 @@ export const useAddressesOperations = (
       } else {
         showWarning(data.message)
       }
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }

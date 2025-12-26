@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import '@/styles/templates/cart/cart.scss'
 import type { SubmitEventPromise } from 'vuetify';
-import { onMounted, onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, watch } from 'vue'
 import { showWarning } from '@/utils/toast'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
@@ -37,21 +37,27 @@ const submitOrder = async (event: SubmitEventPromise) => {
 useLocationWatchers(storeLocation);
 useCartLocationWatchers(storeLocation, store);
 
-onMounted(async () => {
-  if (store.getCartListItem.length > 0) {
-    await store.fetchProductCart();
-    
-    await storeLocation.fetchProvincesStore();
-    if (storeAccount.getUserId) {
-      await store.handleGetDefaultAddress();
+watch(
+  () => store.getCartListItem.length,
+  async (length) => {
+    if (length > 0) {
+      await store.fetchProductCart()
+      await storeLocation.fetchProvincesStore()
+
+      if (storeAccount.getUserId) {
+        await store.handleGetDefaultAddress()
+      }
+
+      if (storePaymentStatus.getListData.length === 0) {
+        storePaymentStatus.fetchPaymentStatusStore()
+      }
+
+      store.handleVoucherReset;
+      // eventBus.on('voucher:reset', store.handleVoucherReset);
     }
-    if (storePaymentStatus.getListData.length === 0) {
-      storePaymentStatus.fetchPaymentStatusStore();
-    }
-    store.handleVoucherReset;
-    // eventBus.on('voucher:reset', store.handleVoucherReset);
-  }
-});
+  },
+  { immediate: true }
+)
 
 onBeforeUnmount(() => {
   store.selectedFreeship = null;

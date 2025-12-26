@@ -339,7 +339,6 @@ export const getPromotionalProducts = async (req, res) => {
         }
         const match = {
             isActive: true,
-            amount: { $gt: 0 },
             $expr: { $lt: ["$priceDiscounts", "$price"] },
             categoryId: { $in: activeCategories }
         };
@@ -459,14 +458,11 @@ export const getMostOrderedProduct = async (req, res) => {
         else {
             activeCategories = await getAllActiveCategoryIds();
         }
-        /* ---------------- MATCH PRODUCT ---------------- */
         const match = {
             isActive: true,
-            amount: { $gt: 0 },
             categoryId: { $in: activeCategories }
         };
         const total = await ProductEntity.countDocuments(match);
-        /* ---------------- SORT ---------------- */
         const sortParam = req.query.sort;
         let sortQuery = { totalOrdered: -1, _id: 1 };
         switch (sortParam) {
@@ -486,7 +482,6 @@ export const getMostOrderedProduct = async (req, res) => {
         }
         const products = await ProductEntity.aggregate([
             { $match: match },
-            /* join order để tính số lượng bán */
             {
                 $lookup: {
                     from: OrderEntity.collection.name,
@@ -522,7 +517,6 @@ export const getMostOrderedProduct = async (req, res) => {
             { $skip: skip },
             { $limit: limit }
         ]);
-        /* ---------------- VARIANT + VOUCHER ---------------- */
         const productsWithVariants = await filterActiveVariantGroupsForProducts(products);
         const finalResult = [];
         for (const p of productsWithVariants) {

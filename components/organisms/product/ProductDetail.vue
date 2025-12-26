@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, watch } from 'vue';
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
-import { formatCurrency } from '@/utils/global';
+import { formatCurrency, scrollIntoView } from '@/utils/global';
 import { useAccountStore } from "@/stores/client/users/useAccountStore";
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
@@ -67,6 +67,10 @@ onBeforeUnmount(() => {
   store.isDetailInfoActive = true
 });
 
+  // const scrollIntoView = (id: string) => {
+  //   const el = document.getElementById(id);
+  //   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // }
 </script>
 
 <template>
@@ -97,11 +101,23 @@ onBeforeUnmount(() => {
               </client-only>
             </div>
 
-            <div class="flex gap-sm align-center mt-xs">
+            <div v-if="store.getSummaryReview?.averageRating !== 0" class="flex align-end gap-xs mb-sm mt-sm pb-sm border-bottom-default border-color-gray2">
+              <v-rating
+                readonly
+                :model-value="store.getSummaryReview?.averageRating"
+                :size="20"
+                active-color="orange"
+              >
+              </v-rating>
+              <Text :text="`(${store.getSummaryReview?.averageRating})`" color="gray5" class="line-height-1d2"/>
+              <Text @click="scrollIntoView('list-review-by-product')" text="Xem đánh giá" color="gray5" class="cursor-pointer line-height-1d2 text-underline ml-xs"/>
+            </div>
+
+            <div class="flex align-end gap-sm align-center mt-xs">
               <template v-if="!detail.variantCombinations.length">
-                <Text :text="formatCurrency(detail.priceDiscounts)" size="md" weight="semibold" color="black" />
+                <Text :text="formatCurrency(detail.priceDiscounts)" size="lg" weight="semibold" color="black" />
                 <template v-if="detail.priceDiscounts !== detail.price">
-                  <Text :text="formatCurrency(detail.price)" size="md" color="gray5" class="text-line-through" />
+                  <Text :text="formatCurrency(detail.price)" size="lg" color="gray5" class="text-line-through" />
                   <span class="product-detail-percent">{{ store.percentDiscount }}</span>
                 </template>
               </template>

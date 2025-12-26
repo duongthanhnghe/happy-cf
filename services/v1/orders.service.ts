@@ -35,9 +35,9 @@ export const ordersAPI = {
       if (!response.ok) {
         const errorData = await response.json()
         return {
-          code: 1,
-          message: errorData,
-          data: undefined as any,
+          code: errorData.code ?? 1,
+          message: errorData.message ?? 'Có lỗi xảy ra',
+          data: errorData.data,
         }
       }
 

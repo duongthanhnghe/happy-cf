@@ -1152,22 +1152,7 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"1236c3-T7fU/d8S3Q/IvJqFgd7VyaMKHP4\"",
-    "mtime": "2025-12-25T06:25:49.092Z",
-    "size": 1193667,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"4a323f-VdXhvZ6yQBkGZ+Qv0tk0MEOBF9E\"",
-    "mtime": "2025-12-25T06:25:49.098Z",
-    "size": 4862527,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -31468,13 +31453,17 @@ const checkProductStockService = async ({
   sku,
   quantity
 }) => {
-  const product = await ProductEntity.findById(productId).select("amount variantCombinations");
+  const product = await ProductEntity.findById(productId).select("amount sku variantCombinations");
   if (!product) {
     throw new Error("S\u1EA3n ph\u1EA9m kh\xF4ng t\u1ED3n t\u1EA1i");
   }
-  if (!sku) {
+  const hasVariants = Array.isArray(product.variantCombinations) && product.variantCombinations.length > 0;
+  if (!hasVariants || !sku || sku === product.sku) {
     const stock2 = product.amount || 0;
-    return { ok: quantity <= stock2, availableStock: stock2 };
+    return {
+      ok: quantity <= stock2,
+      availableStock: stock2
+    };
   }
   const combination = product.variantCombinations.find(
     (c) => c.sku === sku
@@ -31483,13 +31472,21 @@ const checkProductStockService = async ({
     throw new Error(`Ph\xE2n lo\u1EA1i ${sku} kh\xF4ng t\u1ED3n t\u1EA1i`);
   }
   const stock = combination.stock || 0;
-  return { ok: quantity <= stock, availableStock: stock };
+  return {
+    ok: quantity <= stock,
+    availableStock: stock
+  };
 };
 
 const deductStockOrder = async (cartItems) => {
   for (const item of cartItems) {
     const productId = typeof item.idProduct === "string" ? item.idProduct : item.idProduct._id;
-    if (!item.sku) {
+    const product = await ProductEntity.findById(productId).select("amount sku variantCombinations");
+    if (!product) {
+      throw new Error("S\u1EA3n ph\u1EA9m kh\xF4ng t\u1ED3n t\u1EA1i");
+    }
+    const hasVariants = Array.isArray(product.variantCombinations) && product.variantCombinations.length > 0;
+    if (!hasVariants || !item.sku || item.sku === product.sku) {
       const result2 = await ProductEntity.updateOne(
         {
           _id: productId,
@@ -33154,7 +33151,6 @@ const getPromotionalProducts = async (req, res) => {
     }
     const match = {
       isActive: true,
-      amount: { $gt: 0 },
       $expr: { $lt: ["$priceDiscounts", "$price"] },
       categoryId: { $in: activeCategories }
     };
@@ -33275,7 +33271,6 @@ const getMostOrderedProduct = async (req, res) => {
     }
     const match = {
       isActive: true,
-      amount: { $gt: 0 },
       categoryId: { $in: activeCategories }
     };
     const total = await ProductEntity.countDocuments(match);
@@ -33298,7 +33293,6 @@ const getMostOrderedProduct = async (req, res) => {
     }
     const products = await ProductEntity.aggregate([
       { $match: match },
-      /* join order để tính số lượng bán */
       {
         $lookup: {
           from: OrderEntity.collection.name,

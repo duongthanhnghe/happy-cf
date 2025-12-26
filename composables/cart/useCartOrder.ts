@@ -121,6 +121,9 @@ export const useCartOrder = (
         }
 
         handleResetForm();
+      } else {
+        showWarning(result.message ?? '')
+        console.log('result.message',result.message)
       }
     } catch (err: any) {
       showWarning(err.message);

@@ -27,7 +27,7 @@ const handleSubmitCreate = async () => {
     <div class="overflow-hidden">
       <Card size="xs" class="rd-lg flex gap-sm align-center mb-ms shadow-1">
         <div class="bg-gray2 rd-md">
-          <img v-if="store.getDetailReview?.productId.image" :src="store.getDetailReview?.productId.image" width="60" />
+          <img v-if="store.getDetailReview?.productId.image" :src="store.getDetailReview?.productId.image" width="60" class="rd-md" />
         </div>
         <Text :text="store.getDetailReview?.productId.productName" color="black" weight="semibold"/>
       </Card>

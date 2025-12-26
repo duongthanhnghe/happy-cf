@@ -11,6 +11,7 @@ declare global {
   const cachedEventHandler: typeof import('../../node_modules/nitropack/dist/runtime/internal/cache')['cachedEventHandler']
   const cachedFunction: typeof import('../../node_modules/nitropack/dist/runtime/internal/cache')['cachedFunction']
   const callNodeListener: typeof import('../../node_modules/h3')['callNodeListener']
+  const checkProductStockService: typeof import('../../server/utils/productStock')['checkProductStockService']
   const clearResponseHeaders: typeof import('../../node_modules/h3')['clearResponseHeaders']
   const clearSession: typeof import('../../node_modules/h3')['clearSession']
   const createApp: typeof import('../../node_modules/h3')['createApp']
@@ -19,6 +20,7 @@ declare global {
   const createEvent: typeof import('../../node_modules/h3')['createEvent']
   const createEventStream: typeof import('../../node_modules/h3')['createEventStream']
   const createRouter: typeof import('../../node_modules/h3')['createRouter']
+  const deductStockOrder: typeof import('../../server/utils/deductStockOrder')['deductStockOrder']
   const defaultContentType: typeof import('../../node_modules/h3')['defaultContentType']
   const defineAppConfig: typeof import('../../node_modules/nuxt/dist/core/runtime/nitro/utils/config')['defineAppConfig']
   const defineCachedEventHandler: typeof import('../../node_modules/nitropack/dist/runtime/internal/cache')['defineCachedEventHandler']
@@ -91,6 +93,7 @@ declare global {
   const readRawBody: typeof import('../../node_modules/h3')['readRawBody']
   const readValidatedBody: typeof import('../../node_modules/h3')['readValidatedBody']
   const removeResponseHeader: typeof import('../../node_modules/h3')['removeResponseHeader']
+  const restoreStockOrder: typeof import('../../server/utils/restoreStockOrder')['restoreStockOrder']
   const runTask: typeof import('../../node_modules/nitropack/dist/runtime/internal/task')['runTask']
   const sanitizeStatusCode: typeof import('../../node_modules/h3')['sanitizeStatusCode']
   const sanitizeStatusMessage: typeof import('../../node_modules/h3')['sanitizeStatusMessage']
@@ -144,5 +147,8 @@ export { appendCorsHeaders, appendCorsPreflightHeaders, appendHeader, appendHead
 export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from '/Users/ttcenter/happy-cf/node_modules/nuxt/dist/core/runtime/nitro/utils/paths';
 export { defineAppConfig } from '/Users/ttcenter/happy-cf/node_modules/nuxt/dist/core/runtime/nitro/utils/config';
 export { generateBarcode } from '/Users/ttcenter/happy-cf/server/utils/barcodeGenerator';
+export { deductStockOrder } from '/Users/ttcenter/happy-cf/server/utils/deductStockOrder';
 export { generateSlug } from '/Users/ttcenter/happy-cf/server/utils/generateSlug';
 export { transporter, sendResetPasswordEmail } from '/Users/ttcenter/happy-cf/server/utils/mailer';
+export { checkProductStockService } from '/Users/ttcenter/happy-cf/server/utils/productStock';
+export { restoreStockOrder } from '/Users/ttcenter/happy-cf/server/utils/restoreStockOrder';

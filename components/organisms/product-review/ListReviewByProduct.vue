@@ -13,7 +13,7 @@ watch(valueChangePage, (newVal) => {
 </script>
 
 <template>
-  <div class="bg-gray6 pt-section pb-section">
+  <div class="bg-gray6 pt-section pb-section" id="list-review-by-product">
     <div class="container container-xxl">
       <LoadingData v-if="store.loadingListReviews && store.getListReviewProduct === null" />
       <template v-else>
