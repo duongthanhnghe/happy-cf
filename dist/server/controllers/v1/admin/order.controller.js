@@ -1,16 +1,19 @@
 import { UserModel } from "../../../models/v1/user.entity.js";
-import { OrderEntity, OrderStatusEntity, PaymentEntity } from "../../../models/v1/order.entity.js";
+import { OrderEntity, OrderShippingEntity, OrderStatusEntity, PaymentEntity, ShippingProviderEntity } from "../../../models/v1/order.entity.js";
 import { MembershipLevelModel } from "../../../models/v1/membership-level.entity.js";
-import { toOrderDTO, toOrderListDTO, toOrderStatusListDTO, toPaymentListDTO } from "../../../mappers/v1/order.mapper.js";
+import { toOrderDTO, toOrderExport, toOrderListDTO, toOrderShippingDTO, toOrderStatusListDTO, toPaymentListDTO, toShippingProviderDTO, toShippingProviderListDTO } from "../../../mappers/v1/order.mapper.js";
 import { ORDER_STATUS } from "../../../shared/constants/order-status.js";
 import { ProductReviewEntity } from "../../../models/v1/product-review.entity.js";
 import { VoucherEntity } from "../../../models/v1/voucher.entity.js";
 import { VoucherUsageEntity } from "../../../models/v1/voucher-usage.entity.js";
 import mongoose from "mongoose";
 import { restoreStockOrder } from "../../../utils/restoreStockOrder.js";
+import XLSX from "xlsx";
+import { buildVietQR } from "../../../utils/qrcode-payment.js";
+import { buildBillHTML } from "../../../utils/print-bill.js";
 export const getAllOrder = async (req, res) => {
     try {
-        let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId } = req.query;
+        let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId, shippingStatus } = req.query;
         const numPage = Number(page);
         let numLimit = Number(limit);
         const filter = {};
@@ -39,6 +42,10 @@ export const getAllOrder = async (req, res) => {
         if (transactionId) {
             transactionMatch.status = transactionId;
         }
+        let shippingMatch = {};
+        if (shippingStatus) {
+            shippingMatch.status = shippingStatus;
+        }
         if (numLimit === -1) {
             const orders = await OrderEntity.find(filter)
                 .sort({ createdAt: -1 })
@@ -54,6 +61,15 @@ export const getAllOrder = async (req, res) => {
                 path: "cartItems.idProduct",
                 model: "Product",
                 select: "image productName"
+            })
+                .populate({
+                path: "shipping",
+                model: "OrderShipping",
+                match: shippingMatch,
+                populate: {
+                    path: "providerId",
+                    model: "ShippingProvider"
+                }
             });
             const filtered = transactionId
                 ? orders.filter(o => o.transaction !== null)
@@ -82,21 +98,40 @@ export const getAllOrder = async (req, res) => {
                     model: "PaymentTransaction",
                     match: transactionMatch
                 },
+                {
+                    path: "shipping",
+                    model: "OrderShipping",
+                    match: shippingMatch,
+                    populate: {
+                        path: "providerId",
+                        model: "ShippingProvider",
+                    }
+                },
                 { path: "cartItems.idProduct", model: "Product", select: "image productName" }
             ]
         };
         let result = await OrderEntity.paginate(filter, options);
         if (transactionId) {
-            result.docs = result.docs.filter(doc => doc.transaction !== null);
+            result.docs = result.docs.filter(doc => {
+                const transaction = doc.transaction;
+                return transaction && transaction.status === transactionId;
+            });
         }
+        if (shippingStatus) {
+            result.docs = result.docs.filter(doc => {
+                const shipping = doc.shipping;
+                return shipping && shipping.status === shippingStatus;
+            });
+        }
+        const totalFiltered = result.docs.length;
         return res.json({
             code: 0,
             data: toOrderListDTO(result.docs),
             pagination: {
                 page: result.page,
                 limit: result.limit,
-                totalPages: result.totalPages,
-                total: result.totalDocs
+                totalPages: Math.ceil(totalFiltered / result.limit),
+                total: totalFiltered
             }
         });
     }
@@ -106,199 +141,6 @@ export const getAllOrder = async (req, res) => {
             .json({ code: 1, message: "Lỗi lấy danh sách order", error });
     }
 };
-// export const getAllOrder = async (req: Request, res: Response) => {
-//   try {
-//     let {
-//       page = 1,
-//       limit = 10,
-//       fromDate,
-//       toDate,
-//       search,
-//       statusId,
-//       transactionId,
-//     } = req.query;
-//     const numPage = Number(page);
-//     const numLimit = Number(limit);
-//     const preMatch: any = {};
-//     const postMatch: any = {};
-//     // --------------------------
-//     // PRE-MATCH
-//     // --------------------------
-//     if (fromDate || toDate) {
-//       preMatch.createdAt = {};
-//       if (fromDate) preMatch.createdAt.$gte = new Date(fromDate as string);
-//       if (toDate) {
-//         const end = new Date(toDate as string);
-//         end.setHours(23, 59, 59, 999);
-//         preMatch.createdAt.$lte = end;
-//       }
-//     }
-//     if (search) {
-//       const keyword = search.toString().trim();
-//       preMatch.$or = [
-//         { code: { $regex: keyword, $options: "i" } },
-//         { phone: { $regex: keyword, $options: "i" } },
-//         { fullname: { $regex: keyword, $options: "i" } },
-//       ];
-//     }
-//     if (statusId) {
-//       preMatch.status = new mongoose.Types.ObjectId(statusId as string);
-//     }
-//     if (transactionId) {
-//       postMatch["transactionData.status"] = transactionId;
-//     }
-//     // --------------------------
-//     // AGGREGATE PIPELINE
-//     // --------------------------
-//     const pipeline: any[] = [];
-//     if (Object.keys(preMatch).length) pipeline.push({ $match: preMatch });
-//     // --------------------------
-//     // POPULATE: Status
-//     // --------------------------
-//     pipeline.push(
-//       {
-//         $lookup: {
-//           from: "order_status",
-//           localField: "status",
-//           foreignField: "_id",
-//           as: "statusData",
-//         },
-//       },
-//       { $unwind: "$statusData" }
-//     );
-//     // --------------------------
-//     // POPULATE: Payment
-//     // --------------------------
-//     pipeline.push(
-//       {
-//         $lookup: {
-//           from: "payments",
-//           localField: "paymentId",
-//           foreignField: "_id",
-//           as: "paymentData",
-//         },
-//       },
-//       { $unwind: "$paymentData" }
-//     );
-//     // --------------------------
-//     // POPULATE: User
-//     // --------------------------
-//     pipeline.push(
-//       {
-//         $lookup: {
-//           from: "users",
-//           localField: "userId",
-//           foreignField: "_id",
-//           as: "userData",
-//         },
-//       },
-//       {
-//         $unwind: {
-//           path: "$userData",
-//           preserveNullAndEmptyArrays: true,
-//         },
-//       }
-//     );
-//     // --------------------------
-//     // POPULATE: Payment Transaction
-//     // --------------------------
-//     pipeline.push(
-//       {
-//         $lookup: {
-//           from: "paymenttransactions",
-//           localField: "transaction",
-//           foreignField: "_id",
-//           as: "transactionData",
-//         },
-//       },
-//       {
-//         $unwind: {
-//           path: "$transactionData",
-//           preserveNullAndEmptyArrays: true,
-//         },
-//       }
-//     );
-//     // Apply post-match
-//     if (Object.keys(postMatch).length) pipeline.push({ $match: postMatch });
-//     // --------------------------
-//     // POPULATE: Product (image, productName)
-//     // --------------------------
-//     pipeline.push({
-//       $lookup: {
-//         from: "products",
-//         localField: "cartItems.idProduct",
-//         foreignField: "_id",
-//         as: "productData",
-//       },
-//     });
-//     // --------------------------
-//     // Merge product vào cartItems
-//     // --------------------------
-//     pipeline.push({
-//       $addFields: {
-//         cartItems: {
-//           $map: {
-//             input: "$cartItems",
-//             as: "ci",
-//             in: {
-//               $mergeObjects: [
-//                 "$$ci",
-//                 {
-//                   product: {
-//                     $first: {
-//                       $filter: {
-//                         input: "$productData",
-//                         as: "pd",
-//                         cond: { $eq: ["$$pd._id", "$$ci.idProduct"] },
-//                       },
-//                     },
-//                   },
-//                 },
-//               ],
-//             },
-//           },
-//         },
-//       },
-//     });
-//     pipeline.push({ $project: { productData: 0 } });
-//     // SORT
-//     pipeline.push({ $sort: { createdAt: -1 } });
-//     // FACET: data + total
-//     pipeline.push({
-//       $facet: {
-//         data: [
-//           ...(numLimit === -1
-//             ? []
-//             : [
-//                 { $skip: (numPage - 1) * numLimit },
-//                 { $limit: numLimit },
-//               ]),
-//         ],
-//         totalCount: [{ $count: "total" }],
-//       },
-//     });
-//     // EXECUTE DB
-//     const result = await OrderEntity.aggregate(pipeline);
-//     const data = result[0]?.data || [];
-//     const total = result[0]?.totalCount?.[0]?.total || 0;
-//     return res.json({
-//       code: 0,
-//       data: toOrderListDTO(data),
-//       pagination: {
-//         page: numPage,
-//         limit: numLimit,
-//         total,
-//         totalPages: numLimit === -1 ? 1 : Math.ceil(total / numLimit),
-//       },
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       code: 1,
-//       message: "Lỗi lấy danh sách order",
-//       error,
-//     });
-//   }
-// };
 export const getOrderById = async (req, res) => {
     try {
         const order = await OrderEntity.findById(req.params.id)
@@ -509,5 +351,303 @@ export const revertPointAndDowngrade = async (userId, pointsToRevert) => {
         user.membership.pointRate = newLevel.pointRate;
     }
     await user.save();
+};
+export const getOrderCountByStatus = async (req, res) => {
+    try {
+        // 1. Tổng số đơn
+        const totalCount = await OrderEntity.countDocuments();
+        // 2. Lấy tất cả trạng thái
+        const statuses = await OrderStatusEntity.find().lean();
+        // 3. Đếm đơn theo status
+        const counts = await OrderEntity.aggregate([
+            {
+                $group: {
+                    _id: "$status",
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+        const countMap = new Map(counts.map(i => [i._id.toString(), i.count]));
+        // 4. Ghép dữ liệu
+        const statusItems = statuses
+            .sort((a, b) => { var _a, _b; return ((_a = a.index) !== null && _a !== void 0 ? _a : 0) - ((_b = b.index) !== null && _b !== void 0 ? _b : 0); })
+            .map(s => {
+            var _a;
+            return ({
+                statusId: s._id.toString(),
+                status: s.status,
+                name: s.name,
+                icon: s.icon,
+                index: s.index,
+                count: (_a = countMap.get(s._id.toString())) !== null && _a !== void 0 ? _a : 0
+            });
+        });
+        // 5. Thêm "Tất cả" lên đầu
+        const result = [
+            {
+                statusId: "",
+                status: "all",
+                name: "Tất cả",
+                icon: "list_alt",
+                index: -1,
+                count: totalCount
+            },
+            ...statusItems
+        ];
+        return res.json({
+            code: 0,
+            data: result
+        });
+    }
+    catch (error) {
+        console.error("getOrderCountByStatus error:", error);
+        return res.status(500).json({
+            code: 1,
+            message: "Lỗi lấy số lượng đơn hàng theo trạng thái"
+        });
+    }
+};
+export const printOrderBill = async (req, res) => {
+    try {
+        const order = await OrderEntity.findById(req.params.id)
+            .populate("paymentId")
+            .populate("status")
+            .populate("userId")
+            .populate({ path: "transaction", model: "PaymentTransaction" })
+            .populate({
+            path: "cartItems.idProduct",
+            model: "Product",
+            select: "productName sku",
+        })
+            .lean();
+        if (!order) {
+            return res.status(404).send("Order không tồn tại");
+        }
+        const siteName = req.query.siteName ||
+            "";
+        const qrUrl = buildVietQR(order);
+        const html = buildBillHTML(order, qrUrl, siteName);
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        return res.send(html);
+    }
+    catch (err) {
+        return res.status(500).send(err.message);
+    }
+};
+export const exportOrders = async (req, res) => {
+    try {
+        const orders = await OrderEntity.find()
+            .populate("paymentId")
+            .populate("status")
+            .populate("userId")
+            .populate({
+            path: "transaction",
+            model: "PaymentTransaction",
+        })
+            .populate({
+            path: "shipping",
+            model: "OrderShipping",
+            populate: {
+                path: "providerId",
+                model: "ShippingProvider",
+            },
+        })
+            .populate({
+            path: "cartItems.idProduct",
+            model: "Product",
+            select: "productName sku",
+        })
+            .lean();
+        if (!orders.length) {
+            return res.status(200).json({
+                code: 1,
+                message: "Không có đơn hàng để export",
+            });
+        }
+        const exportData = orders.map(toOrderExport);
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+        const excelBuffer = XLSX.write(workbook, {
+            type: "buffer",
+            bookType: "xlsx",
+        });
+        const fileName = `order_export_${Date.now()}.xlsx`;
+        res.setHeader("Content-Disposition", `attachment; filename="${fileName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`);
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        res.setHeader("X-Code", "0");
+        res.setHeader("X-Message", "Export orders thành công");
+        return res.send(excelBuffer);
+    }
+    catch (error) {
+        console.error("Export orders error:", error);
+        return res.status(500).json({
+            code: 1,
+            message: error.message,
+        });
+    }
+};
+export const getAllShippingProviders = async (req, res) => {
+    try {
+        const { active } = req.query;
+        const filter = {};
+        if (active !== undefined) {
+            filter.isActive = active === "true";
+        }
+        const providers = await ShippingProviderEntity
+            .find(filter)
+            .sort({ name: 1 });
+        return res.json({
+            code: 0,
+            message: "Lấy danh sách đơn vị vận chuyển thành công",
+            data: toShippingProviderListDTO(providers)
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            code: 1,
+            message: "Lỗi lấy danh sách đơn vị vận chuyển"
+        });
+    }
+};
+export const getShippingProviderDetail = async (req, res) => {
+    try {
+        const provider = await ShippingProviderEntity.findById(req.params.id);
+        if (!provider) {
+            return res.status(404).json({
+                code: 1,
+                message: "Đơn vị vận chuyển không tồn tại"
+            });
+        }
+        return res.json({
+            code: 0,
+            message: "Lấy chi tiết đơn vị vận chuyển thành công",
+            data: toShippingProviderDTO(provider)
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            code: 1,
+            message: "Lỗi lấy chi tiết đơn vị vận chuyển"
+        });
+    }
+};
+export const createOrderShipping = async (req, res) => {
+    try {
+        const { orderId, providerId, trackingCode, shippingFee } = req.body;
+        if (!orderId || !providerId) {
+            return res.status(400).json({
+                code: 1,
+                message: "Thiếu orderId hoặc providerId"
+            });
+        }
+        const order = await OrderEntity.findById(orderId);
+        if (!order) {
+            return res.status(404).json({
+                code: 1,
+                message: "Order không tồn tại"
+            });
+        }
+        // 1 order chỉ có 1 vận đơn
+        const existed = await OrderShippingEntity.findOne({ orderId });
+        if (existed) {
+            return res.status(400).json({
+                code: 1,
+                message: "Order đã có vận đơn"
+            });
+        }
+        const shipping = await OrderShippingEntity.create({
+            orderId,
+            providerId,
+            trackingCode,
+            shippingFee: shippingFee !== null && shippingFee !== void 0 ? shippingFee : order.shippingFee,
+            status: "pending",
+            logs: [
+                {
+                    status: "pending",
+                    description: "Tạo vận đơn",
+                    time: new Date()
+                }
+            ]
+        });
+        // gán vận đơn vào order
+        order.shipping = shipping._id;
+        await order.save();
+        return res.json({
+            code: 0,
+            data: shipping
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            code: 1,
+            message: "Lỗi tạo vận đơn"
+        });
+    }
+};
+export const getOrderShippingDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const shipping = await OrderShippingEntity
+            .findById(id)
+            .populate({
+            path: "providerId",
+            model: "ShippingProvider"
+        });
+        if (!shipping) {
+            return res.status(404).json({
+                code: 1,
+                message: "Vận đơn không tồn tại"
+            });
+        }
+        return res.json({
+            code: 0,
+            message: "Lấy chi tiết vận đơn thành công",
+            data: toOrderShippingDTO(shipping)
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            code: 1,
+            message: "Lỗi lấy chi tiết vận đơn"
+        });
+    }
+};
+export const updateOrderShippingStatus = async (req, res) => {
+    try {
+        const { status, statusText } = req.body;
+        const shipping = await OrderShippingEntity.findById(req.params.id);
+        if (!shipping) {
+            return res.status(404).json({
+                code: 1,
+                message: "Vận đơn không tồn tại"
+            });
+        }
+        shipping.status = status;
+        if (statusText)
+            shipping.statusText = statusText;
+        if (status === "shipping") {
+            shipping.shippedAt = new Date();
+        }
+        if (status === "delivered") {
+            shipping.deliveredAt = new Date();
+        }
+        shipping.logs.push({
+            status,
+            description: statusText || "Cập nhật trạng thái",
+            time: new Date()
+        });
+        await shipping.save();
+        return res.json({
+            code: 0,
+            data: shipping
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            code: 1,
+            message: "Lỗi cập nhật trạng thái vận đơn"
+        });
+    }
 };
 //# sourceMappingURL=order.controller.js.map

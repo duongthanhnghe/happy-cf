@@ -19,6 +19,12 @@ export const useOrderManageStore = defineStore("OrderManage", () => {
     state.filterStatusOrder,
     state.filterStatusTransactionOrder,
     state.isTogglePopupAdd,
+    state.defaultFormShipping,
+    state.formShipping,
+    state.isTogglePopupCreateShipping,
+    state.isTogglePopupDetailShipping,
+    state.detailShipping,
+    state.filterStatusShipping,
   )
 
   const hasFilter = computed(() => {
@@ -28,6 +34,7 @@ export const useOrderManageStore = defineStore("OrderManage", () => {
       state.toDay.value !== '' ||
       state.filterStatusOrder.value !== '' ||
       state.filterStatusTransactionOrder.value !== '' ||
+      state.filterStatusShipping.value !== '' ||
       state.currentTableOptions.value.page !== 1 ||
       state.currentTableOptions.value.itemsPerPage !== 20
     )

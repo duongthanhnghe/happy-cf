@@ -1,6 +1,6 @@
 import type { Ref } from 'vue';
-import type { OrderDTO, OrderPaginationDTO } from "@/server/types/dto/v1/order.dto";
-import { watch } from 'vue';
+import type { CreateOrderShippingDTO, OrderDTO, OrderPaginationDTO, OrderShippingDTO } from "@/server/types/dto/v1/order.dto";
+import { unref, watch } from 'vue';
 import { Loading } from '@/utils/global';
 import { ordersAPI } from '@/services/v1/admin/orders.service';
 import { ORDER_STATUS } from '@/shared/constants/order-status';
@@ -9,6 +9,9 @@ import { paymentTransactionsAPI } from '@/services/v1/admin/payment-transaction.
 import type { PaymentMethod, PaymentTransactionStatus } from '@/server/types/dto/v1/payment-transaction.dto';
 import type { TableOpt } from '@/server/types';
 import { useOrderStatus } from '@/composables/shared/order/useOrderStatus';
+import { useAdminShippingProviders } from './useAdminShippingProviders';
+import { useAdminOrderShipping } from './useAdminOrderShipping';
+type MaybeRef<T> = T | Ref<T>;
 
 export const useOrderOperations = (
   dataListOrder: Ref<OrderPaginationDTO|null>,
@@ -22,16 +25,32 @@ export const useOrderOperations = (
   filterStatusOrder: Ref<string>,
   filterStatusTransactionOrder:Ref<string>,
   isTogglePopupAdd: Ref<boolean>,
+  defaultFormShipping: object,
+  formShipping: MaybeRef<CreateOrderShippingDTO>,
+  isTogglePopupCreateShipping: Ref<boolean>,
+  isTogglePopupDetailShipping: Ref<boolean>,
+  detailShipping: Ref<OrderShippingDTO|null>,
+  filterStatusShipping: Ref<string>,
 ) => {
 
   const { getListOrderStatus, fetchOrderStatus } = useOrderStatus();
-  
+  const { getShippingProviders, fetchAllShippingProviders } = useAdminShippingProviders();
+  const { getOrderShippingDetail, fetchOrderShippingDetail } = useAdminOrderShipping()
 
   const getListAllProduct = async () => {
     const from = fromDay.value !== '' ? new Date(fromDay.value).toISOString().slice(0, 10) : ''
     const to = toDay.value !== '' ? new Date(toDay.value).toISOString().slice(0, 10) : ''
 
-    const data = await ordersAPI.getAll(currentTableOptions.value.page, currentTableOptions.value.itemsPerPage, from, to, search.value, filterStatusOrder.value, filterStatusTransactionOrder.value);
+    const data = await ordersAPI.getAll(
+      currentTableOptions.value.page, 
+      currentTableOptions.value.itemsPerPage, 
+      from, 
+      to, 
+      search.value, 
+      filterStatusOrder.value, 
+      filterStatusTransactionOrder.value,
+      filterStatusShipping.value
+    );
 
     if(data.code !== 0) return
     dataListOrder.value = data
@@ -76,6 +95,7 @@ export const useOrderOperations = (
       search: search.value,
       filterStatusOrder: filterStatusOrder.value,
       filterStatusTransactionOrder: filterStatusTransactionOrder.value,
+      filterStatusShipping: filterStatusShipping.value,
       fromDay: fromDay.value,
       toDay: toDay.value,
       page: currentTableOptions.value.page,
@@ -104,11 +124,6 @@ export const useOrderOperations = (
       const data = await ordersAPI.delete(orderId)
       if(data.code === 0) {
         showSuccess(data.message ?? '')
-        if(dataListOrder.value?.data){
-          dataListOrder.value.data = dataListOrder.value?.data?.filter(item => 
-            item.id !== orderId
-          )
-        }
         handleReload()
       } else {
         showWarning(data.message ?? '')
@@ -170,6 +185,7 @@ export const useOrderOperations = (
     toDay.value = ''
     filterStatusOrder.value = ''
     filterStatusTransactionOrder.value = ''
+    filterStatusShipping.value = ''
     currentTableOptions.value.page = 1
     currentTableOptions.value.itemsPerPage = 20
   }
@@ -185,6 +201,110 @@ export const useOrderOperations = (
     return getListOrderStatus.value;
   };
 
+  const handlePopupCreateOrderShipping = async (orderId: string) => {
+    if(!orderId) return
+    unref(formShipping).orderId = orderId
+    if(!getShippingProviders.value || getShippingProviders.value.length === 0) await fetchAllShippingProviders()
+    isTogglePopupCreateShipping.value = true;
+  }
+
+  const handlePopupDetailOrderShipping = async (orderId: string) => {
+    if(!orderId) return
+    if(detailShipping.value?.id !== orderId) await fetchOrderShippingDetail(orderId)
+    detailShipping.value = getOrderShippingDetail.value
+    isTogglePopupDetailShipping.value = true;
+  }
+
+  const handleCreateOrderShipping = async () => {
+    Loading(true)
+    try {
+      const payload = unref(formShipping)
+
+      const res = await ordersAPI.createOrderShipping(payload)
+
+      if (res.code === 0) {
+        showSuccess('Tạo vận đơn thành công')
+        await handleReload()
+      } else {
+        showWarning(res.message ?? 'Tạo vận đơn thất bại')
+      }
+      
+    } catch (err: any) {
+      console.error('Create order shipping error:', err)
+      showWarning(err.message)
+    } finally {
+      Loading(false)
+      Object.assign(formShipping, defaultFormShipping)
+      isTogglePopupCreateShipping.value = false
+    }
+  }
+
+  const handleUpdateOrderShippingStatus = async (
+    shippingId: string,
+    status: string,
+    statusText?: string
+  ) => {
+    const confirmed = await showConfirm('Bạn có chắc cập nhật trạng thái vận đơn?')
+    if (!confirmed) return
+
+    Loading(true)
+    try {
+      const res = await ordersAPI.updateOrderShippingStatus(shippingId, {
+        status,
+        statusText
+      })
+
+      if (res.code === 0) {
+        showSuccess('Cập nhật trạng thái vận đơn thành công')
+        await handleReload()
+      } else {
+        showWarning(res.message ?? 'Cập nhật vận đơn thất bại')
+      }
+    } catch (err) {
+      console.error('Update shipping status error:', err)
+      showWarning('Có lỗi xảy ra khi cập nhật vận đơn')
+    } finally {
+      Loading(false)
+    }
+  }
+
+  const handleFilterByOrderStatus = async (statusId: string) => {
+    if (filterStatusOrder.value === statusId) {
+      filterStatusOrder.value = ''
+    } else {
+      filterStatusOrder.value = statusId
+    }
+
+    currentTableOptions.value.page = 1
+  }
+
+  const handleExport = async () => {
+    Loading(true)
+    const from = fromDay.value !== '' ? new Date(fromDay.value).toISOString().slice(0, 10) : ''
+    const to = toDay.value !== '' ? new Date(toDay.value).toISOString().slice(0, 10) : ''
+
+    const res = await ordersAPI.exportOrders(
+      from, 
+      to, 
+      search.value, 
+      filterStatusOrder.value, 
+      filterStatusTransactionOrder.value,
+      filterStatusShipping.value
+    );
+    Loading(false)
+    if(res.code) showSuccess(res.message ?? 'Export thành công')
+  };
+
+  const handlePrintBill = async (orderId: string) => {
+    if (!orderId) return
+
+    try {
+      await ordersAPI.printBill(orderId)
+    } catch (err: any) {
+      showWarning(err?.message || "Không thể in hóa đơn")
+    }
+  }
+
   return {
     handleTogglePopupAdd,
     getListAllProduct,
@@ -195,5 +315,13 @@ export const useOrderOperations = (
     handleUpdateStatusTransactionOrder,
     resetFilter,
     statusListToShow,
+    handleCreateOrderShipping,
+    handleUpdateOrderShippingStatus,
+    getShippingProviders,
+    handlePopupCreateOrderShipping,
+    handlePopupDetailOrderShipping,
+    handleFilterByOrderStatus,
+    handleExport,
+    handlePrintBill,
   };
 };

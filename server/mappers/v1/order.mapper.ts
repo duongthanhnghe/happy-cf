@@ -1,12 +1,62 @@
 import type {
   OrderDTO,
+  OrderShippingDTO,
   OrderStatusDTO,
   PaymentDTO,
+  ShippingProviderDTO,
+  ShippingStatus,
   cartItems,
 } from "../../types/dto/v1/order.dto";
-import type { Order, OrderStatus, Payment } from "../../models/v1/order.entity";
+import type { Order, OrderStatus, Payment, ShippingProvider, OrderShipping } from "../../models/v1/order.entity";
 import { Types } from "mongoose";
 import { toPaymentTransactionDTO } from "./payment-transaction.mapper"
+
+export function toShippingProviderDTO(entity: ShippingProvider): ShippingProviderDTO {
+  return {
+    id: entity._id?.toString() || "",
+    name: entity.name,
+    code: entity.code,
+    logo: entity.logo || "",
+  }
+}
+
+export const toShippingProviderListDTO = (list: ShippingProvider[]): ShippingProviderDTO[] =>
+  list.map(toShippingProviderDTO);
+
+export function toOrderShippingDTO(entity: OrderShipping): OrderShippingDTO {
+  const allowedStatus: ShippingStatus[] = [
+    'pending', 'picked', 'shipping', 'delivered', 'returned', 'cancelled'
+  ]
+
+  const provider =
+    entity.providerId && typeof entity.providerId === 'object'
+      ? toShippingProviderDTO(entity.providerId as any)
+      : null
+
+  return {
+    id: entity._id?.toString() || "",
+    provider,
+    trackingCode: entity.trackingCode ?? null,
+    status: allowedStatus.includes(entity.status as any)
+      ? (entity.status as ShippingStatus)
+      : 'pending',
+    shippingFee: entity.shippingFee ?? 0,
+    shippedAt: entity.shippedAt
+      ? new Date(entity.shippedAt).toISOString()
+      : null,
+    deliveredAt: entity.deliveredAt
+      ? new Date(entity.deliveredAt).toISOString()
+      : null,
+    logs: (entity.logs || []).map(log => ({
+      status: allowedStatus.includes(log.status as any)
+        ? (log.status as ShippingStatus)
+        : 'pending',
+      description: log.description,
+      time: new Date(log.time).toISOString()
+    }))
+  }
+}
+
 
 export function toPaymentDTO(entity: Payment): PaymentDTO {
   return {
@@ -59,6 +109,9 @@ export function toOrderDTO(entity: Order): OrderDTO {
     totalPriceCurrent: entity.totalPriceCurrent,
     totalDiscountOrder: entity.totalDiscountOrder,
     shippingFee: entity.shippingFee,
+    shipping: entity.shipping
+      ? toOrderShippingDTO(entity.shipping as any)
+      : null,
     status:toOrderStatusDTO(entity.status as any),
     userId: entity.userId
       ? (entity.userId as any)._id
@@ -110,6 +163,77 @@ export function toOrderDTO(entity: Order): OrderDTO {
 
 export const toOrderListDTO = (orders: Order[]): OrderDTO[] =>
   orders.map(toOrderDTO);
+
+export function toOrderExport(entity: any) {
+  const shipping = entity.shipping;
+  const transaction = entity.transaction;
+  const status = entity.status;
+  const payment = entity.paymentId;
+  const user = entity.userId;
+
+  return {
+    orderId: entity._id?.toString(),
+    code: entity.code,
+    time: entity.time,
+    createdAt: entity.createdAt,
+    updatedAt: entity.updatedAt,
+
+    fullname: entity.fullname,
+    phone: entity.phone,
+    address: entity.address,
+    provinceName: entity.provinceName,
+    districtName: entity.districtName,
+    wardName: entity.wardName,
+    note: entity.note ?? "",
+
+    totalPrice: entity.totalPrice,
+    totalPriceSave: entity.totalPriceSave,
+    totalPriceCurrent: entity.totalPriceCurrent,
+    totalDiscountOrder: entity.totalDiscountOrder,
+    shippingFee: entity.shippingFee,
+
+    orderStatusCode: status?.status ?? "",
+    orderStatusName: status?.name ?? "",
+
+    paymentMethod: payment?.method ?? "",
+    paymentName: payment?.name ?? "",
+
+    transactionCode: transaction?.code ?? "",
+    transactionStatus: transaction?.status ?? "",
+    transactionAmount: transaction?.amount ?? 0,
+
+    shippingStatus: shipping?.status ?? "",
+    shippingStatusText: shipping?.statusText ?? "",
+    shippingProvider: shipping?.providerId?.name ?? "",
+    shippingTrackingCode: shipping?.trackingCode ?? "",
+    shippedAt: shipping?.shippedAt ?? "",
+    deliveredAt: shipping?.deliveredAt ?? "",
+
+    userId: user?._id?.toString() ?? "",
+    userEmail: user?.email ?? "",
+    userPhone: user?.phone ?? "",
+
+    usedPoints: entity.usedPoints ?? 0,
+    rewardPoints: entity.reward?.points ?? 0,
+    rewardAwarded: entity.reward?.awarded ?? false,
+    rewardAwardedAt: entity.reward?.awardedAt ?? "",
+
+    stockDeducted: entity.stockDeducted,
+    cancelRequested: entity.cancelRequested,
+    voucherRefunded: entity.voucherRefunded,
+    pointsRefunded: entity.pointsRefunded,
+
+    cartItems: Array.isArray(entity.cartItems)
+      ? entity.cartItems
+          .map((i: any) => `${i.idProduct?.productName} x${i.quantity}`)
+          .join(" | ")
+      : "",
+
+    voucherCodes: Array.isArray(entity.voucherUsage)
+      ? entity.voucherUsage.map((v: any) => v.code).join(", ")
+      : "",
+  };
+}
 
 function toCartItemDTO(entity: cartItems): cartItems {
   let idProduct: any = entity.idProduct;

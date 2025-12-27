@@ -1,5 +1,5 @@
-import { ref } from "vue";
-import type { OrderDTO, OrderPaginationDTO } from "@/server/types/dto/v1/order.dto";
+import { reactive, ref } from "vue";
+import type { CreateOrderShippingDTO, OrderDTO, OrderPaginationDTO, OrderShippingDTO } from "@/server/types/dto/v1/order.dto";
 import type { TableHeaders, TableOpt } from "@/server/types";
 
 export const useOrderManageState = () => {
@@ -17,6 +17,8 @@ export const useOrderManageState = () => {
     { title: 'Thời gian lấy hàng', key: 'time', sortable: false, },
     { title: 'Thời gian đặt hàng', key: 'createdAt', sortable: false, },
     { title: 'HTTT', key: 'paymentId', sortable: false, },
+    { title: 'Tình trạng Vận đơn', key: 'shipping.status', sortable: false, },
+    { title: 'Vận đơn', key: 'shipping', sortable: false, },
     { title: 'Yêu cầu huỷ đơn', key: 'cancelRequested', sortable: false, },
     { title: '', key: 'actions', sortable: false, headerProps: { class: 'v-data-table-sticky-cl-right' },
       cellProps: { class: 'v-data-table-sticky-cl-right' }},
@@ -33,8 +35,19 @@ export const useOrderManageState = () => {
     sortBy: [],
   })
   const filterStatusOrder = ref<string>('')
+  const filterStatusShipping = ref<string>('')
   const filterStatusTransactionOrder = ref<string>('')
   const isTogglePopupAdd = ref(false);
+  const defaultFormShipping: CreateOrderShippingDTO = {
+    orderId: '',
+    providerId: '',
+    trackingCode: '',
+    shippingFee: 0,
+  };
+  const formShipping = reactive<CreateOrderShippingDTO>({ ...defaultFormShipping })
+  const isTogglePopupCreateShipping = ref(false)
+  const isTogglePopupDetailShipping = ref(false)
+  const detailShipping = ref<OrderShippingDTO|null>(null)
 
   return {
     dataListOrder,
@@ -48,6 +61,12 @@ export const useOrderManageState = () => {
     headers,
     currentTableOptions,
     filterStatusOrder,
+    filterStatusShipping,
     filterStatusTransactionOrder,
+    defaultFormShipping,
+    formShipping,
+    isTogglePopupCreateShipping,
+    isTogglePopupDetailShipping,
+    detailShipping,
   };
 };

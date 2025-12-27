@@ -2,6 +2,40 @@ import { Schema, model } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 import { VoucherUsageOrderSchema } from "./voucher-usage.entity.js";
 import { VariantCombinationSchema } from "./product.entity.js";
+const ShippingProviderSchema = new Schema({
+    code: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    logo: { type: String },
+    hotline: { type: String },
+    trackingUrl: { type: String },
+    isActive: { type: Boolean, default: true },
+}, { timestamps: true });
+const OrderShippingSchema = new Schema({
+    orderId: {
+        type: Schema.Types.ObjectId,
+        ref: "Order",
+        required: true,
+        unique: true,
+    },
+    providerId: {
+        type: Schema.Types.ObjectId,
+        ref: "ShippingProvider",
+        required: true,
+    },
+    trackingCode: { type: String },
+    shippingFee: { type: Number, default: 0 },
+    status: { type: String, default: "pending" },
+    statusText: { type: String },
+    shippedAt: { type: Date },
+    deliveredAt: { type: Date },
+    logs: [
+        {
+            status: String,
+            description: String,
+            time: { type: Date, default: Date.now },
+        },
+    ],
+});
 const CartItemsSchema = new Schema({
     idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     price: { type: Number, required: true },
@@ -44,6 +78,7 @@ const OrderSchema = new Schema({
     totalPriceCurrent: { type: Number, required: true },
     totalDiscountOrder: { type: Number, required: true },
     shippingFee: { type: Number, required: true },
+    shipping: { type: Schema.Types.ObjectId, ref: "OrderShipping" },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
@@ -61,6 +96,8 @@ const OrderSchema = new Schema({
     voucherRefunded: { type: Boolean, default: false },
 }, { timestamps: true });
 OrderSchema.plugin(mongoosePaginate);
+export const ShippingProviderEntity = model("ShippingProvider", ShippingProviderSchema, "shipping_providers");
+export const OrderShippingEntity = model("OrderShipping", OrderShippingSchema, "order_shippings");
 export const PaymentEntity = model("Payment", PaymentSchema, "payments");
 export const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
 export const OrderEntity = model("Order", OrderSchema, "orders");

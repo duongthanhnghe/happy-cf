@@ -1152,7 +1152,22 @@ const plugins = [
 _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"127f87-cFWnAHNAdB3k35plUHyJCBlMfLw\"",
+    "mtime": "2025-12-27T06:45:17.601Z",
+    "size": 1212295,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"4b60f3-QWX/S7Cb51qDryx3v/WAFqXmVpo\"",
+    "mtime": "2025-12-27T06:45:17.612Z",
+    "size": 4940019,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -3953,6 +3968,45 @@ const VoucherUsageSchema = new Schema(
 );
 const VoucherUsageEntity = model("VoucherUsage", VoucherUsageSchema);
 
+const ShippingProviderSchema = new Schema(
+  {
+    code: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    logo: { type: String },
+    hotline: { type: String },
+    trackingUrl: { type: String },
+    isActive: { type: Boolean, default: true }
+  },
+  { timestamps: true }
+);
+const OrderShippingSchema = new Schema(
+  {
+    orderId: {
+      type: Schema.Types.ObjectId,
+      ref: "Order",
+      required: true,
+      unique: true
+    },
+    providerId: {
+      type: Schema.Types.ObjectId,
+      ref: "ShippingProvider",
+      required: true
+    },
+    trackingCode: { type: String },
+    shippingFee: { type: Number, default: 0 },
+    status: { type: String, default: "pending" },
+    statusText: { type: String },
+    shippedAt: { type: Date },
+    deliveredAt: { type: Date },
+    logs: [
+      {
+        status: String,
+        description: String,
+        time: { type: Date, default: Date.now }
+      }
+    ]
+  }
+);
 const CartItemsSchema = new Schema(
   {
     idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
@@ -4005,6 +4059,7 @@ const OrderSchema = new Schema(
     totalPriceCurrent: { type: Number, required: true },
     totalDiscountOrder: { type: Number, required: true },
     shippingFee: { type: Number, required: true },
+    shipping: { type: Schema.Types.ObjectId, ref: "OrderShipping" },
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
@@ -4024,6 +4079,8 @@ const OrderSchema = new Schema(
   { timestamps: true }
 );
 OrderSchema.plugin(mongoosePaginate);
+const ShippingProviderEntity = model("ShippingProvider", ShippingProviderSchema, "shipping_providers");
+const OrderShippingEntity = model("OrderShipping", OrderShippingSchema, "order_shippings");
 const PaymentEntity = model("Payment", PaymentSchema, "payments");
 const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
 const OrderEntity = model("Order", OrderSchema, "orders");
@@ -4548,6 +4605,42 @@ function toPaymentTransactionDTO(entity) {
 }
 const toPaymentTransactionListDTO = (list) => list.map(toPaymentTransactionDTO);
 
+function toShippingProviderDTO(entity) {
+  var _a;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    name: entity.name,
+    code: entity.code,
+    logo: entity.logo || ""
+  };
+}
+const toShippingProviderListDTO = (list) => list.map(toShippingProviderDTO);
+function toOrderShippingDTO(entity) {
+  var _a, _b, _c;
+  const allowedStatus = [
+    "pending",
+    "picked",
+    "shipping",
+    "delivered",
+    "returned",
+    "cancelled"
+  ];
+  const provider = entity.providerId && typeof entity.providerId === "object" ? toShippingProviderDTO(entity.providerId) : null;
+  return {
+    id: ((_a = entity._id) == null ? void 0 : _a.toString()) || "",
+    provider,
+    trackingCode: (_b = entity.trackingCode) != null ? _b : null,
+    status: allowedStatus.includes(entity.status) ? entity.status : "pending",
+    shippingFee: (_c = entity.shippingFee) != null ? _c : 0,
+    shippedAt: entity.shippedAt ? new Date(entity.shippedAt).toISOString() : null,
+    deliveredAt: entity.deliveredAt ? new Date(entity.deliveredAt).toISOString() : null,
+    logs: (entity.logs || []).map((log) => ({
+      status: allowedStatus.includes(log.status) ? log.status : "pending",
+      description: log.description,
+      time: new Date(log.time).toISOString()
+    }))
+  };
+}
 function toPaymentDTO(entity) {
   var _a;
   return {
@@ -4594,6 +4687,7 @@ function toOrderDTO(entity) {
     totalPriceCurrent: entity.totalPriceCurrent,
     totalDiscountOrder: entity.totalDiscountOrder,
     shippingFee: entity.shippingFee,
+    shipping: entity.shipping ? toOrderShippingDTO(entity.shipping) : null,
     status: toOrderStatusDTO(entity.status),
     userId: entity.userId ? entity.userId._id ? entity.userId._id.toString() : entity.userId.toString() : null,
     cancelRequested: entity.cancelRequested,
@@ -4637,6 +4731,62 @@ function toOrderDTO(entity) {
   };
 }
 const toOrderListDTO = (orders) => orders.map(toOrderDTO);
+function toOrderExport(entity) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
+  const shipping = entity.shipping;
+  const transaction = entity.transaction;
+  const status = entity.status;
+  const payment = entity.paymentId;
+  const user = entity.userId;
+  return {
+    orderId: (_a = entity._id) == null ? void 0 : _a.toString(),
+    code: entity.code,
+    time: entity.time,
+    createdAt: entity.createdAt,
+    updatedAt: entity.updatedAt,
+    fullname: entity.fullname,
+    phone: entity.phone,
+    address: entity.address,
+    provinceName: entity.provinceName,
+    districtName: entity.districtName,
+    wardName: entity.wardName,
+    note: (_b = entity.note) != null ? _b : "",
+    totalPrice: entity.totalPrice,
+    totalPriceSave: entity.totalPriceSave,
+    totalPriceCurrent: entity.totalPriceCurrent,
+    totalDiscountOrder: entity.totalDiscountOrder,
+    shippingFee: entity.shippingFee,
+    orderStatusCode: (_c = status == null ? void 0 : status.status) != null ? _c : "",
+    orderStatusName: (_d = status == null ? void 0 : status.name) != null ? _d : "",
+    paymentMethod: (_e = payment == null ? void 0 : payment.method) != null ? _e : "",
+    paymentName: (_f = payment == null ? void 0 : payment.name) != null ? _f : "",
+    transactionCode: (_g = transaction == null ? void 0 : transaction.code) != null ? _g : "",
+    transactionStatus: (_h = transaction == null ? void 0 : transaction.status) != null ? _h : "",
+    transactionAmount: (_i = transaction == null ? void 0 : transaction.amount) != null ? _i : 0,
+    shippingStatus: (_j = shipping == null ? void 0 : shipping.status) != null ? _j : "",
+    shippingStatusText: (_k = shipping == null ? void 0 : shipping.statusText) != null ? _k : "",
+    shippingProvider: (_m = (_l = shipping == null ? void 0 : shipping.providerId) == null ? void 0 : _l.name) != null ? _m : "",
+    shippingTrackingCode: (_n = shipping == null ? void 0 : shipping.trackingCode) != null ? _n : "",
+    shippedAt: (_o = shipping == null ? void 0 : shipping.shippedAt) != null ? _o : "",
+    deliveredAt: (_p = shipping == null ? void 0 : shipping.deliveredAt) != null ? _p : "",
+    userId: (_r = (_q = user == null ? void 0 : user._id) == null ? void 0 : _q.toString()) != null ? _r : "",
+    userEmail: (_s = user == null ? void 0 : user.email) != null ? _s : "",
+    userPhone: (_t = user == null ? void 0 : user.phone) != null ? _t : "",
+    usedPoints: (_u = entity.usedPoints) != null ? _u : 0,
+    rewardPoints: (_w = (_v = entity.reward) == null ? void 0 : _v.points) != null ? _w : 0,
+    rewardAwarded: (_y = (_x = entity.reward) == null ? void 0 : _x.awarded) != null ? _y : false,
+    rewardAwardedAt: (_A = (_z = entity.reward) == null ? void 0 : _z.awardedAt) != null ? _A : "",
+    stockDeducted: entity.stockDeducted,
+    cancelRequested: entity.cancelRequested,
+    voucherRefunded: entity.voucherRefunded,
+    pointsRefunded: entity.pointsRefunded,
+    cartItems: Array.isArray(entity.cartItems) ? entity.cartItems.map((i) => {
+      var _a2;
+      return `${(_a2 = i.idProduct) == null ? void 0 : _a2.productName} x${i.quantity}`;
+    }).join(" | ") : "",
+    voucherCodes: Array.isArray(entity.voucherUsage) ? entity.voucherUsage.map((v) => v.code).join(", ") : ""
+  };
+}
 function toCartItemDTO(entity) {
   let idProduct = entity.idProduct;
   if (typeof idProduct === "string") {
@@ -4758,296 +4908,6 @@ const restoreStockOrder = async (order) => {
     );
   }
 };
-
-const getAllOrder = async (req, res) => {
-  try {
-    let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId } = req.query;
-    const numPage = Number(page);
-    let numLimit = Number(limit);
-    const filter = {};
-    if (fromDate || toDate) {
-      filter.createdAt = {};
-      if (fromDate) filter.createdAt.$gte = new Date(fromDate);
-      if (toDate) {
-        const endDate = new Date(toDate);
-        endDate.setHours(23, 59, 59, 999);
-        filter.createdAt.$lte = endDate;
-      }
-    }
-    if (search) {
-      const keyword = search.toString().trim();
-      filter.$or = [
-        { code: { $regex: keyword, $options: "i" } },
-        { phone: { $regex: keyword, $options: "i" } },
-        { fullname: { $regex: keyword, $options: "i" } }
-      ];
-    }
-    if (statusId) {
-      filter.status = statusId;
-    }
-    let transactionMatch = {};
-    if (transactionId) {
-      transactionMatch.status = transactionId;
-    }
-    if (numLimit === -1) {
-      const orders = await OrderEntity.find(filter).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId").populate({
-        path: "transaction",
-        model: "PaymentTransaction",
-        match: transactionMatch
-      }).populate({
-        path: "cartItems.idProduct",
-        model: "Product",
-        select: "image productName"
-      });
-      const filtered = transactionId ? orders.filter((o) => o.transaction !== null) : orders;
-      return res.json({
-        code: 0,
-        data: toOrderListDTO(filtered),
-        pagination: {
-          page: 1,
-          limit: filtered.length,
-          totalPages: 1,
-          total: filtered.length
-        }
-      });
-    }
-    const options = {
-      page: numPage,
-      limit: numLimit,
-      sort: { createdAt: -1 },
-      populate: [
-        { path: "paymentId", model: "Payment" },
-        { path: "status", model: "OrderStatus" },
-        { path: "userId", model: "User" },
-        {
-          path: "transaction",
-          model: "PaymentTransaction",
-          match: transactionMatch
-        },
-        { path: "cartItems.idProduct", model: "Product", select: "image productName" }
-      ]
-    };
-    let result = await OrderEntity.paginate(filter, options);
-    if (transactionId) {
-      result.docs = result.docs.filter((doc) => doc.transaction !== null);
-    }
-    return res.json({
-      code: 0,
-      data: toOrderListDTO(result.docs),
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-        total: result.totalDocs
-      }
-    });
-  } catch (error) {
-    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch order", error });
-  }
-};
-const getOrderById$1 = async (req, res) => {
-  try {
-    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" }).populate({
-      path: "cartItems.idProduct",
-      model: "Product",
-      select: "productName image"
-    });
-    if (!order) {
-      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, data: toOrderDTO(order) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const deleteOrder = async (req, res) => {
-  try {
-    const deleted = await OrderEntity.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const rollbackVoucherUsage = async (order) => {
-  if (!(order == null ? void 0 : order.userId) || !Array.isArray(order.voucherUsage)) return;
-  if (order.voucherRefunded) return;
-  for (const vu of order.voucherUsage) {
-    try {
-      const voucher = await VoucherEntity.findOne({ code: vu.code });
-      if (!voucher) continue;
-      await VoucherUsageEntity.updateMany(
-        { userId: order.userId, orderId: order._id, code: vu.code },
-        { $set: { reverted: true, revertedAt: /* @__PURE__ */ new Date() } }
-      );
-      const userObjId = new mongoose.Types.ObjectId(order.userId);
-      const exists = await VoucherEntity.exists({
-        code: vu.code,
-        "usedBy.userId": userObjId
-      });
-      if (exists && voucher.limitPerUser > 0) {
-        await VoucherEntity.updateOne(
-          { code: vu.code, "usedBy.userId": userObjId },
-          { $inc: { "usedBy.$.count": -1, usedCount: -1 } }
-        );
-      } else {
-        await VoucherEntity.updateOne(
-          { code: vu.code },
-          { $inc: { usedCount: -1 } }
-        );
-      }
-    } catch (err) {
-      console.error(`\u274C L\u1ED7i rollback voucher ${vu.code}:`, err);
-    }
-  }
-  await OrderEntity.findByIdAndUpdate(order._id, { voucherRefunded: true });
-};
-const updateOrderStatus = async (req, res) => {
-  var _a, _b;
-  try {
-    const { orderId, statusId } = req.body;
-    if (!orderId || !statusId) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu orderId ho\u1EB7c statusId" });
-    }
-    const status = await OrderStatusEntity.findById(statusId);
-    if (!status) {
-      return res.status(404).json({ code: 1, message: "Status kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    const order = await OrderEntity.findById(orderId);
-    if (!order) {
-      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
-    }
-    if (order.cancelRequested && statusId !== ORDER_STATUS.CANCELLED) {
-      return res.status(400).json({
-        code: 1,
-        message: "Kh\xE1ch \u0111ang y\xEAu c\u1EA7u h\u1EE7y \u0111\u01A1n, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i sang tr\u1EA1ng th\xE1i n\xE0y"
-      });
-    }
-    if (((_a = order.status) == null ? void 0 : _a.toString()) === ORDER_STATUS.CANCELLED) {
-      return res.status(400).json({
-        code: 1,
-        message: "\u0110\u01A1n h\xE0ng \u0111\xE3 \u0111\xE3 h\u1EE7y, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i tr\u1EA1ng th\xE1i n\u1EEFa"
-      });
-    }
-    order.status = statusId;
-    if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
-      const existingReviews = await ProductReviewEntity.find({ orderId });
-      if (existingReviews.length === 0) {
-        const reviews = order.cartItems.map((item) => ({
-          orderId,
-          userId: order.userId,
-          productId: item.idProduct,
-          rating: 0,
-          comment: null,
-          images: [],
-          status: "pending"
-        }));
-        await ProductReviewEntity.insertMany(reviews);
-      }
-    }
-    if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
-      await setPointAndUpgrade(order.userId.toString(), order.reward.points);
-      order.reward.awarded = true;
-      order.reward.awardedAt = /* @__PURE__ */ new Date();
-      await order.save();
-    }
-    if (status.id === ORDER_STATUS.CANCELLED) {
-      if (order.stockDeducted) {
-        await restoreStockOrder(order);
-        order.stockDeducted = false;
-      }
-      if (order.userId) {
-        const user = await UserModel.findById(order.userId);
-        if (!order.pointsRefunded && order.usedPoints > 0 && user) {
-          user.membership.balancePoint += order.usedPoints;
-          user.membership.balancePoint -= order.reward.points;
-          order.pointsRefunded = true;
-        }
-        if (((_b = order.reward) == null ? void 0 : _b.awarded) && order.reward.points > 0) {
-          await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
-          order.reward.awarded = false;
-          order.reward.awardedAt = /* @__PURE__ */ new Date();
-        }
-        await (user == null ? void 0 : user.save());
-      }
-      await rollbackVoucherUsage(order);
-    }
-    await order.save();
-    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
-  } catch (err) {
-    console.error("L\u1ED7i updateOrderStatus:", err);
-    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
-  }
-};
-const getAllStatus = async (_, res) => {
-  try {
-    const status = await OrderStatusEntity.find().sort({ index: 1 });
-    return res.json({ code: 0, data: toOrderStatusListDTO(status) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const getAllPayment = async (_, res) => {
-  try {
-    const payments = await PaymentEntity.find();
-    return res.json({ code: 0, data: toPaymentListDTO(payments) });
-  } catch (err) {
-    return res.status(500).json({ code: 1, message: err.message });
-  }
-};
-const setPointAndUpgrade = async (userId, point) => {
-  var _a, _b, _c, _d, _e;
-  const user = await UserModel.findById(userId);
-  if (!user) return null;
-  const levels = await MembershipLevelModel.find();
-  const newPoint = (((_a = user.membership) == null ? void 0 : _a.point) || 0) + point;
-  const newBalancePoint = (((_b = user.membership) == null ? void 0 : _b.balancePoint) || 0) + point;
-  const newLevel = levels.filter((level) => newPoint >= level.minPoint).sort((a, b) => b.minPoint - a.minPoint)[0];
-  const levelChanged = newLevel && ((_c = user.membership) == null ? void 0 : _c.level) !== newLevel.name;
-  if (newLevel) {
-    user.membership.level = newLevel.name;
-    user.membership.discountRate = (_d = newLevel.discountRate) != null ? _d : 0;
-    user.membership.pointRate = (_e = newLevel.pointRate) != null ? _e : 0;
-  }
-  user.membership.point = newPoint;
-  user.membership.balancePoint = newBalancePoint;
-  await user.save();
-  return {
-    level: user.membership.level,
-    point: user.membership.point,
-    balancePoint: user.membership.balancePoint,
-    discountRate: user.membership.discountRate,
-    pointRate: user.membership.pointRate,
-    levelChanged
-  };
-};
-const revertPointAndDowngrade = async (userId, pointsToRevert) => {
-  const user = await UserModel.findById(userId);
-  if (!user) return;
-  user.membership.point = Math.max(0, user.membership.point - pointsToRevert);
-  const newLevel = await MembershipLevelModel.findOne({ minPoint: { $lte: user.membership.point } }).sort({ minPoint: -1 });
-  if (newLevel && newLevel.name !== user.membership.level) {
-    user.membership.level = newLevel.name;
-    user.membership.discountRate = newLevel.discountRate;
-    user.membership.pointRate = newLevel.pointRate;
-  }
-  await user.save();
-};
-
-const router$n = Router();
-router$n.get("/", authenticateAdmin, getAllOrder);
-router$n.get("/status", getAllStatus);
-router$n.get("/payments", getAllPayment);
-router$n.get("/:id", authenticateAdmin, getOrderById$1);
-router$n.delete("/:id", authenticateAdmin, deleteOrder);
-router$n.put("/status", authenticateAdmin, updateOrderStatus);
-
-const orderManage_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: router$n
-}, Symbol.toStringTag, { value: 'Module' }));
 
 function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -29403,6 +29263,708 @@ const require$$2 = /*@__PURE__*/getDefaultExportFromNamespaceIfNotNamed(node_str
 
 var xlsxExports = xlsx.exports;
 const XLSX = /*@__PURE__*/getDefaultExportFromCjs(xlsxExports);
+
+function buildVietQR(order) {
+  const bankId = process.env.SEPAY_BANK_ID;
+  const accountNo = process.env.SEPAY_ACCOUNT_NO;
+  const accountName = process.env.SEPAY_ACCOUNT_NAME;
+  return `https://img.vietqr.io/image/${bankId}-${accountNo}-compact.png?amount=${order.totalPrice}&addInfo=${encodeURIComponent(`Thanh toan don ${order.code}`)}&accountName=${encodeURIComponent(accountName)}`;
+}
+
+function buildBillHTML(order, qrUrl, siteName) {
+  var _a;
+  const money = (v) => v.toLocaleString("vi-VN");
+  const date = (d) => new Date(d).toLocaleString("vi-VN");
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="UTF-8" />
+    <title>Bill ${order.code}</title>
+    <style>
+    body { width:280px;font-family:Arial;font-size:12px }
+    .center{text-align:center}
+    .bold{font-weight:bold}
+    .line{border-top:1px dashed #000;margin:6px 0}
+    table{width:100%}
+    td{padding:2px 0}
+    .right{text-align:right}
+    </style>
+    </head>
+
+    <body onload="window.print()">
+
+    <div class="center bold">${siteName}</div>
+    <div class="center">H\xF3a \u0111\u01A1n b\xE1n h\xE0ng</div>
+
+    <div class="line"></div>
+
+    <div>M\xE3 \u0111\u01A1n: <b>${order.code}</b></div>
+    <div>Ng\xE0y: ${date(order.createdAt)}</div>
+    <div>Kh\xE1ch: ${order.fullname}</div>
+
+    <div class="line"></div>
+
+    <table>
+    <tr class="bold">
+    <td>S\u1EA3n ph\u1EA9m</td>
+    <td class="right">SL</td>
+    <td class="right">Gi\xE1</td>
+    </tr>
+
+    ${order.cartItems.map((i) => {
+    var _a2;
+    return `
+    <tr>
+    <td>${(_a2 = i.idProduct) == null ? void 0 : _a2.productName}</td>
+    <td class="right">${i.quantity}</td>
+    <td class="right">${money(i.price)}</td>
+    </tr>
+    `;
+  }).join("")}
+    </table>
+
+    <div class="line"></div>
+
+    <table>
+    <tr>
+    <td>T\u1EA1m t\xEDnh</td>
+    <td class="right">${money(order.totalPriceCurrent)}</td>
+    </tr>
+    <td>Ph\xED v\u1EADn chuy\u1EC3n</td>
+    <td class="right">${money(order.shippingFee)}</td>
+    </tr>
+    <td>Gi\u1EA3m gi\xE1</td>
+    <td class="right">${money(order.totalPriceSave)}</td>
+    </tr>
+    <tr class="bold">
+    <td>Thanh to\xE1n</td>
+    <td class="right">${money(order.totalPrice)}</td>
+    </tr>
+    </table>
+
+    <div class="line"></div>
+
+    <div>Thanh to\xE1n: ${(_a = order.paymentId) == null ? void 0 : _a.name}</div>
+
+    <div class="line"></div>
+
+    <div class="center bold">QU\xC9T QR THANH TO\xC1N</div>
+    <img src="${qrUrl}" style="width:180px;display:block;margin:8px auto" />
+
+    <div class="center">
+    C\u1EA3m \u01A1n qu\xFD kh\xE1ch!
+    </div>
+
+    </body>
+    </html>
+  `;
+}
+
+const getAllOrder = async (req, res) => {
+  try {
+    let { page = 1, limit = 10, fromDate, toDate, search, statusId, transactionId, shippingStatus } = req.query;
+    const numPage = Number(page);
+    let numLimit = Number(limit);
+    const filter = {};
+    if (fromDate || toDate) {
+      filter.createdAt = {};
+      if (fromDate) filter.createdAt.$gte = new Date(fromDate);
+      if (toDate) {
+        const endDate = new Date(toDate);
+        endDate.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = endDate;
+      }
+    }
+    if (search) {
+      const keyword = search.toString().trim();
+      filter.$or = [
+        { code: { $regex: keyword, $options: "i" } },
+        { phone: { $regex: keyword, $options: "i" } },
+        { fullname: { $regex: keyword, $options: "i" } }
+      ];
+    }
+    if (statusId) {
+      filter.status = statusId;
+    }
+    let transactionMatch = {};
+    if (transactionId) {
+      transactionMatch.status = transactionId;
+    }
+    let shippingMatch = {};
+    if (shippingStatus) {
+      shippingMatch.status = shippingStatus;
+    }
+    if (numLimit === -1) {
+      const orders = await OrderEntity.find(filter).sort({ createdAt: -1 }).populate("paymentId").populate("status").populate("userId").populate({
+        path: "transaction",
+        model: "PaymentTransaction",
+        match: transactionMatch
+      }).populate({
+        path: "cartItems.idProduct",
+        model: "Product",
+        select: "image productName"
+      }).populate({
+        path: "shipping",
+        model: "OrderShipping",
+        match: shippingMatch,
+        populate: {
+          path: "providerId",
+          model: "ShippingProvider"
+        }
+      });
+      const filtered = transactionId ? orders.filter((o) => o.transaction !== null) : orders;
+      return res.json({
+        code: 0,
+        data: toOrderListDTO(filtered),
+        pagination: {
+          page: 1,
+          limit: filtered.length,
+          totalPages: 1,
+          total: filtered.length
+        }
+      });
+    }
+    const options = {
+      page: numPage,
+      limit: numLimit,
+      sort: { createdAt: -1 },
+      populate: [
+        { path: "paymentId", model: "Payment" },
+        { path: "status", model: "OrderStatus" },
+        { path: "userId", model: "User" },
+        {
+          path: "transaction",
+          model: "PaymentTransaction",
+          match: transactionMatch
+        },
+        {
+          path: "shipping",
+          model: "OrderShipping",
+          match: shippingMatch,
+          populate: {
+            path: "providerId",
+            model: "ShippingProvider"
+          }
+        },
+        { path: "cartItems.idProduct", model: "Product", select: "image productName" }
+      ]
+    };
+    let result = await OrderEntity.paginate(filter, options);
+    if (transactionId) {
+      result.docs = result.docs.filter((doc) => {
+        const transaction = doc.transaction;
+        return transaction && transaction.status === transactionId;
+      });
+    }
+    if (shippingStatus) {
+      result.docs = result.docs.filter((doc) => {
+        const shipping = doc.shipping;
+        return shipping && shipping.status === shippingStatus;
+      });
+    }
+    const totalFiltered = result.docs.length;
+    return res.json({
+      code: 0,
+      data: toOrderListDTO(result.docs),
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        totalPages: Math.ceil(totalFiltered / result.limit),
+        total: totalFiltered
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ code: 1, message: "L\u1ED7i l\u1EA5y danh s\xE1ch order", error });
+  }
+};
+const getOrderById$1 = async (req, res) => {
+  try {
+    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" }).populate({
+      path: "cartItems.idProduct",
+      model: "Product",
+      select: "productName image"
+    });
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toOrderDTO(order) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const deleteOrder = async (req, res) => {
+  try {
+    const deleted = await OrderEntity.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const rollbackVoucherUsage = async (order) => {
+  if (!(order == null ? void 0 : order.userId) || !Array.isArray(order.voucherUsage)) return;
+  if (order.voucherRefunded) return;
+  for (const vu of order.voucherUsage) {
+    try {
+      const voucher = await VoucherEntity.findOne({ code: vu.code });
+      if (!voucher) continue;
+      await VoucherUsageEntity.updateMany(
+        { userId: order.userId, orderId: order._id, code: vu.code },
+        { $set: { reverted: true, revertedAt: /* @__PURE__ */ new Date() } }
+      );
+      const userObjId = new mongoose.Types.ObjectId(order.userId);
+      const exists = await VoucherEntity.exists({
+        code: vu.code,
+        "usedBy.userId": userObjId
+      });
+      if (exists && voucher.limitPerUser > 0) {
+        await VoucherEntity.updateOne(
+          { code: vu.code, "usedBy.userId": userObjId },
+          { $inc: { "usedBy.$.count": -1, usedCount: -1 } }
+        );
+      } else {
+        await VoucherEntity.updateOne(
+          { code: vu.code },
+          { $inc: { usedCount: -1 } }
+        );
+      }
+    } catch (err) {
+      console.error(`\u274C L\u1ED7i rollback voucher ${vu.code}:`, err);
+    }
+  }
+  await OrderEntity.findByIdAndUpdate(order._id, { voucherRefunded: true });
+};
+const updateOrderStatus = async (req, res) => {
+  var _a, _b;
+  try {
+    const { orderId, statusId } = req.body;
+    if (!orderId || !statusId) {
+      return res.status(400).json({ code: 1, message: "Thi\u1EBFu orderId ho\u1EB7c statusId" });
+    }
+    const status = await OrderStatusEntity.findById(statusId);
+    if (!status) {
+      return res.status(404).json({ code: 1, message: "Status kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const order = await OrderEntity.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    if (order.cancelRequested && statusId !== ORDER_STATUS.CANCELLED) {
+      return res.status(400).json({
+        code: 1,
+        message: "Kh\xE1ch \u0111ang y\xEAu c\u1EA7u h\u1EE7y \u0111\u01A1n, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i sang tr\u1EA1ng th\xE1i n\xE0y"
+      });
+    }
+    if (((_a = order.status) == null ? void 0 : _a.toString()) === ORDER_STATUS.CANCELLED) {
+      return res.status(400).json({
+        code: 1,
+        message: "\u0110\u01A1n h\xE0ng \u0111\xE3 \u0111\xE3 h\u1EE7y, kh\xF4ng th\u1EC3 thay \u0111\u1ED5i tr\u1EA1ng th\xE1i n\u1EEFa"
+      });
+    }
+    order.status = statusId;
+    if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
+      const existingReviews = await ProductReviewEntity.find({ orderId });
+      if (existingReviews.length === 0) {
+        const reviews = order.cartItems.map((item) => ({
+          orderId,
+          userId: order.userId,
+          productId: item.idProduct,
+          rating: 0,
+          comment: null,
+          images: [],
+          status: "pending"
+        }));
+        await ProductReviewEntity.insertMany(reviews);
+      }
+    }
+    if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
+      await setPointAndUpgrade(order.userId.toString(), order.reward.points);
+      order.reward.awarded = true;
+      order.reward.awardedAt = /* @__PURE__ */ new Date();
+      await order.save();
+    }
+    if (status.id === ORDER_STATUS.CANCELLED) {
+      if (order.stockDeducted) {
+        await restoreStockOrder(order);
+        order.stockDeducted = false;
+      }
+      if (order.userId) {
+        const user = await UserModel.findById(order.userId);
+        if (!order.pointsRefunded && order.usedPoints > 0 && user) {
+          user.membership.balancePoint += order.usedPoints;
+          user.membership.balancePoint -= order.reward.points;
+          order.pointsRefunded = true;
+        }
+        if (((_b = order.reward) == null ? void 0 : _b.awarded) && order.reward.points > 0) {
+          await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
+          order.reward.awarded = false;
+          order.reward.awardedAt = /* @__PURE__ */ new Date();
+        }
+        await (user == null ? void 0 : user.save());
+      }
+      await rollbackVoucherUsage(order);
+    }
+    await order.save();
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt status th\xE0nh c\xF4ng", data: toOrderDTO(order) });
+  } catch (err) {
+    console.error("L\u1ED7i updateOrderStatus:", err);
+    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" });
+  }
+};
+const getAllStatus = async (_, res) => {
+  try {
+    const status = await OrderStatusEntity.find().sort({ index: 1 });
+    return res.json({ code: 0, data: toOrderStatusListDTO(status) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getAllPayment = async (_, res) => {
+  try {
+    const payments = await PaymentEntity.find();
+    return res.json({ code: 0, data: toPaymentListDTO(payments) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const setPointAndUpgrade = async (userId, point) => {
+  var _a, _b, _c, _d, _e;
+  const user = await UserModel.findById(userId);
+  if (!user) return null;
+  const levels = await MembershipLevelModel.find();
+  const newPoint = (((_a = user.membership) == null ? void 0 : _a.point) || 0) + point;
+  const newBalancePoint = (((_b = user.membership) == null ? void 0 : _b.balancePoint) || 0) + point;
+  const newLevel = levels.filter((level) => newPoint >= level.minPoint).sort((a, b) => b.minPoint - a.minPoint)[0];
+  const levelChanged = newLevel && ((_c = user.membership) == null ? void 0 : _c.level) !== newLevel.name;
+  if (newLevel) {
+    user.membership.level = newLevel.name;
+    user.membership.discountRate = (_d = newLevel.discountRate) != null ? _d : 0;
+    user.membership.pointRate = (_e = newLevel.pointRate) != null ? _e : 0;
+  }
+  user.membership.point = newPoint;
+  user.membership.balancePoint = newBalancePoint;
+  await user.save();
+  return {
+    level: user.membership.level,
+    point: user.membership.point,
+    balancePoint: user.membership.balancePoint,
+    discountRate: user.membership.discountRate,
+    pointRate: user.membership.pointRate,
+    levelChanged
+  };
+};
+const revertPointAndDowngrade = async (userId, pointsToRevert) => {
+  const user = await UserModel.findById(userId);
+  if (!user) return;
+  user.membership.point = Math.max(0, user.membership.point - pointsToRevert);
+  const newLevel = await MembershipLevelModel.findOne({ minPoint: { $lte: user.membership.point } }).sort({ minPoint: -1 });
+  if (newLevel && newLevel.name !== user.membership.level) {
+    user.membership.level = newLevel.name;
+    user.membership.discountRate = newLevel.discountRate;
+    user.membership.pointRate = newLevel.pointRate;
+  }
+  await user.save();
+};
+const getOrderCountByStatus = async (req, res) => {
+  try {
+    const totalCount = await OrderEntity.countDocuments();
+    const statuses = await OrderStatusEntity.find().lean();
+    const counts = await OrderEntity.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    const countMap = new Map(
+      counts.map((i) => [i._id.toString(), i.count])
+    );
+    const statusItems = statuses.sort((a, b) => {
+      var _a, _b;
+      return ((_a = a.index) != null ? _a : 0) - ((_b = b.index) != null ? _b : 0);
+    }).map((s) => {
+      var _a;
+      return {
+        statusId: s._id.toString(),
+        status: s.status,
+        name: s.name,
+        icon: s.icon,
+        index: s.index,
+        count: (_a = countMap.get(s._id.toString())) != null ? _a : 0
+      };
+    });
+    const result = [
+      {
+        statusId: "",
+        status: "all",
+        name: "T\u1EA5t c\u1EA3",
+        icon: "list_alt",
+        index: -1,
+        count: totalCount
+      },
+      ...statusItems
+    ];
+    return res.json({
+      code: 0,
+      data: result
+    });
+  } catch (error) {
+    console.error("getOrderCountByStatus error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i l\u1EA5y s\u1ED1 l\u01B0\u1EE3ng \u0111\u01A1n h\xE0ng theo tr\u1EA1ng th\xE1i"
+    });
+  }
+};
+const printOrderBill = async (req, res) => {
+  try {
+    const order = await OrderEntity.findById(req.params.id).populate("paymentId").populate("status").populate("userId").populate({ path: "transaction", model: "PaymentTransaction" }).populate({
+      path: "cartItems.idProduct",
+      model: "Product",
+      select: "productName sku"
+    }).lean();
+    if (!order) {
+      return res.status(404).send("Order kh\xF4ng t\u1ED3n t\u1EA1i");
+    }
+    const siteName = req.query.siteName || "";
+    const qrUrl = buildVietQR(order);
+    const html = buildBillHTML(order, qrUrl, siteName);
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    return res.send(html);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+};
+const exportOrders = async (req, res) => {
+  try {
+    const orders = await OrderEntity.find().populate("paymentId").populate("status").populate("userId").populate({
+      path: "transaction",
+      model: "PaymentTransaction"
+    }).populate({
+      path: "shipping",
+      model: "OrderShipping",
+      populate: {
+        path: "providerId",
+        model: "ShippingProvider"
+      }
+    }).populate({
+      path: "cartItems.idProduct",
+      model: "Product",
+      select: "productName sku"
+    }).lean();
+    if (!orders.length) {
+      return res.status(200).json({
+        code: 1,
+        message: "Kh\xF4ng c\xF3 \u0111\u01A1n h\xE0ng \u0111\u1EC3 export"
+      });
+    }
+    const exportData = orders.map(toOrderExport);
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+    const excelBuffer = XLSX.write(workbook, {
+      type: "buffer",
+      bookType: "xlsx"
+    });
+    const fileName = `order_export_${Date.now()}.xlsx`;
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`
+    );
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("X-Code", "0");
+    res.setHeader("X-Message", "Export orders th\xE0nh c\xF4ng");
+    return res.send(excelBuffer);
+  } catch (error) {
+    console.error("Export orders error:", error);
+    return res.status(500).json({
+      code: 1,
+      message: error.message
+    });
+  }
+};
+const getAllShippingProviders = async (req, res) => {
+  try {
+    const { active } = req.query;
+    const filter = {};
+    if (active !== void 0) {
+      filter.isActive = active === "true";
+    }
+    const providers = await ShippingProviderEntity.find(filter).sort({ name: 1 });
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y danh s\xE1ch \u0111\u01A1n v\u1ECB v\u1EADn chuy\u1EC3n th\xE0nh c\xF4ng",
+      data: toShippingProviderListDTO(providers)
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i l\u1EA5y danh s\xE1ch \u0111\u01A1n v\u1ECB v\u1EADn chuy\u1EC3n"
+    });
+  }
+};
+const getShippingProviderDetail = async (req, res) => {
+  try {
+    const provider = await ShippingProviderEntity.findById(req.params.id);
+    if (!provider) {
+      return res.status(404).json({
+        code: 1,
+        message: "\u0110\u01A1n v\u1ECB v\u1EADn chuy\u1EC3n kh\xF4ng t\u1ED3n t\u1EA1i"
+      });
+    }
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y chi ti\u1EBFt \u0111\u01A1n v\u1ECB v\u1EADn chuy\u1EC3n th\xE0nh c\xF4ng",
+      data: toShippingProviderDTO(provider)
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i l\u1EA5y chi ti\u1EBFt \u0111\u01A1n v\u1ECB v\u1EADn chuy\u1EC3n"
+    });
+  }
+};
+const createOrderShipping = async (req, res) => {
+  try {
+    const { orderId, providerId, trackingCode, shippingFee } = req.body;
+    if (!orderId || !providerId) {
+      return res.status(400).json({
+        code: 1,
+        message: "Thi\u1EBFu orderId ho\u1EB7c providerId"
+      });
+    }
+    const order = await OrderEntity.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        code: 1,
+        message: "Order kh\xF4ng t\u1ED3n t\u1EA1i"
+      });
+    }
+    const existed = await OrderShippingEntity.findOne({ orderId });
+    if (existed) {
+      return res.status(400).json({
+        code: 1,
+        message: "Order \u0111\xE3 c\xF3 v\u1EADn \u0111\u01A1n"
+      });
+    }
+    const shipping = await OrderShippingEntity.create({
+      orderId,
+      providerId,
+      trackingCode,
+      shippingFee: shippingFee != null ? shippingFee : order.shippingFee,
+      status: "pending",
+      logs: [
+        {
+          status: "pending",
+          description: "T\u1EA1o v\u1EADn \u0111\u01A1n",
+          time: /* @__PURE__ */ new Date()
+        }
+      ]
+    });
+    order.shipping = shipping._id;
+    await order.save();
+    return res.json({
+      code: 0,
+      data: shipping
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i t\u1EA1o v\u1EADn \u0111\u01A1n"
+    });
+  }
+};
+const getOrderShippingDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const shipping = await OrderShippingEntity.findById(id).populate({
+      path: "providerId",
+      model: "ShippingProvider"
+    });
+    if (!shipping) {
+      return res.status(404).json({
+        code: 1,
+        message: "V\u1EADn \u0111\u01A1n kh\xF4ng t\u1ED3n t\u1EA1i"
+      });
+    }
+    return res.json({
+      code: 0,
+      message: "L\u1EA5y chi ti\u1EBFt v\u1EADn \u0111\u01A1n th\xE0nh c\xF4ng",
+      data: toOrderShippingDTO(shipping)
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i l\u1EA5y chi ti\u1EBFt v\u1EADn \u0111\u01A1n"
+    });
+  }
+};
+const updateOrderShippingStatus = async (req, res) => {
+  try {
+    const { status, statusText } = req.body;
+    const shipping = await OrderShippingEntity.findById(req.params.id);
+    if (!shipping) {
+      return res.status(404).json({
+        code: 1,
+        message: "V\u1EADn \u0111\u01A1n kh\xF4ng t\u1ED3n t\u1EA1i"
+      });
+    }
+    shipping.status = status;
+    if (statusText) shipping.statusText = statusText;
+    if (status === "shipping") {
+      shipping.shippedAt = /* @__PURE__ */ new Date();
+    }
+    if (status === "delivered") {
+      shipping.deliveredAt = /* @__PURE__ */ new Date();
+    }
+    shipping.logs.push({
+      status,
+      description: statusText || "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i",
+      time: /* @__PURE__ */ new Date()
+    });
+    await shipping.save();
+    return res.json({
+      code: 0,
+      data: shipping
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 1,
+      message: "L\u1ED7i c\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i v\u1EADn \u0111\u01A1n"
+    });
+  }
+};
+
+const router$n = Router();
+router$n.get("/", authenticateAdmin, getAllOrder);
+router$n.get("/count-by-status", authenticateAdmin, getOrderCountByStatus);
+router$n.get("/export", authenticateAdmin, exportOrders);
+router$n.get("/status", getAllStatus);
+router$n.get("/payments", getAllPayment);
+router$n.put("/status", authenticateAdmin, updateOrderStatus);
+router$n.get("/shipping-providers", authenticateAdmin, getAllShippingProviders);
+router$n.get("/shipping-providers/:id", authenticateAdmin, getShippingProviderDetail);
+router$n.post("/order-shipping", authenticateAdmin, createOrderShipping);
+router$n.get("/order-shipping/:id", authenticateAdmin, getOrderShippingDetail);
+router$n.put("/order-shipping/:id/status", authenticateAdmin, updateOrderShippingStatus);
+router$n.get("/:id", authenticateAdmin, getOrderById$1);
+router$n.delete("/:id", authenticateAdmin, deleteOrder);
+router$n.get(
+  "/:id/print",
+  printOrderBill
+);
+
+const orderManage_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$n
+}, Symbol.toStringTag, { value: 'Module' }));
 
 const getAllProduct = async (req, res) => {
   try {

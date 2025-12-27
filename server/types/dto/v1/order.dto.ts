@@ -25,6 +25,54 @@ export type IdOrder = { id: string }
 
 export type IdUser = { userId: string }
 
+export interface OrderStatusCountDTO {
+  statusId: string | 'all'
+  status: string | 'all'
+  name: string
+  icon?: string
+  index?: number
+  count: number
+}
+
+export type ShippingStatus =
+  | 'pending'     // chờ xử lý
+  | 'picked'      // đã lấy hàng
+  | 'shipping'    // đang giao
+  | 'delivered'   // giao thành công
+  | 'returned'    // hoàn hàng
+  | 'cancelled'
+
+  export interface ShippingProviderDTO {
+  id: string
+  name: string
+  code: string
+  logo?: string
+}
+
+export interface OrderShippingLogDTO {
+  status: ShippingStatus
+  description: string
+  time: string
+}
+
+export interface OrderShippingDTO {
+  id: string
+  provider: ShippingProviderDTO | null
+  trackingCode: string | null
+  status: ShippingStatus
+  shippingFee: number
+  shippedAt: string | null
+  deliveredAt: string | null
+  logs: OrderShippingLogDTO[]
+}
+
+export interface CreateOrderShippingDTO {
+  orderId: string
+  providerId: string
+  trackingCode: string
+  shippingFee: number
+}
+
 export interface PaymentDTO {
   id: string;
   name: string;
@@ -63,6 +111,7 @@ export interface OrderDTO {
   totalPriceCurrent: number;
   totalDiscountOrder: number;
   shippingFee: number;
+  shipping?: OrderShippingDTO | null;
   status: OrderStatusDTO;
   userId: string | null;
   cancelRequested: boolean;
@@ -82,7 +131,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted"> {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping"> {
   paymentId: string;
   status: string;
   provinceCode: number;

@@ -6,6 +6,38 @@ import type { PaymentMethod } from "../../types/dto/v1/payment-transaction.dto"
 import { VoucherUsageOrderSchema } from "./voucher-usage.entity";
 import type { VoucherUsageOrder } from "./voucher-usage.entity";
 import { VariantCombinationSchema } from "./product.entity";
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
+
+export interface ShippingProvider {
+  _id: Types.ObjectId
+  code: string           // ghtk, ghn, vtpost...
+  name: string           // Giao Hàng Tiết Kiệm
+  logo?: string
+  hotline?: string
+  trackingUrl?: string   // https://i.ghtk.vn/{trackingCode}
+  isActive: boolean
+}
+
+export interface OrderShipping {
+  _id: Types.ObjectId
+  orderId: Types.ObjectId
+  providerId: Types.ObjectId
+
+  trackingCode?: string
+  shippingFee: number
+
+  status: string          // pending | picked | shipping | delivered | returned
+  statusText?: string     // Đang giao hàng
+
+  shippedAt?: Date
+  deliveredAt?: Date
+
+  logs: {
+    status: string
+    description: string
+    time: Date
+  }[]
+}
 
 export interface Payment {
   _id: Types.ObjectId;
@@ -45,6 +77,7 @@ export interface Order {
   totalPriceCurrent: number;
   totalDiscountOrder: number;
   shippingFee: number;
+  shipping?: Types.ObjectId
   // point?: number;
   status: Types.ObjectId;
   userId?: Types.ObjectId | null;
@@ -64,6 +97,51 @@ export interface Order {
   createdAt: Date;
   updatedAt: Date;
 }
+
+const ShippingProviderSchema = new Schema<ShippingProvider>(
+  {
+    code: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    logo: { type: String },
+    hotline: { type: String },
+    trackingUrl: { type: String },
+    isActive: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+)
+
+const OrderShippingSchema = new Schema<OrderShipping>(
+  {
+    orderId: {
+      type: Schema.Types.ObjectId,
+      ref: "Order",
+      required: true,
+      unique: true,
+    },
+    providerId: {
+      type: Schema.Types.ObjectId,
+      ref: "ShippingProvider",
+      required: true,
+    },
+
+    trackingCode: { type: String },
+    shippingFee: { type: Number, default: 0 },
+
+    status: { type: String, default: "pending" },
+    statusText: { type: String },
+
+    shippedAt: { type: Date },
+    deliveredAt: { type: Date },
+
+    logs: [
+      {
+        status: String,
+        description: String,
+        time: { type: Date, default: Date.now },
+      },
+    ],
+  }
+)
 
 const CartItemsSchema = new Schema<cartItems>(
   {
@@ -120,6 +198,7 @@ const OrderSchema = new Schema<Order>(
     totalPriceCurrent: { type: Number, required: true },
     totalDiscountOrder: { type: Number, required: true },
     shippingFee: { type: Number, required: true },
+    shipping: { type: Schema.Types.ObjectId, ref: "OrderShipping"},
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     transaction: { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
@@ -141,7 +220,8 @@ const OrderSchema = new Schema<Order>(
 
 OrderSchema.plugin(mongoosePaginate);
 
+export const ShippingProviderEntity = model("ShippingProvider", ShippingProviderSchema, "shipping_providers");
+export const OrderShippingEntity = model("OrderShipping", OrderShippingSchema, "order_shippings")
 export const PaymentEntity = model("Payment", PaymentSchema, "payments");
 export const OrderStatusEntity = model("OrderStatus", OrderStatusSchema, "order_status");
 export const OrderEntity = model<Order, PaginateModel<Order>>("Order", OrderSchema, "orders");
-

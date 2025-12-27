@@ -23,6 +23,8 @@ interface _GlobalComponents {
     'CreatePost': typeof import("../components/admin/news/CreatePost.vue")['default']
     'UpdateCategoryNews': typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']
     'UpdatePost': typeof import("../components/admin/news/UpdatePost.vue")['default']
+    'AdminCreateOrderShipping': typeof import("../components/admin/order/AdminCreateOrderShipping.vue")['default']
+    'AdminDetailOrderShipping': typeof import("../components/admin/order/AdminDetailOrderShipping.vue")['default']
     'AdminOrderDetailTemplate': typeof import("../components/admin/order/AdminOrderDetailTemplate.vue")['default']
     'AdminPopupOrderDetail': typeof import("../components/admin/order/AdminPopupOrderDetail.vue")['default']
     'CreateCategoryProduct': typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']
@@ -203,6 +205,8 @@ interface _GlobalComponents {
     'LazyCreatePost': LazyComponent<typeof import("../components/admin/news/CreatePost.vue")['default']>
     'LazyUpdateCategoryNews': LazyComponent<typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']>
     'LazyUpdatePost': LazyComponent<typeof import("../components/admin/news/UpdatePost.vue")['default']>
+    'LazyAdminCreateOrderShipping': LazyComponent<typeof import("../components/admin/order/AdminCreateOrderShipping.vue")['default']>
+    'LazyAdminDetailOrderShipping': LazyComponent<typeof import("../components/admin/order/AdminDetailOrderShipping.vue")['default']>
     'LazyAdminOrderDetailTemplate': LazyComponent<typeof import("../components/admin/order/AdminOrderDetailTemplate.vue")['default']>
     'LazyAdminPopupOrderDetail': LazyComponent<typeof import("../components/admin/order/AdminPopupOrderDetail.vue")['default']>
     'LazyCreateCategoryProduct': LazyComponent<typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']>
@@ -389,6 +393,8 @@ export const CreateCategoryNews: typeof import("../components/admin/news/CreateC
 export const CreatePost: typeof import("../components/admin/news/CreatePost.vue")['default']
 export const UpdateCategoryNews: typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']
 export const UpdatePost: typeof import("../components/admin/news/UpdatePost.vue")['default']
+export const AdminCreateOrderShipping: typeof import("../components/admin/order/AdminCreateOrderShipping.vue")['default']
+export const AdminDetailOrderShipping: typeof import("../components/admin/order/AdminDetailOrderShipping.vue")['default']
 export const AdminOrderDetailTemplate: typeof import("../components/admin/order/AdminOrderDetailTemplate.vue")['default']
 export const AdminPopupOrderDetail: typeof import("../components/admin/order/AdminPopupOrderDetail.vue")['default']
 export const CreateCategoryProduct: typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']
@@ -569,6 +575,8 @@ export const LazyCreateCategoryNews: LazyComponent<typeof import("../components/
 export const LazyCreatePost: LazyComponent<typeof import("../components/admin/news/CreatePost.vue")['default']>
 export const LazyUpdateCategoryNews: LazyComponent<typeof import("../components/admin/news/UpdateCategoryNews.vue")['default']>
 export const LazyUpdatePost: LazyComponent<typeof import("../components/admin/news/UpdatePost.vue")['default']>
+export const LazyAdminCreateOrderShipping: LazyComponent<typeof import("../components/admin/order/AdminCreateOrderShipping.vue")['default']>
+export const LazyAdminDetailOrderShipping: LazyComponent<typeof import("../components/admin/order/AdminDetailOrderShipping.vue")['default']>
 export const LazyAdminOrderDetailTemplate: LazyComponent<typeof import("../components/admin/order/AdminOrderDetailTemplate.vue")['default']>
 export const LazyAdminPopupOrderDetail: LazyComponent<typeof import("../components/admin/order/AdminPopupOrderDetail.vue")['default']>
 export const LazyCreateCategoryProduct: LazyComponent<typeof import("../components/admin/products/CreateCategoryProduct.vue")['default']>

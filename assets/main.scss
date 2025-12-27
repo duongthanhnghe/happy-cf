@@ -819,6 +819,24 @@ body .bg {
   &-full {
     border-radius: 50%;
   }
+  &-null {
+    &-top {
+      &-left {
+        border-top-left-radius: 0 !important;
+      }
+      &-right {
+        border-top-right-radius: 0 !important;
+      }
+    }
+    &-bottom {
+      &-left {
+        border-bottom-left-radius: 0 !important;
+      }
+      &-right {
+        border-bottom-right-radius: 0 !important;
+      }
+    }
+  }
 }
 
 .text {
@@ -1072,6 +1090,9 @@ body .bg {
     }
     &-dashed {
       border-bottom: 1px dashed $cl-gray6;
+    }
+    &-none {
+      border-bottom: none !important;
     }
   }
   &-default {
@@ -2331,11 +2352,11 @@ body .swiper {
 }
 /* Áp dụng toàn bộ style hiện đại cho Vuetify Data Table */
 body .v-table {
-  border-radius: $rd-xl !important;
-  background-color: $cl-white !important;
-  font-size: $fz-base !important;
-  color: $cl-text !important;
-  box-shadow: none !important;
+  border-radius: $rd-xl;
+  background-color: $cl-white;
+  font-size: $fz-base;
+  color: $cl-text;
+  box-shadow: none;
   overflow-x: auto;
   border: 1px solid $cl-gray2;
 }
