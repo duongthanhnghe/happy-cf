@@ -19,9 +19,8 @@ const props = withDefaults(defineProps<{
 <template>
   <LoadingData v-if="props.loading && !items" />
   <template v-else-if="items.length > 0">
-    <Heading v-if="props.heading" tag="h2" size="lg" weight="semibold" class="black mb-xs pl-ms pr-ms">
-      {{ props.heading }}
-    </Heading>
+    <Text v-if="props.heading" tag="h2" size="lg" weight="semibold" color="black" class="mb-xs pl-ms pr-ms" :text="props.heading" />
+
     <client-only>
       <swiper :modules="[Autoplay, Grid]" :breakpoints='PRODUCT_CATEGORY_ALL' :autoplay="{ delay: 5000, disableOnInteraction: false }" class="pl-ms pr-ms">
         <swiper-slide v-for="(item, index) in props.items" :key="index" >

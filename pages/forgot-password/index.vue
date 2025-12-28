@@ -23,7 +23,8 @@ const handleSubmitForgotPassword = async (event: SubmitEventPromise) => {
 }
 </script>
 <template>
-    <Heading class="mb-xl text-center" tag="div" color="primary" size="2xl">{{AUTH_TEXT_FORGOT_PASSWORD}}</Heading>
+    <Text class="mb-xl" align="center" color="primary" size="xxl" :text="AUTH_TEXT_FORGOT_PASSWORD" />
+
     <div class="text-center text-size-xs text-color-gray5 mb-md">
         {{ AUTH_TEXT_FORGOT_SUGGEST }}
       </div>

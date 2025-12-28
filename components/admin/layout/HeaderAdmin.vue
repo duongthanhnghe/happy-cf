@@ -4,6 +4,7 @@ import '@/styles/organisms/layout/header-admin.scss'
 import { ROUTES } from '@/shared/constants/routes';
 import { useAccountStore } from '@/stores/admin/account/useAccountStore';
 import type { MenuItem } from 'server/types/common/menu-item';
+import { computed } from 'vue';
 
 const storeAccount = useAccountStore()
 const props = defineProps({
@@ -15,7 +16,7 @@ const props = defineProps({
   },
 })
 const listMenu = ROUTES.ADMIN
-const detailAccount = storeAccount.getDetailAccount
+const detailAccount = computed(() => storeAccount.getDetailAccount);
 
 </script>
 
@@ -23,7 +24,8 @@ const detailAccount = storeAccount.getDetailAccount
   <client-only>
   <div :class="['header-admin', headerClass]">
     <div class="header-admin-left">
-      <Heading v-if="props.label" class="line-height-1" tag="h2" weight="semibold" size="xl">{{props.label}}</Heading>
+      <Text v-if="props.label" tag="h2" size="xl" weight="semibold" class="line-height-1" :text="props.label" />
+
       <slot name="left"></slot>
     </div>
     <div class="header-admin-right">
@@ -37,7 +39,7 @@ const detailAccount = storeAccount.getDetailAccount
         <template v-if="listMenu">
           <v-list class="mt-sm">
             <v-list-item 
-              v-for="(item, index) in Object.values(listMenu).filter((item: MenuItem) => item.isShowMenuAccount && item.roles?.includes(detailAccount?.role))" 
+              v-for="(item, index) in Object.values(listMenu).filter((item: MenuItem) => item.isShowMenuAccount && item.roles?.includes(detailAccount.role))" 
               :key="index"
               :value="item.path"
               class="header-admin-right-list">

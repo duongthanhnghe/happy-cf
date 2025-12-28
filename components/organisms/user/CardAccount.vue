@@ -44,7 +44,8 @@ watchEffect(() => {
             <div class="flex align-center gap-sm">
               <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
               <div class="text-size-xs">
-                <Heading weight="semibold"> {{ storeAccount.getDetailValue?.fullname || '' }} </Heading>
+                <Text weight="semibold" color="black" :text="storeAccount.getDetailValue?.fullname" />
+
                 <span @click="storeAccount.handleTogglePopupMembershipInformation(true)" class="text-color-gray8 cursor-pointer">Hạng {{ storeAccount.getDetailValue?.membership.level || '' }} </span>
               </div>
             </div>
@@ -59,7 +60,7 @@ watchEffect(() => {
               {{ storeAccount.getDetailValue?.membership.code }}
           </div>
           <div v-if="props.showLevel" class="mt-md">
-            <template v-if="storeAccount.getInformationMembershipLevel">
+            <template v-if="storeAccount.getInformationMembershipLevel && storeAccount.getDetailValue?.membership.point">
               <div class="text-size-normal weight-semibold mb-xs">
                 {{ formatCurrency(storeAccount.getDetailValue?.membership.point).replace('đ','') }}
               </div>
@@ -81,12 +82,5 @@ watchEffect(() => {
     </div>
   </div>
   <div v-else class="mt-ms"></div>
-   <!-- <div v-else class="information-account-card text-center">
-    <Heading weight="semibold" class="text-center">Dang nhap</Heading>
-    <div class="mt-sm mb-sm">Vui long dang nhap</div>
-    <NuxtLink :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
-      <Button color="black" label="Dang nhap" />
-    </NuxtLink>
-  </div> -->
   </client-only>
 </template>

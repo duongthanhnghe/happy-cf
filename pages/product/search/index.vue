@@ -14,8 +14,7 @@ const store = useSearchStore()
   <div class="container container-xxl ">
     <BreadcrumbDefault />
     <div class="pt-lg pb-lg">
-      <div class="flex flex-wrap gap-sm justify-between mb-ms">
-        <Text :text="`Kết quả tìm kiếm: ${store.getListProductResult?.pagination?.total} sản phẩm`" size="md" color="black" weight="semibold" />
+      <Heading :text="`Kết quả tìm kiếm: ${store.getListProductResult?.pagination?.total} sản phẩm`">
         <v-text-field
           v-model="store.txtSearch"
           label="Tim kiem..."
@@ -26,7 +25,7 @@ const store = useSearchStore()
           hide-details
           required>
         </v-text-field>
-      </div>
+      </Heading>
     
       <v-infinite-scroll
         v-if="store.getListProductResult && store.getListProductResult.data.length > 0"

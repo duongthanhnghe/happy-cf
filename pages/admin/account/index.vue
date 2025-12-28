@@ -46,7 +46,8 @@ const submitChangePassword = async (event: SubmitEventPromise) => {
 <v-container>
   <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
     <div :class="`${cardItemClass}`">
-      <Heading class="mb-sm" tag="div" weight="semibold" size="md">Thông tin nguoi dung</Heading>
+      <Text size="md" weight="semibold" class="mb-sm" text="Thông tin nguoi dung" />
+
       <div class="row row-xs">
         <div class="col-12 col-md-6 col-xxl-4">
           <LabelInput label="Anh dai dien" required/>
@@ -73,7 +74,8 @@ const submitChangePassword = async (event: SubmitEventPromise) => {
 
   <v-form validate-on="submit lazy" @submit.prevent="submitChangePassword">
     <div :class="`${cardItemClass} mt-md`">
-      <Heading class="mb-sm" tag="div" weight="semibold" size="md">Mat khau</Heading>
+      <Text size="md" weight="semibold" class="mb-sm" text="Mat khau" />
+
       <div class="row row-xs">
         <div class="col-12">
           <LabelInput label="Mat khau cu" required/>

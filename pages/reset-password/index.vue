@@ -24,7 +24,8 @@ const handleSubmitResetPassword = async (event: SubmitEventPromise) => {
 }
 </script>
 <template>
-  <Heading class="mb-xl text-center" tag="div" color="primary" size="2xl">{{AUTH_TEXT_RESET_PASSWORD}}</Heading>
+  <Text class="mb-xl" align="center" color="primary" size="xxl" :text="AUTH_TEXT_RESET_PASSWORD" />
+
   <v-form validate-on="submit lazy" @submit.prevent="handleSubmitResetPassword">
     <LabelInput :label="AUTH_TEXT_PASSWORD_NEW" required/>
     <v-text-field :append-icon="store.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="store.showPassword ? 'text' : 'password'" @click:append="store.showPassword = !store.showPassword" v-model="store.newPassword" :rules="strongPasswordRules" :label="AUTH_TEXT_PASSWORD_HINT" variant="outlined" required></v-text-field>

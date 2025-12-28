@@ -25,9 +25,8 @@ const props = withDefaults(defineProps<{
     <div :class="container">
       <LoadingData v-if="props.loading" />
       <template v-else-if="!props.loading && items.length > 0">
-        <Heading v-if="props.headingText" tag="h2" size="lg" weight="semibold" class="black mb-sm">
-          {{ props.headingText }}
-        </Heading>
+        <Heading :text="props.headingText" />
+
         <div :class="COLUMN.ROW">
           <div v-for="(product, index) in props.items" :key="index" :class="column ? column : 'col-6 mb-sm'">
             <ProductItemTemplate1 :product="product" :background="props.backgroundItem" :variant="props.variant" :deleteFavorite="props.deleteFavorite" />

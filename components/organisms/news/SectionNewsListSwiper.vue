@@ -33,7 +33,8 @@ const props = withDefaults(defineProps<{
     <div :class="[container]">
       <LoadingData v-if="props.loading && !items" />
       <template v-else-if="items.length > 0">
-        <Text v-if="props.headingText" :text="props.headingText" tag="h2" size="md" weight="semibold" class="black mb-sm" />
+        <Heading :text="props.headingText" />
+
         <client-only>
           <swiper :modules="[Pagination, Navigation, Autoplay]" :breakpoints='props.breakpoints ? props.breakpoints : NEWS_LIST_SWIPER_DEFAULT' :pagination="props.pagination ? { clickable: true }:false" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" >
             <swiper-slide v-for="(item, index) in props.items" :key="index">

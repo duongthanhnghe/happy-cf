@@ -1,51 +1,53 @@
 <template>
-    <component
-      :is="tag"
-      :id="headingId"
-      :class="[
-        'heading',
-        size ? `heading-${size}` : '',
-        weight ? `weight-${weight}` : '',
-        align ? `text-${align}` : '',
-        headingClass
-      ]"
-    >
-      <slot></slot>
-      <MaterialIcon v-if="icon" :name="icon" size="lg-2" class="heading-icon" />
-    </component>
+  <div v-if="props.text" :class="[computedSize === 'xxl' ? 'mb-ms' : 'mb-sm', {'flex flex-wrap gap-sm justify-between': props.slug || hasContent }]">
+    <Text :tag="props.tag" :text="props.text" :weight="props.weight" :size="computedSize" :color="props.color" :align="props.align" />
+    <NuxtLink v-if="props.slug" :to="{ path: props.slug }">
+      <Button tag="span" color="secondary" size="sm" icon="keyboard_arrow_right" class="rd-full" />
+    </NuxtLink>
+    <slot />
+  </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { useDisplayStore } from '@/stores/shared/useDisplayStore'
+import { computed, useSlots } from 'vue'
 
-const props = defineProps({
-  tag: {
-    type: String,
-    default: 'div',
-    validator: (value) => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6','p','span','div'].includes(value)
-  },
-  size: {
-    type: String,
-    default: 'md',
-    validator: (value) => ['xs', 'sm', 'md', 'lg', 'xl', '2xl'].includes(value)
-  },
-  weight: {
-    type: String,
-    default: 'normal',
-    validator: (value) => ['light', 'normal', 'medium', 'semibold', 'bold'].includes(value)
-  },
-  align: {
-    type: String,
-    default: 'left',
-    validator: (value) => ['left', 'center', 'right'].includes(value)
-  },
-  icon: String,
-  headingClass: {
-    type: String,
-    default: '',
-  },
-  headingId: {
-    type: String,
-    default: '',
-  },
+type HeadingSize = 'lg' | 'xl' | 'xxl'
+
+const slots = useSlots()
+const storeDisplay = useDisplayStore();
+
+const props = withDefaults(defineProps<{
+  text: string | number | object
+  tag?: 'h1' | 'h2' | 'h3' | 'div'
+  color?: 'white' | 'black' | 'primary'
+  size?: HeadingSize
+  weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold'
+  align?: 'left' | 'center' | 'right'
+  slug?: string
+}>(), {
+  tag: 'div',
+  color: 'black',
+  size: 'lg',
+  weight: 'semibold',
+  align: 'left',
+  slug: '',
+})
+
+const SIZE_MAP: Record<HeadingSize, { desktop: HeadingSize; mobile: HeadingSize }> = {
+  xxl: { desktop: 'xxl', mobile: 'xl' },
+  xl:  { desktop: 'xl',  mobile: 'lg' },
+  lg:  { desktop: 'lg',  mobile: 'lg' },
+}
+
+const computedSize = computed<HeadingSize>(() => {
+  const device = storeDisplay.isLaptop ? 'desktop' : 'mobile'
+  return SIZE_MAP[props.size ?? 'lg'][device]
+})
+
+const hasContent = computed(() => {
+  return Boolean(
+    slots.default
+  )
 })
 </script>

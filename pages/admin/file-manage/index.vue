@@ -32,9 +32,7 @@ onBeforeUnmount(() => {
       <template v-if="storeFileManage.getBreadcrumb">
         <template v-for="(item,index) in storeFileManage.getBreadcrumb" :key="index">
           <div class="file-manage-breadcrumb-item flex gap-sm align-center">
-            <Heading tag="div" size="lg" weight="medium">
-              {{ item }}
-            </Heading>
+            <Text size="lg" weight="medium" :text="item" />
             <MaterialIcon class="text-color-gray4" name="keyboard_arrow_right"/>
           </div>
         </template>

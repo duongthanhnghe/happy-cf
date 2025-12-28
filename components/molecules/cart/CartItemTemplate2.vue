@@ -13,9 +13,8 @@ const props = defineProps<{
       <img class="rd-lg" :src="props.item.idProduct.image" :alt="props.item.idProduct?.productName" />
     </div>
     <div class="flex-1 pd-xs pl-sm">
-      <Heading tag="div" size="sm" weight="medium" class="pr-0 text-limit mb-xs">
-        {{ props.item.idProduct?.productName }}
-      </Heading>
+      <Text size="sm" weight="medium" limit="1" class="mb-xs pr-0" :text="props.item?.idProduct?.productName" />
+
       <div class="text-color-gray5 text-size-xs" v-if="item.variantCombination">
         <div v-for="itemV in item.variantCombination.variants" :key="itemV.variantId">
           {{ itemV.groupName }}: <span>{{ itemV.variantName }}</span>

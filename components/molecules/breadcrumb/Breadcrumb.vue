@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import '@/styles/molecules/breadcrumb/breadcrumb.scss'
-  import { useDisplayStore } from '@/stores/shared/useDisplayStore'
   import { Swiper, SwiperSlide } from 'swiper/vue';
   import { Pagination, Autoplay } from 'swiper/modules';
   import 'swiper/css';
@@ -15,7 +14,6 @@
   }
 
   const props = defineProps<Breadcrumb>()
-  const storeDisplay = useDisplayStore();
 
 </script>
 <template>
@@ -32,11 +30,10 @@
     </div>
     <template v-else></template>
     <div class="container container-xxl pt-md pb-section">
-      <Heading tag="h1" :size="storeDisplay.isLaptop ? '2xl':'xl'" weight="semibold" class="breadcrumb-heading black">
-        {{ props.heading }}
-      </Heading>
+      <Heading :text="props.heading" tag="h1" size="xxl" />
+
       <div>
-        <Text color="gray5" v-if="props.description" class="mt-sm" :text="props.description" />
+        <Text color="gray5" v-if="props.description" :text="props.description" />
         <slot></slot>
       </div>
     </div>

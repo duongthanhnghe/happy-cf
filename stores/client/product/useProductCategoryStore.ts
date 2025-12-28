@@ -45,13 +45,11 @@ export const useProductCategoryStore = defineStore("ProductCategoryStore", () =>
     return result;
   });
 
-  
-
   const mapCategoryToMenu = (category: any): MenuItem => {
     return {
       label: category.categoryName,
       path: ROUTE_HELPERS.productCategory(category.slug),
-      icon: 'category',
+      icon: category.image,
       children: category.children?.length
         ? category.children.map((child: any) => mapCategoryToMenu(child))
         : undefined
@@ -62,14 +60,6 @@ export const useProductCategoryStore = defineStore("ProductCategoryStore", () =>
     return dataList.value.map(category => mapCategoryToMenu(category))
   })
 
-  // const getMenuItems = computed((): MenuItem[] => {
-  //   return dataList.value.map((category): MenuItem => ({
-  //     label: category.categoryName,
-  //     path: ROUTE_HELPERS.productCategory(category.slug),
-  //     icon: 'category',
-  //   }))
-  // })
-    
   return {
     dataList,
     fetchCategoryStore,

@@ -29,7 +29,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <Heading class="mb-xl text-center" tag="div" color="primary" size="2xl">{{AUTH_TEXT_LOGIN}}</Heading>
+  <Text class="mb-xl" align="center" color="primary" size="xxl" :text="AUTH_TEXT_LOGIN" />
 
   <client-only>
   <div class="auth-google">

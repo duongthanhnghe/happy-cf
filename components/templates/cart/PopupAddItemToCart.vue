@@ -57,9 +57,8 @@ watch(
           </div>
           <div class="popup-detail-product-card popup-detail-product-info">
             <div class="popup-detail-product-right">
-              <Heading tag="div" size="lg" weight="semibold" class="black mb-xs">
-                {{ detail?.productName }}
-              </Heading>
+              <Text size="lg" weight="semibold" class="mb-xs" color="black" :text="detail?.productName" />
+
               <client-only>
               <Text v-if="storeProductDetail.variantPrice !== undefined && storeProductDetail.variantPrice !== null" :text="formatCurrency(storeProductDetail.variantPrice)" color="gray5" class="pb-md"/>
               </client-only>
@@ -73,9 +72,8 @@ watch(
           </div>
        
           <div class="popup-detail-product-card pb-md">
-            <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
-              Thêm lưu ý
-            </Heading>
+            <Text size="md" weight="semibold" class="mb-sm" color="black" text="Thêm lưu ý" />
+
             <v-textarea class="mb-0" :rows="5" v-model="storeCart.note"/>
             <div class="flex justify-center">
               <Button color="gray" icon="check_indeterminate_small" @click="storeCart.inDecrement(false)" />

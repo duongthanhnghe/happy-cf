@@ -64,7 +64,8 @@ onBeforeUnmount(() => {
   <v-form v-if="storeSettingUpdate.formItem.name" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
 
       <div :class="`${cardItemClass}`">
-        <Heading class="mb-sm" tag="div" weight="semibold" size="md">Thông tin co ban</Heading>
+        <Text size="md" weight="semibold" class="mb-sm" text="Thông tin co ban" />
+
         <div class="row row-xs">
           <div class="col-12 col-md-6 col-xxl-4">
             <LabelInput label="Ten cong ty" required/>
@@ -94,7 +95,8 @@ onBeforeUnmount(() => {
       </div>
 
       <div :class="`${cardItemClass} mt-md`">
-        <Heading class="mb-sm" tag="div" weight="semibold" size="md">Mang xa hoi</Heading>
+        <Text size="md" weight="semibold" class="mb-sm" text="Mang xa hoi" />
+
         <div class="row row-xs">
           <div v-if="storeSettingUpdate.formItem.socialLinks" v-for="(item, index) in storeSettingUpdate.formItem.socialLinks" :key="item.name" class="col-12 col-md-6 col-xxl-4">
             <LabelInput :label="item.name"/>
@@ -104,7 +106,8 @@ onBeforeUnmount(() => {
       </div>
 
       <div :class="`${cardItemClass} mt-md`">
-        <Heading class="mb-sm" tag="div" weight="semibold" size="md">Kho hang</Heading>
+        <Text size="md" weight="semibold" class="mb-sm" text="Kho hang" />
+
         <div class="flex gap-sm">
           <div class="flex-1">
           <LabelInput label="Thành phố" required/>

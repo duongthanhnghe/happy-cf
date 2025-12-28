@@ -6,10 +6,8 @@ import { useSearchStore } from '@/stores/client/product/useSearchStore'
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
 import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
 import { ROUTES } from '@/shared/constants/routes';
-import { useRoute } from 'vue-router'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
-import type { MenuItem } from '@/server/types/common/menu-item';
 import { useHeaderStore } from '@/stores/client/layout/useHeaderStore';
 
 const storeSetting = useBaseInformationStore();
@@ -17,7 +15,6 @@ const storeCart = useCartStore()
 const storeAccount = useAccountStore()
 const storeSearch = useSearchStore()
 const storeAddress = useAddressesManageStore()
-const route = useRoute()
 const storeDisplay = useDisplayStore()
 const storeProductCategory = useProductCategoryStore()
 const storeHeader = useHeaderStore()
@@ -61,12 +58,10 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
   <div class="header">
     <div class="header-fixed">
       <div class="container container-xxl">
-        <div class="header-content">
+        <div class="header-content position-relative">
           <div class="header-left text-color-white flex align-center gap-md">
             <template v-if="props.typeLeft === 'logo'">
-              <NuxtLink :to="{ path: ROUTES.PUBLIC.HOME.path }">
-                <img v-if="storeSetting.getBaseInformation?.logoUrl" class="header-logo" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" />
-              </NuxtLink>
+              <Logo :logo="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" filter link />
             </template>
 
             <template v-else-if="props.typeLeft === 'address'">
@@ -85,25 +80,16 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
             </template>
             <template v-else>
               <client-only>
-                <div>
+                <div v-if="storeAccount.getDetailValue?.fullname">
                   {{ storeSetting.getBaseInformation?.name }}
                   <Text :text="`Xin chào ${storeAccount.getDetailValue?.fullname || 'Quý khách' }!`" weight="semibold" />
                 </div>
+                <Logo v-else :logo="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" filter maxHeight="xl" />
               </client-only>
             </template>
           </div>
           <client-only>
-          <div v-if="storeDisplay.isLaptop && storeHeader.listMenu" class="header-center flex gap-xs">
-            <template v-for="(item,index) in storeHeader.listMenu as MenuItem[]" :key="index">
-              <router-link
-                v-if="item.path"
-                :to="{ path: item.path }"
-                :class="['header-menu-href',{ active: route.path === item.path }]"
-              >
-                <Button color="transparent" :label="item.label"/>
-              </router-link>
-            </template>
-          </div>
+            <HeaderMenu :listMenu="storeHeader.listMenu" :menuLevel="storeHeader.menuLevel" />
           </client-only>
           <div class="header-right flex gap-sm">
             <Button

@@ -45,36 +45,18 @@ watch(
           @submit="store.onChangeSearch"
           @cancel="store.handleCancelSearch"
         />
-
-        <Card class="rd-lg mt-sm pb-0 overflow-hidden">
-          <template v-for="(item, index) in props.listMenu" :key="index">
-            <HeaderMenuItemTemplate1 :item="item" />
-          </template>
-        </Card>
-        <Card class="rd-lg mt-sm">
-          <div class="flex flex-1 align-center justify-between">
-            <Text text="Hỗ trợ CSKH" color="black" weight="semibold" class="text-uppercase" />
-            <div class="flex gap-sm">
-              <a v-if="props.phone" :href="`tel:${Number(props.phone.replace(/\s+/g, ''))}`">
-                <Button tag="span" color="gray" size="sm" icon="phone" />
-              </a>
-              <a v-if="props.socialLinks" :href="props.socialLinks[0].src" target="_blank">
-                <Button tag="span" color="black" size="sm" icon="chat" />
-              </a>
-            </div>
-          </div>
-        </Card>
+        <HeaderMenuMobile
+          :listMenu="props.listMenu"
+        />
+        <HeaderBoxSupport
+          :phone="props.phone"
+          :socialLinks="props.socialLinks"
+        />
       </div>
       <div class="pd-ms">
-        <template v-for="(item, index) in props.listMenuMore" :key="index">
-          <NuxtLink :to="item.path">
-            <Text
-              :text="item.label"
-              color="gray5"
-              class="mb-ms pl-ms"
-            />
-          </NuxtLink>
-        </template>
+        <HeaderMenuMore
+          :listMenuMore="props.listMenuMore"
+        />
       </div>
     </template>
   </Popup>

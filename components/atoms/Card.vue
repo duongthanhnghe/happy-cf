@@ -7,7 +7,7 @@
       props.border ? 'card-border' : '',
     ]"
   >
-    <Text v-if="props.heading" :text="props.heading" color="black" :size="props.size" weight="semibold" class="mb-sm" />
+    <Heading v-if="props.heading" :text="props.heading" />
     <slot></slot>
   </div>
 </template>

@@ -11,7 +11,6 @@ const storeCart = useCartStore();
 const storeDisplay = useDisplayStore()
 
 const detail = computed(() => storeCart.getProductDetailDataEdit);
-// const detailProduct = computed(() => storeProduct.getDetailProduct);
 
 </script>
 
@@ -32,9 +31,8 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
         </div>
         <div class="popup-detail-product-card popup-detail-product-info">
           <div class="popup-detail-product-right">
-            <Heading tag="div" size="lg" weight="semibold" class="black mb-xs">
-              {{ detail?.productName }}
-            </Heading>
+            <Text size="lg" weight="semibold" class="mb-xs" color="black" :text="detail?.productName" />
+
             <Text v-if="storeProduct.variantPrice !== undefined && storeProduct.variantPrice !== null" :text="formatCurrency(storeProduct.variantPrice)" color="gray5" class="pb-md"/>
           </div>
           <div class="flex flex-direction-column gap-ms mb-sm pb-md" v-if="detail?.variantCombinations?.length">
@@ -46,9 +44,8 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
         </div>
 
         <div class="popup-detail-product-card pb-md">
-          <Heading tag="div" size="md" weight="semibold" class="black mb-sm">
-            Thêm lưu ý
-          </Heading>
+          <Text size="md" weight="semibold" class="mb-sm" color="black" text="Thêm lưu ý" />
+
           <v-textarea class="mb-0" :rows="5" v-model="detail.note" :value="detail.note"/>
 
           <div class="flex justify-center">

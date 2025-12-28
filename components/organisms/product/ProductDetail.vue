@@ -67,10 +67,6 @@ onBeforeUnmount(() => {
   store.isDetailInfoActive = true
 });
 
-  // const scrollIntoView = (id: string) => {
-  //   const el = document.getElementById(id);
-  //   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  // }
 </script>
 
 <template>
@@ -128,7 +124,7 @@ onBeforeUnmount(() => {
 
             <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" class="mt-ms" />
             <client-only>
-            <CartPointInfoLabel v-if="detail.priceDiscounts !== 0 && storeAccount.getUserId" :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId" />
+            <CartPointInfoLabel v-if="detail.priceDiscounts !== 0" :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId" />
             </client-only>
 
             <div class="flex flex-direction-column gap-ms mt-ms" v-if="detail.variantCombinations.length">

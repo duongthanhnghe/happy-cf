@@ -2,6 +2,7 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { ROUTES } from "@/shared/constants/routes";
 import { useProductCategoryStore } from "../product/useProductCategoryStore";
+import { getMenuDepth } from "@/utils/menuHelpers";
 
 export const useHeaderStore = defineStore("HeaderStore", () => {
   const storeProductCategory = useProductCategoryStore()
@@ -32,10 +33,15 @@ export const useHeaderStore = defineStore("HeaderStore", () => {
     ]
   })
 
+  const menuLevel = computed(() => {
+    return getMenuDepth(storeProductCategory.getMenuItems)
+  })
+
   return {
     isTogglePopupMenu,
     listMenu,
     listMenuMore,
+    menuLevel,
     handleTogglePopupMenu,
   };
 });

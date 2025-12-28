@@ -8,6 +8,8 @@ declare global {
   const appendResponseHeader: typeof import('../../node_modules/h3')['appendResponseHeader']
   const appendResponseHeaders: typeof import('../../node_modules/h3')['appendResponseHeaders']
   const assertMethod: typeof import('../../node_modules/h3')['assertMethod']
+  const buildBillHTML: typeof import('../../server/utils/print-bill')['buildBillHTML']
+  const buildVietQR: typeof import('../../server/utils/qrcode-payment')['buildVietQR']
   const cachedEventHandler: typeof import('../../node_modules/nitropack/dist/runtime/internal/cache')['cachedEventHandler']
   const cachedFunction: typeof import('../../node_modules/nitropack/dist/runtime/internal/cache')['cachedFunction']
   const callNodeListener: typeof import('../../node_modules/h3')['callNodeListener']
@@ -150,5 +152,7 @@ export { generateBarcode } from '/Users/ttcenter/happy-cf/server/utils/barcodeGe
 export { deductStockOrder } from '/Users/ttcenter/happy-cf/server/utils/deductStockOrder';
 export { generateSlug } from '/Users/ttcenter/happy-cf/server/utils/generateSlug';
 export { transporter, sendResetPasswordEmail } from '/Users/ttcenter/happy-cf/server/utils/mailer';
+export { buildBillHTML } from '/Users/ttcenter/happy-cf/server/utils/print-bill';
 export { checkProductStockService } from '/Users/ttcenter/happy-cf/server/utils/productStock';
+export { buildVietQR } from '/Users/ttcenter/happy-cf/server/utils/qrcode-payment';
 export { restoreStockOrder } from '/Users/ttcenter/happy-cf/server/utils/restoreStockOrder';

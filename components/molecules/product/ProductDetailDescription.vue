@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
   <div class="bg-gray6">
     <div class="container pt-section pb-section">
-      <Text text="Mô tả sản phẩm" size="md" weight="semibold" align="center" color="black" />
+      <Heading tag="h2" text="Mô tả sản phẩm" align="center" />
       <template v-if="props.description">
         <div class="mt-sm product-detail-description" :class="{active: store.toggleDescription}" :ref="el => store.descRef = el">
           {{ props.description }}

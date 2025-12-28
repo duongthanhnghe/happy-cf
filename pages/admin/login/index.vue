@@ -19,9 +19,9 @@ const handleSubmitLogin = async (event: SubmitEventPromise) => {
 
 </script>
 <template>
-  <Heading class="mb-xl text-center" tag="div" color="primary" size="2xl">{{AUTH_TEXT_LOGIN}}</Heading>
+  <Text class="mb-xl" align="center" color="primary" size="xxl" :text="AUTH_TEXT_LOGIN" />
 
-  <v-form v-model="store.valid" validate-on="submit lazy" @submit.prevent="handleSubmitLogin">
+  <v-form validate-on="submit lazy" @submit.prevent="handleSubmitLogin">
     <LabelInput :label="AUTH_TEXT_USERNAME" required/>
     <v-text-field v-model="store.formLogin.email" :rules="emailRules" label="email@gmail.com" variant="outlined" required></v-text-field>
     <LabelInput :label="AUTH_TEXT_PASSWORD" class="flex justify-between" required />

@@ -32,6 +32,7 @@ export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { getBreadcrumbs } from '../utils/breadcrumb';
 export { Loading, formatCurrency, formatDateTime, scrollIntoView, setCookie, getCookie, getCurrentDateTime, formatBytes, copyText, downloadImage, generateSlug, generateSKU, generateSkuVariant, generateSkuProduct, debounce } from '../utils/global';
 export { useForbiddenHandler } from '../utils/handle403';
+export { getMenuDepth } from '../utils/menuHelpers';
 export { useOrderHelpers } from '../utils/orderHelpers';
 export { usePagination } from '../utils/paginationHandle';
 export { useSeoWatchers } from '../utils/seoHandle';

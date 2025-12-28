@@ -22,9 +22,8 @@ const props = defineProps<{
           </div>
         </div>
       </div>
-      <div class="product-detail-fixed-pc-item flex options max-width-600">
+      <div v-if="detail?.variantCombinations.length" class="product-detail-fixed-pc-item flex options max-width-600">
         <ProductDetailOptions 
-          v-if="detail?.variantCombinations.length" 
           :variantCombinations="detail.variantCombinations"
           showHeading
         />

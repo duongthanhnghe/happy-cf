@@ -37,8 +37,6 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
         <CardAccount showLevel/>
       </client-only>
     </template>
-
-
     <div :class="storeDisplay.isMobileTable ? '':'pt-md'">
       <SectionBanner :items="storeBanner.getListBanner" :loading="storeBanner.loading" />
     </div>

@@ -18,3 +18,4 @@ export function markAllSelectable<T extends { id: string; children?: T[] }>(item
       : undefined
   })) as T[]
 }
+

@@ -3,7 +3,7 @@ import { ROUTES } from '@/shared/constants/routes';
 
 const props = defineProps<{
   getTotalPoint: number;
-  userId: string;
+  userId: string|null;
 }>();
 </script>
 <template>

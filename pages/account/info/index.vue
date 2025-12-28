@@ -25,8 +25,8 @@ const infoItems = [
 ]
 </script>
 <template>
-  <Card size="md" :bg="storeDisplay.isMobileTable ? 'gray6':'white'" :heading="ROUTES.PUBLIC.ACCOUNT.children?.INFO.label" :class="storeDisplay.isMobileTable ? 'pd-0':'rd-xl'">
-
+  <Card size="md" :bg="storeDisplay.isMobileTable ? 'gray6':'white'" :class="storeDisplay.isMobileTable ? 'pd-0':'rd-xl'">
+    <Heading :text="ROUTES.PUBLIC.ACCOUNT.children?.INFO.label" />
     <div v-for="(item, index) in infoItems" :key="index" :class="classItem">
       <Text :text="item.label" color="gray5" :class="classTitle" />
       <Text :text="item.value" color="black" size="normal" :class="classTitle" />
@@ -45,7 +45,7 @@ const infoItems = [
       @click.prevent="storeAccountEdit.handleEditAccount"
     />
 
-    <Text text="Thông tin đăng nhập" color="black" size="md" weight="semibold" class="mb-sm mt-lg" />
+    <Heading text="Thông tin đăng nhập" class="mt-lg" />
 
     <div :class="classItem">
       <Text text="Email" color="gray5" :class="classTitle" />

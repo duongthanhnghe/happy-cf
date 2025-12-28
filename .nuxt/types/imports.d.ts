@@ -47,6 +47,7 @@ declare global {
   const getCurrentDateTime: typeof import('../../utils/global')['getCurrentDateTime']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getMenuDepth: typeof import('../../utils/menuHelpers')['getMenuDepth']
   const getRouteRules: typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getRouteRules']
   const h: typeof import('vue')['h']
   const hasInjectionContext: typeof import('vue')['hasInjectionContext']
@@ -269,6 +270,7 @@ declare module 'vue' {
     readonly getCurrentDateTime: UnwrapRef<typeof import('../../utils/global')['getCurrentDateTime']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getMenuDepth: UnwrapRef<typeof import('../../utils/menuHelpers')['getMenuDepth']>
     readonly getRouteRules: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getRouteRules']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly hasInjectionContext: UnwrapRef<typeof import('vue')['hasInjectionContext']>
