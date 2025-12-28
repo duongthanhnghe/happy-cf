@@ -4,11 +4,15 @@ export async function fetchWithAuthAdmin(url: string, options: any = {}) {
   const store = useAccountStore();
 
   let token = store.token;
+  const isFormData = options.body instanceof FormData;
 
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
     ...(options.headers || {}),
   };
+
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;

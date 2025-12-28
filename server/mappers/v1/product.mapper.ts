@@ -7,8 +7,11 @@ import type {
   ProductDTO,
   CategoryProductDTO,
   ProductVariantCombinationDTO,
+  ProductExportDTO,
+  ProductImportTableItem,
 } from "../../types/dto/v1/product.dto";
-
+import mongoose from 'mongoose'
+import slugify from 'slugify'
 
 export function toVariantCombinationDTO(
   combo: ProductVariantCombination
@@ -116,3 +119,70 @@ export function toCategoryProductDTO(entity: CategoryProduct): CategoryProductDT
 
 export const toCategoryProductListDTO = (list: CategoryProduct[]): CategoryProductDTO[] =>
   list.map(toCategoryProductDTO);
+
+export const toProductExport = (p: Product): ProductExportDTO => ({
+  id: p._id.toString(),
+  productName: p.productName,
+  image: p.image,
+  categoryId: String(p.categoryId),
+  price: p.price,
+  priceDiscounts: p.priceDiscounts,
+  amount: p.amount,
+  description: p.description || '',
+  summaryContent: p.summaryContent || '',
+  isActive: p.isActive,
+  weight: p.weight,
+  sku: p.sku,
+  titleSEO: p.titleSEO,
+  descriptionSEO: p.descriptionSEO,
+  keywords: Array.isArray(p.keywords) ? p.keywords : [],
+  slug: p.slug,
+});
+
+export const toProductCreatePayload = (
+  row: any,
+  category: CategoryProduct
+) => ({
+  productName: row.productName.trim(),
+  price: Number(row.price),
+  priceDiscounts: Number(row.priceDiscounts || 0),
+  amount: Number(row.amount || 0),
+  description: row.description || '',
+  summaryContent: row.summaryContent || '',
+  image: row.image || '',
+  listImage: [],
+  variantGroups: [],
+  variantCombinations: [],
+  categoryId: new mongoose.Types.ObjectId(category._id),
+  weight: Number(row.weight || 0),
+  sku:
+    row.sku ||
+    `PRD-${category._id.toString().slice(0, 5)}-${Date.now()}`,
+  isActive: Boolean(row.isActive),
+  titleSEO: row.titleSEO || row.productName,
+  descriptionSEO: row.descriptionSEO || '',
+  slug: row.slug || slugify(row.productName, { lower: true }),
+  keywords: row.keywords ? row.keywords.split(',') : [],
+})
+
+export const applyProductUpdate = (
+  product: Product,
+  row: any,
+  category: CategoryProduct
+) => {
+  product.productName = row.productName
+  product.price = Number(row.price)
+  product.priceDiscounts = Number(row.priceDiscounts || 0)
+  product.amount = Number(row.amount || 0)
+  product.description = row.description || ''
+  product.summaryContent = row.summaryContent || ''
+  product.image = row.image || ''
+  product.isActive = row.isActive ?? product.isActive
+  product.weight = Number(row.weight || 0)
+  product.sku = row.sku || product.sku
+  product.titleSEO = row.titleSEO || product.titleSEO
+  product.descriptionSEO = row.descriptionSEO || product.descriptionSEO
+  product.keywords = row.keywords ? row.keywords.split(',') : []
+  product.categoryId = category._id
+  product.slug = row.slug || product.slug
+}

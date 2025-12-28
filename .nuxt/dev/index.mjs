@@ -3369,6 +3369,62 @@ function toCategoryProductDTO(entity) {
   };
 }
 const toCategoryProductListDTO = (list) => list.map(toCategoryProductDTO);
+const toProductExport = (p) => ({
+  id: p._id.toString(),
+  productName: p.productName,
+  image: p.image,
+  categoryId: String(p.categoryId),
+  price: p.price,
+  priceDiscounts: p.priceDiscounts,
+  amount: p.amount,
+  description: p.description || "",
+  summaryContent: p.summaryContent || "",
+  isActive: p.isActive,
+  weight: p.weight,
+  sku: p.sku,
+  titleSEO: p.titleSEO,
+  descriptionSEO: p.descriptionSEO,
+  keywords: Array.isArray(p.keywords) ? p.keywords : [],
+  slug: p.slug
+});
+const toProductCreatePayload = (row, category) => ({
+  productName: row.productName.trim(),
+  price: Number(row.price),
+  priceDiscounts: Number(row.priceDiscounts || 0),
+  amount: Number(row.amount || 0),
+  description: row.description || "",
+  summaryContent: row.summaryContent || "",
+  image: row.image || "",
+  listImage: [],
+  variantGroups: [],
+  variantCombinations: [],
+  categoryId: new mongoose.Types.ObjectId(category._id),
+  weight: Number(row.weight || 0),
+  sku: row.sku || `PRD-${category._id.toString().slice(0, 5)}-${Date.now()}`,
+  isActive: Boolean(row.isActive),
+  titleSEO: row.titleSEO || row.productName,
+  descriptionSEO: row.descriptionSEO || "",
+  slug: row.slug || slugify(row.productName, { lower: true }),
+  keywords: row.keywords ? row.keywords.split(",") : []
+});
+const applyProductUpdate = (product, row, category) => {
+  var _a;
+  product.productName = row.productName;
+  product.price = Number(row.price);
+  product.priceDiscounts = Number(row.priceDiscounts || 0);
+  product.amount = Number(row.amount || 0);
+  product.description = row.description || "";
+  product.summaryContent = row.summaryContent || "";
+  product.image = row.image || "";
+  product.isActive = (_a = row.isActive) != null ? _a : product.isActive;
+  product.weight = Number(row.weight || 0);
+  product.sku = row.sku || product.sku;
+  product.titleSEO = row.titleSEO || product.titleSEO;
+  product.descriptionSEO = row.descriptionSEO || product.descriptionSEO;
+  product.keywords = row.keywords ? row.keywords.split(",") : [];
+  product.categoryId = category._id;
+  product.slug = row.slug || product.slug;
+};
 
 function buildCategoryTree$1(list) {
   const map = /* @__PURE__ */ new Map();
@@ -30081,33 +30137,14 @@ const importProducts = async (req, res) => {
           });
           continue;
         }
-        const productSlug = slugify(row.productName, { lower: true });
-        const newProduct = await ProductEntity.create({
-          productName: row.productName,
-          price: Number(row.price),
-          priceDiscounts: Number(row.priceDiscounts || 0),
-          amount: Number(row.amount || 0),
-          description: row.description || "",
-          image: row.image || "",
-          listImage: [],
-          variantGroups: [],
-          variantCombinations: [],
-          summaryContent: row.summaryContent || "",
-          categoryId: new mongoose.Types.ObjectId(category._id),
-          weight: Number(row.weight || 0),
-          sku: row.sku || `PRD-${new mongoose.Types.ObjectId(category._id).toString().slice(0, 5)}-${Date.now()}`,
-          isActive: row.isActive || false,
-          titleSEO: row.titleSEO || row.productName,
-          descriptionSEO: row.descriptionSEO || "",
-          slug: productSlug,
-          keywords: row.keywords ? row.keywords.split(",") : []
-        });
+        const payload = toProductCreatePayload(row, category);
+        const newProduct = await ProductEntity.create(payload);
         successCount++;
         results.push({
           rowIndex,
           row,
           status: "success",
-          id: newProduct._id
+          id: newProduct._id.toString()
         });
       } catch (err) {
         failCount++;
@@ -30144,30 +30181,7 @@ const exportProducts = async (req, res) => {
         message: "Kh\xF4ng c\xF3 s\u1EA3n ph\u1EA9m \u0111\u1EC3 export"
       });
     }
-    const exportData = await Promise.all(
-      products.map(async (p) => {
-        var _a, _b;
-        return {
-          id: p._id.toString(),
-          productName: p.productName,
-          image: p.image,
-          categoryId: String(p.categoryId),
-          // categoryName: category ? category.categoryName : "",
-          price: p.price,
-          priceDiscounts: p.priceDiscounts,
-          amount: p.amount,
-          description: p.description,
-          summaryContent: p.summaryContent,
-          isActive: p.isActive,
-          weight: p.weight,
-          sku: p.sku,
-          titleSEO: p.titleSEO,
-          descriptionSEO: p.descriptionSEO,
-          keywords: (_b = (_a = p.keywords) == null ? void 0 : _a.join(",")) != null ? _b : "",
-          slug: p.slug
-        };
-      })
-    );
+    const exportData = products.map(toProductExport);
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
@@ -30196,7 +30210,6 @@ const exportProducts = async (req, res) => {
   }
 };
 const updateImportProducts = async (req, res) => {
-  var _a;
   try {
     if (!req.file) {
       return res.status(400).json({ code: 1, message: "Kh\xF4ng c\xF3 file upload" });
@@ -30256,21 +30269,7 @@ const updateImportProducts = async (req, res) => {
           });
           continue;
         }
-        product.productName = row.productName || product.productName;
-        product.price = Number(row.price) || product.price;
-        product.priceDiscounts = Number(row.priceDiscounts || 0);
-        product.amount = Number(row.amount || 0);
-        product.description = row.description || "";
-        product.image = row.image || "";
-        product.summaryContent = row.summaryContent || "";
-        product.isActive = (_a = row.isActive) != null ? _a : product.isActive;
-        product.weight = Number(row.weight || 0);
-        product.sku = row.sku || "";
-        product.titleSEO = row.titleSEO || product.titleSEO;
-        product.descriptionSEO = row.descriptionSEO || product.descriptionSEO;
-        product.keywords = row.keywords ? row.keywords.split(",") : [];
-        product.categoryId = category._id;
-        product.slug = row.slug;
+        applyProductUpdate(product, row, category);
         await product.save();
         successCount++;
         results.push({
@@ -30374,17 +30373,6 @@ const toggleActive = async (req, res) => {
 const storage = multer.memoryStorage();
 const uploadExcel = multer({
   storage,
-  // fileFilter: (req, file, cb) => {
-  //   if (
-  //     file.mimetype ===
-  //       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-  //     file.mimetype === "application/vnd.ms-excel"
-  //   ) {
-  //     cb(null, true);
-  //   } else {
-  //     cb(new Error("Chỉ hỗ trợ file Excel"), false);
-  //   }
-  // },
   fileFilter: (req, file, cb) => {
     const isExcel = file.mimetype === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.mimetype === "application/vnd.ms-excel";
     if (isExcel) {

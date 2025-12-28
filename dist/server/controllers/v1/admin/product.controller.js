@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import { ProductEntity, CategoryProductEntity } from "../../../models/v1/product.entity.js";
-import { toProductDTO, toProductListDTO } from "../../../mappers/v1/product.mapper.js";
+import { applyProductUpdate, toProductCreatePayload, toProductDTO, toProductExport, toProductListDTO } from "../../../mappers/v1/product.mapper.js";
 import XLSX from "xlsx";
-import slugify from "slugify";
 export const getAllProduct = async (req, res) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
@@ -141,33 +140,14 @@ export const importProducts = async (req, res) => {
                     });
                     continue;
                 }
-                const productSlug = slugify(row.productName, { lower: true });
-                const newProduct = await ProductEntity.create({
-                    productName: row.productName,
-                    price: Number(row.price),
-                    priceDiscounts: Number(row.priceDiscounts || 0),
-                    amount: Number(row.amount || 0),
-                    description: row.description || "",
-                    image: row.image || "",
-                    listImage: [],
-                    variantGroups: [],
-                    variantCombinations: [],
-                    summaryContent: row.summaryContent || "",
-                    categoryId: new mongoose.Types.ObjectId(category._id),
-                    weight: Number(row.weight || 0),
-                    sku: row.sku || `PRD-${new mongoose.Types.ObjectId(category._id).toString().slice(0, 5)}-${Date.now()}`,
-                    isActive: row.isActive || false,
-                    titleSEO: row.titleSEO || row.productName,
-                    descriptionSEO: row.descriptionSEO || "",
-                    slug: productSlug,
-                    keywords: row.keywords ? row.keywords.split(",") : [],
-                });
+                const payload = toProductCreatePayload(row, category);
+                const newProduct = await ProductEntity.create(payload);
                 successCount++;
                 results.push({
                     rowIndex,
                     row,
                     status: "success",
-                    id: newProduct._id
+                    id: newProduct._id.toString(),
                 });
             }
             catch (err) {
@@ -206,29 +186,7 @@ export const exportProducts = async (req, res) => {
                 message: "Không có sản phẩm để export",
             });
         }
-        const exportData = await Promise.all(products.map(async (p) => {
-            // const category = await CategoryProductEntity.findById(p.categoryId).lean();
-            var _a, _b;
-            return {
-                id: p._id.toString(),
-                productName: p.productName,
-                image: p.image,
-                categoryId: String(p.categoryId),
-                // categoryName: category ? category.categoryName : "",
-                price: p.price,
-                priceDiscounts: p.priceDiscounts,
-                amount: p.amount,
-                description: p.description,
-                summaryContent: p.summaryContent,
-                isActive: p.isActive,
-                weight: p.weight,
-                sku: p.sku,
-                titleSEO: p.titleSEO,
-                descriptionSEO: p.descriptionSEO,
-                keywords: (_b = (_a = p.keywords) === null || _a === void 0 ? void 0 : _a.join(",")) !== null && _b !== void 0 ? _b : "",
-                slug: p.slug,
-            };
-        }));
+        const exportData = products.map(toProductExport);
         const worksheet = XLSX.utils.json_to_sheet(exportData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
@@ -252,7 +210,6 @@ export const exportProducts = async (req, res) => {
     }
 };
 export const updateImportProducts = async (req, res) => {
-    var _a;
     try {
         if (!req.file) {
             return res.status(400).json({ code: 1, message: "Không có file upload" });
@@ -314,21 +271,7 @@ export const updateImportProducts = async (req, res) => {
                     });
                     continue;
                 }
-                product.productName = row.productName || product.productName;
-                product.price = Number(row.price) || product.price;
-                product.priceDiscounts = Number(row.priceDiscounts || 0);
-                product.amount = Number(row.amount || 0);
-                product.description = row.description || "";
-                product.image = row.image || "";
-                product.summaryContent = row.summaryContent || "";
-                product.isActive = (_a = row.isActive) !== null && _a !== void 0 ? _a : product.isActive;
-                product.weight = Number(row.weight || 0);
-                product.sku = row.sku || "";
-                product.titleSEO = row.titleSEO || product.titleSEO;
-                product.descriptionSEO = row.descriptionSEO || product.descriptionSEO;
-                product.keywords = row.keywords ? row.keywords.split(",") : [];
-                product.categoryId = category._id;
-                product.slug = row.slug;
+                applyProductUpdate(product, row, category);
                 await product.save();
                 successCount++;
                 results.push({

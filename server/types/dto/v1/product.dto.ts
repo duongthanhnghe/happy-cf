@@ -86,6 +86,25 @@ export interface ProductDTO {
   canonicalUrl?: string;
 }
 
+export interface ProductExportDTO {
+  id: string;
+  productName: string;
+  image: string;
+  categoryId: string;
+  price: number;
+  priceDiscounts: number;
+  amount: number;
+  description: string;
+  summaryContent: string;
+  isActive: boolean;
+  weight: number;
+  sku: string;
+  titleSEO: string;
+  descriptionSEO: string;
+  keywords?: string[];
+  slug: string;
+}
+
 export interface ProductImportTableItem {
   rowIndex?: string;
   productName: string;
@@ -102,6 +121,7 @@ export interface ProductImportTableItem {
   titleSEO?: string;
   descriptionSEO?: string;
   keywords?: string;
+  slug?: string;
   status?: string;
   message?: string;
 }

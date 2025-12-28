@@ -354,11 +354,8 @@ export const revertPointAndDowngrade = async (userId, pointsToRevert) => {
 };
 export const getOrderCountByStatus = async (req, res) => {
     try {
-        // 1. Tổng số đơn
         const totalCount = await OrderEntity.countDocuments();
-        // 2. Lấy tất cả trạng thái
         const statuses = await OrderStatusEntity.find().lean();
-        // 3. Đếm đơn theo status
         const counts = await OrderEntity.aggregate([
             {
                 $group: {
@@ -368,7 +365,6 @@ export const getOrderCountByStatus = async (req, res) => {
             }
         ]);
         const countMap = new Map(counts.map(i => [i._id.toString(), i.count]));
-        // 4. Ghép dữ liệu
         const statusItems = statuses
             .sort((a, b) => { var _a, _b; return ((_a = a.index) !== null && _a !== void 0 ? _a : 0) - ((_b = b.index) !== null && _b !== void 0 ? _b : 0); })
             .map(s => {
@@ -382,7 +378,6 @@ export const getOrderCountByStatus = async (req, res) => {
                 count: (_a = countMap.get(s._id.toString())) !== null && _a !== void 0 ? _a : 0
             });
         });
-        // 5. Thêm "Tất cả" lên đầu
         const result = [
             {
                 statusId: "",
