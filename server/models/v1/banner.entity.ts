@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Document, Types } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 export interface Banner {
   _id: Types.ObjectId;

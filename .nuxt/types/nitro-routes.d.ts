@@ -21,6 +21,9 @@ declare module "nitropack/types" {
     '/v1/admin/categories-product.router': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/categories-product.router').default>>>>
     }
+    '/v1/admin/image-block.router': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/image-block.router').default>>>>
+    }
     '/v1/admin': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/v1/admin/index').default>>>>
     }

@@ -9,6 +9,16 @@ export const API_ENDPOINTS_ADMIN = {
     DELETE: "/itranslation",
     DETAIL: "/itranslation",
   },
+  IMAGE_BLOCKS: {
+    LIST: '/image-blocks',
+    CREATE: '/image-blocks',
+    GET_BY_ID: (id: string) => `/image-blocks/${id}`,
+    UPDATE: (id: string) => `/image-blocks/${id}`,
+    DELETE: (id: string) => `/image-blocks/${id}`,
+    UPDATE_ORDER: (id: string) => `/image-blocks/${id}/order`,
+    TOGGLE_ACTIVE: (id: string) => `/image-blocks/${id}/toggle-active`,
+    // GET_BY_PAGE: '/image-blocks/by-page',
+  },
   ACCOUNT: {
     VERIFY_TOKEN: '/account/verify-token',
     REFRESH_TOKEN: '/account/refresh-token',

@@ -6,10 +6,10 @@ import nodeCrypto, { randomBytes } from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/ttcenter/happy-cf/node_modules/@vue/shared/dist/shared.cjs.js';
 import express, { Router } from 'file:///Users/ttcenter/happy-cf/node_modules/express/index.js';
+import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
 import * as fs from 'node:fs';
 import fs__default, { promises } from 'node:fs';
 import jwt from 'file:///Users/ttcenter/happy-cf/node_modules/jsonwebtoken/index.js';
-import mongoose, { model, Schema, Types } from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose/index.js';
 import mongoosePaginate from 'file:///Users/ttcenter/happy-cf/node_modules/mongoose-paginate-v2/dist/index.js';
 import * as cpexcel from '/Users/ttcenter/happy-cf/node_modules/xlsx/dist/cpexcel.js';
 import * as node_stream from 'node:stream';
@@ -1565,6 +1565,7 @@ const _lazy_Kv_SzT = () => Promise.resolve().then(function () { return account_r
 const _lazy_xcMgXI = () => Promise.resolve().then(function () { return banner_router$1; });
 const _lazy_qQgg3H = () => Promise.resolve().then(function () { return categoriesNews_router$1; });
 const _lazy_k4fO0v = () => Promise.resolve().then(function () { return categoriesProduct_router$1; });
+const _lazy_2ypBqA = () => Promise.resolve().then(function () { return imageBlock_router; });
 const _lazy_ZkwUyZ = () => Promise.resolve().then(function () { return index$2; });
 const _lazy_0O3oAB = () => Promise.resolve().then(function () { return itranslation_routes; });
 const _lazy_DX_tpS = () => Promise.resolve().then(function () { return orderManage_router$1; });
@@ -1603,6 +1604,7 @@ const handlers = [
   { route: '/v1/admin/banner.router', handler: _lazy_xcMgXI, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/categories-news.router', handler: _lazy_qQgg3H, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/categories-product.router', handler: _lazy_k4fO0v, lazy: true, middleware: false, method: undefined },
+  { route: '/v1/admin/image-block.router', handler: _lazy_2ypBqA, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin', handler: _lazy_ZkwUyZ, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/itranslation.routes', handler: _lazy_0O3oAB, lazy: true, middleware: false, method: undefined },
   { route: '/v1/admin/order-manage.router', handler: _lazy_DX_tpS, lazy: true, middleware: false, method: undefined },
@@ -2127,18 +2129,18 @@ const authenticate = (req, res, next) => {
   }
 };
 
-const router$x = Router();
-router$x.get("/default/:userId", authenticate, getDefaultAddressByUserId);
-router$x.get("/user/:userId", authenticate, getAllAddress);
-router$x.get("/:id", authenticate, getAddressById);
-router$x.post("/", authenticate, createAddress);
-router$x.put("/:id", authenticate, updateAddress);
-router$x.delete("/:id", authenticate, deleteAddress);
-router$x.post("/:id/set-default", authenticate, setAddressDefault);
+const router$y = Router();
+router$y.get("/default/:userId", authenticate, getDefaultAddressByUserId);
+router$y.get("/user/:userId", authenticate, getAllAddress);
+router$y.get("/:id", authenticate, getAddressById);
+router$y.post("/", authenticate, createAddress);
+router$y.put("/:id", authenticate, updateAddress);
+router$y.delete("/:id", authenticate, deleteAddress);
+router$y.post("/:id/set-default", authenticate, setAddressDefault);
 
 const addresses_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$x
+  default: router$y
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ListImageSchema$1 = new Schema(
@@ -2297,18 +2299,18 @@ const authenticateAdmin = async (req, res, next) => {
   }
 };
 
-const router$w = Router();
-router$w.get("/", authenticateAdmin, getAllAbout);
-router$w.get("/:id", authenticateAdmin, getAboutById);
-router$w.post("/", authenticateAdmin, createAbout);
-router$w.put("/:id", authenticateAdmin, updateAbout);
-router$w.delete("/:id", authenticateAdmin, deleteAbout);
-router$w.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
-router$w.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
+const router$x = Router();
+router$x.get("/", authenticateAdmin, getAllAbout);
+router$x.get("/:id", authenticateAdmin, getAboutById);
+router$x.post("/", authenticateAdmin, createAbout);
+router$x.put("/:id", authenticateAdmin, updateAbout);
+router$x.delete("/:id", authenticateAdmin, deleteAbout);
+router$x.patch("/updateOrder/:id", authenticateAdmin, updateOrder$3);
+router$x.patch("/toggleActive/:id", authenticateAdmin, toggleActive$7);
 
 const about_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$w
+  default: router$x
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ACCOUNT_ROLES = ["superadmin", "editor"];
@@ -2693,17 +2695,17 @@ const authorizeRoles = (...roles) => {
   };
 };
 
-const router$v = Router();
-router$v.post("/login", login$1);
-router$v.post("/reset-password", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), resetPassword$1);
-router$v.get("/verify-token", verifyToken$1);
-router$v.post("/refresh-token", refreshToken$1);
-router$v.get("/list", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), getAccountList);
-router$v.get("/me/:id", authenticateAdmin, getAccount);
-router$v.put("/update", authenticateAdmin, updateAccount$1);
-router$v.post("/change-password", authenticateAdmin, changePassword$1);
-router$v.post("/create", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), createAccount);
-router$v.post("/logout", (req, res) => {
+const router$w = Router();
+router$w.post("/login", login$1);
+router$w.post("/reset-password", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), resetPassword$1);
+router$w.get("/verify-token", verifyToken$1);
+router$w.post("/refresh-token", refreshToken$1);
+router$w.get("/list", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), getAccountList);
+router$w.get("/me/:id", authenticateAdmin, getAccount);
+router$w.put("/update", authenticateAdmin, updateAccount$1);
+router$w.post("/change-password", authenticateAdmin, changePassword$1);
+router$w.post("/create", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), createAccount);
+router$w.post("/logout", (req, res) => {
   res.clearCookie("admin_refresh_token", {
     httpOnly: true,
     path: "/",
@@ -2711,12 +2713,12 @@ router$v.post("/logout", (req, res) => {
   });
   res.json({ code: 0, message: "\u0110\u0103ng xu\u1EA5t th\xE0nh c\xF4ng" });
 });
-router$v.patch("/toggleActive/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), toggleActive$6);
-router$v.delete("/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), deleteAccount);
+router$w.patch("/toggleActive/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), toggleActive$6);
+router$w.delete("/:id", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), deleteAccount);
 
 const account_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$v
+  default: router$w
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const BannerSchema = new Schema(
@@ -2849,18 +2851,18 @@ const toggleActive$5 = async (req, res) => {
   }
 };
 
-const router$u = Router();
-router$u.get("/", authenticateAdmin, getAllBanners$1);
-router$u.get("/:id", authenticateAdmin, getBannerById);
-router$u.post("/", authenticateAdmin, createBanner);
-router$u.put("/:id", authenticateAdmin, updateBanner);
-router$u.delete("/:id", authenticateAdmin, deleteBanner);
-router$u.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
-router$u.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
+const router$v = Router();
+router$v.get("/", authenticateAdmin, getAllBanners$1);
+router$v.get("/:id", authenticateAdmin, getBannerById);
+router$v.post("/", authenticateAdmin, createBanner);
+router$v.put("/:id", authenticateAdmin, updateBanner);
+router$v.delete("/:id", authenticateAdmin, deleteBanner);
+router$v.patch("/updateOrder/:id", authenticateAdmin, updateOrder$2);
+router$v.patch("/toggleActive/:id", authenticateAdmin, toggleActive$5);
 
 const banner_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$u
+  default: router$v
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function generateSlug(text) {
@@ -3142,18 +3144,18 @@ const toggleActive$4 = async (req, res) => {
   }
 };
 
-const router$t = Router();
-router$t.get("/", authenticateAdmin, getAllCategories$3);
-router$t.get("/:id", authenticateAdmin, getCategoriesById$3);
-router$t.post("/", authenticateAdmin, createCategories$1);
-router$t.put("/:id", authenticateAdmin, updateCategories$1);
-router$t.delete("/:id", authenticateAdmin, deleteCategories$1);
-router$t.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
-router$t.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
+const router$u = Router();
+router$u.get("/", authenticateAdmin, getAllCategories$3);
+router$u.get("/:id", authenticateAdmin, getCategoriesById$3);
+router$u.post("/", authenticateAdmin, createCategories$1);
+router$u.put("/:id", authenticateAdmin, updateCategories$1);
+router$u.delete("/:id", authenticateAdmin, deleteCategories$1);
+router$u.patch("/toggleActive/:id", authenticateAdmin, toggleActive$4);
+router$u.patch("/updateOrder/:id", authenticateAdmin, updateOrder$1);
 
 const categoriesNews_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: router$t
+  default: router$u
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ListImageSchema = new Schema(
@@ -3637,17 +3639,201 @@ const toggleActive$3 = async (req, res) => {
   }
 };
 
-const router$s = Router();
-router$s.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
-router$s.get("/", authenticateAdmin, getAllCategories$2);
-router$s.get("/:id", authenticateAdmin, getCategoriesById$2);
-router$s.post("/", authenticateAdmin, createCategories);
-router$s.put("/:id", authenticateAdmin, updateCategories);
-router$s.delete("/:id", authenticateAdmin, deleteCategories);
-router$s.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
-router$s.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
+const router$t = Router();
+router$t.get("/tree", authenticateAdmin, getAllCategoriesTree$1);
+router$t.get("/", authenticateAdmin, getAllCategories$2);
+router$t.get("/:id", authenticateAdmin, getCategoriesById$2);
+router$t.post("/", authenticateAdmin, createCategories);
+router$t.put("/:id", authenticateAdmin, updateCategories);
+router$t.delete("/:id", authenticateAdmin, deleteCategories);
+router$t.patch("/toggleActive/:id", authenticateAdmin, toggleActive$3);
+router$t.patch("/updateOrder/:id", authenticateAdmin, updateOrder);
 
 const categoriesProduct_router$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: router$t
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const ImageBlockSchema = new Schema(
+  {
+    image: { type: String, required: true },
+    title: { type: String },
+    description: { type: String },
+    textButton: { type: String },
+    linkRedirect: { type: String },
+    page: {
+      type: String,
+      required: true,
+      index: true
+    },
+    position: {
+      type: String,
+      required: true,
+      index: true
+    },
+    order: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true }
+  },
+  { timestamps: true }
+);
+ImageBlockSchema.index({ page: 1, position: 1, isActive: 1, order: 1 });
+const ImageBlockEntity = model(
+  "ImageBlock",
+  ImageBlockSchema,
+  "image_blocks"
+);
+
+const toImageBlockDTO = (entity) => ({
+  id: entity._id.toString(),
+  image: entity.image,
+  title: entity.title,
+  description: entity.description,
+  textButton: entity.textButton,
+  linkRedirect: entity.linkRedirect,
+  page: entity.page,
+  position: entity.position,
+  order: entity.order,
+  isActive: entity.isActive,
+  createdAt: entity.createdAt.toISOString(),
+  updatedAt: entity.updatedAt.toISOString()
+});
+const toImageBlockListDTO = (items) => {
+  return items.map(toImageBlockDTO);
+};
+
+const getAllImageBlocks = async (_, res) => {
+  try {
+    const items = await ImageBlockEntity.find().sort({ page: 1, position: 1, order: 1 });
+    return res.json({ code: 0, data: toImageBlockListDTO(items) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const getImageBlockById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await ImageBlockEntity.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "ImageBlock kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, data: toImageBlockDTO(item) });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const createImageBlock = async (req, res) => {
+  try {
+    const { image, page, position } = req.body;
+    if (!image || !page || !position) {
+      return res.status(400).json({
+        code: 1,
+        message: "Thi\u1EBFu image / page / position"
+      });
+    }
+    const lastItem = await ImageBlockEntity.findOne({
+      page,
+      position
+    }).sort({ order: -1 });
+    const maxOrder = lastItem ? lastItem.order : 0;
+    const newItem = new ImageBlockEntity({
+      ...req.body,
+      order: maxOrder + 1
+    });
+    await newItem.save();
+    return res.status(201).json({
+      code: 0,
+      message: "T\u1EA1o ImageBlock th\xE0nh c\xF4ng",
+      data: toImageBlockDTO(newItem)
+    });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const updateImageBlock = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await ImageBlockEntity.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ code: 1, message: "ImageBlock kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt th\xE0nh c\xF4ng",
+      data: toImageBlockDTO(updated)
+    });
+  } catch (err) {
+    return res.status(400).json({ code: 1, message: err.message });
+  }
+};
+const deleteImageBlock = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await ImageBlockEntity.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ code: 1, message: "ImageBlock kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    return res.json({ code: 0, message: "Xo\xE1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const updateImageBlockOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order } = req.body;
+    const currentItem = await ImageBlockEntity.findById(id);
+    if (!currentItem) {
+      return res.status(404).json({ code: 1, message: "Item kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    const existingItem = await ImageBlockEntity.findOne({
+      page: currentItem.page,
+      position: currentItem.position,
+      order
+    });
+    if (existingItem) {
+      existingItem.order = currentItem.order;
+      await existingItem.save();
+    }
+    currentItem.order = order;
+    await currentItem.save();
+    return res.json({ code: 0, message: "C\u1EADp nh\u1EADt th\u1EE9 t\u1EF1 th\xE0nh c\xF4ng" });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+const toggleImageBlockActive = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await ImageBlockEntity.findById(id);
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "ImageBlock kh\xF4ng t\u1ED3n t\u1EA1i" });
+    }
+    item.isActive = !item.isActive;
+    await item.save();
+    return res.json({
+      code: 0,
+      message: "C\u1EADp nh\u1EADt tr\u1EA1ng th\xE1i th\xE0nh c\xF4ng",
+      data: toImageBlockDTO(item)
+    });
+  } catch (err) {
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+const router$s = Router();
+router$s.get("/", authenticateAdmin, getAllImageBlocks);
+router$s.get("/:id", authenticateAdmin, getImageBlockById);
+router$s.post("/", authenticateAdmin, createImageBlock);
+router$s.put("/:id", authenticateAdmin, updateImageBlock);
+router$s.delete("/:id", authenticateAdmin, deleteImageBlock);
+router$s.patch("/:id/order", authenticateAdmin, updateImageBlockOrder);
+router$s.patch("/:id/toggle-active", authenticateAdmin, toggleImageBlockActive);
+
+const imageBlock_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: router$s
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -31247,16 +31433,16 @@ const voucherUsage_router = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defin
 
 const router$g = Router();
 router$g.use("/itranslation", router$q);
-router$g.use("/account", router$v);
+router$g.use("/account", router$w);
 router$g.use("/settings", router$r);
-router$g.use("/about", router$w);
+router$g.use("/about", router$x);
 router$g.use("/users", router$p);
-router$g.use("/banners", router$u);
-router$g.use("/categoriesNews", router$t);
+router$g.use("/banners", router$v);
+router$g.use("/categoriesNews", router$u);
 router$g.use("/newsPosts", router$o);
 router$g.use("/orders", router$n);
 router$g.use("/payment-transactions", router$k);
-router$g.use("/categories", router$s);
+router$g.use("/categories", router$t);
 router$g.use("/products", router$m);
 router$g.use("/variant-groups", router$l);
 router$g.use("/product-reviews", router$j);
@@ -34347,7 +34533,7 @@ router.use("/orders", router$5);
 router.use("/categories", router$c);
 router.use("/products", router$4);
 router.use("/variant-groups", router$3);
-router.use("/addresses", router$x);
+router.use("/addresses", router$y);
 router.use("/product-reviews", router$2);
 router.use("/voucher", router$1);
 router.use("/", router$4);

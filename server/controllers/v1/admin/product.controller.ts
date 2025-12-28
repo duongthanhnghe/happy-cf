@@ -3,7 +3,6 @@ import mongoose from "mongoose"
 import { ProductEntity, CategoryProductEntity } from "../../../models/v1/product.entity"
 import { applyProductUpdate, toProductCreatePayload, toProductDTO, toProductExport, toProductListDTO } from "../../../mappers/v1/product.mapper"
 import XLSX from "xlsx";
-import slugify from "slugify";
 import type { ProductImportTableItem } from "@/server/types/dto/v1/product.dto";
 
 export const getAllProduct = async (req: Request, res: Response) => {

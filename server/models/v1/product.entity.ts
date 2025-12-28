@@ -1,4 +1,4 @@
-import { Schema, model, models, Types, Document } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 export interface ProductSelectedVariant {
   variantId: string;
