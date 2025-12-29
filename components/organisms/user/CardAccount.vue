@@ -43,10 +43,15 @@ watchEffect(() => {
           <div class="flex justify-between">
             <div class="flex align-center gap-sm">
               <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
-              <div class="text-size-xs">
+              <div>
                 <Text weight="semibold" color="black" :text="storeAccount.getDetailValue?.fullname" />
-
-                <span @click="storeAccount.handleTogglePopupMembershipInformation(true)" class="text-color-gray8 cursor-pointer">Hạng {{ storeAccount.getDetailValue?.membership.level || '' }} </span>
+                <Text
+                   @click="storeAccount.handleTogglePopupMembershipInformation(true)"
+                   color="gray8" 
+                   :text="`Hạng ${ storeAccount.getDetailValue?.membership.level || '' }`" 
+                   class="cursor-pointer"
+                   size="xs"
+                />
               </div>
             </div>
             <div class="flex gap-sm">

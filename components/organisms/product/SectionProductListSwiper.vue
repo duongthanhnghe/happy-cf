@@ -11,10 +11,13 @@ import { PRODUCT_LIST_SWIPER_DEFAULT } from '@/shared/constants/breakpoints';
 import type { ITranslationText } from '@/server/types/dto/v1/itranslation.dto';
 const storeDisplay = useDisplayStore()
 
+type HeadingSize = 'xl' | 'lg'
+
 const props = withDefaults(defineProps<{
   items?: ProductDTO[]
   loading?: boolean
   headingText: string | ITranslationText
+  headingSize?: HeadingSize
   backgroundItem?: string
   breakpoints?: SwiperOptions['breakpoints']
   container?: string
@@ -25,6 +28,7 @@ const props = withDefaults(defineProps<{
   items: () => [],
   showNoData: false,
   fullScreen: false,
+  headingSize: 'xl'
 })
 </script>
 
@@ -33,7 +37,7 @@ const props = withDefaults(defineProps<{
     <div :class="[container, fullScreen ? 'pl-0 pr-0':'']">
       <LoadingData v-if="props.loading && !items" />
       <template v-else-if="items.length > 0">
-        <Heading :text="props.headingText" :slug="props.slug" :class="fullScreen ? 'pl-ms pr-ms':''"/>
+        <Heading :text="props.headingText" :slug="props.slug" :class="fullScreen ? 'pl-ms pr-ms':''" :size="props.headingSize" />
         <client-only>
           <swiper :modules="[Navigation, Autoplay]" :breakpoints='props.breakpoints ? props.breakpoints : PRODUCT_LIST_SWIPER_DEFAULT' :space-between="10" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" :class="fullScreen ? 'pl-ms pr-ms':''">
             <swiper-slide v-for="(product, index) in props.items" :key="index">

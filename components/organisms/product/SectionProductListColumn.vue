@@ -2,10 +2,13 @@
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
 import { COLUMN } from '@/shared/constants/column';
 
+type HeadingSize = 'xl' | 'lg'
+
 const props = withDefaults(defineProps<{
   items?: ProductDTO[]
   loading?: boolean
   headingText?: string
+  headingSize?: HeadingSize
   backgroundItem?: string
   container?: string
   column?: string
@@ -17,6 +20,7 @@ const props = withDefaults(defineProps<{
   loading: false,
   deleteFavorite: false,
   showNoData: false,
+  headingSize: 'xl'
 })
 </script>
 
@@ -25,7 +29,7 @@ const props = withDefaults(defineProps<{
     <div :class="container">
       <LoadingData v-if="props.loading" />
       <template v-else-if="!props.loading && items.length > 0">
-        <Heading :text="props.headingText" />
+        <Heading :text="props.headingText" :size="props.headingSize" />
 
         <div :class="COLUMN.ROW">
           <div v-for="(product, index) in props.items" :key="index" :class="column ? column : 'col-6 mb-sm'">

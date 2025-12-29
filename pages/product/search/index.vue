@@ -14,7 +14,7 @@ const store = useSearchStore()
   <div class="container container-xxl ">
     <BreadcrumbDefault />
     <div class="pt-lg pb-lg">
-      <Heading :text="`Kết quả tìm kiếm: ${store.getListProductResult?.pagination?.total} sản phẩm`">
+      <Heading :text="`Kết quả tìm kiếm: ${store.getListProductResult?.pagination?.total} sản phẩm`" size="xl">
         <v-text-field
           v-model="store.txtSearch"
           label="Tim kiem..."

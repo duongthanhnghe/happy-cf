@@ -81,7 +81,9 @@ const bannerSeller = getByPosition(
             <ProductCategoryMenu :items="storeProductCategory.getListData" :loading="storeProductCategory.loading" />
           </div>
           <div class="order-main-content-scroll scroll-hide flex-1">
-            <SectionProductList :items="storeProductCategory.getListData" :loading="storeProductCategory.loading"/>
+            <div class="product-category-section">
+              <SectionProductList :items="storeProductCategory.getListData" :loading="storeProductCategory.loading" bgTab="bg-gray6" :variantTemplateProduct="storeDisplay.isLaptop ? 'card':''" />
+            </div>
           </div>
         </div>
       </v-tabs-window-item>

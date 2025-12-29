@@ -721,6 +721,9 @@ body .bg {
   }
   &-md {
     margin-bottom: $space-md !important;
+    &-cover {
+      margin-bottom: -$space-md !important;
+    }
   }
   &-lg {
     margin-bottom: $space-lg !important;

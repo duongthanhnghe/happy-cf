@@ -56,7 +56,7 @@ const storeViewed = useProductViewedStore()
       </div>
 
       <div v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0" class="mt-md pb-mt">
-        <SectionProductListSwiper :items="storeProductMostOrder.getListProductMostOrder.data" :loading="storeProductMostOrder.loadingData" :breakpoints="POPUP_HEADER_SEARCH" headingText="Gợi ý cho bạn" />
+        <SectionProductListSwiper :items="storeProductMostOrder.getListProductMostOrder.data" :loading="storeProductMostOrder.loadingData" :breakpoints="POPUP_HEADER_SEARCH" headingText="Gợi ý cho bạn" headingSize="lg" />
       </div>
 
       <SectionProductListSwiper 
@@ -64,7 +64,8 @@ const storeViewed = useProductViewedStore()
         :items="storeViewed.listItems" 
         :loading="storeViewed.loading"
         :breakpoints="POPUP_HEADER_SEARCH"
-        headingText="Bạn đã xem" 
+        headingText="Bạn đã xem"
+        headingSize="lg"
         class="pt-md"
       />
 

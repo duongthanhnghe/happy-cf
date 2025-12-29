@@ -3,10 +3,8 @@
 .product-list-section {
   &-top {
     padding-top: $space-sm;
-    padding-bottom: $space-sm;
   }
   &-button {
-    margin-top: $space-sm;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
@@ -20,13 +18,9 @@
       justify-content: space-between;
       gap: $space-md;
       padding-top: $space-md;
-      padding-bottom: 1.2rem;
       position: sticky;
       top: 0;
       z-index: 3;
-    }
-    &-button {
-      margin-top: 0;
     }
   }
 }

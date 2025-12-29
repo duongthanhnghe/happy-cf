@@ -17,7 +17,7 @@ watch(valueChangePage, (newVal) => {
     <div class="container container-xxl">
       <LoadingData v-if="store.loadingListReviews && store.getListReviewProduct === null" />
       <template v-else>
-        <Heading tag="h2" text="Đánh giá sản phẩm" />
+        <Heading tag="h2" text="Đánh giá sản phẩm" size="xl" />
 
         <div class="flex align-end gap-xs mb-xs">
           <Text :text="store.getSummaryReview?.averageRating" color="black" size="xxl" weight="semibold" class="line-height-1"/>

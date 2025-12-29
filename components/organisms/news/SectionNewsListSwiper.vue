@@ -13,10 +13,13 @@ import type { ITranslationText } from '@/server/types/dto/v1/itranslation.dto';
 
 const storeDisplay = useDisplayStore()
 
+type HeadingSize = 'xl' | 'lg'
+
 const props = withDefaults(defineProps<{
   items?: PostNewsDTO[]
   loading?: boolean
   headingText: string | ITranslationText
+  headingSize: HeadingSize
   backgroundItem?: string
   breakpoints?: SwiperOptions['breakpoints']
   container?: string
@@ -24,6 +27,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   items: () => [],
   pagination: false,
+  headingSize: 'xl'
 })
 
 </script>
@@ -33,7 +37,7 @@ const props = withDefaults(defineProps<{
     <div :class="[container]">
       <LoadingData v-if="props.loading && !items" />
       <template v-else-if="items.length > 0">
-        <Heading :text="props.headingText" />
+        <Heading :text="props.headingText" :size="props.headingSize" />
 
         <client-only>
           <swiper :modules="[Pagination, Navigation, Autoplay]" :breakpoints='props.breakpoints ? props.breakpoints : NEWS_LIST_SWIPER_DEFAULT' :pagination="props.pagination ? { clickable: true }:false" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" >

@@ -8,7 +8,8 @@
 
   <component
     v-else
-    :is="tag"
+    :is="componentTag"
+    :to="props.slug ? props.slug : undefined"
     :class="classList"
   >
     {{ props.text.text ? props.text.text : props.text }}
@@ -17,6 +18,8 @@
 </template>
 
 <script setup>
+import { computed, resolveComponent } from 'vue'
+
 const props = defineProps({
   text: {
     type: [String, Number, Object],
@@ -25,7 +28,7 @@ const props = defineProps({
   tag: {
     type: String,
     default: 'div',
-    validator: (value) => ['h1','h2','h3','h4','h5','h6','p','span','div','b','strong','i',''].includes(value)
+    validator: (value) => ['h1','h2','h3','h4','h5','h6','p','span','div','b','strong','i','NuxtLink',''].includes(value)
   },
   size: {
     type: String,
@@ -66,7 +69,19 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  slug: {
+    type: String,
+    default: '',
+  },
 })
+
+const NuxtLinkComp = resolveComponent('NuxtLink')
+
+const isLink = computed(() => Boolean(props.slug))
+
+const componentTag = computed(() =>
+  isLink.value ? NuxtLinkComp : props.tag
+)
 
 const classList = computed(() => [
   props.weight ? `weight-${props.weight}` : '',

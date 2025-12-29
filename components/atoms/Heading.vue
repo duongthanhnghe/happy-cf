@@ -1,6 +1,6 @@
 <template>
   <div v-if="props.text" :class="[computedSize === 'xxl' ? 'mb-ms' : 'mb-sm', {'flex flex-wrap gap-sm justify-between': props.slug || hasContent }]">
-    <Text :tag="props.tag" :text="props.text" :weight="props.weight" :size="computedSize" :color="props.color" :align="props.align" />
+    <Text :tag="props.tag" :text="props.text" :weight="props.weight" :size="computedSize" :color="props.color" :align="props.align" :slug="props.headingSlug" />
     <NuxtLink v-if="props.slug" :to="{ path: props.slug }">
       <Button tag="span" color="secondary" size="sm" icon="keyboard_arrow_right" class="rd-full" />
     </NuxtLink>
@@ -25,6 +25,7 @@ const props = withDefaults(defineProps<{
   weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold'
   align?: 'left' | 'center' | 'right'
   slug?: string
+  headingSlug?: string
 }>(), {
   tag: 'div',
   color: 'black',
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<{
   weight: 'semibold',
   align: 'left',
   slug: '',
+  headingSlug: '',
 })
 
 const SIZE_MAP: Record<HeadingSize, { desktop: HeadingSize; mobile: HeadingSize }> = {

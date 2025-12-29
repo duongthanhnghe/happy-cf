@@ -90,16 +90,20 @@ const listImageFeatured = getByPosition(
         fullScreen 
         container="container container-xxl" 
         :headingText="t('product.list.title1')" 
-        class="pb-section"
         :slug="storeProductMostOrder.getTotalItems > storeProductMostOrder.getListProductMostOrder.data?.length ? ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.path: ''"
       />
+
+      <client-only>
+        <SectionProductList :items="storeProductCategory.getListData" :loading="storeProductCategory.loading"/>
+      </client-only>
+
       <SectionNewsListSwiper 
         :items="storeNewsLatest.getListNewsLatest" 
         :loading="storeNewsLatest.loading" 
         pagination
         container="container container-xxl" 
         :headingText="t('news.list.title1')" 
-        class="pb-section" 
+        class="pt-section pb-section" 
       />
     </div>
   </div>

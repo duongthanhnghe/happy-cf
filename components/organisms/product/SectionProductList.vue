@@ -13,9 +13,12 @@ const storeDisplay = useDisplayStore()
 const props = withDefaults(defineProps<{
   items?: CategoryProductDTO[]
   loading?: boolean
+  bgTab?: string
+  variantTemplateProduct?: string
 }>(), {
   items: () => [],
   loading: false,
+  bgTab: 'bg-white'
 })
 
 const { data: mappedData } = await useAsyncData(
@@ -40,9 +43,8 @@ watch(mappedData, (val) => {
 </script>
 
 <template>
-<div class="product-category-section">
   <div class="container container-xxl">
-    <div class="product-category-list pb-sm">
+    <div class="product-category-list">
     <LoadingData v-if="props.loading" />
     <template v-else>
       <div
@@ -50,31 +52,28 @@ watch(mappedData, (val) => {
         :key="category.id" :id="`product-category-scroll${category.id}`"
         :data-id="`scroll-${category.id}`"
         rel="js-section-scroll"
-        class="product-list-section"
+        class="product-list-section pt-section"
         >
         <template v-if="category.banner">
-          <img :src="category.banner" :alt="category.categoryName" :class="[storeDisplay.isLaptop ? 'rd-xl mt-lg':'rd-lg mt-ms','w-full']" />
+          <img :src="category.banner" :alt="category.categoryName" :class="[storeDisplay.isLaptop ? 'rd-xl':'rd-lg','w-full']" />
         </template>
-        <div class="product-list-section-top bg-gray6">
-          <Text :size="storeDisplay.isLaptop ? 'xl':'md'" weight="semibold" color="black">
-            <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`">
-              {{ category.categoryName }}
-            </NuxtLink>
-          </Text>
-          <div v-if="category.children && category.children.length > 1" class="product-list-section-button scroll-hide flex gap-xs">
-            <Button
-              v-for="item in [{ id: category.id, categoryName: 'Tất cả' }, ...category.children]"
-              :key="item.id"
-              :label="item.categoryName"
-              :class="['weight-medium ',{ 'active': store.filterCategory[category.id] === item.id }]"
-              :color="store.filterCategory[category.id] === item.id ? 'black':'secondary'"
-              :size="storeDisplay.isLaptop ? 'md':'sm'"
-              @click="store.filterCategory[category.id] = item.id"
-            />
-            <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`" class="position-sticky right-0" v-tooltip.right="'Xem tất cả'">
-              <Button color="secondary" :size="storeDisplay.isLaptop ? 'md':'sm'" icon="keyboard_arrow_right" />
-            </NuxtLink>
-          </div>
+        <div :class='`product-list-section-top ${props.bgTab}`'>
+          <Heading :headingSlug="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`" :text="category.categoryName" class="flex-1" size="xl">
+            <div v-if="category.children && category.children.length > 1" class="product-list-section-button scroll-hide flex gap-xs">
+              <Button
+                v-for="item in [{ id: category.id, categoryName: 'Tất cả' }, ...category.children]"
+                :key="item.id"
+                :label="item.categoryName"
+                :class="['weight-medium ',{ 'active': store.filterCategory[category.id] === item.id }]"
+                :color="store.filterCategory[category.id] === item.id ? 'black':'secondary'"
+                :size="storeDisplay.isLaptop ? 'md':'sm'"
+                @click="store.filterCategory[category.id] = item.id"
+              />
+              <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`" class="position-sticky right-0" v-tooltip.right="'Xem tất cả'">
+                <Button color="secondary" :size="storeDisplay.isLaptop ? 'md':'sm'" icon="keyboard_arrow_right" />
+              </NuxtLink>
+            </div>
+          </Heading>
         </div>
         <template v-if="category.products.data && category.products.data.length > 0">
           <v-infinite-scroll
@@ -92,7 +91,7 @@ watch(mappedData, (val) => {
             <ProductItemTemplate1 
               :product="item" 
               :listView="storeDisplay.isLaptop ? false : true"
-              :variant="storeDisplay.isLaptop ? 'card':''"
+              :variant="props.variantTemplateProduct"
             />
           </div>
           <template #load-more="{ props }">
@@ -106,5 +105,4 @@ watch(mappedData, (val) => {
     </template>
     </div>
   </div>
-</div>
 </template>
