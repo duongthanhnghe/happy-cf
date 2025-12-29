@@ -11,6 +11,7 @@ interface Props {
   description?: string
   textButton?: string
   linkRedirect?: string
+  showContent?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,10 +19,11 @@ const props = withDefaults(defineProps<Props>(), {
   description: '',
   textButton: '',
   linkRedirect: '',
+  showContent: true
 })
 
 const wrapperComponent = computed(() =>
-  props.linkRedirect ? NuxtLinkComp : 'div'
+  props.linkRedirect && props.showContent ? NuxtLinkComp : 'div'
 )
 
 const wrapperProps = computed(() =>
@@ -49,6 +51,7 @@ const wrapperProps = computed(() =>
       />
 
       <div
+        v-if="props.showContent"
         :class="[
           storeDisplay.isMobileTable ? 'pd-ms' : 'pd-lg',
           'bg-gradient-2 el-absolute flex align-end left-0 bottom-0 w-full'

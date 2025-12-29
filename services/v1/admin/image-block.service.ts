@@ -9,9 +9,6 @@ import type { ApiResponse } from '@server/types/common/api-response'
 import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const imageBlocksAPI = {
-  /**
-   * GET ALL (admin)
-   */
   getAll: async (): Promise<ApiResponse<ImageBlockDTO[]>> => {
     try {
       const response = await fetchWithAuthAdmin(
@@ -29,9 +26,6 @@ export const imageBlocksAPI = {
     }
   },
 
-  /**
-   * CREATE
-   */
   create: async (
     bodyData: CreateImageBlockBody
   ): Promise<ApiResponse<ImageBlockDTO>> => {
@@ -74,9 +68,6 @@ export const imageBlocksAPI = {
     }
   },
 
-  /**
-   * GET DETAIL
-   */
   getDetail: async (id: string): Promise<ApiResponse<ImageBlockDTO>> => {
     try {
       const response = await fetchWithAuthAdmin(
@@ -207,28 +198,4 @@ export const imageBlocksAPI = {
       }
     }
   },
-
-  /**
-   * FE PUBLIC – GET BY PAGE + POSITION
-   */
-  // getByPage: async (
-  //   page: string,
-  //   position: string
-  // ): Promise<ApiResponse<ImageBlockDTO[]>> => {
-  //   try {
-  //     const response = await fetch(
-  //       `${apiConfig.apiURL}${API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.GET_BY_PAGE}?page=${page}&position=${position}`
-  //     )
-
-  //     const data = await response.json()
-  //     return data
-  //   } catch (err) {
-  //     console.error('Error fetching image blocks by page:', err)
-  //     return {
-  //       code: 1,
-  //       message: 'Failed to fetch image blocks',
-  //       data: []
-  //     }
-  //   }
-  // }
 }

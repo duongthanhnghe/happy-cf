@@ -9,6 +9,8 @@ import { useProductCategoryStore } from '@/stores/client/product/useProductCateg
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
+import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.middleware || '',
@@ -22,10 +24,22 @@ const storeProductCategory = useProductCategoryStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeViewed = useProductViewedStore()
 const { t } = useITranslations()
+const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 
 if (storeVariant.listVariantGroup.length === 0) {
   await storeVariant.fetchVariantGroupStore()
 }
+
+if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.PRODUCT_SELLER]) {
+  await fetchImageBlock(IMAGE_BLOCK_PAGES.PRODUCT_SELLER, {
+    [IMAGE_BLOCK_POSITIONS.HERO]: 1,
+  })
+}
+
+const bannerHero = getByPosition(
+  IMAGE_BLOCK_PAGES.PRODUCT_SELLER,
+  IMAGE_BLOCK_POSITIONS.HERO
+)
 
 onBeforeUnmount(() => {
   storeProductMostOrder.resetFilter()
@@ -37,7 +51,7 @@ onBeforeUnmount(() => {
     <Breadcrumb 
       :heading="ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.label" 
       :description="`${storeProductMostOrder.getTotalItems} Sản phẩm`" 
-      :image="storeProductMostOrder.IMAGE_AUTH_LOGIN">
+      :image="bannerHero[0]?.image || storeProductMostOrder.IMAGE_AUTH_LOGIN">
       <slot>
         <client-only>
         <div v-if="storeDisplay.isMobileTable" :id="storeProductMostOrder.elFilterProduct">

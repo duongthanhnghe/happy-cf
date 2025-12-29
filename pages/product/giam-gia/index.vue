@@ -8,6 +8,8 @@ import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
+import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.SALE.middleware || '',
@@ -21,9 +23,22 @@ const storeProductSale = useProductSaleStore()
 const storeProductCategory = useProductCategoryStore()
 const storeViewed = useProductViewedStore()
 const { t } = useITranslations()
+const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
+
 if (storeVariant.listVariantGroup.length === 0) {
   await storeVariant.fetchVariantGroupStore()
 }
+
+if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.PRODUCT_SALE]) {
+  await fetchImageBlock(IMAGE_BLOCK_PAGES.PRODUCT_SALE, {
+    [IMAGE_BLOCK_POSITIONS.HERO]: 1,
+  })
+}
+
+const bannerHero = getByPosition(
+  IMAGE_BLOCK_PAGES.PRODUCT_SALE,
+  IMAGE_BLOCK_POSITIONS.HERO
+)
 
 onBeforeUnmount(() => {
   storeProductSale.resetFilter()
@@ -35,7 +50,7 @@ onBeforeUnmount(() => {
     <Breadcrumb 
       :heading="ROUTES.PUBLIC.PRODUCT.children?.SALE.label" 
       :description="`${storeProductSale.getTotalItems} Sản phẩm`" 
-      :image="storeProductSale.IMAGE_AUTH_LOGIN">
+      :image="bannerHero[0]?.image || storeProductSale.IMAGE_AUTH_LOGIN">
       <slot>
         <client-only>
         <div v-if="storeDisplay.isMobileTable" :id="storeProductSale.elFilterProduct">

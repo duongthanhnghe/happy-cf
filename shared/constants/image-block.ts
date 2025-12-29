@@ -2,16 +2,19 @@ export const IMAGE_BLOCK_PAGES = {
   HOME: 'home',
   CATEGORY: 'category',
   PRODUCT: 'product',
+  PRODUCT_NEW: 'product-new',
+  PRODUCT_SELLER: 'product-seller',
+  PRODUCT_SALE: 'product-sale',
 } as const
 
 export const IMAGE_BLOCK_PAGE_OPTIONS = [
   { title: 'Trang chủ', value: IMAGE_BLOCK_PAGES.HOME },
   { title: 'Danh mục', value: IMAGE_BLOCK_PAGES.CATEGORY },
   { title: 'Chi tiết sản phẩm', value: IMAGE_BLOCK_PAGES.PRODUCT },
+  { title: 'Trang SP mới nhất', value: IMAGE_BLOCK_PAGES.PRODUCT_NEW },
+  { title: 'Trang SP bán chạy', value: IMAGE_BLOCK_PAGES.PRODUCT_SELLER },
+  { title: 'Trang SP khuyến mãi', value: IMAGE_BLOCK_PAGES.PRODUCT_SALE },
 ]
-
-export type ImageBlockPage =
-  typeof IMAGE_BLOCK_PAGES[keyof typeof IMAGE_BLOCK_PAGES]
 
 export const IMAGE_BLOCK_POSITIONS = {
   HERO: 'hero',
@@ -26,6 +29,3 @@ export const IMAGE_BLOCK_POSITION_OPTIONS = [
   { title: 'Sidebar', value: IMAGE_BLOCK_POSITIONS.SIDEBAR },
   { title: 'Cuối trang', value: IMAGE_BLOCK_POSITIONS.BOTTOM },
 ]
-
-export type ImageBlockPosition =
-  typeof IMAGE_BLOCK_POSITIONS[keyof typeof IMAGE_BLOCK_POSITIONS]

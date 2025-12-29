@@ -1,7 +1,7 @@
+import type { ImageBlockPage, ImageBlockPosition } from '@/server/types/dto/v1/image-block.dto'
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS } from '@/services/const/api.const'
 import type { ApiResponse } from '@server/types/common/api-response'
-import type { ImageBlockPage, ImageBlockPosition } from '@/server/shared/constants/image-block'
 
 export const imageBlocksAPI = {
   getByPage: async (

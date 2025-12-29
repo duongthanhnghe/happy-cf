@@ -10,6 +10,8 @@ import { COLUMN } from '@/shared/constants/column';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
+import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.ORDER.middleware,
@@ -22,6 +24,7 @@ const storeProductMostOrder = useProductMostOrderStore()
 const storeProductCategory = useProductCategoryStore()
 const storeAccount = useAccountStore();
 const storeDisplay = useDisplayStore();
+const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 
 const { tab, tabs } = await useOrderMainHandlers(storeProductMostOrder,storeProductSale, storeProductCategory)
 
@@ -31,11 +34,32 @@ watch(() => route.query.tab, (newVal) => {
   if (newVal) tab.value = Number(newVal)
 })
 
+if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.PRODUCT_SALE] || !dataImageBlock.value[IMAGE_BLOCK_PAGES.PRODUCT_SELLER]) {
+  await Promise.all([
+    fetchImageBlock(IMAGE_BLOCK_PAGES.PRODUCT_SALE, {
+      [IMAGE_BLOCK_POSITIONS.HERO]: 1,
+    }),
+    fetchImageBlock(IMAGE_BLOCK_PAGES.PRODUCT_SELLER, {
+      [IMAGE_BLOCK_POSITIONS.HERO]: 1,
+    }),
+  ])
+}
+
+const bannerSale = getByPosition(
+  IMAGE_BLOCK_PAGES.PRODUCT_SALE,
+  IMAGE_BLOCK_POSITIONS.HERO
+)
+
+const bannerSeller = getByPosition(
+  IMAGE_BLOCK_PAGES.PRODUCT_SELLER,
+  IMAGE_BLOCK_POSITIONS.HERO
+)
+
 </script>
 
 <template>
-  <div class="bg-white shadow-2">
-    <v-tabs v-model="tab" align-tabs="center" :class="{ container: storeDisplay.isLaptop }">
+  <div :class="[{ '_hidden': storeDisplay.isLaptop },'bg-white shadow-2']">
+    <v-tabs v-model="tab" align-tabs="center">
       <v-tab
           v-for="item in tabs"
           :key="item.value"
@@ -66,20 +90,24 @@ watch(() => route.query.tab, (newVal) => {
           v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0"
           class="pt-lg order-main-content-scroll scroll-hide"
           >
-          <SectionProductListColumn
-            :items="storeProductMostOrder.getListProductMostOrder.data"
-            :loading="storeProductMostOrder.loadingData" 
-            :column="COLUMN.PRODUCT_XL"
-            container="container container-xxl"
-            headingText="Top bán chay"
-            showNoData
-          />
-          <div class="text-center pb-lg" v-if="storeProductMostOrder.getTotalItems > storeProductMostOrder.getListProductMostOrder.data?.length">
-            <NuxtLink
-              :to="{ path: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.path }"
-            >
-              <Button color="black" label="Xem tất cả"/>
-            </NuxtLink>
+          <div class="container container-xxl">
+            <div v-if="bannerSeller[0]" class="pb-lg">
+              <ImageBlock v-bind="bannerSeller[0]" :showContent="false" />
+            </div>
+            <SectionProductListColumn
+              :items="storeProductMostOrder.getListProductMostOrder.data"
+              :loading="storeProductMostOrder.loadingData" 
+              :column="COLUMN.PRODUCT_XL"
+              headingText="Top bán chay"
+              showNoData
+            />
+            <div class="text-center pb-lg" v-if="storeProductMostOrder.getTotalItems > storeProductMostOrder.getListProductMostOrder.data?.length">
+              <NuxtLink
+                :to="{ path: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.path }"
+              >
+                <Button color="black" label="Xem tất cả"/>
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </v-tabs-window-item>
@@ -88,20 +116,24 @@ watch(() => route.query.tab, (newVal) => {
           v-if="storeProductSale.getListProductSales && storeProductSale.getListProductSales.data.length > 0"
           class="pt-lg order-main-content-scroll scroll-hide"
           >
-          <SectionProductListColumn
-            :items="storeProductSale.getListProductSales.data"
-            :loading="storeProductSale.loadingData" 
-            :column="COLUMN.PRODUCT_XL"
-            container="container container-xxl"
-            headingText="Top khuyến mãi"
-            showNoData
-          />
-          <div class="text-center pb-lg" v-if="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length">
-            <NuxtLink
-              :to="{ path: ROUTES.PUBLIC.PRODUCT.children?.SALE.path }"
-            >
-              <Button color="black" label="Xem tất cả"/>
-            </NuxtLink>
+          <div class="container container-xxl">
+            <div v-if="bannerSale[0]" class="pb-lg">
+              <ImageBlock v-bind="bannerSale[0]" :showContent="false" />
+            </div>
+            <SectionProductListColumn
+              :items="storeProductSale.getListProductSales.data"
+              :loading="storeProductSale.loadingData" 
+              :column="COLUMN.PRODUCT_XL"
+              headingText="Top khuyến mãi"
+              showNoData
+            />
+            <div class="text-center pb-lg" v-if="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length">
+              <NuxtLink
+                :to="{ path: ROUTES.PUBLIC.PRODUCT.children?.SALE.path }"
+              >
+                <Button color="black" label="Xem tất cả"/>
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </v-tabs-window-item>

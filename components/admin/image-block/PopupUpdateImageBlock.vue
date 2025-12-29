@@ -16,15 +16,15 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 <Popup v-model="store.isTogglePopupUpdate" popupHeading="Them anh" align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-        <LabelInput label="Tieu de" required/>
-        <v-text-field v-model="store.formUpdate.title" :counter="200" :rules="store.nullRules" label="Nhap tieu de" variant="outlined" required></v-text-field>
+        <LabelInput label="Tieu de"/>
+        <v-text-field v-model="store.formUpdate.title" :counter="100" label="Nhap tieu de" variant="outlined"></v-text-field>
         <LabelInput label="Noi dung"/>
-        <v-textarea v-model="store.formUpdate.description" label="Nhap noi dung" variant="outlined"></v-textarea>
+        <v-textarea v-model="store.formUpdate.description" :counter="200" label="Nhap noi dung" variant="outlined"></v-textarea>
 
-        <LabelInput label="Text tren nut" required/>
+        <LabelInput label="Text tren nut"/>
         <v-text-field v-model="store.formUpdate.textButton" :counter="100" label="Nhap text" variant="outlined"></v-text-field>
 
-        <LabelInput label="Link dieu huong" required/>
+        <LabelInput label="Link dieu huong"/>
         <v-text-field v-model="store.formUpdate.linkRedirect" label="Nhap link dieu huong" variant="outlined"></v-text-field>
 
         <LabelInput label="Trang hiển thị" required/>
@@ -35,7 +35,6 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           item-title="title"
           item-value="value"
           variant="outlined"
-          disabled
         />
 
         <LabelInput label="Vị trí" required/>
@@ -46,7 +45,6 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
           item-title="title"
           item-value="value"
           variant="outlined"
-          disabled
         />
 
         <LabelInput label="Hinh anh" required/>

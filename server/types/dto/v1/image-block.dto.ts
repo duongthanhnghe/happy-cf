@@ -1,3 +1,14 @@
+import {
+  IMAGE_BLOCK_PAGES,
+  IMAGE_BLOCK_POSITIONS,
+} from '../../../shared/constants/image-block'
+
+export type ImageBlockPage =
+  typeof IMAGE_BLOCK_PAGES[keyof typeof IMAGE_BLOCK_PAGES]
+
+export type ImageBlockPosition =
+  typeof IMAGE_BLOCK_POSITIONS[keyof typeof IMAGE_BLOCK_POSITIONS]
+
 export interface ImageBlockDTO {
   id: string
 
@@ -8,8 +19,8 @@ export interface ImageBlockDTO {
   textButton?: string
   linkRedirect?: string
 
-  page: string
-  position: string
+  page: ImageBlockPage
+  position: ImageBlockPosition
   order: number
   isActive: boolean
 

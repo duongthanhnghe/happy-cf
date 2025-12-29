@@ -2,7 +2,7 @@ import { Schema, model, Types } from 'mongoose'
 import type {
   ImageBlockPage,
   ImageBlockPosition,
-} from '../../shared/constants/image-block'
+} from '../../types/dto/v1/image-block.dto'
 
 export interface ImageBlock {
   _id: Types.ObjectId
@@ -44,13 +44,13 @@ const ImageBlockSchema = new Schema<ImageBlock>(
       index: true,
     },
 
-    order: { type: Number, default: 0 },
+    order: { type: Number, required: true, min: 1 },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 )
 
-ImageBlockSchema.index({ page: 1, position: 1, isActive: 1, order: 1 })
+ImageBlockSchema.index({ page: 1, position: 1, order: 1 },{ unique: true })
 
 export const ImageBlockEntity = model<ImageBlock>(
   'ImageBlock',

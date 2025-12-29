@@ -1155,16 +1155,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"129a72-qyUwcFG9FqrSgW+wQn02YTVUunc\"",
-    "mtime": "2025-12-29T04:26:20.705Z",
-    "size": 1219186,
+    "etag": "\"129b3e-8w0a219oAV2mz+FSWfJSRnqn0Ws\"",
+    "mtime": "2025-12-29T06:23:21.883Z",
+    "size": 1219390,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"4bbdce-T9ar6FsruD7c91Fby40RvP8kOLo\"",
-    "mtime": "2025-12-29T04:26:20.713Z",
-    "size": 4963790,
+    "etag": "\"4bc1a0-jXk+GO8wpC5rY82hwwsMEHj6EFs\"",
+    "mtime": "2025-12-29T06:23:21.888Z",
+    "size": 4964768,
     "path": "index.mjs.map"
   }
 };
@@ -3688,12 +3688,12 @@ const ImageBlockSchema = new Schema(
       required: true,
       index: true
     },
-    order: { type: Number, default: 0 },
+    order: { type: Number, required: true, min: 1 },
     isActive: { type: Boolean, default: true }
   },
   { timestamps: true }
 );
-ImageBlockSchema.index({ page: 1, position: 1, isActive: 1, order: 1 });
+ImageBlockSchema.index({ page: 1, position: 1, order: 1 }, { unique: true });
 const ImageBlockEntity = model(
   "ImageBlock",
   ImageBlockSchema,
@@ -3739,6 +3739,7 @@ const getImageBlockById = async (req, res) => {
   }
 };
 const createImageBlock = async (req, res) => {
+  var _a, _b;
   try {
     const { image, page, position } = req.body;
     if (!image || !page || !position) {
@@ -3747,11 +3748,18 @@ const createImageBlock = async (req, res) => {
         message: "Thi\u1EBFu image / page / position"
       });
     }
-    const lastItem = await ImageBlockEntity.findOne({
-      page,
-      position
-    }).sort({ order: -1 });
-    const maxOrder = lastItem ? lastItem.order : 0;
+    const result = await ImageBlockEntity.aggregate([
+      {
+        $match: { page, position }
+      },
+      {
+        $group: {
+          _id: null,
+          maxOrder: { $max: "$order" }
+        }
+      }
+    ]);
+    const maxOrder = (_b = (_a = result[0]) == null ? void 0 : _a.maxOrder) != null ? _b : 0;
     const newItem = new ImageBlockEntity({
       ...req.body,
       order: maxOrder + 1

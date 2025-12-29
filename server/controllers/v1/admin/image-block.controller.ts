@@ -29,29 +29,6 @@ export const getImageBlockById = async (req: Request, res: Response) => {
   }
 }
 
-// export const getImageBlocksByPage = async (req: Request, res: Response) => {
-//   try {
-//     const { page, position } = req.query
-
-//     if (!page || !position) {
-//       return res.status(400).json({
-//         code: 1,
-//         message: "Thiếu page hoặc position",
-//       })
-//     }
-
-//     const items = await ImageBlockEntity.find({
-//       page,
-//       position,
-//       isActive: true,
-//     }).sort({ order: 1 })
-
-//     return res.json({ code: 0, data: toImageBlockListDTO(items) })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
-
 export const createImageBlock = async (req: Request, res: Response) => {
   try {
     const { image, page, position } = req.body
@@ -63,12 +40,19 @@ export const createImageBlock = async (req: Request, res: Response) => {
       })
     }
 
-    const lastItem = await ImageBlockEntity.findOne({
-      page,
-      position,
-    }).sort({ order: -1 })
+    const result = await ImageBlockEntity.aggregate([
+      {
+        $match: { page, position }
+      },
+      {
+        $group: {
+          _id: null,
+          maxOrder: { $max: '$order' }
+        }
+      }
+    ])
 
-    const maxOrder = lastItem ? lastItem.order : 0
+    const maxOrder = result[0]?.maxOrder ?? 0
 
     const newItem = new ImageBlockEntity({
       ...req.body,

@@ -1,11 +1,7 @@
 import { computed, ref } from 'vue'
 import { useState } from 'nuxt/app'
-import type {
-  ImageBlockPage,
-  ImageBlockPosition
-} from '@/server/shared/constants/image-block'
 import { imageBlocksAPI } from '@/services/v1/image-block.service'
-import type { ImageBlockDTO } from '@/server/types/dto/v1/image-block.dto'
+import type { ImageBlockDTO, ImageBlockPage, ImageBlockPosition } from '@/server/types/dto/v1/image-block.dto'
 
 export const useImageBlockByPage = () => {
   const dataImageBlock = useState<

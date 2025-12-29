@@ -13,13 +13,13 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 
 </script>
 <template>
-<Popup v-model="store.isTogglePopupAdd" popupHeading="Them anh 2" align="right">
+<Popup v-model="store.isTogglePopupAdd" popupHeading="Them anh" align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-        <LabelInput label="Tieu de" required/>
-        <v-text-field v-model="store.formItem.title" :counter="200" :rules="store.nullRules" label="Nhap tieu de" variant="outlined" required></v-text-field>
+        <LabelInput label="Tieu de"/>
+        <v-text-field v-model="store.formItem.title" :counter="100" label="Nhap tieu de" variant="outlined"></v-text-field>
         <LabelInput label="Noi dung"/>
-        <v-textarea v-model="store.formItem.description" label="Nhap noi dung" variant="outlined"></v-textarea>
+        <v-textarea v-model="store.formItem.description" :counter="200" label="Nhap noi dung" variant="outlined"></v-textarea>
 
         <LabelInput label="Text tren nut" />
         <v-text-field v-model="store.formItem.textButton" :counter="100" label="Nhap text" variant="outlined"></v-text-field>
