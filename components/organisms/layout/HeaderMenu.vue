@@ -24,7 +24,7 @@ const storeDisplay = useDisplayStore()
     >
       <!-- MENU cha -->
       <NuxtLink
-        v-if="item?.path"
+        v-if="!item || item?.path !== null || item?.path !== undefined"
         :to="{ path: item.path }"
         :class="[
           'header-menu-href flex align-center',

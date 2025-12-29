@@ -60,6 +60,22 @@ export const useProductCategoryStore = defineStore("ProductCategoryStore", () =>
     return dataList.value.map(category => mapCategoryToMenu(category))
   })
 
+  const getMenuMain = computed<MenuItem>(() => {
+    if (!dataList.value.length) {
+      return {} as MenuItem
+    }
+
+    return {
+      label: 'Sản phẩm',
+      path: '',
+      icon: dataList.value[0].image,
+      children: dataList.value.map(category =>
+        mapCategoryToMenu(category)
+      ),
+    } as unknown as MenuItem
+  })
+
+
   return {
     dataList,
     fetchCategoryStore,
@@ -68,6 +84,7 @@ export const useProductCategoryStore = defineStore("ProductCategoryStore", () =>
     getMenuItems,
     lastFetched,
     loading,
+    getMenuMain,
   };
 }, {
   persist: {

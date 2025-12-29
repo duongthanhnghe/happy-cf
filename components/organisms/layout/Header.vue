@@ -54,7 +54,6 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
     </template>
   </client-only>
 
-
   <div class="header">
     <div class="header-fixed">
       <div class="container container-xxl">

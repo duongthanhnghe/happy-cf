@@ -3,9 +3,11 @@ import { defineStore } from "pinia";
 import { ROUTES } from "@/shared/constants/routes";
 import { useProductCategoryStore } from "../product/useProductCategoryStore";
 import { getMenuDepth } from "@/utils/menuHelpers";
+import { useDisplayStore } from "@/stores/shared/useDisplayStore";
 
 export const useHeaderStore = defineStore("HeaderStore", () => {
   const storeProductCategory = useProductCategoryStore()
+  const storeDisplay = useDisplayStore()
 
   const isTogglePopupMenu = ref<boolean>(false);
 
@@ -14,11 +16,20 @@ export const useHeaderStore = defineStore("HeaderStore", () => {
   }
 
   const listMenu = computed(() => {
+    const productMenus = storeDisplay.isLaptop
+      ? [
+          ...storeProductCategory.getMenuItems.slice(0, 2),
+          ...(storeProductCategory.getMenuItems.length > 2
+            ? [storeProductCategory.getMenuMain]
+            : []),
+        ]
+      : storeProductCategory.getMenuItems
+
     return [
       ROUTES.PUBLIC.HOME,
       ROUTES.PUBLIC.ORDER,
       ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER,
-      ...storeProductCategory.getMenuItems,
+      ...productMenus,
       ROUTES.PUBLIC.PRODUCT.children?.SALE,
     ]
   })
