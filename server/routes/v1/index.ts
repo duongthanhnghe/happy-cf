@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 import adminRoutes from "./admin/index"
 import sharedRoutes from "./shared/index"
-
+import ImageBlockRoutes from './image-block.router'
 import authRoutes from './auth.router'
 import usersRoutes from './users.router'
 import bannerRoutes from './banner.router'
@@ -22,6 +22,7 @@ const router = Router()
 router.use("/admin", adminRoutes)
 router.use("/", sharedRoutes)
 
+router.use('/image-blocks', ImageBlockRoutes)
 router.use('/auth', authRoutes)
 router.use('/users', usersRoutes)
 

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import adminRoutes from "./admin/index.js";
 import sharedRoutes from "./shared/index.js";
+import ImageBlockRoutes from './image-block.router.js';
 import authRoutes from './auth.router.js';
 import usersRoutes from './users.router.js';
 import bannerRoutes from './banner.router.js';
@@ -17,6 +18,7 @@ import voucherRouter from './voucher.router.js';
 const router = Router();
 router.use("/admin", adminRoutes);
 router.use("/", sharedRoutes);
+router.use('/image-blocks', ImageBlockRoutes);
 router.use('/auth', authRoutes);
 router.use('/users', usersRoutes);
 router.use('/banners', bannerRoutes);

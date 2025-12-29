@@ -25,7 +25,7 @@ const props = defineProps({
   tag: {
     type: String,
     default: 'div',
-    validator: (value) => ['h2','h3','h4','h5','h6','p','span','div','b','strong','i',''].includes(value)
+    validator: (value) => ['h1','h2','h3','h4','h5','h6','p','span','div','b','strong','i',''].includes(value)
   },
   size: {
     type: String,

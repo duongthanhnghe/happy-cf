@@ -34,38 +34,38 @@ onBeforeUnmount(() => {
 <PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
-  <v-data-table-server 
-    class="v-data-table-no-footer"
-    v-model:items-per-page="store.itemsPerPage" 
-    :headers="store.headers" 
-    :items="store.serverItems" 
-    :items-length="store.totalItems" 
-    :loading="store.loadingTable" 
-    @update:options="options => {
-      store.currentTableOptions = options
-    }">
-     <template #item.index="{ item }">
-      <SelectOrder :order="item.order" :listOrder="store.getListOrder" @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"/>
-    </template>
+  <client-only>
+    <v-data-table-server 
+      class="v-data-table-no-footer"
+      :headers="store.headers" 
+      :items="store.serverItems" 
+      :items-length="store.serverItems.length" 
+      :loading="store.loadingTable" 
+      @update:options="store.loadItems"
+      >
+      <template #item.index="{ item }">
+        <SelectOrder :order="item.order" :listOrder="store.getListOrder" @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"/>
+      </template>
 
-    <template #item.image="{ item }">
-      <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
-    </template>
+      <template #item.image="{ item }">
+        <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
+      </template>
 
-    <template #item.isActive="{ item }">
-      <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Đổi trạng thái'" @click="store.toggleActive(item.id)">
-        {{ item.isActive === true ? 'Kích hoạt' : 'Tắt kích hoạt' }}
-      </v-chip>
-    </template>
+      <template #item.isActive="{ item }">
+        <v-chip label :color="`${item.isActive === true ? 'green' : 'red'}`" v-tooltip.right="'Đổi trạng thái'" @click="store.toggleActive(item.id)">
+          {{ item.isActive === true ? 'Kích hoạt' : 'Tắt kích hoạt' }}
+        </v-chip>
+      </template>
 
-    <template #item.actions="{ item }">
-      <div class="flex gap-sm justify-end">
-        <Button color="gray" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
-        <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
-      </div>
-    </template>
+      <template #item.actions="{ item }">
+        <div class="flex gap-sm justify-end">
+          <Button color="gray" size="sm" icon="edit" @click="store.handleEdit(item.id)" />
+          <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
+        </div>
+      </template>
 
-    <template #bottom />
-  </v-data-table-server>
+      <template #bottom />
+    </v-data-table-server>
+  </client-only>
 </v-container>
 </template>

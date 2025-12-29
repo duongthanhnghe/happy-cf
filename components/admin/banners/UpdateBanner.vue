@@ -14,9 +14,6 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 <Popup v-model="store.isTogglePopupUpdate" popupHeading="Sua banner" align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
-      <div class="portal-popup-footer">
-        <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
-      </div>
         
         <LabelInput label="Tieu de" required/>
         <v-text-field v-model="store.formBannerItem.title" :counter="200" :rules="store.nullRules" label="Tieu de banner" variant="outlined" required></v-text-field>
@@ -32,6 +29,8 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
         </div>
         <v-switch :label="`Tinh trang: ${store.formBannerItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.formBannerItem.isActive" inset
         ></v-switch>
+
+        <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
     </v-form>
   </template>
 </Popup>

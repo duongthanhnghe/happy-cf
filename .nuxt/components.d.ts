@@ -15,6 +15,8 @@ interface _GlobalComponents {
       'PopupAccountCreate': typeof import("../components/admin/account/PopupAccountCreate.vue")['default']
     'CreateBanner': typeof import("../components/admin/banners/CreateBanner.vue")['default']
     'UpdateBanner': typeof import("../components/admin/banners/UpdateBanner.vue")['default']
+    'PopupCreateImageBlock': typeof import("../components/admin/image-block/PopupCreateImageBlock.vue")['default']
+    'PopupUpdateImageBlock': typeof import("../components/admin/image-block/PopupUpdateImageBlock.vue")['default']
     'CreateITranslation': typeof import("../components/admin/itranslation/CreateITranslation.vue")['default']
     'UpdateITranslation': typeof import("../components/admin/itranslation/UpdateITranslation.vue")['default']
     'HeaderAdmin': typeof import("../components/admin/layout/HeaderAdmin.vue")['default']
@@ -42,7 +44,6 @@ interface _GlobalComponents {
     'CreateVoucher': typeof import("../components/admin/voucher/CreateVoucher.vue")['default']
     'UpdateVoucher': typeof import("../components/admin/voucher/UpdateVoucher.vue")['default']
     'AvatarEdit': typeof import("../components/atoms/AvatarEdit.vue")['default']
-    'BoxImage': typeof import("../components/atoms/BoxImage.vue")['default']
     'BreadcrumbDefault': typeof import("../components/atoms/BreadcrumbDefault.vue")['default']
     'Button': typeof import("../components/atoms/Button.vue")['default']
     'CKEditorCDN': typeof import("../components/atoms/CKEditorCDN.vue")['default']
@@ -52,6 +53,7 @@ interface _GlobalComponents {
     'DateFilter': typeof import("../components/atoms/DateFilter.vue")['default']
     'FirstLoader': typeof import("../components/atoms/FirstLoader.vue")['default']
     'Heading': typeof import("../components/atoms/Heading.vue")['default']
+    'ImageBlock': typeof import("../components/atoms/ImageBlock.vue")['default']
     'LabelInput': typeof import("../components/atoms/LabelInput.vue")['default']
     'Loading': typeof import("../components/atoms/Loading.vue")['default']
     'LoadingData': typeof import("../components/atoms/LoadingData.vue")['default']
@@ -76,6 +78,7 @@ interface _GlobalComponents {
     'CartItemTemplate2': typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
     'FileImageItem': typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
     'Pagination': typeof import("../components/molecules/global/Pagination.vue")['default']
+    'ImageBlockLayoutColumn': typeof import("../components/molecules/image-block/ImageBlockLayoutColumn.vue")['default']
     'HeaderBoxSearch': typeof import("../components/molecules/layout/HeaderBoxSearch.vue")['default']
     'HeaderBoxSupport': typeof import("../components/molecules/layout/HeaderBoxSupport.vue")['default']
     'HeaderMenuItemTemplate1': typeof import("../components/molecules/layout/HeaderMenuItemTemplate1.vue")['default']
@@ -204,6 +207,8 @@ interface _GlobalComponents {
       'LazyPopupAccountCreate': LazyComponent<typeof import("../components/admin/account/PopupAccountCreate.vue")['default']>
     'LazyCreateBanner': LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
     'LazyUpdateBanner': LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
+    'LazyPopupCreateImageBlock': LazyComponent<typeof import("../components/admin/image-block/PopupCreateImageBlock.vue")['default']>
+    'LazyPopupUpdateImageBlock': LazyComponent<typeof import("../components/admin/image-block/PopupUpdateImageBlock.vue")['default']>
     'LazyCreateITranslation': LazyComponent<typeof import("../components/admin/itranslation/CreateITranslation.vue")['default']>
     'LazyUpdateITranslation': LazyComponent<typeof import("../components/admin/itranslation/UpdateITranslation.vue")['default']>
     'LazyHeaderAdmin': LazyComponent<typeof import("../components/admin/layout/HeaderAdmin.vue")['default']>
@@ -231,7 +236,6 @@ interface _GlobalComponents {
     'LazyCreateVoucher': LazyComponent<typeof import("../components/admin/voucher/CreateVoucher.vue")['default']>
     'LazyUpdateVoucher': LazyComponent<typeof import("../components/admin/voucher/UpdateVoucher.vue")['default']>
     'LazyAvatarEdit': LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
-    'LazyBoxImage': LazyComponent<typeof import("../components/atoms/BoxImage.vue")['default']>
     'LazyBreadcrumbDefault': LazyComponent<typeof import("../components/atoms/BreadcrumbDefault.vue")['default']>
     'LazyButton': LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
     'LazyCKEditorCDN': LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
@@ -241,6 +245,7 @@ interface _GlobalComponents {
     'LazyDateFilter': LazyComponent<typeof import("../components/atoms/DateFilter.vue")['default']>
     'LazyFirstLoader': LazyComponent<typeof import("../components/atoms/FirstLoader.vue")['default']>
     'LazyHeading': LazyComponent<typeof import("../components/atoms/Heading.vue")['default']>
+    'LazyImageBlock': LazyComponent<typeof import("../components/atoms/ImageBlock.vue")['default']>
     'LazyLabelInput': LazyComponent<typeof import("../components/atoms/LabelInput.vue")['default']>
     'LazyLoading': LazyComponent<typeof import("../components/atoms/Loading.vue")['default']>
     'LazyLoadingData': LazyComponent<typeof import("../components/atoms/LoadingData.vue")['default']>
@@ -265,6 +270,7 @@ interface _GlobalComponents {
     'LazyCartItemTemplate2': LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
     'LazyFileImageItem': LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
     'LazyPagination': LazyComponent<typeof import("../components/molecules/global/Pagination.vue")['default']>
+    'LazyImageBlockLayoutColumn': LazyComponent<typeof import("../components/molecules/image-block/ImageBlockLayoutColumn.vue")['default']>
     'LazyHeaderBoxSearch': LazyComponent<typeof import("../components/molecules/layout/HeaderBoxSearch.vue")['default']>
     'LazyHeaderBoxSupport': LazyComponent<typeof import("../components/molecules/layout/HeaderBoxSupport.vue")['default']>
     'LazyHeaderMenuItemTemplate1': LazyComponent<typeof import("../components/molecules/layout/HeaderMenuItemTemplate1.vue")['default']>
@@ -399,6 +405,8 @@ declare module 'vue' {
 export const PopupAccountCreate: typeof import("../components/admin/account/PopupAccountCreate.vue")['default']
 export const CreateBanner: typeof import("../components/admin/banners/CreateBanner.vue")['default']
 export const UpdateBanner: typeof import("../components/admin/banners/UpdateBanner.vue")['default']
+export const PopupCreateImageBlock: typeof import("../components/admin/image-block/PopupCreateImageBlock.vue")['default']
+export const PopupUpdateImageBlock: typeof import("../components/admin/image-block/PopupUpdateImageBlock.vue")['default']
 export const CreateITranslation: typeof import("../components/admin/itranslation/CreateITranslation.vue")['default']
 export const UpdateITranslation: typeof import("../components/admin/itranslation/UpdateITranslation.vue")['default']
 export const HeaderAdmin: typeof import("../components/admin/layout/HeaderAdmin.vue")['default']
@@ -426,7 +434,6 @@ export const UpdateMembershipBenefit: typeof import("../components/admin/users/U
 export const CreateVoucher: typeof import("../components/admin/voucher/CreateVoucher.vue")['default']
 export const UpdateVoucher: typeof import("../components/admin/voucher/UpdateVoucher.vue")['default']
 export const AvatarEdit: typeof import("../components/atoms/AvatarEdit.vue")['default']
-export const BoxImage: typeof import("../components/atoms/BoxImage.vue")['default']
 export const BreadcrumbDefault: typeof import("../components/atoms/BreadcrumbDefault.vue")['default']
 export const Button: typeof import("../components/atoms/Button.vue")['default']
 export const CKEditorCDN: typeof import("../components/atoms/CKEditorCDN.vue")['default']
@@ -436,6 +443,7 @@ export const ControlImage: typeof import("../components/atoms/ControlImage.vue")
 export const DateFilter: typeof import("../components/atoms/DateFilter.vue")['default']
 export const FirstLoader: typeof import("../components/atoms/FirstLoader.vue")['default']
 export const Heading: typeof import("../components/atoms/Heading.vue")['default']
+export const ImageBlock: typeof import("../components/atoms/ImageBlock.vue")['default']
 export const LabelInput: typeof import("../components/atoms/LabelInput.vue")['default']
 export const Loading: typeof import("../components/atoms/Loading.vue")['default']
 export const LoadingData: typeof import("../components/atoms/LoadingData.vue")['default']
@@ -460,6 +468,7 @@ export const CartItemTemplate1: typeof import("../components/molecules/cart/Cart
 export const CartItemTemplate2: typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']
 export const FileImageItem: typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']
 export const Pagination: typeof import("../components/molecules/global/Pagination.vue")['default']
+export const ImageBlockLayoutColumn: typeof import("../components/molecules/image-block/ImageBlockLayoutColumn.vue")['default']
 export const HeaderBoxSearch: typeof import("../components/molecules/layout/HeaderBoxSearch.vue")['default']
 export const HeaderBoxSupport: typeof import("../components/molecules/layout/HeaderBoxSupport.vue")['default']
 export const HeaderMenuItemTemplate1: typeof import("../components/molecules/layout/HeaderMenuItemTemplate1.vue")['default']
@@ -588,6 +597,8 @@ export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/co
 export const LazyPopupAccountCreate: LazyComponent<typeof import("../components/admin/account/PopupAccountCreate.vue")['default']>
 export const LazyCreateBanner: LazyComponent<typeof import("../components/admin/banners/CreateBanner.vue")['default']>
 export const LazyUpdateBanner: LazyComponent<typeof import("../components/admin/banners/UpdateBanner.vue")['default']>
+export const LazyPopupCreateImageBlock: LazyComponent<typeof import("../components/admin/image-block/PopupCreateImageBlock.vue")['default']>
+export const LazyPopupUpdateImageBlock: LazyComponent<typeof import("../components/admin/image-block/PopupUpdateImageBlock.vue")['default']>
 export const LazyCreateITranslation: LazyComponent<typeof import("../components/admin/itranslation/CreateITranslation.vue")['default']>
 export const LazyUpdateITranslation: LazyComponent<typeof import("../components/admin/itranslation/UpdateITranslation.vue")['default']>
 export const LazyHeaderAdmin: LazyComponent<typeof import("../components/admin/layout/HeaderAdmin.vue")['default']>
@@ -615,7 +626,6 @@ export const LazyUpdateMembershipBenefit: LazyComponent<typeof import("../compon
 export const LazyCreateVoucher: LazyComponent<typeof import("../components/admin/voucher/CreateVoucher.vue")['default']>
 export const LazyUpdateVoucher: LazyComponent<typeof import("../components/admin/voucher/UpdateVoucher.vue")['default']>
 export const LazyAvatarEdit: LazyComponent<typeof import("../components/atoms/AvatarEdit.vue")['default']>
-export const LazyBoxImage: LazyComponent<typeof import("../components/atoms/BoxImage.vue")['default']>
 export const LazyBreadcrumbDefault: LazyComponent<typeof import("../components/atoms/BreadcrumbDefault.vue")['default']>
 export const LazyButton: LazyComponent<typeof import("../components/atoms/Button.vue")['default']>
 export const LazyCKEditorCDN: LazyComponent<typeof import("../components/atoms/CKEditorCDN.vue")['default']>
@@ -625,6 +635,7 @@ export const LazyControlImage: LazyComponent<typeof import("../components/atoms/
 export const LazyDateFilter: LazyComponent<typeof import("../components/atoms/DateFilter.vue")['default']>
 export const LazyFirstLoader: LazyComponent<typeof import("../components/atoms/FirstLoader.vue")['default']>
 export const LazyHeading: LazyComponent<typeof import("../components/atoms/Heading.vue")['default']>
+export const LazyImageBlock: LazyComponent<typeof import("../components/atoms/ImageBlock.vue")['default']>
 export const LazyLabelInput: LazyComponent<typeof import("../components/atoms/LabelInput.vue")['default']>
 export const LazyLoading: LazyComponent<typeof import("../components/atoms/Loading.vue")['default']>
 export const LazyLoadingData: LazyComponent<typeof import("../components/atoms/LoadingData.vue")['default']>
@@ -649,6 +660,7 @@ export const LazyCartItemTemplate1: LazyComponent<typeof import("../components/m
 export const LazyCartItemTemplate2: LazyComponent<typeof import("../components/molecules/cart/CartItemTemplate2.vue")['default']>
 export const LazyFileImageItem: LazyComponent<typeof import("../components/molecules/file-manage/FileImageItem.vue")['default']>
 export const LazyPagination: LazyComponent<typeof import("../components/molecules/global/Pagination.vue")['default']>
+export const LazyImageBlockLayoutColumn: LazyComponent<typeof import("../components/molecules/image-block/ImageBlockLayoutColumn.vue")['default']>
 export const LazyHeaderBoxSearch: LazyComponent<typeof import("../components/molecules/layout/HeaderBoxSearch.vue")['default']>
 export const LazyHeaderBoxSupport: LazyComponent<typeof import("../components/molecules/layout/HeaderBoxSupport.vue")['default']>
 export const LazyHeaderMenuItemTemplate1: LazyComponent<typeof import("../components/molecules/layout/HeaderMenuItemTemplate1.vue")['default']>

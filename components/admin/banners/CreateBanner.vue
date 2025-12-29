@@ -15,9 +15,6 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 <Popup v-model="store.isTogglePopupAdd" popupHeading="Them banner" align="right">
   <template #body>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-      <div class="portal-popup-footer">
-        <Button type="submit" color="primary" label="Luu" class="w-full" />
-      </div>
         <LabelInput label="Tieu de" required/>
         <v-text-field v-model="store.formBannerItem.title" :counter="200" :rules="store.nullRules" label="Nhap tieu de" variant="outlined" required></v-text-field>
         <LabelInput label="Noi dung"/>
@@ -30,6 +27,8 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
         </div>
         <v-switch :label="`Tinh trang: ${store.formBannerItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.formBannerItem.isActive" inset
         ></v-switch>
+
+        <Button type="submit" color="primary" label="Luu" class="w-full" />
     </v-form>
   </template>
 </Popup>

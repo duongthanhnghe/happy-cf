@@ -8,6 +8,8 @@ import { usePostLatestStore } from '@/stores/client/news/usePostLatestStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
+import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.HOME.middleware,
@@ -22,12 +24,24 @@ const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeNewsLatest = usePostLatestStore()
 const storeProductCategory = useProductCategoryStore()
+const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 
 if(storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
 if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',storeProductSale.page,storeProductSale.limit,'')
 if(!storeProductMostOrder.getListProductMostOrder) await storeProductMostOrder.fetchListProductMostOrder('',storeProductMostOrder.page,storeProductMostOrder.limit,'')
 if(storeNewsLatest.getListNewsLatest.length === 0) await storeNewsLatest.fetchPostStore()
 if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCategory.fetchCategoryStore()
+if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.HOME]) {
+  await fetchImageBlock(IMAGE_BLOCK_PAGES.HOME, {
+    [IMAGE_BLOCK_POSITIONS.FEATURED]: 2,
+  })
+}
+
+const listImageFeatured = getByPosition(
+  IMAGE_BLOCK_PAGES.HOME,
+  IMAGE_BLOCK_POSITIONS.FEATURED
+)
+
 </script>
 
 <template>
@@ -47,23 +61,15 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
         :loading="storeProductCategory.loading" 
       />
     </div>
-
-    <div :class="[storeDisplay.isMobileTable ? 'pb-section':'' ,'container container-xxl']" >
-      <div :class="[storeDisplay.isMobileTable ? 'flex-direction-column gap-ms':'flex-direction-row gap-md' ,'flex']">
-        <!-- https://res.cloudinary.com/dl8wwezqp/image/upload/v1764155287/BANNER/slide_3_img.jpg -->
-        <BoxImage 
-          image="https://n7media.coolmate.me/uploads/September2025/pro_nam_Frame_88042_(2)-min.jpg?aio=w-1069"
-          heading="Khuyến mãi"
-          textBtn="Khám phá"
-          linkHref="/order?tab=3"
+    <!-- https://res.cloudinary.com/dl8wwezqp/image/upload/v1764155287/BANNER/slide_3_img.jpg -->
+    <div v-if="listImageFeatured && listImageFeatured.length > 0" class="container container-xxl pb-section">
+      <ImageBlockLayoutColumn :length="listImageFeatured.length">
+        <ImageBlock
+          v-for="item in listImageFeatured"
+          :key="item.id"
+          v-bind="item"
         />
-        <BoxImage 
-          image="https://n7media.coolmate.me/uploads/September2025/pro_nu_Frame_88041_(2)-min.jpg?aio=w-1069"
-          heading="Bán chạy"
-          textBtn="Khám phá"
-          linkHref="/order?tab=2"
-        />
-      </div>
+      </ImageBlockLayoutColumn>
     </div>
 
     <div :class="storeDisplay.isMobileTable ? 'home-page-content':''">
@@ -74,7 +80,7 @@ if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCate
         fullScreen 
         container="container container-xxl" 
         :headingText="t('product.promo.title')"
-        class="pt-section pb-section"
+        class="pb-section"
         :slug="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length ? ROUTES.PUBLIC.PRODUCT.children?.SALE.path: ''"
       />
       <SectionProductListSwiper 

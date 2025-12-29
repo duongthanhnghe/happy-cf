@@ -1,4 +1,7 @@
 export const API_ENDPOINTS = {
+  IMAGE_BLOCKS: {
+    GET_BY_PAGE: '/image-blocks/by-page',
+  },
   ABOUT: {
     LIST: '/about',
     GET_BY_ID: (id: string) => `/about/${id}`,

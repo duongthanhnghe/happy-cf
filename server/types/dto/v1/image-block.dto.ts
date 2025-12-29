@@ -25,6 +25,6 @@ export type CreateImageBlockBody = Omit<
 export type UpdateImageBlockBody = Partial<
   Omit<
     ImageBlockDTO,
-    'id' | 'page' | 'position' | 'order' | 'createdAt' | 'updatedAt'
+    'id' | 'order' | 'createdAt' | 'updatedAt'
   >
 >

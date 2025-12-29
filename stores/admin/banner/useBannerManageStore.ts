@@ -12,11 +12,8 @@ export const useBannerManageStore = defineStore("BannerManage", () => {
   const operations = useAdminBannerOperations(
     state.defaultForm,
     state.formBannerItem,
-    state.dataList,
     state.serverItems,
     state.loadingTable,
-    state.totalItems,
-    state.currentTableOptions,
     state.isTogglePopupAdd,
     state.isTogglePopupUpdate,
     state.detailData,

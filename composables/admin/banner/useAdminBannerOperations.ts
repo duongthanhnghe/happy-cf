@@ -1,41 +1,34 @@
 import { showWarning, showConfirm, showSuccess } from "@/utils/toast";
 import { computed, unref, type Ref } from 'vue';
-import type { TableOpt } from "@/server/types";
 import { Loading } from "@/utils/global";
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
 import { bannersAPI } from "@/services/v1/admin/banner.service";
 import type { BannerDTO, CreateBannerBody } from "@/server/types/dto/v1/banner.dto";
-import { watch } from "vue";
 type MaybeRef<T> = T | Ref<T>;
 
 export const useAdminBannerOperations = (
   defaultForm: object,
   formBannerItem: MaybeRef<CreateBannerBody>,
-  dataList: Ref<BannerDTO[] | null>,
   serverItems: Ref<BannerDTO[]>,
   loadingTable: Ref<Boolean>,
-  totalItems: Ref<number>,
-  currentTableOptions: Ref<TableOpt>,
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
-  detailData: Ref<{ data: BannerDTO } | null| null>,
+  detailData: Ref<BannerDTO | null>,
 ) => {
 
   const getListData = async () => {
     const data = await bannersAPI.getAll()
-    if(data.code === 0) dataList.value = data.data
+    if(data.code === 0) serverItems.value = data.data
   }
   
-  async function loadItems (opt: TableOpt) {
+  async function loadItems () {
     loadingTable.value = true
     await getListData()
-    if(!dataList.value){
+    if(!serverItems.value){
       loadingTable.value= false
       return
     }  
-    serverItems.value = dataList.value
-    totalItems.value  = dataList.value?.length
     loadingTable.value= false
   }
 
@@ -51,22 +44,19 @@ export const useAdminBannerOperations = (
   const handleResetForm = () => {
     Object.assign(formBannerItem, defaultForm)
   }
-  const handleReload = async () => {
-    await loadItems(currentTableOptions.value);
-  }
 
   async function submitCreate () {
     Loading(true);
 
     try {
-      const newCategory = unref(formBannerItem)
+      const payload = unref(formBannerItem)
 
-      const data = await bannersAPI.create(newCategory)
+      const data = await bannersAPI.create(payload)
       if(data.code === 0){
         showSuccess(data.message ?? '')
         isTogglePopupAdd.value = false;
         handleResetForm()
-        handleReload()
+        await loadItems();
       } else {
         showWarning(data.message ?? '')
       }
@@ -78,28 +68,28 @@ export const useAdminBannerOperations = (
   }
 
   const handleEdit = async (id: string) => {
-    detailData.value = await bannersAPI.getDetail(id)
+    const data = await bannersAPI.getDetail(id)
+    detailData.value = data.data
     if(!detailData.value) return
     handleTogglePopupUpdate(true);
-    const data = detailData.value.data;
-    Object.assign(formBannerItem, data);
+    Object.assign(formBannerItem, detailData.value);
   }
 
   async function submitUpdate() {
     if(!detailData.value) return
-    const id = detailData.value.data?.id
+    const id = detailData.value.id
     if (!id) return
     Loading(true);
 
     try {
-      const newCategory = unref(formBannerItem)
+      const payload = unref(formBannerItem)
 
-      const data = await bannersAPI.update(id, newCategory)
+      const data = await bannersAPI.update(id, payload)
       if(data.code === 0){
         showSuccess(data.message ?? '')
         isTogglePopupUpdate.value = false;
         handleResetForm()
-        handleReload()
+        await loadItems();
       } else {
         showWarning(data.message ?? '')
       }
@@ -119,7 +109,7 @@ export const useAdminBannerOperations = (
       const data = await bannersAPI.delete(id)
       if(data.code === 0){
         showSuccess(data.message)
-        handleReload()
+        await loadItems();
       } else {
         showWarning(data.message)
       }
@@ -130,23 +120,12 @@ export const useAdminBannerOperations = (
     }
   }
 
-  watch(
-    () => ({
-      page: currentTableOptions.value.page,
-      limit: currentTableOptions.value.itemsPerPage,
-    }),
-    () => {
-      loadItems(currentTableOptions.value);
-    },
-    { deep: true }
-  )
-
   const { toggleActive } = useToggleActiveStatus(bannersAPI.toggleActive, serverItems );
 
-  const { handleChangeOrder } = useChangeOrder(bannersAPI.updateOrder, () => loadItems(currentTableOptions.value));
+  const { handleChangeOrder } = useChangeOrder(bannersAPI.updateOrder, () => loadItems());
 
   const getListOrder = computed(() => {
-    return Array.from({ length: totalItems.value }, (_, i) => i + 1)
+    return Array.from({ length: serverItems.value?.length }, (_, i) => i + 1)
   })
 
   return {
@@ -158,7 +137,6 @@ export const useAdminBannerOperations = (
     loadItems,
     submitCreate,
     submitUpdate,
-    handleReload,
     handleResetForm,
     toggleActive,
     handleChangeOrder,
