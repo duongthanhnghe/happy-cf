@@ -1,7 +1,5 @@
-import {
-  IMAGE_BLOCK_PAGES,
-  IMAGE_BLOCK_POSITIONS,
-} from '../../../shared/constants/image-block'
+import { IMAGE_BLOCK_PAGES,
+  IMAGE_BLOCK_POSITIONS, } from '../../../../shared/constants/image-block'
 
 export type ImageBlockPage =
   typeof IMAGE_BLOCK_PAGES[keyof typeof IMAGE_BLOCK_PAGES]

@@ -20,6 +20,7 @@
     "paths": {
       "@/*": ["./*"],
       "@server/*": ["server/*"],
+      "@shared/*": ["shared/*"]
     }
   },
   "include": [

@@ -83,10 +83,6 @@ export const createProduct = async (req: Request, res: Response) => {
   try {
     const data = req.body
 
-    if (!data?.productName || !data?.image || !data?.categoryId || !data?.price) {
-      return res.status(400).json({ code: 1, message: "Thiếu dữ liệu" })
-    }
-
     const categoryExists = await CategoryProductEntity.findById(data.categoryId)
     if (!categoryExists) {
       return res.status(400).json({ code: 1, message: "Category không tồn tại" })
@@ -375,6 +371,14 @@ export const updateProduct = async (req: Request<{ id: string }>, res: Response)
     const data = req.body
 
     if (data.categoryId) {
+      const categoryExists = await CategoryProductEntity.findById(data.categoryId)
+      if (!categoryExists) {
+        return res.status(400).json({
+          code: 1,
+          message: 'Category không tồn tại',
+        })
+      }
+
       data.categoryId = new mongoose.Types.ObjectId(data.categoryId)
     }
 

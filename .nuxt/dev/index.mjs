@@ -15,6 +15,7 @@ import * as cpexcel from '/Users/ttcenter/happy-cf/node_modules/xlsx/dist/cpexce
 import * as node_stream from 'node:stream';
 import slugify from 'file:///Users/ttcenter/happy-cf/node_modules/slugify/slugify.js';
 import multer from 'file:///Users/ttcenter/happy-cf/node_modules/multer/index.js';
+import { z } from 'file:///Users/ttcenter/happy-cf/node_modules/zod/index.js';
 import bcrypt from 'file:///Users/ttcenter/happy-cf/node_modules/bcryptjs/index.js';
 import { v2 } from 'file:///Users/ttcenter/happy-cf/node_modules/cloudinary/cloudinary.js';
 import bwipjs from 'file:///Users/ttcenter/happy-cf/node_modules/bwip-js/dist/bwip-js-node.mjs';
@@ -1155,16 +1156,16 @@ _6dnK270kw12H9eqH5B6vNhXuuZYDsnNpZ4gQcGRiGi0
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"129b3e-8w0a219oAV2mz+FSWfJSRnqn0Ws\"",
-    "mtime": "2025-12-29T06:23:21.883Z",
-    "size": 1219390,
+    "etag": "\"12a732-7lNhpECi/IOlSDqdAsYPV0v08is\"",
+    "mtime": "2025-12-30T04:28:54.240Z",
+    "size": 1222450,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"4bc1a0-jXk+GO8wpC5rY82hwwsMEHj6EFs\"",
-    "mtime": "2025-12-29T06:23:21.888Z",
-    "size": 4964768,
+    "etag": "\"4bf2b2-MMQ+p/qpTdhjX7aTccHAOnBr9W0\"",
+    "mtime": "2025-12-30T04:28:54.246Z",
+    "size": 4977330,
     "path": "index.mjs.map"
   }
 };
@@ -30275,9 +30276,6 @@ const getProductById$1 = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const data = req.body;
-    if (!(data == null ? void 0 : data.productName) || !(data == null ? void 0 : data.image) || !(data == null ? void 0 : data.categoryId) || !(data == null ? void 0 : data.price)) {
-      return res.status(400).json({ code: 1, message: "Thi\u1EBFu d\u1EEF li\u1EC7u" });
-    }
     const categoryExists = await CategoryProductEntity.findById(data.categoryId);
     if (!categoryExists) {
       return res.status(400).json({ code: 1, message: "Category kh\xF4ng t\u1ED3n t\u1EA1i" });
@@ -30520,6 +30518,13 @@ const updateProduct = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     if (data.categoryId) {
+      const categoryExists = await CategoryProductEntity.findById(data.categoryId);
+      if (!categoryExists) {
+        return res.status(400).json({
+          code: 1,
+          message: "Category kh\xF4ng t\u1ED3n t\u1EA1i"
+        });
+      }
       data.categoryId = new mongoose.Types.ObjectId(data.categoryId);
     }
     const updated = await ProductEntity.findByIdAndUpdate(id, data, { new: true });
@@ -30594,6 +30599,91 @@ const uploadExcel = multer({
   }
 }).single("file");
 
+const validate = (schema, target = "body") => (req, res, next) => {
+  const data = req[target];
+  const result = schema.safeParse(data);
+  if (!result.success) {
+    return res.status(400).json({
+      code: 1,
+      message: "D\u1EEF li\u1EC7u kh\xF4ng h\u1EE3p l\u1EC7",
+      errors: result.error.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message
+      }))
+    });
+  }
+  req[target] = result.data;
+  next();
+};
+
+const objectIdSchema = z.string().regex(/^[0-9a-fA-F]{24}$/, "ObjectId kh\xF4ng h\u1EE3p l\u1EC7");
+const listImageSchema = z.object({
+  id: z.string(),
+  src: z.string().url()
+});
+z.object({
+  productName: z.string().min(1, "T\xEAn s\u1EA3n ph\u1EA9m l\xE0 b\u1EAFt bu\u1ED9c"),
+  description: z.string().optional().default(""),
+  summaryContent: z.string().optional().default(""),
+  price: z.coerce.number().positive("Gi\xE1 ph\u1EA3i > 0"),
+  priceDiscounts: z.coerce.number().min(0),
+  amount: z.coerce.number().int().min(0),
+  weight: z.coerce.number().positive(),
+  image: z.string().url("\u1EA2nh kh\xF4ng h\u1EE3p l\u1EC7"),
+  listImage: z.array(listImageSchema).optional().default([]),
+  categoryId: objectIdSchema,
+  sku: z.string().optional().default(""),
+  isActive: z.coerce.boolean().default(true),
+  titleSEO: z.string().optional().default(""),
+  descriptionSEO: z.string().optional().default(""),
+  slug: z.string().min(1, "Slug l\xE0 b\u1EAFt bu\u1ED9c"),
+  keywords: z.union([
+    z.array(z.string()),
+    z.string().transform(
+      (v) => v.split(",").map((k) => k.trim()).filter(Boolean)
+    )
+  ]).optional(),
+  canonicalUrl: z.string().url().optional(),
+  // advanced
+  variantGroups: z.array(z.any()).optional().default([]),
+  variantCombinations: z.array(z.any()).optional().default([])
+});
+const updateProductSchema = z.object({
+  productName: z.string().min(1).optional(),
+  description: z.string().optional(),
+  summaryContent: z.string().optional(),
+  price: z.coerce.number().positive().optional(),
+  priceDiscounts: z.coerce.number().min(0).optional(),
+  amount: z.coerce.number().int().min(0).optional(),
+  weight: z.coerce.number().positive().optional(),
+  image: z.string().url().optional(),
+  listImage: z.array(listImageSchema).optional(),
+  categoryId: objectIdSchema.optional(),
+  sku: z.string().optional(),
+  isActive: z.coerce.boolean().optional(),
+  titleSEO: z.string().optional(),
+  descriptionSEO: z.string().optional(),
+  slug: z.string().min(1).optional(),
+  keywords: z.union([
+    z.array(z.string()),
+    z.string().transform(
+      (v) => v.split(",").map((k) => k.trim()).filter(Boolean)
+    )
+  ]).optional(),
+  canonicalUrl: z.string().url().optional(),
+  variantGroups: z.array(z.any()).optional(),
+  variantCombinations: z.array(z.any()).optional()
+});
+z.object({
+  id: objectIdSchema
+});
+z.object({
+  page: z.coerce.number().int().positive().optional(),
+  limit: z.coerce.number().int().positive().optional(),
+  search: z.string().optional(),
+  categoryId: objectIdSchema.optional()
+});
+
 const router$n = Router();
 router$n.get("/", authenticateAdmin, getAllProduct);
 router$n.post("/", authenticateAdmin, createProduct);
@@ -30602,7 +30692,7 @@ router$n.post("/import", authenticateAdmin, uploadExcel, importProducts);
 router$n.post("/updateImport", authenticateAdmin, uploadExcel, updateImportProducts);
 router$n.get("/export", authenticateAdmin, exportProducts);
 router$n.get("/:id", authenticateAdmin, getProductById$1);
-router$n.put("/:id", authenticateAdmin, updateProduct);
+router$n.put("/:id", authenticateAdmin, validate(updateProductSchema), updateProduct);
 router$n.delete("/:id", authenticateAdmin, deleteProduct);
 router$n.patch("/toggleActive/:id", authenticateAdmin, toggleActive);
 

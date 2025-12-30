@@ -13,6 +13,8 @@ import {
 } from '../../../controllers/v1/admin/product.controller'
 import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
 import { uploadExcel } from '../../../middlewares/uploadExcel'
+import { validate } from '../../../middlewares/validate/validate'
+import { updateProductSchema } from '../../../../shared/validate/schemas/product.schema'
 
 const router = Router()
 
@@ -23,7 +25,7 @@ router.post("/import", authenticateAdmin, uploadExcel, importProducts);
 router.post("/updateImport", authenticateAdmin, uploadExcel, updateImportProducts);
 router.get("/export", authenticateAdmin, exportProducts);
 router.get('/:id',       authenticateAdmin, getProductById)
-router.put('/:id',       authenticateAdmin, updateProduct)
+router.put('/:id',       authenticateAdmin, validate(updateProductSchema), updateProduct)
 router.delete('/:id',    authenticateAdmin, deleteProduct)
 router.patch('/toggleActive/:id', authenticateAdmin, toggleActive)
 

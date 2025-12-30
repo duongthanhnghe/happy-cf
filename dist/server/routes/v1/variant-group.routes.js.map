@@ -1,1 +1,0 @@
-{"version":3,"file":"variant-group.routes.js","sourceRoot":"","sources":["../../../../server/routes/v1/variant-group.routes.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,SAAS,CAAC;AACjC,OAAO,EACL,gBAAgB,GACjB,MAAM,+CAA+C,CAAC;AAEvD,MAAM,MAAM,GAAG,MAAM,EAAE,CAAC;AACxB,MAAM,CAAC,GAAG,CAAC,GAAG,EAAE,gBAAgB,CAAC,CAAC;AAElC,eAAe,MAAM,CAAC"}

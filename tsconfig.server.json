@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "rootDir": "server",
+    // "rootDir": "server",
+    "rootDir": ".",
     "outDir": "dist/server",
     "target": "es2019",
     "module": "ESNext",
@@ -16,11 +17,12 @@
     "paths": {
       "@/*": ["./*"],
       "@server/*": ["server/*"],
+      "@shared/*": ["shared/*"]
     },
     "resolveJsonModule": true,
     "declaration": false,
     "sourceMap": true
   },
-  "include": ["server/**/*"],
+  "include": ["server/**/*","shared/**/*"],
   "exclude": ["node_modules", ".nuxt", ".output", "dist"]
 }

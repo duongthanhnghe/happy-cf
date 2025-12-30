@@ -1,8 +1,0 @@
-export const ORDER_STATUS = {
-    PENDING: "68a93304c9f7de47a9f3a7e2",
-    CONFIRMED: "68a93304c9f7de47a9f3a7e3",
-    DELIVERING: "68a93304c9f7de47a9f3a7e4",
-    COMPLETED: "68a93304c9f7de47a9f3a7e5",
-    CANCELLED: "68a93304c9f7de47a9f3a7e6"
-};
-//# sourceMappingURL=order-status.js.map
