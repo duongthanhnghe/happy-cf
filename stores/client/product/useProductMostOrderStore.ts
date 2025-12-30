@@ -34,6 +34,7 @@ export const useProductMostOrderStore = defineStore("ProductMostOrderStore", () 
 
   watch(getListProductMostOrder, (newValue) => {
     if (newValue && newValue.data) {
+      console.log('qa day?')
       state.listItems.value = newValue.data
       state.pagination.value = newValue.pagination
     }

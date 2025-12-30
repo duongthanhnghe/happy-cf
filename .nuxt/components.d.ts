@@ -148,6 +148,8 @@ interface _GlobalComponents {
     'ListManageAddress': typeof import("../components/organisms/user/ListManageAddress.vue")['default']
     'ListOrderHistory': typeof import("../components/organisms/user/ListOrderHistory.vue")['default']
     'PopupBarcode': typeof import("../components/organisms/user/PopupBarcode.vue")['default']
+    'SkeletonProductList': typeof import("../components/skeletons/product/SkeletonProductList.vue")['default']
+    'SkeletonProductTemplate1': typeof import("../components/skeletons/product/SkeletonProductTemplate1.vue")['default']
     'CreateAbout': typeof import("../components/templates/about/CreateAbout.vue")['default']
     'UpdateAbout': typeof import("../components/templates/about/UpdateAbout.vue")['default']
     'CartPaymentInfo': typeof import("../components/templates/cart/CartPaymentInfo.vue")['default']
@@ -340,6 +342,8 @@ interface _GlobalComponents {
     'LazyListManageAddress': LazyComponent<typeof import("../components/organisms/user/ListManageAddress.vue")['default']>
     'LazyListOrderHistory': LazyComponent<typeof import("../components/organisms/user/ListOrderHistory.vue")['default']>
     'LazyPopupBarcode': LazyComponent<typeof import("../components/organisms/user/PopupBarcode.vue")['default']>
+    'LazySkeletonProductList': LazyComponent<typeof import("../components/skeletons/product/SkeletonProductList.vue")['default']>
+    'LazySkeletonProductTemplate1': LazyComponent<typeof import("../components/skeletons/product/SkeletonProductTemplate1.vue")['default']>
     'LazyCreateAbout': LazyComponent<typeof import("../components/templates/about/CreateAbout.vue")['default']>
     'LazyUpdateAbout': LazyComponent<typeof import("../components/templates/about/UpdateAbout.vue")['default']>
     'LazyCartPaymentInfo': LazyComponent<typeof import("../components/templates/cart/CartPaymentInfo.vue")['default']>
@@ -538,6 +542,8 @@ export const ListHistoryReward: typeof import("../components/organisms/user/List
 export const ListManageAddress: typeof import("../components/organisms/user/ListManageAddress.vue")['default']
 export const ListOrderHistory: typeof import("../components/organisms/user/ListOrderHistory.vue")['default']
 export const PopupBarcode: typeof import("../components/organisms/user/PopupBarcode.vue")['default']
+export const SkeletonProductList: typeof import("../components/skeletons/product/SkeletonProductList.vue")['default']
+export const SkeletonProductTemplate1: typeof import("../components/skeletons/product/SkeletonProductTemplate1.vue")['default']
 export const CreateAbout: typeof import("../components/templates/about/CreateAbout.vue")['default']
 export const UpdateAbout: typeof import("../components/templates/about/UpdateAbout.vue")['default']
 export const CartPaymentInfo: typeof import("../components/templates/cart/CartPaymentInfo.vue")['default']
@@ -730,6 +736,8 @@ export const LazyListHistoryReward: LazyComponent<typeof import("../components/o
 export const LazyListManageAddress: LazyComponent<typeof import("../components/organisms/user/ListManageAddress.vue")['default']>
 export const LazyListOrderHistory: LazyComponent<typeof import("../components/organisms/user/ListOrderHistory.vue")['default']>
 export const LazyPopupBarcode: LazyComponent<typeof import("../components/organisms/user/PopupBarcode.vue")['default']>
+export const LazySkeletonProductList: LazyComponent<typeof import("../components/skeletons/product/SkeletonProductList.vue")['default']>
+export const LazySkeletonProductTemplate1: LazyComponent<typeof import("../components/skeletons/product/SkeletonProductTemplate1.vue")['default']>
 export const LazyCreateAbout: LazyComponent<typeof import("../components/templates/about/CreateAbout.vue")['default']>
 export const LazyUpdateAbout: LazyComponent<typeof import("../components/templates/about/UpdateAbout.vue")['default']>
 export const LazyCartPaymentInfo: LazyComponent<typeof import("../components/templates/cart/CartPaymentInfo.vue")['default']>

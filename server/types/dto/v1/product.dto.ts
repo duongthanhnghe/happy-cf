@@ -180,11 +180,12 @@ export type CreateCategoryProductDTO = Omit<CategoryProductDTO, "id" | "createdA
 
 export type UpdateCategoryProductDTO = Partial<Omit<CreateCategoryProductDTO, "createdAt" | "updatedAt">> & { id: string }
 
-
-export interface CategoryWithProductsDTO extends CategoryProductDTO {
+export interface CategoryWithProductsDTO
+  extends Omit<CategoryProductDTO, 'children'> {
   products: ProductPaginationDTO
-  children: CategoryProductDTO[] | null
+  children?: CategoryProductDTO[] | null
 }
+
 
 export interface SelectedOptionPushDTO {
   id?: string

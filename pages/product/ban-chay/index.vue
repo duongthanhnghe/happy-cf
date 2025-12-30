@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
     <Breadcrumb 
       :heading="ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.label" 
       :description="`${storeProductMostOrder.getTotalItems} Sản phẩm`" 
-      :image="bannerHero[0]?.image || storeProductMostOrder.IMAGE_AUTH_LOGIN">
+      :image="bannerHero[0]?.image">
       <slot>
         <client-only>
         <div v-if="storeDisplay.isMobileTable" :id="storeProductMostOrder.elFilterProduct">

@@ -41,6 +41,13 @@ const store = useSearchStore()
             </div>
           </template>
         </div>
+        <div v-if="store.loadingProduct" class="flex-1 w-full ">
+          <SkeletonProductList
+            :count="12"
+            :row="COLUMN.ROW"
+            :column="COLUMN.PRODUCT_XL"
+          />
+        </div>
         <template #load-more="{ props }">
           <Button color="secondary" label="Xem thêm" @click="props.onClick" />
         </template>

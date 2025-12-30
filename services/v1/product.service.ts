@@ -150,11 +150,11 @@ export const productsAPI = {
   },
 
   getListByCategory: async (
-    id: string,
-    page: number,
-    limit: number,
-    sort?: ProductSortType
-  ) => {
+  id: string,
+  page: number,
+  limit: number,
+  sort?: ProductSortType
+): Promise<ProductPaginationDTO> => {
     try {
       const url = new URL(
         `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}`

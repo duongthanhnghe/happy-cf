@@ -9,6 +9,8 @@ import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
 import type { SwiperOptions } from 'swiper/types';
 import { PRODUCT_LIST_SWIPER_DEFAULT } from '@/shared/constants/breakpoints';
 import type { ITranslationText } from '@/server/types/dto/v1/itranslation.dto';
+import { COLUMN } from '@/shared/constants/column';
+
 const storeDisplay = useDisplayStore()
 
 type HeadingSize = 'xl' | 'lg'
@@ -24,18 +26,28 @@ const props = withDefaults(defineProps<{
   showNoData?: boolean
   fullScreen?: boolean
   slug?: string
+  skColumn?: string
+  skCount?: number
 }>(), {
   items: () => [],
   showNoData: false,
   fullScreen: false,
-  headingSize: 'xl'
+  headingSize: 'xl',
+  skColumn: COLUMN.PRODUCT_XL,
+  skCount: 6
 })
 </script>
 
 <template>
   <div>
     <div :class="[container, fullScreen ? 'pl-0 pr-0':'']">
-      <LoadingData v-if="props.loading && !items" />
+      <SkeletonProductList
+        v-if="props.loading || props.items === null"
+        :count="props.skCount"
+        :row="COLUMN.ROW"
+        :column="props.skColumn"
+        heading
+      />
       <template v-else-if="items.length > 0">
         <Heading :text="props.headingText" :slug="props.slug" :class="fullScreen ? 'pl-ms pr-ms':''" :size="props.headingSize" />
         <client-only>

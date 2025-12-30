@@ -27,8 +27,8 @@ const storeProductCategory = useProductCategoryStore()
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 
 if(storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
-if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',storeProductSale.page,storeProductSale.limit,'')
-if(!storeProductMostOrder.getListProductMostOrder) await storeProductMostOrder.fetchListProductMostOrder('',storeProductMostOrder.page,storeProductMostOrder.limit,'')
+if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
+if(!storeProductMostOrder.getListProductMostOrder) await storeProductMostOrder.fetchListProductMostOrder('',Number(storeProductMostOrder.page),storeProductMostOrder.limit,'')
 if(storeNewsLatest.getListNewsLatest.length === 0) await storeNewsLatest.fetchPostStore()
 if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCategory.fetchCategoryStore()
 if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.HOME]) {
@@ -61,7 +61,7 @@ const listImageFeatured = getByPosition(
         :loading="storeProductCategory.loading" 
       />
     </div>
-    <!-- https://res.cloudinary.com/dl8wwezqp/image/upload/v1764155287/BANNER/slide_3_img.jpg -->
+
     <div v-if="listImageFeatured && listImageFeatured.length > 0" class="container container-xxl pb-section">
       <ImageBlockLayoutColumn :length="listImageFeatured.length">
         <ImageBlock
@@ -94,12 +94,15 @@ const listImageFeatured = getByPosition(
       />
 
       <client-only>
-        <SectionProductList :items="storeProductCategory.getListData" :loading="storeProductCategory.loading"/>
+        <SectionProductList 
+          :items="storeProductCategory.getListData" 
+          :limitSection="2"
+        />
       </client-only>
 
       <SectionNewsListSwiper 
         :items="storeNewsLatest.getListNewsLatest" 
-        :loading="storeNewsLatest.loading" 
+        :loading="storeNewsLatest.loading"
         pagination
         container="container container-xxl" 
         :headingText="t('news.list.title1')" 

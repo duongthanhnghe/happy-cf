@@ -23,7 +23,7 @@ const storeDisplay = useDisplayStore()
     <LoadingData v-if="props.loading && props.items.length === 0" />
     <template v-else>
       <div :class="[storeDisplay.isLaptop ? 'rd-xl':'rd-lg','banner overflow-hidden shadow-2']">
-        <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :space-between="0" :pagination="{ clickable: true }" :autoplay="{ delay: 5000, disableOnInteraction: false }">
+        <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :space-between="0" :pagination="{ clickable: true }" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }">
           <swiper-slide v-for="item in props.items" :key="item.id">
             <img :src="item.image" :alt="item.title" class="w-full"/>
           </swiper-slide>

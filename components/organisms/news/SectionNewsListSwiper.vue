@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{
   items?: PostNewsDTO[]
   loading?: boolean
   headingText: string | ITranslationText
-  headingSize: HeadingSize
+  headingSize?: HeadingSize
   backgroundItem?: string
   breakpoints?: SwiperOptions['breakpoints']
   container?: string

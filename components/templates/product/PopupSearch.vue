@@ -4,6 +4,7 @@ import { useSearchStore } from '@/stores/client/product/useSearchStore'
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 import { POPUP_HEADER_SEARCH } from '@/shared/constants/breakpoints';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
+import { COLUMN } from '@/shared/constants/column';
 
 const store = useSearchStore()
 const storeProductMostOrder = useProductMostOrderStore()
@@ -55,9 +56,16 @@ const storeViewed = useProductViewedStore()
         </div>
       </div>
 
-      <div v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0" class="mt-md pb-mt">
-        <SectionProductListSwiper :items="storeProductMostOrder.getListProductMostOrder.data" :loading="storeProductMostOrder.loadingData" :breakpoints="POPUP_HEADER_SEARCH" headingText="Gợi ý cho bạn" headingSize="lg" />
-      </div>
+      <SectionProductListSwiper 
+        :items="storeProductMostOrder.getListProductMostOrder?.data" 
+        :loading="storeProductMostOrder.loadingData" 
+        :breakpoints="POPUP_HEADER_SEARCH" 
+        headingText="Gợi ý cho bạn" 
+        headingSize="lg"
+        class="mt-md pb-mt"
+        :skCount="3"
+        :skColumn="COLUMN.PRODUCT_LG"
+      />
 
       <SectionProductListSwiper 
         v-if="storeViewed.listItems && storeViewed.listItems.length > 0" 

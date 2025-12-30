@@ -1,7 +1,6 @@
 import { ref } from "vue";
 import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
 import type { PaginationMeta } from "@/server/types/common/pagination.dto";
-import { IMAGE_AUTH_LOGIN } from "@/const/image";
 
 export const useProductMainState = () => {
 
@@ -17,6 +16,5 @@ export const useProductMainState = () => {
     page,
     valueChangePage,
     pagination,
-    IMAGE_AUTH_LOGIN,
   };
 };

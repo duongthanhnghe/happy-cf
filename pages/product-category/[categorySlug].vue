@@ -7,6 +7,8 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useVariantGroupStore } from '@/stores/client/product/useVariantGroupStore';
 import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
+import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
+import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
@@ -18,11 +20,23 @@ const storeDisplay = useDisplayStore()
 const storeAccount = useAccountStore()
 const storeVariant = useVariantGroupStore()
 const storeViewed = useProductViewedStore()
+const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 const detail: CategoryProductDTO | null = storeCategoryMain.getProductCategoryDetail
 
 if (storeVariant.listVariantGroup.length === 0) {
   await storeVariant.fetchVariantGroupStore()
 }
+
+if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.CATEGORY] && !detail?.banner) {
+  await fetchImageBlock(IMAGE_BLOCK_PAGES.CATEGORY, {
+    [IMAGE_BLOCK_POSITIONS.HERO]: 1,
+  })
+}
+
+const bannerHero = getByPosition(
+  IMAGE_BLOCK_PAGES.CATEGORY,
+  IMAGE_BLOCK_POSITIONS.HERO
+)
 
 onBeforeUnmount(() => {
   storeCategoryMain.resetFilter()
@@ -34,7 +48,7 @@ onBeforeUnmount(() => {
     <Breadcrumb 
       :heading="detail.categoryName" 
       :description="`${storeCategoryMain.getTotalItems} Sản phẩm`" 
-      :image="storeCategoryMain.listBannerCategory.length > 0 ? storeCategoryMain.listBannerCategory : (detail.banner || storeCategoryMain.IMAGE_AUTH_LOGIN)">
+      :image="storeCategoryMain.listBannerCategory?.length > 0 ? storeCategoryMain.listBannerCategory : (detail.banner || bannerHero[0].image)">
       <slot>
         <div v-if="storeDisplay.isMobileTable" :id="storeCategoryMain.elFilterProduct">
           <ProductFilterMobile 

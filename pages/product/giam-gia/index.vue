@@ -50,7 +50,7 @@ onBeforeUnmount(() => {
     <Breadcrumb 
       :heading="ROUTES.PUBLIC.PRODUCT.children?.SALE.label" 
       :description="`${storeProductSale.getTotalItems} Sản phẩm`" 
-      :image="bannerHero[0]?.image || storeProductSale.IMAGE_AUTH_LOGIN">
+      :image="bannerHero[0]?.image">
       <slot>
         <client-only>
         <div v-if="storeDisplay.isMobileTable" :id="storeProductSale.elFilterProduct">

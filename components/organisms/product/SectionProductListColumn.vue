@@ -27,7 +27,13 @@ const props = withDefaults(defineProps<{
 <template>
   <div>
     <div :class="container">
-      <LoadingData v-if="props.loading" />
+      <SkeletonProductList
+        v-if="props.loading"
+        :count="12"
+        :row="COLUMN.ROW"
+        :column="COLUMN.PRODUCT_XL"
+        heading
+      />
       <template v-else-if="!props.loading && items.length > 0">
         <Heading :text="props.headingText" :size="props.headingSize" />
 

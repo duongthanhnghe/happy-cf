@@ -58,7 +58,7 @@ const bannerSeller = getByPosition(
 </script>
 
 <template>
-  <div :class="[{ '_hidden': storeDisplay.isLaptop },'bg-white shadow-2']">
+  <div :class="[{ '_hidden123': storeDisplay.isLaptop },'bg-white shadow-2']">
     <v-tabs v-model="tab" align-tabs="center">
       <v-tab
           v-for="item in tabs"
@@ -82,7 +82,7 @@ const bannerSeller = getByPosition(
           </div>
           <div class="order-main-content-scroll scroll-hide flex-1">
             <div class="product-category-section">
-              <SectionProductList :items="storeProductCategory.getListData" :loading="storeProductCategory.loading" bgTab="bg-gray6" :variantTemplateProduct="storeDisplay.isLaptop ? 'card':''" />
+              <SectionProductList :items="storeProductCategory.getListData" bgTab="bg-gray6" :variantTemplateProduct="storeDisplay.isLaptop ? 'card':''" />
             </div>
           </div>
         </div>
