@@ -4,6 +4,8 @@ import { ProductEntity, CategoryProductEntity } from "../../../models/v1/product
 import { applyProductUpdate, toProductCreatePayload, toProductDTO, toProductExport, toProductListDTO } from "../../../mappers/v1/product.mapper"
 import XLSX from "xlsx";
 import type { ProductImportTableItem } from "@/server/types/dto/v1/product.dto";
+import { createProductSchema, productUpdateImportSchema } from "@/shared/validate/schemas/product.schema";
+import { generateSlug } from "../../../utils/generateSlug";
 
 export const getAllProduct = async (req: Request, res: Response) => {
   try {
@@ -104,100 +106,180 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 }
 
+// export const importProducts = async (req: Request, res: Response) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ code: 1, message: "Không có file upload" });
+//     }
+
+//     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+//     const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//     const rows = XLSX.utils.sheet_to_json<ProductImportTableItem>(sheet);
+
+//     const results: any[] = [];
+//     let successCount = 0;
+//     let failCount = 0;
+
+//     for (let i = 0; i < rows.length; i++) {
+//       const row = rows[i];
+//       const rowIndex = i + 1;
+
+//       try {
+//         if (!row.productName || !row.price || !row.categoryId || !row.priceDiscounts || !row.amount || !row.image) {
+//           failCount++;
+//           results.push({
+//             rowIndex,
+//             row,
+//             status: "error",
+//             message: "Thiếu dữ liệu bắt buộc (productName, price, categorySlug/categoryId)"
+//           });
+//           continue;
+//         }
+
+//         const existingProduct = await ProductEntity.findOne({
+//           productName: row.productName.trim()
+//         });
+
+//         if (existingProduct) {
+//           failCount++;
+//           results.push({
+//             rowIndex,
+//             row,
+//             status: "error",
+//             message: `Sản phẩm '${row.productName}' đã tồn tại, không thể import`
+//           });
+//           continue;
+//         }
+
+//         let category = null;
+
+//         if (row.categoryId) {
+//           category = await CategoryProductEntity.findById(row.categoryId);
+//         }
+
+//         if (!category) {
+//           failCount++;
+//           results.push({
+//             rowIndex,
+//             row,
+//             status: "error",
+//             message: "Category không tồn tại"
+//           });
+//           continue;
+//         }
+
+//         const payload = toProductCreatePayload(row, category)
+//         const newProduct = await ProductEntity.create(payload)
+
+//         successCount++;
+//         results.push({
+//           rowIndex,
+//           row,
+//           status: "success",
+//           id: newProduct._id.toString(),
+//         });
+
+//       } catch (err: any) {
+//         failCount++;
+//         results.push({
+//           rowIndex,
+//           row,
+//           status: "error",
+//           message: err.message,
+//         });
+//       }
+//     }
+
+//     return res.json({
+//       code: 0,
+//       message: "Import hoàn tất",
+//       summary: {
+//         total: rows.length,
+//         success: successCount,
+//         fail: failCount,
+//         report: `${successCount}/${rows.length} sản phẩm import thành công`
+//       },
+//       data: results ,
+//     });
+
+//   } catch (err: any) {
+//     console.log("Import error:", err);
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
+
 export const importProducts = async (req: Request, res: Response) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ code: 1, message: "Không có file upload" });
-    }
+    if (!req.file) return res.status(400).json({ code: 1, message: "Không có file upload" });
 
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json<ProductImportTableItem>(sheet);
 
     const results: any[] = [];
-    let successCount = 0;
-    let failCount = 0;
+    let successCount = 0, failCount = 0;
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       const rowIndex = i + 1;
 
-      try {
-        if (!row.productName || !row.price || !row.categoryId || !row.priceDiscounts || !row.amount || !row.image) {
-          failCount++;
-          results.push({
-            rowIndex,
-            row,
-            status: "error",
-            message: "Thiếu dữ liệu bắt buộc (productName, price, categorySlug/categoryId)"
-          });
-          continue;
-        }
+      if (!row.slug && row.productName) {
+        row.slug = generateSlug(row.productName)
+      }
 
-        const existingProduct = await ProductEntity.findOne({
-          productName: row.productName.trim()
-        });
+      const parse = createProductSchema.safeParse(row);
 
-        if (existingProduct) {
-          failCount++;
-          results.push({
-            rowIndex,
-            row,
-            status: "error",
-            message: `Sản phẩm '${row.productName}' đã tồn tại, không thể import`
-          });
-          continue;
-        }
-
-        let category = null;
-
-        if (row.categoryId) {
-          category = await CategoryProductEntity.findById(row.categoryId);
-        }
-
-        if (!category) {
-          failCount++;
-          results.push({
-            rowIndex,
-            row,
-            status: "error",
-            message: "Category không tồn tại"
-          });
-          continue;
-        }
-
-        const payload = toProductCreatePayload(row, category)
-        const newProduct = await ProductEntity.create(payload)
-
-        successCount++;
-        results.push({
-          rowIndex,
-          row,
-          status: "success",
-          id: newProduct._id.toString(),
-        });
-
-      } catch (err: any) {
+      if (!parse.success) {
         failCount++;
         results.push({
           rowIndex,
           row,
           status: "error",
-          message: err.message,
+          message: parse.error.errors.map(e => e.message).join(', ')
         });
+        continue;
       }
+
+      const validData = parse.data;
+
+      // Check tồn tại sản phẩm
+      const existingProduct = await ProductEntity.findOne({ productName: validData.productName.trim() });
+      if (existingProduct) {
+        failCount++;
+        results.push({
+          rowIndex,
+          row,
+          status: "error",
+          message: `Sản phẩm '${validData.productName}' đã tồn tại, không thể import`
+        });
+        continue;
+      }
+
+      // Check category
+      const category = await CategoryProductEntity.findById(validData.categoryId);
+      if (!category) {
+        failCount++;
+        results.push({
+          rowIndex,
+          row,
+          status: "error",
+          message: "Category không tồn tại"
+        });
+        continue;
+      }
+
+      const payload = toProductCreatePayload(validData, category);
+      const newProduct = await ProductEntity.create(payload);
+
+      successCount++;
+      results.push({ rowIndex, row, status: "success", id: newProduct._id.toString() });
     }
 
     return res.json({
       code: 0,
       message: "Import hoàn tất",
-      summary: {
-        total: rows.length,
-        success: successCount,
-        fail: failCount,
-        report: `${successCount}/${rows.length} sản phẩm import thành công`
-      },
-      data: results ,
+      summary: { total: rows.length, success: successCount, fail: failCount, report: `${successCount}/${rows.length} sản phẩm import thành công` },
+      data: results,
     });
 
   } catch (err: any) {
@@ -254,108 +336,173 @@ export const exportProducts = async (req: Request, res: Response) => {
   }
 };
 
+// export const updateImportProducts = async (req: Request, res: Response) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ code: 1, message: "Không có file upload" });
+//     }
+
+//     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+//     const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//     const rows = XLSX.utils.sheet_to_json<any>(sheet);
+
+//     const results: any[] = [];
+//     let successCount = 0;
+//     let failCount = 0;
+
+//     for (let i = 0; i < rows.length; i++) {
+//       const row = rows[i];
+//       const rowIndex = i + 1;
+
+//       try {
+//         if (!row.id) {
+//           failCount++;
+//           results.push({
+//             rowIndex,
+//             row,
+//             status: "error",
+//             message: "Thiếu id sản phẩm, không thể update"
+//           });
+//           continue;
+//         }
+
+//         const product = await ProductEntity.findById(row.id);
+//         if (!product) {
+//           failCount++;
+//           results.push({
+//             rowIndex,
+//             row,
+//             status: "error",
+//             message: `Không tìm thấy sản phẩm với id: ${row.id}`
+//           });
+//           continue;
+//         }
+
+//         if (!row.productName || !row.price || !row.categoryId || !row.priceDiscounts ||
+//             !row.amount || !row.image) {
+//           failCount++;
+//           results.push({
+//             rowIndex,
+//             row,
+//             status: "error",
+//             message: "Thiếu dữ liệu bắt buộc (productName, price, priceDiscounts, amount, image, categoryId)"
+//           });
+//           continue;
+//         }
+
+//         // Kiểm tra category
+//         let category = null;
+//         if (row.categoryId) {
+//           category = await CategoryProductEntity.findById(row.categoryId);
+//         }
+//         if (!category) {
+//           failCount++;
+//           results.push({
+//             rowIndex,
+//             row,
+//             status: "error",
+//             message: "Category không tồn tại"
+//           });
+//           continue;
+//         }
+
+//         applyProductUpdate(product, row, category)
+
+//         await product.save();
+
+//         successCount++;
+//         results.push({
+//           rowIndex,
+//           row,
+//           status: "success",
+//           id: row.id
+//         });
+
+//       } catch (err: any) {
+//         failCount++;
+//         results.push({
+//           rowIndex,
+//           row,
+//           status: "error",
+//           message: err.message
+//         });
+//       }
+//     }
+
+//     return res.json({
+//       code: 0,
+//       message: "Update sản phẩm từ file thành công",
+//       summary: {
+//         total: rows.length,
+//         success: successCount,
+//         fail: failCount,
+//         report: `${successCount}/${rows.length} sản phẩm update thành công`
+//       },
+//       data: results
+//     });
+
+//   } catch (err: any) {
+//     console.log("Update import error:", err);
+//     return res.status(500).json({ code: 1, message: err.message });
+//   }
+// };
+
 export const updateImportProducts = async (req: Request, res: Response) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ code: 1, message: "Không có file upload" });
-    }
+    if (!req.file) return res.status(400).json({ code: 1, message: "Không có file upload" });
 
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json<any>(sheet);
 
     const results: any[] = [];
-    let successCount = 0;
-    let failCount = 0;
+    let successCount = 0, failCount = 0;
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       const rowIndex = i + 1;
 
-      try {
-        if (!row.id) {
-          failCount++;
-          results.push({
-            rowIndex,
-            row,
-            status: "error",
-            message: "Thiếu id sản phẩm, không thể update"
-          });
-          continue;
-        }
+      const parse = productUpdateImportSchema.safeParse(row);
 
-        const product = await ProductEntity.findById(row.id);
-        if (!product) {
-          failCount++;
-          results.push({
-            rowIndex,
-            row,
-            status: "error",
-            message: `Không tìm thấy sản phẩm với id: ${row.id}`
-          });
-          continue;
-        }
-
-        if (!row.productName || !row.price || !row.categoryId || !row.priceDiscounts ||
-            !row.amount || !row.image) {
-          failCount++;
-          results.push({
-            rowIndex,
-            row,
-            status: "error",
-            message: "Thiếu dữ liệu bắt buộc (productName, price, priceDiscounts, amount, image, categoryId)"
-          });
-          continue;
-        }
-
-        // Kiểm tra category
-        let category = null;
-        if (row.categoryId) {
-          category = await CategoryProductEntity.findById(row.categoryId);
-        }
-        if (!category) {
-          failCount++;
-          results.push({
-            rowIndex,
-            row,
-            status: "error",
-            message: "Category không tồn tại"
-          });
-          continue;
-        }
-
-        applyProductUpdate(product, row, category)
-
-        await product.save();
-
-        successCount++;
-        results.push({
-          rowIndex,
-          row,
-          status: "success",
-          id: row.id
-        });
-
-      } catch (err: any) {
+      if (!parse.success) {
         failCount++;
         results.push({
           rowIndex,
           row,
           status: "error",
-          message: err.message
+          message: parse.error.errors.map(e => e.message).join(', ')
         });
+        continue;
       }
+
+      const validData = parse.data;
+      const product = await ProductEntity.findById(validData.id);
+
+      if (!product) {
+        failCount++;
+        results.push({ rowIndex, row, status: "error", message: `Không tìm thấy sản phẩm với id: ${validData.id}` });
+        continue;
+      }
+
+      // Check category
+      const category = await CategoryProductEntity.findById(validData.categoryId);
+      if (!category) {
+        failCount++;
+        results.push({ rowIndex, row, status: "error", message: "Category không tồn tại" });
+        continue;
+      }
+
+      applyProductUpdate(product, validData, category);
+      await product.save();
+
+      successCount++;
+      results.push({ rowIndex, row, status: "success", id: validData.id });
     }
 
     return res.json({
       code: 0,
       message: "Update sản phẩm từ file thành công",
-      summary: {
-        total: rows.length,
-        success: successCount,
-        fail: failCount,
-        report: `${successCount}/${rows.length} sản phẩm update thành công`
-      },
+      summary: { total: rows.length, success: successCount, fail: failCount, report: `${successCount}/${rows.length} sản phẩm update thành công` },
       data: results
     });
 

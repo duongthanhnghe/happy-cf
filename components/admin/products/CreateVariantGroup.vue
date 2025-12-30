@@ -1,38 +1,41 @@
 <script lang="ts" setup>
+import { useValidate } from '@/composables/validate/useValidate';
+import { createVariantGroupSchema } from '@/shared/validate/schemas/variant-group.schema';
 import { useVariantGroupStore } from '@/stores/admin/product/useVariantGroupManageStore'; 
-import { nullRules, nullAndSpecialRules } from '@/utils/validation';
-import { ref } from 'vue';
-import type { VForm } from 'vuetify/components'
+import { showWarning } from '@/utils/toast';
+const { formErrors, validate } = useValidate(createVariantGroupSchema);
 
 const store = useVariantGroupStore();
-const formRef = ref<VForm | null>(null);
 
 const handleSubmitCreate = async () => {
-  if (!formRef.value) return;
-  const { valid } = await formRef.value.validate();
-  if (!valid) return;
+ if (!validate(store.formItem)) {
+    showWarning('Vui lòng nhập đầy đủ thông tin hợp lệ')
+    return
+  }
 
   await store.submitCreate();
 }
 </script>
 
 <template>
-<Popup popupId="popup-create-variant-group" v-model="store.isTogglePopupAdd" footerFixed popupHeading="Thêm nhóm biến thể" align="right">
+<Popup v-model="store.isTogglePopupAdd" footerFixed popupHeading="Thêm nhóm biến thể" align="right">
   <template #body>
-    <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+    <v-form @submit.prevent="handleSubmitCreate">
 
       <LabelInput label="Tên nhóm biến thể" required/>
       <v-text-field 
         v-model="store.formItem.groupName" 
         variant="outlined" 
-        :rules="nullRules"
+        :error="!!formErrors.groupName"
+        :error-messages="formErrors.groupName"
         required
       />
 
       <LabelInput label="Loại nhóm" required/>
       <v-text-field 
         v-model="store.formItem.groupType" 
-        :rules="nullAndSpecialRules"
+        :error="!!formErrors.groupType"
+        :error-messages="formErrors.groupType"
         variant="outlined" 
         placeholder="Ví dụ: size, color, addon, option"
         required
@@ -42,17 +45,21 @@ const handleSubmitCreate = async () => {
       <v-textarea 
         v-model="store.formItem.description" 
         variant="outlined"
+        :error="!!formErrors.description"
+        :error-messages="formErrors.description"
       />
 
       <LabelInput label="Icon hiển thị"/>
       <v-text-field  
         v-model="store.formItem.icon" 
+        :error="!!formErrors.icon"
+        :error-messages="formErrors.icon"
         variant="outlined"
       />
 
       <LabelInput label="Danh sách biến thể" required/>
       <Card size="sm" bg="gray2" border class="rd-lg pb-0">
-        <NoData v-if="store.formItem.variants.length === 0" text="Vui lòng nhập biến thể" class="pb-ms"/>
+        <NoData v-if="store.formItem.variants.length === 0" :text="formErrors.variants || 'Vui lòng nhập biến thể'" class="pb-ms"/>
         <template v-else>
           <div v-for="(v, idx) in store.formItem.variants" :key="v.id" class="flex flex-direction-column">
             <div class="flex gap-ms">
@@ -62,7 +69,8 @@ const handleSubmitCreate = async () => {
                   v-model="v.name"
                   variant="outlined"
                   placeholder="Ví dụ: Size M"
-                  :rules="nullRules"
+                  :error="!!formErrors[`variants.${idx}.name`]"
+                  :error-messages="formErrors[`variants.${idx}.name`]"
                   required
                 />
               </div>

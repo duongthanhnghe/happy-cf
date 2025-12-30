@@ -162,7 +162,7 @@ export const toProductCreatePayload = (
   titleSEO: row.titleSEO || row.productName,
   descriptionSEO: row.descriptionSEO || '',
   slug: row.slug || slugify(row.productName, { lower: true }),
-  keywords: row.keywords ? row.keywords.split(',') : [],
+  keywords: row.keywords ? row.keywords?.split(',') : [],
 })
 
 export const applyProductUpdate = (

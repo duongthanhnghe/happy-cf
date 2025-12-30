@@ -45,32 +45,6 @@ export const getAllCategoriesTree = async (_: Request, res: Response) => {
   }
 };
 
-// export const getAllCategories = async (req: Request, res: Response) => {
-//   try {
-//     const search = (req.query.search as string) || "";
-
-//     const filter: any = {};
-
-//     if (search.trim()) {
-//       filter.categoryName = { $regex: search.trim(), $options: "i" };
-//     }
-
-//     const categories = await CategoryProductEntity.find(filter)
-//       .lean()
-//       .sort({ order: 1 });
-
-//     return res.json({
-//       code: 0,
-//       data: toCategoryProductListDTO(categories),
-//     });
-
-//   } catch (err: any) {
-//     return res.status(500).json({
-//       code: 1,
-//       message: err.message,
-//     });
-//   }
-// };
 export const getAllCategories = async (req: Request, res: Response) => {
   try {
     const search = (req.query.search as string) || "";
@@ -90,7 +64,7 @@ export const getAllCategories = async (req: Request, res: Response) => {
     const categories = await CategoryProductEntity.find(filter)
       .populate({
         path: "parentId",
-        select: "categoryName order slug", // chỉ chọn những field cần thiết
+        select: "categoryName order slug",
       })
       .lean()
       .sort({ order: 1 })
@@ -119,10 +93,6 @@ export const getAllCategories = async (req: Request, res: Response) => {
 
 export const getCategoriesById = async (req: Request<{ id: string }>, res: Response) => {
   try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
-    }
-
     const category = await CategoryProductEntity.findById(req.params.id).lean();
     if (!category) {
       return res.status(404).json({ code: 1, message: "Danh mục không tồn tại" });
@@ -137,14 +107,7 @@ export const getCategoriesById = async (req: Request<{ id: string }>, res: Respo
 
 export const createCategories = async (req: Request<{}, {}, CreateCategoryProductBody>, res: Response) => {
   try {
-    const { categoryName, image, parentId } = req.body;
-    if (!categoryName || !image) {
-      return res.status(400).json({ code: 1, message: "Thiếu categoryName hoặc image" });
-    }
-
-    if (parentId && !Types.ObjectId.isValid(parentId)) {
-      return res.status(400).json({ code: 1, message: "parentId không hợp lệ" });
-    }
+    const { categoryName, parentId } = req.body;
 
     if (parentId) {
       const parent = await CategoryProductEntity.findById(parentId);
@@ -176,19 +139,11 @@ export const createCategories = async (req: Request<{}, {}, CreateCategoryProduc
 
 export const updateCategories = async (req: Request<{ id: string }, {}, Partial<UpdateCategoryProductBody>>, res: Response) => {
   try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
-    }
-
     if (req.body.parentId === "") {
       delete req.body.parentId
     }
 
     const { parentId } = req.body;
-
-    if (parentId && !Types.ObjectId.isValid(parentId)) {
-      return res.status(400).json({ code: 1, message: "parentId không hợp lệ" });
-    }
 
     if (parentId) {
       const parent = await CategoryProductEntity.findById(parentId);
@@ -215,10 +170,6 @@ export const updateCategories = async (req: Request<{ id: string }, {}, Partial<
 
 export const deleteCategories = async (req: Request<{ id: string }>, res: Response) => {
   try {
-    if (!Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ code: 1, message: "ID không hợp lệ" });
-    }
-
     const categoryId = new Types.ObjectId(req.params.id);
 
     const hasChildren = await CategoryProductEntity.exists({ parentId: categoryId });
@@ -255,7 +206,7 @@ export const updateOrder = async (req: Request, res: Response) => {
 
     const currentItem = await CategoryProductEntity.findById(id)
     if (!currentItem) {
-      return res.status(404).json({ code: 1, message: "Item không tồn tại" })
+      return res.status(404).json({ code: 1, message: "category không tồn tại" })
     }
 
     const existingItem = await CategoryProductEntity.findOne({ order: order })
@@ -281,7 +232,7 @@ export const toggleActive = async (req: Request, res: Response) => {
 
     const item = await CategoryProductEntity.findById(id)
     if (!item) {
-      return res.status(404).json({ code: 1, message: "Banner không tồn tại" })
+      return res.status(404).json({ code: 1, message: "category không tồn tại" })
     }
 
     item.isActive = !item.isActive

@@ -14,19 +14,19 @@ import {
 import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
 import { uploadExcel } from '../../../middlewares/uploadExcel'
 import { validate } from '../../../middlewares/validate/validate'
-import { updateProductSchema } from '../../../../shared/validate/schemas/product.schema'
+import { updateProductSchema, createProductSchema, objectIdParamSchema, deleteProductsSchema } from '../../../../shared/validate/schemas/product.schema'
 
 const router = Router()
 
 router.get('/', authenticateAdmin, getAllProduct)
-router.post('/', authenticateAdmin, createProduct)
-router.delete('/',    authenticateAdmin, deleteProducts)
+router.post('/', authenticateAdmin, validate(createProductSchema), createProduct)
+router.delete('/',    authenticateAdmin, validate(deleteProductsSchema), deleteProducts)
 router.post("/import", authenticateAdmin, uploadExcel, importProducts);
 router.post("/updateImport", authenticateAdmin, uploadExcel, updateImportProducts);
 router.get("/export", authenticateAdmin, exportProducts);
-router.get('/:id',       authenticateAdmin, getProductById)
-router.put('/:id',       authenticateAdmin, validate(updateProductSchema), updateProduct)
-router.delete('/:id',    authenticateAdmin, deleteProduct)
-router.patch('/toggleActive/:id', authenticateAdmin, toggleActive)
+router.get('/:id',       authenticateAdmin, validate(objectIdParamSchema, 'params'), getProductById)
+router.put('/:id',       authenticateAdmin, validate(objectIdParamSchema, 'params'), validate(updateProductSchema), updateProduct)
+router.delete('/:id',    authenticateAdmin, validate(objectIdParamSchema, 'params'), deleteProduct)
+router.patch('/toggleActive/:id', authenticateAdmin, validate(objectIdParamSchema, 'params'), toggleActive)
 
 export default router

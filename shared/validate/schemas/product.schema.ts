@@ -6,96 +6,87 @@ const objectIdSchema = z
 
 const listImageSchema = z.object({
   id: z.string(),
-  src: z.string().url(),
+  src: z.string().url('Ảnh không hợp lệ'),
 })
 
-export const createProductSchema = z.object({
-  productName: z.string().min(1, 'Tên sản phẩm là bắt buộc'),
-
-  description: z.string().optional().default(''),
-  summaryContent: z.string().optional().default(''),
-
+const baseProductSchema = z.object({
+  productName: z.string().min(1, 'Tên sản phẩm là bắt buộc').max(100, 'Tên sản phẩm không được vượt quá 100 ký tự'),
+  description: z.string().max(5000, 'Mô tả không được vượt quá 5000 ký tự'),
+  summaryContent: z.string().max(500, 'Tóm tắt không được vượt quá 500 ký tự'),
   price: z.coerce.number().positive('Giá phải > 0'),
-  priceDiscounts: z.coerce.number().min(0),
-  amount: z.coerce.number().int().min(0),
-  weight: z.coerce.number().positive(),
-
-  image: z.string().url('Ảnh không hợp lệ'),
+  priceDiscounts: z.coerce.number().min(0, 'Giá khuyến mại ≥ 0'),
+  amount: z.coerce.number().int().min(0, 'Số lượng ≥ 0'),
+  weight: z.coerce.number().positive('Cân nặng phải > 0'),
+  image: z.string().nonempty('Ảnh đại diện là bắt buộc').url('Ảnh không hợp lệ'),
   listImage: z.array(listImageSchema).optional().default([]),
-
   categoryId: objectIdSchema,
-
-  sku: z.string().optional().default(''),
-
-  isActive: z.coerce.boolean().default(true),
-
-  titleSEO: z.string().optional().default(''),
-  descriptionSEO: z.string().optional().default(''),
-
-  slug: z.string().min(1, 'Slug là bắt buộc'),
-
-  keywords: z
-    .union([
-      z.array(z.string()),
-      z.string().transform(v =>
-        v.split(',').map(k => k.trim()).filter(Boolean)
-      ),
-    ])
-    .optional(),
-
-  canonicalUrl: z.string().url().optional(),
-
-  // advanced
+  sku: z.string().max(50, 'SKU không được vượt quá 50 ký tự').optional().default(''),
+  isActive: z.coerce.boolean(),
+  titleSEO: z.string().max(200, 'SEO Title không được vượt quá 200 ký tự').optional().default(''),
+  descriptionSEO: z.string().max(160, 'SEO Description không được vượt quá 160 ký tự').optional().default(''),
+  slug: z.string().min(1, 'Slug là bắt buộc').max(100, 'Slug không được vượt quá 100 ký tự'),
+  keywords: z.preprocess(
+    (val) => (val === undefined || val === null ? '' : String(val)),
+    z.string().optional().default('')
+  ),
+  canonicalUrl: z.string().optional().default(''),
   variantGroups: z.array(z.any()).optional().default([]),
   variantCombinations: z.array(z.any()).optional().default([]),
 })
 
-export const updateProductSchema = z.object({
-  productName: z.string().min(1).optional(),
+const validatePriceDiscounts = (data: any, ctx: any) => {
+  if (data.priceDiscounts !== undefined && data.price !== undefined) {
+    if (data.priceDiscounts > data.price) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['priceDiscounts'],
+        message: 'Giá khuyến mại không được lớn hơn giá gốc',
+      })
+    }
+  }
+}
 
-  description: z.string().optional(),
-  summaryContent: z.string().optional(),
+export const createProductSchema = baseProductSchema.merge(
+  z.object({
+    description: z.string().optional().default(''),
+    summaryContent: z.string().optional().default(''),
+    listImage: z.array(listImageSchema).optional().default([]),
+    sku: z.string().optional().default(''),
+    titleSEO: z.string().optional().default(''),
+    descriptionSEO: z.string().optional().default(''),
+    variantGroups: z.array(z.any()).optional().default([]),
+    variantCombinations: z.array(z.any()).optional().default([]),
+  })
+).superRefine(validatePriceDiscounts)
 
-  price: z.coerce.number().positive().optional(),
-  priceDiscounts: z.coerce.number().min(0).optional(),
-  amount: z.coerce.number().int().min(0).optional(),
-  weight: z.coerce.number().positive().optional(),
 
-  image: z.string().url().optional(),
-  listImage: z.array(listImageSchema).optional(),
-
-  categoryId: objectIdSchema.optional(),
-
-  sku: z.string().optional(),
-  isActive: z.coerce.boolean().optional(),
-
-  titleSEO: z.string().optional(),
-  descriptionSEO: z.string().optional(),
-
-  slug: z.string().min(1).optional(),
-
-  keywords: z
-    .union([
-      z.array(z.string()),
-      z.string().transform(v =>
-        v.split(',').map(k => k.trim()).filter(Boolean)
-      ),
-    ])
-    .optional(),
-
-  canonicalUrl: z.string().url().optional(),
-
-  variantGroups: z.array(z.any()).optional(),
-  variantCombinations: z.array(z.any()).optional(),
-})
+export const updateProductSchema = baseProductSchema
+  .partial({
+    listImage: true,
+    description: true,
+    sku: true,
+    summaryContent: true,
+    titleSEO: true,
+    descriptionSEO: true,
+    keywords: true,
+    canonicalUrl: true,
+    variantGroups: true,
+    variantCombinations: true,
+  })
+  .superRefine(validatePriceDiscounts)
 
 export const productIdParamSchema = z.object({
   id: objectIdSchema,
 })
 
-export const productListQuerySchema = z.object({
-  page: z.coerce.number().int().positive().optional(),
-  limit: z.coerce.number().int().positive().optional(),
-  search: z.string().optional(),
-  categoryId: objectIdSchema.optional(),
-})
+export const objectIdParamSchema = z.object({
+  id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ObjectId không hợp lệ')
+});
+
+export const deleteProductsSchema = z.object({
+  ids: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/)).nonempty('Danh sách sản phẩm không hợp lệ')
+});
+
+export const productUpdateImportSchema = baseProductSchema.extend({
+  id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID sản phẩm không hợp lệ')
+});

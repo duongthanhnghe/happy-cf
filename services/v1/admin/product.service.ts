@@ -33,14 +33,6 @@ export const productsAPI = {
 
   create: async (bodyData: CreateProductDTO): Promise<ApiResponse<ProductDTO>> => {
     try {
-      if (!bodyData.productName || !bodyData.image || !bodyData.categoryId || !bodyData.price || !bodyData.priceDiscounts) {
-        return {
-          code: 1,
-          message: "Thiếu dữ liệu bắt buộc",
-          data: null as any
-        }
-      }
-
       const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.CREATE}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -180,8 +172,6 @@ export const productsAPI = {
   },
 
   update: async (id: string, bodyData: UpdateProductDTO): Promise<ApiResponse<ProductDTO>> => {
-    console.log(bodyData)
-
     try {
       const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.UPDATE(id)}`, {
         method: 'PUT',
