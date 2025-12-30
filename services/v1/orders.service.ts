@@ -18,14 +18,6 @@ export const ordersAPI = {
     usedPoint: number,
   ): Promise<ApiResponse<OrderDTO>> => {
     try {
-      if (!bodyData.fullname || !bodyData.phone || !bodyData.paymentId || !bodyData.cartItems?.length) {
-        return {
-          code: 1,
-          message: 'Missing required fields: fullname, phone, paymentId, cartItems',
-          data: undefined as any,
-        }
-      }
-
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.ORDERS.CREATE}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

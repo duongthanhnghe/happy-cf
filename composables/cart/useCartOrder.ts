@@ -8,6 +8,8 @@ import type { CreateOrderBody, cartItems } from '@/server/types/dto/v1/order.dto
 import type { Ref } from 'vue';
 import type { CartDTO } from '@/server/types/dto/v1/product.dto';
 import type { ApplyVoucherResponse } from "@/server/types/dto/v1/voucher.dto";
+import { useValidate } from "../validate/useValidate";
+import { createOrderSchema } from "@/shared/validate/schemas/order.schema";
 
 export const useCartOrder = (
   cartListItem: Ref<CartDTO[]>,
@@ -26,6 +28,8 @@ export const useCartOrder = (
   router: any,
   storeLocation: any
 ) => {
+
+  const { validate, formErrors } = useValidate(createOrderSchema)
 
   const submitOrder = async (userId?: string, membershipDiscountRate?: number) => {
     const confirm = await showConfirm('Xác nhận đặt hàng?');
@@ -85,6 +89,17 @@ export const useCartOrder = (
       wardName: storeLocation.selectedWardObj.WARDS_NAME,
       voucherUsage: newVoucherUsage
     };
+
+    if (!validate({
+      data: orderData,
+      userId: userId || null,
+      point,
+      usedPoint: newUsedPoint,
+    })) {
+      showWarning('Vui lòng nhập đầy đủ thông tin đặt hàng hợp lệ')
+      Loading(false)
+      return
+    }
 
     try {
       const result = await ordersAPI.create(orderData, userId || null, point, newUsedPoint);

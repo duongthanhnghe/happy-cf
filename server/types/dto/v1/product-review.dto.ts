@@ -1,6 +1,7 @@
 import type { PaginationDTO } from '../../common/pagination.dto'
 import type { ProductDTO } from "../../dto/v1/product.dto"
 import type { User } from "./user.dto"; 
+import { Types } from "mongoose";
 
 export type ReviewStatus = 'pending' | 'approved' | 'rejected';
 
@@ -80,3 +81,9 @@ export interface PaginationReviewDTO<T> extends PaginationDTO<T> {
 }
 
 export type ProductReviewPaginationDTO = PaginationReviewDTO<ProductReviewWithUserDTO>
+
+export interface CreateProductReviewInput {
+  orderId: Types.ObjectId;
+  userId: Types.ObjectId;
+  productId: string;
+}

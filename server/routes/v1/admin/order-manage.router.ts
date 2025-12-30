@@ -16,6 +16,8 @@ import {
   printOrderBill,
 } from '../../../controllers/v1/admin/order.controller'
 import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
+import { validate } from '../../../middlewares/validate/validate'
+import { orderIdParamSchema, updateOrderStatusSchema } from '../../../../shared/validate/schemas/order.schema'
 
 const router = Router()
 
@@ -24,24 +26,21 @@ router.get("/count-by-status", authenticateAdmin, getOrderCountByStatus)
 router.get("/export", authenticateAdmin, exportOrders)
 router.get('/status', getAllStatus)
 router.get('/payments', getAllPayment)
-router.put('/status', authenticateAdmin, updateOrderStatus)
+router.put('/status', authenticateAdmin, validate(updateOrderStatusSchema), updateOrderStatus)
 
-/* ========== SHIPPING PROVIDERS ========== */
+// shipping
 router.get('/shipping-providers', authenticateAdmin, getAllShippingProviders)
 router.get('/shipping-providers/:id', authenticateAdmin, getShippingProviderDetail)
 
-/* ========== ORDER SHIPPING ========== */
+// order shipping
 router.post('/order-shipping', authenticateAdmin, createOrderShipping)
 router.get('/order-shipping/:id', authenticateAdmin, getOrderShippingDetail)
 router.put('/order-shipping/:id/status', authenticateAdmin, updateOrderShippingStatus)
 
-/* ========== ORDER DETAIL ========== */
-router.get('/:id', authenticateAdmin, getOrderById)
-router.delete('/:id', authenticateAdmin, deleteOrder)
-router.get(
-  "/:id/print",
-  printOrderBill
-)
+// order detail
+router.get('/:id', authenticateAdmin, validate(orderIdParamSchema, 'params'), getOrderById)
+router.delete('/:id', authenticateAdmin, validate(orderIdParamSchema, 'params'), deleteOrder)
+router.get("/:id/print", validate(orderIdParamSchema, 'params'), printOrderBill)
 
 
 export default router

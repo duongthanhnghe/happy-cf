@@ -40,10 +40,6 @@ export const createOrder = async (req: Request, res: Response) => {
   try {
     const { data, userId, point, usedPoint } = req.body
 
-    if (!data?.fullname || !data?.phone || !data?.paymentId || !data?.cartItems) {
-      return res.status(400).json({ code: 1, message: "Dữ liệu đơn hàng không hợp lệ" })
-    }
-
     for (const item of data.cartItems) {
       const productId =
         typeof item.idProduct === 'string'

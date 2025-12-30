@@ -13,6 +13,7 @@ import { restoreStockOrder } from "../../../utils/restoreStockOrder"
 import XLSX from "xlsx";
 import { buildVietQR } from "../../../utils/qrcode-payment"
 import { buildBillHTML } from "../../../utils/print-bill"
+import { createProductReviewEntity } from "../../../factories/v1/product-review.factory"
 
 export const getAllOrder = async (req: Request, res: Response) => {
   try {
@@ -246,10 +247,6 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const { orderId, statusId } = req.body
 
-    if (!orderId || !statusId) {
-      return res.status(400).json({ code: 1, message: "Thiếu orderId hoặc statusId" })
-    }
-
     const status = await OrderStatusEntity.findById(statusId)
     if (!status) {
       return res.status(404).json({ code: 1, message: "Status không tồn tại" })
@@ -282,15 +279,13 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
 
       if (existingReviews.length === 0) {
 
-        const reviews = order.cartItems.map((item: any) => ({
-          orderId: orderId,
-          userId: order.userId,
-          productId: item.idProduct,
-          rating: 0,
-          comment: null,
-          images: [],
-          status: "pending",
-        }));
+        const reviews = order.cartItems.map(item =>
+          createProductReviewEntity({
+            orderId: order._id,
+            userId: order.userId!,
+            productId: item.idProduct as string,
+          })
+        );
 
         await ProductReviewEntity.insertMany(reviews);
       }

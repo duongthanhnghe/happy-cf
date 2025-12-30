@@ -1,0 +1,65 @@
+import { z } from 'zod'
+import { objectIdSchema } from './common.schema'
+
+export const cartItemSchema = z.object({
+  idProduct: objectIdSchema,
+  price: z.number().min(0, 'Giá sản phẩm không hợp lệ'),
+  quantity: z.number().int().min(1, 'Số lượng phải >= 1'),
+  note: z.string().optional().nullable(),
+  sku: z.string().optional(),
+  combinationId: z.string().optional(),
+  variantCombination: z.any().optional().nullable(),
+})
+
+export const voucherUsageSchema = z.object({
+  voucherId: objectIdSchema,
+  code: z.string(),
+  type: z.string(),          // order | product | freeship
+  discount: z.number().min(0),
+}).passthrough()
+
+export const createOrderDataSchema = z.object({
+  code: z.string().min(1),
+  time: z.string().min(1),
+  address: z.string().min(1, 'Địa chỉ là bắt buộc'),
+  fullname: z.string().min(1, 'Họ tên là bắt buộc'),
+  phone: z.string().min(8, 'Số điện thoại không hợp lệ'),
+  note: z.string().optional().nullable(),
+  paymentId: objectIdSchema,
+  cartItems: z.array(cartItemSchema).min(1, 'Giỏ hàng trống'),
+
+  totalPrice: z.number().min(0),
+  totalPriceSave: z.number().min(0),
+  totalPriceCurrent: z.number().min(0),
+  totalDiscountOrder: z.number().min(0),
+  shippingFee: z.number().min(0),
+
+  status: objectIdSchema,
+
+  provinceCode: z.number(),
+  districtCode: z.number(),
+  wardCode: z.number(),
+
+  provinceName: z.string(),
+  districtName: z.string(),
+  wardName: z.string(),
+
+  voucherUsage: z.array(voucherUsageSchema).optional().default([]),
+})
+
+export const createOrderSchema = z.object({
+  data: createOrderDataSchema,
+
+  userId: objectIdSchema.optional().nullable(),
+
+  point: z.number().optional().default(0),
+
+  usedPoint: z.number().optional().default(0),
+})
+
+export const orderIdParamSchema = z.object({ id: objectIdSchema, })
+
+export const updateOrderStatusSchema = z.object({
+  orderId: objectIdSchema,
+  statusId: objectIdSchema,
+})
