@@ -37,14 +37,6 @@ export const newsAPI = {
 
   createCategory: async (bodyData: CreateCategoryNewsDTO): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
-      if (!bodyData.categoryName) {
-        return {
-          code: 1,
-          message: "Thiếu tên danh mục",
-          data: null as any
-        }
-      }
-
       const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.CREATE}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -192,14 +184,6 @@ export const newsAPI = {
 
   createPost: async (bodyData: CreatePostNewsDTO): Promise<ApiResponse<PostNewsDTO>> => {
     try {
-      if (!bodyData.title || !bodyData.categoryId || !bodyData.image) {
-        return {
-          code: 1,
-          message: "Thiếu các trường bắt buộc: title, categoryId, image",
-          data: null as any
-        }
-      }
-
       const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.NEWS_POSTS.CREATE}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

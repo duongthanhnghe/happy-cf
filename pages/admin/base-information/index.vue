@@ -68,6 +68,10 @@ onBeforeUnmount(() => {
 
         <div class="row row-xs">
           <div class="col-12 col-md-6 col-xxl-4">
+            <LabelInput label="Logo" required/>
+            <v-text-field v-model="storeSettingUpdate.formItem.logoUrl" :rules="nullRules" label="Logo" variant="outlined" required></v-text-field>
+          </div>
+          <div class="col-12 col-md-6 col-xxl-4">
             <LabelInput label="Ten cong ty" required/>
             <v-text-field v-model="storeSettingUpdate.formItem.name" :rules="nullRules" label="Nhap ten cong ty" variant="outlined" required></v-text-field>
           </div>

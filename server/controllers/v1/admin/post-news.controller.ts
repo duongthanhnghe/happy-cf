@@ -2,39 +2,6 @@ import type { Request, Response } from "express"
 import { PostNewsModel } from "../../../models/v1/news.entity"
 import { toPostNewsDTO, toPostNewsListDTO } from "../../../mappers/v1/news.mapper"
 
-// export const getAllPosts = async (req: Request, res: Response) => {
-//   try {
-//     const page = parseInt(req.query.page as string, 10) || 1
-//     let limit = parseInt(req.query.limit as string, 10) || 10
-
-//     const query: any = {}
-//     if (limit === -1) {
-//       limit = await PostNewsModel.countDocuments(query)
-//     }
-
-//     const skip = (page - 1) * limit
-
-//     const [total, posts] = await Promise.all([
-//       PostNewsModel.countDocuments(),
-//       PostNewsModel.find()
-//         .sort({ createdAt: -1 })
-//         .skip(skip)
-//         .limit(limit)
-//     ])
-
-//     const totalPages = Math.ceil(total / limit)
-
-//     return res.json({
-//       code: 0,
-//       data: toPostNewsListDTO(posts),
-//       pagination: { page, limit, total, totalPages },
-//       message: "Success"
-//     })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
-
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string, 10) || 1

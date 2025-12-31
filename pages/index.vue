@@ -33,7 +33,7 @@ if(storeNewsLatest.getListNewsLatest.length === 0) await storeNewsLatest.fetchPo
 if(storeProductCategory.getFlatCategoryList.length === 0) await storeProductCategory.fetchCategoryStore()
 if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.HOME]) {
   await fetchImageBlock(IMAGE_BLOCK_PAGES.HOME, {
-    [IMAGE_BLOCK_POSITIONS.FEATURED]: 2,
+    [IMAGE_BLOCK_POSITIONS.FEATURED]: 3,
   })
 }
 

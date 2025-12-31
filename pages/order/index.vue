@@ -58,7 +58,7 @@ const bannerSeller = getByPosition(
 </script>
 
 <template>
-  <div :class="[{ '_hidden123': storeDisplay.isLaptop },'bg-white shadow-2']">
+  <div :class="[{ '_hidden': storeDisplay.isLaptop },'bg-white shadow-2']">
     <v-tabs v-model="tab" align-tabs="center">
       <v-tab
           v-for="item in tabs"

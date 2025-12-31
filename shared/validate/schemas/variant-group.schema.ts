@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { objectIdSchema } from './common.schema'
+import { isActiveSchema, objectIdSchema } from './common.schema'
 
 export const variantItemSchema = z.object({
   id: z.string().min(1, 'ID biến thể là bắt buộc'),
@@ -27,7 +27,7 @@ export const createVariantGroupSchema = z.object({
 
   hasImage: z.coerce.boolean().default(false),
 
-  isActive: z.coerce.boolean().default(true),
+  isActive: isActiveSchema,
 
   variants: z
     .array(variantItemSchema)

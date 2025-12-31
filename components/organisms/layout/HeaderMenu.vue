@@ -13,7 +13,7 @@ const storeDisplay = useDisplayStore()
 </script>
 
 <template>
-  <div v-if="storeDisplay.isLaptop && props.listMenu" class="header-center flex gap-xs" >
+  <div v-if="storeDisplay.isLaptop && props.listMenu" class="header-center flex flex-1 gap-ms justify-center" >
     <div
       v-for="(item, index) in props.listMenu"
       :key="index"
@@ -31,7 +31,7 @@ const storeDisplay = useDisplayStore()
           { active: route.path === item.path }
         ]"
       >
-        <Button color="transparent" :label="item.label" />
+        <Button color="transparent" :label="item.label" class="pl-ms pr-ms"/>
       </NuxtLink>
 
       <!-- MENU 2 CẤP -->

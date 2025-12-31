@@ -1,18 +1,22 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { usePostManageStore } from '@/stores/admin/news/usePostManageStore'
-import type { SubmitEventPromise } from 'vuetify';
 import { showWarning } from '@/utils/toast';
+import { useValidate } from '@/composables/validate/useValidate'
+import { updatePostNewsSchema } from '@/shared/validate/schemas/news.schema'
 
 const store = usePostManageStore();
 const editorRef = ref()
+const { validate, formErrors } = useValidate(updatePostNewsSchema)
 
-const handleSubmitUpdate = async (event: SubmitEventPromise) => {
-  const result = await event
-  if (!result.valid) return
+const handleSubmitUpdate = async () => {
+  if (!validate(store.updatePostItem)) {
+    showWarning('Vui lòng nhập đầy đủ thông tin hợp lệ')
+    return
+  }
 
   if(!store.updatePostItem.description) {
-    showWarning('Vui long nhap noi dung bai viet')
+    showWarning('Vui lòng nhập nội dung bài viết')
     return
   }
 
@@ -33,46 +37,98 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 
 </script>
 <template>
-<Popup popupId="popup-update-post" v-model="store.isTogglePopupUpdate" popupHeading="Sua bai viet" align="right">
-  <template #body>
-    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
-      <div class="portal-popup-footer">
-        <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
-      </div>
-        <LabelInput label="Ten bai viet" required/>
-        <v-text-field v-model="store.updatePostItem.title" :counter="200" :rules="store.nullRules" label="Ten bai viet" variant="outlined" required></v-text-field>
-        <LabelInput label="Mo ta bai viet"/>
-        <v-textarea v-model="store.updatePostItem.summaryContent" :counter="500" label="Mo ta" variant="outlined"></v-textarea>
-        <LabelInput label="Noi dung bai viet" required/>
-        <client-only>
-        <CKEditorCDN
-          ref="editorRef"
-          v-model="store.updatePostItem.description"
-          :uploadUrl="store.folderName"
+  <Popup
+    v-model="store.isTogglePopupUpdate"
+    popupHeading="Cập nhật bài viết"
+    align="right"
+    footerFixed
+  >
+    <template #body>
+      <v-form @submit.prevent="handleSubmitUpdate">
+
+        <!-- Tên bài viết -->
+        <LabelInput label="Tên bài viết" required />
+        <v-text-field
+          v-model="store.updatePostItem.title"
+          :counter="200"
+          label="Nhập tên bài viết"
+          variant="outlined"
+          :error="!!formErrors.title"
+          :error-messages="formErrors.title"
+          required
         />
+
+        <!-- Mô tả -->
+        <LabelInput label="Mô tả bài viết" />
+        <v-textarea
+          v-model="store.updatePostItem.summaryContent"
+          :counter="500"
+          label="Nhập mô tả"
+          variant="outlined"
+          :error="!!formErrors.summaryContent"
+          :error-messages="formErrors.summaryContent"
+        />
+
+        <!-- Nội dung -->
+        <LabelInput label="Nội dung bài viết" required />
+        <div v-if="formErrors.description" class="text-error text-size-xs mb-xs">
+          {{ formErrors.description }}
+        </div>
+        <client-only>
+          <CKEditorCDN
+            ref="editorRef"
+            v-model="store.updatePostItem.description"
+            :uploadUrl="store.folderName"
+          />
         </client-only>
-       
-        <LabelInput label="Danh muc bai viet" required/>
-        <v-select 
+
+        <!-- Danh mục -->
+        <LabelInput label="Danh mục bài viết" required />
+        <v-select
           v-if="store.getListCategory"
-          label="Chon danh muc"
+          label="Chọn danh mục"
           v-model="store.updatePostItem.categoryId"
           variant="solo"
           :items="store.getListCategory"
           item-title="categoryName"
           item-value="id"
-          :rules="store.nullRules"
-          />
-        
-        <LabelInput label="Hinh dai dien" required/>
-        <v-img v-if="store.updatePostItem.image" :src="store.updatePostItem.image" class="mb-sm" alt="Hinh anh" />
-        <div class="flex gap-sm">
-          <v-text-field v-model="store.updatePostItem.image" label="Duong dan anh..." variant="outlined" :rules="store.nullRules" required disabled></v-text-field>
-          <Button color="black" :label="store.updatePostItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
-        </div>
-        <v-switch :label="`Tinh trang: ${store.updatePostItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.updatePostItem.isActive" inset
-        ></v-switch>
+          :error="!!formErrors.categoryId"
+          :error-messages="formErrors.categoryId"
+        />
 
+        <!-- Ảnh đại diện -->
+        <LabelInput label="Hình đại diện" required />
+        <v-img
+          v-if="store.updatePostItem.image"
+          :src="store.updatePostItem.image"
+          class="mb-sm"
+          alt="Hình ảnh"
+        />
+        <div class="flex gap-sm">
+          <v-text-field
+            v-model="store.updatePostItem.image"
+            label="Đường dẫn ảnh..."
+            variant="outlined"
+            disabled
+            :error="!!formErrors.image"
+            :error-messages="formErrors.image"
+            required
+          />
+          <Button
+            color="black"
+            :label="store.updatePostItem.image ? 'Đổi ảnh' : 'Chọn ảnh'"
+            @click.prevent="store.handleAddImage()"
+          />
+        </div>
+
+        <!-- Trạng thái -->
+        <v-switch
+          v-model="store.updatePostItem.isActive"
+          :label="`Tình trạng: ${store.updatePostItem.isActive ? 'Bật' : 'Tắt'} kích hoạt`"
+          inset
+        />
+
+        <!-- SEO -->
         <LabelInput label="SEO Title" />
         <v-text-field
           v-model="store.updatePostItem.titleSEO"
@@ -88,23 +144,38 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           variant="outlined"
         />
 
-        <LabelInput label="Slug (URL)" required/>
+        <!-- Slug -->
+        <LabelInput label="Slug (URL)" required />
         <v-text-field
           v-model="store.updatePostItem.slug"
           label="Slug"
           variant="outlined"
-          :rules="store.nullRules"
+          :error="!!formErrors.slug"
+          :error-messages="formErrors.slug"
           required
         />
 
-        <LabelInput label="Keywords (phân cách bằng dấu ,)" />
+        <!-- Keywords -->
+        <LabelInput label="Từ khóa (phân cách bằng dấu ,)" />
         <v-text-field
           v-model="store.updatePostItem.keywords"
-          label="Keywords"
+          label="Từ khóa"
           variant="outlined"
+          :error="!!formErrors.keywords"
+          :error-messages="formErrors.keywords"
         />
-        
-    </v-form>
-  </template>
-</Popup>
+
+      </v-form>
+    </template>
+
+    <template #footer>
+      <Button
+        @click="handleSubmitUpdate"
+        type="submit"
+        color="primary"
+        label="Cập nhật bài viết"
+        class="w-full"
+      />
+    </template>
+  </Popup>
 </template>
