@@ -74,7 +74,7 @@ export const forgotPasswordSchema = z.object({
   email: z.string().email(),
 })
 
-export const resetPasswordSchema = z.object({
+export const changePasswordFESchema = z.object({
   oldPassword: z.string().min(8),
   password: strongPasswordSchema,
   passwordConfirm: z.string().min(1, 'Vui lòng xác nhận mật khẩu'),
@@ -82,6 +82,23 @@ export const resetPasswordSchema = z.object({
     if (data.password !== data.passwordConfirm) {
       ctx.addIssue({
         path: ['passwordConfirm'],
+        message: 'Mật khẩu xác nhận không khớp',
+        code: z.ZodIssueCode.custom,
+      })
+    }
+  })
+
+export const resetPasswordSchema = z.object({
+  email: emailSchema,
+  token: z
+    .string()
+    .min(1, 'Token không hợp lệ'),
+  newPassword: strongPasswordSchema,
+  newPasswordConfirm: strongPasswordSchema,
+}).superRefine((data, ctx) => {
+    if (data.newPassword !== data.newPasswordConfirm) {
+      ctx.addIssue({
+        path: ['newPasswordConfirm'],
         message: 'Mật khẩu xác nhận không khớp',
         code: z.ZodIssueCode.custom,
       })

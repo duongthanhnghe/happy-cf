@@ -1,14 +1,15 @@
+import 'dotenv/config'
 import express, { type Request, type Response, type NextFunction } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import * as dotenv from 'dotenv'
+// import * as dotenv from 'dotenv'
 import { v2 as cloudinary } from 'cloudinary'
 import { connectDB } from './db/db'
 
 // Load env
-dotenv.config({ path: path.resolve(process.cwd(), '.env') })
+// dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
 // Cloudinary config
 cloudinary.config({

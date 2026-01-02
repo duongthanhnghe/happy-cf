@@ -106,7 +106,8 @@ export const useAuthUtils = (
       const dataReset:ResetPassword = {
         email: email,
         token: token,
-        newPassword: newPassword.value
+        newPassword: newPassword.value,
+        newPasswordConfirm: newPasswordConfirm.value
       }
 
       const data = await authAPI.ResetPassword(dataReset)

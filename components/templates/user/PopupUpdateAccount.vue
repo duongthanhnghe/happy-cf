@@ -27,14 +27,6 @@ const folderName = `${FOLDER_UPLOAD.MEMBER}${accountStore.getUserId}`;
 const { validate, formErrors } = useValidate(updateUserProfileSchema)
 
 const handleSubmitUpdate = async () => {
-  // const payload = {
-  //   fullname: storeAccountEdit.formUserItem.fullname,
-  //   phone: storeAccountEdit.formUserItem.phone,
-  //   birthday: storeAccountEdit.getBirthday,
-  //   gender: storeAccountEdit.formUserItem.gender,
-  //   avatar: storeAccountEdit.formUserItem.avatar,
-  // }
-
   if (!validate(storeAccountEdit.formUserItem)) {
     showWarning('Vui lòng kiểm tra lại thông tin')
     return

@@ -144,13 +144,13 @@ export const authAPI = {
       throw error
     }
   },
-  ResetPassword: async ({ email, token, newPassword } : ResetPassword) => {
+  ResetPassword: async ({ email, token, newPassword, newPasswordConfirm } : ResetPassword) => {
     try {
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.RESET_PASSWORD}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: "include",
-        body: JSON.stringify({ email, token, newPassword })
+        body: JSON.stringify({ email, token, newPassword, newPasswordConfirm })
       })
 
       const data = await response.json()

@@ -3,6 +3,7 @@ import { useUserAuthStore } from '@/stores/client/users/useUserAuthStore'
 import { useValidate } from '@/composables/validate/useValidate'
 import { resetPasswordSchema } from '@/shared/validate/schemas/user.schema'
 import { showWarning } from '@/utils/toast'
+import { useRoute } from 'vue-router'
 
 import {
   AUTH_TEXT_RESET_PASSWORD,
@@ -19,13 +20,18 @@ definePageMeta({
 })
 
 const store = useUserAuthStore()
+const route = useRoute()
 
+const email = route.query.email as string
+const token = route.query.token as string
 const { validate, formErrors } = useValidate(resetPasswordSchema)
 
 const handleSubmitResetPassword = async () => {
   const payload = {
-    password: store.newPassword,
-    passwordConfirm: store.newPasswordConfirm,
+    email,
+    token,
+    newPassword: store.newPassword,
+    newPasswordConfirm: store.newPasswordConfirm,
   }
 
   if (!validate(payload)) {
@@ -47,7 +53,6 @@ const handleSubmitResetPassword = async () => {
   />
 
   <v-form @submit.prevent="handleSubmitResetPassword">
-    <!-- New password -->
     <LabelInput :label="AUTH_TEXT_PASSWORD_NEW" required />
     <v-text-field
       v-model="store.newPassword"
@@ -57,11 +62,10 @@ const handleSubmitResetPassword = async () => {
       :label="AUTH_TEXT_PASSWORD_HINT"
       variant="outlined"
       required
-      :error="!!formErrors.password"
-      :error-messages="formErrors.password"
+      :error="!!formErrors.newPassword"
+      :error-messages="formErrors.newPassword"
     />
 
-    <!-- Confirm password -->
     <LabelInput :label="AUTH_TEXT_CONFIRM_PASSWORD" required />
     <v-text-field
       v-model="store.newPasswordConfirm"
@@ -71,8 +75,8 @@ const handleSubmitResetPassword = async () => {
       :label="AUTH_TEXT_PASSWORD_HINT"
       variant="outlined"
       required
-      :error="!!formErrors.passwordConfirm"
-      :error-messages="formErrors.passwordConfirm"
+      :error="!!formErrors.newPasswordConfirm"
+      :error-messages="formErrors.newPasswordConfirm"
     />
 
     <Button

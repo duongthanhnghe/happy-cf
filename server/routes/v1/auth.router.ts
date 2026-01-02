@@ -14,7 +14,7 @@ import {
 } from '../../controllers/v1/auth.controller'
 import { authenticate } from '../../middlewares/authenticate'
 import { validate } from '../../middlewares/validate/validate'
-import { idParamSchema, loginSchema, registerSchema, resetPasswordSchema, changePasswordSchema } from '../../../shared/validate/schemas/user.schema'
+import { idParamSchema, loginSchema, registerSchema, changePasswordSchema, resetPasswordSchema } from '../../../shared/validate/schemas/user.schema'
 
 const router = express.Router()
 
@@ -26,7 +26,7 @@ router.post('/register', validate(registerSchema), register)
 router.post('/login', validate(loginSchema), login)
 router.post('/google-login', googleLogin)
 router.post('/forgot-password', forgotPassword)
-router.post('/reset-password', resetPassword)
+router.post('/reset-password', validate(resetPasswordSchema), resetPassword)
 router.post('/change-password', authenticate, validate(changePasswordSchema), changePassword)
 router.post('/logout', authenticate, logout)
 

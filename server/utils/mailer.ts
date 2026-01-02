@@ -3,14 +3,14 @@ import nodemailer from 'nodemailer'
 export const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: "duongthanhnghe12071996@gmail.com",
-    pass: "ehoegyzdvuexthep"
+    user: process.env.EMAIL_NOREPLY_NAME,
+    pass: process.env.EMAIL_NOREPLY_APP_KEY,
   }
 })
 
 export const sendResetPasswordEmail = async (to: string, resetLink: string) => {
   const mailOptions = {
-    from: 'duongthanhnghe12071996@gmail.com',
+    from: `${process.env.EMAIL_NOREPLY_NAME}`,
     to,
     subject: 'Khôi phục mật khẩu',
     html: `

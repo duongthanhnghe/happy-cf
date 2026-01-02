@@ -26,8 +26,8 @@ const handleSubmitForgotPassword = async (event: SubmitEventPromise) => {
     <Text class="mb-xl" align="center" color="primary" size="xxl" :text="AUTH_TEXT_FORGOT_PASSWORD" />
 
     <div class="text-center text-size-xs text-color-gray5 mb-md">
-        {{ AUTH_TEXT_FORGOT_SUGGEST }}
-      </div>
+      {{ AUTH_TEXT_FORGOT_SUGGEST }}
+    </div>
     <v-form validate-on="submit lazy" @submit.prevent="handleSubmitForgotPassword">
       <LabelInput label="Email" required/>
       <v-text-field v-model="store.emailForgot" :rules="emailRules" :label="AUTH_TEXT_EMAIL_HINT" variant="outlined" required></v-text-field>

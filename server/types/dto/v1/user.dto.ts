@@ -50,6 +50,7 @@ export interface ResetPassword {
   email: string
   token: string
   newPassword: string
+  newPasswordConfirm: string
 }
 
 export interface ChangePassword {

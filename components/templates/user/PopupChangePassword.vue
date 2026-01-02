@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
-import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import {
   AUTH_TEXT_CHANGE_PASSWORD,
   AUTH_TEXT_PASSWORD_NEW,
@@ -9,12 +8,11 @@ import {
   AUTH_TEXT_PASSWORD_HINT,
 } from '@/const/text'
 import { useValidate } from '@/composables/validate/useValidate'
-import { resetPasswordSchema } from '@/shared/validate/schemas/user.schema'
+import { changePasswordFESchema } from '@/shared/validate/schemas/user.schema'
 import { showWarning } from '@/utils/toast'
 
 const storeAccountEdit = useAccountEditStore();
-const storeAccount = useAccountStore();
-const { validate, formErrors } = useValidate(resetPasswordSchema)
+const { validate, formErrors } = useValidate(changePasswordFESchema)
 
 const handleSubmitUpdate = async () => {
   const payload = {
