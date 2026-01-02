@@ -15,8 +15,6 @@ const handleSubmitCreate = async () => {
     comment: store.formDataItem.comment,
   }
 
-  // console.log(payload)
-
   if (!validate(payload)) {
     showWarning('Vui lòng kiểm tra lại đánh giá')
     return

@@ -39,9 +39,11 @@ watch(() => route.fullPath, () => {
               <MenuAccount :menu="listMenu" />
             </div>
           </div>
-          <div class="col-12 col-lg-9 pt-ms">
-            <slot />
-          </div>
+          <client-only>
+            <div class="col-12 col-lg-9 pt-ms">
+              <slot />
+            </div>
+          </client-only>
         </div>
       </div>
     </template>

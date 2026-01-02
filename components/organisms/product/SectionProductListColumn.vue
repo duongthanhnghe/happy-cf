@@ -20,7 +20,8 @@ const props = withDefaults(defineProps<{
   loading: false,
   deleteFavorite: false,
   showNoData: false,
-  headingSize: 'xl'
+  headingSize: 'xl',
+  headingText: ''
 })
 </script>
 
