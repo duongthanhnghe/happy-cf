@@ -1,0 +1,48 @@
+import { z } from 'zod'
+import { phoneSchema, emailSchema } from './common.schema'
+
+export const socialLinkSchema = z.object({
+  name: z.string().min(1),
+  icon: z.string().min(1),
+  src: z
+    .preprocess(
+      v => (v === null || v === undefined ? '' : String(v)),
+      z.string().url('Link mạng xã hội không hợp lệ').optional()
+    )
+    .optional(),
+})
+
+export const baseInformationSchema = z.object({
+  name: z.string().min(1, 'Tên công ty là bắt buộc'),
+
+  logoUrl: z.string().url('Logo không hợp lệ'),
+
+  phone: phoneSchema,
+
+  email: emailSchema,
+
+  address: z.string().min(1, 'Địa chỉ là bắt buộc'),
+
+  openingHours: z.string().optional().default(''),
+
+  description: z.string().optional().default(''),
+
+  socialLinks: z.array(socialLinkSchema).optional().default([]),
+
+  provinceCode: z.preprocess(
+    v => (v === '' || v === null ? undefined : Number(v)),
+    z.number().optional()
+  ),
+
+  districtCode: z.preprocess(
+    v => (v === '' || v === null ? undefined : Number(v)),
+    z.number().optional()
+  ),
+
+  wardCode: z.preprocess(
+    v => (v === '' || v === null ? undefined : Number(v)),
+    z.number().optional()
+  ),
+})
+
+export const updateBaseInformationSchema = baseInformationSchema.partial()

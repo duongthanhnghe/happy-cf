@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount } from 'vue'
-import type { SubmitEventPromise } from 'vuetify'
 import { useBaseInformationUpdateStore } from '@/stores/admin/setting/useBaseInformationUpdateStore';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { showWarning } from '@/utils/toast';
 import { ROUTES } from '@/shared/constants/routes';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
-import { nullRules, emailRules } from '@/utils/validation';
 import { useLocationWatchers } from '@/composables/shared/location/useLocationWatchers';
+import { useValidate } from '@/composables/validate/useValidate'
+import { updateBaseInformationSchema } from '@/shared/validate/schemas/base-information.schema';
 
 definePageMeta({
   layout: ROUTES.ADMIN.BASE_INFORMATION.layout,
@@ -17,16 +17,15 @@ definePageMeta({
 const storeSettingUpdate = useBaseInformationUpdateStore();
 const storeLocation = useLocationStore();
 const storeDisplay = useDisplayStore()
+const { validate, formErrors } = useValidate(updateBaseInformationSchema)
 
-const cardItemClass= 'card card-sm bg-white pb-0';
+const handleSubmitCreate = async () => {
 
-const handleSubmitCreate = async (event: SubmitEventPromise) => {
-  const result = await event
-  console.log(result)
-  if (!result.valid) {
-    showWarning('Vui long dien day du thong tin')
+  if (!validate(storeSettingUpdate.formItem)) {
+    showWarning('Vui lòng kiểm tra lại thông tin')
     return
   }
+
   await storeSettingUpdate.update()
 }
 
@@ -58,59 +57,113 @@ onBeforeUnmount(() => {
 </script>
 <template>
 
-<HeaderAdmin label="Cai dat thong tin" />
+<HeaderAdmin label="Cài đặt thông tin" />
 
 <v-container>
-  <v-form v-if="storeSettingUpdate.formItem.name" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+  <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
 
-      <div :class="`${cardItemClass}`">
-        <Text size="md" weight="semibold" class="mb-sm" text="Thông tin co ban" />
+      <Card class="rd-lg" size="sm">
+        <Text
+          size="md"
+          weight="semibold"
+          class="mb-sm"
+          text="Thông tin cơ bản"
+        />
 
         <div class="row row-xs">
           <div class="col-12 col-md-6 col-xxl-4">
-            <LabelInput label="Logo" required/>
-            <v-text-field v-model="storeSettingUpdate.formItem.logoUrl" :rules="nullRules" label="Logo" variant="outlined" required></v-text-field>
+            <LabelInput label="Logo công ty" required />
+            <v-text-field
+              v-model="storeSettingUpdate.formItem.logoUrl"
+              :error="!!formErrors.logoUrl"
+              :error-messages="formErrors.logoUrl"
+              label="Nhập logo công ty"
+              variant="outlined"
+              required
+            />
           </div>
+
           <div class="col-12 col-md-6 col-xxl-4">
-            <LabelInput label="Ten cong ty" required/>
-            <v-text-field v-model="storeSettingUpdate.formItem.name" :rules="nullRules" label="Nhap ten cong ty" variant="outlined" required></v-text-field>
+            <LabelInput label="Tên công ty" required />
+            <v-text-field
+              v-model="storeSettingUpdate.formItem.name"
+              :error="!!formErrors.name"
+              :error-messages="formErrors.name"
+              label="Nhập tên công ty"
+              variant="outlined"
+              required
+            />
           </div>
+
           <div class="col-12 col-md-6 col-xxl-4">
-            <LabelInput label="So dien thoai" required/>
-            <v-text-field v-model="storeSettingUpdate.formItem.phone" :rules="nullRules" type="number" label="Nhap so dien thoai" variant="outlined" required></v-text-field>
+            <LabelInput label="Số điện thoại" required />
+            <v-text-field
+              v-model="storeSettingUpdate.formItem.phone"
+              :error="!!formErrors.phone"
+              :error-messages="formErrors.phone"
+              type="number"
+              label="Nhập số điện thoại"
+              variant="outlined"
+              required
+            />
           </div>
+
           <div class="col-12 col-md-6 col-xxl-4">
-            <LabelInput label="Email" required/>
-            <v-text-field v-model="storeSettingUpdate.formItem.email" :rules="emailRules" label="Nhap email" variant="outlined" required></v-text-field>
+            <LabelInput label="Email" required />
+            <v-text-field
+              v-model="storeSettingUpdate.formItem.email"
+              :error="!!formErrors.email"
+              :error-messages="formErrors.email"
+              label="Nhập email"
+              variant="outlined"
+              required
+            />
           </div>
+
           <div class="col-12 col-md-6 col-xxl-4">
-            <LabelInput label="Dia chi" required/>
-            <v-text-field v-model="storeSettingUpdate.formItem.address" label="Nhap dia chi" variant="outlined" required></v-text-field>
+            <LabelInput label="Địa chỉ" required />
+            <v-text-field
+              v-model="storeSettingUpdate.formItem.address"
+              label="Nhập địa chỉ"
+              variant="outlined"
+              required
+            />
           </div>
+
           <div class="col-12 col-md-6 col-xxl-4">
-            <LabelInput label="Thoi gian mo cua"/>
-            <v-text-field v-model="storeSettingUpdate.formItem.openingHours" label="7:00 - 21:00" variant="outlined"></v-text-field>
+            <LabelInput label="Thời gian mở cửa" />
+            <v-text-field
+              v-model="storeSettingUpdate.formItem.openingHours"
+              label="Ví dụ: 7:00 - 21:00"
+              variant="outlined"
+            />
           </div>
+
           <div class="col-12">
-            <LabelInput label="Mo ta"/>
-            <v-textarea v-model="storeSettingUpdate.formItem.description" label="Nhap mo ta ngan" variant="outlined"></v-textarea>
+            <LabelInput label="Mô tả" />
+            <v-textarea
+              v-model="storeSettingUpdate.formItem.description"
+              label="Nhập mô tả ngắn"
+              variant="outlined"
+            />
           </div>
         </div>
-      </div>
+      </Card>
 
-      <div :class="`${cardItemClass} mt-md`">
-        <Text size="md" weight="semibold" class="mb-sm" text="Mang xa hoi" />
+      <Card class="rd-lg mt-md" size="sm">
+        <Text size="md" weight="semibold" class="mb-sm" text="Mạng xã hội" />
 
         <div class="row row-xs">
           <div v-if="storeSettingUpdate.formItem.socialLinks" v-for="(item, index) in storeSettingUpdate.formItem.socialLinks" :key="item.name" class="col-12 col-md-6 col-xxl-4">
             <LabelInput :label="item.name"/>
-            <v-text-field v-model="storeSettingUpdate.formItem.socialLinks[index].src" :label="`Nhap duong dan `+item.name" variant="outlined"></v-text-field> 
+            <v-text-field v-model="storeSettingUpdate.formItem.socialLinks[index].src" :label="`Nhập đường dẫn `+item.name" variant="outlined" :error="!!formErrors[`socialLinks.${index}.src`]"
+  :error-messages="formErrors[`socialLinks.${index}.src`]"></v-text-field> 
           </div>
         </div>
-      </div>
+      </Card>
 
-      <div :class="`${cardItemClass} mt-md`">
-        <Text size="md" weight="semibold" class="mb-sm" text="Kho hang" />
+      <Card class="rd-lg mt-md" size="sm">
+        <Text size="md" weight="semibold" class="mb-sm" text="Kho hàng" />
 
         <div class="flex gap-sm">
           <div class="flex-1">
@@ -121,36 +174,39 @@ onBeforeUnmount(() => {
               item-title="PROVINCE_NAME"
               item-value="PROVINCE_ID"
               variant="outlined"
-              :rules="nullRules"
+              :error="!!formErrors.provinceCode"
+              :error-messages="formErrors.provinceCode"
             />
           </div>
           <div class="flex-1">
-          <LabelInput label="Quan huyen" required/>
+          <LabelInput label="Quận huyện" required/>
             <v-autocomplete
               v-model="storeLocation.selectedDistrict"
               :items="storeLocation.getListDistricts ?? []"
               item-title="DISTRICT_NAME"
               item-value="DISTRICT_ID"
               variant="outlined"
-              :rules="nullRules"
+              :error="!!formErrors.districtCode"
+              :error-messages="formErrors.districtCode"
             />
           </div>
           <div class="flex-1">
-          <LabelInput label="Phuong xa" required/>
+          <LabelInput label="Phường xã" required/>
           <v-autocomplete
               v-model="storeLocation.selectedWard"
               :items="storeLocation.getListWards ?? []"
               item-title="WARDS_NAME"
               item-value="WARDS_ID"
               variant="outlined"
-              :rules="nullRules"
+              :error="!!formErrors.wardCode"
+              :error-messages="formErrors.wardCode"
             />
           </div>
         </div>
-      </div>
+      </Card>
 
       <div class="flex justify-end mt-md">
-        <Button type="submit" color="primary" :shadow="true" label="Luu cai dat" :class="storeDisplay.isMobileTable ? 'w-full':''" />
+        <Button type="submit" color="primary" :shadow="true" label="Lưu cài đặt" :class="storeDisplay.isMobileTable ? 'w-full':''" />
       </div>
     </v-form>
 </v-container>

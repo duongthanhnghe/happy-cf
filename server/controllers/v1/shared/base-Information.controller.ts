@@ -18,11 +18,9 @@ export const getBaseInformation = async (_: Request, res: Response) => {
 
 export const updateBaseInformation = async (req: Request, res: Response) => {
   try {
-    // Kiểm tra xem đã có thông tin chưa
     let existing = await BaseInformationEntity.findOne();
 
     if (!existing) {
-      // Nếu chưa có -> tạo mới
       const created = await BaseInformationEntity.create(req.body);
       return res.status(201).json({
         code: 0,
@@ -31,7 +29,6 @@ export const updateBaseInformation = async (req: Request, res: Response) => {
       });
     }
 
-    // Nếu đã có -> cập nhật
     existing.set(req.body);
     await existing.save();
 
