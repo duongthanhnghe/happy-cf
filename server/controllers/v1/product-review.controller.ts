@@ -3,64 +3,6 @@ import { ProductReviewEntity } from "../../models/v1/product-review.entity";
 import { toProductReviewDTO, toProductReviewListDTO } from "../../mappers/v1/product-review.mapper";
 import { ProductEntity } from "../../models/v1/product.entity";
 
-// export const getAllProductReviews = async (req: Request, res: Response) => {
-//   try {
-//     let { page = 1, limit = 10 } = req.query;
-
-//     const numPage = Number(page);
-//     let numLimit = Number(limit);
-
-//     if (numLimit === -1) {
-//       const reviews = await ProductReviewEntity.find({})
-//         .sort({ createdAt: -1 })
-//         // .populate("orderId")
-//         .populate("userId")
-//         .populate("productId");
-
-//       return res.json({
-//         code: 0,
-//         data: toProductReviewListDTO(reviews),
-//         pagination: {
-//           page: 1,
-//           limit: reviews.length,
-//           totalPages: 1,
-//           total: reviews.length,
-//         },
-//       });
-//     }
-
-//     const options = {
-//       page: numPage,
-//       limit: numLimit,
-//       sort: { createdAt: -1 },
-//       populate: [
-//         // { path: "orderId", model: "Order" },
-//         { path: "userId", model: "User" },
-//         { path: "productId", model: "Product" },
-//       ],
-//     };
-
-//     const result = await (ProductReviewEntity as any).paginate({}, options);
-
-//     return res.json({
-//       code: 0,
-//       data: toProductReviewListDTO(result.docs),
-//       pagination: {
-//         page: result.page,
-//         limit: result.limit,
-//         totalPages: result.totalPages,
-//         total: result.totalDocs,
-//       },
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       code: 1,
-//       message: "Lỗi lấy danh sách đánh giá",
-//       error,
-//     });
-//   }
-// };
-
 export const getProductReviewById = async (req: Request, res: Response) => {
   try {
     const review = await ProductReviewEntity.findById(req.params.id)
@@ -78,53 +20,9 @@ export const getProductReviewById = async (req: Request, res: Response) => {
   }
 };
 
-// export const updateProductReviewStatus = async (req: Request, res: Response) => {
-//   try {
-//     const { id, status } = req.body;
-
-//     if (!id || !status) {
-//       return res.status(400).json({ code: 1, message: "Thiếu id hoặc status" });
-//     }
-
-//     const review = await ProductReviewEntity.findById(id);
-//     if (!review) {
-//       return res.status(404).json({ code: 1, message: "Đánh giá không tồn tại" });
-//     }
-
-//     review.status = status;
-//     await review.save();
-
-//     return res.json({
-//       code: 0,
-//       message: "Cập nhật trạng thái đánh giá thành công",
-//       data: toProductReviewDTO(review),
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ code: 1, message: "Lỗi cập nhật trạng thái đánh giá", error });
-//   }
-// };
-
-// export const deleteProductReview = async (req: Request, res: Response) => {
-//   try {
-//     const deleted = await ProductReviewEntity.findByIdAndDelete(req.params.id);
-
-//     if (!deleted) {
-//       return res.status(404).json({ code: 1, message: "Đánh giá không tồn tại" });
-//     }
-
-//     return res.json({ code: 0, message: "Xóa đánh giá thành công" });
-//   } catch (error) {
-//     return res.status(500).json({ code: 1, message: "Lỗi xóa đánh giá", error });
-//   }
-// };
-
 export const submitProductReview = async (req: Request, res: Response) => {
   try {
     const { reviewId, rating, comment, images } = req.body;
-
-    if (!reviewId || !rating) {
-      return res.status(400).json({ code: 1, message: "Thiếu reviewId hoặc rating" });
-    }
 
     const review = await ProductReviewEntity.findById(reviewId);
     if (!review) {
@@ -134,7 +32,7 @@ export const submitProductReview = async (req: Request, res: Response) => {
     review.rating = rating;
     review.comment = comment || null;
     review.images = images || [];
-    review.status = "approved"; // Chuyển trạng thái thành approved
+    review.status = "approved";
     await review.save();
 
     return res.json({ code: 0, message: "Gửi đánh giá thành công", data: toProductReviewDTO(review) });
@@ -147,7 +45,7 @@ export const submitProductReview = async (req: Request, res: Response) => {
 export const getReviewsByUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { status, page = 1, limit = 10 } = req.query; // Lấy status, page và limit từ query string
+    const { status, page = 1, limit = 10 } = req.query;
 
     if (!userId) {
       return res.status(400).json({ code: 1, message: "Thiếu userId" });
@@ -162,10 +60,9 @@ export const getReviewsByUser = async (req: Request, res: Response) => {
 
     const query = {
       userId,
-      status, // Sử dụng status từ query string
+      status,
     };
 
-    // Nếu limit = -1, trả về toàn bộ dữ liệu không phân trang
     if (numLimit === -1) {
       const reviews = await ProductReviewEntity.find(query)
         // .populate("orderId")
@@ -184,7 +81,6 @@ export const getReviewsByUser = async (req: Request, res: Response) => {
       });
     }
 
-    // Phân trang
     const options = {
       page: numPage,
       limit: numLimit,

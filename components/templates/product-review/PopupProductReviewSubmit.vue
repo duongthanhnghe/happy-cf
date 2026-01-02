@@ -1,16 +1,27 @@
 <script lang="ts" setup>
+import { useValidate } from '@/composables/validate/useValidate'
+import { createProductReviewSchema } from '@/shared/validate/schemas/product-review.schema'
 import { useProductReviewByUserStore } from '@/stores/client/product-review/useProductReviewByUserStore';
-import { nullRules } from '@/utils/validation';
-import type { VForm } from 'vuetify/lib/components';
-import { ref } from 'vue';
+import { showWarning } from '@/utils/toast'
+
+const { validate, formErrors } = useValidate(createProductReviewSchema)
 
 const store = useProductReviewByUserStore();
-const formRef = ref<VForm | null>(null);
 
 const handleSubmitCreate = async () => {
-  if (!formRef.value) return;
-  const { valid } = await formRef.value.validate();
-  if (!valid) return;
+  const payload = {
+    reviewId: store.getDetailReview?.id,
+    rating: store.ratingNumber,
+    comment: store.formDataItem.comment,
+  }
+
+  // console.log(payload)
+
+  if (!validate(payload)) {
+    showWarning('Vui lòng kiểm tra lại đánh giá')
+    return
+  }
+
   await store.submitReview();
 }
 
@@ -31,7 +42,7 @@ const handleSubmitCreate = async () => {
         </div>
         <Text :text="store.getDetailReview?.productId.productName" color="black" weight="semibold"/>
       </Card>
-      <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+      <v-form @submit.prevent="handleSubmitCreate">
         <LabelInput label="Số sao" required/>
         <v-rating
           v-model="store.ratingNumber"
@@ -40,10 +51,12 @@ const handleSubmitCreate = async () => {
           item-label-position="bottom"
           active-color="orange"
           hide-details
+          :error="!!formErrors.rating"
         ></v-rating>
 
         <LabelInput label="Nội dung" required/>
-        <v-textarea v-model="store.formDataItem.comment" :rules="nullRules" label="Nhập nội dung" variant="outlined" required></v-textarea>
+        <v-textarea v-model="store.formDataItem.comment" :error="!!formErrors.comment"
+        :error-messages="formErrors.comment" label="Nhập nội dung" variant="outlined" required></v-textarea>
       </v-form>
     </div>
   </template>

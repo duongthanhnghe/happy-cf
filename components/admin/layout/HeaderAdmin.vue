@@ -39,7 +39,7 @@ const detailAccount = computed(() => storeAccount.getDetailAccount);
         <template v-if="listMenu">
           <v-list class="mt-sm">
             <v-list-item 
-              v-for="(item, index) in Object.values(listMenu).filter((item: MenuItem) => item.isShowMenuAccount && item.roles?.includes(detailAccount.role))" 
+              v-for="(item, index) in Object.values(listMenu).filter((item: MenuItem) => item.isShowMenuAccount && detailAccount && item.roles?.includes(detailAccount.role))" 
               :key="index"
               :value="item.path"
               class="header-admin-right-list">
@@ -54,7 +54,7 @@ const detailAccount = computed(() => storeAccount.getDetailAccount);
               <v-list-item-title >
                 <div class="flex align-center gap-sm weight-medium cursor-pointer" @click="storeAccount.handleLogout()">
                   <MaterialIcon name="logout" />
-                  Dang xuat
+                  Đăng xuất
                 </div>
               </v-list-item-title>
             </v-list-item>

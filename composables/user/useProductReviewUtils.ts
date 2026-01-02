@@ -59,10 +59,10 @@ export const useProductReviewUtils = (
     getApiListData()
   })
 
-  const handleTogglePopupSubmit = (value: boolean, reviewId: string) => {
+  const handleTogglePopupSubmit = async (value: boolean, reviewId: string) => {
     isTogglePopupSubmit.value = value;
     handleResetForm()
-    fetchDetailReview(reviewId)
+    await fetchDetailReview(reviewId)
   };
 
   async function submitReview() {
@@ -73,6 +73,7 @@ export const useProductReviewUtils = (
       formDataItem.rating = ratingNumber.value
 
       const newDataItem = {...formDataItem}
+
       const data = await productReviewAPI.submitReview(newDataItem)
       if(data.code === 0){
         showSuccess('Tao thanh cong')
@@ -82,11 +83,11 @@ export const useProductReviewUtils = (
       } else {
         showWarning('Tao that bai')
       }
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
+      Loading(false);
     }
-    Loading(false);
   }
 
   const handleResetForm = () => {
