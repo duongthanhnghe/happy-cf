@@ -19,7 +19,7 @@ onMounted( async () => {
 
   <HeaderAdmin>
     <template #right>
-      <Button label="Them moi" color="primary" :shadow="true" @click="store.handleTogglePopupAdd()" />
+      <Button label="Thêm mới" color="primary" :shadow="true" @click="store.handleTogglePopupAdd()" />
     </template>
   </HeaderAdmin>
   <CreateMembershipBenefit />

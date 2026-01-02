@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { useMembershipStore } from '@/stores/admin/users/useMembershipStore'
 import type { SubmitEventPromise } from 'vuetify'
-import { nullRules } from '@/utils/validation';
+import { nullRules } from '@/utils/validation'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
-import { watch } from 'vue';
+import { watch } from 'vue'
 
-const store = useMembershipStore();
-const storeFileManage = useFileManageFolderStore();
+const store = useMembershipStore()
+const storeFileManage = useFileManageFolderStore()
 
 const handleSubmitUpdate = async (event: SubmitEventPromise) => {
   const results = await event
   if (!results.valid) return
-  await store.submitUpdate();
+  await store.submitUpdate()
 }
 
 watch(() => storeFileManage.getSelectImage, (newValue) => {
@@ -20,15 +20,17 @@ watch(() => storeFileManage.getSelectImage, (newValue) => {
   target.image = newValue.url
 })
 </script>
-<template>
-<Popup popupId="popup-update-membership" v-model="store.isTogglePopupUpdate" popupHeading="Sua level" align="right">
-  <template #body>
-    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
-      <div class="portal-popup-footer">
-        <Button type="submit" color="primary" label="Cap nhat" class="w-full" />
-      </div>
 
-      <LabelInput label="Loi ich thanh vien"/>
+<template>
+  <Popup
+    v-model="store.isTogglePopupUpdate"
+    popupHeading="Sửa cấp độ"
+    align="right"
+  >
+    <template #body>
+      <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
+
+        <LabelInput label="Lợi ích thành viên" />
         <v-select
           v-model="store.selectedArray"
           :items="store.getMembershipBenefitList"
@@ -39,7 +41,7 @@ watch(() => storeFileManage.getSelectImage, (newValue) => {
         >
           <template v-slot:prepend-item>
             <v-list-item
-              title="Chon tat ca"
+              title="Chọn tất cả"
               @click="store.toggleSelectAll"
             >
               <template v-slot:prepend>
@@ -47,28 +49,69 @@ watch(() => storeFileManage.getSelectImage, (newValue) => {
                   :color="store.likesSomeSelect ? 'indigo-darken-4' : undefined"
                   :indeterminate="store.likesSomeSelect && !store.likesAllArray"
                   :model-value="store.likesAllArray"
-                ></v-checkbox-btn>
+                />
               </template>
             </v-list-item>
           </template>
         </v-select>
-        
-        <LabelInput label="Tieu de" required/>
-        <v-text-field v-model="store.formItem.name" :counter="200" :rules="nullRules" label="Ten" variant="outlined" required></v-text-field>
 
-        <LabelInput label="Diem" required/>
-        <v-text-field v-model="store.formItem.minPoint" type="number" :rules="nullRules" label="Ten" variant="outlined" required></v-text-field>
+        <LabelInput label="Tiêu đề" required />
+        <v-text-field
+          v-model="store.formItem.name"
+          :counter="200"
+          :rules="nullRules"
+          label="Tên"
+          variant="outlined"
+          required
+        />
 
-        <LabelInput label="Icon" required/>
-        <v-text-field v-model="store.formItem.icon" :rules="nullRules" label="Ten" variant="outlined" required></v-text-field>
-        
-        <LabelInput label="Anh dai dien" required/>
-        <v-img v-if="store.formItem.image" :src="store.formItem.image" class="mb-sm" alt="Hinh anh" />
+        <LabelInput label="Điểm tối thiểu" required />
+        <v-text-field
+          v-model="store.formItem.minPoint"
+          type="number"
+          :rules="nullRules"
+          label="Điểm"
+          variant="outlined"
+          required
+        />
+
+        <LabelInput label="Biểu tượng (Icon)" required />
+        <v-text-field
+          v-model="store.formItem.icon"
+          :rules="nullRules"
+          label="Icon"
+          variant="outlined"
+          required
+        />
+
+        <LabelInput label="Ảnh đại diện" required />
+        <v-img
+          v-if="store.formItem.image"
+          :src="store.formItem.image"
+          class="mb-sm"
+          alt="Hình ảnh"
+        />
         <div class="flex gap-sm">
-          <v-text-field v-model="store.formItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
-          <Button color="black" :label="store.formItem.image ? 'Doi anh':'Chon anh'" @click.prevent="storeFileManage.handleTogglePopup(true)"/>
+          <v-text-field
+            v-model="store.formItem.image"
+            label="Đường dẫn ảnh..."
+            variant="outlined"
+            disabled
+          />
+          <Button
+            color="black"
+            :label="store.formItem.image ? 'Đổi ảnh' : 'Chọn ảnh'"
+            @click.prevent="storeFileManage.handleTogglePopup(true)"
+          />
         </div>
-    </v-form>
-  </template>
-</Popup>
+
+        <Button
+          type="submit"
+          color="primary"
+          label="Cập nhật"
+          class="w-full"
+        />
+      </v-form>
+    </template>
+  </Popup>
 </template>

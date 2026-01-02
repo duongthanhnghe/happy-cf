@@ -54,7 +54,9 @@ export const useAdminAccountOperations = (
     if(data.code === 0){
       detailData.value = data.data;
       userId.value = data.data.id;
-      Object.assign(formUpdate, detailData.value);
+      unref(formUpdate).id = detailData.value.id
+      unref(formUpdate).avatar = detailData.value.avatar
+      unref(formUpdate).fullname = detailData.value.fullname
     } 
   };
 
@@ -64,7 +66,7 @@ export const useAdminAccountOperations = (
       const payload = {...unref(formUpdate)}
       const data = await accountAPI.updateAccount(payload)
       if(data.code === 0){
-        showSuccess('Cap nhat thanh cong')
+        showSuccess(data.message ?? 'Thành công')
         detailData.value = data.data
       } else {
         showWarning(data.message ?? '')
@@ -76,41 +78,24 @@ export const useAdminAccountOperations = (
     }
   }
 
-  async function submitChangePassword(userId: string, oldPasswordInput: string) {
+  async function submitChangePassword() {
     try {
-      if (!userId || !oldPasswordInput) {
-        showWarning('Thiếu thông tin userId hoặc oldPassword');
-        return;
-      }
       Loading(true);
 
       const dataReset:ChangePasswordDTO = {
-        id: userId,
-        oldPassword: oldPasswordInput,
+        oldPassword: oldPassword.value,
         newPassword: newPassword.value
       }
       
       const data = await accountAPI.changePassword(dataReset)
-      if(data.code === 1){
-        showWarning('Token không hợp lệ hoặc đã hết hạn!');
-      }
-      else if(data.code === 2){
-        showWarning('Không tìm thấy tài khoản!');
-      }
-      else if(data.code === 3){
-        showWarning('Mật khẩu cũ không đúng!');
-      }
-      else if(data.code === 0){
+      if(data.code === 0){
         showSuccess('Đổi mật khẩu thành công!');
-        oldPassword.value = ''
-        newPassword.value = ''
-        newPasswordConfirm.value = ''
       } else {
-        oldPassword.value = ''
-        newPassword.value = ''
-        newPasswordConfirm.value = ''
-        showWarning('Có lỗi!');
+        showWarning(data.message ?? 'Có lỗi');
       }
+      oldPassword.value = ''
+      newPassword.value = ''
+      newPasswordConfirm.value = ''
     } catch (err) {
       console.error('Error submitting form:', err)
     } finally {

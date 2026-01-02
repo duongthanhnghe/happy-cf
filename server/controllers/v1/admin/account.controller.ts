@@ -214,7 +214,8 @@ export const updateAccount = async (req: any, res: Response) => {
 
 export const changePassword = async (req: any, res: Response) => {
   try {
-    const adminId = req.body.id;
+    const adminId = req.account?.id;
+
     const { oldPassword, newPassword } = req.body;
 
     if (!oldPassword || !newPassword) {

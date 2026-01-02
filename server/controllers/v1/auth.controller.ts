@@ -357,7 +357,6 @@ export const getUserById = async (req: Request, res: Response) => {
 export const changePassword = async (req: any, res: Response) => {
   try {
     const userId = req.user?.id;
-    console.log('userId',userId)
     const { oldPassword, newPassword } = req.body;
 
     const user = await UserModel.findById(userId);

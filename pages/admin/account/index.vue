@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import type { SubmitEventPromise } from 'vuetify'
 import { showWarning } from '@/utils/toast';
 import { ROUTES } from '@/shared/constants/routes';
-import { nullRules, createNewPasswordRules } from '@/utils/validation';
 import { useAccountStore } from '@/stores/admin/account/useAccountStore';
+import { useValidate } from '@/composables/validate/useValidate';
+import { updateAccountSchema, changePasswordFESchema } from '@/shared/validate/schemas/account.schema';
 
 definePageMeta({
   layout: ROUTES.ADMIN.BASE_INFORMATION.layout,
@@ -12,92 +11,171 @@ definePageMeta({
 })
 
 const storeAccount = useAccountStore()
-const cardItemClass= 'card card-sm bg-white';
-const newPasswordRules = computed(() =>
-  createNewPasswordRules(storeAccount.newPasswordConfirm)
-)
-const confirmPasswordRules = computed(() =>
-  createNewPasswordRules(storeAccount.newPassword)
-)
+const {
+  validate: validateUpdate,
+  formErrors: updateErrors,
+} = useValidate(updateAccountSchema)
 
-const handleSubmitCreate = async (event: SubmitEventPromise) => {
-  const result = await event
-  if (!result.valid) {
-    showWarning('Vui long dien day du thong tin')
+const {
+  validate: validatePassword,
+  formErrors: passwordErrors,
+} = useValidate(changePasswordFESchema)
+
+const handleSubmitUpdate = async () => {
+  if (!validateUpdate(storeAccount.formUpdate)) {
+    showWarning('Vui lòng kiểm tra lại thông tin')
     return
   }
+
   await storeAccount.submitUpdate()
 }
 
-const submitChangePassword = async (event: SubmitEventPromise) => {
-  const result = await event
-  if (!result.valid) {
-    showWarning('Vui long dien day du thong tin')
+const submitChangePassword = async () => {
+  const payload = {
+    oldPassword: storeAccount.oldPassword,
+    newPassword: storeAccount.newPassword,
+    newPasswordConfirm: storeAccount.newPasswordConfirm,
+  }
+  if (!validatePassword(payload)) {
+    showWarning('Vui lòng nhập mật khẩu hợp lệ')
     return
   }
-  await storeAccount.submitChangePassword(storeAccount.getDetailAccount?.id ?? '', storeAccount.oldPassword ?? '');
+
+  await storeAccount.submitChangePassword();
 }
 
 </script>
 <template>
+<HeaderAdmin label="Quản lý tài khoản" />
 
-<HeaderAdmin label="Quan ly tai khoan" />
+<client-only>
+  <v-container>
+    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
+      <Card class="rd-lg" size="sm">
+        <Text
+          size="md"
+          weight="semibold"
+          class="mb-sm"
+          text="Thông tin người dùng"
+        />
 
-<v-container>
-  <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-    <div :class="`${cardItemClass}`">
-      <Text size="md" weight="semibold" class="mb-sm" text="Thông tin nguoi dung" />
+        <div class="row row-xs">
+          <div class="col-12 col-md-6 col-xxl-4">
+            <LabelInput label="Ảnh đại diện" required />
+            <v-text-field
+              v-model="storeAccount.formUpdate.avatar"
+              :error="!!updateErrors.avatar"
+              :error-messages="updateErrors.avatar"
+              label="Ảnh đại diện"
+              variant="outlined"
+              required
+            />
+          </div>
 
-      <div class="row row-xs">
-        <div class="col-12 col-md-6 col-xxl-4">
-          <LabelInput label="Anh dai dien" required/>
-          <v-text-field v-model="storeAccount.formUpdate.avatar" :rules="nullRules" label="Avatar" variant="outlined" required></v-text-field>
-        </div>
-        <div class="col-12 col-md-6 col-xxl-4">
-          <LabelInput label="Ho va ten" required/>
-          <v-text-field v-model="storeAccount.formUpdate.fullname" :rules="nullRules" label="Nhap ho ten" variant="outlined" required></v-text-field>
-        </div>
-        <div class="col-12 col-md-6 col-xxl-4">
-          <LabelInput label="Email" required/>
-          <v-text-field v-model="storeAccount.formUpdate.email" label="Email" variant="outlined" required disabled></v-text-field>
-        </div>
-        <div class="col-12 col-md-6 col-xxl-4">
-          <LabelInput label="Role" required/>
-          <v-text-field v-model="storeAccount.formUpdate.role" label="Role" variant="outlined" required disabled></v-text-field>
-        </div>
-        <div class="col-12">
-          <Button type="submit" color="black" label="Luu thong tin" />
-        </div>
-      </div>
-    </div>
-  </v-form>
+          <div class="col-12 col-md-6 col-xxl-4">
+            <LabelInput label="Họ và tên" required />
+            <v-text-field
+              v-model="storeAccount.formUpdate.fullname"
+              :error="!!updateErrors.fullname"
+              :error-messages="updateErrors.fullname"
+              label="Nhập họ và tên"
+              variant="outlined"
+              required
+            />
+          </div>
 
-  <v-form validate-on="submit lazy" @submit.prevent="submitChangePassword">
-    <div :class="`${cardItemClass} mt-md`">
-      <Text size="md" weight="semibold" class="mb-sm" text="Mat khau" />
+          <div class="col-12 col-md-6 col-xxl-4">
+            <LabelInput label="Email" />
+            <v-text-field
+              :model-value="storeAccount.getDetailAccount?.email"
+              variant="outlined"
+              disabled
+              required
+            />
+          </div>
 
-      <div class="row row-xs">
-        <div class="col-12">
-          <LabelInput label="Mat khau cu" required/>
-          <v-text-field :append-icon="storeAccount.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccount.showPassword ? 'text' : 'password'" @click:append="storeAccount.showPassword = !storeAccount.showPassword" v-model="storeAccount.oldPassword" 
-          :rules="nullRules" label="Mat khau cu" autocomplete="old-password" required></v-text-field>
-        </div>
-        <div class="col-12">
-          <LabelInput label="Mat khau moi" required/>
-          <v-text-field :append-icon="storeAccount.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccount.showPassword ? 'text' : 'password'" @click:append="storeAccount.showPassword = !storeAccount.showPassword" v-model="storeAccount.newPassword" 
-          :rules="newPasswordRules" label="Mat khau moi" autocomplete="new-password" required></v-text-field>
-        </div>
-        <div class="col-12">
-          <LabelInput label="Xac nhan mat khau" required/>
-          <v-text-field :append-icon="storeAccount.showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'" :type="storeAccount.showPasswordConfirm ? 'text' : 'password'" @click:append="storeAccount.showPasswordConfirm = !storeAccount.showPasswordConfirm" v-model="storeAccount.newPasswordConfirm" 
-          :rules="confirmPasswordRules" label="Xac nhan mat khau" autocomplete="new-password" required></v-text-field>
-        </div>
-        <div class="col-12">
-          <Button type="submit" color="black" label="Doi mat khau" />
-        </div>
-      </div>
-    </div>
-  </v-form>
+          <div class="col-12 col-md-6 col-xxl-4">
+            <LabelInput label="Vai trò" />
+            <v-text-field
+              :model-value="storeAccount.getDetailAccount?.role"
+              variant="outlined"
+              disabled
+              required
+            />
+          </div>
 
-</v-container>
+          <div class="col-12">
+            <Button type="submit" color="black" label="Lưu thông tin" />
+          </div>
+        </div>
+      </Card>
+    </v-form>
+
+    <v-form validate-on="submit lazy" @submit.prevent="submitChangePassword">
+      <Card class="rd-lg mt-md" size="sm">
+        <Text
+          size="md"
+          weight="semibold"
+          class="mb-sm"
+          text="Mật khẩu"
+        />
+
+        <div class="max-width-600 m-auto">
+        <div class="row row-xs">
+          <div class="col-12">
+            <LabelInput label="Mật khẩu cũ" required />
+            <v-text-field
+              :append-icon="storeAccount.showOldPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="storeAccount.showOldPassword ? 'text' : 'password'"
+              @click:append="storeAccount.showOldPassword = !storeAccount.showOldPassword"
+              v-model="storeAccount.oldPassword"
+              :error="!!passwordErrors.oldPassword"
+              :error-messages="passwordErrors.oldPassword"
+              label="Mật khẩu cũ"
+              autocomplete="old-password"
+              required
+            />
+          </div>
+
+          <div class="col-12">
+            <LabelInput label="Mật khẩu mới" required />
+            <v-text-field
+              :append-icon="storeAccount.showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="storeAccount.showPassword ? 'text' : 'password'"
+              @click:append="storeAccount.showPassword = !storeAccount.showPassword"
+              v-model="storeAccount.newPassword"
+              :error="!!passwordErrors.newPassword"
+              :error-messages="passwordErrors.newPassword"
+              label="Mật khẩu mới"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+
+          <div class="col-12">
+            <LabelInput label="Xác nhận mật khẩu" required />
+            <v-text-field
+              :append-icon="storeAccount.showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="storeAccount.showPasswordConfirm ? 'text' : 'password'"
+              @click:append="storeAccount.showPasswordConfirm = !storeAccount.showPasswordConfirm"
+              v-model="storeAccount.newPasswordConfirm"
+              :error="!!passwordErrors.newPasswordConfirm"
+              :error-messages="passwordErrors.newPasswordConfirm"
+              label="Xác nhận mật khẩu"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+
+          <div class="col-12">
+            <Button type="submit" color="black" label="Đổi mật khẩu" />
+          </div>
+        </div>
+        </div>
+
+      </Card>
+    </v-form>
+  </v-container>
+</client-only>
+
 </template>

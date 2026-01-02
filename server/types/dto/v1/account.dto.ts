@@ -30,7 +30,6 @@ export interface AccountDTO {
 export type AccountPaginationDTO = PaginationDTO<AccountDTO>
 
 export interface ChangePasswordDTO {
-  id: string;
   oldPassword: string
   newPassword: string
 }

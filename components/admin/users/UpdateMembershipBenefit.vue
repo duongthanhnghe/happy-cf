@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useBenefitStore } from '@/stores/admin/users/useBenefitStore'
 import type { SubmitEventPromise } from 'vuetify'
-import { nullRules } from '@/utils/validation';
+import { nullRules } from '@/utils/validation'
 
 const store = useBenefitStore()
 
@@ -17,7 +17,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
   <Popup
     popupId="popup-update-membership-benefit"
     v-model="store.isTogglePopupUpdate"
-    popupHeading="Sửa loi ich"
+    popupHeading="Sửa lợi ích"
     align="right"
   >
     <template #body>
@@ -25,18 +25,40 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
         validate-on="submit lazy"
         @submit.prevent="handleSubmitUpdate"
       >
-        <div class="portal-popup-footer">
-          <Button type="submit" color="primary" label="Cập nhật" class="w-full" />
-        </div>
+        <LabelInput label="Tiêu đề" required />
+        <v-text-field
+          v-model="store.updateItem.name"
+          :counter="200"
+          :rules="nullRules"
+          label="Nhập tiêu đề"
+          variant="outlined"
+          required
+        />
 
-        <LabelInput label="Tieu de" required/>
-        <v-text-field v-model="store.updateItem.name" :counter="200" :rules="nullRules" label="Nhap tieu de" variant="outlined" required></v-text-field>
+        <LabelInput label="Mô tả" required />
+        <v-textarea
+          v-model="store.updateItem.description"
+          label="Nhập mô tả"
+          :rules="nullRules"
+          variant="outlined"
+          required
+        />
 
-        <LabelInput label="Mo ta" required/>
-        <v-textarea v-model="store.updateItem.description" label="Nhap mo ta" :rules="nullRules" variant="outlined" required></v-textarea>
+        <LabelInput label="Biểu tượng (Icon)" required />
+        <v-text-field
+          v-model="store.updateItem.icon"
+          label="Nhập icon"
+          :rules="nullRules"
+          variant="outlined"
+          required
+        />
 
-        <LabelInput label="Icon" required/>
-        <v-text-field v-model="store.updateItem.icon" label="Nhap icon" :rules="nullRules" variant="outlined" required></v-text-field>
+        <Button
+          type="submit"
+          color="primary"
+          label="Cập nhật"
+          class="w-full"
+        />
       </v-form>
     </template>
   </Popup>

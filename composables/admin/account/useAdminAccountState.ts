@@ -6,6 +6,7 @@ export const useAdminAccountState = () => {
   const token = ref<string | null>(null);
   const showPassword = ref<boolean>(false)
   const showPasswordConfirm = ref<boolean>(false)
+  const showOldPassword = ref<boolean>(false)
   const oldPassword = ref<string>('')
   const newPassword = ref<string>('')
   const newPasswordConfirm = ref<string>('')
@@ -27,6 +28,7 @@ export const useAdminAccountState = () => {
     showPassword,
     showPasswordConfirm,
     token,
+    showOldPassword,
     oldPassword,
     newPassword,
     newPasswordConfirm,

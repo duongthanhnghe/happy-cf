@@ -26,7 +26,7 @@ router.post('/register', validate(registerSchema), register)
 router.post('/login', validate(loginSchema), login)
 router.post('/google-login', googleLogin)
 router.post('/forgot-password', forgotPassword)
-router.post('/reset-password', validate(resetPasswordSchema), resetPassword)
+router.post('/reset-password', resetPassword)
 router.post('/change-password', authenticate, validate(changePasswordSchema), changePassword)
 router.post('/logout', authenticate, logout)
 
