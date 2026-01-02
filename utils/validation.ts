@@ -1,10 +1,6 @@
 import { computed } from 'vue'
 import type { Ref } from 'vue'
 
-// function requiredRule(value: string) {
-//   return !!value || 'Nội dung không được trống'
-// }
-
 function requiredRule(value: string | number) {
   const isEmpty =
     value === null ||

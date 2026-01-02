@@ -15,6 +15,8 @@ import {
   getRewardHistory,
 } from '../../../controllers/v1/admin/users.controller'
 import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
+import { validate } from '../../../middlewares/validate/validate'
+import { idParamSchema } from '../../../../shared/validate/schemas/user.schema'
 
 const router = express.Router()
 
@@ -31,8 +33,8 @@ router.put('/membership-benefit/:id', authenticateAdmin, updateMembershipBenefit
 router.delete('/membership-benefit/:id', authenticateAdmin, deleteMembershipBenefit)
 
 router.get('/', authenticateAdmin, getAllUsers)
-router.get('/:id', authenticateAdmin, getUserById)
-router.patch('/toggleActive/:id', authenticateAdmin, toggleActive)
-router.delete('/:id', authenticateAdmin, deleteUsers)
+router.get('/:id', authenticateAdmin, validate(idParamSchema, 'params'), getUserById)
+router.patch('/toggleActive/:id', authenticateAdmin, validate(idParamSchema, 'params'), toggleActive)
+router.delete('/:id', authenticateAdmin, validate(idParamSchema, 'params'), deleteUsers)
 
 export default router

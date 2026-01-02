@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { watch, onBeforeUnmount, ref } from 'vue'
+import { watch, onBeforeUnmount } from 'vue'
 import {
   AUTH_TEXT_FULLNAME,
   AUTH_TEXT_BIRTHDAY,
@@ -16,19 +16,30 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
-import { nullRules } from '@/utils/validation';
-import type { VForm } from 'vuetify/components'
+import { useValidate } from '@/composables/validate/useValidate'
+import { updateUserProfileSchema } from '@/shared/validate/schemas/user.schema'
+import { showWarning } from '@/utils/toast'
 
 const storeAccountEdit = useAccountEditStore()
 const accountStore = useAccountStore()
 const storeFileManage = useFileManageFolderStore();
 const folderName = `${FOLDER_UPLOAD.MEMBER}${accountStore.getUserId}`;
-const formRef = ref<VForm | null>(null);
+const { validate, formErrors } = useValidate(updateUserProfileSchema)
 
 const handleSubmitUpdate = async () => {
-  if (!formRef.value) return;
-  const { valid } = await formRef.value.validate();
-  if (!valid) return;
+  // const payload = {
+  //   fullname: storeAccountEdit.formUserItem.fullname,
+  //   phone: storeAccountEdit.formUserItem.phone,
+  //   birthday: storeAccountEdit.getBirthday,
+  //   gender: storeAccountEdit.formUserItem.gender,
+  //   avatar: storeAccountEdit.formUserItem.avatar,
+  // }
+
+  if (!validate(storeAccountEdit.formUserItem)) {
+    showWarning('Vui lòng kiểm tra lại thông tin')
+    return
+  }
+
   storeAccountEdit.submitUpdate();
 }
 
@@ -49,7 +60,7 @@ onBeforeUnmount(() => {
 
 <Popup bodyClass="bg-gray6" v-model="storeAccountEdit.isTogglePopupUpdate" footerFixed :popupHeading="AUTH_TEXT_UPDATE_INFO" align="right">
   <template #body>
-    <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
+    <v-form @submit.prevent="handleSubmitUpdate">
       <AvatarEdit :label="AUTH_TEXT_EDIT_AVATAR" className="mb-md width-200 height-200" @click.prevent="storeFileManage.handleTogglePopup(true)">
         <slot>
           <img v-if="storeAccountEdit.formUserItem.avatar" :src="storeAccountEdit.formUserItem.avatar" :alt="storeAccountEdit.formUserItem.fullname" />
@@ -58,16 +69,19 @@ onBeforeUnmount(() => {
       </AvatarEdit>
 
       <LabelInput :label="AUTH_TEXT_FULLNAME" required />
-      <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.fullname" :rules="nullRules" label="Họ và tên" required></v-text-field>
+      <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.fullname" :error="!!formErrors.fullname"
+  :error-messages="formErrors.fullname" label="Họ và tên" required></v-text-field>
 
       <LabelInput :label="AUTH_TEXT_BIRTHDAY" required />
-      <v-text-field variant="outlined" v-model="storeAccountEdit.getBirthday" type="date" label="Ngày sinh" class="input-date-custom" append-inner-icon="mdi-calendar"></v-text-field>
+      <v-text-field variant="outlined" v-model="storeAccountEdit.getBirthday" type="date" label="Ngày sinh" class="input-date-custom" append-inner-icon="mdi-calendar" :error="!!formErrors.birthday"
+  :error-messages="formErrors.birthday"></v-text-field>
 
       <LabelInput :label="AUTH_TEXT_PHONE" required />
-      <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.phone" type="tel" :counter="11" maxlength="11" :rules="nullRules" label="Số điện thoại"></v-text-field>
+      <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.phone" type="tel" :counter="11" maxlength="11" :error="!!formErrors.phone"
+  :error-messages="formErrors.phone" label="Số điện thoại"></v-text-field>
       <v-radio-group inline v-model="storeAccountEdit.formUserItem.gender">
-        <v-radio :label="GLOBAL_TEXT_MALE" value="male"></v-radio>
-        <v-radio :label="GLOBAL_TEXT_FEMALE" value="female"></v-radio>
+        <v-radio :label="GLOBAL_TEXT_MALE" value="male" class="mr-sm"></v-radio>
+        <v-radio :label="GLOBAL_TEXT_FEMALE" value="female" class="mr-sm"></v-radio>
         <v-radio label="Khác" value="other"></v-radio>
       </v-radio-group>
     </v-form>

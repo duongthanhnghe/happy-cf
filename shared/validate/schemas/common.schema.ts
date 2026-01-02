@@ -1,4 +1,9 @@
 import { z } from 'zod'
+import {
+  EMAIL_REGEX,
+  PHONE_REGEX,
+  NO_SPECIAL_CHAR_REGEX
+} from '../../constants/regex'
 
 export const objectIdSchema = z
   .string()
@@ -92,3 +97,28 @@ export const validateSEO = (data: any, ctx: any) => {
     })
   }
 }
+
+export const emailSchema = z
+  .string()
+  .min(1, 'Email không được để trống')
+  .regex(EMAIL_REGEX, 'Email không hợp lệ')
+
+export const phoneSchema = z
+  .string()
+  .min(1, 'Nội dung không được trống')
+  .regex(PHONE_REGEX, 'Số điện thoại phải có ít nhất 10 số')
+
+export const phoneOptionalSchema = z
+  .string()
+  .regex(PHONE_REGEX, 'Số điện thoại phải có ít nhất 10 số')
+  .optional()
+  .nullable()
+
+export const strongPasswordSchema = z
+  .string()
+  .min(1, 'Mật khẩu không được để trống')
+  .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+  .regex(/[A-Z]/, 'Phải có ít nhất 1 chữ in hoa')
+  .regex(/[a-z]/, 'Phải có ít nhất 1 chữ thường')
+  .regex(/[0-9]/, 'Phải có ít nhất 1 số')
+  .regex(/[^A-Za-z0-9]/, 'Phải có ít nhất 1 ký tự đặc biệt')

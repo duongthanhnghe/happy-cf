@@ -53,8 +53,7 @@ export interface ResetPassword {
 }
 
 export interface ChangePassword {
-  userId: string
-  oldPassword: string
+  oldPassword?: string
   newPassword: string
 }
 

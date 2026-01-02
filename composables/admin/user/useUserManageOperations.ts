@@ -93,7 +93,7 @@ export const useUserManageOperations = (
     }
   }
 
-  const { toggleActive } = useToggleActiveStatus(usersAPI.toggleActive, serverItems.value );
+  const { toggleActive } = useToggleActiveStatus(usersAPI.toggleActive, serverItems );
   
   const resetFilter = () => {
     search.value = ''

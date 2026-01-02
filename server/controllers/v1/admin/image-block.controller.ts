@@ -31,14 +31,7 @@ export const getImageBlockById = async (req: Request, res: Response) => {
 
 export const createImageBlock = async (req: Request, res: Response) => {
   try {
-    const { image, page, position } = req.body
-
-    if (!image || !page || !position) {
-      return res.status(400).json({
-        code: 1,
-        message: "Thiếu image / page / position",
-      })
-    }
+    const { page, position } = req.body
 
     const result = await ImageBlockEntity.aggregate([
       {

@@ -21,14 +21,6 @@ export const aboutAPI = {
   },
   create: async (bodyData:CreateAboutBody): Promise<ApiResponse<AboutDTO>> => {
     try {
-      if (!bodyData.title || !bodyData.image) {
-        return {
-          code: 1,
-          message: 'Missing required fields: title, image',
-          data: undefined as any
-        }
-      }
-
       const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ABOUT.CREATE}`, {
         method: 'POST',
         headers: {

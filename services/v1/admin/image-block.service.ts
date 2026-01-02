@@ -30,14 +30,6 @@ export const imageBlocksAPI = {
     bodyData: CreateImageBlockBody
   ): Promise<ApiResponse<ImageBlockDTO>> => {
     try {
-      if (!bodyData.image || !bodyData.page || !bodyData.position) {
-        return {
-          code: 1,
-          message: 'Missing required fields: image, page, position',
-          data: undefined as any
-        }
-      }
-
       const response = await fetchWithAuthAdmin(
         `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.CREATE}`,
         {

@@ -1,6 +1,6 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS } from '@/services/const/api.const'
-import type { UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword, MembershipBenefitDTO } from '@/server/types/dto/v1/user.dto.js'
+import type { UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword } from '@/server/types/dto/v1/user.dto.js'
 import type { ApiResponse } from '@server/types/common/api-response'
 import { useRequestHeaders } from 'nuxt/app'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
@@ -160,12 +160,12 @@ export const authAPI = {
       throw error
     }
   },
-  ChangePassword: async ({ userId, oldPassword, newPassword } : ChangePassword) => {
+  ChangePassword: async ({ oldPassword, newPassword } : ChangePassword) => {
     try {
       const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.CHANGE_PASSWORD}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, oldPassword, newPassword })
+        body: JSON.stringify({ oldPassword, newPassword })
       })
 
       const data = await response.json()
@@ -190,7 +190,7 @@ export const authAPI = {
       throw err
     }
   },
-  updateAccount: async (payload: UserEdit, token: string) => {
+  updateAccount: async (payload: UserEdit) => {
     const res = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.AUTH.UPDATE}`, {
       method: 'PUT',
       headers: {

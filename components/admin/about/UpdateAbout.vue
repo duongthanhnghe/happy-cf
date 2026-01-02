@@ -1,15 +1,20 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useAboutManageStore } from '@/stores/admin/about/useAboutManageStore'
-import type { SubmitEventPromise } from 'vuetify'
 import { showWarning } from '@/utils/toast'
+import { useValidate } from '@/composables/validate/useValidate'
+import { updateAboutSchema } from '@/shared/validate/schemas/about.schema'
 
 const store = useAboutManageStore()
 const editorRef = ref()
 
-const handleSubmitUpdate = async (event: SubmitEventPromise) => {
-  const results = await event
-  if (!results.valid) return
+const { validate, formErrors } = useValidate(updateAboutSchema)
+
+const handleSubmitUpdate = async () => {
+  if (!validate(store.formItem)) {
+    showWarning('Vui lòng nhập đầy đủ thông tin hợp lệ')
+    return
+  }
 
   try {
     const editorComponent: any = editorRef.value
@@ -29,53 +34,56 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 
 <template>
   <Popup
-    popupId="popup-update-about"
     v-model="store.isTogglePopupUpdate"
     popupHeading="Sửa bài viết"
+    footerFixed
     align="right"
   >
     <template #body>
-      <v-form
-        v-model="store.valid"
-        validate-on="submit lazy"
-        @submit.prevent="handleSubmitUpdate"
-      >
-        <div class="portal-popup-footer">
-          <Button type="submit" color="primary" label="Cập nhật" class="w-full" />
-        </div>
+      <v-form @submit.prevent="handleSubmitUpdate">
 
+        <!-- Tiêu đề -->
         <LabelInput label="Tiêu đề" required />
         <v-text-field
           v-model="store.formItem.title"
           :counter="200"
-          :rules="store.titleRules"
-          label="Tiêu đề banner"
+          label="Nhập tiêu đề"
           variant="outlined"
           required
+          :error="!!formErrors.title"
+          :error-messages="formErrors.title"
         />
 
-        <LabelInput label="Mô tả" />
+        <!-- Mô tả ngắn -->
+        <LabelInput label="Mô tả ngắn" />
         <v-textarea
           v-model="store.formItem.summaryContent"
-          label="Nhập mô tả"
+          label="Nhập mô tả ngắn"
           variant="outlined"
+          :error="!!formErrors.summaryContent"
+          :error-messages="formErrors.summaryContent"
         />
 
-        <LabelInput label="Nội dung" />
+        <!-- Nội dung -->
+        <LabelInput label="Nội dung chi tiết" />
+        <div v-if="formErrors.description" class="text-error text-size-xs mb-xs">
+          {{ formErrors.description }}
+        </div>
         <client-only>
-        <CKEditorCDN
-          ref="editorRef"
-          v-model="store.formItem.description"
-          :uploadUrl="store.folderName"
-        />
+          <CKEditorCDN
+            ref="editorRef"
+            v-model="store.formItem.description"
+            :uploadUrl="store.folderName"
+          />
         </client-only>
 
+        <!-- Ảnh đại diện -->
         <LabelInput label="Ảnh đại diện" required />
         <v-img
           v-if="store.formItem.image"
           :src="store.formItem.image"
           class="mb-sm"
-          alt="Hình ảnh"
+          alt="Ảnh đại diện"
         />
         <div class="flex gap-sm">
           <v-text-field
@@ -83,6 +91,8 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
             label="Đường dẫn ảnh..."
             variant="outlined"
             disabled
+            :error="!!formErrors.image"
+            :error-messages="formErrors.image"
           />
           <Button
             color="black"
@@ -91,6 +101,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           />
         </div>
 
+        <!-- Ảnh liên quan -->
         <LabelInput label="Ảnh liên quan" />
         <div
           class="row row-xs"
@@ -123,12 +134,16 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           @click.prevent="store.handleAddListImage()"
         />
 
+        <!-- Trạng thái -->
         <v-switch
-          :label="`Tình trạng: ${store.formItem.isActive ? 'Bật' : 'Tắt'} kích hoạt`"
+          :label="`Trạng thái: ${store.formItem.isActive ? 'Bật' : 'Tắt'} kích hoạt`"
           v-model="store.formItem.isActive"
           inset
         />
       </v-form>
+    </template>
+    <template #footer>
+      <Button @click="handleSubmitUpdate" color="primary" label="Cập nhật" class="w-full" />
     </template>
   </Popup>
 </template>

@@ -10,11 +10,13 @@ export const useAccountEditState = () => {
     gender: 'male',
     phone: ''
   });
+  const oldPassword = ref<string>('')
   const newPassword = ref<string>('')
   const newPasswordConfirm = ref<string>('')
   const isTogglePopupChangePassword = ref<boolean>(false);
   const showPassword = ref<boolean>(false)
   const showPasswordConfirm = ref<boolean>(false)
+  const showOldPassword = ref<boolean>(false)
 
   return {
     formUserItem,
@@ -24,5 +26,7 @@ export const useAccountEditState = () => {
     isTogglePopupChangePassword,
     showPassword,
     showPasswordConfirm,
+    oldPassword,
+    showOldPassword,
   };
 };

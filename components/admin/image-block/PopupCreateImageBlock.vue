@@ -1,67 +1,149 @@
 <script lang="ts" setup>
-import { useImageBlockManageStore } from '@/stores/admin/image-block/useImageBlockManageStore';
-import type { SubmitEventPromise } from 'vuetify'
-import { IMAGE_BLOCK_PAGE_OPTIONS, IMAGE_BLOCK_POSITION_OPTIONS } from '@/shared/constants/image-block';
+import { useImageBlockManageStore } from '@/stores/admin/image-block/useImageBlockManageStore'
+import { IMAGE_BLOCK_PAGE_OPTIONS, IMAGE_BLOCK_POSITION_OPTIONS } from '@/shared/constants/image-block'
+import { useValidate } from '@/composables/validate/useValidate'
+import { createImageBlockSchema } from '@/shared/validate/schemas/image-block.schema'
+import { showWarning } from '@/utils/toast'
 
-const store = useImageBlockManageStore();
+const store = useImageBlockManageStore()
 
-const handleSubmitCreate = async (event: SubmitEventPromise) => {
-  const results = await event
-  if (!results.valid) return
-  await store.submitCreate();
+const { validate, formErrors } = useValidate(createImageBlockSchema)
+
+const handleSubmitCreate = async () => {
+  if (!validate(store.formItem)) {
+    showWarning('Vui lòng nhập đầy đủ thông tin hợp lệ')
+    return
+  }
+
+  try {
+    await store.submitCreate()
+  } catch (error) {
+    showWarning('Có lỗi khi lưu khối hình ảnh. Vui lòng thử lại.')
+  }
 }
-
 </script>
 <template>
-<Popup v-model="store.isTogglePopupAdd" popupHeading="Them anh" align="right">
-  <template #body>
-    <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-        <LabelInput label="Tieu de"/>
-        <v-text-field v-model="store.formItem.title" :counter="100" label="Nhap tieu de" variant="outlined"></v-text-field>
-        <LabelInput label="Noi dung"/>
-        <v-textarea v-model="store.formItem.description" :counter="200" label="Nhap noi dung" variant="outlined"></v-textarea>
+  <Popup
+    v-model="store.isTogglePopupAdd"
+    popupHeading="Thêm hình ảnh"
+    footerFixed
+    align="right"
+  >
+    <template #body>
+      <v-form @submit.prevent="handleSubmitCreate">
+        <!-- Tiêu đề -->
+        <LabelInput label="Tiêu đề" />
+        <v-text-field
+          v-model="store.formItem.title"
+          :counter="100"
+          label="Nhập tiêu đề"
+          variant="outlined"
+          :error="!!formErrors.title"
+          :error-messages="formErrors.title"
+        />
 
-        <LabelInput label="Text tren nut" />
-        <v-text-field v-model="store.formItem.textButton" :counter="100" label="Nhap text" variant="outlined"></v-text-field>
+        <!-- Nội dung -->
+        <LabelInput label="Mô tả" />
+        <v-textarea
+          v-model="store.formItem.description"
+          :counter="200"
+          label="Nhập mô tả"
+          variant="outlined"
+          :error="!!formErrors.description"
+          :error-messages="formErrors.description"
+        />
 
-        <LabelInput label="Link dieu huong" />
-        <v-text-field v-model="store.formItem.linkRedirect" label="Nhap link dieu huong" variant="outlined"></v-text-field>
+        <!-- Text nút -->
+        <LabelInput label="Text trên nút" />
+        <v-text-field
+          v-model="store.formItem.textButton"
+          :counter="100"
+          label="Nhập text nút"
+          variant="outlined"
+          :error="!!formErrors.textButton"
+          :error-messages="formErrors.textButton"
+        />
 
-        <LabelInput label="Trang hiển thị" required/>
+        <!-- Link -->
+        <LabelInput label="Link điều hướng" />
+        <v-text-field
+          v-model="store.formItem.linkRedirect"
+          label="Nhập link điều hướng"
+          variant="outlined"
+          :error="!!formErrors.linkRedirect"
+          :error-messages="formErrors.linkRedirect"
+        />
+
+        <!-- Trang -->
+        <LabelInput label="Trang hiển thị" required />
         <v-select
-          label="Trang hiển thị"
           v-model="store.formItem.page"
           :items="IMAGE_BLOCK_PAGE_OPTIONS"
           item-title="title"
           item-value="value"
+          label="Chọn trang hiển thị"
           variant="outlined"
-          :rules="store.nullRules"
+          :error="!!formErrors.page"
+          :error-messages="formErrors.page"
           required
         />
 
-        <LabelInput label="Vị trí" required/>
+        <!-- Vị trí -->
+        <LabelInput label="Vị trí hiển thị" required />
         <v-select
-          label="Vị trí hiển thị"
           v-model="store.formItem.position"
           :items="IMAGE_BLOCK_POSITION_OPTIONS"
           item-title="title"
           item-value="value"
+          label="Chọn vị trí hiển thị"
           variant="outlined"
-          :rules="store.nullRules"
+          :error="!!formErrors.position"
+          :error-messages="formErrors.position"
           required
         />
 
-        <LabelInput label="Hinh anh" required/>
-        <v-img v-if="store.formItem.image" :src="store.formItem.image" class="mb-sm" alt="Hinh anh" required/>
+        <!-- Hình ảnh -->
+        <LabelInput label="Hình ảnh" required />
+        <v-img
+          v-if="store.formItem.image"
+          :src="store.formItem.image"
+          class="mb-sm"
+          alt="Hình ảnh"
+        />
         <div class="flex gap-sm">
-          <v-text-field v-model="store.formItem.image" label="Duong dan anh..." :rules="store.nullRules" variant="outlined" required></v-text-field>
-          <Button color="black" :label="store.formItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
+          <v-text-field
+            v-model="store.formItem.image"
+            label="Đường dẫn hình ảnh..."
+            variant="outlined"
+            :error="!!formErrors.image"
+            :error-messages="formErrors.image"
+            required
+          />
+          <Button
+            color="black"
+            :label="store.formItem.image ? 'Đổi ảnh' : 'Chọn ảnh'"
+            @click.prevent="store.handleAddImage()"
+          />
         </div>
-        <v-switch :label="`Tinh trang: ${store.formItem.isActive ? 'Bat':'Tat'} kich hoat`" v-model="store.formItem.isActive" inset
-        ></v-switch>
 
-        <Button type="submit" color="primary" label="Luu" class="w-full" />
-    </v-form>
-  </template>
-</Popup>
+        <!-- Trạng thái -->
+        <v-switch
+          :label="`Trạng thái: ${store.formItem.isActive ? 'Bật' : 'Tắt'} hiển thị`"
+          v-model="store.formItem.isActive"
+          inset
+        />
+
+        <!-- Submit -->
+        
+      </v-form>
+    </template>
+    <template #footer>
+      <Button
+        @click="handleSubmitCreate"
+        color="primary"
+        label="Lưu"
+        class="w-full"
+      />
+    </template>
+  </Popup>
 </template>

@@ -26,11 +26,6 @@ export const getAboutById = async (req: Request, res: Response) => {
 
 export const createAbout = async (req: Request, res: Response) => {
   try {
-    const { title, image } = req.body
-    if (!title || !image) {
-      return res.status(400).json({ code: 1, message: "Thiếu title hoặc image" })
-    }
-
     const lastItem = await AboutEntity.findOne().sort({ order: -1 })
     const maxOrder = lastItem ? lastItem.order : 0
 

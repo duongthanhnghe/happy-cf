@@ -21,14 +21,6 @@ export const bannersAPI = {
   },
   create: async (bodyData:CreateBannerBody): Promise<ApiResponse<BannerDTO>> => {
     try {
-      if (!bodyData.title || !bodyData.image) {
-        return {
-          code: 1,
-          message: 'Missing required fields: title, image',
-          data: undefined as any
-        }
-      }
-
       const response = await fetchWithAuthAdmin(`${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.BANNERS.CREATE}`, {
         method: 'POST',
         headers: {

@@ -1,17 +1,22 @@
 <script lang="ts" setup>
 import { useTranslationManageStore } from '@/stores/admin/itranslation/useTranslationManageStore'
-import { showWarning } from '@/utils/toast';
 import { ref } from 'vue';
-import type { SubmitEventPromise } from 'vuetify';
+import { useValidate } from '@/composables/validate/useValidate'
+import { showWarning } from '@/utils/toast'
+import { createTranslationSchema } from '@/shared/validate/schemas/itranslation.schema';
 
 const store = useTranslationManageStore();
+const { validate, formErrors } = useValidate(createTranslationSchema)
 const editorRef = ref()
 const editorRefEn = ref()
 
-const handleSubmitCreate = async (event: SubmitEventPromise) => {
-  const result = await event
-  if (!result.valid) return
+const handleSubmitCreate = async () => {
   
+  if (!validate(store.formItem)) {
+    showWarning('Vui lòng nhập đầy đủ thông tin hợp lệ')
+    return
+  }
+
   if(!store.formItem.translations.vi || !store.formItem.translations.en) {
     showWarning('Vui long nhap noi dung')
     return
@@ -44,21 +49,25 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
 <template>
   <Popup
     v-model="store.isTogglePopupAdd"
-    popupHeading="Tao bien"
+    popupHeading="Tạo biến"
     align="right"
+    footerFixed
   >
     <template #body>
-      <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+      <v-form @submit.prevent="handleSubmitCreate">
 
+        <!-- Key -->
         <LabelInput label="Key" required />
         <v-text-field
           v-model="store.formItem.key"
           label="Nhập key"
           variant="outlined"
-          :rules="[v => !!v || 'Không được bỏ trống']"
           required
+          :error="!!formErrors.key"
+          :error-messages="formErrors.key"
         />
 
+        <!-- Type -->
         <LabelInput label="Loại dữ liệu" required />
         <v-select
           v-model="store.formItem.type"
@@ -67,43 +76,56 @@ const handleSubmitCreate = async (event: SubmitEventPromise) => {
             { title: 'HTML', value: 'html' }
           ]"
           variant="outlined"
+          :error="!!formErrors.type"
+          :error-messages="formErrors.type"
         />
 
-        <LabelInput label="Tiếng Việt" />
+        <!-- Tiếng Việt -->
+        <LabelInput label="Nội dung tiếng Việt" required />
         <v-textarea
+          v-if="store.formItem.type === 'text'"
           v-model="store.formItem.translations.vi"
-          label="Nhập nội dung"
+          label="Nhập nội dung tiếng Việt"
           variant="outlined"
-          v-if="store.formItem.type === 'text'"
+          :error="!!formErrors['translations.vi']"
+          :error-messages="formErrors['translations.vi']"
         />
-        <template v-else>
-          <client-only >
-            <CKEditorCDN
-              ref="editorRef"
-              v-model="store.formItem.translations.vi"
-              :uploadUrl="store.folderName"
-            />
-          </client-only>
-        </template>
+        <client-only v-else>
+          <CKEditorCDN
+            ref="editorRef"
+            v-model="store.formItem.translations.vi"
+            :uploadUrl="store.folderName"
+          />
+        </client-only>
 
-        <LabelInput label="Tiếng Anh" />
+        <!-- Tiếng Anh -->
+        <LabelInput label="Nội dung tiếng Anh" required />
         <v-textarea
-          v-model="store.formItem.translations.en"
-          label="Nhập nội dung"
-          variant="outlined"
           v-if="store.formItem.type === 'text'"
+          v-model="store.formItem.translations.en"
+          label="Nhập nội dung tiếng Anh"
+          variant="outlined"
+          :error="!!formErrors['translations.en']"
+          :error-messages="formErrors['translations.en']"
         />
-         <template v-else>
-          <client-only>
-            <CKEditorCDN
-              ref="editorRefEn"
-              v-model="store.formItem.translations.en"
-              :uploadUrl="store.folderName"
-            />
-          </client-only>
-        </template>
-        <Button type="submit" color="primary" label="Lưu mới" class="w-full" />
+        <client-only v-else>
+          <CKEditorCDN
+            ref="editorRefEn"
+            v-model="store.formItem.translations.en"
+            :uploadUrl="store.folderName"
+          />
+        </client-only>
+
+        
       </v-form>
+    </template>
+    <template #footer>
+      <Button
+        @click="handleSubmitCreate"
+        color="primary"
+        label="Lưu mới"
+        class="w-full"
+      />
     </template>
   </Popup>
 </template>

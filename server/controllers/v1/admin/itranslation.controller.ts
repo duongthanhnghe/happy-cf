@@ -62,7 +62,6 @@ export const getTranslationDetail = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/v1/translations
 export const createTranslation = async (req: Request, res: Response) => {
   const { key, type, translations } = req.body;
 
@@ -79,7 +78,6 @@ export const createTranslation = async (req: Request, res: Response) => {
   }
 };
 
-// PUT /api/v1/translations/:id
 export const updateTranslation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { type, translations } = req.body;
@@ -98,7 +96,6 @@ export const updateTranslation = async (req: Request, res: Response) => {
   }
 };
 
-// DELETE /api/v1/translations/:id
 export const deleteTranslation = async (req: Request, res: Response) => {
   const { id } = req.params;
 

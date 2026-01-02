@@ -341,10 +341,10 @@ export const updateAccount = async (req: any, res: Response) => {
   const updated = await UserModel.findByIdAndUpdate(userId, req.body, { new: true });
 
   if (!updated) {
-    return res.status(404).json({ success: false, message: "User not found" });
+    return res.status(404).json({ code: 1, success: false, message: "User not found" });
   }
 
-  res.json({ code: 200, message: "Update success", data: toUserDTO(updated!) });
+  res.json({ code: 0, message: "Update success", data: toUserDTO(updated!) });
 };
 
 export const getUserById = async (req: Request, res: Response) => {
@@ -354,17 +354,40 @@ export const getUserById = async (req: Request, res: Response) => {
   res.json({ code: 0, data: toUserDTO(user) });
 };
 
-export const changePassword = async (req: Request, res: Response) => {
-  const { userId, oldPassword, newPassword } = req.body;
-  const user = await UserModel.findById(userId);
-  if (!user) return res.status(404).json({ code: 404, message: "User not found" });
+export const changePassword = async (req: any, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    console.log('userId',userId)
+    const { oldPassword, newPassword } = req.body;
 
-  const isMatch = await bcrypt.compare(oldPassword, user.password);
-  if (!isMatch) return res.status(401).json({ code: 401, message: "Wrong old password" });
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        code: 2,
+        message: "Không tìm thấy tài khoản",
+      });
+    }
 
-  user.password = await bcrypt.hash(newPassword, 10);
-  await user.save();
-  res.json({ code: 200, message: "Password updated" });
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ code: 3, message: "Mật khẩu cũ không đúng" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    return res.status(200).json({
+      code: 0,
+      message: "Đổi mật khẩu thành công",
+    });
+  } catch (err: any) {
+    console.error("Change admin password error:", err);
+    return res.status(500).json({
+      code: 500,
+      message: "Lỗi hệ thống",
+      error: err.message,
+    });
+  }
 };
 
 export const logout = (req: Request, res: Response) => {

@@ -5,25 +5,21 @@ import { Loading } from '@/utils/global';
 import type { ChangePassword, UserEdit } from "@/server/types/dto/v1/user.dto";
 
 export const useAccountEditUtils = (state: {
-  token: Ref<string | null>,
   isTogglePopupUpdate: Ref<boolean>;
   formUserItem: Reactive<UserEdit>;
+  oldPassword: Ref<string>;
   newPassword: Ref<string>;
   newPasswordConfirm: Ref<string>;
   isTogglePopupChangePassword: Ref<boolean>;
-  showPassword: Ref<boolean>;
-  showPasswordConfirm: Ref<boolean>;
   accountStore: any;
 }) => {
   const {
-    token,
     isTogglePopupUpdate,
     formUserItem,
+    oldPassword,
     newPassword,
     newPasswordConfirm,
     isTogglePopupChangePassword,
-    showPassword,
-    showPasswordConfirm,
     accountStore,
   } = state;
 
@@ -44,48 +40,31 @@ export const useAccountEditUtils = (state: {
   async function submitUpdate() {
     Loading(true);
     try {
-      if (!token.value) return showWarning("Token không hợp lệ");
-
       const newCategory = {...formUserItem}
-      const data = await authAPI.updateAccount(newCategory, token.value)
-      if(data.code === 200){
-        showSuccess('Cap nhat thanh cong')
+      const data = await authAPI.updateAccount(newCategory)
+      if(data.code === 0){
+        showSuccess(data.message)
         isTogglePopupUpdate.value = false;
         if(accountStore.detailData) accountStore.detailData = data.data
       } else {
-        showWarning('Cap nhat loi!')
+        showWarning(data.message)
       }
-      Loading(false);
     } catch (err) {
       console.error('Error submitting form:', err)
+    } finally {
       Loading(false);
     }
   }
 
-  async function submitChangePassword(userId: string, oldPassword: string) {
+  async function submitChangePassword() {
     try {
-      if (!userId || !oldPassword) {
-        showWarning('Thiếu thông tin userId hoặc oldPassword');
-        return;
-      }
-
       const dataReset:ChangePassword = {
-        userId: userId,
-        oldPassword: oldPassword,
+        oldPassword: oldPassword.value,
         newPassword: newPassword.value
       }
 
       const data = await authAPI.ChangePassword(dataReset)
-      if(data.code === 2){
-        showWarning('Không tìm thấy tài khoản admin');
-      }
-      else if(data.code === 1){
-        showWarning('Thiếu mật khẩu cũ hoặc mới');
-      }
-      else if(data.code === 3){
-        showWarning('Mật khẩu cũ không đúng');
-      }
-      else if(data.code === 0){
+      if(data.code === 0){
         showSuccess('Đặt lại mật khẩu thành công');
         newPassword.value = ''
         newPasswordConfirm.value = ''
@@ -93,7 +72,7 @@ export const useAccountEditUtils = (state: {
       } else {
         newPassword.value = ''
         newPasswordConfirm.value = ''
-        showWarning('Vui long nhap mat khau day du!');
+        showWarning(data.message);
       }
     } catch (err) {
       console.error('Error submitting form:', err)

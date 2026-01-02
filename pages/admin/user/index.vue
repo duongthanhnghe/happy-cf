@@ -64,22 +64,22 @@ onBeforeUnmount(() => {
     <template #item.membership="{ item }">
       <div class="flex gap-xs">
         <v-chip :color="colorType(item.membership.level)" >{{item.membership.level}}</v-chip>
-        <v-chip color="blue">{{item.membership.point}}</v-chip>
+        <v-chip color="blue">{{item.membership.point}} điểm</v-chip>
       </div>
     </template>
 
     <template #item.active="{ item }">
-      <v-chip label :color="`${item.active === true ? 'green' : 'red'}`" v-tooltip.right="'Doi trang thai'" @click="store.toggleActive(item.id)">
-        {{ item.active === true ? 'Kich hoat' : 'Tat kich hoat' }}
+      <v-chip label :color="`${item.active === true ? 'green' : 'red'}`" v-tooltip.right="'Đổi trạng thái'" @click="store.toggleActive(item.id)">
+        {{ item.active === true ? 'Kích hoạt' : 'Tắt kích hoạt' }}
       </v-chip>
     </template>
 
     <template #item.birthday="{ item }">
-      {{formatDateTime(item.birthday)}}
+      {{formatDateTime(item.birthday,'vi-VN', false)}}
     </template>
 
     <template #item.createdAt="{ item }">
-      {{formatDateTime(item.createdAt)}}
+      {{formatDateTime(item.createdAt,'vi-VN', false)}}
     </template>
     
     <template #item.actions="{ item }">

@@ -1,25 +1,21 @@
 import { computed } from "vue";
 import { defineStore } from "pinia";
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
-import { useAccountDetailState } from "@/composables/user/useAccountDetailState";
 import { useAccountEditState } from "@/composables/user/useAccountEditState";
 import { useAccountEditUtils } from "@/composables/user/useAccountEditUtils";
 
 export const useAccountEditStore = defineStore("useAccountEdit", () => {
   const accountStore = useAccountStore()
 
-  const stateAccount = useAccountDetailState()
   const state = useAccountEditState()
 
   const utils = useAccountEditUtils({
-    token: stateAccount.token,
     isTogglePopupUpdate: state.isTogglePopupUpdate,
     formUserItem: state.formUserItem,
+    oldPassword: state.oldPassword,
     newPassword: state.newPassword,
     newPasswordConfirm: state.newPasswordConfirm,
     isTogglePopupChangePassword: state.isTogglePopupChangePassword,
-    showPassword: state.showPassword,
-    showPasswordConfirm: state.showPasswordConfirm,
     accountStore,
   });
 
