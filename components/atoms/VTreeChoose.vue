@@ -38,7 +38,7 @@ const props = defineProps({
   },
   heading: {
     type: String,
-    default: 'Vui long chon',
+    default: 'Vui lòng chọn',
   },
   required: {
     type: Boolean,

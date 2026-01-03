@@ -44,12 +44,23 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     target.image = newValue.url
   })
 
+  const resetState = () => {
+    state.selectedCategory.value = []
+    state.selectedCategoryName.value = []
+
+    state.isTogglePopupAdd.value = false
+    state.isTogglePopupUpdate.value = false
+
+    state.detailData.value = null
+  }
+
   return {
     ...state,
     nullRules,
     nullAndSpecialRules,
     isDiscountVoucherType,
     handleAddImage,
+    resetState,
     ...operations,
   };
 });

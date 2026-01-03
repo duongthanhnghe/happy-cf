@@ -160,6 +160,28 @@ export const useProductManageStore = defineStore("ProductManage", () => {
     }
   ]);
 
+  const resetState = () => {
+    // form
+    state.formProductItem = { ...state.defaultForm }
+
+    // category
+    state.selectedCategory.value = []
+    state.selectedCategoryName.value = []
+
+    // image
+    state.checkSelectImage.value = true
+
+    // popup
+    state.isTogglePopupAdd.value = false
+    state.isTogglePopupUpdate.value = false
+    state.isTogglePopupAddVariant.value = false
+    state.isTogglePopupImport.value = false
+
+    // misc
+    state.selectedIdsDelete.value = []
+    state.detailData.value = null
+  }
+
   return {
     ...state,
     ...productUtils,
@@ -169,6 +191,7 @@ export const useProductManageStore = defineStore("ProductManage", () => {
     handleAddListImage,
     handleAddImage,
     toggleActive,
+    resetState,
     getListImageAdd,
     treeItems,
     nullRules,

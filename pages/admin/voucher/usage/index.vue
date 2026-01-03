@@ -94,14 +94,14 @@ onBeforeUnmount(() => {
 
       <template #item.orderId="{ item }">
         <div class="flex gap-sm align-center cursor-pointer white-space" @click="storeDetailOrder.handleTogglePopupDetail(true,item.orderId._id.toString())">
-          <Button color="gray" size="sm" class="white-space" icon="visibility" />
-          Chi tiet
+          <Button color="gray" size="sm" class="white-space" icon="visibility" v-tooltip="'Xem chi tiết đơn hàng'" />
+          Chi tiết
         </div>
       </template>
 
       <template #item.stackable="{ item }">
         <v-chip class="w-full justify-center" :color="item.stackable ? 'green' : 'red'" label>
-          {{ item.stackable ? 'Cho phep' : 'Khong' }}
+          {{ item.stackable ? 'Cho phép' : 'Không cho phép' }}
         </v-chip>
       </template>
 
@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
       <template #item.reverted="{ item }">
         <div class="flex gap-sm align-center white-space">
         <v-chip v-if="item.reverted" :color="item.reverted ? 'orange' : 'grey'" label>
-          {{ item.reverted ? 'Da hoan' : '' }}
+          {{ item.reverted ? 'Đã hoàn' : '' }}
         </v-chip>
         {{ formatDateTime(item.revertedAt,'vi-VN') }}
         </div>

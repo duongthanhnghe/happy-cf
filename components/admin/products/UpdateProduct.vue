@@ -102,7 +102,6 @@ const handleSubmitUpdate = async () => {
         <div class="col-12 flex gap-sm align-anchor">
           <div class="flex-1">
             <LabelInput label="Danh mục sản phẩm" required/>
-            {{ store.selectedCategory }}
             <VTreeChoose :label="store.selectedCategoryName">
               <v-treeview
                 :items="store.treeItems"
