@@ -1197,6 +1197,9 @@ body .bg {
   &-3 {
     z-index: 3;
   }
+  &-4 {
+    z-index: 4;
+  }
 }
 
 .opacity {
@@ -1286,6 +1289,9 @@ body .bg {
 .left {
   &-0 {
     left: 0 !important;
+  }
+  &-05 {
+    left: 0.5rem !important;
   }
   &-1 {
     left: 1rem !important;

@@ -2,9 +2,7 @@
 import "./index.scss"
 import { onMounted, onBeforeUnmount } from "vue";
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
-import {
-  copyText
-} from '@/utils/global'
+import { copyText } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
 
 definePageMeta({
@@ -23,26 +21,44 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  storeFileManage.items = null
+  storeFileManage.resetState()
 })
 </script>
 <template>
-  <HeaderAdmin>
-    <template #left >
+  <HeaderAdmin headerRightClass="flex-1" headerLeftClass="flex-none">
+    <template #left>
       <template v-if="storeFileManage.getBreadcrumb">
-        <template v-for="(item,index) in storeFileManage.getBreadcrumb" :key="index">
+        <template v-for="(item, index) in storeFileManage.getBreadcrumb" :key="index">
           <div class="file-manage-breadcrumb-item flex gap-sm align-center">
             <Text size="lg" weight="medium" :text="item" />
-            <MaterialIcon class="text-color-gray4" name="keyboard_arrow_right"/>
+            <MaterialIcon class="text-color-gray4" name="keyboard_arrow_right" />
           </div>
         </template>
       </template>
     </template>
-    <template #right >
-      <div class="flex flex-1 gap-sm align-center mr-md" v-if="storeFileManage.getSelectImage">
-        <v-text-field v-model="storeFileManage.getSelectImage" hide-details disabled class="file-manage-url-detail"></v-text-field>
+
+    <template #right>
+      <Button
+        v-if="storeFileManage.selectedIdsDelete.length > 0"
+        color="secondary"
+        icon="delete"
+        v-tooltip="'Xóa ảnh đã chọn'"
+        @click="storeFileManage.deleteImages()"
+      />
+
+      <div
+        class="flex flex-1 gap-sm align-center"
+        v-if="storeFileManage.getSelectImage"
+      >
+        <v-text-field
+          v-model="storeFileManage.getSelectImage"
+          hide-details
+          variant="outlined"
+          disabled
+          class="file-manage-url-detail"
+        />
         <Button
-          v-tooltip="'Copy URL'"
+          v-tooltip="'Sao chép URL'"
           class="file-image-item-btn"
           color="secondary"
           icon="link"
@@ -51,14 +67,20 @@ onBeforeUnmount(() => {
       </div>
     </template>
   </HeaderAdmin>
+
   <v-container>
     <div class="v-table">
       <div class="flex">
         <div class="file-manage-left">
-          <FileManageFolder />
+          <LoadingData
+            v-if="storeFileManage.loadingFolder"
+            class="pt-ms"
+          />
+          <FileManageFolder v-else />
         </div>
+
         <div class="file-manage-right scroll-hide">
-          <FileManageImage folderName="PostsNews" />
+          <FileManageImage folderName="Default" :isAdmin="true" />
         </div>
       </div>
     </div>

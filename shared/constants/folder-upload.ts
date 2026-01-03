@@ -1,7 +1,7 @@
 export const FOLDER_UPLOAD = {
   ABOUT: 'About',
   BANNER: 'BANNER',
-  IMAGE_BLOCK: 'ImageBlock',
+  IMAGE_BLOCK: 'ImageAds',
   CATEGORY_NEWS: 'CategoryNews',
   CATEGORY_PRODUCT: 'CategoryProduct',
   DEFAULT: 'Default',

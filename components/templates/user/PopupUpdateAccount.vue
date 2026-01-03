@@ -43,7 +43,7 @@ watch(() => storeFileManage.getSelectImage, (newValue) => {
 useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
-  storeFileManage.items = null
+  storeFileManage.resetState()
 })
 </script>
 <template>

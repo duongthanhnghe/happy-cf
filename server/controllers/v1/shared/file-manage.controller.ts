@@ -3,6 +3,30 @@ import fs from 'fs'
 import { v2 as cloudinary } from 'cloudinary'
 import type { Request, Response } from 'express'
 
+const MAX_USER_STORAGE = 3 * 1024 * 1024 // 3MB
+
+const getFolderTotalSize = async (folder: string): Promise<number> => {
+  let total = 0
+  let nextCursor: string | undefined
+
+  do {
+    const res = await cloudinary.api.resources({
+      type: 'upload',
+      prefix: folder,
+      max_results: 100,
+      next_cursor: nextCursor,
+    })
+
+    for (const r of res.resources) {
+      total += r.bytes
+    }
+
+    nextCursor = res.next_cursor
+  } while (nextCursor)
+
+  return total
+}
+
 export const getImages = async (req: Request, res: Response) => {
   try {
     const { folder, max_results = 10, next_cursor } = req.query
@@ -10,20 +34,29 @@ export const getImages = async (req: Request, res: Response) => {
     if (!folder) {
       return res.status(400).json({
         success: false,
-        message: 'Missing folder name'
+        message: 'Missing folder name',
       })
     }
 
-    const search = cloudinary.search
-      .expression(`folder:${folder}`)
-      .sort_by("created_at", "desc")
-      .max_results(Number(max_results) || 10)
-
-    if (next_cursor) {
-      search.next_cursor(next_cursor as string)
+    const options: any = {
+      type: 'upload',
+      prefix: folder,
+      max_results: Number(max_results),
+      resource_type: 'image',
     }
 
-    const result = await search.execute()
+    // let search = cloudinary.search
+    //   .expression(`folder:${folder}`)
+    //   .sort_by('created_at', 'desc')
+    //   .max_results(Number(max_results))
+
+    if (next_cursor) {
+      // search = search.next_cursor(next_cursor as string)
+      options.next_cursor = next_cursor
+    }
+
+    const result = await cloudinary.api.resources(options)
+    // const result = await search.execute()
 
     return res.status(200).json({
       success: true,
@@ -34,15 +67,15 @@ export const getImages = async (req: Request, res: Response) => {
         created_at: item.created_at,
         bytes: item.bytes,
         width: item.width,
-        height: item.height
+        height: item.height,
       })),
-      next_cursor: result.next_cursor || null
+      next_cursor: result.next_cursor ?? null,
     })
   } catch (err: any) {
     console.error('Get images error:', err)
     return res.status(500).json({
       success: false,
-      message: err.message || 'Failed to get images'
+      message: err.message || 'Failed to get images',
     })
   }
 }
@@ -112,6 +145,36 @@ export const deleteImage = async (req: Request, res: Response) => {
   }
 }
 
+export const deleteImages = async (req: Request, res: Response) => {
+  try {
+    const { publicIds } = req.body
+
+    if (!Array.isArray(publicIds) || publicIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'publicIds must be a non-empty array',
+      })
+    }
+
+    const decodedIds = publicIds.map((id: string) =>
+      decodeURIComponent(id)
+    )
+
+    const result = await cloudinary.api.delete_resources(decodedIds)
+
+    return res.status(200).json({
+      success: true,
+      result,
+    })
+  } catch (err: any) {
+    console.error('Delete multiple images error:', err)
+    return res.status(500).json({
+      success: false,
+      message: err.message || 'Delete failed',
+    })
+  }
+}
+
 export const searchImage = async (req: Request, res: Response) => {
   try {
     const { url, folder } = req.query
@@ -126,7 +189,7 @@ export const searchImage = async (req: Request, res: Response) => {
     const result = await cloudinary.api.resources({
       type: 'upload',
       prefix: folderPath,
-      max_results: 500,
+      max_results: 50,
     })
 
     const filtered = result.resources.filter((item: any) =>
@@ -141,54 +204,84 @@ export const searchImage = async (req: Request, res: Response) => {
 }
 
 export const uploadImage = async (req: Request, res: Response) => {
-  let userId = req.body?.userId
+  const userId = req.body?.userId;
+
   try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: 'No file uploaded' })
+    if (!req.files || !(req.files instanceof Array) || req.files.length === 0) {
+      return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
 
     const folder = userId
       ? `Member/member${userId}`
-      : req.body.folder || "Default"
+      : req.body.folder || "Default";
 
-    const originalName = path.parse(req.file.originalname).name
-    let publicId = originalName
-    let attempt = 0
+    if (userId) {
+      const currentSize = await getFolderTotalSize(folder)
 
-    while (true) {
-      const exists = await cloudinary.api.resource(`${folder}/${publicId}`)
-        .then(() => true)
-        .catch(() => false)
+      const uploadSize = (req.files as Express.Multer.File[])
+        .reduce((sum, f) => sum + f.size, 0)
 
-      if (!exists) break
-      attempt++
-      publicId = `${originalName}(${attempt})`
+      if (currentSize + uploadSize > MAX_USER_STORAGE) {
+        for (const file of req.files as Express.Multer.File[]) {
+          fs.unlinkSync(file.path)
+        }
+
+        return res.status(400).json({
+          success: false,
+          message: 'Dung lượng ảnh của bạn đã vượt quá 3MB',
+        })
+      }
     }
 
-    const uploaded = await cloudinary.uploader.upload(req.file.path, {
-      folder,
-      use_filename: false,
-      unique_filename: false,
-      resource_type: "image",
-      public_id: publicId,
-    })
+    const uploadedFiles: any[] = [];
 
-    fs.unlinkSync(req.file.path)
+    for (const file of req.files as Express.Multer.File[]) {
+      const originalName = path.parse(file.originalname).name;
+      let publicId = originalName;
+      let attempt = 0;
+
+      while (true) {
+        const exists = await cloudinary.api.resource(`${folder}/${publicId}`)
+          .then(() => true)
+          .catch(() => false);
+
+        if (!exists) break;
+        attempt++;
+        publicId = `${originalName}(${attempt})`;
+      }
+
+      const uploaded = await cloudinary.uploader.upload(file.path, {
+        folder,
+        use_filename: false,
+        unique_filename: false,
+        resource_type: "image",
+        public_id: publicId,
+      });
+
+      fs.unlinkSync(file.path);
+
+      uploadedFiles.push({
+        url: uploaded.secure_url,
+        public_id: uploaded.public_id,
+        format: uploaded.format,
+        created_at: uploaded.created_at,
+        bytes: uploaded.bytes,
+        width: uploaded.width,
+        height: uploaded.height,
+        folder,
+      });
+    }
 
     return res.status(200).json({
       success: true,
-      message: 'File uploaded successfully',
-      url: uploaded.secure_url,
-      public_id: uploaded.public_id,
-      folder
-    })
+      message: `${uploadedFiles.length} file(s) uploaded successfully`,
+      files: uploadedFiles,
+    });
   } catch (err: any) {
-    console.error("Upload error:", err)
+    console.error("Upload error:", err);
     return res.status(500).json({
       success: false,
-      message: err.message || "Upload failed"
-    })
+      message: err.message || "Upload failed",
+    });
   }
-}
-
-
+};

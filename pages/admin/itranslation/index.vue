@@ -20,7 +20,7 @@ const storeAccount = useAccountStore()
 useFileManageWatchers(storeFileManage, store.folderName);
 
 onBeforeUnmount(() => {
-  storeFileManage.items = null
+  storeFileManage.resetState()
 })
 </script>
 

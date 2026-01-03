@@ -27,7 +27,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   store.resetFilter()
-  storeFileManage.items = null
+  storeFileManage.resetState()
 })
 </script>
 <template>

@@ -22,7 +22,7 @@ onMounted( async () => {
 })
 
 onBeforeUnmount(() => {
-  storeFileManage.items = null
+  storeFileManage.resetState()
 })
 </script>
 <template>

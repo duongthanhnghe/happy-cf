@@ -16,7 +16,7 @@ const storeFileManage = useFileManageFolderStore();
 useFileManageWatchers(storeFileManage, store.folderName);
 
 onBeforeUnmount(() => {
-  storeFileManage.items = null
+  storeFileManage.resetState()
 })
 </script>
 <template>

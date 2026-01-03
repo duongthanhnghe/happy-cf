@@ -8,7 +8,10 @@ import { computed } from 'vue';
 
 const storeAccount = useAccountStore()
 const props = defineProps({
-  headerClass: {
+  headerRightClass: {
+    type: String,
+  },
+  headerLeftClass: {
     type: String,
   },
   label: {
@@ -22,13 +25,13 @@ const detailAccount = computed(() => storeAccount.getDetailAccount);
 
 <template>
   <client-only>
-  <div :class="['header-admin', headerClass]">
-    <div class="header-admin-left">
+  <div class="header-admin">
+    <div :class="['header-admin-left', headerLeftClass]">
       <Text v-if="props.label" tag="h2" size="xl" weight="semibold" class="line-height-1" :text="props.label" />
 
       <slot name="left"></slot>
     </div>
-    <div class="header-admin-right">
+    <div :class="['header-admin-right', headerRightClass]">
       <slot name="right"></slot>
       <v-menu transition="slide-x-transition">
         <template v-slot:activator="{ props }">

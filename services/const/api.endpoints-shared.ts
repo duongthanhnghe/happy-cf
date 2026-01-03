@@ -4,6 +4,7 @@ export const API_ENDPOINTS_SHARED = {
     GET_IMAGES: (folder: string, limit: number) => `/fileManage/images?folder=${folder}&max_results=${limit}`,
     GET_FOLDERS: () => `/fileManage/images/folders`,
     DELETE_IMAGE: (id: string) => `/fileManage/images/delete?publicId=${id}`,
+    DELETE_IMAGES: '/fileManage/images',
     SEARCH_IMAGE: () => `/fileManage/images/search`
   },
   LOCATION: {

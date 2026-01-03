@@ -18,7 +18,7 @@ const folderName = FOLDER_UPLOAD.CATEGORY_NEWS
 useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
-  storeFileManage.items = null
+  storeFileManage.resetState()
 })
 </script>
 <template>

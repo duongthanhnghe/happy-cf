@@ -6,6 +6,7 @@ export interface FileManageImage {
   bytes: number
   width: number
   height: number
+  folder?: string
 }
 
 export interface FileManageFolder {

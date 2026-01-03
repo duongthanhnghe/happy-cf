@@ -19,7 +19,7 @@ const folderName = FOLDER_UPLOAD.IMAGE_BLOCK
 useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
-  storeFileManage.items = null
+  storeFileManage.resetState()
 })
 </script>
 <template>

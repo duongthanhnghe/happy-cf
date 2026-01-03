@@ -1,5 +1,6 @@
 import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS_SHARED } from '@/services/const/api.endpoints-shared'
+import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 export const fileManageAPI = {
   getImages: async (folder: string, max_results: number = 10, next_cursor?: string) => {
@@ -21,7 +22,7 @@ export const fileManageAPI = {
 
   getFolders: async () => {
     try {
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.GET_FOLDERS()}`,{
+      const response = await fetchWithAuthAdmin(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.GET_FOLDERS()}`,{
         credentials: 'include',
       })
       const data = await response.json()
@@ -42,6 +43,27 @@ export const fileManageAPI = {
       return data
     } catch (err) {
       console.error('Error:', err)
+    }
+  },
+
+  deleteImages: async (publicIds: string[]) => {
+    try {
+      const response = await fetchWithAuthAdmin(
+      `${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.DELETE_IMAGES}`,
+      {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ publicIds }),
+        }
+      )
+
+      return await response.json()
+    } catch (err) {
+      console.error('Delete images error:', err)
+      return { success: false }
     }
   },
 
@@ -69,17 +91,24 @@ export const fileManageAPI = {
     }
   },
 
-  uploadImage: async (file: File, folder: string) => {
+  uploadImage: async (files: File[], folder: string) => {
     try {
       const formData = new FormData()
-      formData.append('file', file)
+
+      files.forEach((file) => {
+        formData.append('files', file)
+      })
+
       formData.append('folder', folder)
 
-      const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD}`, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
-      })
+      const response = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        }
+      )
 
       const data = await response.json()
       return data
@@ -89,18 +118,23 @@ export const fileManageAPI = {
     }
   },
 
-  uploadAvatar: async (file: File, folder: string, userId: string) => {
+  uploadAvatar: async (files: File[], folder: string, userId: string) => {
     try {
       const formData = new FormData()
-      formData.append('file', file)
+
+      files.forEach((file) => {
+        formData.append('files', file)
+      })
+
       formData.append('folder', folder)
       formData.append('userId', userId);
 
       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD}`, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
-      })
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        }
+      )
 
       const data = await response.json()
       return data
@@ -108,6 +142,6 @@ export const fileManageAPI = {
       console.error('Upload image error:', err)
       return { success: false, message: 'Upload failed' }
     }
-  }
+  },
 
 }
