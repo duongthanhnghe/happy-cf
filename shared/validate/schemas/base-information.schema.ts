@@ -15,7 +15,17 @@ export const socialLinkSchema = z.object({
 export const baseInformationSchema = z.object({
   name: z.string().min(1, 'Tên công ty là bắt buộc'),
 
-  logoUrl: z.string().url('Logo không hợp lệ'),
+  logoUrl: z
+  .string()
+  .min(1, 'Logo là bắt buộc')
+  .refine(
+    (val) =>
+      val.startsWith('/') ||
+      /^https?:\/\/.+/.test(val),
+    {
+      message: 'Logo không hợp lệ',
+    }
+  ),
 
   phone: phoneSchema,
 

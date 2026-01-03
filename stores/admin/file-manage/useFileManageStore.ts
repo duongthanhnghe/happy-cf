@@ -38,8 +38,9 @@ const dataListFolder = ref<FileManageFolder[]|null>(null);
 const folderSelected = ref<string|null>(null);
 const breadcrumb = ref<string[]|null>(null);
 
-const handleTogglePopup = (value: boolean) => {
+const handleTogglePopup = async (value: boolean) => {
   isTogglePopup.value = value;
+  if(value && folderSelected.value && items.value?.length === 0 ) await getApiList(folderSelected.value)
 };
 
 function load({ done }: { done: (status: 'ok' | 'empty') => void }) {
@@ -144,8 +145,7 @@ watch(
   dataList,
   (newVal) => {
     items.value = newVal?.slice(0, pageSize) ?? []
-  },
-  { immediate: true }
+  }
 )
 
 const uploadImage = async (folderName: string) => {
@@ -183,7 +183,7 @@ const uploadImage = async (folderName: string) => {
       return true
     }
 
-    showWarning('Tải lên thất bại')
+    showWarning(res.message ?? 'Tải lên thất bại')
     return false
   } catch (err) {
     console.error(err)

@@ -10,7 +10,7 @@ onMounted(() => {
 <template>
   <Popup
     v-model="storeAccount.isTogglePopupAccountMenuInfo"
-    :popupHeading="`Hi, ${storeAccount.getDetailValue.fullname}`"
+    :popupHeading="`Hi, ${storeAccount.getDetailValue?.fullname}`"
     bodyClass="bg-gray2"
     align="right"
     footerFixed

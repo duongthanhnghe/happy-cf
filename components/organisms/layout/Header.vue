@@ -47,10 +47,10 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
   <client-only>
     <PopupSearch />
     <template v-if="storeAccount.getUserId">
-    <PopupAccountMenuInfo />
-    <PopupMembershipInfo />
-    <PopupBarcode />
-    <PopupHistoryReward />
+      <PopupAccountMenuInfo />
+      <PopupMembershipInfo />
+      <PopupBarcode />
+      <PopupHistoryReward />
     </template>
   </client-only>
 
