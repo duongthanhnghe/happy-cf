@@ -155,9 +155,7 @@ export const useVoucherManageOperations = (
       detailData.value = res.data;
       handleTogglePopupUpdate(true);
       Object.assign(updateItem, detailData.value);
-
-      if(res.data.type === 'product') setSelectedCategory(unref(formItem).applicableCategories)
-
+      if(res.data.type === VOUCHER_TYPE.PRODUCT) setSelectedCategory(unref(updateItem).applicableCategories)
     }
   };
 
@@ -240,6 +238,11 @@ export const useVoucherManageOperations = (
     )
   })
 
+  const typeHasImage = computed(() => {
+    const target = unref(updateItem).code ? unref(updateItem) : unref(formItem)
+    return target.type === VOUCHER_TYPE.PRODUCT || target.type === VOUCHER_TYPE.PERCENTAGE || target.type === VOUCHER_TYPE.FIXED
+  })
+
   const { toggleActive } = useToggleActiveStatus(vouchersAPI.toggleActive, serverItems);
 
   const treeItems = computed(() => {
@@ -294,5 +297,6 @@ export const useVoucherManageOperations = (
     toggleActive,
     resetFilter,
     treeItems,
+    typeHasImage,
   };
 };

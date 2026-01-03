@@ -21,14 +21,11 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
 <template>
   <Popup
     v-model="store.isTogglePopupUpdate"
-    popupHeading="Sua voucher"
+    popupHeading="Sửa voucher"
     align="right"
   >
     <template #body>
       <v-form validate-on="submit lazy" @submit.prevent="handleSubmitUpdate">
-        <div class="portal-popup-footer">
-          <Button type="submit" color="primary" label="Lưu voucher" class="w-full" />
-        </div>
 
         <!-- Mã voucher -->
         <LabelInput label="Mã voucher" required />
@@ -60,12 +57,12 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           variant="outlined"
         />
 
-        <template v-if="store.updateItem.type === VOUCHER_TYPE.product.type || store.updateItem.type === VOUCHER_TYPE.percentage.type || store.updateItem.type === VOUCHER_TYPE.fixed.type ">
-        <LabelInput label="Anh dai dien" required/>
-        <v-img v-if="store.updateItem.image" :src="store.updateItem.image" class="mb-sm" alt="Hinh anh" :rules="store.nullRules" required />
+        <template v-if="store.typeHasImage">
+        <LabelInput label="Ảnh đại diện" />
+        <v-img v-if="store.updateItem.image" :src="store.updateItem.image" class="mb-sm" alt="Ảnh đại diện" />
         <div class="flex gap-sm">
-          <v-text-field v-model="store.updateItem.image" label="Duong dan anh..." variant="outlined" disabled></v-text-field>
-          <Button color="black" :label="store.updateItem.image ? 'Doi anh':'Chon anh'" @click.prevent="store.handleAddImage()"/>
+          <v-text-field v-model="store.updateItem.image" label="Đường dẫn ảnh.." variant="outlined" ></v-text-field>
+          <Button color="black" :label="store.updateItem.image ? 'Đổi ảnh' : 'Chọn ảnh'" @click.prevent="store.handleAddImage()"/>
         </div>
         </template>
 
@@ -148,7 +145,7 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
           required
         />
 
-        <div class="card card-sm bg-gray2 pb-0 mb-md">
+        <div class="rd-lg pd-ms bg-gray2 pb-0 mb-md">
 
           <!-- Giá trị giảm -->
           <div :class="{ _hidden: !showValue }">
@@ -224,11 +221,10 @@ const handleSubmitUpdate = async (event: SubmitEventPromise) => {
               </VTreeChoose>
             </div>
           </div>
-
           </div>
-
         </div>
-
+        
+        <Button type="submit" color="primary" label="Lưu voucher" class="w-full" />
       </v-form>
     </template>
   </Popup>
