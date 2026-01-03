@@ -40,7 +40,6 @@ const breadcrumb = ref<string[]|null>(null);
 
 const handleTogglePopup = async (value: boolean) => {
   isTogglePopup.value = value;
-  if(value && folderSelected.value && items.value?.length === 0 ) await getApiList(folderSelected.value)
 };
 
 function load({ done }: { done: (status: 'ok' | 'empty') => void }) {

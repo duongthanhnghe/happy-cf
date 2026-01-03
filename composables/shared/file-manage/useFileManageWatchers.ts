@@ -5,8 +5,11 @@ export const useFileManageWatchers = (
   folderName: string,
 ) => {
 
-  watch(() => storeFileManage.isTogglePopup, (newValue) => {
-    if(newValue && !storeFileManage.getItems) storeFileManage.getApiList(folderName)
+  watch(() => storeFileManage.isTogglePopup, async (newValue) => {
+    if(newValue){
+      storeFileManage.resetState()
+      await storeFileManage.getApiList(folderName)
+    } 
   }, { immediate: true })
 
   return {
