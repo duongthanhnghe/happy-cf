@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import './index.scss';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useBannerStore } from '@/stores/client/banner/useBannerStore';
 import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore';
@@ -72,7 +71,7 @@ const listImageFeatured = getByPosition(
       </ImageBlockLayoutColumn>
     </div>
 
-    <div :class="storeDisplay.isMobileTable ? 'home-page-content':''">
+    <div :class="storeDisplay.isMobileTable ? 'bg-white pt-section overflow-hidden rd-xl rd-null-bottom-left rd-null-bottom-right':''">
       <SectionProductListSwiper 
         v-if="storeProductSale.getListProductSales && storeProductSale.getListProductSales.data.length > 0" 
         :items="storeProductSale.getListProductSales.data" 
@@ -110,5 +109,4 @@ const listImageFeatured = getByPosition(
       />
     </div>
   </div>
-  <client-only><Footer /></client-only>
 </template>

@@ -20,15 +20,31 @@ export const categoriesAPI = {
       console.error('Error:', err);
     }
   },
+  // getChildren: async (parentId: string, includeInactive = false) => {
+  //   try {
+  //     const url = new URL(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.GET_CHILDREN(parentId)}`)
+  //     url.searchParams.set("includeInactive", String(includeInactive))
+
+  //     const response = await fetch(url.toString())
+  //     return await response.json()
+  //   } catch (err) {
+  //     console.error(err)
+  //     throw err
+  //   }
+  // },
   getChildren: async (parentId: string, includeInactive = false) => {
     try {
-      const url = new URL(`${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.GET_CHILDREN(parentId)}`)
-      url.searchParams.set("includeInactive", String(includeInactive))
+      const params = new URLSearchParams({
+        includeInactive: String(includeInactive),
+      })
 
-      const response = await fetch(url.toString())
-      return await response.json()
+      const res = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.CATEGORIES.GET_CHILDREN(parentId)}?${params.toString()}`
+      )
+
+      return await res.json()
     } catch (err) {
-      console.error(err)
+      console.error("Error fetching child categories:", err)
       throw err
     }
   },

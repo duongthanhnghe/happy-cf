@@ -359,8 +359,7 @@ export const useCartStore = defineStore("Cart", () => {
 
   const submitOrder = async () => {
     await order.submitOrder(
-      storeAccount.getDetailValue?.id,
-      storeAccount.getDetailValue?.membership?.discountRate
+      storeAccount.getDetailValue?.id
     );
   };
 

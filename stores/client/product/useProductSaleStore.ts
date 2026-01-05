@@ -32,13 +32,6 @@ export const useProductSaleStore = defineStore("ProductSaleStore", () => {
     state.pagination,
   )
 
-  watch(getListProductSales, (newValue) => {
-    if (newValue && newValue.data) {
-      state.listItems.value = newValue.data
-      state.pagination.value = newValue.pagination
-    }
-  }, { immediate: true })
-
   watch([state.page, stateFilter.filterType, stateFilter.filterCategory,],
     async ([newPage, newFilterType, newFilterCategory], [oldPage, oldFilterType, oldFilterCategory]) => {
 
@@ -68,6 +61,13 @@ export const useProductSaleStore = defineStore("ProductSaleStore", () => {
     },
   )
 
+  const fetchInit = async () => {
+    await fetchListProductSales('', Number(state.page.value), state.limit, stateFilter.filterType.value)
+    if(!getListProductSales.value) return
+    state.listItems.value = getListProductSales.value?.data
+    state.pagination.value = getListProductSales.value?.pagination
+  }
+
   return {
     ...state,
     ...stateFilter,
@@ -76,5 +76,6 @@ export const useProductSaleStore = defineStore("ProductSaleStore", () => {
     fetchListProductSales,
     ...utilsFilter,
     ...operation,
+    fetchInit,
   };
 })

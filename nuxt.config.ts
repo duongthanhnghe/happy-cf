@@ -14,20 +14,10 @@ export default defineNuxtConfig({
     transpile: ['vuetify'],
   },
   modules: ['@pinia/nuxt'],
-  // nitro: {
-  //   routeRules: {
-  //     '/**': {
-  //       headers: {
-  //         'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-  //         'Cross-Origin-Embedder-Policy': 'unsafe-none'
-  //       }
-  //     }
-  //   }
-  // },
   nitro: {
     routeRules: {
       "/api/**": {
-        proxy: "http://localhost:8080/api/**",
+        proxy: "http://localhost:8080/api/v1/**",
         headers: {
           "Access-Control-Allow-Credentials": "true"
         }
@@ -39,6 +29,9 @@ export default defineNuxtConfig({
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
     
     public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE,
+      apiAdminBase: process.env.NUXT_PUBLIC_API_ADMIN_BASE,
+
       siteUrl: process.env.DOMAIN || 'Website',
       siteName: 'Happy Coffee',
       siteDescription: 'Mô tả website',
@@ -98,16 +91,6 @@ export default defineNuxtConfig({
     }
   },
   vite: {
-    // css: {
-    //   preprocessorOptions: {
-    //     sass: {
-    //       additionalData: (content, filename) => {
-    //         if (filename.includes('vuetify/styles')) return ''
-    //         return content
-    //       }
-    //     }
-    //   }
-    // },
     define: {
       'process.env.DEBUG': false,
     },
@@ -115,10 +98,5 @@ export default defineNuxtConfig({
       noExternal: ['vuetify'],
     },
     optimizeDeps: { include: ['vuetify/components', 'vuetify/directives'] },
-    server: {
-      proxy: {
-        '/api': 'http://127.0.0.1:5000'
-      }
-    },
   },
 })

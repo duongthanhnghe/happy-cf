@@ -3,34 +3,45 @@ import { defineStore } from "pinia";
 import { usePostAllPagination } from '@/composables/news/usePostAllPagination'
 import { usePagination } from '@/utils/paginationHandle'
 import type { PostNewsDTO } from '@/server/types/dto/v1/news.dto'
+import type { PaginationMeta } from "@/server/types/common/pagination.dto";
 
 export const useMainStore = defineStore("NewsMainNewsStore", () => {
   const { loading, getListPostApi, fetchPostList } = usePostAllPagination()
 
-  const listItems = ref<PostNewsDTO[]|null>(null);
-  const pagination = ref(null)
+  const listItems = ref<PostNewsDTO[]>([])
+  const pagination = ref<PaginationMeta | null>(null)
   const page = ref('1')
   const limit = 10
+  const keySearch = ref<string>('')
 
-  watch(page, async (newValue) => {
-    if(newValue) {
-      await fetchPostList(newValue,limit, '')
-      listItems.value = getListPostApi.value?.data || []
-    }
+  const fetchPage = async (searchQuery: string) => {
+    keySearch.value = searchQuery
+    await fetchPostList(page.value, limit, keySearch.value)
+    listItems.value = getListPostApi.value?.data ?? []
+    pagination.value = getListPostApi.value?.pagination ?? null
+  }
+
+  watch(page, async (newValue, oldValue) => {
+    if (newValue === oldValue) return
+    await fetchPage(keySearch.value)
   })
 
-  const { handleChangePage, getTotalPages } = usePagination(page, computed(() => pagination.value?.totalPages ?? 0))
+  const { handleChangePage, getTotalPages } = usePagination(
+    page,
+    computed(() => pagination.value?.totalPages ?? 0)
+  )
 
-  const getListItems = computed(() => listItems.value);
+  const getListItems = computed(() => listItems.value)
 
   return {
-    limit,
     page,
-    pagination,
-    listItems,
+    limit,
+    loading,
     getListItems,
     getTotalPages,
-    loading,
-    handleChangePage
-  };
-});
+    pagination,
+    keySearch,
+    handleChangePage,
+    fetchPage,
+  }
+})

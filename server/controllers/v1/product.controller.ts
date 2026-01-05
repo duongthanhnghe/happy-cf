@@ -5,12 +5,15 @@ import { ProductEntity, CategoryProductEntity, type Product } from "../../models
 import { WishlistModel } from "../../models/v1/wishlist.entity"
 import { OrderEntity } from "../../models/v1/order.entity"
 import {
+  toCategoryProductDTO,
   toProductDTO,
   toProductListDTO,
 } from "../../mappers/v1/product.mapper"
 import { VariantGroupEntity } from "../../../server/models/v1/variant-group.entity"
 import { getApplicableVouchersForProduct } from "./voucher-controller"
 import { checkProductStockService } from "../../utils/productStock"
+import { buildCategoryBreadcrumb, buildCategoryTree } from "./categories-product.controller"
+import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
 
 export const getAllActiveCategoryIds = async (): Promise<Types.ObjectId[]> => {
   const categories = await CategoryProductEntity.find({ isActive: true })
@@ -115,34 +118,123 @@ export const filterActiveVariantGroupsForProducts = async (products: Product[]):
 };
 ////// END HELPERS
 
-export const getProductById = async (req: Request<{ id: string }>, res: Response) => {
+// export const getProductById = async (req: Request<{ id: string }>, res: Response) => {
+//   try {
+
+//     let product
+//     if (/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
+//       product = await ProductEntity
+//         .findById(req.params.id)
+//         .populate({
+//           path: 'category',
+//           select: 'categoryName slug parentId'
+//         })
+//     } else {
+//       product = await ProductEntity
+//         .findOne({ slug: req.params.id })
+//         .populate({
+//           path: 'category',
+//           select: 'categoryName slug parentId'
+//         })
+//     }
+
+//     if (!product) {
+//       return res.status(404).json({ code: 1, message: "Product không tồn tại" })
+//     }
+
+//     const isActiveChain = await isCategoryChainActive(product.categoryId);
+//     if (!isActiveChain) {
+//       return res.status(404).json({ code: 1, message: "Danh mục của sản phẩm đã bị vô hiệu hóa" });
+//     }
+
+//     product = await filterActiveVariantGroupsForProduct(product) as Product;
+
+//     const voucher = await getApplicableVouchersForProduct(product);
+
+//     const finalResult = toProductDTO(product);
+//     finalResult.vouchers = voucher;
+
+//     return res.json({ code: 0, data: finalResult })
+//   } catch (err: any) {
+//     return res.status(500).json({ code: 1, message: err.message })
+//   }
+// }
+export const getProductById = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
   try {
+    const match = Types.ObjectId.isValid(req.params.id)
+      ? { _id: new Types.ObjectId(req.params.id) }
+      : { slug: req.params.id }
 
-    let product
-    if (/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
-      product = await ProductEntity.findById(req.params.id)
-    } else {
-      product = await ProductEntity.findOne({ slug: req.params.id })
-    }
-
+    const product = await ProductEntity.findOne(match).lean()
     if (!product) {
-      return res.status(404).json({ code: 1, message: "Product không tồn tại" })
+      return res.status(404).json({ code: 1, message: 'Product không tồn tại' })
     }
 
-    const isActiveChain = await isCategoryChainActive(product.categoryId);
-    if (!isActiveChain) {
-      return res.status(404).json({ code: 1, message: "Danh mục của sản phẩm đã bị vô hiệu hóa" });
+    const category = await CategoryProductEntity.findById(product.categoryId)
+      .select('_id categoryName slug parentId isActive')
+      .lean()
+
+    if (!category) {
+      return res.status(404).json({ code: 1, message: 'Category không tồn tại' })
     }
 
-    product = await filterActiveVariantGroupsForProduct(product) as Product;
+    const isActive = await isCategoryChainActive(category._id)
+    if (!isActive) {
+      return res.status(404).json({
+        code: 1,
+        message: 'Danh mục của sản phẩm đã bị vô hiệu hóa'
+      })
+    }
 
-    const voucher = await getApplicableVouchersForProduct(product);
+    const categoriesAgg = await CategoryProductEntity.aggregate([
+      { $match: { _id: category._id } },
+      {
+        $graphLookup: {
+          from: CategoryProductEntity.collection.name,
+          startWith: '$parentId',
+          connectFromField: 'parentId',
+          connectToField: '_id',
+          as: 'parents'
+        }
+      },
+      {
+        $project: {
+          all: { $concatArrays: [['$$ROOT'], '$parents'] }
+        }
+      }
+    ])
 
-    const finalResult = toProductDTO(product);
-    finalResult.vouchers = voucher;
+    const categoryDocs = categoriesAgg[0]?.all || []
+
+    const categoryDTOs: CategoryProductDTO[] =
+      categoryDocs.map(toCategoryProductDTO)
+
+    const categoryTree = buildCategoryTree(categoryDTOs)
+
+    const breadcrumbCategories = buildCategoryBreadcrumb(
+      categoryTree,
+      category._id.toString()
+    )
+
+    const filteredProduct =
+      (await filterActiveVariantGroupsForProduct(product)) as Product
+
+    const voucher = await getApplicableVouchersForProduct(filteredProduct)
+
+    const finalResult = toProductDTO(filteredProduct)
+    finalResult.vouchers = voucher
+
+    finalResult.categoryBreadcrumb = breadcrumbCategories.map(cat => ({
+      label: cat.categoryName,
+      slug: cat.slug
+    }))
 
     return res.json({ code: 0, data: finalResult })
   } catch (err: any) {
+    console.error('getProductById error:', err)
     return res.status(500).json({ code: 1, message: err.message })
   }
 }

@@ -1,34 +1,58 @@
 <script lang="ts" setup>
-  import '@/styles/molecules/breadcrumb/breadcrumb.scss'
-  import { Swiper, SwiperSlide } from 'swiper/vue';
-  import { Pagination, Autoplay } from 'swiper/modules';
-  import 'swiper/css';
-  import 'swiper/css/pagination';
-  import 'swiper/css/autoplay';
+import { computed } from 'vue'
+import '@/styles/molecules/breadcrumb/breadcrumb.scss'
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
 
-  interface Breadcrumb {
-    heading: string
-    description?: string
-    classCustom?: string
-    image?: string | string[]
+interface Breadcrumb {
+  heading: string
+  description?: string
+  classCustom?: string
+  image?: string | string[] | null
+}
+
+const props = defineProps<Breadcrumb>()
+
+const isMultipleImages = computed(() => {
+  return Array.isArray(props.image) && props.image.length > 1
+})
+
+const isSingleImageArray = computed(() => {
+  return Array.isArray(props.image) && props.image.length === 1
+})
+
+const singleImage = computed(() => {
+  if (isSingleImageArray.value && Array.isArray(props.image)) {
+    return props.image[0]
   }
-
-  const props = defineProps<Breadcrumb>()
-
+  return typeof props.image === 'string' ? props.image : null
+})
 </script>
+
 <template>
   <div :class="['breadcrumb bg-gray6', props.classCustom]">
-    <div v-if="props.image && typeof props.image === 'string'" class="breadcrumb-image">
-      <img :src="props.image" :alt="props.heading" class="w-full" />
+    <div v-if="singleImage" class="breadcrumb-image">
+      <img :src="singleImage" :alt="props.heading" class="w-full" />
     </div>
-    <div v-else-if="Array.isArray(props.image)" class="breadcrumb-image" >
-    <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :space-between="0" :pagination="{ clickable: true }" :autoplay="{ delay: 5000, disableOnInteraction: false }">
-      <swiper-slide v-for="(item, index) in props.image" :key="index">
-        <img :src="item" :alt="props.heading" class="w-full"/>
-      </swiper-slide>
-    </swiper>
+    
+    <div v-else-if="isMultipleImages" class="breadcrumb-image">
+      <swiper 
+        :modules="[Pagination, Autoplay]" 
+        :slides-per-view="1" 
+        :space-between="0" 
+        :pagination="{ clickable: true }" 
+        :autoplay="{ delay: 5000, disableOnInteraction: false }"
+        :loop="true"
+      >
+        <swiper-slide v-for="(item, index) in props.image" :key="index">
+          <img :src="item" :alt="`${props.heading} - ${index + 1}`" class="w-full"/>
+        </swiper-slide>
+      </swiper>
     </div>
-    <template v-else></template>
+    
     <div class="container container-xxl pt-md pb-section">
       <Heading :text="props.heading" tag="h1" size="xxl" />
 
@@ -39,3 +63,4 @@
     </div>
   </div>
 </template>
+

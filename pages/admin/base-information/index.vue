@@ -20,7 +20,6 @@ const storeDisplay = useDisplayStore()
 const { validate, formErrors } = useValidate(updateBaseInformationSchema)
 
 const handleSubmitCreate = async () => {
-
   if (!validate(storeSettingUpdate.formItem)) {
     showWarning('Vui lòng kiểm tra lại thông tin')
     return
@@ -32,6 +31,8 @@ const handleSubmitCreate = async () => {
 useLocationWatchers(storeLocation);
 
 onMounted(async () => {
+  await storeSettingUpdate.fetchInit()
+
   await storeLocation.fetchProvincesStore()
   const { provinceCode, districtCode, wardCode } = storeSettingUpdate.formItem
 
@@ -61,7 +62,6 @@ onBeforeUnmount(() => {
 
 <v-container>
   <v-form validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
-
       <Card class="rd-lg" size="sm">
         <Text
           size="md"

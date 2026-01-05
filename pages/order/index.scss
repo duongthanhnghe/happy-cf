@@ -2,19 +2,13 @@
 
 $height-tab: 48px;
 
-.order-main-content, .order-main-content-scroll {
+.order-main-content-scroll {
   height: calc(100dvh - ($height-header + $height-menu-bottom + $height-tab));
   overflow: hidden;
 }
-.order-main-content {
-  overflow: hidden;
-}
-.order-main-content-scroll {
-  overflow-y: auto;
-}
 
 @media (min-width: 1025px){
-  .order-main-content, .order-main-content-scroll {
+  .order-main-content-scroll {
     height: calc(100dvh - $height-header);
   }
 }

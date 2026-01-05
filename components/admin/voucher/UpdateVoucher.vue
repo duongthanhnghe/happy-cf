@@ -3,15 +3,18 @@ import { useVoucherManageStore } from '@/stores/admin/voucher/useVoucherManageSt
 import type { SubmitEventPromise } from 'vuetify'
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 import { useVoucherForm } from '@/composables/admin/voucher/useVoucherForm'
+import { showWarning } from '@/utils/toast';
 
 const store = useVoucherManageStore()
 const { type, showValue, showMaxDiscount, showMaxShippingDiscount, showProduct, validateVoucher } = useVoucherForm(store.updateItem)
 
 const handleSubmitUpdate = async (event: SubmitEventPromise) => {
   const result = await event
-  if (!result.valid) return
 
-  if (validateVoucher() !== true) return
+  if (validateVoucher() !== true || !result.valid) {
+    showWarning('Vui lòng nhập đầy đủ thông tin hợp lệ')
+    return
+  }
 
   await store.submitUpdate()
 }

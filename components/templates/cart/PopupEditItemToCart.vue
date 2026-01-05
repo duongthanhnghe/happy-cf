@@ -41,6 +41,7 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
               showHeading
             />
           </div>
+          <div v-else class="pb-xs"></div>
         </div>
 
         <div class="popup-detail-product-card pb-md">

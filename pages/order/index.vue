@@ -73,16 +73,21 @@ const bannerSeller = getByPosition(
         </v-tab>
     </v-tabs>
   </div>
-  <div class="order-main-content">
-    <v-tabs-window v-model="tab">
+  <div>
+    <v-tabs-window v-model="tab" class="overflow-inherit">
       <v-tabs-window-item :value="1">
         <div class="flex align-start bg-gray6">
-          <div class="order-main-content-scroll scroll-hide bg-white">
+          <div class="order-main-content-scroll scroll-hide bg-white position-sticky top-cover-header min-width-90">
             <ProductCategoryMenu :items="storeProductCategory.getListData" :loading="storeProductCategory.loading" />
           </div>
-          <div class="order-main-content-scroll scroll-hide flex-1">
+          <div class="flex-1 overflow-hidden">
             <div class="product-category-section">
-              <SectionProductList :items="storeProductCategory.getListData" bgTab="bg-gray6" :variantTemplateProduct="storeDisplay.isLaptop ? 'card':''" />
+              <SectionProductList 
+                :items="storeProductCategory.getListData" 
+                bgTab="bg-gray6" 
+                :variantTemplateProduct="storeDisplay.isLaptop ? 'card':''"
+                :listView="storeDisplay.isLaptop ? false : true"
+                />
             </div>
           </div>
         </div>
@@ -90,7 +95,7 @@ const bannerSeller = getByPosition(
       <v-tabs-window-item :value="2">
         <div 
           v-if="storeProductMostOrder.getListProductMostOrder && storeProductMostOrder.getListProductMostOrder.data.length > 0"
-          class="pt-lg order-main-content-scroll scroll-hide"
+          class="pt-lg "
           >
           <div class="container container-xxl">
             <div v-if="bannerSeller[0]" class="pb-lg">
@@ -116,7 +121,7 @@ const bannerSeller = getByPosition(
       <v-tabs-window-item :value="3">
         <div 
           v-if="storeProductSale.getListProductSales && storeProductSale.getListProductSales.data.length > 0"
-          class="pt-lg order-main-content-scroll scroll-hide"
+          class="pt-lg "
           >
           <div class="container container-xxl">
             <div v-if="bannerSale[0]" class="pb-lg">

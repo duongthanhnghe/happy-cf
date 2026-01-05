@@ -25,15 +25,6 @@ export const useBaseInformationUpdateStore = defineStore("BaseInformationUpdateS
     wardCode: 0,
   });
 
-  const handleInitStore = () => {
-    if (!storeSetting.getBaseInformation) return false;
-    Object.assign(formItem, storeSetting.getBaseInformation);
-
-    storeLocation.selectedProvince = formItem.provinceCode ?? null;
-    storeLocation.selectedDistrict = formItem.districtCode ?? null;
-    storeLocation.selectedWard = formItem.wardCode ?? null;
-  }
-
   const update = async () => {
     Loading(true);
     try {
@@ -51,14 +42,26 @@ export const useBaseInformationUpdateStore = defineStore("BaseInformationUpdateS
     }
   }
 
-  watch(() => storeSetting.getBaseInformation, (newValue) => {
-    if (newValue) {
-      handleInitStore();
-    }
-  }, { 
-    immediate: true,
-    deep: true
-  });
+  const fetchInit = async () => {
+    await storeSetting.fetchBaseInformation(true)
+
+    if (!storeSetting.detailData) return
+
+    Object.assign(formItem, storeSetting.detailData)
+
+    storeLocation.selectedProvince = formItem.provinceCode ?? null
+    storeLocation.selectedDistrict = formItem.districtCode ?? null
+    storeLocation.selectedWard = formItem.wardCode ?? null
+  }
+
+  // watch(() => storeSetting.getBaseInformation, async (newValue) => {
+  //   if (newValue) {
+  //     handleInitStore();
+  //   }
+  // }, { 
+  //   // immediate: true,
+  //   deep: true
+  // });
 
   //set value location
   watch(() => storeLocation.selectedProvince,
@@ -88,5 +91,6 @@ export const useBaseInformationUpdateStore = defineStore("BaseInformationUpdateS
   return {
     formItem,
     update,
+    fetchInit,
   }
 })

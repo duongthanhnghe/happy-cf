@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<{
   <div>
     <div :class="[container]">
       <LoadingData v-if="props.loading && !items" />
-      <template v-else-if="items.length > 0">
+      <template v-else-if="items?.length > 0">
         <Heading :text="props.headingText" :size="props.headingSize" />
 
         <client-only>

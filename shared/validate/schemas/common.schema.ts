@@ -89,14 +89,17 @@ export const validateSEO = (data: any, ctx: any) => {
     })
   }
 
-  if (!data.descriptionSEO) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['descriptionSEO'],
-      message: 'Nên nhập SEO Description để tối ưu tìm kiếm',
-    })
-  }
+  // if (!data.descriptionSEO) {
+  //   ctx.addIssue({
+  //     code: z.ZodIssueCode.custom,
+  //     path: ['descriptionSEO'],
+  //     message: 'Nên nhập SEO Description để tối ưu tìm kiếm',
+  //   })
+  // }
 }
+
+export const requiredString = (label: string, max = 255) =>
+  z.string().min(1, `${label} là bắt buộc`).max(max)
 
 export const emailSchema = z
   .string()

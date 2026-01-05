@@ -54,7 +54,6 @@ export const useAdminAccountOperations = (
     if(data.code === 0){
       detailData.value = data.data;
       userId.value = data.data.id;
-      unref(formUpdate).id = detailData.value.id
       unref(formUpdate).avatar = detailData.value.avatar
       unref(formUpdate).fullname = detailData.value.fullname
     } 
@@ -64,6 +63,7 @@ export const useAdminAccountOperations = (
     try {
       Loading(true);
       const payload = {...unref(formUpdate)}
+
       const data = await accountAPI.updateAccount(payload)
       if(data.code === 0){
         showSuccess(data.message ?? 'Thành công')

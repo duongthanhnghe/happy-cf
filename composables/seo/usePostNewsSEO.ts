@@ -8,7 +8,7 @@ export const usePostNewsSEO = () => {
     if (!post) return
 
     const canonicalUrl = `${configRuntime.public.siteUrl}${routePath}/${post.slug}`
-    
+
     useHead({
       title: post.titleSEO || post.title,
       meta: [

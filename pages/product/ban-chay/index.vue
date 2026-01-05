@@ -13,7 +13,7 @@ import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPa
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 
 definePageMeta({
-  middleware: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.middleware || '',
+  middleware: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.middleware,
   headerTypeLeft: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.headerTypeLeft,
 })
 
@@ -26,15 +26,26 @@ const storeViewed = useProductViewedStore()
 const { t } = useITranslations()
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 
-if (storeVariant.listVariantGroup.length === 0) {
-  await storeVariant.fetchVariantGroupStore()
-}
+const { data, error } = await useAsyncData(
+  `product-most-order`,
+  async () => {
+    if(storeProductMostOrder.getListItems.length > 0) return true
 
-if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.PRODUCT_SELLER]) {
-  await fetchImageBlock(IMAGE_BLOCK_PAGES.PRODUCT_SELLER, {
-    [IMAGE_BLOCK_POSITIONS.HERO]: 1,
-  })
-}
+    await storeProductMostOrder.fetchInit()
+
+    if (storeVariant.listVariantGroup.length === 0) {
+      await storeVariant.fetchVariantGroupStore()
+    }
+
+    if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.PRODUCT_SELLER]) {
+      await fetchImageBlock(IMAGE_BLOCK_PAGES.PRODUCT_SELLER, {
+        [IMAGE_BLOCK_POSITIONS.HERO]: 1,
+      })
+    }
+
+    return true
+  }
+)
 
 const bannerHero = getByPosition(
   IMAGE_BLOCK_PAGES.PRODUCT_SELLER,

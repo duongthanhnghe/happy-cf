@@ -9,7 +9,7 @@ import {
   toCategoryProductListDTO,
 } from "../../mappers/v1/product.mapper"
 
-function buildCategoryTree(list: CategoryProductDTO[]): (CategoryProductDTO & { children: CategoryProductDTO[] })[] {
+export function buildCategoryTree(list: CategoryProductDTO[]): (CategoryProductDTO & { children: CategoryProductDTO[] })[] {
   const map = new Map<string, CategoryProductDTO & { children: CategoryProductDTO[] }>();
 
   list.forEach(cat => {
@@ -33,6 +33,33 @@ function buildCategoryTree(list: CategoryProductDTO[]): (CategoryProductDTO & { 
 
   return tree;
 }
+
+export function buildCategoryBreadcrumb(
+  tree: (CategoryProductDTO & { children?: CategoryProductDTO[] })[],
+  currentCategoryId: string
+): CategoryProductDTO[] {
+  const path: CategoryProductDTO[] = []
+
+  function dfs(node: any): boolean {
+    path.push(node)
+
+    if (node.id === currentCategoryId) return true
+
+    for (const child of node.children || []) {
+      if (dfs(child)) return true
+    }
+
+    path.pop()
+    return false
+  }
+
+  for (const root of tree) {
+    if (dfs(root)) break
+  }
+
+  return path
+}
+
 
 // export const getAllCategoriesTree = async (_: Request, res: Response) => {
 //   try {

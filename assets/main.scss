@@ -1089,6 +1089,9 @@ body .bg {
 }
 
 .overflow {
+  &-inherit {
+    overflow: inherit !important;
+  }
   &-hidden {
     overflow: hidden;
   }
@@ -1247,6 +1250,9 @@ body .bg {
   }
   &-sm {
     top: $space-sm !important;
+  }
+  &-cover-header {
+    top: $height-header;
   }
 }
 

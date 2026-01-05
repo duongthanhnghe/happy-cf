@@ -1,4 +1,4 @@
-import { watch, computed } from "vue";
+import { watch } from "vue";
 import { defineStore } from "pinia";
 import { Loading} from '@/utils/global'
 import { useProductCategoryDetail } from '@/composables/product/useProductCategoryDetail'
@@ -37,13 +37,6 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     state.pagination,
   )
 
-  watch(getProductByCategoryApi, (newValue) => {
-    if (newValue && newValue.data) {
-      state.listItems.value = newValue.data
-      state.pagination.value = newValue.pagination
-    }
-  }, { immediate: true })
-
   watch([state.page, stateFilter.filterType, stateFilter.filterCategory,],
     async ([newPage, newFilterType, newFilterCategory], [oldPage, oldFilterType, oldFilterCategory]) => {
 
@@ -75,16 +68,12 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     },
   )
 
-  const listBannerCategory = computed(() => {
-    if (!getListCategoryChildren.value || getListCategoryChildren.value.length === 0) {
-      if(!getProductCategoryDetail) return
-      return getProductCategoryDetail.value?.banner ? getProductCategoryDetail.value?.banner : state.IMAGE_AUTH_LOGIN
-    }
-
-    return getListCategoryChildren.value
-      .map(item => item.banner)
-      .filter(Boolean)
-  })
+  const fetchInit = async (id: string) => {
+    await fetchProductByCategory(id, 1, state.limit, stateFilter.filterType.value)
+    if(!getProductByCategoryApi.value) return
+    state.listItems.value = getProductByCategoryApi.value?.data
+    state.pagination.value = getProductByCategoryApi.value?.pagination
+  }
 
   return {
     ...state,
@@ -92,8 +81,8 @@ export const useCategoryMainStore = defineStore("CategoryMainProductStore", () =
     getProductCategoryDetail,
     getListCategoryChildren,
     loadingData,
-    listBannerCategory,
     ...utilsFilter,
     ...operation,
+    fetchInit,
   };
 });

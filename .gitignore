@@ -8,6 +8,8 @@ vtp_token_cache.json
 *.log
 
 .nuxt/
+.output/
+.vscode/
 
 # build output
 dist/

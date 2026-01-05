@@ -119,10 +119,10 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   })
 
   const getCheckButtonOrder = computed(() => {
-    if (!getDetailProduct.value?.variantCombinations) {
+    if (getDetailProduct.value?.variantCombinations) {
       if(getSelectedStock.value === 0) return false
       return true
-    } else if (getDetailProduct.value.amount === 0) return false
+    } else if (getDetailProduct.value?.amount === 0) return false
     else return true
   })
 

@@ -31,4 +31,3 @@ function fixImports(dir) {
 }
 
 fixImports('./dist/server');
-console.log('✅ Đã thêm .js vào import nội bộ (đã xử lý cả .ts -> .js)');

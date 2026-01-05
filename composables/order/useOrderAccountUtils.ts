@@ -1,4 +1,4 @@
-import { showSuccess, showWarning } from "@/utils/toast";
+import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import { Loading } from "@/utils/global";
 import { ordersAPI } from "@/services/v1/orders.service";
 import { type Ref } from 'vue';
@@ -23,23 +23,23 @@ export const useOrderAccountUtils = (
   }
 
   const handleCancelOrder = async (orderId: string, userId: string) => {
+    const confirm = await showConfirm('Bạn có chắc chắn huỷ?')
+    if (!confirm) return
+
     try {
       Loading(true)
       const data = await ordersAPI.cancelOrderByUser(orderId, userId);
       if(data.code === 0){
         showSuccess(data.message ?? '')
-
         const order = items.value?.data.find(o => o.id === orderId)
-        if (order) {
-          order.cancelRequested = true
-        }
-
+        if (order) order.cancelRequested = true
       } else {
         showWarning(data.message ?? '')
       }
-      Loading(false)
     } catch (err) {
       console.error('Error loading more products:', err)
+    } finally {
+      Loading(false)
     }
   }
 

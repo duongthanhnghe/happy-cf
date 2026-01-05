@@ -16,9 +16,22 @@ export const positionSchema = z
 
 export const linkSchema = z
   .string()
-  .url('Link điều hướng không hợp lệ')
   .optional()
   .or(z.literal(''))
+  .refine(
+    (val) => {
+      if (!val) return true
+
+      if (/^https?:\/\/.+/.test(val)) return true
+
+      if (/^\/?[a-zA-Z0-9-_\/]+$/.test(val)) return true
+
+      return false
+    },
+    {
+      message: 'Link không hợp lệ',
+    }
+  )
 
 export const shortTextSchema = z
   .string()

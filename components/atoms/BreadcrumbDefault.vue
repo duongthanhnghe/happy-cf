@@ -2,33 +2,58 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { getBreadcrumbs } from '@/utils/breadcrumb'
+import type { MenuItem } from '@/server/types/common/menu-item';
+import { useSeoTitle } from '@/composables/seo/useSEO';
 
 const props = defineProps<{
-  customLabel?: string
+  items?: MenuItem[]
 }>()
 
 const route = useRoute()
-const breadcrumbs = computed(() => getBreadcrumbs(route.path, props.customLabel))
+
+const seoTitle = useSeoTitle()
+
+const breadcrumbs = computed<(MenuItem & { isCurrent: boolean })[]>(() => {
+  const raw =
+    props.items && props.items.length > 0
+      ? props.items.filter(item => item.label)
+      : getBreadcrumbs(route.path)
+
+  const mapped = raw.map((item, i) => ({
+    ...item,
+    isCurrent: i === raw.length - 1,
+  }))
+
+  if (mapped.length > 0 && seoTitle.value) {
+    mapped[mapped.length - 1] = {
+      ...mapped[mapped.length - 1],
+      label: seoTitle.value
+    }
+  }
+
+  return mapped
+})
+
 </script>
 
 <template>
   <v-breadcrumbs class="pl-0 pr-0">
-    <template v-for="(item, index) in breadcrumbs" :key="index">
+    <template v-for="item in breadcrumbs" :key="item.path || item.label">
       <v-breadcrumbs-item>
-        <router-link 
-          v-if="index < breadcrumbs.length - 1 && item.path"
+        <router-link
+          v-if="!item.isCurrent && item.path"
           :to="item.path"
         >
           {{ item.label }}
         </router-link>
-        
+
         <h1 v-else>
           {{ item.label }}
         </h1>
       </v-breadcrumbs-item>
-      
-      <v-breadcrumbs-divider v-if="index < breadcrumbs.length - 1">
-        <MaterialIcon name="keyboard_arrow_right"/>
+
+      <v-breadcrumbs-divider v-if="!item.isCurrent">
+        <MaterialIcon name="keyboard_arrow_right" />
       </v-breadcrumbs-divider>
     </template>
   </v-breadcrumbs>

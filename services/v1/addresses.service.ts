@@ -18,10 +18,6 @@ export const addressesAPI = {
   },
   create: async (bodyData: CreateAddressBody) => {
     try {
-      if (!bodyData.userId || !bodyData.fullname || !bodyData.fullname || !bodyData.phone || !bodyData.address || !bodyData.tag) {
-        throw new Error('Missing required fields: categoryName, id, image')
-      }
-
       const response = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.CREATE}`, {
         method: 'POST',
         headers: {

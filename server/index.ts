@@ -2,14 +2,9 @@ import 'dotenv/config'
 import express, { type Request, type Response, type NextFunction } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import path from 'path'
 import { fileURLToPath } from 'url'
-// import * as dotenv from 'dotenv'
 import { v2 as cloudinary } from 'cloudinary'
 import { connectDB } from './db/db'
-
-// Load env
-// dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
 // Cloudinary config
 cloudinary.config({
@@ -25,13 +20,11 @@ const barcodePath = fileURLToPath(new URL('./public/barcodes', import.meta.url))
 
 // --- Middleware ---
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5000',
-    'http://0.0.0.0:3000',
-    'http://192.168.1.113:3000',
-    'http://192.168.2.161:3000',
-  ],
+  // origin: [
+  //   'http://localhost:3000',
+  //   'http://0.0.0.0:3000',
+  // ],
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],

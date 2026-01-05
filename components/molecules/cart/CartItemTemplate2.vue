@@ -25,7 +25,7 @@ const props = defineProps<{
       </div>
       <div class="flex justify-between align-end mt-xs">
         <Button size="xs" color="secondary" class="text-size-xs" :label="`x${item.quantity}`"/>
-        <Text :text="`${formatCurrency(item.price)}`" color="gray5" />
+        <Text v-if="item.price" :text="`${formatCurrency(item.price)}`" color="gray5" />
       </div>
     </div>
   </div>

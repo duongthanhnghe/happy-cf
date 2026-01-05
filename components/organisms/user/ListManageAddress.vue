@@ -8,11 +8,11 @@ const props = defineProps<{
 
 </script>
 <template>
-  <LoadingData v-if="store.loadingData && !store.getListAddress" />
+  <LoadingData v-if="store.loadingData && !store.getListAddress" class="pb-ms" />
   <template v-else-if="store.getListAddress && store.getListAddress.length > 0">
     <template v-for="item in store.getListAddress" :key="item.id">
       <AccountAddressTemplate1 :item="item" :idChoose="props.idChoose"/>
     </template>
   </template>
-  <NoData v-else />
+  <NoData v-else class="pb-ms" />
 </template>

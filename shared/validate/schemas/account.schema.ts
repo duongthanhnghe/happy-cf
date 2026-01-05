@@ -20,7 +20,6 @@ export const createAccountSchema = z.object({
 
 export const updateAccountSchema = z.object({
   avatar: z.string().url('Avatar không hợp lệ').optional().nullable(),
-
   fullname: z
     .string()
     .min(1, 'Họ và tên không được để trống'),

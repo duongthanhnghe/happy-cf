@@ -2,13 +2,16 @@
 import { ROUTES } from '@/shared/constants/routes'
 import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
 import { useDisplayStore } from "@/stores/shared/useDisplayStore";
-import { onBeforeUnmount } from 'vue';
+import { computed, onBeforeUnmount } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useVariantGroupStore } from '@/stores/client/product/useVariantGroupStore';
-import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
 import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
+import { useProductCategoryDetail } from '@/composables/product/useProductCategoryDetail';
+import { useCategoryProductSEO } from '@/composables/seo/useCategoryProductSEO';
+import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren';
+import { useRoute } from 'vue-router'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
@@ -20,18 +23,53 @@ const storeDisplay = useDisplayStore()
 const storeAccount = useAccountStore()
 const storeVariant = useVariantGroupStore()
 const storeViewed = useProductViewedStore()
+const route = useRoute()
+
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
-const detail: CategoryProductDTO | null = storeCategoryMain.getProductCategoryDetail
+const { fetchProductCategoryDetailSlug, getProductCategoryDetail } = useProductCategoryDetail()
+const { setCategoryProductSEO } = useCategoryProductSEO()
+const { fetchCategoryChildrenList } = useProductCategoryChildren()
 
-if (storeVariant.listVariantGroup.length === 0) {
-  await storeVariant.fetchVariantGroupStore()
-}
+const slug = route.params.categorySlug as string
 
-if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.CATEGORY] && !detail?.banner) {
-  await fetchImageBlock(IMAGE_BLOCK_PAGES.CATEGORY, {
-    [IMAGE_BLOCK_POSITIONS.HERO]: 1,
-  })
-}
+const { data, error } = await useAsyncData(
+  `product-category-${slug}`,
+  async () => {
+    const data = await fetchProductCategoryDetailSlug(slug)
+    if(data?.data.id) {
+      setCategoryProductSEO(data.data, ROUTES.PUBLIC.NEWS.children?.MAIN.path || '')
+
+      await fetchCategoryChildrenList(data.data.id, false)
+
+      await storeCategoryMain.fetchInit(data.data.id)
+
+      if (storeVariant.listVariantGroup.length === 0) {
+        await storeVariant.fetchVariantGroupStore()
+      }
+
+      if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.CATEGORY] && !detail?.banner) {
+        await fetchImageBlock(IMAGE_BLOCK_PAGES.CATEGORY, {
+          [IMAGE_BLOCK_POSITIONS.HERO]: 1,
+        })
+      }
+    }
+
+    return false
+  }
+)
+
+const detail = storeCategoryMain.getProductCategoryDetail
+
+const listBannerCategory = computed(() => {
+  if (!storeCategoryMain.getListCategoryChildren || storeCategoryMain.getListCategoryChildren.length === 0) {
+    if(!getProductCategoryDetail) return
+    return getProductCategoryDetail.value?.banner
+  }
+
+  return storeCategoryMain.getListCategoryChildren
+    .map(item => item.banner)
+    .filter(Boolean)
+})
 
 const bannerHero = getByPosition(
   IMAGE_BLOCK_PAGES.CATEGORY,
@@ -48,7 +86,7 @@ onBeforeUnmount(() => {
     <Breadcrumb 
       :heading="detail.categoryName" 
       :description="`${storeCategoryMain.getTotalItems} Sản phẩm`" 
-      :image="storeCategoryMain.listBannerCategory?.length > 0 ? storeCategoryMain.listBannerCategory : (detail.banner || bannerHero[0].image)">
+      :image="listBannerCategory && listBannerCategory?.length > 0 ? listBannerCategory : (detail.banner || bannerHero[0].image)">
       <slot>
         <div v-if="storeDisplay.isMobileTable" :id="storeCategoryMain.elFilterProduct">
           <ProductFilterMobile 

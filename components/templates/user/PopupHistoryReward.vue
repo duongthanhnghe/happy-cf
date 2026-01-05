@@ -4,7 +4,7 @@ const store = useHistoryRewardByUserStore();
 
 </script>
 <template>
-  <Popup popupId="popup-list-review-by-user" v-model="store.isTogglePopup" popupHeading="Lich su tich diem" align="right" bodyClass="bg-gray2 pd-0 pb-md">
+  <Popup v-model="store.isTogglePopup" popupHeading="Lịch sử tích điểm" align="right" bodyClass="bg-gray2 pd-0 pb-md">
     <template #body>
       <div class="container pt-ms">
         <ListHistoryReward />

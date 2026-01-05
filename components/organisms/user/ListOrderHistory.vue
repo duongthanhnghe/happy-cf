@@ -7,6 +7,8 @@ const store = useOrderHistoryStore();
 const storeOrderStatus = useOrderStatusStore();
 const { isStuck } = useStickyObserver('tabsSticky')
 
+if(storeOrderStatus.getListData.length === 0) await storeOrderStatus.fetchOrderStatusStore();
+
 </script>
 <template>
   <div>

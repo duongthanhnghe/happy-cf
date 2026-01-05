@@ -79,6 +79,10 @@ export interface ProductDTO {
   createdAt: string;
   updatedAt: string;
   //SEO
+  categoryBreadcrumb?: {
+    label: string
+    slug: string
+  }[]
   titleSEO: string;
   descriptionSEO: string;
   slug: string;

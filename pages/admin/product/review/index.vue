@@ -3,16 +3,16 @@ import { useProductReviewManageStore } from '@/stores/admin/product-review/usePr
 import { formatDateTime } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
 import { PRODUCT_REVIEW_STATUS, ARRAY_RATING } from '@/shared/constants/product-review-status'
-import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
 import { onBeforeUnmount } from 'vue';
+import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.layout,
   middleware: ROUTES.ADMIN.ORDER.middleware,
 })
 
-const storeUser = useUserManageStore();
 const store = useProductReviewManageStore();
+const storeDetailUser = useAdminUserDetailStore();
 
 onBeforeUnmount(() => {
   store.resetFilter()
@@ -74,7 +74,7 @@ onBeforeUnmount(() => {
 
     <template #item.userId="{ item }">
       <div class="min-width-200 flex gap-sm align-center white-space">
-        <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeUser.handleEdit(item.userId.id)" />
+        <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeDetailUser.handleTogglePopup(true,item.userId.id)" />
         <div>
           <span class="text-limit">{{ item.userId.fullname }}</span>
           <span class="text-limit text-color-gray5">{{ item.userId.phone }}</span>

@@ -32,13 +32,6 @@ export const useProductMostOrderStore = defineStore("ProductMostOrderStore", () 
     state.pagination,
   )
 
-  watch(getListProductMostOrder, (newValue) => {
-    if (newValue && newValue.data) {
-      state.listItems.value = newValue.data
-      state.pagination.value = newValue.pagination
-    }
-  }, { immediate: true })
-
   watch([state.page, stateFilter.filterType, stateFilter.filterCategory,],
     async ([newPage, newFilterType, newFilterCategory], [oldPage, oldFilterType, oldFilterCategory]) => {
 
@@ -68,6 +61,13 @@ export const useProductMostOrderStore = defineStore("ProductMostOrderStore", () 
     },
   )
 
+  const fetchInit = async () => {
+    await fetchListProductMostOrder('', Number(state.page.value), state.limit, stateFilter.filterType.value)
+    if(!getListProductMostOrder.value) return
+    state.listItems.value = getListProductMostOrder.value?.data
+    state.pagination.value = getListProductMostOrder.value?.pagination
+  }
+
   return {
     ...state,
     ...stateFilter,
@@ -76,5 +76,6 @@ export const useProductMostOrderStore = defineStore("ProductMostOrderStore", () 
     fetchListProductMostOrder,
     ...utilsFilter,
     ...operation,
+    fetchInit,
   };
 })

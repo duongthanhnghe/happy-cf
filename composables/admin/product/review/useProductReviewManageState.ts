@@ -7,13 +7,18 @@ export const useProductReviewManageState = () => {
   const dataList = ref<ProductReviewPaginationDTO|null>(null)
   const headers = ref<TableHeaders[]>([
     { title: 'STT', key: 'index', sortable: false },
-    { title: 'Nguoi dung', key: 'userId', sortable: false, },
-    { title: 'Noi dung', key: 'comment', sortable: false, },
-    { title: 'So sao', key: 'rating', sortable: false, },
-    { title: 'Thoi gian', key: 'createdAt', sortable: false, },
-    { title: 'Tinh trang don', key: 'statusText', sortable: false, },
-    { title: '', key: 'actions', sortable: false, headerProps: { class: 'v-data-table-sticky-cl-right' },
-      cellProps: { class: 'v-data-table-sticky-cl-right' }},
+    { title: 'Người dùng', key: 'userId', sortable: false },
+    { title: 'Nội dung đánh giá', key: 'comment', sortable: false },
+    { title: 'Số sao', key: 'rating', sortable: false },
+    { title: 'Thời gian tạo', key: 'createdAt', sortable: false },
+    { title: 'Trạng thái đơn hàng', key: 'statusText', sortable: false },
+    {
+      title: '',
+      key: 'actions',
+      sortable: false,
+      headerProps: { class: 'v-data-table-sticky-cl-right' },
+      cellProps: { class: 'v-data-table-sticky-cl-right' }
+    },
   ])
   const serverItems = ref<ProductReviewWithUserDTO[]>([])
   const loadingTable = ref<boolean>(true)

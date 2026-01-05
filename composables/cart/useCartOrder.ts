@@ -31,7 +31,7 @@ export const useCartOrder = (
 
   const { validate, formErrors } = useValidate(createOrderSchema)
 
-  const submitOrder = async (userId?: string, membershipDiscountRate?: number) => {
+  const submitOrder = async (userId?: string) => {
     const confirm = await showConfirm('Xác nhận đặt hàng?');
     if (!confirm) return;
 

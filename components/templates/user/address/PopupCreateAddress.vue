@@ -1,41 +1,49 @@
 <script lang="ts" setup>
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
 import { ADDRESS_TAG } from "@/shared/constants/address-tag";
-import { nullRules, phoneRules } from '@/utils/validation';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
-import type { VForm } from 'vuetify/lib/components';
-import { ref } from 'vue';
+import { showWarning } from '@/utils/toast';
+import { useValidate } from '@/composables/validate/useValidate';
+import { createAddressSchema } from '@/shared/validate/schemas/address.schema';
 
 const store = useAddressesManageStore();
 const storeLocation = useLocationStore();
-const formRef = ref<VForm | null>(null);
+const { validate, formErrors } = useValidate(createAddressSchema)
 
 const handleSubmitCreate = async () => {
-  if (!formRef.value) return;
-  const { valid } = await formRef.value.validate();
-  if (!valid) return;
+  if (!validate(store.formDataItem)) {
+    showWarning('Vui lòng nhập đầy đủ thông tin hợp lệ')
+    return
+  }
 
-  await store.submitCreate();
+  try {
+    await store.submitCreate()
+  } catch (error) {
+    showWarning('Có lỗi khi lưu địa chỉ. Vui lòng thử lại.')
+  }
+
 }
 </script>
 <template>
 <Popup 
-  popupId="popup-create-address" 
   v-model="store.isTogglePopupAdd" 
   popupHeading="Thêm địa chỉ" 
   footerFixed
   align="right">
   <template #body>
-    <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitCreate">
+    <v-form @submit.prevent="handleSubmitCreate">
       
         <LabelInput label="Tên người nhận" required/>
-        <v-text-field v-model="store.formDataItem.fullname" :rules="nullRules" label="Nhập họ và tên" variant="outlined" required></v-text-field>
+        <v-text-field v-model="store.formDataItem.fullname" :error="!!formErrors.fullname"
+          :error-messages="formErrors.fullname" label="Nhập họ và tên" variant="outlined" required></v-text-field>
 
         <LabelInput label="Số điện thoại" required/>
-        <v-text-field type="tel" v-model="store.formDataItem.phone" :rules="phoneRules" label="Nhập số điện thoại" variant="outlined" required></v-text-field>
+        <v-text-field type="tel" v-model="store.formDataItem.phone" :error="!!formErrors.phone"
+          :error-messages="formErrors.phone" label="Nhập số điện thoại" variant="outlined" required></v-text-field>
 
         <LabelInput label="Địa chỉ" required/>
-        <v-text-field v-model="store.formDataItem.address" :rules="nullRules" label="Nhập địa chỉ" variant="outlined" required></v-text-field>
+        <v-text-field v-model="store.formDataItem.address" :error="!!formErrors.address"
+          :error-messages="formErrors.address" label="Nhập địa chỉ" variant="outlined" required></v-text-field>
 
         <div class="flex gap-sm">
           <div class="flex-1">
@@ -46,7 +54,8 @@ const handleSubmitCreate = async () => {
               item-title="PROVINCE_NAME"
               item-value="PROVINCE_ID"
               variant="outlined"
-              :rules="nullRules"
+              :error="!!formErrors.provinceCode"
+              :error-messages="formErrors.provinceCode"
             />
           </div>
           <div class="flex-1">
@@ -57,7 +66,8 @@ const handleSubmitCreate = async () => {
               item-title="DISTRICT_NAME"
               item-value="DISTRICT_ID"
               variant="outlined"
-              :rules="nullRules"
+              :error="!!formErrors.districtCode"
+              :error-messages="formErrors.districtCode"
             />
           </div>
           <div class="flex-1">
@@ -68,7 +78,8 @@ const handleSubmitCreate = async () => {
               item-title="WARDS_NAME"
               item-value="WARDS_ID"
               variant="outlined"
-              :rules="nullRules"
+              :error="!!formErrors.wardCode"
+              :error-messages="formErrors.wardCode"
             />
           </div>
         </div>
@@ -77,10 +88,10 @@ const handleSubmitCreate = async () => {
         <v-text-field v-model="store.formDataItem.note" label="Nhập ghi chú" variant="outlined"></v-text-field>
    
         <LabelInput label="Nhãn" required/>
-        <v-radio-group inline v-model="store.formDataItem.tag">
-          <v-radio :label="ADDRESS_TAG.HOME" :value="ADDRESS_TAG.HOME"></v-radio>
-          <v-radio :label="ADDRESS_TAG.OFFICE" :value="ADDRESS_TAG.OFFICE"></v-radio>
-          <v-radio :label="ADDRESS_TAG.SCHOOL" :value="ADDRESS_TAG.SCHOOL"></v-radio>
+        <v-radio-group inline v-model="store.formDataItem.tag" :error="!!formErrors.tag" :error-messages="formErrors.tag">
+          <v-radio :label="ADDRESS_TAG.HOME" :value="ADDRESS_TAG.HOME" class="mr-sm"></v-radio>
+          <v-radio :label="ADDRESS_TAG.OFFICE" :value="ADDRESS_TAG.OFFICE" class="mr-sm"></v-radio>
+          <v-radio :label="ADDRESS_TAG.SCHOOL" :value="ADDRESS_TAG.SCHOOL" class="mr-sm"></v-radio>
           <v-radio :label="ADDRESS_TAG.OTHER" :value="ADDRESS_TAG.OTHER"></v-radio>
         </v-radio-group>
     </v-form>

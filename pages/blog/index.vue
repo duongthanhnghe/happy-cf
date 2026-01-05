@@ -9,10 +9,17 @@ definePageMeta({
   middleware: ROUTES.PUBLIC.NEWS.children?.MAIN.middleware || '',
 })
 
-const { getListCategory } = useCategoryList()
+const { getListCategory, fetchCategoryList} = useCategoryList()
 
 const store = useMainStore()
 const valueChangePage = ref<boolean|null>(null)
+
+await useAsyncData('post-main-page', async () => {
+  await Promise.all([
+    store.fetchPage(''),
+    !getListCategory.value?.length && fetchCategoryList()
+  ])
+})
 
 watch(valueChangePage, (newVal) => {
   if(newVal !== null) store.handleChangePage(newVal)

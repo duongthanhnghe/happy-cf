@@ -24,9 +24,10 @@ watch(() => route.fullPath, () => {
 <template>
   <div>
     <Header :typeLeft="storeLayout.headerTypeLeft"/>
-    <div>
-      <slot />
+    <div class="container container-xxl">
+      <BreadcrumbDefault />
     </div>
+    <slot />
     <Footer />
     <MenuBottom v-if="storeDisplay.isMobileTable" />
   </div>

@@ -90,15 +90,26 @@ export const productsAPI = {
     sort?: ProductSortType
   ) => {
     try {
-      const url = new URL(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_MOST_ORDER}`
-      )
-      url.searchParams.set('page', String(page))
-      url.searchParams.set('limit', String(limit))
-      if (sort) url.searchParams.set('sort', sort)
-      if (categoryId) url.searchParams.set('categoryId', categoryId)
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      })
+
+      if (sort) params.set('sort', sort)
+      if (categoryId) params.set('categoryId', categoryId)
+
+      // const url = new URL(
+      //   `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_MOST_ORDER}`
+      // )
+      // url.searchParams.set('page', String(page))
+      // url.searchParams.set('limit', String(limit))
+      // if (sort) url.searchParams.set('sort', sort)
+      // if (categoryId) url.searchParams.set('categoryId', categoryId)
       
-      const res = await fetch(url.toString())
+      // const res = await fetch(url.toString())
+      const res = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_MOST_ORDER}?${params.toString()}`
+      )
       const result = await res.json()
 
       if (result.code !== 0) {
@@ -123,15 +134,27 @@ export const productsAPI = {
     sort?: ProductSortType
   ) => {
     try {
-      const url = new URL(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_PROMOTION}`
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      })
+
+      if (sort) params.set('sort', sort)
+      if (categoryId) params.set('categoryId', categoryId)
+
+      // const url = new URL(
+      //   `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_PROMOTION}`
+      // )
+      // url.searchParams.set('page', String(page))
+      // url.searchParams.set('limit', String(limit))
+      // if (sort) url.searchParams.set('sort', sort)
+      // if (categoryId) url.searchParams.set('categoryId', categoryId)
+
+      const res = await fetch(
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_PROMOTION}?${params.toString()}`
       )
-      url.searchParams.set('page', String(page))
-      url.searchParams.set('limit', String(limit))
-      if (sort) url.searchParams.set('sort', sort)
-      if (categoryId) url.searchParams.set('categoryId', categoryId)
       
-      const res = await fetch(url.toString())
+      // const res = await fetch(url.toString())
       const result = await res.json()
 
       if (result.code !== 0) {
@@ -149,39 +172,83 @@ export const productsAPI = {
     }
   },
 
-  getListByCategory: async (
+//   getListByCategory: async (
+//   id: string,
+//   page: number,
+//   limit: number,
+//   sort?: ProductSortType
+// ): Promise<ProductPaginationDTO> => {
+
+//     const params = new URLSearchParams({
+//       page: String(page),
+//       limit: String(limit),
+//     })
+
+//     if (sort) params.set('sort', sort)
+  
+//     try {
+//       const url = await fetch(
+//         `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}?${params.toString()}`
+//       )
+//       // url.searchParams.set("page", String(page))
+//       // url.searchParams.set("limit", String(limit))
+//       // if (sort) {
+//       //   url.searchParams.set("sort", sort)
+//       // }
+      
+//       const res = await fetch(url.toString())
+//       const result = await res.json()
+
+//       if (result.code !== 0) {
+//         throw new Error(result.message || "Lỗi khi lấy sản phẩm theo danh mục")
+//       }
+
+//       return {
+//         code: 0,
+//         data: result.data,
+//         pagination: result.pagination,
+//       }
+//     } catch (err) {
+//       console.error("Error fetching products by category:", err)
+//       throw err
+//     }
+//   },
+
+getListByCategory: async (
   id: string,
   page: number,
   limit: number,
   sort?: ProductSortType
 ): Promise<ProductPaginationDTO> => {
-    try {
-      const url = new URL(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}`
-      )
-      url.searchParams.set("page", String(page))
-      url.searchParams.set("limit", String(limit))
-      if (sort) {
-        url.searchParams.set("sort", sort)
-      }
-      
-      const res = await fetch(url.toString())
-      const result = await res.json()
 
-      if (result.code !== 0) {
-        throw new Error(result.message || "Lỗi khi lấy sản phẩm theo danh mục")
-      }
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  })
 
-      return {
-        code: 0,
-        data: result.data,
-        pagination: result.pagination,
-      }
-    } catch (err) {
-      console.error("Error fetching products by category:", err)
-      throw err
+  if (sort) params.set('sort', sort)
+
+  try {
+    const url = `${apiConfig.baseApiURL}${API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id)}?${params.toString()}`
+
+    const res = await fetch(url)
+    const result = await res.json()
+
+    if (result.code !== 0) {
+      throw new Error(result.message || "Lỗi khi lấy sản phẩm theo danh mục")
     }
-  },
+
+    return {
+      code: 0,
+      data: result.data,
+      pagination: result.pagination,
+    }
+  } catch (err) {
+    console.error("Error fetching products by category:", err)
+    throw err
+  }
+},
+
 
   search: async (keyword: string, page = 1, limit = 20): Promise<ProductPaginationDTO> => {
     try {

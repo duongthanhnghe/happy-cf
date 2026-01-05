@@ -185,7 +185,7 @@ export const getAccount = async (req: any, res: Response) => {
 
 export const updateAccount = async (req: any, res: Response) => {
   try {
-    const adminId = req.body.id;
+    const adminId = req.account?.id
     if (!adminId) {
       return res.status(400).json({ code: 1, message: "Thiếu thông tin xác thực" });
     }

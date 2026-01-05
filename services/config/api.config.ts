@@ -1,4 +1,11 @@
 export const apiConfig = {
-  baseApiURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api/v1',
-  adminApiURL: import.meta.env.VITE_API_ADMIN_URL || 'http://localhost:5001/api/v1/admin',
+  baseApiURL:
+    process.server
+      ? process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080'
+      : '/api',
+
+  adminApiURL:
+    process.server
+      ? process.env.NUXT_PUBLIC_API_ADMIN_BASE || 'http://localhost:8080/admin'
+      : '/api/admin',
 }

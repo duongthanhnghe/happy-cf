@@ -12,7 +12,7 @@ import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPa
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 
 definePageMeta({
-  middleware: ROUTES.PUBLIC.PRODUCT.children?.SALE.middleware || '',
+  middleware: ROUTES.PUBLIC.PRODUCT.children?.SALE.middleware,
   headerTypeLeft: ROUTES.PUBLIC.PRODUCT.children?.SALE.headerTypeLeft,
 })
 
@@ -25,15 +25,26 @@ const storeViewed = useProductViewedStore()
 const { t } = useITranslations()
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 
-if (storeVariant.listVariantGroup.length === 0) {
-  await storeVariant.fetchVariantGroupStore()
-}
+const { data, error } = await useAsyncData(
+  `product-sale`,
+  async () => {
+    if(storeProductSale.getListItems.length > 0) return true
 
-if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.PRODUCT_SALE]) {
-  await fetchImageBlock(IMAGE_BLOCK_PAGES.PRODUCT_SALE, {
-    [IMAGE_BLOCK_POSITIONS.HERO]: 1,
-  })
-}
+    await storeProductSale.fetchInit()
+
+    if (storeVariant.listVariantGroup.length === 0) {
+      await storeVariant.fetchVariantGroupStore()
+    }
+
+    if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.PRODUCT_SALE]) {
+      await fetchImageBlock(IMAGE_BLOCK_PAGES.PRODUCT_SALE, {
+        [IMAGE_BLOCK_POSITIONS.HERO]: 1,
+      })
+    }
+
+    return true
+  }
+)
 
 const bannerHero = getByPosition(
   IMAGE_BLOCK_PAGES.PRODUCT_SALE,

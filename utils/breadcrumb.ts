@@ -38,23 +38,16 @@ function findRoutePath(
   return null;
 }
 
-export function getBreadcrumbs(path: string, customLabel?: string): MenuItem[] {
+export function getBreadcrumbs(path: string): MenuItem[] {
   const found =
     findRoutePath(ROUTES.PUBLIC, path) ||
     findRoutePath(ROUTES.ADMIN, path) ||
-    [];
+    []
 
-  const valid = found.filter(item => item.path);
-
-  if (customLabel && valid.length > 0) {
-    valid[valid.length - 1] = {
-      ...valid[valid.length - 1],
-      label: customLabel
-    };
-  }
+  const valid = found.filter(item => item.path)
 
   return [
     { label: 'Trang chủ', path: '/' },
     ...valid,
-  ];
+  ]
 }

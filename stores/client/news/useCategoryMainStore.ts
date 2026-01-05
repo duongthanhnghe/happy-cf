@@ -28,6 +28,11 @@ export const useCategoryMainStore = defineStore("CategoryMainNewsStore", () => {
     }
   })
 
+  const fetchInit = async (id: string) => {
+    await fetchPostByCategory(id, 1, limit)
+    listItems.value = getPostByCategoryApi.value?.data || []
+  }
+
   const { handleChangePage, getTotalPages } = usePagination(page, computed(() => pagination.value?.totalPages ?? 0))
 
   const getListItems = computed(() => listItems.value);
@@ -40,6 +45,7 @@ export const useCategoryMainStore = defineStore("CategoryMainNewsStore", () => {
     getTotalPages,
     loadingListPost,
     handleChangePage,
-    getDetailNewsCategoryApi
+    getDetailNewsCategoryApi,
+    fetchInit,
   };
 });

@@ -15,9 +15,11 @@ const props = withDefaults(defineProps<{
   bgTab?: string
   variantTemplateProduct?: string
   limitSection?: number
+  listView?: boolean
 }>(), {
   items: () => [],
-  bgTab: 'bg-white'
+  bgTab: 'bg-white',
+  listView: false
 })
 
 watch(
@@ -78,18 +80,18 @@ watch(
             <v-infinite-scroll
             height="auto"
             mode="manual"
-            :class="storeDisplay.isLaptop ? COLUMN.ROW : ''"
+            :class="!props.listView ? COLUMN.ROW : ''"
             @load="(ctx) => store.load(category, ctx)"
           >
               <div 
               v-for="(item, index) in category.products.data" 
               :key="index" 
               class=""
-              :class="[storeDisplay.isLaptop ? `${COLUMN.PRODUCT_XL}`:'',{ _hidden: store.filterCategory[category.id] !== category.id && item.categoryId !== store.filterCategory[category.id] }]"
+              :class="[!props.listView ? `${COLUMN.PRODUCT_XL}`:'',{ _hidden: store.filterCategory[category.id] !== category.id && item.categoryId !== store.filterCategory[category.id] }]"
             >
               <ProductItemTemplate1 
                 :product="item" 
-                :listView="storeDisplay.isLaptop ? false : true"
+                :listView="props.listView"
                 :variant="props.variantTemplateProduct"
               />
             </div>
