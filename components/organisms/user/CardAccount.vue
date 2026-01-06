@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import '@/styles/organisms/user/section-account.scss'
-import { watch, watchEffect } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
-import { ROUTES } from '@/shared/constants/routes';
-import { useMembershipStore } from '@/stores/shared/useMembershipStore'
 import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
 import { formatCurrency } from '@/utils/global';
 
 const storeAccount = useAccountStore()
-const storeMembership = useMembershipStore()
 const storeHistoryReward = useHistoryRewardByUserStore();
 
 const props = defineProps({
@@ -20,18 +16,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-})
-
-watch(() => storeAccount.getDetailValue?.id, (newValue) => {
-    if(newValue && storeMembership.getListData.length === 0) storeMembership.fetchMembershipStore()
-  },
-  { immediate: true }
-)
-
-watchEffect(() => {
-  if (storeMembership.getListData.length > 0 && storeAccount.getUserId) {
-    storeAccount.getNextMembershipLevel(storeMembership.getListData)
-  }
 })
 
 </script>

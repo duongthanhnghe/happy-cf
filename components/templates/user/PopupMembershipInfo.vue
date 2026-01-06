@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
-import { useMembershipStore } from '@/stores/shared/useMembershipStore';
+import { useMembershipStore } from '@/stores/client/users/useMembershipStore';
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 
 const store = useMembershipStore();
@@ -18,7 +18,6 @@ watch(() => store.getListData, (newVal) => {
 </script>
 <template>
   <Popup
-    popupId="popup-membership-info"
     v-model="storeAccount.isTogglePopupMembershipInformation"
     popupHeading="Hạng thành viên"
     bodyClass="bg-gray2 pd-0"

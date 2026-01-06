@@ -4,7 +4,7 @@ import { Loading } from '@/utils/global';
 import { showSuccess, showWarning } from '@/utils/toast';
 import type { MembershipLevels, UpdateMembershipLevels } from '@/server/types/dto/v1/user.dto';
 import { usersAPI } from '@/services/v1/admin/users.service';
-import { useMembershipList } from '@/composables/user/useMembershipList';
+import { useMembershipList } from '@/composables/admin/user/useAdminMembershipList';
 import { useMembershipLevelDetail } from '@/composables/user/useMembershipLevelDetail';
 import { useMembershipBenefitList } from '@/composables/user/useMembershipBenefitList';
 type MaybeRef<T> = T | Ref<T>;

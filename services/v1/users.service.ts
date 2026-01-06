@@ -17,7 +17,6 @@ export const usersAPI = {
       };
     }
   },
-
   logSearchKeyword: async (keyword: string): Promise<ApiResponse<any>> => {
     try {
       return await apiClient().post<ApiResponse<any>>(
@@ -31,6 +30,23 @@ export const usersAPI = {
         message: err.message || "Failed to log search keyword",
         data: null,
       };
+    }
+  },
+  getAllMembershipLevel: async (): Promise<ApiResponse<any[]>> => {
+    try {
+      return await apiClient().get<ApiResponse<any[]>>(API_ENDPOINTS.USERS.LIST_MEMBERSHIP_LEVEL);
+    } catch (err: any) {
+      console.error("Error fetching all membership levels:", err);
+      return { code: 1, message: err.message ?? "Failed to fetch membership levels", data: [] };
+    }
+  },
+
+  getMembershipLevelById: async (id: string): Promise<ApiResponse<any>> => {
+    try {
+      return await apiClient().get<ApiResponse<any>>(API_ENDPOINTS.USERS.GET_MEMBERSHIP_LEVEL_BY_ID(id));
+    } catch (err: any) {
+      console.error(`Error fetching membership level ID ${id}:`, err);
+      return { code: 1, message: err.message ?? "Failed to fetch membership level", data: undefined as any };
     }
   },
 };

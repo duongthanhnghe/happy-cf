@@ -76,6 +76,8 @@ export const API_ENDPOINTS = {
     SET_POINT: '/auth/set-point',
     LOG_SEARCH_KEYWORD: '/users/search-keywords/log',
     LIST_SEARCH_KEYWORD: (limit: number) => `/users/search-keywords/list?limit=${limit}`,
+    LIST_MEMBERSHIP_LEVEL: '/users/membership-level',
+    GET_MEMBERSHIP_LEVEL_BY_ID: (id: string) => `/users/membership-level/${id}`,
   },
   ADDRESSES: {
     LIST: '/addresses',

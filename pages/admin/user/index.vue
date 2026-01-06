@@ -2,10 +2,10 @@
 import { onBeforeUnmount, onMounted } from "vue";
 import { formatDateTime } from '@/utils/global'
 import { useUserManageStore } from '@/stores/admin/users/useUserManageStore'
-import { useMembershipList } from '@/composables/user/useMembershipList'
 import { ROUTES } from '@/shared/constants/routes';
 import { useUserHelpers } from "@/utils/userHelpers";
 import { useAdminUserDetailStore } from "@/stores/admin/users/useUserDetailStore";
+import { useMembershipStore } from "@/stores/admin/users/useAdminMembershipStore";
 
 definePageMeta({
   layout: ROUTES.ADMIN.USER.children?.CUSTOMER.layout,
@@ -13,13 +13,13 @@ definePageMeta({
 })
 
 const store = useUserManageStore();
+const storeMembership = useMembershipStore()
 const storeDetailUser = useAdminUserDetailStore();
-const { getMembershipList, fetchMembershipList } = useMembershipList()
 
 const { colorType } = useUserHelpers()
 
 onMounted( async () => {
- if(getMembershipList.value.length === 0) await fetchMembershipList()
+ if(storeMembership.getListData.length === 0) await storeMembership.fetchMembershipStore()
 })
 
 onBeforeUnmount(() => {
@@ -31,7 +31,7 @@ onBeforeUnmount(() => {
 <HeaderAdmin>
   <template #left>
     <v-text-field v-model="store.search" density="compact" placeholder="Tìm kiếm tên, email..." variant="outlined" hide-details></v-text-field>
-    <v-select v-model="store.filterTypeMember" variant="outlined" :items="[{ id: null, name: null, text: 'Tất cả' }, ...getMembershipList ?? []]" :item-title="item => item.name ?? item.text" item-value="name" hide-details />
+    <v-select v-model="store.filterTypeMember" variant="outlined" :items="[{ id: null, name: null, text: 'Tất cả' }, ...storeMembership.getListData ?? []]" :item-title="item => item.name ?? item.text" item-value="name" hide-details />
     <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>
 </HeaderAdmin>

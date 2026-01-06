@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import type { InformationMembershipLevels, MembershipLevels, User } from "@/server/types/dto/v1/user.dto";
 import { usePendingRewardPoints } from '../order/usePendingRewardPoints';
 import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
+import { useMembershipStore } from '@/stores/client/users/useMembershipStore';
 
 export const useAccountDetailUtils = (state: {
   detailData: Ref<User | null>,
@@ -31,6 +32,7 @@ export const useAccountDetailUtils = (state: {
 
   const router = useRouter()
   const storeWishList = useWishlistStore()
+  const storeMembership = useMembershipStore();
   const { fetchPendingRewardPoints, getPendingReward } = usePendingRewardPoints()
   
   const handleGetDetailAccount = async (id: string) => {
@@ -109,8 +111,10 @@ export const useAccountDetailUtils = (state: {
     const res = await authAPI.verifyToken()
     if (res.code === 0 && res.data) {
       lastVerifiedAt.value = now
-      await handleGetDetailAccount(res.data.id);
-      storeWishList.fetchWishlist(res.data.id);
+      await storeMembership.fetchMembershipStore()
+      await handleGetDetailAccount(res.data.id)
+      storeWishList.fetchWishlist(res.data.id)
+      if(storeMembership.getListData.length > 0) getNextMembershipLevel(storeMembership.getListData)
       return true
     }
 
