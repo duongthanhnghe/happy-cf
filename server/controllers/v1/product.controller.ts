@@ -919,6 +919,15 @@ export const searchProducts = async (
       ]
     }
 
+    // ✅ Lấy tất cả active category IDs trước
+    const activeCategoryIds = await getAllActiveCategoryIds()
+    
+    // ✅ Thêm filter category vào match stage
+    matchStage.categoryId = { $in: activeCategoryIds }
+
+    // ✅ Đếm đúng số lượng với category filter
+    const totalCount = await ProductEntity.countDocuments(matchStage)
+
     const pipeline: PipelineStage[] = [
       { $match: matchStage },
       {
@@ -942,32 +951,26 @@ export const searchProducts = async (
           }
         }
       },
-      { $sort: { discountPercent: -1, amount: -1 } },
+      { 
+        $sort: { 
+          discountPercent: -1 as const, 
+          amount: -1 as const 
+        } 
+      },
       { $skip: skip },
       { $limit: limit }
     ]
 
-    const [products, totalCount] = await Promise.all([
-      ProductEntity.aggregate(pipeline),
-      ProductEntity.countDocuments(matchStage)
-    ])
+    const products = await ProductEntity.aggregate(pipeline)
 
-    const filtered = [];
-    for (const p of products) {
-      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
-    }
-
-    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+    // ✅ Không cần filter lại vì đã filter trong query
+    const productsWithVariants = await filterActiveVariantGroupsForProducts(products)
 
     res.json({
       code: 0,
-      data: toProductListDTO(
-        productsWithVariants.map(p => ({
-          ...p,
-        }))
-      ),
+      data: toProductListDTO(productsWithVariants),
       pagination: {
-        total: totalCount,
+        total: totalCount,  // ✅ Đúng số lượng
         page: page,
         totalPages: Math.ceil(totalCount / limit),
         limit: limit
@@ -1021,67 +1024,6 @@ export const getCartProducts = async (
   }
 }
 
-// export const checkProductStock = async (
-//   req: Request,
-//   res: Response
-// ) => {
-//   try {
-//     const { productId, combinationId, quantity } = req.body
-
-//     if (!productId || !quantity || quantity <= 0) {
-//       return res.status(400).json({
-//         code: 1,
-//         message: 'Thiếu dữ liệu kiểm tra tồn kho'
-//       })
-//     }
-
-//     const product = await ProductEntity.findById(productId)
-//       .select('amount variantCombinations')
-
-//     if (!product) {
-//       return res.status(404).json({
-//         code: 1,
-//         message: 'Sản phẩm không tồn tại'
-//       })
-//     }
-
-//     // ✅ SẢN PHẨM KHÔNG VARIANT
-//     if (!combinationId) {
-//       const stock = product.amount || 0
-
-//       return res.json({
-//         code: 0,
-//         ok: quantity <= stock,
-//         availableStock: stock
-//       })
-//     }
-
-//     // ✅ SẢN PHẨM CÓ VARIANT
-//     const combination = product.variantCombinations?.find(
-//       c => c._id.toString() === combinationId
-//     )
-
-//     if (!combination) {
-//       return res.status(404).json({
-//         code: 1,
-//         message: 'Phân loại không tồn tại'
-//       })
-//     }
-
-//     const stock = combination.stock || 0
-
-//     return res.json({
-//       code: 0,
-//       ok: quantity <= stock,
-//       availableStock: stock
-//     })
-//   } catch (err: any) {
-//     return res.status(500).json({
-//       code: 1,
-//       message: err.message
-//     })
-//   }
-// }
 export const checkProductStock = async (req: Request, res: Response) => {
   try {
     const result = await checkProductStockService(req.body)

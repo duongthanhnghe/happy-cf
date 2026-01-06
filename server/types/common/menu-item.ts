@@ -12,4 +12,7 @@ export interface MenuItem {
   isShowMenuAccount?: boolean;
   roles?: AccountRoleType[];
   action?: () => void;
+  showBreadcrumb?: boolean
+  showFooter?: boolean
+  showMenuBottom?: boolean
 }

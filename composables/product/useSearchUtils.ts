@@ -80,7 +80,7 @@ export const useSearchUtils = (
     if(getListProductSearch.value) items.value = getListProductSearch.value
   }
 
-  const handleViewAll = () => {
+  const handleViewAll = async () => {
     router.push({
       path: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.path,
       query: {

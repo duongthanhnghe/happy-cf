@@ -2,27 +2,47 @@
 import { ROUTES } from '@/shared/constants/routes'
 import { COLUMN } from "@/shared/constants/column"
 import { useSearchStore } from "@/stores/client/product/useSearchStore"
+import { useRoute } from 'vue-router'
+import { nullRules } from '@/utils/validation';
+import { watch } from 'vue'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.middleware || '',
+  showBreadcrumb: true,
 })
+
+const route = useRoute()
 const store = useSearchStore()
+
+watch(
+  () => route.query.search,
+  async (newSearch) => {
+    if (!newSearch) return
+
+    const keyword = newSearch as string
+    store.txtSearch = keyword
+
+    await store.fetchListProductSearch(keyword, 1, store.limit)
+    store.items = store.getListProductSearch
+  },
+  { immediate: true }
+)
 
 </script>
 
 <template>
   <div class="container container-xxl ">
-    <BreadcrumbDefault />
     <div class="pt-lg pb-lg">
       <Heading :text="`Kết quả tìm kiếm: ${store.getListProductResult?.pagination?.total} sản phẩm`" size="xl">
         <v-text-field
           v-model="store.txtSearch"
-          label="Tim kiem..."
+          label="Tìm kiếm..."
           variant="outlined"
           prepend-inner-icon="mdi-magnify"
           class="w-full max-width-400"
           @keydown.enter="store.handleViewAll"
           hide-details
+          :rules="nullRules"
           required>
         </v-text-field>
       </Heading>

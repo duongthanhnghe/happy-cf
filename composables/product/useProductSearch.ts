@@ -13,7 +13,6 @@ export const useProductSearch = () => {
       const data: ProductPaginationDTO = await productsAPI.search(keyword, page, limit)
       if(data.code === 0) {
         listData.value = data
-        // return data
       }
     } catch (err) {
       console.error('Error product all', err)
