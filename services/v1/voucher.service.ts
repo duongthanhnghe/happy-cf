@@ -20,10 +20,7 @@ export const vouchersAPI = {
     try {
       return await apiClient().authPost<ApiResponse<ApplyVoucherResponse>>(
         API_ENDPOINTS.VOUCHERS.APPLY,
-        {
-          method: "POST",
-          body: payload,
-        }
+        payload
       );
     } catch (err: any) {
       console.error("Error applying voucher:", err);
@@ -71,7 +68,6 @@ export const vouchersAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS } from '@/services/const/api.const'
 // import type {
 //   ApplyVoucherProduct,
@@ -79,7 +75,6 @@ export const vouchersAPI = {
 //   VoucherAvailableDTO,
 // } from '@/server/types/dto/v1/voucher.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
-// import { fetchWithAuth } from '../helpers/fetchWithAuth'
 
 // export const vouchersAPI = {
 //   apply: async (

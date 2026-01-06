@@ -13,9 +13,13 @@ export const newsAPI = {
       const result = await apiClient().get<ApiResponse<CategoryNewsDTO[]>>(API_ENDPOINTS.CATEGORIES_NEWS.LIST)
       if (result.code !== 0) throw new Error(result.message || 'Failed to fetch categories news')
       return result
-    } catch (err: any) {
-      console.error('[newsAPI.getAllCategories]', err)
-      return { code: 1, message: err.message ?? 'Failed to fetch categories news', data: [] }
+    } catch (err) {
+      console.error("Error fetching categories:", err)
+      return {
+        code: 1,
+        message: "Failed to fetch categories news",
+        data: []
+      }
     }
   },
 
@@ -25,8 +29,12 @@ export const newsAPI = {
       if (result.code !== 0) throw new Error(result.message || `Failed to fetch category with ID ${id}`)
       return result
     } catch (err: any) {
-      console.error(`[newsAPI.getCategoryById] ID: ${id}`, err)
-      return { code: 1, message: err.message ?? `Failed to fetch category with ID ${id}`, data: null as any }
+      console.error(`Error fetching category with ID ${id}:`, err)
+      return {
+        code: 1,
+        message: err.message ?? `Failed to fetch category with ID ${id}`,
+        data: null as any
+      }
     }
   },
 
@@ -47,8 +55,12 @@ export const newsAPI = {
       if (result.code !== 0) throw new Error(result.message || `Failed to fetch post with ID ${id}`)
       return result
     } catch (err: any) {
-      console.error(`[newsAPI.getPostById] ID: ${id}`, err)
-      return { code: 1, message: err.message ?? `Failed to fetch post with ID ${id}`, data: null as any }
+      console.error(`Error fetching post with ID ${id}:`, err)
+      return {
+        code: 1,
+        message: err.message ?? `Failed to fetch post with ID ${id}`,
+        data: null as any
+      }
     }
   },
 
@@ -57,9 +69,13 @@ export const newsAPI = {
       const result = await apiClient().get<ApiResponse<PostNewsDTO>>(API_ENDPOINTS.NEWS_POSTS.GET_BY_SLUG(slug))
       if (result.code !== 0) throw new Error(result.message || `Failed to fetch post with slug ${slug}`)
       return result
-    } catch (err: any) {
-      console.error(`[newsAPI.getPostBySlug] slug: ${slug}`, err)
-      return { code: 1, message: err.message ?? `Failed to fetch post with slug ${slug}`, data: null as any }
+     } catch (err: any) {
+      console.error(`Error fetching post with slug ${slug}:`, err)
+      return {
+        code: 1,
+        message: err.message ?? `Failed to fetch post with slug ${slug}`,
+        data: null as any
+      }
     }
   },
 
@@ -69,8 +85,12 @@ export const newsAPI = {
       if (result.code !== 0) throw new Error(result.message || 'Failed to fetch latest posts')
       return result
     } catch (err: any) {
-      console.error('[newsAPI.getLatestPosts]', err)
-      return { code: 1, message: err.message ?? 'Failed to fetch latest posts', data: [] }
+      console.error("Error fetching latest posts:", err)
+      return {
+        code: 1,
+        message: err.message ?? "Failed to fetch latest posts",
+        data: []
+      }
     }
   },
 
@@ -104,8 +124,11 @@ export const newsAPI = {
       if (result.code !== 0) throw new Error(result.message || 'Failed to fetch related posts')
       return result
     } catch (err: any) {
-      console.error(`[newsAPI.getRelatedPosts] slug: ${slug}`, err)
-      return { code: 1, message: err.message ?? 'Failed to fetch related posts', data: [] }
+      return {
+        code: 1,
+        message: err.message ?? `Failed to fetch related posts for slug ${slug}`,
+        data: [],
+      }
     }
   },
 
@@ -145,7 +168,6 @@ export const newsAPI = {
   }
 }
 
-// import { apiConfig } from "@/services/config/api.config"
 // import { API_ENDPOINTS } from "@/services/const/api.const"
 // import type { 
 //   CategoryNewsDTO, 

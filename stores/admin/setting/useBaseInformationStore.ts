@@ -1,14 +1,11 @@
-import { ref, computed, markRaw } from "vue"
+import { ref, computed } from "vue"
 import { defineStore } from "pinia"
-import { baseInformationAPI } from "@/services/v1/base-information.service"
-import Facebook from "@/components/atoms/icons/Facebook.vue"
-import Instagram from "@/components/atoms/icons/Instagram.vue"
-import Tiktok from "@/components/atoms/icons/Tiktok.vue"
+import { baseInformationAPI } from "@/services/v1/admin/base-information.service"
 import type { BaseInformationDTO } from "@/server/types/dto/v1/base-information.dto";
 
 const CACHE_TTL = 3 * 24 * 60 * 60 * 1000 // 3 ngày
 
-export const useBaseInformationStore = defineStore("BaseInformationStore", () => {
+export const useBaseInformationStore = defineStore("AdminBaseInformationStore", () => {
   const detailData = ref<BaseInformationDTO | null>(null)
   const lastFetched = ref<number | null>(null)
 
@@ -41,17 +38,10 @@ export const useBaseInformationStore = defineStore("BaseInformationStore", () =>
 
   const getBaseInformation = computed(() => detailData.value)
 
-  const iconMap: Record<string, any> = {
-    Facebook: markRaw(Facebook),
-    Instagram: markRaw(Instagram),
-    Tiktok: markRaw(Tiktok),
-  }
-
   return {
     detailData,
     lastFetched,
     fetchBaseInformation,
     getBaseInformation,
-    iconMap,
   }
 })

@@ -18,6 +18,18 @@ export const API_ENDPOINTS_ADMIN = {
     UPDATE_ORDER: (id: string) => `/image-blocks/${id}/order`,
     TOGGLE_ACTIVE: (id: string) => `/image-blocks/${id}/toggle-active`,
   },
+  FILE_MANAGE: {
+    UPLOAD: '/fileManage/images/upload',
+    GET_IMAGES: (folder: string, limit: number) => `/fileManage/images?folder=${folder}&max_results=${limit}`,
+    GET_FOLDERS: () => `/fileManage/images/folders`,
+    DELETE_IMAGE: (id: string) => `/fileManage/images/delete?publicId=${id}`,
+    DELETE_IMAGES: '/fileManage/images',
+    SEARCH_IMAGE: () => `/fileManage/images/search`
+  },
+  BASE_INFORMATION: {
+    GET: '/base-information',
+    UPDATE: '/base-information',
+  },
   ACCOUNT: {
     VERIFY_TOKEN: '/account/verify-token',
     REFRESH_TOKEN: '/account/refresh-token',
@@ -56,7 +68,7 @@ export const API_ENDPOINTS_ADMIN = {
     LIST_ALL: '/products',
     GET_BY_ID: (id: string) => `/products/${id}`,
     DELETE: (id: string) => `/products/${id}`,
-    DELETE_MANY: '/products',
+    DELETE_MANY: '/products/delete-many',
     UPDATE: (id: string) => `/products/${id}`,
     CREATE: '/products',
     IMPORT: '/products/import',

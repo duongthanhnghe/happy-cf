@@ -92,9 +92,7 @@ export const authAPI = {
 
   ChangePassword: async (payload: ChangePassword): Promise<ApiResponse<any>> => {
     try {
-      return await apiClient().authPost<ApiResponse<any>>(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, {
-        body: payload
-      })
+      return await apiClient().authPost<ApiResponse<any>>(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, payload)
     } catch (err: any) {
       console.error('[authAPI.ChangePassword]', err)
       throw err
@@ -112,9 +110,7 @@ export const authAPI = {
 
   updateAccount: async (payload: UserEdit): Promise<ApiResponse<any>> => {
     try {
-      return await apiClient().authPut<ApiResponse<any>>(API_ENDPOINTS.AUTH.UPDATE, {
-        body: payload
-      })
+      return await apiClient().authPut<ApiResponse<any>>(API_ENDPOINTS.AUTH.UPDATE, payload)
     } catch (err: any) {
       console.error('[authAPI.updateAccount]', err)
       throw err
@@ -131,13 +127,11 @@ export const authAPI = {
   },
 }
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS } from '@/services/const/api.const'
 // import type { UserRegister, UserEdit, UserLogin, ResetPassword, ChangePassword } from '@/server/types/dto/v1/user.dto.js'
 // import type { ApiResponse } from '@server/types/common/api-response'
 // import { useRequestHeaders } from 'nuxt/app'
 // import { useAccountStore } from '@/stores/client/users/useAccountStore'
-// import { fetchWithAuth } from '../helpers/fetchWithAuth'
 
 // export const authAPI = {
 //   verifyToken: async () => {

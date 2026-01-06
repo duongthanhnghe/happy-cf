@@ -8,8 +8,6 @@ export const setRefreshCookie = (
 ) => {
   const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https"
 
-  // const isHttps = process.env.NODE_ENV === "production" && (req.secure || req.headers["x-forwarded-proto"] === "https")
-
   res.cookie(cookieName, token, {
     httpOnly: true,
     secure: isHttps,
@@ -26,8 +24,6 @@ export const clearAuthCookie = (
 ) => {
 
   const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https"
-
-  // const isHttps = process.env.NODE_ENV === "production" && (req.secure || req.headers["x-forwarded-proto"] === "https")
 
   res.clearCookie(cookieName, {
     httpOnly: true,
@@ -46,8 +42,6 @@ export const setRefreshCookieAdmin = (
 ) => {
   const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https"
 
-  // const isHttps = process.env.NODE_ENV === "production" && (req.secure || req.headers["x-forwarded-proto"] === "https")
-
   res.cookie(cookieName, token, {
     httpOnly: true,
     secure: isHttps,
@@ -64,8 +58,6 @@ export const clearAuthCookieAdmin = (
 ) => {
 
   const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https"
-
-  // const isHttps = process.env.NODE_ENV === "production" && (req.secure || req.headers["x-forwarded-proto"] === "https")
 
   res.clearCookie(cookieName, {
     httpOnly: true,

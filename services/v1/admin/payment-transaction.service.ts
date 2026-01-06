@@ -106,7 +106,6 @@ export const paymentTransactionsAPI = {
   },
 }
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { ApiResponse } from '@server/types/common/api-response'
 // import type {
@@ -116,7 +115,6 @@ export const paymentTransactionsAPI = {
 //   PaymentTransactionPaginationDTO,
 //   PaymentTransactionStatus,
 // } from '@/server/types/dto/v1/payment-transaction.dto'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const paymentTransactionsAPI = {
 //   getAll: async (

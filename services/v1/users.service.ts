@@ -35,7 +35,6 @@ export const usersAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS } from '@/services/const/api.const'
 
 // export const usersAPI = {

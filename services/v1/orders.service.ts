@@ -176,7 +176,6 @@ export const ordersAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS } from '@/services/const/api.const'
 // import type {
 //   CreateOrderBody,
@@ -185,7 +184,6 @@ export const ordersAPI = {
 // } from '@/server/types/dto/v1/order.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
 // import type { PendingRewardData } from '@/server/types/dto/v1/reward-history.dto';
-// import { fetchWithAuth } from '../helpers/fetchWithAuth';
 
 // export const ordersAPI = {
   

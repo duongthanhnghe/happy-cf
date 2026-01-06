@@ -103,11 +103,9 @@ export const productReviewAPI = {
   },
 }
 
-// import { apiConfig } from '@/services/config/api.config';
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { ProductReviewPaginationDTO, ProductReviewDTO, SubmitProductReviewBody, ProductReviewWithProductDTO } from '@/server/types/dto/v1/product-review.dto';
 // import type { ApiResponse } from '@server/types/common/api-response';
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin';
 
 // export const productReviewAPI = {
 //   getAll: async (

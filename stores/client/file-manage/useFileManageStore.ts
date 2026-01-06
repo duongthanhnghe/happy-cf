@@ -1,12 +1,12 @@
 import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { fileManageAPI } from "@/services/v1/admin/file-manage.service";
+import { fileManageAPI } from "@/services/v1/file-manage.service";
 import { Loading } from '@/utils/global'
-import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
-import type { FileManageImage, FileManageFolder } from "@/server/types/dto/v1/file-manage.dto"
+import { showSuccess, showWarning } from "@/utils/toast";
+import type { FileManageImage } from "@/server/types/dto/v1/file-manage.dto"
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 
-export const useFileManageFolderStore = defineStore("FileManageFolderAdmin", () => {
+export const useFileManageClientStore = defineStore("FileManageClient", () => {
   
 const accountStore = useAccountStore()
 const txtSearch = ref<string>('');
@@ -15,8 +15,6 @@ const pageSize = 42
 const dataList = ref<FileManageImage[]|null>(null);
 const file = ref<File | null>(null)
 const files = ref<File[]>([])
-const loadingFolder = ref<boolean>(false)
-const selectedIdsDelete = ref<string[]>([])
 const MAX_FILE_SIZE = 3 * 1024 * 1024 // 3MB
 const imageRules = [
   (v: File[] | null) => {
@@ -34,9 +32,6 @@ const imageRules = [
 ]
 const dataSelectImage = ref<{ id: string, url: string } | null>(null)
 const items = ref<FileManageImage[]|null>(null)
-const dataListFolder = ref<FileManageFolder[]|null>(null);
-const folderSelected = ref<string|null>(null);
-const breadcrumb = ref<string[]|null>(null);
 
 const handleTogglePopup = async (value: boolean) => {
   isTogglePopup.value = value;
@@ -73,7 +68,6 @@ const getApiList = async (folderName:string) => {
 }
 
 const onChangeSearch = async (folderName: string) => {
-  const folder = folderSelected.value != null ? folderSelected.value : folderName
   Loading(true)
   if(txtSearch.value === '') {
     showWarning('Vui lòng nhập từ khóa')
@@ -82,7 +76,7 @@ const onChangeSearch = async (folderName: string) => {
   }
   const keyQuery:string = txtSearch.value
   try {
-    const res = await fileManageAPI.searchImage(keyQuery,folder)
+    const res = await fileManageAPI.searchImage(keyQuery,folderName)
     if(res.success) dataList.value = res.data
   } catch (err) {
     console.error('Error submitting form:', err)
@@ -92,9 +86,8 @@ const onChangeSearch = async (folderName: string) => {
 }
 
 const handleCancelSearch = async (folderName: string) => {
-  const folder = folderSelected.value != null ? folderSelected.value : folderName
   txtSearch.value = ''
-  await getApiList(folder)
+  await getApiList(folderName)
 }
 
 const deleteImage = async (id: string) => {
@@ -108,33 +101,6 @@ const deleteImage = async (id: string) => {
     else showWarning('Xóa thất bại')
   } catch (err) {
     console.error('Error submitting form:', err)
-  } finally {
-    Loading(false)
-  }
-}
-
-const deleteImages = async () => {
-  const confirm = await showConfirm('Bạn có chắc chắn muốn xóa không?')
-  if (!confirm) return
-
-  if (selectedIdsDelete.value.length === 0) {
-    showWarning('Vui lòng chọn ít nhất 1 ảnh')
-    return
-  }
-
-  Loading(true)
-  try {
-    const publicIds = selectedIdsDelete.value
-
-    const res = await fileManageAPI.deleteImages(publicIds)
-
-    if (res.success) {
-      showSuccess(`Đã xóa ${publicIds.length} ảnh`)
-      if(folderSelected.value) await getApiList(folderSelected.value)
-      selectedIdsDelete.value = []
-    } else {
-      showWarning('Xóa ảnh thất bại')
-    }
   } finally {
     Loading(false)
   }
@@ -159,7 +125,7 @@ const uploadImage = async (folderName: string) => {
   }
 
   Loading(true)
-  const folder = folderSelected.value ?? folderName
+  const folder = folderName
 
   try {
     let res = null;
@@ -197,42 +163,15 @@ const selectImage = async (url: string) => {
   isTogglePopup.value = false;
 }
 
-//folder
-const getApiListFolder = async () => {
-  loadingFolder.value = true
-  try {
-    const res = await fileManageAPI.getFolders()
-    if(res.success) dataListFolder.value = res.data
-  } catch (err) {
-    console.error('Error submitting form:', err)
-  } finally {
-    loadingFolder.value = false
-  }
-}
-
-const handleItemClick = async (item: FileManageFolder) => {
-  selectedIdsDelete.value = []
-  folderSelected.value = item.path
-  breadcrumb.value = item.segments
-  if(!txtSearch.value) {
-    await getApiList(item.path)
-  } else {
-    onChangeSearch(item.path)
-  }
-}
-
 const resetState = () => {
   txtSearch.value = ''
   items.value = null
   dataList.value = null
-  selectedIdsDelete.value = []
   dataSelectImage.value = null
 }
 
 const getItems = computed(() => items.value)
-const getSelectImage = computed(() => dataSelectImage.value)
-const getListFolder = computed(() => dataListFolder.value)
-const getBreadcrumb = computed(() => breadcrumb.value)
+const getSelectImage = computed(() => dataSelectImage.value?.url)
 
   return {
     txtSearch,
@@ -244,26 +183,16 @@ const getBreadcrumb = computed(() => breadcrumb.value)
     files,
     imageRules,
     dataSelectImage,
-    dataListFolder,
-    folderSelected,
-    breadcrumb,
-    loadingFolder,
-    selectedIdsDelete,
     handleTogglePopup,
     load,
     getApiList,
     onChangeSearch,
     handleCancelSearch,
     deleteImage,
-    deleteImages,
     uploadImage,
     selectImage,
-    getApiListFolder,
-    handleItemClick,
     resetState,
     getItems,
     getSelectImage,
-    getListFolder,
-    getBreadcrumb,
   };
 });

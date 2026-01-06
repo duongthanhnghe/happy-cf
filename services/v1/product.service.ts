@@ -1,13 +1,10 @@
-import { apiConfig } from '@/services/config/api.config'
 import { API_ENDPOINTS } from '@/services/const/api.const'
 import type { 
   ProductDTO, 
   WishlistItem, 
-  ProductPaginationDTO,
   ProductSortType
 } from '@/server/types/dto/v1/product.dto'
 import type { ApiResponse } from '@/server/types/common/api-response'
-import { fetchWithAuth } from '../helpers/fetchWithAuth' 
 import { apiClient } from '@/services/http/apiClient'
 import type { PaginationDTO } from '@/server/types/common/pagination.dto'
 
@@ -174,9 +171,19 @@ export const productsAPI = {
       }
 
       return result
-    } catch (error) {
-      console.error('[getMostOrdered]', error)
-      throw error
+    } catch (err: any) {
+      console.error('[getMostOrdered]', err)
+      return {
+        code: 1,
+        message: err.message ?? "Failed to fetch related products",
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
+      };
     }
   },
 
@@ -186,6 +193,7 @@ export const productsAPI = {
     limit: number,
     sort?: ProductSortType
   ): Promise<PaginationDTO<ProductDTO>> => {
+    try {
     const result = await apiClient().get<PaginationDTO<ProductDTO>>(
       API_ENDPOINTS.PRODUCTS.LIST_PROMOTION,
       {
@@ -201,6 +209,20 @@ export const productsAPI = {
     }
 
     return result
+    } catch (err: any) {
+      console.error('[getPromotional]', err)
+      return {
+        code: 1,
+        message: err.message ?? "Failed to fetch products",
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
+      };
+    }
   },
 
 
@@ -270,20 +292,35 @@ getListByCategory: async (
   limit: number,
   sort?: ProductSortType
 ): Promise<PaginationDTO<ProductDTO>> => {
-  const result = await apiClient().get<PaginationDTO<ProductDTO>>(
-    API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id),
-    {
-      page,
-      limit,
-      ...(sort && { sort }),
+  try {
+    const result = await apiClient().get<PaginationDTO<ProductDTO>>(
+      API_ENDPOINTS.PRODUCTS.LIST_BY_CATEGORY(id),
+      {
+        page,
+        limit,
+        ...(sort && { sort }),
+      }
+    )
+
+    if (result.code !== 0) {
+      throw new Error(result.message || 'Lỗi khi lấy sản phẩm theo danh mục')
     }
-  )
 
-  if (result.code !== 0) {
-    throw new Error(result.message || 'Lỗi khi lấy sản phẩm theo danh mục')
+    return result
+  } catch (err: any) {
+    console.error('[getListByCategory]', err)
+    return {
+      code: 1,
+      message: err.message ?? "Failed to fetch products",
+      data: [],
+      pagination: {
+        page,
+        limit,
+        total: 0,
+        totalPages: 0
+      }
+    };
   }
-
-  return result
 },
 
 
@@ -326,32 +363,56 @@ search: async (
   page = 1,
   limit = 20
 ): Promise<PaginationDTO<ProductDTO>> => {
-  const result = await apiClient().get<PaginationDTO<ProductDTO>>(
-    API_ENDPOINTS.PRODUCTS.SEARCH,
-    {
-      keyword,
-      page,
-      limit,
+  try {
+    const result = await apiClient().get<PaginationDTO<ProductDTO>>(
+      API_ENDPOINTS.PRODUCTS.SEARCH,
+      {
+        keyword,
+        page,
+        limit,
+      }
+    )
+
+    if (result.code !== 0) {
+      throw new Error(result.message || 'Lỗi khi tìm kiếm sản phẩm')
     }
-  )
 
-  if (result.code !== 0) {
-    throw new Error(result.message || 'Lỗi khi tìm kiếm sản phẩm')
+    return result
+  } catch (err: any) {
+    console.error("Error searching products:", err)
+    return {
+      code: 1,
+      message: err.message ?? "Failed to fetch posts",
+      data: [],
+      pagination: {
+        page,
+        limit,
+        total: 0,
+        totalPages: 0
+      }
+    }
   }
-
-  return result
 },
 
 addToWishlist: async (
   userId: string,
   productId: string
 ): Promise<ApiResponse<WishlistItem>> => {
-  return apiClient().authPost<ApiResponse<WishlistItem>>(
-    API_ENDPOINTS.PRODUCTS.ADD_WISHLIST(userId),
-    {
-      body: { productId },
+  try {
+    return apiClient().authPost<ApiResponse<WishlistItem>>(
+      API_ENDPOINTS.PRODUCTS.ADD_WISHLIST(userId),
+      {
+        productId
+      }
+    )
+  } catch (err: any) {
+    console.error(`add to wishlist failed:`, err)
+    return {
+      code: 1,
+      message: err.message ?? "Failed to add to wishlist",
+      data: null as any
     }
-  )
+  }
 },
 
 
@@ -379,9 +440,18 @@ removeFromWishlist: async (
   userId: string,
   productId: string
 ): Promise<ApiResponse<null>> => {
-  return apiClient().authDelete<ApiResponse<null>>(
-    API_ENDPOINTS.PRODUCTS.DELETE_WISHLIST(userId, productId)
-  )
+  try {
+    return apiClient().authDelete<ApiResponse<null>>(
+      API_ENDPOINTS.PRODUCTS.DELETE_WISHLIST(userId, productId)
+    )
+  } catch (err: any) {
+    console.error(`Remove wishlist failed:`, err)
+    return {
+      code: 1,
+      message: err.message ?? "Failed to remove from wishlist",
+      data: null as any
+    }
+  }
 },
 
  
@@ -410,10 +480,19 @@ removeFromWishlist: async (
 getCartProducts: async (
   ids: string[]
 ): Promise<ApiResponse<ProductDTO[]>> => {
-  return apiClient().post<ApiResponse<ProductDTO[]>>(
-    API_ENDPOINTS.PRODUCTS.CART_DETAIL,
-    { ids }
-  )
+  try {
+    return apiClient().post<ApiResponse<ProductDTO[]>>(
+      API_ENDPOINTS.PRODUCTS.CART_DETAIL,
+      { ids }
+    )
+  } catch (err: any) {
+    console.error("Error fetching cart products:", err)
+    return {
+      code: 1,
+      message: err.message ?? "Failed to fetch cart products",
+      data: []
+    }
+  }
 },
 
 
@@ -448,18 +527,26 @@ getCartProducts: async (
 //     }
 //   }
 
-  checkProductStock: async (
+checkProductStock: async (
   payload: {
     productId: string
     combinationId?: string
     quantity: number
   }
 ): Promise<ApiResponse<any>> => {
-  return apiClient().post<ApiResponse<any>>(
-    API_ENDPOINTS.PRODUCTS.CHECK_STOCK,
-    payload
-  )
+  try {
+    return apiClient().post<ApiResponse<any>>(
+      API_ENDPOINTS.PRODUCTS.CHECK_STOCK,
+      payload
+    )
+  } catch (err: any) {
+    console.error('Error checking product stock:', err)
+    return {
+      code: 1,
+      message: err.message ?? 'Failed to check product stock',
+      data: null as any
+    }
+  }
 },
-
 
 }

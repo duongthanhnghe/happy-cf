@@ -1,7 +1,7 @@
 import { createI18n } from "vue-i18n"
 import { defineNuxtPlugin } from "#app"
 import { translationTypeMap } from "@/utils/translationTypeMap"
-import { useAdminITranslationAll } from "@/composables/shared/itranslation/useAdminITranslationAll";
+import { useAdminITranslationAll } from "@/composables/admin/itranslation/useAdminITranslationAll";
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const { getListITranslation, fetchListITranslationAll } = useAdminITranslationAll()

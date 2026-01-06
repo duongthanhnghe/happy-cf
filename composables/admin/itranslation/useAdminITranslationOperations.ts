@@ -4,7 +4,7 @@ import type { TableOpt } from "@/server/types";
 import { Loading } from "@/utils/global";
 import { iTranslationAPI } from "@/services/v1/admin/itranslation.service";
 import { useAdminITranslationDetail } from "@/composables/itranslation/useAdminITranslationDetail";
-import { useAdminITranslationAll } from "@/composables/shared/itranslation/useAdminITranslationAll";
+import { useAdminITranslationAll } from "@/composables/admin/itranslation/useAdminITranslationAll";
 import type { TranslationCreateDTO, TranslationDTO, TranslationUpdateDTO } from "@/server/types/dto/v1/itranslation.dto";
 type MaybeRef<T> = T | Ref<T>;
 

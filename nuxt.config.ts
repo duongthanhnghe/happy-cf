@@ -14,16 +14,16 @@ export default defineNuxtConfig({
     transpile: ['vuetify'],
   },
   modules: ['@pinia/nuxt'],
-  nitro: {
-    routeRules: {
-      "/api/**": {
-        proxy: "http://localhost:8080/api/v1/**",
-        headers: {
-          "Access-Control-Allow-Credentials": "true"
-        }
-      }
-    },
-  },
+  // nitro: {
+  //   routeRules: {
+  //     "/api/**": {
+  //       proxy: "http://localhost:8080/api/v1/**",
+  //       headers: {
+  //         "Access-Control-Allow-Credentials": "true"
+  //       }
+  //     }
+  //   },
+  // },
   runtimeConfig: {
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,

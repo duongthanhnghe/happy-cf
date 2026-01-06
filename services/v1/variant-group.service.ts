@@ -20,7 +20,6 @@ export const variantGroupAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/api.config';
 // import { API_ENDPOINTS } from '@/services/const/api.const';
 // import type { VariantGroupDTO } from '@/server/types/dto/v1/product.dto';
 // import type { ApiResponse } from '@/server/types/common/api-response';

@@ -337,7 +337,6 @@ export const resetPassword = async (req: Request, res: Response) => {
 export const updateAccount = async (req: any, res: Response) => {
   const userId = req.user.id;
   const updated = await UserModel.findByIdAndUpdate(userId, req.body, { new: true });
-
   if (!updated) {
     return res.status(404).json({ code: 1, success: false, message: "User not found" });
   }

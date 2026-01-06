@@ -13,16 +13,16 @@ import {
 import { IMAGE_EMPTY_DEFAULT } from '@/const/image'
 import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
-import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 import { useValidate } from '@/composables/validate/useValidate'
 import { updateUserProfileSchema } from '@/shared/validate/schemas/user.schema'
 import { showWarning } from '@/utils/toast'
+import { useFileManageClientStore } from '@/stores/client/file-manage/useFileManageStore'
 
 const storeAccountEdit = useAccountEditStore()
 const accountStore = useAccountStore()
-const storeFileManage = useFileManageFolderStore();
+const storeFileManage = useFileManageClientStore()
 const folderName = `${FOLDER_UPLOAD.MEMBER}${accountStore.getUserId}`;
 const { validate, formErrors } = useValidate(updateUserProfileSchema)
 
@@ -37,7 +37,7 @@ const handleSubmitUpdate = async () => {
 
 watch(() => storeFileManage.getSelectImage, (newValue) => {
   if (!newValue) return
-  storeAccountEdit.formUserItem.avatar = newValue.url
+  storeAccountEdit.formUserItem.avatar = newValue
 }, { immediate: true })
 
 useFileManageWatchers(storeFileManage, folderName);
@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
 </script>
 <template>
 
-<PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupClientFileManage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <Popup bodyClass="bg-gray6" v-model="storeAccountEdit.isTogglePopupUpdate" footerFixed :popupHeading="AUTH_TEXT_UPDATE_INFO" align="right">
   <template #body>

@@ -20,7 +20,7 @@ const router = Router()
 
 router.get('/', authenticateAdmin, getAllProduct)
 router.post('/', authenticateAdmin, validate(createProductSchema), createProduct)
-router.post('/',    authenticateAdmin, validate(deleteProductsSchema), deleteProducts)
+router.post('/delete-many',    authenticateAdmin, deleteProducts)
 router.post("/import", authenticateAdmin, uploadExcel, importProducts);
 router.post("/updateImport", authenticateAdmin, uploadExcel, updateImportProducts);
 router.get("/export", authenticateAdmin, exportProducts);

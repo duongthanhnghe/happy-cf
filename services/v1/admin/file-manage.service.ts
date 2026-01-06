@@ -1,5 +1,5 @@
 import { apiAdmin } from '@/services/http/apiAdmin'
-import { API_ENDPOINTS_SHARED } from '@/services/const/api.endpoints-shared'
+import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
 
 export const fileManageAPI = {
   getImages: async (
@@ -12,7 +12,7 @@ export const fileManageAPI = {
       if (next_cursor) params.append('next_cursor', next_cursor)
 
       return await apiAdmin().get(
-        `${API_ENDPOINTS_SHARED.FILE_MANAGE.GET_IMAGES(folder, max_results)}?${params.toString()}`
+        `${API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_IMAGES(folder, max_results)}?${params.toString()}`
       )
     } catch (err: any) {
       console.error('Error fetching images:', err)
@@ -22,7 +22,7 @@ export const fileManageAPI = {
 
   getFolders: async (): Promise<any> => {
     try {
-      return await apiAdmin().get(API_ENDPOINTS_SHARED.FILE_MANAGE.GET_FOLDERS())
+      return await apiAdmin().get(API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_FOLDERS())
     } catch (err: any) {
       console.error('Error fetching folders:', err)
       return { success: false, message: err.message }
@@ -32,7 +32,7 @@ export const fileManageAPI = {
   deleteImage: async (publicId: string): Promise<any> => {
     try {
       const encodedId = encodeURIComponent(publicId)
-      return await apiAdmin().delete(API_ENDPOINTS_SHARED.FILE_MANAGE.DELETE_IMAGE(encodedId))
+      return await apiAdmin().delete(API_ENDPOINTS_ADMIN.FILE_MANAGE.DELETE_IMAGE(encodedId))
     } catch (err: any) {
       console.error('Error deleting image:', err)
       return { success: false, message: err.message }
@@ -41,7 +41,7 @@ export const fileManageAPI = {
 
   deleteImages: async (publicIds: string[]): Promise<any> => {
     try {
-      return await apiAdmin().post(API_ENDPOINTS_SHARED.FILE_MANAGE.DELETE_IMAGES, { publicIds })
+      return await apiAdmin().post(API_ENDPOINTS_ADMIN.FILE_MANAGE.DELETE_IMAGES, { publicIds })
     } catch (err: any) {
       console.error('Error deleting multiple images:', err)
       return { success: false, message: err.message }
@@ -54,7 +54,7 @@ export const fileManageAPI = {
       if (folder) params.folder = folder
 
       const query = new URLSearchParams(params).toString()
-      return await apiAdmin().get(`${API_ENDPOINTS_SHARED.FILE_MANAGE.SEARCH_IMAGE()}?${query}`)
+      return await apiAdmin().get(`${API_ENDPOINTS_ADMIN.FILE_MANAGE.SEARCH_IMAGE()}?${query}`)
     } catch (err: any) {
       console.error('Error searching image:', err)
       return { success: false, message: err.message }
@@ -67,7 +67,7 @@ export const fileManageAPI = {
       files.forEach(file => formData.append('files', file))
       formData.append('folder', folder)
 
-      return await apiAdmin().post(API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD, formData)
+      return await apiAdmin().post(API_ENDPOINTS_ADMIN.FILE_MANAGE.UPLOAD, formData)
     } catch (err: any) {
       console.error('Error uploading images:', err)
       return { success: false, message: 'Upload failed' }
@@ -75,13 +75,12 @@ export const fileManageAPI = {
   },
 }
 
-// import { API_ENDPOINTS_SHARED } from '@/services/const/api.endpoints-shared'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
+// import { API_ENDPOINTS_ADMIN } from '@/services/const/api.endpoints-shared'
 
 // export const fileManageAPI = {
 //   getImages: async (folder: string, max_results: number = 10, next_cursor?: string) => {
 //     try {
-//       let url = `${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.GET_IMAGES(folder, max_results)}`
+//       let url = `${apiConfig.baseApiURL}${API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_IMAGES(folder, max_results)}`
 //       if (next_cursor) {
 //         url += `&next_cursor=${next_cursor}`
 //       }
@@ -98,7 +97,7 @@ export const fileManageAPI = {
 
 //   getFolders: async () => {
 //     try {
-//       const response = await fetchWithAuthAdmin(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.GET_FOLDERS()}`,{
+//       const response = await fetchWithAuthAdmin(`${apiConfig.baseApiURL}${API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_FOLDERS()}`,{
 //         credentials: 'include',
 //       })
 //       const data = await response.json()
@@ -111,7 +110,7 @@ export const fileManageAPI = {
 //   deleteImage: async (publicId: string) => {
 //     try {
 //       const encodedId = encodeURIComponent(publicId)
-//       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.DELETE_IMAGE(encodedId)}`, {
+//       const response = await fetch(`${apiConfig.baseApiURL}${API_ENDPOINTS_ADMIN.FILE_MANAGE.DELETE_IMAGE(encodedId)}`, {
 //         method: 'DELETE',
 //         credentials: 'include',
 //       })
@@ -125,7 +124,7 @@ export const fileManageAPI = {
 //   deleteImages: async (publicIds: string[]) => {
 //     try {
 //       const response = await fetchWithAuthAdmin(
-//       `${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.DELETE_IMAGES}`,
+//       `${apiConfig.baseApiURL}${API_ENDPOINTS_ADMIN.FILE_MANAGE.DELETE_IMAGES}`,
 //       {
 //           method: 'DELETE',
 //           credentials: 'include',
@@ -150,7 +149,7 @@ export const fileManageAPI = {
 //       if (folder) params.append('folder', folder)
 
 //       const response = await fetch(
-//         `${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.SEARCH_IMAGE()}?${params.toString()}`,{
+//         `${apiConfig.baseApiURL}${API_ENDPOINTS_ADMIN.FILE_MANAGE.SEARCH_IMAGE()}?${params.toString()}`,{
 //           credentials: 'include',
 //         }
 //       )
@@ -178,7 +177,7 @@ export const fileManageAPI = {
 //       formData.append('folder', folder)
 
 //       const response = await fetch(
-//         `${apiConfig.baseApiURL}${API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD}`,
+//         `${apiConfig.baseApiURL}${API_ENDPOINTS_ADMIN.FILE_MANAGE.UPLOAD}`,
 //         {
 //           method: 'POST',
 //           credentials: 'include',

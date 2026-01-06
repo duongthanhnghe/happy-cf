@@ -37,9 +37,6 @@ export const variantGroupAPI = {
 
   create: async (bodyData: CreateVariantGroupDTO): Promise<ApiResponse<VariantGroupDTO>> => {
     try {
-      if (!bodyData.groupName || !bodyData.variants || bodyData.variants.length === 0) {
-        return { code: 1, message: "Thiếu dữ liệu bắt buộc", data: null as any };
-      }
       return await apiAdmin().post<ApiResponse<VariantGroupDTO>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.CREATE, bodyData);
     } catch (err: any) {
       console.error("Error creating variant group:", err);
@@ -91,7 +88,6 @@ export const variantGroupAPI = {
 //   UpdateVariantGroupDTO 
 // } from '@/server/types/dto/v1/product.dto';
 // import type { ApiResponse } from '@/server/types/common/api-response';
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin';
 
 // export const variantGroupAPI = {
 //   getAll: async (): Promise<ApiResponse<VariantGroupDTO[]>> => {

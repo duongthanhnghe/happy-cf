@@ -100,11 +100,9 @@ export const productReviewAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/api.config';
 // import { API_ENDPOINTS } from '@/services/const/api.const'
 // import type { ProductReviewPaginationDTO, ProductReviewDTO, SubmitProductReviewBody, ProductReviewWithProductDTO } from '@/server/types/dto/v1/product-review.dto';
 // import type { ApiResponse } from '@server/types/common/api-response';
-// import { fetchWithAuth } from '../helpers/fetchWithAuth';
 
 // export const productReviewAPI = {
 //   getById: async (id: string): Promise<ApiResponse<ProductReviewWithProductDTO>> => {

@@ -1,7 +1,7 @@
 import { watch, reactive } from "vue"
 import { defineStore } from "pinia"
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
-import { baseInformationAPI } from "@/services/v1/shared/base-information.service"
+import { useBaseInformationStore } from '@/stores/admin/setting/useBaseInformationStore';
+import { baseInformationAPI } from "@/services/v1/admin/base-information.service"
 import { Loading} from '@/utils/global'
 import { showSuccess, showWarning } from "@/utils/toast";
 import { useLocationStore } from '@/stores/shared/useLocationStore';

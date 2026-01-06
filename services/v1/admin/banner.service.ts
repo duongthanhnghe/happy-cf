@@ -96,11 +96,9 @@ export const bannersAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/apiAdmin().config'
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { CreateBannerBody, UpdateBannerBody, BannerDTO } from '@/server/types/dto/v1/banner.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const bannersAPI = {
 //   getAll: async (): Promise<ApiResponse<BannerDTO[]>> => {

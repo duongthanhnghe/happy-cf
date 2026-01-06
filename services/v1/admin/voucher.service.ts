@@ -118,7 +118,6 @@ export const vouchersAPI = {
 //   VoucherPaginationDTO,
 // } from '@/server/types/dto/v1/voucher.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const vouchersAPI = {
 //   getAll: async (

@@ -142,11 +142,9 @@ export const categoriesAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { CategoryProductDTO, CreateCategoryProductDTO, UpdateCategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const categoriesAPI = {
 //   getAll: async (page: number, limit: number,search: string) => {

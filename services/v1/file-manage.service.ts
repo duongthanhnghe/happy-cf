@@ -1,5 +1,5 @@
 import { apiClient } from '../http/apiClient'
-import { API_ENDPOINTS_SHARED } from '@/services/const/api.endpoints-shared'
+import { API_ENDPOINTS } from '../const/api.const'
 import type { ApiResponse } from '@/server/types/common/api-response'
 
 export const fileManageAPI = {
@@ -13,7 +13,7 @@ export const fileManageAPI = {
       if (next_cursor) params.append('next_cursor', next_cursor)
 
       return await apiClient().get(
-        `${API_ENDPOINTS_SHARED.FILE_MANAGE.GET_IMAGES(folder, max_results)}?${params.toString()}`
+        `${API_ENDPOINTS.FILE_MANAGE.GET_IMAGES(folder, max_results)}?${params.toString()}`
       )
     } catch (err: any) {
       console.error('Error fetching images:', err)
@@ -24,7 +24,7 @@ export const fileManageAPI = {
   deleteImage: async (publicId: string): Promise<ApiResponse<any>> => {
     try {
       const encodedId = encodeURIComponent(publicId)
-      return await apiClient().delete(API_ENDPOINTS_SHARED.FILE_MANAGE.DELETE_IMAGE(encodedId))
+      return await apiClient().delete(API_ENDPOINTS.FILE_MANAGE.DELETE_IMAGE(encodedId))
     } catch (err: any) {
       console.error('Error deleting image:', err)
       return { code: 1, message: err.message, data: null }
@@ -37,7 +37,7 @@ export const fileManageAPI = {
       if (folder) params.folder = folder
       const query = new URLSearchParams(params).toString()
 
-      return await apiClient().get(`${API_ENDPOINTS_SHARED.FILE_MANAGE.SEARCH_IMAGE()}?${query}`)
+      return await apiClient().get(`${API_ENDPOINTS.FILE_MANAGE.SEARCH_IMAGE()}?${query}`)
     } catch (err: any) {
       console.error('Error searching image:', err)
       return { code: 1, message: err.message, data: null }
@@ -50,7 +50,7 @@ export const fileManageAPI = {
       files.forEach(file => formData.append('files', file))
       formData.append('folder', folder)
 
-      return await apiClient().post(API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD, formData)
+      return await apiClient().post(API_ENDPOINTS.FILE_MANAGE.UPLOAD, formData)
     } catch (err: any) {
       console.error('Upload image error:', err)
       return { code: 1, message: 'Upload failed', data: null }
@@ -64,7 +64,7 @@ export const fileManageAPI = {
       formData.append('folder', folder)
       formData.append('userId', userId)
 
-      return await apiClient().post(API_ENDPOINTS_SHARED.FILE_MANAGE.UPLOAD, formData)
+      return await apiClient().post(API_ENDPOINTS.FILE_MANAGE.UPLOAD, formData)
     } catch (err: any) {
       console.error('Upload avatar error:', err)
       return { code: 1, message: 'Upload failed', data: null }

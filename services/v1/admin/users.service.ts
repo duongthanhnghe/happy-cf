@@ -166,7 +166,6 @@ export const usersAPI = {
 // import type { User, MembershipBenefitDTO, CreateMembershipBenefit, UpdateMembershipBenefit } from '@/server/types/dto/v1/user.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
 // import type { PaginationDTO } from '@server/types/common/pagination.dto'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const usersAPI = {
 //   getDetailAccount: async (id: string) => {

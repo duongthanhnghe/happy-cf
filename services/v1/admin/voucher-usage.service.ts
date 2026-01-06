@@ -50,7 +50,6 @@ export const vouchersUsageAPI = {
 
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { VoucherUsagePaginationDTO } from '@/server/types/dto/v1/voucher-usage.dto'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const vouchersUsageAPI = {
 //   getAll: async (

@@ -7,8 +7,7 @@ import type {
   UpdateProductDTO,
   ProductPaginationDTO
 } from "@/server/types/dto/v1/product.dto"
-import { apiConfig } from "@/services/config/api.config"
-import { fetchWithAuthAdmin } from "@/services/helpers/fetchWithAuthAdmin"
+import { fetchRawAdmin } from "@/services/http/fetchRawAdmin"
 
 export const productsAPI = {
   getAll: async (
@@ -91,56 +90,51 @@ export const productsAPI = {
     }
   },
 
-  exportProducts: async (): Promise<{ code: number; message: string }> => {
+  exportProducts: async (): Promise<{
+    code: number
+    message: string
+  }> => {
     try {
-      const url = `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.PRODUCTS.EXPORT}`;
+      const response = await fetchRawAdmin(
+        API_ENDPOINTS_ADMIN.PRODUCTS.EXPORT,
+        { method: "GET" }
+      )
 
-      const response = await fetchWithAuthAdmin(url, {
-        method: "GET",
-        credentials: "include",
-      });
+      const contentType = response.headers.get("content-type")
 
-      const contentType = response.headers.get("Content-Type");
-
-      // Nếu server trả JSON (lỗi)
       if (contentType?.includes("application/json")) {
-        const json = await response.json();
+        const json = await response.json()
         return {
           code: json.code ?? 1,
           message: json.message ?? "Export thất bại",
-        };
+        }
       }
 
-      // Nếu server trả file
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
 
-      let fileName = `product_export_${Date.now()}.xlsx`;
-      const contentDisposition = response.headers.get("Content-Disposition");
-      if (contentDisposition) {
-        const match = contentDisposition.match(/filename="?([^"]+)"?/);
-        if (match) fileName = match[1];
+      let fileName = `product_export_${Date.now()}.xlsx`
+      const disposition = response.headers.get("content-disposition")
+      if (disposition) {
+        const match = disposition.match(/filename="?([^"]+)"?/i)
+        if (match?.[1]) fileName = match[1]
       }
 
-      a.href = blobUrl;
-      a.download = fileName;
-      a.click();
-      window.URL.revokeObjectURL(blobUrl);
+      const a = document.createElement("a")
+      a.href = blobUrl
+      a.download = fileName
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(blobUrl)
 
-      const codeHeader = response.headers.get("X-Code");
-      const messageHeader = response.headers.get("X-Message") ?? "Export thành công";
-
-      return {
-        code: codeHeader ? Number(codeHeader) : 0,
-        message: messageHeader,
-      };
+      return { code: 0, message: "Export thành công" }
     } catch (err: any) {
-      console.error("Error exporting products:", err);
+      console.error("[exportProducts]", err)
       return {
         code: 1,
         message: err.message ?? "Export thất bại",
-      };
+      }
     }
   },
 
@@ -222,7 +216,6 @@ export const productsAPI = {
 }
 
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { 
 //   ProductDTO, 
@@ -231,7 +224,6 @@ export const productsAPI = {
 //   ProductPaginationDTO
 // } from '@/server/types/dto/v1/product.dto'
 // import type { ApiResponse } from '@/server/types/common/api-response'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const productsAPI = {
 //   getAll: async (page: number, limit: number, search: string, categoryId: string): Promise<ProductPaginationDTO> => {

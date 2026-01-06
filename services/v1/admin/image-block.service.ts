@@ -96,7 +96,6 @@ export const imageBlocksAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type {
 //   ImageBlockDTO,
@@ -104,7 +103,6 @@ export const imageBlocksAPI = {
 //   UpdateImageBlockBody,
 // } from '@/server/types/dto/v1/image-block.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const imageBlocksAPI = {
 //   getAll: async (): Promise<ApiResponse<ImageBlockDTO[]>> => {

@@ -43,11 +43,11 @@ export const useAccountEditUtils = (state: {
       const newCategory = {...formUserItem}
       const data = await authAPI.updateAccount(newCategory)
       if(data.code === 0){
-        showSuccess(data.message)
+        showSuccess(data.message ?? '')
         isTogglePopupUpdate.value = false;
         if(accountStore.detailData) accountStore.detailData = data.data
       } else {
-        showWarning(data.message)
+        showWarning(data.message ?? '')
       }
     } catch (err) {
       console.error('Error submitting form:', err)
@@ -72,7 +72,7 @@ export const useAccountEditUtils = (state: {
       } else {
         newPassword.value = ''
         newPasswordConfirm.value = ''
-        showWarning(data.message);
+        showWarning(data.message ?? '');
       }
     } catch (err) {
       console.error('Error submitting form:', err)

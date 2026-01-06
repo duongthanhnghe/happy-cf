@@ -97,11 +97,9 @@ export const aboutAPI = {
 };
 
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { CreateAboutBody, UpdateAboutBody, AboutDTO } from '@/server/types/dto/v1/about.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const aboutAPI = {
 //   getAll: async (): Promise<ApiResponse<AboutDTO[]>> => {

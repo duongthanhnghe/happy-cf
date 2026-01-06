@@ -11,8 +11,8 @@ import type {
 } from "@/server/types/dto/v1/order.dto";
 import type { ApiResponse } from "@/server/types/common/api-response";
 import { useRuntimeConfig } from 'nuxt/app'
-import { apiConfig } from "@/services/config/api.config";
-import { fetchWithAuthAdmin } from "@/services/helpers/fetchWithAuthAdmin";
+import { fetchRawAdmin } from "@/services/http/fetchRawAdmin";
+import { apiAdminRaw } from "@/services/http/apiAdminRaw";
 
 export const ordersAPI = {
   getAll: async (
@@ -159,83 +159,83 @@ export const ordersAPI = {
 
   printBill: async (id: string): Promise<void> => {
     try {
-      const config = useRuntimeConfig();
-      const siteName: any = config.public.siteName;
+      const config = useRuntimeConfig()
+      const siteName = String(config.public.siteName ?? "")
 
-      const url =
-        `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.PRINT_BILL(id)}` +
-        `?siteName=${encodeURIComponent(siteName)}`;
-     
-      window.open(url, "_blank", "width=400,height=650");
-    } catch (err: any) {
-      console.error(`Error printing bill for order ${id}:`, err);
-      throw err;
+      const url = apiAdminRaw(
+        API_ENDPOINTS_ADMIN.ORDERS.PRINT_BILL(id) +
+          `?siteName=${encodeURIComponent(siteName)}`
+      )
+
+      window.open(url, "_blank", "width=400,height=650")
+    } catch (err) {
+      console.error(`[printBill]`, err)
+      throw err
     }
   },
 
   exportOrders: async (
     params: {
-      fromDate?: string;
-      toDate?: string;
-      search?: string;
-      statusId?: string;
-      transactionId?: string;
-      shippingStatus?: string;
+      fromDate?: string
+      toDate?: string
+      search?: string
+      statusId?: string
+      transactionId?: string
+      shippingStatus?: string
     } = {}
   ): Promise<{ code: number; message: string }> => {
     try {
-      const query = new URLSearchParams(params as Record<string, string>).toString();
-      const url = `${apiConfig.adminApiURL}${API_ENDPOINTS_ADMIN.ORDERS.EXPORT}?${query}`;
+      const query = new URLSearchParams(
+        Object.entries(params).filter(
+          ([, v]) => v !== undefined && v !== ""
+        ) as [string, string][]
+      ).toString()
 
-      const response = await fetchWithAuthAdmin(url, {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetchRawAdmin(
+        `${API_ENDPOINTS_ADMIN.ORDERS.EXPORT}?${query}`,
+        { method: "GET" }
+      )
 
-      const contentType = response.headers.get("Content-Type");
+      const contentType = response.headers.get("content-type")
 
       if (contentType?.includes("application/json")) {
-        const json = await response.json();
+        const json = await response.json()
         return {
           code: json.code ?? 1,
           message: json.message ?? "Export thất bại",
-        };
+        }
       }
 
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
 
-      let fileName = `order_export_${Date.now()}.xlsx`;
-      const contentDisposition = response.headers.get("Content-Disposition");
-      if (contentDisposition) {
-        const match = contentDisposition.match(/filename="?([^"]+)"?/);
-        if (match) fileName = match[1];
+      let fileName = `order_export_${Date.now()}.xlsx`
+      const disposition = response.headers.get("content-disposition")
+      if (disposition) {
+        const match = disposition.match(/filename="?([^"]+)"?/i)
+        if (match?.[1]) fileName = match[1]
       }
 
-      a.href = blobUrl;
-      a.download = fileName;
-      a.click();
-      window.URL.revokeObjectURL(blobUrl);
+      const a = document.createElement("a")
+      a.href = blobUrl
+      a.download = fileName
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(blobUrl)
 
-      const codeHeader = response.headers.get("X-Code");
-      const messageHeader = response.headers.get("X-Message") ?? "Export orders thành công";
-
-      return {
-        code: codeHeader ? Number(codeHeader) : 0,
-        message: messageHeader,
-      };
+      return { code: 0, message: "Export orders thành công" }
     } catch (err: any) {
-      console.error("Error exporting orders:", err);
-      return { code: 1, message: err.message ?? "Export thất bại" };
+      console.error("[exportOrders]", err)
+      return {
+        code: 1,
+        message: err.message ?? "Export thất bại",
+      }
     }
   },
 
-
 };
 
-
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type {
 //   OrderDTO,
@@ -247,7 +247,6 @@ export const ordersAPI = {
 //   OrderStatusCountDTO,
 // } from '@/server/types/dto/v1/order.dto'
 // import type { ApiResponse } from '@server/types/common/api-response'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 // import { useRuntimeConfig } from 'nuxt/app'
 
 

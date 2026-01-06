@@ -61,7 +61,6 @@ export const iTranslationAPI = {
   },
 };
 
-// import { apiConfig } from '@/services/config/api.config'
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { ApiResponse } from '@/server/types/common/api-response'
 // import type { 
@@ -70,7 +69,6 @@ export const iTranslationAPI = {
 //   TranslationUpdateDTO, 
 //   TranslationPaginationDTO
 // } from '@/server/types/dto/v1/itranslation.dto';
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin';
 
 // export const iTranslationAPI = {
 //   getTranslations: async (page: number, limit: number, search: string = '') => {

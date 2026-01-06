@@ -17,18 +17,18 @@ const app = express()
 const PORT = Number(process.env.PORT) || 8080
 const HOST = process.env.HOST || '0.0.0.0'
 const barcodePath = fileURLToPath(new URL('./public/barcodes', import.meta.url))
-
 // --- Middleware ---
+const allowedOrigins = [
+  'http://localhost:3000',
+  process.env.DOMAIN,
+].filter(Boolean) as string[]
+
 app.use(cors({
-  // origin: [
-  //   'http://localhost:3000',
-  //   'http://0.0.0.0:3000',
-  // ],
-  origin: true,
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ["Set-Cookie"],
+  // exposedHeaders: ["Set-Cookie"],
 }))
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true, limit: '50mb' }))
@@ -37,7 +37,14 @@ app.use('/barcodes', express.static(barcodePath))
 
 // --- Logger (optional) ---
 app.use((req, _res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`)
+  console.log(
+    `[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`,
+    {
+      origin: req.headers.origin,
+      hasAuth: !!req.headers.authorization,
+      hasCookie: !!req.headers.cookie,
+    }
+  )
   next()
 })
 
@@ -63,5 +70,5 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 
 // --- Start server ---
 app.listen(PORT, HOST, () => {
-  console.log(`✅ Server running at http://${HOST}:${PORT}/api/v1`)
+  console.log(`✅ Server running on port ${PORT}`)
 })

@@ -183,7 +183,6 @@ export const accountAPI = {
 // import type { AccountDTO, ChangePasswordDTO, LoginDTO, AccountLoginResponse, AccountUpdateDTO, AccountPaginationDTO, AccountCreateDTO, AccountRoleType } from '@/server/types/dto/v1/account.dto'
 // import { useRequestHeaders } from 'nuxt/app'
 // import { useAccountStore } from '@/stores/admin/account/useAccountStore'
-// import { fetchWithAuthAdmin } from '@/services/helpers/fetchWithAuthAdmin'
 
 // export const accountAPI = {
 //   verifyToken: async () => {
