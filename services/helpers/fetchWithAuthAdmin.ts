@@ -1,7 +1,7 @@
-import { useAccountStore } from "@/stores/admin/account/useAccountStore";
+import { useAccountAdminStore } from "@/stores/admin/account/useAccountAdminStore";
 
 export async function fetchWithAuthAdmin(url: string, options: any = {}) {
-  const store = useAccountStore();
+  const store = useAccountAdminStore();
 
   let token = store.token;
   const isFormData = options.body instanceof FormData;

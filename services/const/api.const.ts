@@ -78,13 +78,13 @@ export const API_ENDPOINTS = {
     LIST_SEARCH_KEYWORD: (limit: number) => `/users/search-keywords/list?limit=${limit}`,
   },
   ADDRESSES: {
-    LIST: '/addresses/user',
+    LIST: '/addresses',
     GET_BY_ID: (id: string) => `/addresses/${id}`,
     CREATE: '/addresses',
     UPDATE: (id: string) => `/addresses/${id}`,
     DELETE: (id: string) => `/addresses/${id}`,
     SET_DEFAULT: (id: string) => `/addresses/${id}/set-default`,
-    GET_BY_ID_DEFAULT: (userId: string) => `/addresses/default/${userId}`,
+    GET_BY_ID_DEFAULT: '/addresses/default',
   },
   PRODUCT_REVIEWS: {
     LIST: '/product-reviews',
@@ -92,7 +92,7 @@ export const API_ENDPOINTS = {
     DELETE: (id: string) => `/product-reviews/${id}`,
     UPDATE_STATUS: '/product-reviews/status',
     SUBMIT: '/product-reviews/submit',
-    GET_BY_USER_PENDING: (userId: string) => `/product-reviews/user/${userId}/reviews`,
+    GET_BY_USER_PENDING: (userId: string) => `/product-reviews/user/${userId}`,
     GET_BY_PRODUCT_ID: (id: string) => `/product-reviews/product/${id}/reviews`,
   },
   VOUCHERS: {

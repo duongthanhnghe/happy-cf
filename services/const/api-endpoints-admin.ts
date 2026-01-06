@@ -17,7 +17,6 @@ export const API_ENDPOINTS_ADMIN = {
     DELETE: (id: string) => `/image-blocks/${id}`,
     UPDATE_ORDER: (id: string) => `/image-blocks/${id}/order`,
     TOGGLE_ACTIVE: (id: string) => `/image-blocks/${id}/toggle-active`,
-    // GET_BY_PAGE: '/image-blocks/by-page',
   },
   ACCOUNT: {
     VERIFY_TOKEN: '/account/verify-token',

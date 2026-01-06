@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useAccountStore } from '@/stores/admin/account/useAccountStore'
+import { useAccountAdminStore } from '@/stores/admin/account/useAccountAdminStore'
 import type { SubmitEventPromise } from 'vuetify'
 import { AUTH_TEXT_LOGIN, AUTH_TEXT_PASSWORD, AUTH_TEXT_USERNAME } from '@/const/text'
 import { ROUTES } from '@/shared/constants/routes'
@@ -11,7 +11,7 @@ definePageMeta({
   layout: ROUTES.ADMIN.LOGIN.layout,
 })
 
-const store = useAccountStore()
+const store = useAccountAdminStore()
 
 const { validate, formErrors } = useValidate(loginSchema)
 

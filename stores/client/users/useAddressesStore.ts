@@ -20,10 +20,8 @@ export const useAddressesManageStore = defineStore("AddressesManage", () => {
     state.isTogglePopupList,
     state.isTogglePopupUpdate,
     state.isTogglePopupAdd,
-    state.isChildrenPopupManage,
     state.actionChangeAddress,
     state.loadingData,
-    storeAccount.getUserId,
     storeLocation
   );
 

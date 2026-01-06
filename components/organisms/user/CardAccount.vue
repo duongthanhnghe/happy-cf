@@ -29,7 +29,7 @@ watch(() => storeAccount.getDetailValue?.id, (newValue) => {
 )
 
 watchEffect(() => {
-  if (storeMembership.getListData.length > 0) {
+  if (storeMembership.getListData.length > 0 && storeAccount.getUserId) {
     storeAccount.getNextMembershipLevel(storeMembership.getListData)
   }
 })

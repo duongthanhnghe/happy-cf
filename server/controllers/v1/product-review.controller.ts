@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { ProductReviewEntity } from "../../models/v1/product-review.entity";
 import { toProductReviewDTO, toProductReviewListDTO } from "../../mappers/v1/product-review.mapper";
 import { ProductEntity } from "../../models/v1/product.entity";
+import mongoose from "mongoose";
 
 export const getProductReviewById = async (req: Request, res: Response) => {
   try {
@@ -42,7 +43,7 @@ export const submitProductReview = async (req: Request, res: Response) => {
   }
 };
 
-export const getReviewsByUser = async (req: Request, res: Response) => {
+export const getReviewsByUser = async (req: any, res: Response) => {
   try {
     const { userId } = req.params;
     const { status, page = 1, limit = 10 } = req.query;
@@ -59,7 +60,8 @@ export const getReviewsByUser = async (req: Request, res: Response) => {
     const numLimit = Number(limit);
 
     const query = {
-      userId,
+      // userId,
+      userId: new mongoose.Types.ObjectId(userId),
       status,
     };
 

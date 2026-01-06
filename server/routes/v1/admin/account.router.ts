@@ -11,6 +11,7 @@ import {
   deleteAccount,
   createAccount,
   refreshToken,
+  logout,
  } from "../../../controllers/v1/admin/account.controller";
 import { authorizeRoles } from "../../../middlewares/admin-role";
 import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
@@ -29,15 +30,7 @@ router.get("/me/:id", authenticateAdmin, validate(idParamSchema, 'params'), getA
 router.put("/update", authenticateAdmin, validate(updateAccountSchema), updateAccount);
 router.post("/change-password", authenticateAdmin, validate(changePasswordSchema), changePassword);
 router.post("/create", authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), validate(createAccountSchema), createAccount);
-
-router.post("/logout", (req, res) => {
-  res.clearCookie("admin_refresh_token", {
-    httpOnly: true,
-    path: "/",
-    sameSite: "lax",
-  });
-  res.json({ code: 0, message: "Đăng xuất thành công" });
-});
+router.post('/logout', logout)
 
 router.patch('/toggleActive/:id', authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), validate(idParamSchema, 'params'), toggleActive)
 router.delete('/:id', authenticateAdmin, authorizeRoles(ACCOUNT_ROLES_CONST.SUPERADMIN), validate(idParamSchema, 'params'), deleteAccount)

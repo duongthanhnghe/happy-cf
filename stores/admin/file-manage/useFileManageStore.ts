@@ -1,6 +1,6 @@
 import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { fileManageAPI } from "@/services/v1/shared/file-manage.service";
+import { fileManageAPI } from "@/services/v1/admin/file-manage.service";
 import { Loading } from '@/utils/global'
 import { showConfirm, showSuccess, showWarning } from "@/utils/toast";
 import type { FileManageImage, FileManageFolder } from "@/server/types/dto/v1/file-manage.dto"

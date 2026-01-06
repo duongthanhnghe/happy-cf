@@ -3,7 +3,7 @@ import { useTranslationManageStore } from '@/stores/admin/itranslation/useTransl
 import { ROUTES } from '@/shared/constants/routes'
 import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
-import { useAccountStore } from '@/stores/admin/account/useAccountStore';
+import { useAccountAdminStore } from '@/stores/admin/account/useAccountAdminStore';
 import { ACCOUNT_ROLE } from '@/shared/constants/account-role';
 import { copyText } from '@/utils/global';
 import { onBeforeUnmount } from 'vue';
@@ -15,7 +15,7 @@ definePageMeta({
 
 const store = useTranslationManageStore()
 const storeFileManage = useFileManageFolderStore();
-const storeAccount = useAccountStore()
+const storeAccount = useAccountAdminStore()
 
 useFileManageWatchers(storeFileManage, store.folderName);
 

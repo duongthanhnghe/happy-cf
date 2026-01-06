@@ -8,9 +8,9 @@ import { useVariantGroupStore } from '@/stores/client/product/useVariantGroupSto
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
 import { useProductMostOrderStore } from '@/stores/client/product/useProductMostOrderStore';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
-import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
+import { useProductTexts } from '@/composables/texts/useProductTexts';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.middleware,
@@ -23,7 +23,7 @@ const storeVariant = useVariantGroupStore()
 const storeProductCategory = useProductCategoryStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeViewed = useProductViewedStore()
-const { t } = useITranslations()
+const texts = useProductTexts()
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 
 const { data, error } = await useAsyncData(
@@ -122,10 +122,10 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <div class="pt-section" v-if="t('bestseller.desc.main')">
+  <div class="pt-section" v-if="texts['bestseller.desc.main']">
     <div class="bg-gray6">
       <div class="container pt-lg pb-lg">
-        <Text color="gray5" :text="t('bestseller.desc.main')" />
+        <Text color="gray5" :text="texts['bestseller.desc.main']" />
       </div>
     </div>
   </div>

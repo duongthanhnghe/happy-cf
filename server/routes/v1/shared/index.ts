@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import fileManageRoutes from './file-manage.router'
+import fileManageRoutes from '../file-manage.router'
 import locationRoutes from './location.router'
 import baseInformationRoutes from './base-information.router'
 

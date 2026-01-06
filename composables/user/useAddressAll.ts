@@ -5,9 +5,9 @@ import type { AddressDTO } from '@/server/types/dto/v1/address.dto';
 export const useAddressAll = () => {
   const listData = ref<AddressDTO[]|null>(null);
 
-  const fetchAddressAll = async (userId: string) => {
+  const fetchAddressAll = async () => {
     try {
-      const data = await addressesAPI.getAll(userId)
+      const data = await addressesAPI.getAll()
       if(data.code === 0) listData.value = data.data
     } catch (err) {
       console.error('Error product all', err)

@@ -3,10 +3,10 @@ import '@/styles/organisms/layout/sidebar.scss';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router'
 import { ROUTES } from '@/shared/constants/routes';
-import { useAccountStore } from '@/stores/admin/account/useAccountStore';
+import { useAccountAdminStore } from '@/stores/admin/account/useAccountAdminStore';
 import type { MenuItem } from 'server/types/common/menu-item';
 
-const storeAccount = useAccountStore()
+const storeAccount = useAccountAdminStore()
 const route = useRoute()
 const listMenu = ROUTES.ADMIN;
 const toggleActive = ref<Record<string, boolean>>({})

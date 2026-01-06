@@ -9,6 +9,7 @@ import { sendResetPasswordEmail } from "../../utils/mailer";
 import { randomBytes } from 'crypto'
 import { OAuth2Client } from "google-auth-library";
 import type { MyJwtPayload } from "@/server/types/dto/v1/user.dto";
+import { clearAuthCookie, setRefreshCookie } from "@/server/utils/cookieHelpers";
 
 const client = new OAuth2Client(process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID, process.env.NUXT_GOOGLE_CLIENT_SECRET);
 
@@ -113,13 +114,7 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: "30d" }
     );
 
-    res.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-      path: "/api/v1/auth/refresh-token",
-      maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
-    });
+    setRefreshCookie(req, res, "refresh_token", refreshToken)
 
     return res.status(200).json({
       code: 0,
@@ -236,13 +231,16 @@ export const googleLogin = async (req: Request, res: Response) => {
       { expiresIn: "30d" }
     );
 
-    res.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-      path: "/api/v1/auth/refresh-token",
-      maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
-    });
+    setRefreshCookie(req, res, "refresh_token", refreshToken)
+    // res.cookie("refresh_token", refreshToken, {
+    //   httpOnly: true,
+    //   secure: false,
+    //   // sameSite: "strict",
+    //   // path: "/api/v1/auth",
+    //   sameSite: "lax",
+    //   path: "/",
+    //   maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
+    // });
 
     return res.status(200).json({
       code: 0,
@@ -390,12 +388,10 @@ export const changePassword = async (req: any, res: Response) => {
 };
 
 export const logout = (req: Request, res: Response) => {
-  res.clearCookie('refresh_token', {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'strict',
-    path: '/api/v1/auth/refresh-token',
-  });
+  clearAuthCookie(req, res, "refresh_token")
 
-  return res.status(200).json({ code: 0, message: "Đăng xuất thành công" });
-};
+  return res.status(200).json({
+    code: 0,
+    message: "Đăng xuất thành công",
+  })
+}

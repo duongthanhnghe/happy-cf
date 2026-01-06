@@ -4,6 +4,7 @@ import type { Request, Response } from "express";
 import { AccountModel } from "../../../models/v1/account.entity";
 import { toAccountDTO, toAccountListDTO } from "../../../mappers/v1/admin-auth.mapper"
 import type { AccountJwtPayload } from "@/server/types/dto/v1/account.dto";
+import { clearAuthCookieAdmin, setRefreshCookieAdmin } from "@/server/utils/cookieHelpers";
 
 export const verifyToken = async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization
@@ -68,13 +69,15 @@ export const login = async (req: Request, res: Response) => {
     account.lastLogin = new Date();
     await account.save();
 
-    res.cookie("admin_refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-      path: "/api/v1/admin",
-      maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
-    });
+    // res.cookie("admin_refresh_token", refreshToken, {
+    //   httpOnly: true,
+    //   secure: false,
+    //   sameSite: "strict",
+    //   path: "/api/v1/admin",
+    //   maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
+    // });
+
+    setRefreshCookieAdmin(req, res, "admin_refresh_token", refreshToken)
 
     return res.status(200).json({
       code: 0,
@@ -315,6 +318,15 @@ export const getAccountList = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const logout = (req: Request, res: Response) => {
+  clearAuthCookieAdmin(req, res, "admin_refresh_token")
+
+  return res.status(200).json({
+    code: 0,
+    message: "Đăng xuất thành công",
+  })
+}
 
 export const toggleActive = async (req: Request, res: Response) => {
   try {

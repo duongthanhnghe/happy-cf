@@ -28,7 +28,7 @@ onMounted(() => {
       </div>
     </template>
     <template #footer>
-      <NuxtLink :to="{ path: storeAccount.accountMenu[0].path }" @click="storeAccount.handleTogglePopupAccountMenuInfo(false)">
+      <NuxtLink v-if="storeAccount.accountMenu" :to="{ path: storeAccount.accountMenu[0].path }" @click="storeAccount.handleTogglePopupAccountMenuInfo(false)">
         <Button tag="div" label="Đi tới tài khoản" color="primary" class="w-full text-uppercase" />
       </NuxtLink>
     </template>

@@ -15,7 +15,7 @@ const storeLocation = useLocationStore();
 const storeDisplay = useDisplayStore()
 
 store.actionChangeAddress = false
-if (!store.getListAddress) store.loadItems();
+if (!store.getListAddress || store.getListAddress.length === 0) await store.loadItems();
 
 useLocationWatchers(storeLocation);
 

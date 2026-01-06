@@ -14,8 +14,8 @@ import { createAddressSchema, updateAddressSchema, addressIdParamSchema } from '
 
 const router = Router()
 
-router.get('/default/:userId', authenticate, getDefaultAddressByUserId)
-router.get('/user/:userId',          authenticate, getAllAddress)
+router.get('/default', authenticate, getDefaultAddressByUserId)
+router.get('/',          authenticate, getAllAddress)
 router.get('/:id',       authenticate, getAddressById)
 router.post('/',         authenticate, validate(createAddressSchema), createAddress)
 router.put('/:id',       authenticate, validate(updateAddressSchema), updateAddress)

@@ -12,7 +12,7 @@ import { createProductReviewSchema } from '../../../shared/validate/schemas/prod
 const router = Router();
 
 router.get("/:id", getProductReviewById);
-router.get("/user/:userId/reviews", authenticate, getReviewsByUser); 
+router.get("/user/:userId", authenticate, getReviewsByUser); 
 router.get("/product/:productId/reviews", getReviewsByProduct); 
 router.put("/submit", authenticate, validate(createProductReviewSchema), submitProductReview); 
 

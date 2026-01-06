@@ -44,7 +44,7 @@ export const useAuthUtils = (
         handleResetFormLoginItem()
         router.push({ path: ROUTES.PUBLIC.HOME.path })
       } else {
-        showWarning(data.message)
+        showWarning(data.message ?? '')
       }
     } catch (err: any) {
       showWarning(err.message)
@@ -61,13 +61,13 @@ export const useAuthUtils = (
 
       const data = await authAPI.Register(dataRegister)
       if(data.code === 0){
-        showSuccess(data.message);
+        showSuccess(data.message ?? '');
         handleResetFormUserItem()
         setTimeout(function(){
           router.push({ path: ROUTES.PUBLIC.LOGIN.path })
         }, 1000);
       }
-      else showWarning(data.message);
+      else showWarning(data.message ?? '');
     } catch (err: any) {
       showWarning(err.message);
       console.error('Error submitting form:', err)
@@ -81,10 +81,10 @@ export const useAuthUtils = (
     try {
       const data = await authAPI.ForgotPassword(emailForgot.value)
       if(data.code === 0){
-        showSuccess(data.message)
+        showSuccess(data.message ?? '')
         emailForgot.value = ''
       }
-      else showWarning(data.message);
+      else showWarning(data.message ?? '');
     } catch (err: any) {
       showWarning(err.message);
       console.error('Error submitting form:', err)
@@ -112,7 +112,7 @@ export const useAuthUtils = (
 
       const data = await authAPI.ResetPassword(dataReset)
       if(data.code === 0){
-        showSuccess(data.message);
+        showSuccess(data.message ?? '');
         newPassword.value = ''
         newPasswordConfirm.value = ''
         setTimeout(function(){
@@ -121,7 +121,7 @@ export const useAuthUtils = (
       } else {
         newPassword.value = ''
         newPasswordConfirm.value = ''
-        showWarning(data.message);
+        showWarning(data.message ?? '');
       }
     } catch (err: any) {
       showWarning(err.message);

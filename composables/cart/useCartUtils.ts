@@ -75,10 +75,9 @@ export const useCartUtils = (
     isTogglePopup.value = value;
   };
 
-  const handleGetDefaultAddress = async (userId?: string) => {
+  const handleGetDefaultAddress = async () => {
     try {
-      if (!userId) return;
-      const data = await storeAddress.getDefaultAddress(userId);
+      const data = await storeAddress.getDefaultAddress();
       if (informationOrder.address === '' && data) {
         handleChooseAddress(data);
       }

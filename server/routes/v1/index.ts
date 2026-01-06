@@ -16,6 +16,7 @@ import addressRoutes from './addresses.router'
 import wishlistRoutes from './product.router'
 import productReviewRouter from './product-review.router'
 import voucherRouter from './voucher.router'
+import fileManageRoutes from './file-manage.router'
 
 const router = Router()
 
@@ -37,5 +38,6 @@ router.use('/addresses', addressRoutes)
 router.use('/product-reviews', productReviewRouter)
 router.use('/voucher', voucherRouter)
 router.use('/', wishlistRoutes)
+router.use('/fileManage', fileManageRoutes)
 
 export default router

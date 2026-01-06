@@ -20,12 +20,12 @@
 
 // });
 
-import { useAccountStore } from "@/stores/admin/account/useAccountStore";
+import { useAccountAdminStore } from "@/stores/admin/account/useAccountAdminStore";
 import { ROUTES } from '@/shared/constants/routes'
 import type { RouteLocationNormalized } from 'vue-router'
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
-  const storeAccount = useAccountStore()
+  const storeAccount = useAccountAdminStore()
 
   if (process.client) {
     await storeAccount.$hydrate?.()

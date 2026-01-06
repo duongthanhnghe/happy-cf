@@ -385,7 +385,7 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const handleGetDefaultAddress = async () => {
-    await utils.handleGetDefaultAddress(storeAccount.getDetailValue?.id);
+    await utils.handleGetDefaultAddress();
   };
 
   const getCartCount = computed(() => state.cartCount.value);

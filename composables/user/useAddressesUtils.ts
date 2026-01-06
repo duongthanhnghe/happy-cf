@@ -12,18 +12,14 @@ export const useAddressesUtils = (
   isTogglePopupList: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
   isTogglePopupAdd: Ref<boolean>,
-  isChildrenPopupManage: Ref<boolean>,
   actionChangeAddress: Ref<boolean>,
   loadingData: Ref<boolean>,
-  userId: string | null,
   storeLocation: any,
 ) => {
 
   const { getListAddressAllApi, fetchAddressAll } = useAddressAll()  
 
   const handleTogglePopupList = (value: boolean, action: boolean) => {
-    if (!userId) return
-
     isTogglePopupList.value = value;
     actionChangeAddress.value = action
     if(!dataList.value) loadItems();
@@ -41,9 +37,8 @@ export const useAddressesUtils = (
   };
 
   async function loadItems() {
-    if (!userId) return
     loadingData.value = true
-    await fetchAddressAll(userId)
+    await fetchAddressAll()
     if (getListAddressAllApi.value?.length) {
       dataList.value = getListAddressAllApi.value
     }
@@ -76,11 +71,11 @@ export const useAddressesUtils = (
     }
   }
 
-  const getDefaultAddress = async (userId: string) => {
-    await fetchAddressAll(userId)
+  const getDefaultAddress = async () => {
+    await fetchAddressAll()
     if (!getListAddressAllApi.value?.length) return
     try {
-      return await addressesAPI.getDefaultAddressByUserId(userId)
+      return await addressesAPI.getDefaultAddressByUserId()
     } catch {
       return null
     }

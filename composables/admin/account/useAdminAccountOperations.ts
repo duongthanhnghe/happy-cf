@@ -32,7 +32,7 @@ export const useAdminAccountOperations = (
 
       const dataLogin = {...unref(formLogin)}
     
-      const data = await accountAPI.Login(dataLogin)
+      const data = await accountAPI.login(dataLogin)
       if (data.code === 0 && data.data.accessToken) {
         token.value = data.data.accessToken
         handleResetLogin()
@@ -106,7 +106,7 @@ export const useAdminAccountOperations = (
   const handleLogout = async () => {
     try {
       Loading(true);
-      const res = await accountAPI.Logout();
+      const res = await accountAPI.logout();
 
       if (res.code === 0) {
         token.value = null;

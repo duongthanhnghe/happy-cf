@@ -17,6 +17,7 @@ import productReviewRouter from './product-review.router'
 import voucherRouter from './voucher.router'
 import voucherUsageRouter from './voucher-usage.router'
 import accountRouter from './account.router'
+import fileManageRoutes from './file-manage.router'
 
 const router = Router()
 
@@ -37,5 +38,6 @@ router.use('/variant-groups', variantGroupRoutes)
 router.use('/product-reviews', productReviewRouter)
 router.use('/voucher', voucherRouter)
 router.use('/voucher-usage', voucherUsageRouter)
+router.use('/fileManage', fileManageRoutes)
 
 export default router

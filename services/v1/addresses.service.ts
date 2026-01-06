@@ -4,10 +4,10 @@ import type { AddressDTO, CreateAddressBody } from '@/server/types/dto/v1/addres
 import { fetchWithAuth } from '../helpers/fetchWithAuth'
 
 export const addressesAPI = {
-  getAll: async (userId: string) => {
+  getAll: async () => {
     try {
       const response = await fetchWithAuth(
-        `${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.LIST}/${userId}`
+        `${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.LIST}`
       )
       const data = await response.json()
       return data
@@ -104,9 +104,9 @@ export const addressesAPI = {
       throw err
     }
   },
-  getDefaultAddressByUserId: async (userId: string) => {
+  getDefaultAddressByUserId: async () => {
     try {
-      const res = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID_DEFAULT(userId)}`)
+      const res = await fetchWithAuth(`${apiConfig.baseApiURL}${API_ENDPOINTS.ADDRESSES.GET_BY_ID_DEFAULT}`)
 
       if (!res.ok) {
         throw new Error('Không thể lấy địa chỉ mặc định')

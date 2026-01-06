@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { useAdminAccountOperations } from "@/composables/admin/account/useAdminAccountOperations";
 import { useAdminAccountState } from "@/composables/admin/account/useAdminAccountState";
 
-export const useAccountStore = defineStore("AccountStore", () => {
+export const useAccountAdminStore = defineStore("AccountAdminStore", () => {
 
   const state = useAdminAccountState()
 

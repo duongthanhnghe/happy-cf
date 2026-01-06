@@ -2,9 +2,9 @@ import type { Request, Response } from "express"
 import { AddressModel } from "../../models/v1/address.entity"
 import { toAddressDTO, toAddressListDTO } from "../../mappers/v1/addresses.mapper"
 
-export const getAllAddress = async (req: Request, res: Response) => {
+export const getAllAddress = async (req: any, res: Response) => {
   try {
-    const { userId } = req.params || req.query
+    const userId = req.user.id;
     if (!userId) {
       return res.status(400).json({ code: 1, message: "Thiếu userId" })
     }
@@ -113,9 +113,9 @@ export const setAddressDefault = async (req: Request, res: Response) => {
   }
 }
 
-export const getDefaultAddressByUserId = async (req: Request, res: Response) => {
+export const getDefaultAddressByUserId = async (req: any, res: Response) => {
   try {
-    const { userId } = req.params
+    const userId = req.user.id;
     if (!userId) {
       return res.status(400).json({ code: 1, message: "Thiếu userId" })
     }

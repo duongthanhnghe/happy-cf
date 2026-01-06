@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { showWarning } from '@/utils/toast';
 import { ROUTES } from '@/shared/constants/routes';
-import { useAccountStore } from '@/stores/admin/account/useAccountStore';
+import { useAccountAdminStore } from '@/stores/admin/account/useAccountAdminStore';
 import { useValidate } from '@/composables/validate/useValidate';
 import { updateAccountSchema, changePasswordFESchema } from '@/shared/validate/schemas/account.schema';
 
@@ -10,7 +10,7 @@ definePageMeta({
   middleware: ROUTES.ADMIN.BASE_INFORMATION.middleware,
 })
 
-const storeAccount = useAccountStore()
+const storeAccount = useAccountAdminStore()
 const {
   validate: validateUpdate,
   formErrors: updateErrors,

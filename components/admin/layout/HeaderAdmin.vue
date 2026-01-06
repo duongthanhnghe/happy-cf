@@ -2,11 +2,11 @@
 <script lang="ts" setup>
 import '@/styles/organisms/layout/header-admin.scss'
 import { ROUTES } from '@/shared/constants/routes';
-import { useAccountStore } from '@/stores/admin/account/useAccountStore';
+import { useAccountAdminStore } from '@/stores/admin/account/useAccountAdminStore';
 import type { MenuItem } from 'server/types/common/menu-item';
 import { computed } from 'vue';
 
-const storeAccount = useAccountStore()
+const storeAccount = useAccountAdminStore()
 const props = defineProps({
   headerRightClass: {
     type: String,

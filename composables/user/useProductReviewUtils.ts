@@ -32,7 +32,7 @@ export const useProductReviewUtils = (
       }
 
       const nextPage = currentPage + 1
-      await fetchListReview(userId,statusFilter.value, nextPage, limit)
+      await fetchListReview(userId, statusFilter.value, nextPage, limit)
 
       if (getListReview.value && getListReview.value.data && getListReview.value.data.length > 0) {
         items.value.data.push(...getListReview.value.data)
