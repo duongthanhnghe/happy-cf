@@ -25,6 +25,7 @@ import {
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 const props = defineProps<{
   product: ProductDTO
@@ -34,6 +35,7 @@ const props = defineProps<{
   deleteFavorite?: Boolean
 }>()
 
+const { t } = useITranslations()
 const storeCart = useCartStore()
 const storeDisplay = useDisplayStore()
 const storeProduct = useProductDetailStore()
@@ -84,7 +86,7 @@ function handleShowAction () {
         :class="[storeDisplay.isLaptop ? 'left-sm top-sm':'left-xs top-xs','position-absolute z-index-1 weight-medium text-size-xs']" 
         color="black" 
         size="xs" 
-        :label="orderText.textStockNull" 
+        :label="t('product.detail.text2').text" 
         tag="span"
       />
     </template>

@@ -5,7 +5,9 @@ import { useProductMostOrderStore } from '@/stores/client/product/useProductMost
 import { POPUP_HEADER_SEARCH } from '@/shared/constants/breakpoints';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
 import { COLUMN } from '@/shared/constants/column';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
+const { t } = useITranslations()
 const store = useSearchStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeViewed = useProductViewedStore()
@@ -60,7 +62,7 @@ const storeViewed = useProductViewedStore()
         :items="storeProductMostOrder.getListProductMostOrder?.data" 
         :loading="storeProductMostOrder.loadingData" 
         :breakpoints="POPUP_HEADER_SEARCH" 
-        headingText="Gợi ý cho bạn" 
+        :headingText="t('product.section.text2')" 
         headingSize="lg"
         class="mt-md pb-mt"
         :skCount="3"
@@ -72,7 +74,7 @@ const storeViewed = useProductViewedStore()
         :items="storeViewed.listItems" 
         :loading="storeViewed.loading"
         :breakpoints="POPUP_HEADER_SEARCH"
-        headingText="Bạn đã xem"
+        :headingText="t('product.section.text1')"
         headingSize="lg"
         class="pt-md"
       />

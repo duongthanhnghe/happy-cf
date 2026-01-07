@@ -14,11 +14,13 @@ import { useProductSEO } from '@/composables/seo/useProductSEO'
 import { useAvailableVouchersForOrder } from '@/composables/voucher/useAvailableVouchers';
 import { useProductRelated } from '@/composables/product/useProductRelated';
 import { useProductReviewByProduct } from '@/composables/product-review/useProductReviewByProduct';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.DETAIL.middleware ?? { middleware: ['product-detail'] },
 })
 
+const { t } = useITranslations()
 const store = useProductDetailStore()
 const storeProductSale = useProductSaleStore()
 const storeViewed = useProductViewedStore()
@@ -104,7 +106,7 @@ const breadcrumbItems = useBreadcrumb({
         :items="store.getListProductRelated" 
         :loading="store.loadingListRelated" 
         container="container container-xxl" 
-        headingText="Gợi ý liên quan" 
+        :headingText="t('product.section.text3')" 
         class="pt-section pb-section"
       />
       <ListReviewByProduct />
@@ -113,7 +115,7 @@ const breadcrumbItems = useBreadcrumb({
         :items="storeProductSale.getListProductSales.data" 
         :loading="storeProductSale.loadingData" 
         container="container container-xxl" 
-        headingText="Khuyến mãi" 
+        :headingText="t('product.promo.title')" 
         class="pt-section"
         :slug="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length ? ROUTES.PUBLIC.PRODUCT.children?.SALE.path: ''"
       />
@@ -122,7 +124,7 @@ const breadcrumbItems = useBreadcrumb({
         :items="storeViewed.listItems" 
         :loading="storeViewed.loading" 
         container="container container-xxl" 
-        headingText="Bạn đã xem" 
+        :headingText="t('product.section.text1')" 
         class="pt-section pb-section"
       />
     </div>

@@ -1,9 +1,11 @@
 
 <script lang="ts" setup>
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto';
 import { ROUTES } from '@/shared/constants/routes';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 
+const { t } = useITranslations()
 const storeDisplay = useDisplayStore()
 const props = defineProps<{
   item: CategoryProductDTO
@@ -22,7 +24,7 @@ const props = defineProps<{
       <div>
         <Text :text="item.categoryName" :size="storeDisplay.isMobileTable ? 'base':'normal'" color="black" weight="medium" limit="1" class="mb-xs line-height-1d2"/>
         <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${item.slug}`">
-          <Text text="Xem thêm" :size="storeDisplay.isMobileTable ? 'xs':'base'" color="gray5" hover="primary" />
+          <Text :text="t('product.category.text2')" :size="storeDisplay.isMobileTable ? 'xs':'base'" color="gray5" hover="primary" />
         </NuxtLink>
       </div>
       <NuxtLink :to="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${item.slug}`">

@@ -5,12 +5,14 @@ import { useSearchStore } from "@/stores/client/product/useSearchStore"
 import { useRoute } from 'vue-router'
 import { nullRules } from '@/utils/validation';
 import { watch } from 'vue'
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.middleware || '',
   showBreadcrumb: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.showBreadcrumb,
 })
 
+const { t } = useITranslations()
 const route = useRoute()
 const store = useSearchStore()
 
@@ -33,7 +35,7 @@ watch(
 <template>
   <div class="container container-xxl ">
     <div class="pt-lg pb-lg">
-      <Heading :text="`Kết quả tìm kiếm: ${store.getListProductResult?.pagination?.total} sản phẩm`" size="xl">
+      <Heading :text="`Kết quả tìm kiếm: ${store.getListProductResult?.pagination?.total} ${t('product.category.text1').text}`" size="xl">
         <v-text-field
           v-model="store.txtSearch"
           label="Tìm kiếm..."

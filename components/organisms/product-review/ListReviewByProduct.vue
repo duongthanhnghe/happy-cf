@@ -2,7 +2,9 @@
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore';
 import { ref, watch } from 'vue';
 import { COLUMN } from '@/shared/constants/column';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
+const { t } = useITranslations()
 const store = useProductDetailStore()
 const valueChangePage = ref<boolean|null>(null)
 
@@ -17,7 +19,7 @@ watch(valueChangePage, (newVal) => {
     <div class="container container-xxl">
       <LoadingData v-if="store.loadingListReviews && store.getListReviewProduct === null" />
       <template v-else>
-        <Heading tag="h2" text="Đánh giá sản phẩm" size="xl" />
+        <Heading tag="h2" :text="t('product.detail.text4')" size="xl" />
 
         <div class="flex align-end gap-xs mb-xs">
           <Text :text="store.getSummaryReview?.averageRating" color="black" size="xxl" weight="semibold" class="line-height-1"/>

@@ -11,12 +11,14 @@ import { useProductViewedStore } from '@/stores/client/product/useProductViewedS
 import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 import { useProductTexts } from '@/composables/texts/useProductTexts';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.middleware,
   headerTypeLeft: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.headerTypeLeft,
 })
 
+const { t } = useITranslations()
 const storeDisplay = useDisplayStore()
 const storeAccount = useAccountStore()
 const storeVariant = useVariantGroupStore()
@@ -61,7 +63,7 @@ onBeforeUnmount(() => {
   <div>
     <Breadcrumb 
       :heading="ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.label" 
-      :description="`${storeProductMostOrder.getTotalItems} Sản phẩm`" 
+      :description="`${storeProductMostOrder.getTotalItems} ${t('product.category.text1').text}`" 
       :image="bannerHero[0]?.image">
       <slot>
         <client-only>
@@ -135,7 +137,7 @@ onBeforeUnmount(() => {
     :items="storeViewed.listItems" 
     :loading="storeViewed.loading" 
     container="container container-xxl" 
-    headingText="Bạn đã xem" 
+    :headingText="t('product.section.text1')" 
     class="pt-section pb-section"
   />
   <client-only>

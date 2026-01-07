@@ -5,7 +5,9 @@ import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { formatCurrency } from "@/utils/global";
+import { useITranslations } from "@/composables/shared/itranslation/useITranslations";
 
+const { t } = useITranslations()
 const store = useCartStore();
 const storeAccount = useAccountStore();
 
@@ -21,7 +23,7 @@ onMounted(async() => {
 <Popup
     popupId="popup-cart" 
     v-model="store.isTogglePopup" 
-    popupHeading="Giỏ hàng" 
+    :popupHeading="t('cart.text1').text" 
     bodyClass="bg-gray6 popup-cart-body" 
     footerFixed 
     align="right"
@@ -53,7 +55,7 @@ onMounted(async() => {
   <template #footer>
     <template v-if="store.getCartListItem && store.getCartListItem.length > 0">
       <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
-        <Button tag="div" label="Tới trang đặt hàng" color="primary" class="w-full" />
+        <Button tag="div" :label="t('cart.text11').text" color="primary" class="w-full" />
       </NuxtLink>
     </template>
   </template>

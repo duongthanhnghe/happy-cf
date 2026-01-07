@@ -1,9 +1,15 @@
 <script lang="ts" setup>
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations'
 
+const { t } = useITranslations()
 const store = useProductDetailStore()
 const storeCart = useCartStore()
+
+const props = defineProps<{
+  classButton?: string
+}>()
 
 </script>
 
@@ -16,9 +22,9 @@ const storeCart = useCartStore()
         <Button color="transparent" icon="add" @click="storeCart.inDecrement(true)" />
       </div>
       <Button
-        :label="store.getCheckButtonOrder ? 'Thêm vào giỏ hàng' : 'Tạm hết hàng'"
+        :label="store.getCheckButtonOrder ? t('product.detail.text1').text : t('product.detail.text2').text"
         :disabled="!store.getCheckButtonOrder"
-        :class="[{'product-detail-button-order-add': store.getCheckButtonOrder}, 'w-full']"
+        :class="[{'product-detail-button-order-add': store.getCheckButtonOrder}, 'w-full', props.classButton]"
         color="primary"
         @handleOnClick="store.handleAddToCart()"
       />

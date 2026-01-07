@@ -2,8 +2,10 @@
 import { computed } from 'vue'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import type { ProductVariantCombinationDTO } from '@/server/types/dto/v1/product.dto' 
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations'
 
 const storeCart = useCartStore()
+const { t } = useITranslations()
 
 const props = defineProps<{
   variantCombinations: ProductVariantCombinationDTO[]
@@ -68,7 +70,7 @@ const selectedStock = computed(() =>
 
     </v-radio-group>
   </div>
-  <Text v-if="showStock" text="Tồn kho:" size="base">
+  <Text v-if="showStock" :text="t('product.detail.text8')" size="base">
     <Text tag="span" :text="selectedStock" weight="semibold" color="green" />
   </Text>
   </client-only>

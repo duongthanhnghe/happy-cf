@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import type { CategoryProductDTO, VariantGroupDTO } from '@/server/types/dto/v1/product.dto';
+
+const { t } = useITranslations()
 const props = defineProps<{
   categoryName: string;
   variantGroups: VariantGroupDTO[];
@@ -25,7 +28,7 @@ const props = defineProps<{
   <Popup 
     :model-value="props.isTogglePopupFilter"
     @update:modelValue="props.onHandleTogglePopupFilter"
-    popupHeading="Bộ lọc" 
+    :popupHeading="t('product.category.text6').text" 
     bodyClass="bg-gray6" 
     footerFixed 
     align="right">
@@ -34,7 +37,7 @@ const props = defineProps<{
     </template>
     <template #body>
       <div v-if="listCategory.length > 0" class="mb-sm">
-        <Text text="Danh mục" color="black" size="normal" weight="semibold" class="mt-sm mb-sm" />
+        <Text :text="t('product.category.text4')" color="black" size="normal" weight="semibold" class="mt-sm mb-sm" />
         <ProductFilterCategory :categoryName="props.categoryName" :list="listCategory"/>
       </div>
 
@@ -46,7 +49,7 @@ const props = defineProps<{
         />
       </div>
 
-      <Text text="Giá" color="black" size="normal" weight="semibold" class="mt-md mb-xs" />
+      <Text :text="t('product.category.text5')" color="black" size="normal" weight="semibold" class="mt-md mb-xs" />
       <ProductFilterPrice
         :price-ranges="priceRanges"
         :selected-price-ranges="selectedPriceRanges"
@@ -55,8 +58,8 @@ const props = defineProps<{
     </template>
     <template #footer>
     <div class="text-center flex gap-xs justify-center">
-      <Button color="black" :class="{'flex-1': props.hasFilter}" label="Tiếp tục xem" @click.prevent="props.onHandleTogglePopupFilter(false)"/>
-      <Button v-if="props.hasFilter" color="secondary" class="flex-1" label="Xoá bộ lọc" @click.prevent="props.onResetFilter()" />
+      <Button color="black" :class="{'flex-1': props.hasFilter}" :label="t('product.category.text7').text" @click.prevent="props.onHandleTogglePopupFilter(false)"/>
+      <Button v-if="props.hasFilter" color="secondary" class="flex-1" :label="t('product.category.text8').text" @click.prevent="props.onResetFilter()" />
     </div>
   </template>
   </Popup>

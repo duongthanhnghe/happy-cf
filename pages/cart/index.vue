@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import '@/styles/templates/cart/cart.scss'
 import type { SubmitEventPromise } from 'vuetify';
 import { onBeforeUnmount, watch } from 'vue'
 import { showWarning } from '@/utils/toast'
@@ -12,6 +11,7 @@ import { useEventBus } from "@/composables/voucher/useEventBus";
 import { useLocationWatchers } from '@/composables/shared/location/useLocationWatchers';
 import { useCartLocationWatchers } from '@/composables/cart/useCartLocationWatchers';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.CART.middleware,
@@ -20,6 +20,7 @@ definePageMeta({
   containerClass: 'bg-gray6'
 })
 
+const { t } = useITranslations()
 const store = useCartStore();
 const storeAccount = useAccountStore();
 const storePaymentStatus = usePaymentStatusStore();
@@ -79,14 +80,14 @@ onBeforeUnmount(() => {
 </script>
 <template>
 
-  <div class=" cart-body">
+  <div class="pb-section">
     <div class="container">
       <LoadingData v-if="store.loadingCartProduct && !store.getCartListItem" />
       <v-form v-else-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
         <!-- LIST PRODUCT -->
         <div class="rd-lg overflow-hidden">
           <div class="flex justify-between align-center mb-xs">
-            <Text text="Giỏ hàng" color="black" size="md" weight="semibold" />
+            <Text :text="t('cart.text1')" color="black" size="md" weight="semibold" />
             <Text text="Xoá tất cả" color="gray5" class="cursor-pointer" @click.prevent="store.handleDeleteCartAll" />
           </div>
           <div class="flex flex-direction-column gap-xs">
@@ -112,9 +113,9 @@ onBeforeUnmount(() => {
         <CartPaymentInfo :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint || 0"/>
       </v-form>
       <div v-else class="text-center">
-        <NoData text="Không có sản phẩm nào trong giỏ hàng!" class="mb-sm"/>
+        <NoData :text="t('cart.text17').text" class="mb-sm"/>
         <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }" >
-          <Button color="black" label="Đặt hàng ngay" />
+          <Button color="black" :label="t('cart.text18').text" />
         </NuxtLink>
       </div>
     </div>

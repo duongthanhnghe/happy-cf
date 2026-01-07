@@ -38,7 +38,7 @@ export const useHeaderStore = defineStore("HeaderStore", () => {
     return [
       ROUTES.PUBLIC.PAGE?.children?.POINT_CLUB,
       ROUTES.PUBLIC.ABOUT,
-      ROUTES.PUBLIC.NEWS,
+      ROUTES.PUBLIC.NEWS?.children?.MAIN,
       ROUTES.PUBLIC.LOGIN,
       ROUTES.PUBLIC.REGISTER,
     ]

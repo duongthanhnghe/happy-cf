@@ -1,22 +1,25 @@
 <script lang="ts" setup>
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { ROUTES } from '@/shared/constants/routes';
 
 const props = defineProps<{
   getTotalPoint: number;
   userId: string|null;
 }>();
+const { t } = useITranslations()
+
 </script>
 <template>
   <Card border class="rd-xl flex justify-between mt-sm cart-point-info-label">
     <template v-if="userId">
-      Được hoàn điểm thưởng
+      {{ t('point.text1').text }}
       <span  class="flex gap-xs weight-semibold">
         <Button tag="span" size="xs" color="secondary" icon="diamond_shine"/>
         {{ props.getTotalPoint }}
       </span>
     </template>
     <template v-else>
-      Hoàn điểm thưởng
+      {{ t('point.text2').text }}
       <NuxtLink  :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
         <Text color="primary" text="Đăng nhập" weight="semibold" class="text-underline" />
       </NuxtLink>

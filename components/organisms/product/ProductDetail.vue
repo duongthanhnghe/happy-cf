@@ -7,7 +7,9 @@ import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
 import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
+const { t } = useITranslations()
 const store = useProductDetailStore();
 const storeCart = useCartStore();
 const storeWishlist = useWishlistStore();
@@ -106,7 +108,7 @@ onBeforeUnmount(() => {
               >
               </v-rating>
               <Text :text="`(${store.getSummaryReview?.averageRating})`" color="gray5" class="line-height-1d2"/>
-              <Text @click="scrollIntoView('list-review-by-product')" text="Xem đánh giá" color="gray5" class="cursor-pointer line-height-1d2 text-underline ml-xs"/>
+              <Text @click="scrollIntoView('list-review-by-product')" :text="t('product.detail.text7')" color="gray5" class="cursor-pointer line-height-1d2 text-underline ml-xs"/>
             </div>
 
             <div class="flex align-end gap-sm align-center mt-xs">
@@ -132,7 +134,7 @@ onBeforeUnmount(() => {
             </div>
            
             <div class="mt-md">
-              <ProductDetailButtonOrder />
+              <ProductDetailButtonOrder classButton="text-size-normal" />
             </div>
           </div>
         </div>

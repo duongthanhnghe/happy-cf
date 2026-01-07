@@ -1,13 +1,15 @@
 <script lang="ts" setup>
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 
+const { t } = useITranslations()
 const store = useCartStore();
 const storeAccount = useAccountStore();
 
 </script>
 <template>
-  <Popup v-model="store.isTogglePopupVoucher" popupHeading="Voucher giảm giá" bodyClass="bg-gray6" footerFixed align="right">
+  <Popup v-model="store.isTogglePopupVoucher" :popupHeading="t('cart.text8').text" bodyClass="bg-gray6" footerFixed align="right">
     <template #body>
       <div v-if="store.allVouchers?.length > 0">
         <div v-if="store.selectedVoucher || store.selectedFreeship" class="mb-md">
@@ -36,7 +38,7 @@ const storeAccount = useAccountStore();
     </template>
     <template #footer>
       <div class="text-center">
-        <Button color="black" label="Tiếp tục thanh toán" @click.prevent="store.handleTogglePopupVoucher(false)"/>
+        <Button color="black" :label="t('cart.text12').text" @click.prevent="store.handleTogglePopupVoucher(false)"/>
       </div>
     </template>
   </Popup>

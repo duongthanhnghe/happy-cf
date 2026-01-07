@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
   <div>
     <Breadcrumb 
       :heading="ROUTES.PUBLIC.PRODUCT.children?.SALE.label" 
-      :description="`${storeProductSale.getTotalItems} Sản phẩm`" 
+      :description="`${storeProductSale.getTotalItems} ${t('product.category.text1').text}`" 
       :image="bannerHero[0]?.image">
       <slot>
         <client-only>
@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
     :items="storeViewed.listItems" 
     :loading="storeViewed.loading" 
     container="container container-xxl" 
-    headingText="Bạn đã xem" 
+    :headingText="t('product.section.text1')" 
     class="pt-section pb-section"
   />
   <client-only>

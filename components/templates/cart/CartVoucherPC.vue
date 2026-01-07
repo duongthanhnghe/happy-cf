@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 
+const { t } = useITranslations()
 const store = useCartStore();
 const storeAccount = useAccountStore();
 
@@ -9,7 +11,7 @@ const storeAccount = useAccountStore();
 <template>
   <Card v-if="store.allVouchers?.length" class="rd-xl mt-sm shadow-1 mt-ms mb-ms">
     <div class="flex justify-between mb-sm">
-      <Text size="md" color="black" weight="semibold" text="Voucher giảm giá" />
+      <Text size="md" color="black" weight="semibold" :text="t('cart.text8')" />
       <div v-if="store.selectedVoucher || store.selectedFreeship" class="flex align-center gap-xs">
         Xoá mã: 
         <CartVoucherChoose />

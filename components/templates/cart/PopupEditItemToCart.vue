@@ -5,7 +5,9 @@ import { useProductDetailStore } from '@/stores/client/product/useProductDetailS
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { formatCurrency } from '@/utils/global';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations'
 
+const { t } = useITranslations()
 const storeProduct = useProductDetailStore();
 const storeCart = useCartStore();
 const storeDisplay = useDisplayStore()
@@ -45,7 +47,7 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
         </div>
 
         <div class="popup-detail-product-card pb-md">
-          <Text size="md" weight="semibold" class="mb-sm" color="black" text="Thêm lưu ý" />
+          <Text size="md" weight="semibold" class="mb-sm" color="black" :text="t('product.detail.text6')" />
 
           <v-textarea class="mb-0" :rows="5" v-model="detail.note" :value="detail.note"/>
 
@@ -63,7 +65,7 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
       <template v-if="detail">
         <Button
           v-if="detail.variantCombination?.variants"
-          :label="storeProduct.getCheckButtonOrder ? 'Cập nhật' : 'Không đủ hàng!'"
+          :label="storeProduct.getCheckButtonOrder ? t('product.detail.text10').text : t('product.detail.text9').text"
           :disabled="!storeProduct.getCheckButtonOrder"
           class="w-full"
           color="primary"
@@ -72,7 +74,7 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
         <template v-else>
           <Button
             v-if="detail.id"
-            :label="storeProduct.getCheckButtonOrder ? 'Cập nhật' : 'Không đủ hàng!'"
+            :label="storeProduct.getCheckButtonOrder ? t('product.detail.text10').text : t('product.detail.text9').text"
             :disabled="!storeProduct.getCheckButtonOrder"
             class="w-full"
             color="primary"

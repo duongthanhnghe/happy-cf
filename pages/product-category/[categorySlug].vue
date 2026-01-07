@@ -12,12 +12,14 @@ import { useProductCategoryDetail } from '@/composables/product/useProductCatego
 import { useCategoryProductSEO } from '@/composables/seo/useCategoryProductSEO';
 import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren';
 import { useRoute } from 'vue-router'
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
   headerTypeLeft: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.headerTypeLeft,
 })
 
+const { t } = useITranslations()
 const storeCategoryMain = useCategoryMainStore()
 const storeDisplay = useDisplayStore()
 const storeAccount = useAccountStore()
@@ -85,7 +87,7 @@ onBeforeUnmount(() => {
   <div v-if="detail" >
     <Breadcrumb 
       :heading="detail.categoryName" 
-      :description="`${storeCategoryMain.getTotalItems} Sản phẩm`" 
+      :description="`${storeCategoryMain.getTotalItems} ${t('product.category.text1').text}`" 
       :image="listBannerCategory && listBannerCategory?.length > 0 ? listBannerCategory : (detail.banner || bannerHero[0].image)">
       <slot>
         <div v-if="storeDisplay.isMobileTable" :id="storeCategoryMain.elFilterProduct">
@@ -161,7 +163,7 @@ onBeforeUnmount(() => {
     :items="storeViewed.listItems" 
     :loading="storeViewed.loading" 
     container="container container-xxl" 
-    headingText="Bạn đã xem" 
+    :headingText="t('product.section.text1')" 
     class="pt-section pb-section"
   />
   <client-only>

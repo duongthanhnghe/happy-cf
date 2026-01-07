@@ -2,7 +2,9 @@
 import { formatCurrency } from '@/utils/global';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
+const { t } = useITranslations()
 const store = useCartStore();
 const storeDisplay = useDisplayStore()
 const props = defineProps<{
@@ -13,7 +15,7 @@ const props = defineProps<{
 <template>
   <Card class="rd-xl mt-sm shadow-1 mt-ms">
     <div class="flex gap-xs align-baseline">
-      <Text text="Chi tiết thanh toán" color="black" size="md" weight="semibold" />
+      <Text :text="t('cart.text9')" color="black" size="md" weight="semibold" />
       <Text v-if="!storeDisplay.isMobileTable && store.getTotalPriceSave !== 0" color="green" :text="`(Tiết kiệm: ${ formatCurrency(store.getTotalPriceSave)})`" />
     </div>
 
@@ -56,8 +58,8 @@ const props = defineProps<{
     </Text>
 
     <template v-if="storeDisplay.isMobileTable">
-      <div class="cart-mb-submit shadow-2">
-        <div class="flex justify-between cart-mb-submit-item" @click.prevent="store.handleTogglePopupVoucher(true)">
+      <div class="cart-mb-submit position-fixed left-0 bottom-0 width-full pd-ms bg-white shadow-2 z-index-13">
+        <div class="flex justify-between gap-xs cart-mb-submit-item pb-05 mb-05 border-bottom-default" @click.prevent="store.handleTogglePopupVoucher(true)">
           <Text color="gray5" text="Voucher" />
           <div v-if="store.selectedVoucher || store.selectedFreeship" class="flex align-center gap-xs">
             <CartVoucherListText v-if="store.voucherUsage.length > 0" />
@@ -69,8 +71,8 @@ const props = defineProps<{
           </Text>
         </div>
 
-        <div v-if="props.userId" class="flex justify-between cart-mb-submit-item" @click.prevent="store.handleTogglePopupPoint(true)">
-          <Text color="gray5" text="Sử dụng điểm" />
+        <div v-if="props.userId" class="flex justify-between gap-xs cart-mb-submit-item pb-05 mb-05 border-bottom-default" @click.prevent="store.handleTogglePopupPoint(true)">
+          <Text color="gray5" :text="t('cart.text7')" />
           <Text v-if="!store.usedPointOrder.pointInput" color="gray5" class="line-height-1 flex align-center gap-xs">
             Đang có: {{ formatCurrency(props.balancePoint).replace('đ','') }}
             <MaterialIcon name="keyboard_arrow_right"/>

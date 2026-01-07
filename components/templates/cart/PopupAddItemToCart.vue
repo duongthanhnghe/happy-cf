@@ -6,7 +6,9 @@ import { formatCurrency } from '@/utils/global';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
 import { computed, watch } from 'vue';
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
+const { t } = useITranslations()
 const storeProductDetail = useProductDetailStore();
 const storeCart = useCartStore();
 const storeDisplay = useDisplayStore()
@@ -72,7 +74,7 @@ watch(
           </div>
        
           <div class="popup-detail-product-card pb-md">
-            <Text size="md" weight="semibold" class="mb-sm" color="black" text="Thêm lưu ý" />
+            <Text size="md" weight="semibold" class="mb-sm" color="black" :text="t('product.detail.text6')" />
 
             <v-textarea class="mb-0" :rows="5" v-model="storeCart.note"/>
             <div class="flex justify-center">
@@ -87,7 +89,7 @@ watch(
       <template #footer>
         <client-only>
           <Button
-            :label="storeProductDetail.getCheckButtonOrder ? 'Thêm vào giỏ hàng' : 'Tạm hết hàng'"
+            :label="storeProductDetail.getCheckButtonOrder ? t('product.detail.text1').text : t('product.detail.text2').text"
             :disabled="!storeProductDetail.getCheckButtonOrder"
             class="w-full"
             color="primary"

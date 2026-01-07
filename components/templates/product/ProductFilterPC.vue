@@ -1,5 +1,9 @@
 <script lang="ts" setup>
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import type { CategoryProductDTO, VariantGroupDTO } from '@/server/types/dto/v1/product.dto';
+
+const { t } = useITranslations()
+
 const props = defineProps<{
   categoryName: string
   variantGroups: VariantGroupDTO[]
@@ -21,12 +25,12 @@ const props = defineProps<{
 </script>
 <template>
   <div class="sticky sticky-cover-header min-width-300 max-width-300 overflow-auto max-height-cover-header pt-section">
-    <Button v-if="props.hasFilter" color="black" class="w-full mb-md" label="Xoá bộ lọc" icon="filter_alt_off" @click.prevent="props.onResetFilter()" />
-    <Text text="Phân loại" color="black" size="normal" weight="semibold" class="mb-sm" />
+    <Button v-if="props.hasFilter" color="black" class="w-full mb-md" :label="t('product.category.text8').text" icon="filter_alt_off" @click.prevent="props.onResetFilter()" />
+    <Text :text="t('product.category.text3')" color="black" size="normal" weight="semibold" class="mb-sm" />
     <ProductFilterDefault />
 
     <template v-if="listCategory.length > 0">
-      <Text text="Danh mục" color="black" size="normal" weight="semibold" class="mt-md mb-xs" />
+      <Text :text="t('product.category.text4')" color="black" size="normal" weight="semibold" class="mt-md mb-xs" />
       <ProductFilterCategory :categoryName="props.categoryName" :list="listCategory"/>
     </template>
 
@@ -38,7 +42,7 @@ const props = defineProps<{
       />
     </div> 
 
-    <Text text="Giá" color="black" size="normal" weight="semibold" class="mt-md mb-xs" />
+    <Text :text="t('product.category.text5')" color="black" size="normal" weight="semibold" class="mt-md mb-xs" />
     <ProductFilterPrice
       :price-ranges="priceRanges"
       :selected-price-ranges="selectedPriceRanges"
