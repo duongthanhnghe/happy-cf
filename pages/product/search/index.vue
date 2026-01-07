@@ -34,7 +34,7 @@ watch(
 
 <template>
   <div class="container container-xxl ">
-    <div class="pt-lg pb-lg">
+    <div class="pt-section pb-section">
       <Heading :text="`Kết quả tìm kiếm: ${store.getListProductResult?.pagination?.total} ${t('product.category.text1').text}`" size="xl">
         <v-text-field
           v-model="store.txtSearch"

@@ -27,12 +27,17 @@ a {
   margin-left: auto;
   margin-right: auto;
   max-width: 1200px;
-  &-xxl {
-    max-width: 1800px;
-  }
   &-cover {
     margin-left: -$gutter-x;
     margin-right: -$gutter-x;
+  }
+  @media (min-width: 1200px){
+    max-width: 1300px;
+  }
+  @media (min-width: 1440px){
+    &-xxl {
+      max-width: 1800px;
+    }
   }
 }
 
@@ -209,6 +214,9 @@ a {
 
 .min {
   &-width {
+    &-xl {
+      min-width: $space-xl;
+    }
     &-40 {
       min-width: 40px !important;
     }
@@ -261,6 +269,9 @@ a {
     &-200 {
       max-width: 200px;
     }
+    &-250 {
+      max-width: 250px;
+    }
     &-300 {
       max-width: 300px;
     }
@@ -292,6 +303,9 @@ a {
     }
     &-70 {
       max-height: 70px;
+    }
+    &-80 {
+      max-height: 80px;
     }
     &-100 {
       max-height: 100px;
@@ -661,6 +675,9 @@ body .bg {
 .pt {
   &-0 {
     padding-top: 0 !important;
+  }
+  &-05 {
+    padding-top: 0.5rem !important;
   }
   &-xs {
     padding-top: $space-xs !important;
@@ -1186,6 +1203,12 @@ body .bg {
   cursor: pointer;
 }
 
+.visibility {
+  &-hidden {
+    visibility: hidden;
+  }
+}
+
 .border {
   &-bottom {
     &-default {
@@ -1196,6 +1219,16 @@ body .bg {
     }
     &-none {
       border-bottom: none !important;
+    }
+  }
+  &-left {
+    &-default {
+      border-left: 1px solid $cl-gray6;
+    }
+  }
+  &-right {
+    &-default {
+      border-right: 1px solid $cl-gray6;
     }
   }
   &-default {

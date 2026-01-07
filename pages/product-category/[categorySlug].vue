@@ -49,7 +49,7 @@ const { data, error } = await useAsyncData(
         await storeVariant.fetchVariantGroupStore()
       }
 
-      if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.CATEGORY] && !detail?.banner) {
+      if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.CATEGORY] && !data.data?.banner) {
         await fetchImageBlock(IMAGE_BLOCK_PAGES.CATEGORY, {
           [IMAGE_BLOCK_POSITIONS.HERO]: 1,
         })
@@ -78,6 +78,7 @@ const bannerHero = getByPosition(
   IMAGE_BLOCK_POSITIONS.HERO
 )
 
+
 onBeforeUnmount(() => {
   storeCategoryMain.resetFilter()
 })
@@ -88,7 +89,7 @@ onBeforeUnmount(() => {
     <Breadcrumb 
       :heading="detail.categoryName" 
       :description="`${storeCategoryMain.getTotalItems} ${t('product.category.text1').text}`" 
-      :image="listBannerCategory && listBannerCategory?.length > 0 ? listBannerCategory : (detail.banner || bannerHero[0].image)">
+      :image="listBannerCategory && listBannerCategory?.length > 0 ? listBannerCategory : (detail.banner || bannerHero[0]?.image)">
       <slot>
         <div v-if="storeDisplay.isMobileTable" :id="storeCategoryMain.elFilterProduct">
           <ProductFilterMobile 
@@ -165,6 +166,7 @@ onBeforeUnmount(() => {
     container="container container-xxl" 
     :headingText="t('product.section.text1')" 
     class="pt-section pb-section"
+    fullScreen
   />
   <client-only>
     <PopupManageAddress v-if="storeAccount.getUserId" />

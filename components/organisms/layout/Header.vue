@@ -87,11 +87,11 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
           <client-only>
             <HeaderMenu :listMenu="storeHeader.listMenu" :menuLevel="storeHeader.menuLevel" />
           </client-only>
-          <div class="header-right flex gap-sm">
+          <div class="header-right flex gap-sm justify-end">
             <Button
               color="third"
               icon="search"
-              :class="['header-search-button-toggle rd-xs', storeDisplay.isLaptop ? 'min-width-300 justify-start weight-normal pl-ms pr-ms':'']"
+              :class="['header-search-button-toggle rd-xs', storeDisplay.isLaptop ? 'width-full max-width-250 justify-start weight-normal pl-ms pr-ms':'']"
               :label="storeDisplay.isLaptop ? 'Tìm kiếm':''"
               @click="storeSearch.handleTogglePopup(true)"
             />
@@ -107,7 +107,7 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
               <img 
                 v-else
                 @click="storeAccount.handleTogglePopupAccountMenuInfo(true)"
-                :src="storeAccount.getDetailValue?.avatar" :alt="storeAccount.getDetailValue?.fullname" class="cursor-pointer object-fit-cover rd-xs width-xl height-xl border-default border-color-gray3"
+                :src="storeAccount.getDetailValue?.avatar" :alt="storeAccount.getDetailValue?.fullname" class="cursor-pointer object-fit-cover rd-xs width-xl min-width-xl height-xl border-default border-color-gray3"
               />
             </template>
             </client-only>

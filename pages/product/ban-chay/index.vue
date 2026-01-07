@@ -139,6 +139,7 @@ onBeforeUnmount(() => {
     container="container container-xxl" 
     :headingText="t('product.section.text1')" 
     class="pt-section pb-section"
+    fullScreen
   />
   <client-only>
     <PopupManageAddress v-if="storeAccount.getUserId" />

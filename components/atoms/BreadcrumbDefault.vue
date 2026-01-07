@@ -37,7 +37,7 @@ const breadcrumbs = computed<(MenuItem & { isCurrent: boolean })[]>(() => {
 </script>
 
 <template>
-  <v-breadcrumbs class="pl-0 pr-0">
+  <v-breadcrumbs class="pl-0 pr-0 overflow-x-auto white-space scroll-hide">
     <template v-for="item in breadcrumbs" :key="item.path || item.label">
       <v-breadcrumbs-item>
         <router-link

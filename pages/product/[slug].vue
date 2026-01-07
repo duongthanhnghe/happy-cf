@@ -108,6 +108,7 @@ const breadcrumbItems = useBreadcrumb({
         container="container container-xxl" 
         :headingText="t('product.section.text3')" 
         class="pt-section pb-section"
+        fullScreen
       />
       <ListReviewByProduct />
       <SectionProductListSwiper 
@@ -117,6 +118,7 @@ const breadcrumbItems = useBreadcrumb({
         container="container container-xxl" 
         :headingText="t('product.promo.title')" 
         class="pt-section"
+        fullScreen
         :slug="storeProductSale.getTotalItems > storeProductSale.getListProductSales.data?.length ? ROUTES.PUBLIC.PRODUCT.children?.SALE.path: ''"
       />
       <SectionProductListSwiper 
@@ -126,6 +128,7 @@ const breadcrumbItems = useBreadcrumb({
         container="container container-xxl" 
         :headingText="t('product.section.text1')" 
         class="pt-section pb-section"
+        fullScreen
       />
     </div>
   </template>

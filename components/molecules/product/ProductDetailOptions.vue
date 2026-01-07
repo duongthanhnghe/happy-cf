@@ -11,6 +11,7 @@ const props = defineProps<{
   variantCombinations: ProductVariantCombinationDTO[]
   showHeading?: boolean
   showStock?: boolean
+  classCustom?: string
 }>()
 
 const variantGroupsUI = computed(() =>
@@ -42,7 +43,7 @@ const selectedStock = computed(() =>
         <Text tag="span" :text="getSelectedVariantName(group.groupId)" weight="semibold" color="black" />
       </Text>
     
-      <div class="flex flex-wrap gap-xs">
+      <div :class="['flex flex-wrap gap-xs', classCustom]">
         <v-radio
           v-for="variant in group.variants"
           :key="variant.variantId"

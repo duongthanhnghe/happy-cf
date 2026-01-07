@@ -18,7 +18,7 @@ const { t } = useITranslations()
       <Text v-if="props.totalPendingPoints" :text="`Đang chờ ${formatCurrency(props.totalPendingPoints).replace('đ','')} point`" />
     </Card>
     <Card size="sm" bg="black2" class="flex-1 rd-lg" style="max-width: 140px">
-      <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }">
+      <NuxtLink :to="{ path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path }">
         <Text :text="t('cart.text15')" color="white" weight="semibold" size="normal" />
       </NuxtLink>
       <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">

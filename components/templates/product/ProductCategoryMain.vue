@@ -39,7 +39,5 @@ const emit = defineEmits<{
          />
       </div>
     </template>
-
-    <!-- <Text color="gray5" v-if="props.description" class="mt-md" :text="props.description" /> -->
   </div>
 </template>

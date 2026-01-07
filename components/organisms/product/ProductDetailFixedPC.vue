@@ -9,12 +9,12 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="product-detail-fixed-pc shadow-2">
+  <div class="width-full position-fixed bg-white left-0 top-0 transition-0d3 z-index-13 shadow-2">
     <div class="container container-xxl flex justify-between align-center">
-      <div class="product-detail-fixed-pc-item">
+      <div class="pl-05 pr-05">
         <div class="flex gap-sm">
-          <div class="bg-gray2 rd-lg">
-            <img :src="detail.image" :alt="detail.productName" width="75" class="rd-md"/>
+          <div class="bg-gray2 rd-lg max-height-80 overflow-hidden flex">
+            <img :src="detail.image" :alt="detail.productName" width="75" class="rd-md object-fit-cover"/>
           </div>
           <div>
             <Text :text="detail.productName" size="normal" limit="2" weight="semibold" color="black" />
@@ -22,13 +22,13 @@ const props = defineProps<{
           </div>
         </div>
       </div>
-      <div v-if="detail?.variantCombinations.length" class="product-detail-fixed-pc-item flex options max-width-600">
+      <div v-if="detail?.variantCombinations.length" class="border-left-default border-right-default gap-md pl-md pr-md pt-05 pb-05 flex options max-width-600">
         <ProductDetailOptions 
           :variantCombinations="detail.variantCombinations"
           showHeading
         />
       </div>
-      <div class="product-detail-fixed-pc-item flex-1 max-width-400">
+      <div class="pl-05 pr-05 flex-1 max-width-400">
         <ProductDetailButtonOrder />
       </div>
     </div>

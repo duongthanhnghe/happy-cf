@@ -7,15 +7,13 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="product-detail-fixed-mobile shadow-2">
-    <div class="flex flex-direction-column gap-xs">
+  <div class="width-full position-fixed bg-white left-0 bottom-0 pd-ms transition-0d3 z-index-13 shadow-2">
+    <div v-if="detail?.variantCombinations.length" class="flex flex-direction-column gap-xs mb-sm">
       <ProductDetailOptions 
-        v-if="detail?.variantCombinations.length" 
         :variantCombinations="detail.variantCombinations"
+        classCustom="overflow-x-auto scroll-hide"
       />
     </div>
-    <div class="mt-sm">
-      <ProductDetailButtonOrder />
-    </div>
+    <ProductDetailButtonOrder />
   </div>
 </template>

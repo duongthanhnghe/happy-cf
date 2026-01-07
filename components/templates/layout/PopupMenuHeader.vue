@@ -42,7 +42,7 @@ watch(
       <div class="bg-gray pd-ms">
         <HeaderBoxSearch
           v-model="store.txtSearch"
-          @submit="store.onChangeSearch"
+          @submit="store.handleViewAll"
           @cancel="store.handleCancelSearch"
         />
         <HeaderMenuMobile

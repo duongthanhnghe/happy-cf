@@ -116,7 +116,7 @@ onBeforeUnmount(() => {
                 <Text :text="formatCurrency(detail.priceDiscounts)" size="lg" weight="semibold" color="black" />
                 <template v-if="detail.priceDiscounts !== detail.price">
                   <Text :text="formatCurrency(detail.price)" size="lg" color="gray5" class="text-line-through" />
-                  <span class="product-detail-percent">{{ store.percentDiscount }}</span>
+                  <Button tag="span" color="primary" size="sm" :label="store.percentDiscount" class="pl-sm pr-sm" />
                 </template>
               </template>
               <template v-else>
@@ -142,8 +142,8 @@ onBeforeUnmount(() => {
     </div>
 
     <ProductDetailDescription :description="detail.description" />
-    <ProductDetailFixedMobile v-if="storeDisplay.isMobileTable" :detail="detail" :class="{ hide: store.isDetailInfoActive }" />
-    <ProductDetailFixedPC v-else :detail="detail" :variantPrice="store.variantPrice" :class="{ hide: store.isDetailInfoActive }" />
+    <ProductDetailFixedMobile v-if="storeDisplay.isMobileTable" :detail="detail" :class="{'opacity-0 visibility-hidden': store.isDetailInfoActive }" />
+    <ProductDetailFixedPC v-else :detail="detail" :variantPrice="store.variantPrice" :class="{'opacity-0 visibility-hidden': store.isDetailInfoActive }" />
   </div>
 
   <PopupProductDetailNote />

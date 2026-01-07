@@ -1,5 +1,4 @@
 import { type Ref } from 'vue';
-import { showWarning } from '@/utils/toast';
 import type { ProductPaginationDTO } from '@/server/types/dto/v1/product.dto';
 import type { SearchKeywordDTO } from '@/server/types/dto/v1/search-keyword.dto';
 import { ROUTES } from '@/shared/constants/routes';
@@ -61,7 +60,6 @@ export const useSearchUtils = (
 
   const onChangeSearch = async () => {
     if(txtSearch.value === '') {
-      showWarning('Vui long nhap tu khoa')
       if(items.value) handleCancelSearch()
       return;
     }
