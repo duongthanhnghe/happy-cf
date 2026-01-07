@@ -6,7 +6,7 @@ export const homeText = {
 export const orderText = {
   headingCategory: 'Danh mục sản phẩm',
   headingProductSales: 'Sản phẩm khuyến mãi',
-  textStockNull: 'Tạm hêt hàng'
+  textStockNull: 'Hêt hàng'
 }
 
 export const globalText = {

@@ -79,9 +79,15 @@ function handleShowAction () {
         <template v-else />
       </template>
     </client-only>
-    <div v-if="product.amount === 0 && !product.variantCombinations.length" class="text-color-white bg-black-20 el-absolute left-0 top-0 flex justify-center align-center">
-      {{orderText.textStockNull}}
-    </div>
+    <template v-if="product.amount === 0 && !product.variantCombinations.length">
+      <Button v-if="!listView"
+        :class="[storeDisplay.isLaptop ? 'left-sm top-sm':'left-xs top-xs','position-absolute z-index-1 weight-medium text-size-xs']" 
+        color="black" 
+        size="xs" 
+        :label="orderText.textStockNull" 
+        tag="span"
+      />
+    </template>
     <div v-else>
       <div v-if="storeCart.getTemplate1Amount(product.id) < 1">
         <Button 
@@ -144,18 +150,18 @@ function handleShowAction () {
       />
     </div>
   </div>
-  <div :class="[{'pd-05': props.variant === 'card'},'product-template1-content pt-ms']">
+  <div :class="[{'pd-05': props.variant === 'card'},storeDisplay.isLaptop ? 'pt-ms':'pt-sm','product-template1-content']">
     <NuxtLink 
       v-if="product.slug" 
       :to="ROUTE_HELPERS.productDetail(product.slug)"
     >
-      <Text :text="product.productName" limit="2" class="mb-sm line-height-1d4" />
+      <Text :text="product.productName" limit="2" :class="[storeDisplay.isLaptop ? 'mb-sm':'mb-05','line-height-1d4']" />
     </NuxtLink>
     <div class="product-template1-price flex gap-xs align-center">
-      <Text class="line-height-1" weight="semibold">{{ formatCurrency(product.priceDiscounts) }}</Text>
+      <Text class="line-height-1" weight="semibold" :size="storeDisplay.isLaptop ? 'base':'xs'" >{{ formatCurrency(product.priceDiscounts) }}</Text>
       <template v-if="product.percentDiscount && product.percentDiscount !== 0">
         <Text color="gray5" size="xs" class='line-height-1 text-line-through'>{{ formatCurrency(product.price) }}</Text>
-        <Button tag="div" color="primary" size="xs" :label="`-${product.percentDiscount}%`" class="pl-xs pr-xs rd-lg height-auto line-height-1d2" />
+        <Button tag="div" color="primary" size="xs" :label="`-${product.percentDiscount}%`" :class="[{'text-size-xs': !storeDisplay.isLaptop } ,'pl-xs pr-xs rd-lg height-auto line-height-1d2']" />
       </template>
     </div>
   </div>

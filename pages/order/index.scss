@@ -3,7 +3,7 @@
 $height-tab: 48px;
 
 .order-main-content-scroll {
-  height: calc(100dvh - ($height-header + $height-menu-bottom + $height-tab));
+  height: calc(100dvh - ($height-header + $height-menu-bottom));
   overflow: hidden;
 }
 

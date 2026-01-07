@@ -770,6 +770,9 @@ body .bg {
   &-0 {
     margin-bottom: 0 !important;
   }
+  &-05 {
+    margin-bottom: 0.5rem !important;
+  }
   &-xs {
     margin-bottom: $space-xs !important;
   }
@@ -1310,6 +1313,12 @@ body .bg {
   }
   &-1 {
     left: 1rem !important;
+  }
+  &-xs {
+    left: $space-xs !important;
+  }
+  &-sm {
+    left: $space-sm !important;
   }
 }
 
