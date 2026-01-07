@@ -287,6 +287,12 @@ a {
     &-40 {
       max-height: 40px;
     }
+    &-70 {
+      max-height: 70px;
+    }
+    &-100 {
+      max-height: 100px;
+    }
     &-200 {
       max-height: 200px;
     }
@@ -1199,6 +1205,9 @@ body .bg {
     &-gray3 {
       border-color: rgba(255, 255, 255, 0.4);
     }
+    &-gray8 {
+      border-color: $cl-gray8;
+    }
   }
 }
 
@@ -1353,6 +1362,9 @@ body .bg {
   }
   &-wrap {
     flex-wrap: wrap;
+    &-no {
+      flex-wrap: nowrap;
+    }
   }
   &-direction-column {
     flex-direction: column;
@@ -1425,6 +1437,15 @@ body .bg {
   }
 }
 
+.order {
+  &-1 {
+    order: 1;
+  }
+  &-2 {
+    order: 2;
+  }
+}
+
 .transform {
   &-scale {
     &-0 {
@@ -1457,6 +1478,9 @@ body .bg {
   }
   &-scale:hover {
     transform: scale(1.2)
+  }
+  &-underline:hover {
+    text-decoration: underline;
   }
 }
 

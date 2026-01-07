@@ -25,7 +25,7 @@ export const useAdminITranslationState = () => {
   const search = ref<string>("");
   const isTogglePopupAdd = ref<boolean>(false);
   const isTogglePopupUpdate = ref<boolean>(false);
-  const itemsPerPage = 10;
+  const itemsPerPage = 50;
   const currentTableOptions = ref<TableOpt>({
     page: 1,
     itemsPerPage,

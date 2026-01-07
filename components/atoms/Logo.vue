@@ -3,7 +3,7 @@ import { ROUTES } from '@/shared/constants/routes'
 import { computed } from 'vue'
 import { NuxtLink } from '#components'
 
-type LogoSize = 'sm' | 'md' | 'lg' | 'xl'
+type LogoSize = '100' | '70' | 'xl'
 
 const props = withDefaults(defineProps<{
   logo: string

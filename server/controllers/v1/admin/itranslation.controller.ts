@@ -68,7 +68,7 @@ export const createTranslation = async (req: Request, res: Response) => {
   try {
     const existing = await ITranslationModel.findOne({ key });
     if (existing) {
-      return res.status(400).json({ code: 1, message: "Key đã tồn tại" });
+      return res.json({ code: 1, message: "Key đã tồn tại" });
     }
 
     const t = await ITranslationModel.create({ key, type, translations });

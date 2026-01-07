@@ -46,6 +46,7 @@ const props = withDefaults(defineProps<{
         :count="props.skCount"
         :row="COLUMN.ROW"
         :column="props.skColumn"
+        rowClass="flex-wrap-no"
         heading
       />
       <template v-else-if="items.length > 0">

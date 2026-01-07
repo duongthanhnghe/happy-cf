@@ -15,7 +15,7 @@ export const useAdminITranslationOperations = (
   dataList: Ref<TranslationDTO[] | null>,
   serverItems: Ref<TranslationDTO[]>,
   loadingTable: Ref<Boolean>,
-  totalItems: Ref<Number>,
+  totalItems: Ref<number>,
   search: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
   isTogglePopupAdd: Ref<boolean>,
@@ -46,9 +46,15 @@ export const useAdminITranslationOperations = (
     isTogglePopupUpdate.value = value;
   };
 
+  const getDefaultFormValues = () => ({
+    key: "",
+    type: "text" as const,
+    translations: { vi: "", en: "" },
+  });
+
   const handleResetForm = () => {
-    Object.assign(formItem, defaultForm);
-    Object.assign(updateItem, { ...defaultForm, id: "" });
+    Object.assign(formItem, getDefaultFormValues());
+    Object.assign(updateItem, { ...getDefaultFormValues(), id: "" });
   };
 
   const ListAllTranslationAPI = {
@@ -103,8 +109,14 @@ export const useAdminITranslationOperations = (
         showSuccess(data.message ?? 'Thêm thành công');
         isTogglePopupAdd.value = false;
         handleResetForm();
-        loadItems(currentTableOptions.value);
-      } else showWarning(data.message ?? '');
+        if (data.data) {
+          serverItems.value.unshift(data.data);
+          dataList.value?.unshift(data.data);
+          totalItems.value = totalItems.value + 1;
+        }
+        // loadItems(currentTableOptions.value);
+      } else if (data.code === 1) showWarning(data.message ?? '');
+      else showWarning(data.message ?? '');
     } catch (err) {
       console.error("Error create translation:", err);
     } finally {
