@@ -1,35 +1,19 @@
 <script lang="ts" setup>
-import { watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { useLayoutStore } from '@/stores/client/layout/useUserLayoutStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { ROUTES } from '@/shared/constants/routes'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
-import type { HeaderTypeLeft } from '@/stores/client/layout/useUserLayoutStore'
 
 const store = useAccountStore();
-const storeLayout = useLayoutStore()
 const storeDisplay = useDisplayStore()
-const route = useRoute()
 const listMenu = [
   ...store.accountMenu,
   { label: 'Đăng xuất', action: () => store.handleLogout(), icon: 'logout' }
 ];
-
-watch(() => route.fullPath, () => {
-  const meta = route.meta
-
-  storeLayout.setHeaderTypeLeft('logo')
-
-  if (meta?.headerTypeLeft) {
-    storeLayout.setHeaderTypeLeft(meta.headerTypeLeft as HeaderTypeLeft)
-  }
-}, { immediate: true })
 </script>
 
 <template>
   <div :class="['min-height-dvh pb-section',storeDisplay.isLaptop ? 'bg-gray2':'bg-gray6']">
-    <Header :type-left="storeLayout.headerTypeLeft"/>
+    <Header />
     <template v-if="storeDisplay.isLaptop">
       <SectionAccount showLevel />
       <div class="container">

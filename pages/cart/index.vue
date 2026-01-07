@@ -15,7 +15,9 @@ import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.CART.middleware,
+  showBreadcrumb: ROUTES.PUBLIC.CART.showBreadcrumb,
   layout: ROUTES.PUBLIC.CART.layout,
+  containerClass: 'bg-gray6'
 })
 
 const store = useCartStore();
@@ -77,10 +79,8 @@ onBeforeUnmount(() => {
 </script>
 <template>
 
-  <div class="bg-gray6 cart-body">
+  <div class=" cart-body">
     <div class="container">
-      <BreadcrumbDefault />
-      
       <LoadingData v-if="store.loadingCartProduct && !store.getCartListItem" />
       <v-form v-else-if="store.getCartListItem && store.getCartListItem.length > 0" validate-on="submit lazy" @submit.prevent="submitOrder">
         <!-- LIST PRODUCT -->

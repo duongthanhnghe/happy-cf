@@ -8,7 +8,7 @@ import { watch } from 'vue'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.middleware || '',
-  showBreadcrumb: true,
+  showBreadcrumb: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.showBreadcrumb,
 })
 
 const route = useRoute()

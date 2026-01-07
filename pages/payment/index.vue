@@ -8,6 +8,8 @@ import { useRuntimeConfig } from 'nuxt/app';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PAYMENT.middleware,
+  showBreadcrumb: ROUTES.PUBLIC.PAYMENT.showBreadcrumb,
+  containerClass: 'bg-gray2',
 })
 
 const config = useRuntimeConfig()
@@ -32,9 +34,8 @@ onBeforeUnmount(() => {
 
 </script>
 <template>
-  <div class="bg-gray2 min-height-dvh" v-if="route.query.orderId && route.query.amount && route.query.orderCode && store.qrCodeUrl">
+  <div class="pt-section pb-section" v-if="route.query.orderId && route.query.amount && route.query.orderCode && store.qrCodeUrl">
     <div class="container">
-      <BreadcrumbDefault />
       <Card size="md" class="rd-xl max-width-800 m-auto">
         <Text text="QR Thanh toán đơn hàng" color="black" size="lg" weight="semibold" align="center" class="text-uppercase" />
         <Text text="Vui lòng kiểm tra số tiền cần thanh toán trước khi chuyển khoản" color="gray8" align="center" class="mt-xs" />
@@ -77,7 +78,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </Card>
-      <div class="flex justify-center mt-ms pb-md">
+      <div class="flex justify-center mt-ms">
         <Button
           color="black"
           icon="download"

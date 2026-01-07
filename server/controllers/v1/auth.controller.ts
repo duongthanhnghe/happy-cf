@@ -232,15 +232,6 @@ export const googleLogin = async (req: Request, res: Response) => {
     );
 
     setRefreshCookie(req, res, "refresh_token", refreshToken)
-    // res.cookie("refresh_token", refreshToken, {
-    //   httpOnly: true,
-    //   secure: false,
-    //   // sameSite: "strict",
-    //   // path: "/api/v1/auth",
-    //   sameSite: "lax",
-    //   path: "/",
-    //   maxAge: 10 * 24 * 60 * 60 * 1000 // 10 ngày
-    // });
 
     return res.status(200).json({
       code: 0,
@@ -335,13 +326,21 @@ export const resetPassword = async (req: Request, res: Response) => {
 };
 
 export const updateAccount = async (req: any, res: Response) => {
-  const userId = req.user.id;
-  const updated = await UserModel.findByIdAndUpdate(userId, req.body, { new: true });
-  if (!updated) {
-    return res.status(404).json({ code: 1, success: false, message: "User not found" });
-  }
+  try {
+    const userId = req.user.id;
+    const updated = await UserModel.findByIdAndUpdate(userId, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ code: 1, success: false, message: "Cập nhật thất bại!" });
+    }
 
-  res.json({ code: 0, message: "Update success", data: toUserDTO(updated!) });
+    res.json({ code: 0, message: "Cập nhật thành công", data: toUserDTO(updated!) });
+  } catch (err: any) {
+    return res.status(500).json({
+      code: 2,
+      message: "Cập nhật thất bại!",
+      error: err.message,
+    });
+  }
 };
 
 export const getUserById = async (req: Request, res: Response) => {

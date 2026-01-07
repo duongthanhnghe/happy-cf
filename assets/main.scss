@@ -136,6 +136,9 @@ a {
   &-auto {
     width: auto;
   }
+  &-xl {
+    width: $space-xl;
+  }
   &-p20 {
     width: 20%;
   }
@@ -174,6 +177,9 @@ a {
 .height {
   &-auto {
     height: auto !important;
+  }
+  &-xl {
+    height: $space-xl;
   }
   &-full {
     height: 100%;
@@ -1186,6 +1192,9 @@ body .bg {
     }
     &-gray2 {
       border-color: $cl-gray2;
+    }
+    &-gray3 {
+      border-color: rgba(255, 255, 255, 0.4);
     }
   }
 }

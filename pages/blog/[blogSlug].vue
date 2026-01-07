@@ -8,6 +8,7 @@ import { useSeoTitle } from '@/composables/seo/useSEO'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.NEWS.children?.DETAIL.middleware ?? { middleware: ['post-detail'] },
+  showBreadcrumb: ROUTES.PUBLIC.NEWS.children?.DETAIL.showBreadcrumb,
   layout: ROUTES.PUBLIC.PAGE.layout,
 })
 

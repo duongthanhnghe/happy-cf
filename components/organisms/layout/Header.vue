@@ -9,7 +9,10 @@ import { ROUTES } from '@/shared/constants/routes';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
 import { useHeaderStore } from '@/stores/client/layout/useHeaderStore';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const storeSetting = useBaseInformationStore();
 const storeCart = useCartStore()
 const storeAccount = useAccountStore()
@@ -19,13 +22,7 @@ const storeDisplay = useDisplayStore()
 const storeProductCategory = useProductCategoryStore()
 const storeHeader = useHeaderStore()
 
-const props = defineProps({
-  typeLeft: {
-    type: String,
-    default: 'logo',
-    validator: (value: string) => ['logo', 'address','name'].includes(value)
-  }
-})
+const typeLeft = computed(() => route.meta?.headerTypeLeft ?? 'logo')
 
 if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0) {
   await storeProductCategory.fetchCategoryStore()
@@ -59,11 +56,11 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
       <div class="container container-xxl">
         <div class="header-content position-relative">
           <div class="header-left text-color-white flex align-center gap-md">
-            <template v-if="props.typeLeft === 'logo'">
+            <template v-if="typeLeft === 'logo'">
               <Logo :logo="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" filter link />
             </template>
 
-            <template v-else-if="props.typeLeft === 'address'">
+            <template v-else-if="typeLeft === 'address'">
               <div class="flex gap-sm align-center">
                 <MaterialIcon size="30" name="location_on"/>
                 <div>
@@ -107,12 +104,10 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
                   class="rd-xs"
                 />
               </NuxtLink>
-              <Button
+              <img 
                 v-else
-                color="third"
-                icon="person"
-                class="rd-xs"
                 @click="storeAccount.handleTogglePopupAccountMenuInfo(true)"
+                :src="storeAccount.getDetailValue?.avatar" :alt="storeAccount.getDetailValue?.fullname" class="cursor-pointer object-fit-cover rd-xs width-xl height-xl border-default border-color-gray3"
               />
             </template>
             </client-only>

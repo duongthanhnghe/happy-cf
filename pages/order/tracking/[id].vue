@@ -6,6 +6,7 @@ import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderD
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.ORDER.middleware,
+  showBreadcrumb: ROUTES.PUBLIC.ORDER.showBreadcrumb,
 })
 
 const route = useRoute()

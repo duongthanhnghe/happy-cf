@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.NEWS.children?.SEARCH.middleware || '',
+  showBreadcrumb: ROUTES.PUBLIC.NEWS.children?.SEARCH.showBreadcrumb,
 })
 
 const storeNews = useMainStore()
@@ -29,7 +30,6 @@ watch(valueChangePageNews, (newVal) => {
 
 <template>
   <div class="container container-xxl ">
-    <BreadcrumbDefault />
     <div class="pt-lg pb-lg">
       <Text :text="`Kết quả tìm kiếm: ${storeNews.pagination?.total} bài viết`" size="md" color="black" weight="semibold" class="mb-ms"/>
       

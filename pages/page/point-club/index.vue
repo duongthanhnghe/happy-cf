@@ -4,6 +4,7 @@ import { ROUTES } from '@/shared/constants/routes'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.middleware,
+  showBreadcrumb: ROUTES.PUBLIC.PAGE.showBreadcrumb,
   layout: ROUTES.PUBLIC.PAGE.layout,
 })
 

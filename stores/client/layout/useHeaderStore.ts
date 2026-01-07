@@ -36,7 +36,7 @@ export const useHeaderStore = defineStore("HeaderStore", () => {
 
   const listMenuMore = computed(() => {
     return [
-      ROUTES.PUBLIC.CLUB,
+      ROUTES.PUBLIC.PAGE?.children?.POINT_CLUB,
       ROUTES.PUBLIC.ABOUT,
       ROUTES.PUBLIC.NEWS,
       ROUTES.PUBLIC.LOGIN,
