@@ -1,4 +1,4 @@
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore'
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore'
 import type { RouteLocationNormalized } from 'vue-router'
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => {

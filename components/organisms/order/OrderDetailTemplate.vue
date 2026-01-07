@@ -3,7 +3,7 @@ import '@/styles/molecules/order/order-item-detail-template1.scss'
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
 import { formatCurrency, formatDateTime } from '@/utils/global'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 import { useOrderStatusStore } from '@/stores/shared/order/useOrderStatusStore';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';

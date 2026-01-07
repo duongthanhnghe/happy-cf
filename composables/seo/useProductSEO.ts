@@ -1,4 +1,4 @@
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore'
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore'
 
 export const useProductSEO = () => {
   const configRuntime = useRuntimeConfig()

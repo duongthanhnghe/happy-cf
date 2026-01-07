@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import './index.scss'
 import { IMAGE_AUTH_LOGIN } from '@/const/image'
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 import { ROUTES } from '@/shared/constants/routes';
 
 const storeSetting = useBaseInformationStore();

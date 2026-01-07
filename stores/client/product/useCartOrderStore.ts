@@ -6,7 +6,7 @@ import { useProductDetailStore } from "@/stores/client/product/useProductDetailS
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore';
 import { useLocationStore } from '@/stores/shared/useLocationStore';
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 
 import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailableVouchers";
 import { useEventBus } from "@/composables/voucher/useEventBus";

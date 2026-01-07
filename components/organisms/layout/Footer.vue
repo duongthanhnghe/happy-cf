@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import '@/styles/molecules/layout/footer.scss';
 import { IMAGE_FOOTER } from '@/const/image'
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 
 const storeSetting = useBaseInformationStore();
 const listLink = [

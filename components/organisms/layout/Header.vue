@@ -4,7 +4,7 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useSearchStore } from '@/stores/client/product/useSearchStore'
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore'
-import { useBaseInformationStore } from '@/stores/shared/setting/useBaseInformationStore';
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
