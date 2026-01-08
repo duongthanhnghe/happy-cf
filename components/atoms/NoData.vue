@@ -17,7 +17,11 @@ const props = defineProps({
   <client-only>
     <div class="no-data text-center">
       <div class="no-data-image">
-        <img :src="image" :alt="text" />
+        <Image 
+          :src="image"
+          :alt="text"
+          :width="185"
+        />
       </div>
       <div class="no-data-text mt-sm text-color-gray5">
         {{ text }}

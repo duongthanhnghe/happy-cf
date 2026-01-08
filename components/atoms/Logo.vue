@@ -2,8 +2,11 @@
 import { ROUTES } from '@/shared/constants/routes'
 import { computed } from 'vue'
 import { NuxtLink } from '#components'
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 
 type LogoSize = '100' | '70' | 'xl'
+
+const storeSetting = useBaseInformationStore();
 
 const props = withDefaults(defineProps<{
   logo: string
@@ -12,16 +15,25 @@ const props = withDefaults(defineProps<{
   filter?: boolean
   link?: boolean
 }>(), {
+  logo: '',
+  alt: '',
   maxHeight: 'xl',
   filter: false,
   link: true
 })
-
 const logoClass = computed(() => [
   'object-fit-contain',
   `max-height-${props.maxHeight}`,
   { 'filter-brightness': props.filter }
 ])
+
+const logoSrc = computed(() => {
+  return props.logo || storeSetting.getBaseInformation?.logoUrl || ''
+})
+
+const logoAlt = computed(() => {
+  return props.alt || storeSetting.getBaseInformation?.name || 'logo'
+})
 </script>
 
 <template>
@@ -30,10 +42,10 @@ const logoClass = computed(() => [
     :to="props.link ? ROUTES.PUBLIC.HOME.path : undefined"
   >
     <img
-      v-if="props.logo"
+      v-if="logoSrc"
       :class="logoClass"
-      :src="props.logo"
-      :alt="props.alt || 'logo'"
+      :src="logoSrc"
+      :alt="logoAlt"
     />
   </component>
 </template>

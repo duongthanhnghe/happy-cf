@@ -6,6 +6,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
+import { BANNER_LAZY } from '@/const/image';
 
 const props = withDefaults(defineProps<{
   items?: BannerDTO[]
@@ -22,10 +23,16 @@ const storeDisplay = useDisplayStore()
   <div class="container container-xxl">
     <LoadingData v-if="props.loading && props.items.length === 0" />
     <template v-else>
-      <div :class="[storeDisplay.isLaptop ? 'rd-xl':'rd-lg','banner overflow-hidden shadow-2']">
+      <div :class="[storeDisplay.isLaptop ? 'rd-xl':'rd-lg','overflow-hidden shadow-2']">
         <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :space-between="0" :pagination="{ clickable: true }" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }">
           <swiper-slide v-for="item in props.items" :key="item.id">
-            <img :src="item.image" :alt="item.title" class="w-full"/>
+            <Image 
+              :src="item.image"
+              :alt="item.title"
+              class="w-full"
+              :width="1800"
+              :placeholder="BANNER_LAZY"
+            />
           </swiper-slide>
         </swiper>
       </div>

@@ -15,7 +15,11 @@ const storeSetting = useBaseInformationStore();
   </NuxtLink>
   <div class="auth-wrapper">
     <div class="auth-right">
-      <img :src="IMAGE_AUTH_LOGIN" alt="Login">
+      <Image 
+        :src="IMAGE_AUTH_LOGIN"
+        alt="Login"
+        :width="1000"
+      />
     </div>
     <div class="auth-left">
       <slot />

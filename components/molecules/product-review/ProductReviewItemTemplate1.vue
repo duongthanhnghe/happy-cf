@@ -17,14 +17,16 @@ const props = defineProps<{
   <Card size="sm" :bg="storeDisplay.isLaptop ? 'gray6':'white'" class="rd-lg shadow-1">
     <div class="flex justify-between line-height-1">
       <div>
-        <Text :text="storeAccount.getDetailValue.fullname" weight="semibold" size="normal" color="black" />
+        <Text :text="storeAccount.getDetailValue?.fullname" weight="semibold" size="normal" color="black" />
         <Text :text="formatDateTime(props.item?.createdAt, 'vi-VN',false)" class="mt-ms" color="gray5" />
       </div>
       <Button size="sm" color="black" label="Đánh giá" class="weight-normal" @click.prevent="store.handleTogglePopupSubmit(true, props.item?.id)"/>
     </div>
     <div :class="['flex gap-xs align-center mt-md rd-lg', storeDisplay.isLaptop ? 'bg-white':'bg-gray6']">
       <div class="pd-xs">
-        <img class="rd-lg" :src="props.item.productId.image" :alt="props.item.productId.productName" width="40"/>
+        <Image 
+          class="rd-lg" :src="props.item.productId.image" :alt="props.item.productId.productName" :width="40"
+        />
       </div>
       <Text :text="props.item.productId.productName" limit="2" />
     </div>

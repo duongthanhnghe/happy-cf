@@ -10,7 +10,7 @@ import {
   GLOBAL_TEXT_MALE,
   GLOBAL_TEXT_FEMALE
 } from '@/const/text'
-import { IMAGE_EMPTY_DEFAULT } from '@/const/image'
+import { IMAGE_AVATAR_DEFAULT } from '@/const/image'
 import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
@@ -55,11 +55,13 @@ onBeforeUnmount(() => {
     <v-form @submit.prevent="handleSubmitUpdate">
       <AvatarEdit :label="AUTH_TEXT_EDIT_AVATAR" className="mb-md width-200 height-200" @click.prevent="storeFileManage.handleTogglePopup(true)">
         <slot>
-          <img v-if="storeAccountEdit.formUserItem.avatar" :src="storeAccountEdit.formUserItem.avatar" :alt="storeAccountEdit.formUserItem.fullname" />
-          <img v-else :src="IMAGE_EMPTY_DEFAULT" :alt="storeAccountEdit.formUserItem.fullname" />
+          <Image 
+            :src="storeAccountEdit.formUserItem.avatar" :alt="storeAccountEdit.formUserItem.fullname"
+            :width="200"
+            :placeholder="IMAGE_AVATAR_DEFAULT"
+          />
         </slot>
       </AvatarEdit>
-
       <LabelInput :label="AUTH_TEXT_FULLNAME" required />
       <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.fullname" :error="!!formErrors.fullname"
   :error-messages="formErrors.fullname" label="Họ và tên" required></v-text-field>

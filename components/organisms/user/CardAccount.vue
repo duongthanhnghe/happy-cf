@@ -3,6 +3,7 @@ import '@/styles/organisms/user/section-account.scss'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { useHistoryRewardByUserStore } from '@/stores/client/users/useHistoryRewardByUserStore'
 import { formatCurrency } from '@/utils/global';
+import { IMAGE_AVATAR_DEFAULT } from '@/const/image';
 
 const storeAccount = useAccountStore()
 const storeHistoryReward = useHistoryRewardByUserStore();
@@ -26,7 +27,14 @@ const props = defineProps({
         <div class="information-account-card">
           <div class="flex justify-between">
             <div class="flex align-center gap-sm">
-              <img :src="storeAccount.getDetailValue?.avatar" class="information-account-avatar avatar-src" alt="avatar" />
+              <Image 
+                :src="storeAccount.getDetailValue?.avatar"
+                :alt="storeAccount.getDetailValue?.fullname"
+                :width="50"
+                class="information-account-avatar avatar-src"
+                preset="avatar"
+                :placeholder="IMAGE_AVATAR_DEFAULT"
+              />
               <div>
                 <Text weight="semibold" color="black" :text="storeAccount.getDetailValue?.fullname" />
                 <Text
@@ -45,7 +53,12 @@ const props = defineProps({
           </div>
         
           <div v-if="props.showBarcode" class="information-account-code">
-              <img :src="storeAccount.getDetailValue?.membership.barcode" alt="code" />
+              <Image 
+                :src="storeAccount.getDetailValue?.membership.barcode"
+                :alt="storeAccount.getDetailValue?.fullname"
+                :width="150"
+                :height="50"
+              />
               {{ storeAccount.getDetailValue?.membership.code }}
           </div>
           <div v-if="props.showLevel" class="mt-md">
@@ -59,8 +72,18 @@ const props = defineProps({
                 <div class="information-account-process-line"></div>
               </div>
               <div class="flex justify-between mt-xs text-size-xs text-color-gray8">
-                <img v-if="storeAccount.getInformationMembershipLevel?.currentLevel.image" :src="storeAccount.getInformationMembershipLevel?.currentLevel.image" :alt="storeAccount.getInformationMembershipLevel?.currentLevel.name" width="50" />
-                <img v-if="storeAccount.getInformationMembershipLevel?.nextLevel.image" :src="storeAccount.getInformationMembershipLevel?.nextLevel.image" :alt="storeAccount.getInformationMembershipLevel?.nextLevel.name" width="50" />
+                <Image 
+                  v-if="storeAccount.getInformationMembershipLevel?.currentLevel.image"
+                  :src="storeAccount.getInformationMembershipLevel?.currentLevel.image" 
+                  :alt="storeAccount.getInformationMembershipLevel?.currentLevel.name"
+                  :width="50"
+                />
+                <Image 
+                  v-if="storeAccount.getInformationMembershipLevel?.nextLevel.image"
+                  :src="storeAccount.getInformationMembershipLevel?.nextLevel.image" 
+                  :alt="storeAccount.getInformationMembershipLevel?.nextLevel.name"
+                  :width="50"
+                />
               </div>
               <div v-if="storeAccount.getDetailValue?.membership.point < storeAccount.getInformationMembershipLevel?.nextLevel.minPoint" class="mt-xs">
                 Tích luỹ thêm <span class="weight-semibold">{{ formatCurrency(storeAccount.getInformationMembershipLevel?.nextLevel.minPoint - storeAccount.getDetailValue?.membership.point).replace('đ','') }} điểm</span> để thăng hạng {{ storeAccount.getInformationMembershipLevel?.nextLevel.name }}

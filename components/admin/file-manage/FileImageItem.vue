@@ -27,10 +27,11 @@ const props = defineProps({
           :class="{ 'cursor-pointer': props.chooseImage }"
           @click="props.chooseImage && store.selectImage(props.item.url)"
         >
-          <img
-            class="cursor-pointer"
+          <Image 
             :src="props.item.url"
             :alt="props.item.public_id"
+            :width="200"
+            class="cursor-pointer"
           />
         </div>
 

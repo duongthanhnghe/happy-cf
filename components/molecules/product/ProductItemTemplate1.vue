@@ -1,8 +1,5 @@
 
 <script lang="ts" setup>
-import {
-  orderText
-} from '@/const/text.js';
 import '@/styles/molecules/product/product-item-template1.scss'
 import {
   formatCurrency
@@ -57,8 +54,22 @@ function handleShowAction () {
   >
   <div class="product-template1-image bg-gray6 position-relative rd-lg text-center overflow-hidden">
     <NuxtLink v-if="product.slug" :to="ROUTE_HELPERS.productDetail(product.slug)">
-      <img v-lazy="product.image" :alt="product.productName">
-      <img v-if="product.listImage.length > 0" v-lazy="product.listImage[0].src" :alt="product.productName" class="el-absolute left-0 top-0 hover-visible-overlay-el">
+      <Image 
+        :src="product.image" 
+        :alt="product.productName"
+        preset="thumbnail"
+        :width="400"
+        :height="400"
+      />
+      <Image 
+        v-if="product.listImage.length > 0"
+        :src="product.listImage[0].src"
+        :alt="product.productName"
+        class="el-absolute left-0 top-0 hover-visible-overlay-el object-fit-cover bg-gray6"
+        preset="thumbnail"
+        :width="400"
+        :height="400"
+      />
     </NuxtLink>
     <client-only>
       <template v-if="!props.listView">
@@ -110,7 +121,13 @@ function handleShowAction () {
         />
       </div>
     </div>
-    <img class="el-absolute left-0 bottom-0 height-auto" v-if="product.vouchers?.image" :alt="product.productName" :src="product.vouchers.image" />
+    <Image 
+      v-if="product.vouchers?.image"
+      :alt="product.productName" 
+      :src="product.vouchers.image"
+      class="el-absolute left-0 bottom-0 height-auto"
+      :width="400"
+    />
   </div>
   <div v-if="storeCart.getTemplate1Amount(product.id) > 0" :class="['product-template1-action el-absolute left-0 top-0 flex justify-center align-center z-index-2',toggleAction ? 'hover-visible-overlay-el active transform-scale-1' : 'transform-scale-0']">
     <div class="product-template1-action-before el-absolute left-0 top-0 bg-white-70" @click="handleShowAction()"></div>

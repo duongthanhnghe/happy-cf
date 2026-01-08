@@ -28,7 +28,14 @@ const props = defineProps<{
     <div :class="['flex gap-sm border-bottom-dashed mt-md mb-sm pb-sm', storeDisplay.isLaptop ? 'border-color-gray':'border-color-gray2']">
       <div class="flex gap-xs position-relative">
         <template v-for="(itemImage, index) in props.item?.cartItems" :key="index" >
-          <img v-tooltip="itemImage.idProduct.productName" v-if="index < 3 && itemImage.idProduct.image" :class="[storeDisplay.isLaptop ? 'bg-white':'bg-gray6','rd-lg']" width="50" :src="itemImage.idProduct.image" :alt="itemImage.idProduct.productName" />
+          <Image 
+            v-if="index < 3 && itemImage.idProduct.image"
+            v-tooltip="itemImage.idProduct.productName"
+            :src="itemImage.idProduct.image"
+            preset="label"
+            :alt="itemImage.idProduct.productName"
+            :class="[storeDisplay.isLaptop ? 'bg-white':'bg-gray6','rd-lg width-50']"
+          />
           <span v-tooltip.html="remainingProductNames(props.item?.cartItems)" v-else-if="index < 4" class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ props.item?.cartItems.length - 3 }}</span>
           <template v-else />
         </template>
@@ -43,7 +50,11 @@ const props = defineProps<{
     <div class="flex justify-between align-center">
       <div class="flex gap-xs">
         <v-chip v-if="storeDisplay.isLaptop" label color="gray">
-          <img width="20" :src="props.item?.paymentId.image" alt="icon" class="mr-xs"/>
+          <Image 
+            :src="props.item?.paymentId.image" alt="icon"
+            :width="20"
+            class="mr-xs"
+          />
           {{ props.item?.paymentId.name }}
         </v-chip>
         <Button v-if="props.item?.transaction === null && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handlePaymentOrder(props.item?.id, props.item?.code, props.item?.totalPrice)" size="sm" color="black" label="Thanh toán"/>

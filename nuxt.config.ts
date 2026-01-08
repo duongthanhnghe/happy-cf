@@ -13,7 +13,66 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
-  modules: ['@pinia/nuxt'],
+  modules: ['@pinia/nuxt','@nuxt/image'],
+
+  image: {
+    quality: 80,
+    format: ['webp', 'avif', 'jpeg', 'png'],
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
+    cloudinary: {
+      baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/`
+    },
+    presets: {
+      label: {
+        modifiers: {
+          format: 'webp',
+          width: 80,
+          height: 80,
+          fit: 'cover'
+        }
+      },
+      avatar: {
+        modifiers: {
+          format: 'webp',
+          width: 150,
+          height: 150,
+          fit: 'cover'
+        }
+      },
+      thumbnail: {
+        modifiers: {
+          format: 'webp',
+          width: 400,
+          height: 400,
+          fit: 'cover'
+        }
+      },
+      thumbnail_blog: {
+        modifiers: {
+          format: 'webp',
+          width: 430,
+          height: 285,
+          fit: 'cover'
+        }
+      },
+      detail: {
+        modifiers: {
+          format: 'webp',
+          width: 1080,
+          height: 1080,
+          fit: 'cover'
+        }
+      }
+    }
+  },
+
   runtimeConfig: {
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,

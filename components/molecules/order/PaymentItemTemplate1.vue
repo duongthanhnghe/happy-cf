@@ -23,7 +23,12 @@ const isSelected = (id: string) => {
   <div :class="['payment-template1-item', isSelected(props.item.id) ? 'checked' : '']">
     <v-radio :label="props.item.name" :value="props.item.id" :name="nameRadio"></v-radio>
     <div class="payment-template1-info">
-      <img class="payment-template1-image" :src="props.item.image" :alt="props.item.name" width="25" />
+      <Image 
+        :src="props.item.image" 
+        :alt="props.item.name"
+        :width="25"
+        class="payment-template1-image"
+      />
     </div>
   </div>
 </template>

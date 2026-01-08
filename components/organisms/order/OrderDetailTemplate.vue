@@ -115,7 +115,12 @@ const storeDetailOrder = useSharedOrderDetailStore()
       <div class="flex gap-sm justify-end">
         <Button v-if="storeDetailOrder.getDetailOrder?.reward.points != 0 && storeDetailOrder.getDetailOrder?.reward.awarded" color="secondary" :label="`+${storeDetailOrder.getDetailOrder?.reward.points}`" icon="diamond_shine" :disabled="false" size="sm" />
         <v-chip v-if="storeDetailOrder.getDetailOrder.paymentId" label color="gray">
-          <img width="20" :src="storeDetailOrder.getDetailOrder?.paymentId.image" alt="icon" class="mr-xs"/>
+          <Image 
+            :src="storeDetailOrder.getDetailOrder?.paymentId.image" 
+            alt="icon"
+            :width="20"
+            class="mr-xs"
+          />
           {{ storeDetailOrder.getDetailOrder?.paymentId.name }}
         </v-chip>
         <v-chip v-if="storeDetailOrder.getDetailOrder.transaction" label :color="storeDetailOrder.getDetailOrder.transaction.statusColor">
@@ -128,7 +133,7 @@ const storeDetailOrder = useSharedOrderDetailStore()
       </div>
     </Card>
     <Card size="sm" class="rd-lg mt-sm flex gap-sm justify-between">
-      <img class="avatar-src" :src="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" loading="lazy" /> 
+      <Logo class="rd-full object-fit-cover bg-white border-default width-xl flex" />
       <div class="flex flex-1 justify-between">
         <div>
           <div class="weight-medium text-color-black">

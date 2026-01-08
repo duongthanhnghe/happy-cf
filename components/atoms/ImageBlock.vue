@@ -12,6 +12,7 @@ interface Props {
   textButton?: string
   linkRedirect?: string
   showContent?: boolean
+  width?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -35,7 +36,7 @@ const wrapperProps = computed(() =>
   <div
     :class="[
       storeDisplay.isMobileTable ? 'rd-lg' : 'rd-xl',
-      'overflow-hidden position-relative'
+      'overflow-hidden position-relative flex-1'
     ]"
   >
     <component
@@ -43,11 +44,11 @@ const wrapperProps = computed(() =>
       v-bind="wrapperProps"
       class="block"
     >
-      <img
+      <Image 
         :src="props.image"
         :alt="props.title || 'image-block'"
-        class="w-full object-fit-cover"
-        loading="lazy"
+        class="w-full"
+        :width="props.width"
       />
 
       <div

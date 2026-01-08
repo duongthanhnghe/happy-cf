@@ -35,7 +35,6 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
   <PopupAddItemToCart />
   <PopupMenuHeader 
     v-model:isTogglePopupMenu="storeHeader.isTogglePopupMenu"
-    :logo="storeSetting.getBaseInformation?.logoUrl"
     :listMenu="storeHeader.listMenu"
     :listMenuMore="storeHeader.listMenuMore"
     :phone="storeSetting.getBaseInformation?.phone"
@@ -57,7 +56,7 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
         <div class="header-content position-relative">
           <div class="header-left text-color-white flex align-center gap-md">
             <template v-if="typeLeft === 'logo'">
-              <Logo :logo="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" filter link />
+              <Logo filter link />
             </template>
 
             <template v-else-if="typeLeft === 'address'">
@@ -80,7 +79,7 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
                   {{ storeSetting.getBaseInformation?.name }}
                   <Text :text="`Xin chào ${storeAccount.getDetailValue?.fullname || 'Quý khách' }!`" weight="semibold" />
                 </div>
-                <Logo v-else :logo="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" filter maxHeight="xl" />
+                <Logo v-else filter maxHeight="xl" />
               </client-only>
             </template>
           </div>
@@ -104,10 +103,14 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
                   class="rd-xs"
                 />
               </NuxtLink>
-              <img 
+              <Image 
                 v-else
                 @click="storeAccount.handleTogglePopupAccountMenuInfo(true)"
-                :src="storeAccount.getDetailValue?.avatar" :alt="storeAccount.getDetailValue?.fullname" class="cursor-pointer object-fit-cover rd-xs width-xl min-width-xl height-xl border-default border-color-gray3"
+                :src="storeAccount.getDetailValue?.avatar"
+                :alt="storeAccount.getDetailValue?.fullname"
+                class="cursor-pointer object-fit-cover rd-xs width-xl min-width-xl height-xl border-default border-color-gray3"
+                :width="44"
+                preset="avatar"
               />
             </template>
             </client-only>

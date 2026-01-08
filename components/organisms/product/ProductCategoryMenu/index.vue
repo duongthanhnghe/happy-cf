@@ -24,7 +24,12 @@ watch(() => props.items, (newValue) => {
   <div v-else>
     <template v-for="category, in props.items" >
       <div v-if="useHandle.elActive.value === category.id" class="text-center cursor-pointer pt-ms pb-ms pl-xs pr-xs shadow-2'" @click="useHandle.handleItemClickScroll(category.id)" :id="`scroll-${category.id}`">
-        <img class="rd-xl shadow-1" :src="category.image" :alt="category.categoryName" width="60" />
+        <Image 
+          :src="category.image"
+          :alt="category.categoryName"
+          class="rd-xl shadow-1"
+          :width="60"
+        />
         <Text :text="category.categoryName" size="xs" weight="semibold" limit="2" class="mt-xs max-width-70"/>
       </div>
       <div v-else class="text-center cursor-pointer pt-ms pb-ms pl-xs pr-xs" @click="useHandle.handleItemClickScroll(category.id)" :id="`scroll-${category.id}`">

@@ -56,7 +56,12 @@ watch(
           class="product-list-section pt-section"
           >
           <template v-if="category.banner">
-            <img :src="category.banner" :alt="category.categoryName" :class="[storeDisplay.isLaptop ? 'rd-xl':'rd-lg','w-full']" />
+            <Image 
+              :src="category.banner"
+              :alt="category.categoryName"
+              :width="1800"
+              :class="[storeDisplay.isLaptop ? 'rd-xl':'rd-lg','w-full']"
+            />
           </template>
           <div :class='`product-list-section-top ${props.bgTab}`'>
             <Heading :headingSlug="`${ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.path}/${category.slug}`" :text="category.categoryName" class="flex-1" size="xl">

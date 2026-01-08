@@ -18,7 +18,12 @@ const props = withDefaults(defineProps<{
   <div :class="[listView && storeDisplay.isLaptop ? 'flex':'' ,'rd-xl overflow-hidden shadow-2 border-default bg-white']">
     <div :class="listView && storeDisplay.isLaptop ? 'max-width-per50':''">
       <NuxtLink :to="ROUTE_HELPERS.newsDetail(item.slug)">
-        <img :src="props.item?.image" :alt="props.item?.title" />
+        <Image 
+          :src="props.item?.image" :alt="props.item?.title"
+          :width="listView ? 630 : 430"
+          :height="listView ? 420 : 285"
+          preset="thumbnail_blog"
+        />
       </NuxtLink>
     </div>
     <div :class="[listView && storeDisplay.isLaptop ? 'flex-1 pd-md':'pd-ms']">

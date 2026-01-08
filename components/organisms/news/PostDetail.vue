@@ -24,7 +24,12 @@ const storeDisplay = useDisplayStore()
           <Text :text="`${item.views} lượt xem`" color="gray5" weight="medium"/>
         </client-only>
       </div>
-      <img v-if="item.image" :src="item.image" :alt="item.title" class="rd-lg mt-md"/>
+      <Image 
+        v-if="item.image"
+        :src="item.image" :alt="item.title"
+        :width="1300"
+        class="rd-lg mt-md"
+      />
     </div>
     <Text v-if="item.summaryContent" :text="item.summaryContent" weight="semibold" class="mb-sm"/>
     <div v-html="item?.description"></div>

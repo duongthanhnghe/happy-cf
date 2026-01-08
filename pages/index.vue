@@ -67,6 +67,7 @@ const listImageFeatured = getByPosition(
           v-for="item in listImageFeatured"
           :key="item.id"
           v-bind="item"
+          :width="900"
         />
       </ImageBlockLayoutColumn>
     </div>

@@ -9,7 +9,6 @@ const route = useRoute()
 const store = useSearchStore()
 const props = defineProps<{
   isTogglePopupMenu: boolean;
-  logo: string
   listMenu: MenuItem[]
   listMenuMore: MenuItem[]
   phone: string
@@ -36,7 +35,7 @@ watch(
     bodyClass="pd-0"
     >
     <template #header >
-      <img v-if="props.logo" :src="props.logo" alt="logo" height="40px" class="max-height-40" />
+      <Logo maxHeight="40" />
     </template>
     <template #body>
       <div class="bg-gray pd-ms">

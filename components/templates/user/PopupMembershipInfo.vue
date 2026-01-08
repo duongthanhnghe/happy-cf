@@ -39,7 +39,12 @@ watch(() => store.getListData, (newVal) => {
             :value="item.id"
             :text="item.name"
           >
-            <img v-if="item.image" :src="item.image" class="max-height-25" />
+            <Image 
+              v-if="item.image"
+              :src="item.image"
+              :alt="item.name"
+              :height="25"
+            />
           </v-tab>
         </v-tabs>
         <v-tabs-window v-model="tab">

@@ -1,19 +1,21 @@
-import AuthLoginImage from '@/assets/image/auth/banner-homepage.png'
-import FooterImage from '@/assets/image/auth/banner-homepage.png'
-import AvatarDefaultImage from '@/assets/image/global/user-avatar-default.png'
-import EmptyDefaultImage from '@/assets/image/global/empty-data.png'
+import IMAGE_AUTH_LOGIN from '/assets/global/banner-homepage.png'
+import IMAGE_AVATAR_DEFAULT from '/assets/global/user-avatar-default.png'
+import IMAGE_EMPTY_DEFAULT from '/assets/global/empty-data.png'
 import FacebookIcon from '@/assets/icons/Icon-holder.png'
 import XIcon from '@/assets/icons/Icon-holder-3.png'
 import LinkedinIcon from '@/assets/icons/Icon-holder-4.png'
 import InternetIcon from '@/assets/icons/Icon-holder-5.png'
+import IMAGE_LAZY from '@/assets/image/global/placeholder-product-image.webp'
+import BANNER_LAZY from '@/assets/image/global/placeholder-banner.webp'
 
 export {
-  AuthLoginImage as IMAGE_AUTH_LOGIN,
-  FooterImage as IMAGE_FOOTER,
-  AvatarDefaultImage as IMAGE_AVATAR_DEFAULT,
-  EmptyDefaultImage as IMAGE_EMPTY_DEFAULT,
+  IMAGE_AUTH_LOGIN,
+  IMAGE_AVATAR_DEFAULT,
+  IMAGE_EMPTY_DEFAULT,
   FacebookIcon,
   XIcon,
   LinkedinIcon,
   InternetIcon,
+  IMAGE_LAZY,
+  BANNER_LAZY,
 }

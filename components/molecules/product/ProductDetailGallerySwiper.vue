@@ -30,11 +30,19 @@ const props = defineProps<{
         v-for="(item, index) in store.galleryImages"
         :key="index"
       >
-        <img :src="item.src" :alt="detail.productName" />
+        <Image 
+          :src="item.src" 
+          :alt="detail.productName"
+          :width="700"
+        />
       </swiper-slide>
     </swiper>
     <div v-if="detail.vouchers?.image" class="w-full">
-      <img :src="detail.vouchers?.image" :alt="detail.productName" />
+      <Image 
+        :src="detail.vouchers?.image" 
+        :alt="detail.productName"
+        :width="700"
+      />
     </div>
   </div>
 
@@ -54,9 +62,15 @@ const props = defineProps<{
         :key="index"
         class="cursor-pointer product-detail-gallery-thumbs-slide"
       >
-        <img class="rd-lg bg-gray6" :src="item.src" :alt="detail.productName" />
+        <Image 
+          :src="item.src" 
+          :alt="detail.productName"
+          :width="150"
+          :height="150"
+          preset="avatar"
+          class="rd-lg bg-gray6"
+        />
       </swiper-slide>
     </swiper>
-
   </div>
 </template>

@@ -15,7 +15,7 @@ const { t } = useITranslations()
       <div class="border-bottom-default border-color-gray8">
         <div class="row ">
           <div class="col-12 col-lg-4 pb-md">
-            <Logo :logo="storeSetting.getBaseInformation?.logoUrl" :alt="storeSetting.getBaseInformation?.name" maxHeight="100" filter link />
+            <Logo maxHeight="100" filter link />
           </div>
           <div class="col-12 col-lg-4 pb-md">
             <Text :text="storeSetting.getBaseInformation?.name" color="white" weight="semibold" size="lg" class="mb-sm" />

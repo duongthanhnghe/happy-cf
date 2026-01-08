@@ -35,11 +35,12 @@ const MAX_CHILD = 5
                  object-fit-cover overflow-hidden
                  mb-sm"
         >
-          <img
+          <Image 
             :src="child.icon"
             :alt="child.label"
-            width="50"
             class="hover-scale transition-0d3"
+            :width="50"
+            preset="label"
           />
         </div>
 

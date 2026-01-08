@@ -6,6 +6,7 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
+import { BANNER_LAZY } from '@/const/image';
 
 interface Breadcrumb {
   heading: string
@@ -35,7 +36,13 @@ const singleImage = computed(() => {
 <template>
   <div :class="['breadcrumb bg-gray6', props.classCustom]">
     <div v-if="singleImage" class="breadcrumb-image">
-      <img :src="singleImage" :alt="props.heading" class="w-full" />
+      <Image 
+        :src="singleImage"
+        :alt="props.heading"
+        class="w-full"
+        :width="1920"
+        :placeholder="BANNER_LAZY"
+      />
     </div>
     
     <div v-else-if="isMultipleImages" class="breadcrumb-image">
@@ -48,7 +55,13 @@ const singleImage = computed(() => {
         :loop="true"
       >
         <swiper-slide v-for="(item, index) in props.image" :key="index">
-          <img :src="item" :alt="`${props.heading} - ${index + 1}`" class="w-full"/>
+          <Image 
+            :src="item"
+            :alt="`${props.heading} - ${index + 1}`"
+            class="w-full"
+            :width="1920"
+            :placeholder="BANNER_LAZY"
+          />
         </swiper-slide>
       </swiper>
     </div>

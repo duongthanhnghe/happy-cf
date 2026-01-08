@@ -29,7 +29,11 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
     <template #body v-if="detail">
       <div class="popup-detail-product overflow-hidden">
         <div class="popup-detail-product-image">
-          <img :src="detail?.image" :alt="detail?.productName" />
+          <Image 
+            :src="detail?.image"
+            :alt="detail?.productName"
+            :width="650"
+          />
         </div>
         <div class="popup-detail-product-card popup-detail-product-info">
           <div class="popup-detail-product-right">
