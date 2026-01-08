@@ -30,11 +30,6 @@ export const useCartVoucherHandlers = (
     handleCalcTotalPriceCurrent();
   };
 
-  // const handleVoucherReset = (data: { resetFreeship: boolean; resetVoucher: boolean }) => {
-  //   if (data.resetFreeship) selectedFreeship.value = null;
-  //   if (data.resetVoucher) selectedVoucher.value = null;
-  // };
-
   const handleVoucherReset = () => {
     if (selectedFreeship.value) selectedFreeship.value = null;
     if (selectedFreeship.value) selectedVoucher.value = null;

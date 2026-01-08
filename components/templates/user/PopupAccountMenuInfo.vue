@@ -1,11 +1,6 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
-
 const storeAccount = useAccountStore();
-onMounted(() => {
-  if(!storeAccount.getPendingReward && storeAccount.getUserId) storeAccount.fetchPendingRewardPoints(storeAccount.getUserId)
-});
 </script>
 <template>
   <Popup

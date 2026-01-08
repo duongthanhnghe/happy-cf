@@ -29,7 +29,7 @@ watch(
 
     store.resultData = null
 
-    const mapped = await store.mapProductsByCategory(items)
+    const mapped = await store.mapProductsByCategory(items, props.limitSection)
     store.resultData = mapped
   },
   { immediate: true }

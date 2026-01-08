@@ -48,9 +48,13 @@ export const useOrderStore = defineStore('order', () => {
   }
   }
 
-  const mapProductsByCategory = async (categories: CategoryProductDTO[]) => {
+  const mapProductsByCategory = async (categories: CategoryProductDTO[], limitSection?: number) => {
+    const limitedCategories = limitSection
+    ? categories.slice(0, limitSection)
+    : categories
+    
     const mapped = await Promise.all(
-      categories.map(async category => {
+      limitedCategories.map(async category => {
         const products = await productsAPI.getListByCategory(category.id,1,limit,filterType.value)
           if (category.id) {
             filterCategory.value[category.id] = category.id

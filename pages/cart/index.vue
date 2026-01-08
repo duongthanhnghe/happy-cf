@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { SubmitEventPromise } from 'vuetify';
-import { onBeforeUnmount, watch } from 'vue'
+import { onBeforeUnmount, onMounted, watch } from 'vue'
 import { showWarning } from '@/utils/toast'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
@@ -41,26 +41,26 @@ useLocationWatchers(storeLocation);
 useCartLocationWatchers(storeLocation, store);
 
 watch(
-  () => store.getCartListItem.length,
-  async (length) => {
-    if (length > 0) {
-      await store.fetchProductCart()
-      storeLocation.fetchProvincesStore()
-
-      if (storeAccount.getUserId) {
-        store.handleGetDefaultAddress()
-      }
-
-      if (storePaymentStatus.getListData.length === 0) {
-        storePaymentStatus.fetchPaymentStatusStore()
-      }
-
-      store.handleVoucherReset;
-      // eventBus.on('voucher:reset', store.handleVoucherReset);
-    }
+  () => store.getCartListItem,
+  async (items) => {
+    if (!items.length) return
+    store.handleVoucherReset();
+    // eventBus.on('voucher:reset', store.handleVoucherReset);
   },
-  { immediate: true }
+  { deep: true }
 )
+
+onMounted(async () => {
+  if (!store.cartListItem) return
+
+  if (store.cartListItem.length > 0 && store.getCartListItem?.length === 0) await store.fetchProductCart()
+  await storeLocation.fetchProvincesStore()
+  if(storeAccount.getUserId) store.handleGetDefaultAddress()
+
+  if (storePaymentStatus.getListData.length === 0) {
+    storePaymentStatus.fetchPaymentStatusStore()
+  }
+})
 
 onBeforeUnmount(() => {
   store.selectedFreeship = null;
@@ -79,7 +79,7 @@ onBeforeUnmount(() => {
 
 </script>
 <template>
-
+  <client-only>
   <div class="pb-section">
     <div class="container">
       <LoadingData v-if="store.loadingCartProduct && !store.getCartListItem" />
@@ -121,14 +121,14 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <client-only>
-    <template v-if="storeDisplay.isMobileTable">
-      <!-- POPUP USE POINT -->
-      <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue?.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
-      <!-- POPUP CHOOSE VOUCHER -->
-      <CartVoucherMobile />
-    </template>
+  <template v-if="storeDisplay.isMobileTable">
+    <!-- POPUP USE POINT -->
+    <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue?.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
+    <!-- POPUP CHOOSE VOUCHER -->
+    <CartVoucherMobile />
+  </template>
 
-    <PopupManageAddress v-if="storeAccount.getUserId" :idChoose="store.getIdAddressChoose"/>
+  <PopupManageAddress v-if="storeAccount.getUserId" :idChoose="store.getIdAddressChoose"/>
+
   </client-only>
 </template>
