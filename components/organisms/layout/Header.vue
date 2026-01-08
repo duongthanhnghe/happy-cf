@@ -30,18 +30,18 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
 
 </script>
 <template>
-  <PopupCart />
-  <PopupEditItemToCart v-if="storeCart.getCartListItem.length > 0" />
-  <PopupAddItemToCart />
-  <PopupMenuHeader 
-    v-model:isTogglePopupMenu="storeHeader.isTogglePopupMenu"
-    :listMenu="storeHeader.listMenu"
-    :listMenuMore="storeHeader.listMenuMore"
-    :phone="storeSetting.getBaseInformation?.phone"
-    :socialLinks="storeSetting.getBaseInformation?.socialLinks"
-  />
   <client-only>
+    <PopupMenuHeader 
+      v-model:isTogglePopupMenu="storeHeader.isTogglePopupMenu"
+      :listMenu="storeHeader.listMenu"
+      :listMenuMore="storeHeader.listMenuMore"
+      :phone="storeSetting.getBaseInformation?.phone"
+      :socialLinks="storeSetting.getBaseInformation?.socialLinks"
+    />
     <PopupSearch />
+    <PopupCart />
+    <PopupEditItemToCart v-if="storeCart.getCartListItem.length > 0" />
+    <PopupAddItemToCart />
     <template v-if="storeAccount.getUserId">
       <PopupAccountMenuInfo />
       <PopupMembershipInfo />

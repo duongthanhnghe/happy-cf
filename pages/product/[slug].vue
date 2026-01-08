@@ -4,7 +4,7 @@ import { ROUTES } from '@/shared/constants/routes'
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
-import { computed, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 import { useBreadcrumb } from '@/composables/utils/useBreadcrumb';
 import { useRoute } from 'vue-router'
@@ -40,28 +40,25 @@ const { data, error, pending } = await useAsyncData(
   async () => {
     const data = await fetchDetailProduct(slug)
     if(data?.data.id) {
-      const userId = storeAccount.getUserId || '';
-      const categoryIds = data?.data.categoryId ? [data?.data.categoryId] : [];
-      const orderTotal = data?.data.priceDiscounts;
       const routePath = ROUTES.PUBLIC.PRODUCT.children?.DETAIL?.path ?? '/product'
-
       setProductSEO(data.data, routePath)
 
-      if(categoryIds && orderTotal){
-        await fetchAvailableVouchers({
-          userId,
-          categoryIds,
-          orderTotal
-        })
-      }
+      // if(categoryIds && orderTotal){
+      //   await fetchAvailableVouchers({
+      //     userId,
+      //     categoryIds,
+      //     orderTotal
+      //   })
+      // }
 
-      await fetchProductRelated(slug, store.limitRelated)
+      // await fetchProductRelated(slug, store.limitRelated)
 
-      await fetchListReview(data.data.id, 1, store.limitReview)
+      // await fetchListReview(data.data.id, 1, store.limitReview)
 
-      if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
-      
+      // if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
     }
+
+    return data
   }
 )
 
@@ -91,16 +88,41 @@ const breadcrumbItems = useBreadcrumb({
   })),
 })
 
+onMounted(async () => {
+  const detail = store.getDetailProduct
+  if (!detail?.id) return
+
+  const userId = storeAccount.getUserId || ''
+  const categoryIds = detail.categoryId ? [detail.categoryId] : []
+  const orderTotal = detail.priceDiscounts
+
+  if (categoryIds.length && orderTotal) {
+    fetchAvailableVouchers({
+      userId,
+      categoryIds,
+      orderTotal
+    })
+  }
+
+  fetchProductRelated(slug, store.limitRelated)
+
+  fetchListReview(detail.id, 1, store.limitReview)
+
+  if (!storeProductSale.getListProductSales) {
+    storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
+  }
+})
 </script>
 
 <template>
-  <LoadingData v-if="pending" />
+  <SkeletonProductDetail v-if="pending" />
   <template v-else-if="detail">
     <div class="container">
       <BreadcrumbDefault v-if="breadcrumbItems.length" :items="breadcrumbItems" />
     </div>
-    <div class="product-detail-body">
+    <div>
       <ProductDetail />
+      <client-only>
       <SectionProductListSwiper 
         v-if="store.getListProductRelated.length > 0" 
         :items="store.getListProductRelated" 
@@ -130,6 +152,7 @@ const breadcrumbItems = useBreadcrumb({
         class="pt-section pb-section"
         fullScreen
       />
+      </client-only>
     </div>
   </template>
   <NoData v-else />

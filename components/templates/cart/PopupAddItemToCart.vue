@@ -56,6 +56,7 @@ watch(
         <div class="popup-detail-product overflow-hidden">
           <div class="popup-detail-product-image">
             <Image 
+              v-if="detail?.image"
               :src="detail?.image"
               :alt="detail?.productName"
               :width="650"

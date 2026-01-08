@@ -9,7 +9,7 @@ type LogoSize = '100' | '70' | 'xl'
 const storeSetting = useBaseInformationStore();
 
 const props = withDefaults(defineProps<{
-  logo: string
+  logo?: string
   alt?: string
   maxHeight?: LogoSize
   filter?: boolean

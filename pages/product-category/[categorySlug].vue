@@ -2,7 +2,7 @@
 import { ROUTES } from '@/shared/constants/routes'
 import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainStore'
 import { useDisplayStore } from "@/stores/shared/useDisplayStore";
-import { computed, onBeforeUnmount } from 'vue';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useVariantGroupStore } from '@/stores/client/product/useVariantGroupStore';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
@@ -45,10 +45,6 @@ const { data, error } = await useAsyncData(
 
       await storeCategoryMain.fetchInit(data.data.id)
 
-      if (storeVariant.listVariantGroup.length === 0) {
-        await storeVariant.fetchVariantGroupStore()
-      }
-
       if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.CATEGORY] && !data.data?.banner) {
         await fetchImageBlock(IMAGE_BLOCK_PAGES.CATEGORY, {
           [IMAGE_BLOCK_POSITIONS.HERO]: 1,
@@ -78,6 +74,11 @@ const bannerHero = getByPosition(
   IMAGE_BLOCK_POSITIONS.HERO
 )
 
+onMounted(async () => {
+  if (storeVariant.listVariantGroup.length === 0) {
+    await storeVariant.fetchVariantGroupStore()
+  }
+})
 
 onBeforeUnmount(() => {
   storeCategoryMain.resetFilter()
@@ -159,16 +160,16 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <SectionProductListSwiper 
-    v-if="storeViewed.listItems && storeViewed.listItems.length > 0" 
-    :items="storeViewed.listItems" 
-    :loading="storeViewed.loading" 
-    container="container container-xxl" 
-    :headingText="t('product.section.text1')" 
-    class="pt-section pb-section"
-    fullScreen
-  />
   <client-only>
+    <SectionProductListSwiper 
+      v-if="storeViewed.listItems && storeViewed.listItems.length > 0" 
+      :items="storeViewed.listItems" 
+      :loading="storeViewed.loading" 
+      container="container container-xxl" 
+      :headingText="t('product.section.text1')" 
+      class="pt-section pb-section"
+      fullScreen
+    />
     <PopupManageAddress v-if="storeAccount.getUserId" />
   </client-only>
 </template>

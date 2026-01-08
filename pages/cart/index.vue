@@ -45,10 +45,10 @@ watch(
   async (length) => {
     if (length > 0) {
       await store.fetchProductCart()
-      await storeLocation.fetchProvincesStore()
+      storeLocation.fetchProvincesStore()
 
       if (storeAccount.getUserId) {
-        await store.handleGetDefaultAddress()
+        store.handleGetDefaultAddress()
       }
 
       if (storePaymentStatus.getListData.length === 0) {
@@ -121,14 +121,14 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <template v-if="storeDisplay.isMobileTable">
-    <!-- POPUP USE POINT -->
-    <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue?.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
-    <!-- POPUP CHOOSE VOUCHER -->
-    <CartVoucherMobile />
-  </template>
-
   <client-only>
+    <template v-if="storeDisplay.isMobileTable">
+      <!-- POPUP USE POINT -->
+      <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue?.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
+      <!-- POPUP CHOOSE VOUCHER -->
+      <CartVoucherMobile />
+    </template>
+
     <PopupManageAddress v-if="storeAccount.getUserId" :idChoose="store.getIdAddressChoose"/>
   </client-only>
 </template>
