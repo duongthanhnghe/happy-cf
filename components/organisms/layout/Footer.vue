@@ -3,11 +3,19 @@ import { useBaseInformationStore } from '@/stores/client/base-information/useBas
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useDisplayStore } from '@/stores/shared/useDisplayStore';
+import { computed } from 'vue';
 
-const storeSetting = useBaseInformationStore();
+const storeSetting = useBaseInformationStore()
 const storeAccount = useAccountStore()
+const storeDisplay = useDisplayStore()
 const { t } = useITranslations()
-
+const sizeLinkMenu = computed(() => {
+  return storeDisplay.isLaptop ? 'base' : 'xs'
+})
+const headingMenu = computed(() => {
+  return storeDisplay.isLaptop ? 'md' : 'normal'
+})
 </script>
 <template>
   <div class="footer bg-black2 pt-section pb-section">
@@ -18,21 +26,21 @@ const { t } = useITranslations()
             <Logo maxHeight="100" filter link />
           </div>
           <div class="col-12 col-lg-4 pb-md">
-            <Text :text="storeSetting.getBaseInformation?.name" color="white" weight="semibold" size="lg" class="mb-sm" />
-            <Text v-if="storeSetting.getBaseInformation?.address" :text="storeSetting.getBaseInformation?.address" color="gray" class="mb-xs" />
-            <Text v-if="storeSetting.getBaseInformation?.email" color="gray" class="mb-xs">
+            <Text :text="storeSetting.getBaseInformation?.name" color="white" weight="semibold" :size="headingMenu" class="mb-sm" />
+            <Text v-if="storeSetting.getBaseInformation?.address" :text="storeSetting.getBaseInformation?.address" :size="sizeLinkMenu" color="gray" class="mb-xs" />
+            <Text v-if="storeSetting.getBaseInformation?.email" :size="sizeLinkMenu" color="gray" class="mb-xs">
               Email:
               <Text tag="span" :text="storeSetting.getBaseInformation?.email" weight="semibold" />
             </Text>
-            <Text v-if="storeSetting.getBaseInformation?.phone" color="gray" >
+            <Text v-if="storeSetting.getBaseInformation?.phone" :size="sizeLinkMenu" color="gray" >
               <Text tag="span" :text="t('footer.text14')" />
               <Text tag="span" :text="storeSetting.getBaseInformation?.phone" weight="semibold" />
             </Text>
           </div>
           <div class="col-12 col-lg-4 pb-md">
             <template v-if="storeSetting.getBaseInformation?.socialLinks && storeSetting.getBaseInformation?.socialLinks.length > 0">
-              <Text :text="t('footer.text12')" color="white" weight="semibold" size="lg" class="mb-xs" />
-              <Text :text="t('footer.text13')" color="gray" class="mb-ms" />
+              <Text :text="t('footer.text12')" color="white" weight="semibold" :size="headingMenu" class="mb-xs" />
+              <Text :text="t('footer.text13')" :size="sizeLinkMenu" color="gray" class="mb-ms" />
               
               <div class="flex gap-sm">
                 <template v-for="item in storeSetting.getBaseInformation?.socialLinks" :key="item.icon">
@@ -50,56 +58,56 @@ const { t } = useITranslations()
       <div class="border-bottom-default border-color-gray8 pt-md">
         <div class="row ">
           <div class="col-6 col-lg-3 pb-md">
-            <Text :text="t('footer.text5')" color="white" weight="semibold" size="md" class="mb-sm" />
+            <Text :text="t('footer.text5')" color="white" weight="semibold" :size="headingMenu" class="mb-sm" />
             <client-only>
             <NuxtLink :to="{ path: storeAccount.getUserId ? ROUTES.PUBLIC.ACCOUNT.children?.INFO.path : ROUTES.PUBLIC.LOGIN.path }">
-              <Text :text="t('footer.text1')" color="gray" class="mb-sm hover-underline" />
+              <Text :text="t('footer.text1')" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             </client-only>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.REGISTER.path }">
-              <Text :text="t('footer.text2')" color="gray" class="mb-sm hover-underline" />
+              <Text :text="t('footer.text2')" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.LOGIN.path }">
-              <Text :text="t('footer.text3')" color="gray" class="mb-sm hover-underline" />
+              <Text :text="t('footer.text3')" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path }">
               <Text :text="t('footer.text4')" color="white" class="hover-underline" />
             </NuxtLink>
           </div>
           <div class="col-6 col-lg-3 pb-md">
-            <Text :text="t('footer.text6')" color="white" weight="semibold" size="md" class="mb-sm" />
+            <Text :text="t('footer.text6')" color="white" weight="semibold" :size="headingMenu" class="mb-sm" />
             <NuxtLink :to="{ path: ROUTES.PUBLIC.PAGE.children?.POLICY_PAYMENT.path }">
-              <Text :text="t('page.payment.heading')" color="gray" class="mb-sm hover-underline" />
+              <Text :text="t('page.payment.heading')" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.PAGE.children?.POLICY_RETURN.path }">
-              <Text :text="t('page.return.heading')" color="gray" class="mb-sm hover-underline" />
+              <Text :text="t('page.return.heading')" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.PAGE.children?.POLICY_SECURITY.path }">
-              <Text :text="t('page.security.heading')" color="gray" class="mb-sm hover-underline" />
+              <Text :text="t('page.security.heading')" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.PAGE.children?.POLICY_SHIPPING.path }">
               <Text :text="t('page.shipping.heading')" color="white" class="hover-underline" />
             </NuxtLink>
           </div>
           <div class="col-6 col-lg-3 pb-md">
-            <Text :text="t('footer.text7')" color="white" weight="semibold" size="md" class="mb-sm" />
+            <Text :text="t('footer.text7')" color="white" weight="semibold" :size="headingMenu" class="mb-sm" />
             <NuxtLink :to="{ path: ROUTES.PUBLIC.PAGE.children?.FAQ.path }">
-              <Text :text="t('page.faq.heading')" color="gray" class="mb-sm hover-underline" />
+              <Text :text="t('page.faq.heading')" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.PAGE.children?.SUPPORT_ORDER.path }">
-              <Text :text="t('page.support-order.heading')" color="white" class="hover-underline" />
+              <Text :text="t('page.support-order.heading')" :size="sizeLinkMenu" color="gray" class="hover-underline" />
             </NuxtLink>
           </div>
           <div class="col-6 col-lg-3 pb-md">
-            <Text :text="t('footer.text8')" color="white" weight="semibold" size="md" class="mb-sm" />
+            <Text :text="t('footer.text8')" color="white" weight="semibold" :size="headingMenu" class="mb-sm" />
             <NuxtLink :to="{ path: ROUTES.PUBLIC.HOME.path }">
-              <Text :text="ROUTES.PUBLIC.HOME.label" color="gray" class="mb-sm hover-underline" />
+              <Text :text="ROUTES.PUBLIC.HOME.label" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.ABOUT.path }">
-              <Text :text="ROUTES.PUBLIC.ABOUT.label" color="gray" class="mb-sm hover-underline" />
+              <Text :text="ROUTES.PUBLIC.ABOUT.label" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.NEWS.children?.MAIN.path }">
-              <Text :text="ROUTES.PUBLIC.NEWS.children?.MAIN.label" color="gray" class="mb-sm hover-underline" />
+              <Text :text="ROUTES.PUBLIC.NEWS.children?.MAIN.label" :size="sizeLinkMenu" color="gray" class="mb-sm hover-underline" />
             </NuxtLink>
             <NuxtLink :to="{ path: ROUTES.PUBLIC.CONTACT.path }">
               <Text :text="ROUTES.PUBLIC.CONTACT.label" color="white" class="hover-underline" />
