@@ -21,6 +21,7 @@ export const IMAGE_BLOCK_POSITIONS = {
   FEATURED: 'featured',
   SIDEBAR: 'sidebar',
   BOTTOM: 'bottom',
+  FIXED: 'fixed',
 } as const
 
 export const IMAGE_BLOCK_POSITION_OPTIONS = [
@@ -28,4 +29,5 @@ export const IMAGE_BLOCK_POSITION_OPTIONS = [
   { title: 'Nổi bật', value: IMAGE_BLOCK_POSITIONS.FEATURED },
   { title: 'Sidebar', value: IMAGE_BLOCK_POSITIONS.SIDEBAR },
   { title: 'Cuối trang', value: IMAGE_BLOCK_POSITIONS.BOTTOM },
+  { title: 'Giữa màn hình', value: IMAGE_BLOCK_POSITIONS.FIXED },
 ]

@@ -144,6 +144,7 @@ onBeforeUnmount(() => {
             <div class="mt-md">
               <ProductDetailButtonOrder classButton="text-size-normal" />
             </div>
+            <ProductDetailPolicy />
           </div>
         </div>
       </div>

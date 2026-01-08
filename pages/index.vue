@@ -112,4 +112,7 @@ onMounted(async () => {
       </client-only>
     </div>
   </div>
+
+  <ImageBlockPopupFixed />
+
 </template>

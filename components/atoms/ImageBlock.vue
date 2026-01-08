@@ -13,6 +13,7 @@ interface Props {
   linkRedirect?: string
   showContent?: boolean
   width?: number
+  classContent?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -55,7 +56,8 @@ const wrapperProps = computed(() =>
         v-if="props.showContent"
         :class="[
           storeDisplay.isMobileTable ? 'pd-ms' : 'pd-lg',
-          'bg-gradient-2 el-absolute flex align-end left-0 bottom-0 w-full'
+          'bg-gradient-2 el-absolute flex align-end left-0 bottom-0 w-full',
+          props.classContent
         ]"
       >
         <div>
