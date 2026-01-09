@@ -62,6 +62,12 @@
       color: $cl-white;
     }
   }
+  @media (min-width: 1025px){
+  &.has-header-sub {
+    background-color: $cl-white;
+    min-height: $height-header + $height-header-sub;
+  }
+  }
   @media (min-width: 1920px){
     &-left, &-right {
       min-width: 400px;

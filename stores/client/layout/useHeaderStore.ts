@@ -34,13 +34,40 @@ export const useHeaderStore = defineStore("HeaderStore", () => {
     ]
   })
 
+  const listMenuProductLeft = computed(() => {
+    const productMenus = storeProductCategory.getMenuItems
+
+    return [
+      ...productMenus,
+    ]
+  })
+
   const listMenuMore = computed(() => {
     return [
       ROUTES.PUBLIC.PAGE?.children?.POINT_CLUB,
+      { label: 'Hoàn tiền', path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path},
+      { label: 'Hạng thành viên', path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path},
       ROUTES.PUBLIC.ABOUT,
       ROUTES.PUBLIC.NEWS?.children?.MAIN,
       ROUTES.PUBLIC.LOGIN,
       ROUTES.PUBLIC.REGISTER,
+    ]
+  })
+
+  const listHeaderSubMenu = computed(() => {
+    return [
+      ROUTES.PUBLIC.ACCOUNT.children!.WALLET_VOUCHER,
+      { label: 'Hoàn tiền', path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path , icon: 'paid' },
+      { label: 'Hạng thành viên', path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path , icon: 'crown' },
+      ROUTES.PUBLIC.ACCOUNT.children!.INFO,
+    ]
+  })
+
+  const listHeaderSubMenuLeft = computed(() => {
+    return [
+      { label: 'Tất cả sản phẩm', action: () => handleTogglePopupMenu(true), icon: 'menu' },
+      ROUTES.PUBLIC.ABOUT,
+      ROUTES.PUBLIC.NEWS.children!.MAIN,
     ]
   })
 
@@ -52,7 +79,10 @@ export const useHeaderStore = defineStore("HeaderStore", () => {
     isTogglePopupMenu,
     listMenu,
     listMenuMore,
+    listMenuProductLeft,
     menuLevel,
+    listHeaderSubMenu,
+    listHeaderSubMenuLeft,
     handleTogglePopupMenu,
   };
 });

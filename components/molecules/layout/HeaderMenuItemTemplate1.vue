@@ -23,7 +23,7 @@ const toggle = () => {
         class="text-uppercase"
       />
     </NuxtLink>
-    <MaterialIcon v-if="props.item.children?.length" @click.prevent="toggle" name="chevron_right" weight="light" size="lg-2" :class="[{'rotate-90': isOpen},'text-color-gray5 transition-0d3']"/>
+    <MaterialIcon v-if="props.item.children?.length" @click.prevent="toggle" name="chevron_right" weight="light" size="lg-2" :class="[{'rotate-90': isOpen},'text-color-gray5 transition-0d3 cursor-pointer']"/>
   </div>
   <div v-show="props.item.children?.length && isOpen" class="pl-ms mt-ms">
     <NuxtLink :to="child.path" v-for="(child, idx) in item.children" :key="idx">

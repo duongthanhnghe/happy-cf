@@ -23,6 +23,7 @@ const storeProductCategory = useProductCategoryStore()
 const storeHeader = useHeaderStore()
 
 const typeLeft = computed(() => route.meta?.headerTypeLeft ?? 'logo')
+const showHeaderSub = computed(() => route.meta?.showHeaderSub ?? true)
 
 if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0) {
   await storeProductCategory.fetchCategoryStore()
@@ -33,7 +34,7 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
   <client-only>
     <PopupMenuHeader 
       v-model:isTogglePopupMenu="storeHeader.isTogglePopupMenu"
-      :listMenu="storeHeader.listMenu"
+      :listMenu="storeDisplay.isLaptop ? storeHeader.listMenuProductLeft : storeHeader.listMenu"
       :listMenuMore="storeHeader.listMenuMore"
       :phone="storeSetting.getBaseInformation?.phone"
       :socialLinks="storeSetting.getBaseInformation?.socialLinks"
@@ -50,7 +51,7 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
     </template>
   </client-only>
 
-  <div class="header">
+  <div :class="['header', {'has-header-sub': showHeaderSub}]">
     <div class="header-fixed">
       <div class="container container-xxl">
         <div class="header-content position-relative">
@@ -124,6 +125,7 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
           </div>
         </div>
       </div>
+      <HeaderSub v-if="showHeaderSub && storeDisplay.isLaptop" :listMenu="storeHeader.listHeaderSubMenu" :listMenuLeft="storeHeader.listHeaderSubMenuLeft" />
     </div>
   </div>
 </template>

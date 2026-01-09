@@ -15,4 +15,5 @@ export interface MenuItem {
   showBreadcrumb?: boolean
   showFooter?: boolean
   showMenuBottom?: boolean
+  showHeaderSub?: boolean
 }

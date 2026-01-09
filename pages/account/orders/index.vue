@@ -6,6 +6,7 @@ import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
+  showHeaderSub: ROUTES.PUBLIC.ACCOUNT.showHeaderSub,
 })
 
 const store = useOrderHistoryStore();

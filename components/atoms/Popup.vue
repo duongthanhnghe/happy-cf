@@ -69,8 +69,8 @@ const handleClosePopup = () => {
       popupClass
     ]"
   >
-      <template v-if="variant === 'modal-right' || variant === 'modal-full-screen'">
-        <div :class="['portal-popup-main', {'full-screen': variant === 'modal-full-screen'}]">
+      <template v-if="variant === 'modal-right' || variant === 'modal-left' || variant === 'modal-full-screen'">
+        <div :class="['portal-popup-main', {'full-screen': variant === 'modal-full-screen'}, variant]">
           <div class="portal-popup-header">
             <Button color="secondary" class="portal-popup-close" icon="arrow_back" @click="handleClosePopup" />
             <Text v-if="popupHeading" :size="storeDisplay.isMobileTable ? 'md':'lg'" weight="medium" :text="popupHeading" limit="1"/>

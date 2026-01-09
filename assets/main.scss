@@ -207,6 +207,9 @@ a {
   &-25 {
     height: 25px;
   }
+  &-40 {
+    height: 40px !important;
+  }
   &-50 {
     height: 50px;
   }
@@ -252,6 +255,9 @@ a {
     }
   }
   &-height {
+    &-lg {
+      min-height: $space-lg;
+    }
     &-40 {
       min-height: 40px;
     }
@@ -1538,8 +1544,11 @@ body .bg {
     }
   }
   &-color {
-    &-primary:hover {
-      color: $cl-primary !important;
+    &-primary {
+      transition: 0.3s all;
+      &:hover {
+        color: $cl-primary !important;
+      }
     }
   }
   &-scale:hover {
@@ -1619,6 +1628,10 @@ body .bg {
       -webkit-transition: -webkit-transform 0.5s ease;
       transition: -webkit-transform 0.5s ease;
       transition: transform 0.5s ease, -webkit-transform 0.5s ease;
+      &.modal-left {
+        right: auto;
+        left: 0;
+      }
     }
     &-header {
       background-color: $cl-white;
@@ -1823,6 +1836,9 @@ body .bg {
             justify-content: center;
           }
         }
+        &.modal-left {
+          transform: translateX(-100%);
+        }
       }
       &-header {
         max-height: 70px;
@@ -1852,8 +1868,10 @@ body .bg {
         left: 1.5rem;
       }
       &.active &-main {
-        -webkit-transform: translateX(-20px);
         transform: translateX(-20px);
+        &.modal-left {
+        transform: translateX(20px);
+        }
       }
       &-children {
         &.active {

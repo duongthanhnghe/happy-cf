@@ -8,6 +8,7 @@ import { formatDateTime } from '@/utils/global';
 definePageMeta({
   layout: ROUTES.PUBLIC.ACCOUNT.layout,
   middleware: ROUTES.PUBLIC.ACCOUNT.middleware,
+  showHeaderSub: ROUTES.PUBLIC.ACCOUNT.showHeaderSub,
 })
 
 const storeAccount = useAccountStore();

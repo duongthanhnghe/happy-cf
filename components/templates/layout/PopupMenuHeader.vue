@@ -31,7 +31,7 @@ watch(
   <Popup 
     :model-value="props.isTogglePopupMenu"
     @update:modelValue="emit('update:isTogglePopupMenu', $event)"
-    align="right" 
+    variant="modal-left"
     bodyClass="pd-0"
     >
     <template #header >

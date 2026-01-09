@@ -24,6 +24,8 @@ export const useVoucherAll = () => {
   };
 
   const getVoucherAll = computed(() => vouchers.value);
+
+  const getVoucherDesc = computed(() => vouchers.value.filter(item => item.description !== ''));
   
   const getTotalVoucherAll = computed(() => vouchers.value.length);
 
@@ -31,6 +33,7 @@ export const useVoucherAll = () => {
     loadingData,
     fetchVoucherAll,
     getVoucherAll,
+    getVoucherDesc,
     getTotalVoucherAll,
   };
 };

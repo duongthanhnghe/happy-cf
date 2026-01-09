@@ -5,6 +5,7 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore'
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.MENU_ACCOUNT.middleware,
+  showHeaderSub: ROUTES.PUBLIC.ACCOUNT.showHeaderSub,
 })
 const storeDisplay = useDisplayStore()
 const store = useAccountStore();
