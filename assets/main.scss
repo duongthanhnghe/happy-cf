@@ -363,6 +363,9 @@ body .bg {
     &-50 {
       background-color: rgba($cl-primary, 0.5);
     }
+     &-90 {
+      background-color: rgba($cl-primary, 0.9);
+    }
   }
   &-third {
     background-color: $cl-third;
