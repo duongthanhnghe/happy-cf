@@ -38,6 +38,5 @@ export const apiAdmin = () => {
     put: <T>(url: string, body?: any) => request<T>(url, { method: "PUT", body }),
     delete: <T>(url: string) => request<T>(url, { method: "DELETE" }),
     patch: <T>(url: string, body?: any) => request<T>(url, { method: "PATCH", body }),
-    // auth: <T>(url: string, options?: any) => request<T>(url, options),
   };
 };

@@ -4,6 +4,7 @@ export interface ApiResponse<T> {
   code: number;
   message?: string;
   data: T;
+  success?: boolean
 }
 
 // export interface ApiPaginationResponse<T> {

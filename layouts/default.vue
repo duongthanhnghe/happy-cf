@@ -10,6 +10,7 @@ const showBreadcrumb = computed(() => route.meta?.showBreadcrumb ?? false)
 const showFooter = computed(() => route.meta?.showFooter ?? true)
 const showMenuBottom = computed(() => route.meta?.showMenuBottom ?? true)
 const containerClass = computed(() => route.meta?.containerClass ?? '')
+const showMembershipCTA = computed(() => route.meta?.showMembershipCTA ?? false)
 
 </script>
 
@@ -24,6 +25,7 @@ const containerClass = computed(() => route.meta?.containerClass ?? '')
         <slot />
       </div>
     </div>
+    <MembershipCTA v-if="showMembershipCTA" />
     <Footer v-if="showFooter" />
     <MenuBottom v-if="storeDisplay.isMobileTable && showMenuBottom" />
   </div>

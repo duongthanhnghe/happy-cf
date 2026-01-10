@@ -10,12 +10,14 @@ import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 import { useAdminProductCategoryOperations } from "@/composables/admin/product/category/useAdminProductCategoryOperations";
 import { useAdminProductCategoryUtils } from "@/composables/admin/product/category/useAdminProductCategoryUtils";
 import { useAdminProductCategoryState } from "@/composables/admin/product/category/useAdminProductCategoryState";
+import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
 
 export const useCategoryManageStore = defineStore("CategoryManage", () => {
 
   const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
   const storeFileManage = useFileManageFolderStore();
 
+  const folderName = FOLDER_UPLOAD.CATEGORY_PRODUCT
   const state = useAdminProductCategoryState();
 
   const treeItems = computed(() => {
@@ -34,7 +36,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
   //upload image
   const handleAddImage = (type: 'image' | 'banner') => {
     state.currentImageType.value = type;
-    storeFileManage.handleTogglePopup(true);
+    storeFileManage.handleTogglePopup(true, folderName);
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {
@@ -109,6 +111,7 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     state.currentTableOptions,
     state.isTogglePopupAdd,
     state.isTogglePopupUpdate,
+    state.itemsPerPage,
     productUtils.handleResetFormCategoryItem,
     productUtils.handleTogglePopupUpdate,
     setSelectedCategory,
@@ -129,5 +132,6 @@ export const useCategoryManageStore = defineStore("CategoryManage", () => {
     getListCategoryAllTree,
     treeItems,
     treeItemsForEdit,
+    folderName
   };
 });

@@ -61,19 +61,13 @@ const wrapperProps = computed(() =>
         ]"
       >
         <div>
-          <Text
-            v-if="props.title"
-            :text="props.title"
-            color="white"
-            size="lg-2"
-            weight="semibold"
-            class="text-uppercase"
-          />
+          <Heading v-if="props.title" :text="props.title" color="white" class="text-uppercase" weight="semibold" size="xl" />
 
           <Text
             v-if="props.description"
             :text="props.description"
             color="white"
+            class="mb-sm"
           />
 
           <Button
@@ -82,7 +76,6 @@ const wrapperProps = computed(() =>
             color="secondary"
             :border="false"
             :label="props.textButton"
-            class="mt-sm"
           />
         </div>
       </div>

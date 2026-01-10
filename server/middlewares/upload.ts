@@ -1,5 +1,4 @@
 import multer from 'multer'
-// export const uploadImageMulter = multer({ dest: 'uploads/' })
 export const uploadImageMulter = multer({
   dest: 'uploads/',
   limits: {

@@ -10,6 +10,7 @@ definePageMeta({
   showBreadcrumb: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.showBreadcrumb,
   showHeaderSub: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.showHeaderSub,
   layout: ROUTES.PUBLIC.PAGE.layout,
+  showMembershipCTA: ROUTES.PUBLIC.PAGE.showMembershipCTA,
 })
 
 const { t } = useITranslations()

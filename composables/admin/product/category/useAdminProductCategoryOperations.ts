@@ -19,6 +19,7 @@ export const useAdminProductCategoryOperations = (
   currentTableOptions: Ref<TableOpt>,
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
+  itemsPerPage: number,
   handleResetFormCategoryItem: () => void,
   handleTogglePopupUpdate: (value: boolean) => void,
   setSelectedCategory: (parentId: string | null) => void,
@@ -150,14 +151,14 @@ export const useAdminProductCategoryOperations = (
   const resetFilter = () => {
     search.value = ''
     currentTableOptions.value.page = 1
-    currentTableOptions.value.itemsPerPage = 20
+    currentTableOptions.value.itemsPerPage = itemsPerPage
   }
 
   const hasFilter = computed(() => {
     return (
       search.value !== '' ||
       currentTableOptions.value.page !== 1 ||
-      currentTableOptions.value.itemsPerPage !== 20
+      currentTableOptions.value.itemsPerPage !== itemsPerPage
     )
   })
 

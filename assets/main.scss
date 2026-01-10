@@ -2,6 +2,10 @@
 @import "./fonts/fonts.css";
 @import "./base.css";
 
+#nuxt-devtools-container {
+  display: none !important;
+}
+
 body {
   min-height: 100vh;
   color: $cl-text;
@@ -131,6 +135,18 @@ a {
   100% {
     background-position: -100% 0;
   }
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  line-height: 1;
+  display: inline-block;
+  letter-spacing: normal;
+  text-transform: none;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }
 
 .el-absolute {
@@ -1434,6 +1450,9 @@ body .bg {
   display: flex;
   &-1 {
     flex: 1;
+  }
+  &-auto {
+    flex: auto;
   }
   &-wrap {
     flex-wrap: wrap;

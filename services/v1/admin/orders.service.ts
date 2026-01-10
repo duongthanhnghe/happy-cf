@@ -12,7 +12,7 @@ import type {
 import type { ApiResponse } from "@/server/types/common/api-response";
 import { useRuntimeConfig } from 'nuxt/app'
 import { fetchRawAdmin } from "@/services/http/fetchRawAdmin";
-import { apiAdminRaw } from "@/services/http/apiAdminRaw";
+import { apiRaw } from "@/services/http/apiRaw";
 
 export const ordersAPI = {
   getAll: async (
@@ -162,7 +162,7 @@ export const ordersAPI = {
       const config = useRuntimeConfig()
       const siteName = String(config.public.siteName ?? "")
 
-      const url = apiAdminRaw(
+      const url = apiRaw(
         API_ENDPOINTS_ADMIN.ORDERS.PRINT_BILL(id) +
           `?siteName=${encodeURIComponent(siteName)}`
       )

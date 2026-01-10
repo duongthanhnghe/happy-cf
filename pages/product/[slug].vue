@@ -18,6 +18,7 @@ import { useITranslations } from '@/composables/shared/itranslation/useITranslat
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.DETAIL.middleware ?? { middleware: ['product-detail'] },
+  showMembershipCTA: ROUTES.PUBLIC.PRODUCT.children?.DETAIL.showMembershipCTA,
 })
 
 const { t } = useITranslations()

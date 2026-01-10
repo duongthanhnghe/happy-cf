@@ -2,9 +2,7 @@
 import { onBeforeUnmount} from 'vue'
 import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
-import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 
 definePageMeta({
@@ -14,9 +12,6 @@ definePageMeta({
 
 const store = useCategoryManageStore();
 const storeFileManage = useFileManageFolderStore();
-const folderName = FOLDER_UPLOAD.CATEGORY_PRODUCT
-
-useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   store.resetFilter()
@@ -44,7 +39,7 @@ onBeforeUnmount(() => {
 
 <CreateCategoryProduct />
 <UpdateCategoryProduct />
-<PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
   <v-data-table-server 

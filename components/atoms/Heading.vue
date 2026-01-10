@@ -1,5 +1,7 @@
 <template>
-  <div v-if="props.text" :class="[computedSize === 'xxl' ? 'mb-ms' : 'mb-sm', {'flex flex-wrap gap-sm justify-between': props.slug || hasContent }]">
+  <div v-if="props.text" :class="[props.marginBottom
+        ? (computedSize === 'xxl' ? 'mb-ms' : 'mb-sm')
+        : '', {'flex flex-wrap gap-sm justify-between': props.slug || hasContent }]">
     <Text :tag="props.tag" :text="props.text" :weight="props.weight" :size="computedSize" :color="props.color" :align="props.align" :slug="props.headingSlug" />
     <NuxtLink v-if="props.slug" :to="{ path: props.slug }">
       <Button tag="span" color="secondary" size="sm" icon="keyboard_arrow_right" class="rd-full" />
@@ -12,7 +14,7 @@
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { computed, useSlots } from 'vue'
 
-type HeadingSize = 'lg' | 'xl' | 'xxl'
+type HeadingSize = 'base' | 'lg' | 'xl' | 'xxl'
 
 const slots = useSlots()
 const storeDisplay = useDisplayStore();
@@ -26,6 +28,7 @@ const props = withDefaults(defineProps<{
   align?: 'left' | 'center' | 'right'
   slug?: string
   headingSlug?: string
+  marginBottom?: boolean
 }>(), {
   tag: 'div',
   color: 'black',
@@ -34,12 +37,14 @@ const props = withDefaults(defineProps<{
   align: 'left',
   slug: '',
   headingSlug: '',
+  marginBottom: true
 })
 
 const SIZE_MAP: Record<HeadingSize, { desktop: HeadingSize; mobile: HeadingSize }> = {
   xxl: { desktop: 'xxl', mobile: 'xl' },
   xl:  { desktop: 'xl',  mobile: 'lg' },
   lg:  { desktop: 'lg',  mobile: 'lg' },
+  base:  { desktop: 'base',  mobile: 'base' },
 }
 
 const computedSize = computed<HeadingSize>(() => {

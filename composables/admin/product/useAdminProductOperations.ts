@@ -23,6 +23,7 @@ export const useAdminProductOperations = (
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
   selectedIdsDelete: Ref<string[]>,
+  itemsPerPage: number,
   handleReset: () => void,
   handleTogglePopupUpdate: (value: boolean) => void,
   setSelectedCategory: (parentId: string | null) => void,
@@ -203,7 +204,7 @@ export const useAdminProductOperations = (
     search.value = ''
     categorySelectedFilter.value = ''
     currentTableOptions.value.page = 1
-    currentTableOptions.value.itemsPerPage = 50
+    currentTableOptions.value.itemsPerPage = itemsPerPage
   }
 
   const hasFilter = computed(() => {
@@ -211,7 +212,7 @@ export const useAdminProductOperations = (
       search.value !== '' ||
       categorySelectedFilter.value !== '' ||
       currentTableOptions.value.page !== 1 ||
-      currentTableOptions.value.itemsPerPage !== 50
+      currentTableOptions.value.itemsPerPage !== itemsPerPage
     )
   })
 

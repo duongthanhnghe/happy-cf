@@ -29,7 +29,7 @@ const getFolderTotalSize = async (folder: string): Promise<number> => {
 
 export const getImages = async (req: Request, res: Response) => {
   try {
-    const { folder, max_results = 10, next_cursor } = req.query
+    const { folder, max_results, next_cursor } = req.query
 
     if (!folder) {
       return res.status(400).json({
@@ -45,18 +45,11 @@ export const getImages = async (req: Request, res: Response) => {
       resource_type: 'image',
     }
 
-    // let search = cloudinary.search
-    //   .expression(`folder:${folder}`)
-    //   .sort_by('created_at', 'desc')
-    //   .max_results(Number(max_results))
-
     if (next_cursor) {
-      // search = search.next_cursor(next_cursor as string)
       options.next_cursor = next_cursor
     }
 
     const result = await cloudinary.api.resources(options)
-    // const result = await search.execute()
 
     return res.status(200).json({
       success: true,
@@ -97,31 +90,68 @@ export const deleteImage = async (req: Request, res: Response) => {
   }
 }
 
+// export const searchImage = async (req: Request, res: Response) => {
+//   try {
+//     const { url, folder } = req.query
+
+//     if (!url) {
+//       return res.status(400).json({ success: false, message: 'url (keyQuery) is required' })
+//     }
+
+//     const keyQuery = decodeURIComponent(url as string)
+//     const folderPath = folder ? decodeURIComponent(folder as string) : undefined
+
+//     const result = await cloudinary.api.resources({
+//       type: 'upload',
+//       prefix: folderPath,
+//       max_results: 50,
+//     })
+
+//     const filtered = result.resources.filter((item: any) =>
+//       item.secure_url.includes(keyQuery)
+//     )
+
+//     return res.status(200).json({ success: true, data: filtered })
+//   } catch (err: any) {
+//     console.error('Search image error:', err)
+//     return res.status(500).json({ success: false, message: err.message })
+//   }
+// }
+
 export const searchImage = async (req: Request, res: Response) => {
   try {
     const { url, folder } = req.query
 
     if (!url) {
-      return res.status(400).json({ success: false, message: 'url (keyQuery) is required' })
+      return res.status(400).json({
+        success: false,
+        message: 'url (keyQuery) is required',
+      })
     }
 
-    const keyQuery = decodeURIComponent(url as string)
-    const folderPath = folder ? decodeURIComponent(folder as string) : undefined
+    const keyQuery = String(url)
+    const folderPath = folder ? String(folder).replace(/\/+$/, '') : undefined
 
     const result = await cloudinary.api.resources({
       type: 'upload',
       prefix: folderPath,
-      max_results: 50,
+      max_results: 100,
     })
 
     const filtered = result.resources.filter((item: any) =>
       item.secure_url.includes(keyQuery)
     )
 
-    return res.status(200).json({ success: true, data: filtered })
+    return res.status(200).json({
+      success: true,
+      data: filtered,
+    })
   } catch (err: any) {
     console.error('Search image error:', err)
-    return res.status(500).json({ success: false, message: err.message })
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    })
   }
 }
 

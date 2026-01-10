@@ -16,4 +16,5 @@ export interface MenuItem {
   showFooter?: boolean
   showMenuBottom?: boolean
   showHeaderSub?: boolean
+  showMembershipCTA?: boolean
 }

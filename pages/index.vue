@@ -15,6 +15,7 @@ definePageMeta({
   middleware: ROUTES.PUBLIC.HOME.middleware,
   headerTypeLeft: ROUTES.PUBLIC.HOME.headerTypeLeft,
   layout: ROUTES.PUBLIC.PAGE.layout,
+  showMembershipCTA: ROUTES.PUBLIC.HOME.showMembershipCTA,
 })
 
 const { t } = useITranslations()

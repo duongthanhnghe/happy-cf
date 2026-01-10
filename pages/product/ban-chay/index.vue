@@ -16,6 +16,7 @@ import { useITranslations } from '@/composables/shared/itranslation/useITranslat
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.middleware,
   headerTypeLeft: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.headerTypeLeft,
+  showMembershipCTA: ROUTES.PUBLIC.PRODUCT.children?.MOST_ORDER.showMembershipCTA,
 })
 
 const { t } = useITranslations()
@@ -144,6 +145,7 @@ onBeforeUnmount(() => {
       class="pt-section pb-section"
       fullScreen
     />
+    <div v-else class="pt-section"></div>
     <PopupManageAddress v-if="storeAccount.getUserId" />
   </client-only>
 </template>

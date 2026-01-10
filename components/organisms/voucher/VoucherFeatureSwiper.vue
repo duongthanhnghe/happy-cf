@@ -44,7 +44,7 @@ onMounted(async () => {
         class="height-40"
       >
         <Text v-if="props.position === 'header-sub'" class="hover-color-primary white-space height-40 align-center flex align-center gap-xs justify-center">
-          <MaterialIcon name="local_activity" size="normal" color="gray5" />
+          <MaterialIcon name="local_activity" size="normal" color="primary" />
           <Text :text="item.description" limit="1" class="max-width-200" weight="medium" />
         </Text>
         <Text v-else color="white" class="white-space height-40 align-center flex gap-xs align-center justify-center">

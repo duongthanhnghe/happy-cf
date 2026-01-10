@@ -29,7 +29,7 @@ const getFolderTotalSize = async (folder: string): Promise<number> => {
 
 export const getImages = async (req: Request, res: Response) => {
   try {
-    const { folder, max_results = 10, next_cursor } = req.query
+    const { folder, max_results, next_cursor } = req.query
 
     if (!folder) {
       return res.status(400).json({
@@ -45,18 +45,11 @@ export const getImages = async (req: Request, res: Response) => {
       resource_type: 'image',
     }
 
-    // let search = cloudinary.search
-    //   .expression(`folder:${folder}`)
-    //   .sort_by('created_at', 'desc')
-    //   .max_results(Number(max_results))
-
     if (next_cursor) {
-      // search = search.next_cursor(next_cursor as string)
       options.next_cursor = next_cursor
     }
 
     const result = await cloudinary.api.resources(options)
-    // const result = await search.execute()
 
     return res.status(200).json({
       success: true,
@@ -204,34 +197,8 @@ export const searchImage = async (req: Request, res: Response) => {
 }
 
 export const uploadImage = async (req: Request, res: Response) => {
-  const userId = req.body?.userId;
-
   try {
-    if (!req.files || !(req.files instanceof Array) || req.files.length === 0) {
-      return res.status(400).json({ success: false, message: 'No files uploaded' });
-    }
-
-    const folder = userId
-      ? `Member/member${userId}`
-      : req.body.folder || "Default";
-
-    if (userId) {
-      const currentSize = await getFolderTotalSize(folder)
-
-      const uploadSize = (req.files as Express.Multer.File[])
-        .reduce((sum, f) => sum + f.size, 0)
-
-      if (currentSize + uploadSize > MAX_USER_STORAGE) {
-        for (const file of req.files as Express.Multer.File[]) {
-          fs.unlinkSync(file.path)
-        }
-
-        return res.status(400).json({
-          success: false,
-          message: 'Dung lượng ảnh của bạn đã vượt quá 3MB',
-        })
-      }
-    }
+    const folder = req.body.folder || "Default";
 
     const uploadedFiles: any[] = [];
 

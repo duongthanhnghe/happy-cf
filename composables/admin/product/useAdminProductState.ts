@@ -81,9 +81,10 @@ export const useAdminProductState = () => {
     const totalItems = ref<number>(0)
     const search = ref<string>('')
     const categorySelectedFilter = ref<string>('')
+    const itemsPerPage = 50
     const currentTableOptions = ref<TableOpt>({
     page: 1,
-    itemsPerPage: 50,
+    itemsPerPage: itemsPerPage,
     sortBy: [],
   })
   const isTogglePopupUpdate = ref<boolean>(false);
@@ -145,5 +146,6 @@ export const useAdminProductState = () => {
     dataImport,
     currentTypeImport,
     selectedIdsDelete,
+    itemsPerPage,
   };
 };

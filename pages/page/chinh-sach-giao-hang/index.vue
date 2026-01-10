@@ -6,6 +6,7 @@ definePageMeta({
   middleware: ROUTES.PUBLIC.PAGE.children?.POLICY_SECURITY.middleware,
   showBreadcrumb: ROUTES.PUBLIC.PAGE.showBreadcrumb,
   layout: ROUTES.PUBLIC.PAGE.layout,
+  showMembershipCTA: ROUTES.PUBLIC.PAGE.showMembershipCTA
 })
 
 const { t } = useITranslations()

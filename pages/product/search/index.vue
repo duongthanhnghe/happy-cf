@@ -10,6 +10,7 @@ import { useITranslations } from '@/composables/shared/itranslation/useITranslat
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.middleware || '',
   showBreadcrumb: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.showBreadcrumb,
+  showMembershipCTA: ROUTES.PUBLIC.PRODUCT.children?.SEARCH.showMembershipCTA,
 })
 
 const { t } = useITranslations()

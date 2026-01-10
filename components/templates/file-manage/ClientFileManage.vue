@@ -50,6 +50,7 @@ const reloadData = () => {
         prepend-inner-icon="mdi-magnify"
         @keydown.enter="store.onChangeSearch(props.folderName)"
         required
+        hide-details
       />
       <MaterialIcon
         v-if="store.txtSearch !== ''"
@@ -81,7 +82,6 @@ const reloadData = () => {
     <v-infinite-scroll
       height="auto"
       mode="manual"
-      :class="{ 'hide-side': store.getItems.length < store.pageSize }"
       @load="store.load"
     >
       <div class="row row-xs mb-sm">

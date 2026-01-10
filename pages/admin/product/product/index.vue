@@ -3,9 +3,7 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { formatCurrency } from '@/utils/global'
-import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 import { useAdminProductCategory } from '@/composables/admin/product/category/useAdminProductCategory';
 
@@ -17,9 +15,6 @@ definePageMeta({
 const store = useProductManageStore();
 const storeFileManage = useFileManageFolderStore();
 const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
-const folderName = FOLDER_UPLOAD.PRODUCT
-
-useFileManageWatchers(storeFileManage, folderName);
 
 onMounted(async () => {
   if(!getListCategoryAll.value || getListCategoryAll.value.data.length === 0) await fetchCategoryList(1,9999,'')
@@ -91,7 +86,7 @@ onBeforeUnmount(() => {
 <UpdateProduct />
 <CreateVariantProduct />
 <ImportProduct />
-<PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
     <v-data-table-server

@@ -11,11 +11,13 @@ import { useAdminProductOperations } from "@/composables/admin/product/useAdminP
 import { useAdminProductUtils } from "@/composables/admin/product/useAdminProductUtils";
 import { useAdminProductState } from "@/composables/admin/product/useAdminProductState";
 import { useAdminProductImport } from "@/composables/admin/product/useAdminProductImport";
+import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
 
 export const useProductManageStore = defineStore("ProductManage", () => {
   const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
   const storeFileManage = useFileManageFolderStore();
   
+  const folderName = FOLDER_UPLOAD.PRODUCT
   const state = useAdminProductState()
 
   const treeItems = computed(() => {
@@ -25,7 +27,7 @@ export const useProductManageStore = defineStore("ProductManage", () => {
 
   // handles image
   const handleAddImage = () => {
-    storeFileManage.handleTogglePopup(true)
+    storeFileManage.handleTogglePopup(true, folderName)
   }
 
   const handleDeleteListImage = (id: string, formAdd: boolean) => {
@@ -38,7 +40,7 @@ export const useProductManageStore = defineStore("ProductManage", () => {
 
   const handleAddListImage = () => {
     state.checkSelectImage.value = false
-    storeFileManage.handleTogglePopup(true)
+    handleAddImage()
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {
@@ -118,6 +120,7 @@ export const useProductManageStore = defineStore("ProductManage", () => {
     state.isTogglePopupAdd,
     state.isTogglePopupUpdate,
     state.selectedIdsDelete,
+    state.itemsPerPage,
     productUtils.handleReset,
     productUtils.handleTogglePopupUpdate,
     setSelectedCategory,
@@ -197,5 +200,6 @@ export const useProductManageStore = defineStore("ProductManage", () => {
     nullRules,
     nullAndSpecialRules,
     menuActions,
+    folderName,
   };
 });

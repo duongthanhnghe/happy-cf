@@ -14,17 +14,3 @@ const props = defineProps({
   weight: { type: String, default: 'normal' }
 })
 </script>
-
-<style scoped>
-.material-symbols-rounded {
-  font-family: 'Material Symbols Rounded';
-  font-style: normal;
-  display: inline-block;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  direction: ltr;
-  -webkit-font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
-}
-</style>

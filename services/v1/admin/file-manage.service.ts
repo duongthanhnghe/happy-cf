@@ -1,18 +1,19 @@
 import { apiAdmin } from '@/services/http/apiAdmin'
 import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
+import { fetchRawAdmin } from '@/services/http/fetchRawAdmin';
 
 export const fileManageAPI = {
   getImages: async (
     folder: string, 
-    max_results: number = 10, 
+    max_results: number, 
     next_cursor?: string
   ): Promise<any> => {
     try {
-      const params = new URLSearchParams({ max_results: max_results.toString() })
-      if (next_cursor) params.append('next_cursor', next_cursor)
-
-      return await apiAdmin().get(
-        `${API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_IMAGES(folder, max_results)}?${params.toString()}`
+      return await apiAdmin().get(API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_IMAGES(folder, max_results),
+      {
+        max_results,
+        ...(next_cursor ? { next_cursor } : {})
+      }
       )
     } catch (err: any) {
       console.error('Error fetching images:', err)
@@ -61,16 +62,22 @@ export const fileManageAPI = {
     }
   },
 
+  
   uploadImage: async (files: File[], folder: string): Promise<any> => {
     try {
       const formData = new FormData()
       files.forEach(file => formData.append('files', file))
       formData.append('folder', folder)
 
-      return await apiAdmin().post(API_ENDPOINTS_ADMIN.FILE_MANAGE.UPLOAD, formData)
+      const res = await fetchRawAdmin(
+        `${API_ENDPOINTS_ADMIN.FILE_MANAGE.UPLOAD}`,
+        { method: "POST", body: formData, }
+      )
+
+      return res.json()
     } catch (err: any) {
       console.error('Error uploading images:', err)
-      return { success: false, message: 'Upload failed' }
+      return { success: false, message: 'Upload thất bại!' }
     }
   },
 }

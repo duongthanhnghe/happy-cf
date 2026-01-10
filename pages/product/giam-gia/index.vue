@@ -14,6 +14,7 @@ import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/ima
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.SALE.middleware,
   headerTypeLeft: ROUTES.PUBLIC.PRODUCT.children?.SALE.headerTypeLeft,
+  showMembershipCTA: ROUTES.PUBLIC.PRODUCT.children?.SALE.showMembershipCTA,
 })
 
 const storeDisplay = useDisplayStore()
@@ -141,6 +142,8 @@ onBeforeUnmount(() => {
       class="pt-section pb-section"
       fullScreen
     />
+    <div v-else class="pt-section"></div>
+
     <PopupManageAddress v-if="storeAccount.getUserId" />
   </client-only>
 </template>

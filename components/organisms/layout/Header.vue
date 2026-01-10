@@ -51,7 +51,7 @@ if(!storeProductCategory.dataList || storeProductCategory.dataList.length === 0)
     </template>
   </client-only>
 
-  <div :class="['header', {'has-header-sub': showHeaderSub}]">
+  <div :class="['header', {'has-header-sub': showHeaderSub && storeDisplay.isLaptop}]">
     <div class="header-fixed">
       <div class="container container-xxl">
         <div class="header-content position-relative">
