@@ -60,8 +60,8 @@ const load = async ({ done }: { done: (status: 'ok' | 'empty') => void }) => {
     nextCursor.value || undefined
   )
 
-  if (res.images.length) {
-    items.value.push(...res.images)
+  if (res.data.length) {
+    items.value.push(...res.data)
     nextCursor.value = res.next_cursor
     isEnd.value = !res.next_cursor
     done('ok')
@@ -83,7 +83,7 @@ const load = async ({ done }: { done: (status: 'ok' | 'empty') => void }) => {
 
   try {
     const res = await fileManageAPI.getImages(folderName, pageSize)
-    items.value = res.images
+    items.value = res.data
     nextCursor.value = res.next_cursor ?? null
     isEnd.value = !res.next_cursor
   } finally {
@@ -178,8 +178,8 @@ const uploadImage = async (folderName: string) => {
     const res = await fileManageAPI.uploadImage(files.value, folder) 
 
     if (res.success) {
-      const uploadedFiles = res.files as FileManageImage[]
-      showSuccess(`${res.files.length} ảnh đã tải lên thành công`)
+      const uploadedFiles = res.data as FileManageImage[]
+      showSuccess(`${res.data.length} ảnh đã tải lên thành công`)
       items.value.unshift(...uploadedFiles)
       files.value = []
       return true

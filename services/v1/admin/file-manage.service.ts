@@ -1,13 +1,14 @@
 import { apiAdmin } from '@/services/http/apiAdmin'
 import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
 import { fetchRawAdmin } from '@/services/http/fetchRawAdmin';
+import type { DeleteImageResponse, DeleteImagesResponse, GetFoldersResponse, GetImagesResponse, SearchImagesResponse, UploadImagesResponse } from '@/server/types/dto/v1/file-manage.dto';
 
 export const fileManageAPI = {
   getImages: async (
     folder: string, 
     max_results: number, 
     next_cursor?: string
-  ): Promise<any> => {
+  ): Promise<GetImagesResponse> => {
     try {
       return await apiAdmin().get(API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_IMAGES(folder, max_results),
       {
@@ -17,39 +18,39 @@ export const fileManageAPI = {
       )
     } catch (err: any) {
       console.error('Error fetching images:', err)
-      return { success: false, message: err.message }
+      return { success: false, data: [], next_cursor: null }
     }
   },
 
-  getFolders: async (): Promise<any> => {
+  getFolders: async (): Promise<GetFoldersResponse> => {
     try {
       return await apiAdmin().get(API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_FOLDERS())
     } catch (err: any) {
       console.error('Error fetching folders:', err)
-      return { success: false, message: err.message }
+      return { success: false, message: err.message, data: [], code: 1 }
     }
   },
 
-  deleteImage: async (publicId: string): Promise<any> => {
+  deleteImage: async (publicId: string): Promise<DeleteImageResponse> => {
     try {
       const encodedId = encodeURIComponent(publicId)
       return await apiAdmin().delete(API_ENDPOINTS_ADMIN.FILE_MANAGE.DELETE_IMAGE(encodedId))
     } catch (err: any) {
       console.error('Error deleting image:', err)
-      return { success: false, message: err.message }
+      return { success: false, code: 1, message: err.message, data: {public_id: publicId} }
     }
   },
 
-  deleteImages: async (publicIds: string[]): Promise<any> => {
+  deleteImages: async (publicIds: string[]): Promise<DeleteImagesResponse> => {
     try {
       return await apiAdmin().post(API_ENDPOINTS_ADMIN.FILE_MANAGE.DELETE_IMAGES, { publicIds })
     } catch (err: any) {
       console.error('Error deleting multiple images:', err)
-      return { success: false, message: err.message }
+      return { success: false, code: 1, message: err.message, data: {public_id: publicIds} }
     }
   },
 
-  searchImage: async (url: string, folder?: string): Promise<any> => {
+  searchImage: async (url: string, folder?: string): Promise<SearchImagesResponse> => {
     try {
       const params: Record<string, string> = { url }
       if (folder) params.folder = folder
@@ -58,12 +59,12 @@ export const fileManageAPI = {
       return await apiAdmin().get(`${API_ENDPOINTS_ADMIN.FILE_MANAGE.SEARCH_IMAGE()}?${query}`)
     } catch (err: any) {
       console.error('Error searching image:', err)
-      return { success: false, message: err.message }
+      return { success: false ,code: 1, message: err.message, data: [] }
     }
   },
 
   
-  uploadImage: async (files: File[], folder: string): Promise<any> => {
+  uploadImage: async (files: File[], folder: string): Promise<UploadImagesResponse> => {
     try {
       const formData = new FormData()
       files.forEach(file => formData.append('files', file))
@@ -77,7 +78,7 @@ export const fileManageAPI = {
       return res.json()
     } catch (err: any) {
       console.error('Error uploading images:', err)
-      return { success: false, message: 'Upload thất bại!' }
+      return { success: false, code: 1, message: 'Upload thất bại!', data: [] }
     }
   },
 }

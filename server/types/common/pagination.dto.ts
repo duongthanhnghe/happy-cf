@@ -10,4 +10,5 @@ export interface PaginationDTO<T> {
   data: T[]
   pagination: PaginationMeta
   message?: string
+  success?: boolean
 }

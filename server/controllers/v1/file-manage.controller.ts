@@ -2,6 +2,7 @@ import path from "path"
 import fs from 'fs'
 import { v2 as cloudinary } from 'cloudinary'
 import type { Request, Response } from 'express'
+import { toFileManageImageDTO, toFileManageImageListDTO } from "@/server/mappers/v1/file-manage.mapper"
 
 const MAX_USER_STORAGE = 3 * 1024 * 1024 // 3MB
 
@@ -53,16 +54,9 @@ export const getImages = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      images: result.resources.map((item: any) => ({
-        url: item.secure_url,
-        public_id: item.public_id,
-        format: item.format,
-        created_at: item.created_at,
-        bytes: item.bytes,
-        width: item.width,
-        height: item.height,
-      })),
+      data: toFileManageImageListDTO(result.resources),
       next_cursor: result.next_cursor ?? null,
+      limit: Number(max_results),
     })
   } catch (err: any) {
     console.error('Get images error:', err)
@@ -90,34 +84,6 @@ export const deleteImage = async (req: Request, res: Response) => {
   }
 }
 
-// export const searchImage = async (req: Request, res: Response) => {
-//   try {
-//     const { url, folder } = req.query
-
-//     if (!url) {
-//       return res.status(400).json({ success: false, message: 'url (keyQuery) is required' })
-//     }
-
-//     const keyQuery = decodeURIComponent(url as string)
-//     const folderPath = folder ? decodeURIComponent(folder as string) : undefined
-
-//     const result = await cloudinary.api.resources({
-//       type: 'upload',
-//       prefix: folderPath,
-//       max_results: 50,
-//     })
-
-//     const filtered = result.resources.filter((item: any) =>
-//       item.secure_url.includes(keyQuery)
-//     )
-
-//     return res.status(200).json({ success: true, data: filtered })
-//   } catch (err: any) {
-//     console.error('Search image error:', err)
-//     return res.status(500).json({ success: false, message: err.message })
-//   }
-// }
-
 export const searchImage = async (req: Request, res: Response) => {
   try {
     const { url, folder } = req.query
@@ -129,7 +95,6 @@ export const searchImage = async (req: Request, res: Response) => {
       })
     }
 
-    const keyQuery = String(url)
     const folderPath = folder ? String(folder).replace(/\/+$/, '') : undefined
 
     const result = await cloudinary.api.resources({
@@ -139,12 +104,12 @@ export const searchImage = async (req: Request, res: Response) => {
     })
 
     const filtered = result.resources.filter((item: any) =>
-      item.secure_url.includes(keyQuery)
+      item.secure_url.includes(String(url))
     )
 
     return res.status(200).json({
       success: true,
-      data: filtered,
+      data: toFileManageImageListDTO(filtered),
     })
   } catch (err: any) {
     console.error('Search image error:', err)
@@ -212,22 +177,15 @@ export const uploadImage = async (req: Request, res: Response) => {
 
       fs.unlinkSync(file.path);
 
-      uploadedFiles.push({
-        url: uploaded.secure_url,
-        public_id: uploaded.public_id,
-        format: uploaded.format,
-        created_at: uploaded.created_at,
-        bytes: uploaded.bytes,
-        width: uploaded.width,
-        height: uploaded.height,
-        folder,
-      });
+      uploadedFiles.push(
+        toFileManageImageDTO(uploaded)
+      )
     }
 
     return res.status(200).json({
       success: true,
       message: `${uploadedFiles.length} file(s) uploaded successfully`,
-      files: uploadedFiles,
+      data: uploadedFiles,
     });
   } catch (err: any) {
     console.error("Upload error:", err);
