@@ -5,11 +5,12 @@ import { ORDER_STATUS } from "@/shared/constants/order-status";
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
 import { ROUTES } from '@/shared/constants/routes';
 import type { CreateOrderBody, cartItems } from '@/server/types/dto/v1/order.dto';
-import type { Ref } from 'vue';
+import type { MaybeRef, Ref } from 'vue';
 import type { CartDTO } from '@/server/types/dto/v1/product.dto';
 import type { ApplyVoucherResponse } from "@/server/types/dto/v1/voucher.dto";
 import { useValidate } from "../validate/useValidate";
 import { createOrderSchema } from "@/shared/validate/schemas/order.schema";
+import { unref } from "vue";
 
 export const useCartOrder = (
   cartListItem: Ref<CartDTO[]>,
@@ -24,6 +25,7 @@ export const useCartOrder = (
   totalDiscountRateMembership: Ref<number>,
   voucherUsage: Ref<ApplyVoucherResponse[]>,
   discountVoucherFreeship: Ref<number>,
+  userId: MaybeRef<string | null>,
   deleteCartAll: () => void,
   router: any,
   storeLocation: any
@@ -31,7 +33,7 @@ export const useCartOrder = (
 
   const { validate, formErrors } = useValidate(createOrderSchema)
 
-  const submitOrder = async (userId?: string) => {
+  const submitOrder = async () => {
     const confirm = await showConfirm('Xác nhận đặt hàng?');
     if (!confirm) return;
 
@@ -54,7 +56,7 @@ export const useCartOrder = (
       };
     });
 
-    const point = userId ? Math.round(totalPriceDiscount.value * 0.05) : 0;
+    const point = unref(userId) ? Math.round(totalPriceDiscount.value * 0.05) : 0;
     const newUsedPoint = usedPointOrder.checkBalancePoint ? usedPointOrder.usedPoint : 0;
 
     const newVoucherUsage = voucherUsage.value.map(v => {
@@ -80,7 +82,7 @@ export const useCartOrder = (
       totalDiscountOrder: orderPriceDiscount.value,
       shippingFee: shippingFee.value,
       status: ORDER_STATUS.PENDING,
-      userId: userId || null,
+      userId: unref(userId) || null,
       provinceCode: storeLocation.selectedProvince,
       districtCode: storeLocation.selectedDistrict,
       wardCode: storeLocation.selectedWard,
@@ -92,17 +94,17 @@ export const useCartOrder = (
 
     if (!validate({
       data: orderData,
-      userId: userId || null,
       point,
       usedPoint: newUsedPoint,
     })) {
+      console.log(formErrors.value)
       showWarning('Vui lòng nhập đầy đủ thông tin đặt hàng hợp lệ')
       Loading(false)
       return
     }
 
     try {
-      const result = await ordersAPI.create(orderData, userId || null, point, newUsedPoint);
+      const result = await ordersAPI.create(orderData, point, newUsedPoint);
       
       if (result.code === 0 && result.data.id) {
         if (paymentSelected.value === PAYMENT_STATUS.BANK) {

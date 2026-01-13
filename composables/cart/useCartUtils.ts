@@ -13,7 +13,7 @@ export const useCartUtils = (
   idAddressChoose: Ref<string>,
   selectedOptionsData: Ref<SelectedOptionPushDTO[]>,
   usedPointOrder: any,
-  totalPriceDiscount: Ref<number>,
+  totalPriceCurrent: Ref<number>,
   isTogglePopup: Ref<boolean>,
   fetchProductCart: () => Promise<void>,
   handleCalcTotalPriceCurrent: () => void,
@@ -100,19 +100,20 @@ export const useCartUtils = (
   };
 
   const handleCheckPoint = async (userId?: string) => {
-    if (!userId || usedPointOrder.pointInput == 0 || totalPriceDiscount.value === 0) {
-      showWarning('Vui lòng kiểm tra lại thông tin!');
-      return;
+    if (!userId || usedPointOrder.pointInput == 0 || totalPriceCurrent.value === 0) {
+      showWarning('Vui lòng kiểm tra lại thông tin!')
+      return
     }
 
-    if (usedPointOrder.pointInput >= Math.floor(totalPriceDiscount.value * 0.1)) {
-      showWarning(`Chỉ được dùng tối đa ${Math.floor(totalPriceDiscount.value * 0.1)} điểm`);
-      return;
+    if (usedPointOrder.pointInput > Math.floor(totalPriceCurrent.value * 0.1)) {
+      showWarning(`Chỉ được dùng tối đa ${Math.floor(totalPriceCurrent.value * 0.1)} điểm`)
+      resetPoint()
+      return
     }
 
     Loading(true);
     try {
-      const res = await ordersAPI.checkPoint(userId, usedPointOrder.pointInput, totalPriceDiscount.value);
+      const res = await ordersAPI.checkPoint(userId, usedPointOrder.pointInput, totalPriceCurrent.value);
       if (res.code === 0) {
         usedPointOrder.checkBalancePoint = true;
         usedPointOrder.usedPoint = Number(res.data.appliedPoint);

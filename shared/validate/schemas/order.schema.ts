@@ -12,7 +12,7 @@ export const cartItemSchema = z.object({
 })
 
 export const voucherUsageSchema = z.object({
-  voucherId: objectIdSchema,
+  // voucherId: objectIdSchema,
   code: z.string(),
   type: z.string(),          // order | product | freeship
   discount: z.number().min(0),
@@ -25,7 +25,9 @@ export const createOrderDataSchema = z.object({
   fullname: z.string().min(1, 'Họ tên là bắt buộc'),
   phone: z.string().min(8, 'Số điện thoại không hợp lệ'),
   note: z.string().optional().nullable(),
-  paymentId: objectIdSchema,
+  paymentId: objectIdSchema.refine(Boolean, {
+    message: 'Phương thức thanh toán không hợp lệ',
+  }),
   cartItems: z.array(cartItemSchema).min(1, 'Giỏ hàng trống'),
 
   totalPrice: z.number().min(0),
@@ -34,7 +36,11 @@ export const createOrderDataSchema = z.object({
   totalDiscountOrder: z.number().min(0),
   shippingFee: z.number().min(0),
 
-  status: objectIdSchema,
+  userId: objectIdSchema.optional().nullable(),
+
+  status: objectIdSchema.refine(Boolean, {
+    message: 'Trạng thái đơn hàng không hợp lệ',
+  }),
 
   provinceCode: z.number(),
   districtCode: z.number(),
@@ -50,7 +56,6 @@ export const createOrderDataSchema = z.object({
 export const createOrderSchema = z.object({
   data: createOrderDataSchema,
 
-  userId: objectIdSchema.optional().nullable(),
 
   point: z.number().optional().default(0),
 

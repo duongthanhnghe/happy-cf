@@ -38,7 +38,8 @@ export const getOrderById = async (req: Request, res: Response) => {
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { data, userId, point, usedPoint } = req.body
+    const { data, point, usedPoint } = req.body
+    const userId = data.userId
 
     for (const item of data.cartItems) {
       const productId =

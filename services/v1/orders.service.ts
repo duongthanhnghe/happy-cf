@@ -13,14 +13,13 @@ import { paginationError } from "@/server/types/common/pagination.dto";
 export const ordersAPI = {
   create: async (
     bodyData: CreateOrderBody,
-    userId: string | null,
     point: number,
     usedPoint: number
   ): Promise<ApiResponse<OrderDTO>> => {
     try {
       return await apiClient().post<ApiResponse<OrderDTO>>(
         API_ENDPOINTS.ORDERS.CREATE,
-        { data: bodyData, userId, point, usedPoint }
+        { data: bodyData, point, usedPoint }
       );
     } catch (err: any) {
       console.error("Error creating order:", err);

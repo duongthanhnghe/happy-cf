@@ -274,7 +274,7 @@ export const useCartStore = defineStore("Cart", () => {
     state.idAddressChoose,
     state.selectedOptionsData,
     state.usedPointOrder,
-    state.totalPriceDiscount,
+    state.totalPriceCurrent,
     state.isTogglePopup,
     fetchProductCart,
     handleCalcTotalPriceCurrent,
@@ -342,6 +342,7 @@ export const useCartStore = defineStore("Cart", () => {
     state.totalDiscountRateMembership,
     state.voucherUsage,
     state.discountVoucherFreeship,
+    storeAccount.getUserId,
     productOps.deleteCartAll,
     router,
     storeLocation
@@ -358,9 +359,7 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const submitOrder = async () => {
-    await order.submitOrder(
-      storeAccount.getDetailValue?.id
-    );
+    await order.submitOrder();
   };
 
   const applyVoucher = async (code: string) => {
@@ -406,7 +405,7 @@ export const useCartStore = defineStore("Cart", () => {
   const getIdAddressChoose = computed(() => state.idAddressChoose.value);
   const getNameAddressChoose = computed(() => state.informationOrder.address);
   const getProductDetailDataEdit = computed(() => state.productDetailEdit.value);
-  const getMaxPointCanUse = computed(() =>  Math.floor(state.totalPriceDiscount.value * 0.1));
+  const getMaxPointCanUse = computed(() =>  Math.floor(state.totalPriceCurrent.value * 0.1 ));
   
   return {
     ...state,
