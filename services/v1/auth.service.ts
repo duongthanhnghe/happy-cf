@@ -37,29 +37,27 @@ export const authAPI = {
 
   refreshToken: async (): Promise<ApiResponse<{ accessToken: string }>> => {
     try {
-      return await apiClient().post<ApiResponse<{ accessToken: string }>>(API_ENDPOINTS.AUTH.REFRESH_TOKEN, {
-        method: 'POST'
-      })
+      return await apiClient().post<ApiResponse<{ accessToken: string }>>(API_ENDPOINTS.AUTH.REFRESH_TOKEN)
     } catch (err: any) {
       console.error('[authAPI.refreshToken]', err)
       return apiError<{ accessToken: string }>(err)
     }
   },
 
-  googleLogin: async (googleToken: string): Promise<ApiResponse<User>> => {
+  googleLogin: async (googleToken: string): Promise<ApiResponse<LoginResponseDTO>> => {
     if (!googleToken) {
       return {
         code: ApiErrorCode.VALIDATION,
         message: 'Thiếu token Google',
-        data: null as any
+        data: null as unknown as LoginResponseDTO
       }
     }
 
     try {
-      return await apiClient().post<ApiResponse<User>>(API_ENDPOINTS.AUTH.GOOGLE_LOGIN, { token: googleToken })
+      return await apiClient().post<ApiResponse<LoginResponseDTO>>(API_ENDPOINTS.AUTH.GOOGLE_LOGIN, { token: googleToken })
     } catch (err: any) {
       console.error('[authAPI.googleLogin]', err)
-      return apiError<User>(err)
+      return apiError<LoginResponseDTO>(err)
     }
   },
 
