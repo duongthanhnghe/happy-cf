@@ -52,7 +52,14 @@ const store = useAccountListStore();
     </template>
 
     <template #item.avatar="{ item }">
-      <v-img :src="item.avatar" max-height="50" max-width="50" cover class="rd-full" />
+      <Image 
+        :src="item.avatar"
+        :alt="item.avatar"
+        :width="50"
+        :height="50"
+        preset="avatar"
+        class="rd-lg bg-gray6"
+      />
     </template>
 
      <template #item.role="{ item }">

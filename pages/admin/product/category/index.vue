@@ -59,11 +59,25 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.image="{ item }">
-      <v-img :src="item.image" max-height="60" max-width="60" cover class="rounded" />
+      <Image 
+        :src="item.image"
+        :alt="item.image"
+        :width="50"
+        :height="50"
+        preset="avatar"
+        class="rd-lg bg-gray6"
+      />
     </template>
 
     <template #item.banner="{ item }">
-      <v-img v-if="item.banner" :src="item.banner" max-height="60" class="rounded" />
+      <Image 
+        :src="item.banner"
+        :alt="item.banner"
+        :width="100"
+        :height="50"
+        preset="avatar"
+        class="rd-lg bg-gray6"
+      />
     </template>
 
     <template #item.parent="{ item }">

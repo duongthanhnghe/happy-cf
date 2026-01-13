@@ -111,7 +111,15 @@ const handleSubmit = async () => {
         </template>
 
         <template #item.image="{ item }">
-          <img v-if="item.image" class="bg-gray2 rd-lg" width="50" :src="item.image" :alt="item.productName" />
+          <Image 
+            v-if="item.image"
+            :src="item.image"
+            :alt="item.productName"
+            :width="50"
+            :height="50"
+            preset="avatar"
+            class="rd-lg bg-gray6"
+          />
         </template>
 
         <template #item.price="{ item }">

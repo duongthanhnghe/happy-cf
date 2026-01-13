@@ -36,7 +36,14 @@ const detailAccount = computed(() => storeAccount.getDetailAccount);
       <v-menu transition="slide-x-transition">
         <template v-slot:activator="{ props }">
           <div class="header-admin-right-avatar" v-bind="props">
-            <img v-if="detailAccount?.avatar" :src="detailAccount?.avatar" width="44" alt="avatar" />
+            <Image 
+              v-if="detailAccount?.avatar" :src="detailAccount?.avatar"
+              alt="avatar"
+              :width="44"
+              :height="44"
+              preset="avatar"
+              class="rd-full bg-gray6"
+            />
           </div>
         </template>
         <template v-if="listMenu">

@@ -16,7 +16,13 @@ const store = useAdminUserDetailStore();
   <template #body >
     <div class="text-center">
       <div>
-        <img v-if="store.getDetailUser?.avatar" :src="store.getDetailUser?.avatar" :alt="store.getDetailUser?.fullname" class="rd-full width-150 height-150 object-fit-cover" />
+        <Image 
+          v-if="store.getDetailUser?.avatar" :src="store.getDetailUser?.avatar" :alt="store.getDetailUser?.fullname"
+          :width="150"
+          :height="150"
+          preset="avatar"
+          class="rd-full width-150 height-150 object-fit-cover"
+        />
       </div>
       <Text :text="store.getDetailUser?.fullname" color="black" weight="semibold" size="lg" class="mt-sm mb-xs"/>
       <v-chip v-if="store.getDetailUser?.membership" :color="colorType(store.getDetailUser?.membership.level)" >{{store.getDetailUser?.membership.level}}</v-chip>

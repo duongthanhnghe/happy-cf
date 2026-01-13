@@ -116,9 +116,23 @@ onBeforeUnmount(() => {
 
     <template #item.image="{ item }">
       <div class="flex gap-xs position-relative white-space justify-between">
-        <img class="bg-gray2 rd-lg" width="50" :src="item.image" :alt="item.productName" />
+        <Image 
+          :src="item.image"
+          :alt="item.productName"
+          :width="50"
+          :height="50"
+          preset="avatar"
+          class="rd-lg bg-gray6"
+        />
         <template v-if="item.listImage.length > 0" v-for="(itemImage, index) in item.listImage" :key="index" >
-          <img v-if="index < 2 && itemImage" class="bg-gray2 rd-lg" width="50" :src="itemImage.src" :alt="item.productName" />
+          <Image 
+            v-if="index < 2 && itemImage"
+            :src="itemImage.src" :alt="item.productName"
+            :width="50"
+            :height="50"
+            preset="avatar"
+            class="rd-lg bg-gray6"
+          />
           <span v-else-if="index < 3" class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ item.listImage.length - 2 }}</span>
           <template v-else />
         </template>

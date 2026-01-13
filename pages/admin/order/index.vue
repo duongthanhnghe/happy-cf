@@ -120,7 +120,14 @@ onBeforeUnmount(() => {
     <template #item.cartItems="{ item }">
       <div class="flex gap-xs position-relative white-space">
         <template v-for="(itemImage, index) in item.cartItems" :key="index" >
-          <img v-tooltip="itemImage.idProduct.productName" v-if="index < 3 && itemImage.idProduct.image" class="bg-gray2 rd-lg" width="50" :src="itemImage.idProduct.image" :alt="itemImage.idProduct.productName" />
+          <Image 
+            v-tooltip="itemImage.idProduct.productName" v-if="index < 3 && itemImage.idProduct.image"
+            :src="itemImage.idProduct.image" :alt="itemImage.idProduct.productName"
+            :width="50"
+            :height="50"
+            preset="avatar"
+            class="rd-lg bg-gray6"
+          />
           <span v-tooltip.html="remainingProductNames(item.cartItems)" v-else-if="index < 4" class="mr-xs el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ item.cartItems.length - 3 }}</span>
           <template v-else />
         </template>
