@@ -44,10 +44,6 @@ export const accountAPI = {
         password: loginData.password.trim(),
       }
 
-      if (!payload.email || !payload.password) {
-        throw new Error('Missing required fields: email, password')
-      }
-
       return await apiAdmin().post<ApiResponse<AccountLoginResponse>>(
         API_ENDPOINTS_ADMIN.ACCOUNT.LOGIN,
         payload

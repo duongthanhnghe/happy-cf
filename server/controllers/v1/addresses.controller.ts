@@ -16,30 +16,35 @@ export const getAllAddress = async (req: any, res: Response) => {
   }
 }
 
-export const getAddressById = async (req: Request, res: Response) => {
+export const getAddressById = async (req: any, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params
+    const userId = req.user.id
 
-    const address = await AddressModel.findById(id).lean();
+    const address = await AddressModel.findOne({ _id: id, userId })
 
     if (!address) {
-      return res.status(404).json({ code: 1, message: "address không tồn tại" })
+      return res.status(404).json({ code: 1, message: "Address không tồn tại" })
     }
+
     return res.json({ code: 0, data: toAddressDTO(address) })
   } catch (err: any) {
-    console.error("Error getAddressById:", err);
     return res.status(500).json({ code: 1, message: err.message })
   }
 }
 
-export const createAddress = async (req: Request, res: Response) => {
+export const createAddress = async (req: any, res: Response) => {
   try {
     const dataBody = req.body
-    const newAddress = new AddressModel(dataBody)
+    const userId = req.user.id;
+    const newAddress = new AddressModel({
+      ...dataBody,
+      userId,
+    })
 
     if (dataBody.isDefault) {
       await AddressModel.updateMany(
-        { userId: dataBody.userId },
+        { userId: userId },
         { $set: { isDefault: false } }
       )
     }
@@ -51,12 +56,13 @@ export const createAddress = async (req: Request, res: Response) => {
   }
 }
 
-export const updateAddress = async (req: Request, res: Response) => {
+export const updateAddress = async (req: any, res: Response) => {
   try {
     const { id } = req.params
+    const userId = req.user.id
     const dataBody = req.body
 
-    const address = await AddressModel.findById(id)
+    const address = await AddressModel.findOne({ _id: id, userId })
     if (!address) {
       return res.status(404).json({ code: 1, message: "address không tồn tại" })
     }
@@ -77,10 +83,16 @@ export const updateAddress = async (req: Request, res: Response) => {
   }
 }
 
-export const deleteAddress = async (req: Request, res: Response) => {
+export const deleteAddress = async (req: any, res: Response) => {
   try {
     const { id } = req.params
-    const address = await AddressModel.findByIdAndDelete(id)
+    const userId = req.user.id
+
+    const address = await AddressModel.findOneAndDelete({
+      _id: id,
+      userId,
+    })
+
     if (!address) {
       return res.status(404).json({ code: 1, message: "address không tồn tại" })
     }
@@ -90,10 +102,12 @@ export const deleteAddress = async (req: Request, res: Response) => {
   }
 }
 
-export const setAddressDefault = async (req: Request, res: Response) => {
+export const setAddressDefault = async (req: any, res: Response) => {
   try {
     const { id } = req.params
-    const address = await AddressModel.findById(id)
+    const userId = req.user.id
+
+    const address = await AddressModel.findOne({ _id: id, userId })
 
     if (!address) {
       return res.status(404).json({ code: 1, message: "address không tồn tại" })
@@ -122,7 +136,10 @@ export const getDefaultAddressByUserId = async (req: any, res: Response) => {
 
     const defaultAddress = await AddressModel.findOne({ userId, isDefault: true })
     if (!defaultAddress) {
-      return res.status(400).json({ code: 2, message: "Không tìm thấy địa chỉ mặc định" })
+      return res.status(404).json({
+        code: 2,
+        message: "Không tìm thấy địa chỉ mặc định",
+      })
     }
 
     return res.json({ code: 0, data: toAddressDTO(defaultAddress) })

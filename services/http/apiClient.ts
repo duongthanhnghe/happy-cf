@@ -11,7 +11,6 @@ export const apiClient = () => {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
-    // console.log('store.token',store.token)
     if (store.token) {
       headers.Authorization = `Bearer ${store.token}`;
     }
@@ -45,61 +44,3 @@ export const apiClient = () => {
     authDelete: <T>(url: string) => request<T>(url, { method: "DELETE" }),
   };
 };
-
-
-// import { useRuntimeConfig } from '#app'
-
-// export const apiClient = () => {
-//   const config = useRuntimeConfig()
-
-//   const baseURL = config.public.apiBase
-//   const adminBaseURL = config.public.apiAdminBase
-
-//   return {
-//     get<T>(url: string, params?: any) {
-//       return $fetch<T>(url, {
-//         baseURL,
-//         params,
-//       })
-//     },
-
-//     post<T>(url: string, body?: any) {
-//       return $fetch<T>(url, {
-//         baseURL,
-//         method: 'POST',
-//         body,
-//       })
-//     },
-
-//     put<T>(url: string, body?: any) {
-//       return $fetch<T>(url, {
-//         baseURL,
-//         method: 'PUT',
-//         body,
-//       })
-//     },
-
-//     delete<T>(url: string) {
-//       return $fetch<T>(url, {
-//         baseURL,
-//         method: 'DELETE',
-//       })
-//     },
-
-//     auth<T>(url: string, options: any = {}) {
-//       return $fetch<T>(url, {
-//         baseURL,
-//         credentials: 'include',
-//         ...options,
-//       })
-//     },
-
-//     admin<T>(url: string, options: any = {}) {
-//       return $fetch<T>(url, {
-//         baseURL: adminBaseURL,
-//         credentials: 'include',
-//         ...options,
-//       })
-//     },
-//   }
-// }

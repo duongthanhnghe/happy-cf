@@ -136,6 +136,12 @@ export type ProductImportDTO = ImportDTO<ProductDTO>
 
 export type ProductImportItemDTO = ImportItemDTO<ProductDTO> 
 
+export type CheckStockResult = {
+  isAvailable: boolean
+  availableQuantity?: number
+  message?: string
+}
+
 export interface CategoryProductLiteDTO {
   id: string;
   categoryName: string;

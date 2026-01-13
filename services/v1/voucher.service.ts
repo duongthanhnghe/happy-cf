@@ -6,6 +6,7 @@ import type {
   VoucherAvailableDTO,
 } from "@/server/types/dto/v1/voucher.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
+import { apiError } from "@/server/types/common/api-response"
 
 export const vouchersAPI = {
   apply: async (
@@ -24,11 +25,7 @@ export const vouchersAPI = {
       );
     } catch (err: any) {
       console.error("Error applying voucher:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to apply voucher",
-        data: null as any,
-      };
+      return apiError<ApplyVoucherResponse>(err)
     }
   },
 
@@ -44,11 +41,7 @@ export const vouchersAPI = {
       );
     } catch (err: any) {
       console.error("Error fetching available vouchers for order:", err);
-      return {
-        code: 1,
-        message: "Không thể lấy danh sách voucher khả dụng",
-        data: [],
-      };
+      return apiError<VoucherAvailableDTO[]>(err)
     }
   },
 
@@ -59,11 +52,7 @@ export const vouchersAPI = {
       );
     } catch (err: any) {
       console.error("Error fetching all vouchers:", err);
-      return {
-        code: 1,
-        message: "Không thể lấy danh sách voucher",
-        data: [],
-      };
+      return apiError<VoucherAvailableDTO[]>(err)
     }
   },
 };

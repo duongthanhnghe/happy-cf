@@ -3,8 +3,6 @@ import { objectIdSchema, phoneSchema, requiredString } from './common.schema'
 import { ADDRESS_TAG } from '@/shared/constants/address-tag'
 
 export const baseAddressSchema = z.object({
-  // userId: objectIdSchema,
-
   fullname: requiredString('Họ và tên', 100),
 
   phone: phoneSchema,

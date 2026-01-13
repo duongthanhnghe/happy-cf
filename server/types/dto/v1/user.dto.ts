@@ -41,6 +41,11 @@ export type UserEdit = Partial<Pick<User, 'avatar' | 'birthday' | 'fullname' | '
 
 export type UserRegister = Pick<User, 'fullname' | 'email' | 'gender' > & { password: string }
 
+export interface LoginResponseDTO {
+  accessToken: string
+  user: User
+}
+
 export interface TokenReset {
   resetToken?: string
   resetTokenExpire?: number

@@ -5,92 +5,62 @@ import type {
   PostNewsDTO,
   PostNewsPaginationDTO
 } from '@/server/types/dto/v1/news.dto'
-import type { ApiResponse } from '@server/types/common/api-response'
+import { type ApiResponse } from '@/server/types/common/api-response'
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const newsAPI = {
   getAllCategories: async (): Promise<ApiResponse<CategoryNewsDTO[]>> => {
     try {
-      const result = await apiClient().get<ApiResponse<CategoryNewsDTO[]>>(API_ENDPOINTS.CATEGORIES_NEWS.LIST)
-      if (result.code !== 0) throw new Error(result.message || 'Failed to fetch categories news')
-      return result
+      return await apiClient().get<ApiResponse<CategoryNewsDTO[]>>(API_ENDPOINTS.CATEGORIES_NEWS.LIST)
     } catch (err) {
       console.error("Error fetching categories:", err)
-      return {
-        code: 1,
-        message: "Failed to fetch categories news",
-        data: []
-      }
+      return apiError<CategoryNewsDTO[]>(err)
     }
   },
 
   getCategoryById: async (id: string): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
-      const result = await apiClient().get<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS.CATEGORIES_NEWS.GET_BY_ID(id))
-      if (result.code !== 0) throw new Error(result.message || `Failed to fetch category with ID ${id}`)
-      return result
+      return await apiClient().get<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS.CATEGORIES_NEWS.GET_BY_ID(id))
     } catch (err: any) {
       console.error(`Error fetching category with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch category with ID ${id}`,
-        data: null as any
-      }
+      return apiError<CategoryNewsDTO>(err)
     }
   },
 
   getCategoryBySlug: async (slug: string): Promise<ApiResponse<CategoryNewsDTO>> => {
     try {
-      const result = await apiClient().get<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS.CATEGORIES_NEWS.GET_BY_SLUG(slug))
-      if (result.code !== 0) throw new Error(result.message || `Failed to fetch category with slug ${slug}`)
-      return result
+      return await apiClient().get<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS.CATEGORIES_NEWS.GET_BY_SLUG(slug))
     } catch (err: any) {
       console.error(`[newsAPI.getCategoryBySlug] slug: ${slug}`, err)
-      return { code: 1, message: err.message ?? `Failed to fetch category by slug`, data: null as any }
+      return apiError<CategoryNewsDTO>(err)
     }
   },
 
   getPostById: async (id: string): Promise<ApiResponse<PostNewsDTO>> => {
     try {
-      const result = await apiClient().get<ApiResponse<PostNewsDTO>>(API_ENDPOINTS.NEWS_POSTS.GET_BY_ID(id))
-      if (result.code !== 0) throw new Error(result.message || `Failed to fetch post with ID ${id}`)
-      return result
+      return await apiClient().get<ApiResponse<PostNewsDTO>>(API_ENDPOINTS.NEWS_POSTS.GET_BY_ID(id))
     } catch (err: any) {
       console.error(`Error fetching post with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch post with ID ${id}`,
-        data: null as any
-      }
+      return apiError<PostNewsDTO>(err)
     }
   },
 
   getPostBySlug: async (slug: string): Promise<ApiResponse<PostNewsDTO>> => {
     try {
-      const result = await apiClient().get<ApiResponse<PostNewsDTO>>(API_ENDPOINTS.NEWS_POSTS.GET_BY_SLUG(slug))
-      if (result.code !== 0) throw new Error(result.message || `Failed to fetch post with slug ${slug}`)
-      return result
+      return await apiClient().get<ApiResponse<PostNewsDTO>>(API_ENDPOINTS.NEWS_POSTS.GET_BY_SLUG(slug))
      } catch (err: any) {
       console.error(`Error fetching post with slug ${slug}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch post with slug ${slug}`,
-        data: null as any
-      }
+      return apiError<PostNewsDTO>(err)
     }
   },
 
   getLatestPosts: async (limit: number): Promise<ApiResponse<PostNewsDTO[]>> => {
     try {
-      const result = await apiClient().get<ApiResponse<PostNewsDTO[]>>(API_ENDPOINTS.NEWS_POSTS.LATEST(limit))
-      if (result.code !== 0) throw new Error(result.message || 'Failed to fetch latest posts')
-      return result
+      return await apiClient().get<ApiResponse<PostNewsDTO[]>>(API_ENDPOINTS.NEWS_POSTS.LATEST(limit))
     } catch (err: any) {
       console.error("Error fetching latest posts:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch latest posts",
-        data: []
-      }
+      return apiError<PostNewsDTO[]>(err)
     }
   },
 
@@ -98,37 +68,25 @@ export const newsAPI = {
     id: string,
     page: number,
     limit: number
-  ): Promise<ApiResponse<{ posts: PostNewsDTO[]; pagination: { page: number; limit: number; total: number; totalPages: number } }>> => {
+  ): Promise<PostNewsPaginationDTO> => {
     try {
       const params = { page, limit }
-      const result = await apiClient().get<ApiResponse<{ posts: PostNewsDTO[]; pagination: { page: number; limit: number; total: number; totalPages: number } }>>(
+      return await apiClient().get<PostNewsPaginationDTO>(
         API_ENDPOINTS.NEWS_POSTS.GET_BY_CATEGORY(id),
         params
       )
-      if (result.code !== 0) throw new Error(result.message || 'Failed to fetch posts by category')
-      return result
     } catch (err: any) {
       console.error(`[newsAPI.getPostsByCategory] ID: ${id}`, err)
-      return {
-        code: 1,
-        message: err.message ?? 'Failed to fetch posts by category',
-        data: { posts: [], pagination: { page, limit, total: 0, totalPages: 0 } }
-      }
+      return paginationError<PostNewsDTO>(page, limit, err)
     }
   },
 
   getRelatedPosts: async (slug: string, limit: number): Promise<ApiResponse<PostNewsDTO[]>> => {
     try {
       const params = { limit }
-      const result = await apiClient().get<ApiResponse<PostNewsDTO[]>>(API_ENDPOINTS.NEWS_POSTS.RELATED_BY_SLUG(slug), params)
-      if (result.code !== 0) throw new Error(result.message || 'Failed to fetch related posts')
-      return result
+      return await apiClient().get<ApiResponse<PostNewsDTO[]>>(API_ENDPOINTS.NEWS_POSTS.RELATED_BY_SLUG(slug), params)
     } catch (err: any) {
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch related posts for slug ${slug}`,
-        data: [],
-      }
+      return apiError<PostNewsDTO[]>(err)
     }
   },
 
@@ -137,33 +95,21 @@ export const newsAPI = {
       return await apiClient().patch<ApiResponse<null>>(API_ENDPOINTS.NEWS_POSTS.UPDATE_VIEWS(slug))
     } catch (err: any) {
       console.error(`[newsAPI.updateViews] slug: ${slug}`, err)
-      return { code: 1, message: err.message ?? 'Failed to update views', data: null }
+      return apiError<null>(err)
     }
   },
 
   getAllPostsPagination: async (
-    page: number|string,
+    page: number,
     limit: number,
     search: string = ""
   ): Promise<PostNewsPaginationDTO> => {
     try {
       const params = { page, limit, search }
-      const result = await apiClient().get<PostNewsPaginationDTO>(API_ENDPOINTS.NEWS_POSTS.LIST_PAGINATION, params)
-      if (result.code !== 0) throw new Error(result.message || 'Failed to fetch posts')
-      return result
+      return await apiClient().get<PostNewsPaginationDTO>(API_ENDPOINTS.NEWS_POSTS.LIST_PAGINATION, params)
     } catch (err: any) {
       console.error('[newsAPI.getAllPostsPagination]', err)
-      return {
-        code: 1,
-        message: err.message ?? 'Failed to fetch posts',
-        data: [],
-        pagination: {
-          page: 1,
-          limit,
-          total: 0,
-          totalPages: 0
-        }
-      }
+      return paginationError<PostNewsDTO>(page, limit, err)
     }
   }
 }

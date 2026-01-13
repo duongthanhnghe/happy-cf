@@ -86,10 +86,10 @@ export const register = async (req: Request, res: Response) => {
       }
     });
 
-    res.status(200).json({ code: 0, message: "Register success", data: toUserDTO(user) });
+    res.status(200).json({ code: 0, message: "Đăng ký thành công", data: toUserDTO(user) });
   } catch (err: any) {
     console.error("Register error:", err);
-    res.status(500).json({ code: 2, message: "Register failed", error: err.message || err });
+    res.status(500).json({ code: 2, message: "Đăng ký thất bại!", error: err.message || err });
   }
 };
 
@@ -125,7 +125,7 @@ export const login = async (req: Request, res: Response) => {
       }
     });
   } catch (err) {
-    res.status(500).json({ code: 500, message: "Đăng nhập thất bại", error: err });
+    res.status(500).json({ code: 500, message: "Mật khẩu hoặc email không đúng! Vui lòng đăng nhập lại", error: err });
   }
 };
 
@@ -243,7 +243,7 @@ export const googleLogin = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error("Google login error:", err);
-    res.status(500).json({ code: 1, message: "Đăng nhập Google thất bại", error: err.message });
+    res.status(500).json({ code: 1, message: "Đăng nhập thất bại", error: err.message });
   }
 };
 

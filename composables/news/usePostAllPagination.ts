@@ -10,7 +10,7 @@ export const usePostAllPagination = () => {
   const fetchPostList = async (page: number|string, limit: number, search: string) => {
     loading.value = true
     try {
-      const data: PostNewsPaginationDTO = await newsAPI.getAllPostsPagination(page, limit, search)
+      const data: PostNewsPaginationDTO = await newsAPI.getAllPostsPagination(Number(page), limit, search)
       if(data.code === 0) listData.value = data
     } catch (error) {
       console.error("Error fetching post:", error)

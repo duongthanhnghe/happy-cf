@@ -87,3 +87,27 @@ export interface CreateProductReviewInput {
   userId: Types.ObjectId;
   productId: string;
 }
+
+const emptyReviewSummary: ReviewSummaryDTO = {
+  averageRating: 0,
+  totalReviews: 0,
+  ratingsBreakdown: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+}
+
+export const paginationReviewError = <T>(
+  page: number,
+  limit: number,
+  err: any,
+  message?: string
+): PaginationReviewDTO<T> => ({
+  code: 1,
+  message: message ?? err?.message ?? 'Request failed',
+  data: [],
+  pagination: {
+    page,
+    limit,
+    total: 0,
+    totalPages: 0,
+  },
+  summary: emptyReviewSummary,
+})

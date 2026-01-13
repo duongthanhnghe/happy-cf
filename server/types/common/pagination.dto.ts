@@ -12,3 +12,15 @@ export interface PaginationDTO<T> {
   message?: string
   success?: boolean
 }
+
+export const paginationError = <T>(
+  page: number,
+  limit: number,
+  err: any,
+  message?: string
+): PaginationDTO<T> => ({
+  code: 1,
+  message: message ?? err.message ?? 'Request failed',
+  data: [],
+  pagination: { page, limit, total: 0, totalPages: 0 },
+});

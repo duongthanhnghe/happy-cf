@@ -5,8 +5,10 @@ import type {
   OrderPaginationDTO,
 } from "@/server/types/dto/v1/order.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
-import type { PendingRewardData } from "@/server/types/dto/v1/reward-history.dto";
+import type { PendingRewardData, RewardHistoryDTO, RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-history.dto";
 import { apiClient } from "../http/apiClient";
+import { apiError } from "@/server/types/common/api-response"
+import { paginationError } from "@/server/types/common/pagination.dto";
 
 export const ordersAPI = {
   create: async (
@@ -22,11 +24,7 @@ export const ordersAPI = {
       );
     } catch (err: any) {
       console.error("Error creating order:", err);
-      return {
-        code: 1,
-        message: err.message || "Unexpected error while creating order",
-        data: undefined as any,
-      };
+      return apiError<OrderDTO>(err)
     }
   },
 
@@ -37,11 +35,7 @@ export const ordersAPI = {
       );
     } catch (err: any) {
       console.error(`Error getting order detail with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message || `Failed to fetch order with ID ${id}`,
-        data: null as any,
-      };
+      return apiError<OrderDTO>(err)
     }
   },
 
@@ -60,16 +54,11 @@ export const ordersAPI = {
 
       return await apiClient().get<OrderPaginationDTO>(
         API_ENDPOINTS.ORDERS.LIST_BY_USER(userId),
-        { params }
+        params
       );
     } catch (err: any) {
       console.error(`Error getting orders for user ${userId}:`, err);
-      return {
-        code: 1,
-        message: err.message || `Failed to fetch orders for user ${userId}`,
-        data: [],
-        pagination: { page, limit, total: 0, totalPages: 0 },
-      };
+      return paginationError<OrderDTO>(page, limit, err)
     }
   },
 
@@ -77,21 +66,16 @@ export const ordersAPI = {
     userId: string,
     page = 1,
     limit = 10
-  ): Promise<any> => {
+  ): Promise<RewardHistoryPaginationDTO> => {
     try {
       const params = { page: page.toString(), limit: limit.toString() };
-      return await apiClient().get(
+      return await apiClient().get<RewardHistoryPaginationDTO>(
         API_ENDPOINTS.ORDERS.LIST_REWARDS_BY_USER(userId),
-        { params }
+        params
       );
     } catch (err: any) {
       console.error(`Error fetching reward history for user ${userId}:`, err);
-      return {
-        code: 1,
-        message: err.message || `Failed to fetch reward history for user ${userId}`,
-        data: [],
-        pagination: { page, limit, total: 0, totalPages: 0 },
-      };
+      return paginationError<RewardHistoryDTO>(page, limit, err)
     }
   },
 
@@ -107,11 +91,7 @@ export const ordersAPI = {
       );
     } catch (err: any) {
       console.error("Error checking point:", err);
-      return {
-        code: 1,
-        message: err.message || "Unexpected error while checking point",
-        data: { appliedPoint: 0 },
-      };
+      return apiError<{ appliedPoint: number }>(err)
     }
   },
 
@@ -131,11 +111,7 @@ export const ordersAPI = {
       );
     } catch (err: any) {
       console.error("Error fetching shipping fee:", err);
-      return {
-        code: 1,
-        message: err.message || "Unexpected error while getting shipping fee",
-        data: null,
-      };
+      return apiError<number>(err)
     }
   },
 
@@ -150,11 +126,7 @@ export const ordersAPI = {
       );
     } catch (err: any) {
       console.error("Cancel order error:", err);
-      return {
-        code: 1,
-        message: err.message || "Hủy đơn thất bại",
-        data: null as any,
-      };
+      return apiError<OrderDTO>(err)
     }
   },
 
@@ -167,11 +139,7 @@ export const ordersAPI = {
       );
     } catch (err: any) {
       console.error("Error fetching pending reward points:", err);
-      return {
-        code: 1,
-        message: err.message || "Error fetching pending reward points",
-        data: { totalPendingPoints: 0, orders: 0 },
-      };
+      return apiError<PendingRewardData>(err)
     }
   },
 };

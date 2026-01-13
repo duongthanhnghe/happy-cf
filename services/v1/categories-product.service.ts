@@ -1,6 +1,6 @@
 import { apiClient } from '@/services/http/apiClient'
 import { API_ENDPOINTS } from '@/services/const/api.const'
-import type { ApiResponse } from '@/server/types/common/api-response'
+import { apiError, type ApiResponse } from '@/server/types/common/api-response'
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 
 export const categoriesAPI = {
@@ -9,11 +9,7 @@ export const categoriesAPI = {
       return await apiClient().get<ApiResponse<CategoryProductDTO[]>>(API_ENDPOINTS.CATEGORIES.LIST)
     } catch (err: any) {
       console.error('[categoriesAPI.getAll]', err)
-      return {
-        code: 1,
-        message: err.message ?? 'Failed to fetch categories',
-        data: [],
-      }
+      return apiError<CategoryProductDTO[]>(err)
     }
   },
 
@@ -22,11 +18,7 @@ export const categoriesAPI = {
       return await apiClient().get<ApiResponse<CategoryProductDTO[]>>(API_ENDPOINTS.CATEGORIES.LIST_TREE)
     } catch (err: any) {
       console.error('[categoriesAPI.getAllTree]', err)
-      return {
-        code: 1,
-        message: err.message ?? 'Failed to fetch categories tree',
-        data: [],
-      }
+      return apiError<CategoryProductDTO[]>(err)
     }
   },
 
@@ -41,11 +33,7 @@ export const categoriesAPI = {
       )
     } catch (err: any) {
       console.error(`[categoriesAPI.getChildren] parentId=${parentId}`, err)
-      return {
-        code: 1,
-        message: err.message ?? 'Failed to fetch child categories',
-        data: [],
-      }
+      return apiError<CategoryProductDTO[]>(err)
     }
   },
 
@@ -54,11 +42,7 @@ export const categoriesAPI = {
       return await apiClient().get<ApiResponse<CategoryProductDTO>>(API_ENDPOINTS.CATEGORIES.GET_BY_ID(id))
     } catch (err: any) {
       console.error(`[categoriesAPI.getDetail] id=${id}`, err)
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch category with ID ${id}`,
-        data: null as any,
-      }
+      return apiError<CategoryProductDTO>(err)
     }
   },
 
@@ -67,15 +51,10 @@ export const categoriesAPI = {
       return await apiClient().get<ApiResponse<CategoryProductDTO>>(API_ENDPOINTS.CATEGORIES.GET_BY_SLUG(slug))
     } catch (err: any) {
       console.error(`[categoriesAPI.getDetailBySlug] slug=${slug}`, err)
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch category with slug ${slug}`,
-        data: null as any,
-      }
+      return apiError<CategoryProductDTO>(err)
     }
   },
 }
-
 
 // import { API_ENDPOINTS } from '@/services/const/api.const'
 

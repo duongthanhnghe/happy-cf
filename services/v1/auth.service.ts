@@ -5,35 +5,33 @@ import type {
   UserEdit,
   UserLogin,
   ResetPassword,
-  ChangePassword
+  ChangePassword,
+  LoginResponseDTO,
+  User
 } from '@/server/types/dto/v1/user.dto.js'
+import { apiError, ApiErrorCode } from '@/server/types/common/api-response'
 import type { ApiResponse } from '@server/types/common/api-response'
 
 export const authAPI = {
-  verifyToken: async (): Promise<ApiResponse<any>> => {
+  verifyToken: async (): Promise<ApiResponse<User>> => {
     try {
-      return await apiClient().authGet<ApiResponse<any>>(API_ENDPOINTS.AUTH.VERIFY_TOKEN)
+      return await apiClient().authGet<ApiResponse<User>>(API_ENDPOINTS.AUTH.VERIFY_TOKEN)
     } catch (err: any) {
       console.error('[authAPI.verifyToken]', err)
-      return { code: 1, message: err.message, data: null }
+      return apiError<User>(err)
     }
   },
 
-  Login: async (loginData: UserLogin): Promise<ApiResponse<any>> => {
+  Login: async (loginData: UserLogin): Promise<ApiResponse<LoginResponseDTO>> => {
     try {
       const payload = {
         email: loginData.email.trim(),
         password: loginData.password.trim(),
       }
-
-      if (!payload.email || !payload.password) {
-        throw new Error('Missing required fields: email, password')
-      }
-
-      return await apiClient().post<ApiResponse<any>>(API_ENDPOINTS.AUTH.LOGIN, payload)
+      return await apiClient().post<ApiResponse<LoginResponseDTO>>(API_ENDPOINTS.AUTH.LOGIN, payload)
     } catch (err: any) {
       console.error('[authAPI.Login]', err)
-      throw err
+      return apiError<LoginResponseDTO>(err)
     }
   },
 
@@ -44,85 +42,87 @@ export const authAPI = {
       })
     } catch (err: any) {
       console.error('[authAPI.refreshToken]', err)
-      return { code: 1, message: err.message, data: null as any }
+      return apiError<{ accessToken: string }>(err)
     }
   },
 
-  googleLogin: async (googleToken: string): Promise<ApiResponse<any>> => {
-    if (!googleToken) throw new Error("Thiếu token Google")
+  googleLogin: async (googleToken: string): Promise<ApiResponse<User>> => {
+    if (!googleToken) {
+      return {
+        code: ApiErrorCode.VALIDATION,
+        message: 'Thiếu token Google',
+        data: null as any
+      }
+    }
 
     try {
-      return await apiClient().post<ApiResponse<any>>(API_ENDPOINTS.AUTH.GOOGLE_LOGIN, { token: googleToken })
+      return await apiClient().post<ApiResponse<User>>(API_ENDPOINTS.AUTH.GOOGLE_LOGIN, { token: googleToken })
     } catch (err: any) {
       console.error('[authAPI.googleLogin]', err)
-      throw err
+      return apiError<User>(err)
     }
   },
 
-  Register: async (bodyData: UserRegister): Promise<ApiResponse<any>> => {
-    if (!bodyData.email || !bodyData.password || !bodyData.fullname) {
-      throw new Error('Missing required fields: fullname, email, password')
-    }
-
+  Register: async (bodyData: UserRegister): Promise<ApiResponse<User>> => {
     try {
-      return await apiClient().post<ApiResponse<any>>(API_ENDPOINTS.AUTH.REGISTER, bodyData)
+      return await apiClient().post<ApiResponse<User>>(API_ENDPOINTS.AUTH.REGISTER, bodyData)
     } catch (err: any) {
       console.error('[authAPI.Register]', err)
-      throw err
+      return apiError<User>(err)
     }
   },
 
-  ForgotPassword: async (email: string): Promise<ApiResponse<any>> => {
+  ForgotPassword: async (email: string): Promise<ApiResponse<null>> => {
     try {
-      return await apiClient().post<ApiResponse<any>>(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email })
+      return await apiClient().post<ApiResponse<null>>(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email })
     } catch (err: any) {
       console.error('[authAPI.ForgotPassword]', err)
-      throw err
+      return apiError<null>(err)
     }
   },
 
-  ResetPassword: async (payload: ResetPassword): Promise<ApiResponse<any>> => {
+  ResetPassword: async (payload: ResetPassword): Promise<ApiResponse<null>> => {
     try {
-      return await apiClient().post<ApiResponse<any>>(API_ENDPOINTS.AUTH.RESET_PASSWORD, payload)
+      return await apiClient().post<ApiResponse<null>>(API_ENDPOINTS.AUTH.RESET_PASSWORD, payload)
     } catch (err: any) {
       console.error('[authAPI.ResetPassword]', err)
-      throw err
+      return apiError<null>(err)
     }
   },
 
-  ChangePassword: async (payload: ChangePassword): Promise<ApiResponse<any>> => {
+  ChangePassword: async (payload: ChangePassword): Promise<ApiResponse<null>> => {
     try {
-      return await apiClient().authPost<ApiResponse<any>>(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, payload)
+      return await apiClient().authPost<ApiResponse<null>>(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, payload)
     } catch (err: any) {
       console.error('[authAPI.ChangePassword]', err)
-      throw err
+      return apiError<null>(err)
     }
   },
 
-  getDetailAccount: async (id: string): Promise<ApiResponse<any>> => {
+  getDetailAccount: async (id: string): Promise<ApiResponse<User>> => {
     try {
-      return await apiClient().get<ApiResponse<any>>(API_ENDPOINTS.AUTH.GET_BY_ID(id))
+      return await apiClient().get<ApiResponse<User>>(API_ENDPOINTS.AUTH.GET_BY_ID(id))
     } catch (err: any) {
       console.error('[authAPI.getDetailAccount]', err)
-      throw err
+      return apiError<User>(err)
     }
   },
 
-  updateAccount: async (payload: UserEdit): Promise<ApiResponse<any>> => {
+  updateAccount: async (payload: UserEdit): Promise<ApiResponse<User>> => {
     try {
-      return await apiClient().authPut<ApiResponse<any>>(API_ENDPOINTS.AUTH.UPDATE, payload)
+      return await apiClient().authPut<ApiResponse<User>>(API_ENDPOINTS.AUTH.UPDATE, payload)
     } catch (err: any) {
       console.error('[authAPI.updateAccount]', err)
-      throw err
+      return apiError<User>(err)
     }
   },
 
-  logout: async (): Promise<ApiResponse<any>> => {
+  logout: async (): Promise<ApiResponse<null>> => {
     try {
-      return await apiClient().authPost<ApiResponse<any>>(API_ENDPOINTS.AUTH.LOGOUT)
+      return await apiClient().authPost<ApiResponse<null>>(API_ENDPOINTS.AUTH.LOGOUT)
     } catch (err: any) {
       console.error('[authAPI.logout]', err)
-      throw err
+      return apiError<null>(err)
     }
   },
 }
