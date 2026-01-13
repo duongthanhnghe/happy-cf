@@ -1,15 +1,16 @@
 import { watch } from "vue";
 import { defineStore } from "pinia";
-import { nullRules, nullAndSpecialRules } from '@/utils/validation'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useSeoWatchers } from "@/utils/seoHandle";
 import { useAdminNewsCategoryState } from "@/composables/admin/news/useAdminNewsCategoryState";
 import { useAdminNewsCategoryOperations } from "@/composables/admin/news/useAdminNewsCategoryOperations";
+import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
 
 export const useCategoryManageStore = defineStore("CategoryNewsManage", () => {
 
   const storeFileManage = useFileManageFolderStore();
 
+  const folderName = FOLDER_UPLOAD.CATEGORY_NEWS
   const state = useAdminNewsCategoryState()
   const operations = useAdminNewsCategoryOperations(
     state.defaultForm,
@@ -28,7 +29,7 @@ export const useCategoryManageStore = defineStore("CategoryNewsManage", () => {
   )
 
   const handleAddImage = () => {
-    storeFileManage.handleTogglePopup(true)
+    storeFileManage.handleTogglePopup(true, folderName)
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {
@@ -43,8 +44,7 @@ export const useCategoryManageStore = defineStore("CategoryNewsManage", () => {
   return {
     ...state,
     handleAddImage,
-    nullAndSpecialRules,
-    nullRules,
     ...operations,
+    folderName,
   };
 });

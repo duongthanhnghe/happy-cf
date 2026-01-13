@@ -2,9 +2,7 @@
 import { onBeforeUnmount} from 'vue'
 import { useBannerManageStore } from '@/stores/admin/banner/useBannerManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
-import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.BANNER.layout,
@@ -13,9 +11,6 @@ definePageMeta({
 
 const store = useBannerManageStore();
 const storeFileManage = useFileManageFolderStore();
-const folderName = FOLDER_UPLOAD.BANNER
-
-useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.resetState()
@@ -31,7 +26,7 @@ onBeforeUnmount(() => {
 
 <CreateBanner />
 <UpdateBanner />
-<PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
   <client-only>

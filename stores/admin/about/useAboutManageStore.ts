@@ -29,7 +29,7 @@ export const useAboutManageStore = defineStore("AboutManage", () => {
 
   const handleAddImage = () => {
     contextStore.setContext("about")
-    storeFileManage.handleTogglePopup(true)
+    storeFileManage.handleTogglePopup(true, folderName)
   }
 
   const handleDeleteListImage = (id: string) => {
@@ -37,9 +37,8 @@ export const useAboutManageStore = defineStore("AboutManage", () => {
   }
 
   const handleAddListImage = () => {
-    contextStore.setContext("about")
     state.checkSelectImage.value = false
-    storeFileManage.handleTogglePopup(true)
+    handleAddImage()
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {

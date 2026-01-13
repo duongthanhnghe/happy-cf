@@ -2,9 +2,7 @@
 import { onBeforeUnmount } from 'vue'
 import { useCategoryManageStore } from '@/stores/admin/news/useCategoryManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
-import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.NEWS.children?.CATEGORY.layout,
@@ -13,9 +11,6 @@ definePageMeta({
 
 const storeFileManage = useFileManageFolderStore();
 const store = useCategoryManageStore();
-const folderName = FOLDER_UPLOAD.CATEGORY_NEWS
-
-useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.resetState()
@@ -42,7 +37,7 @@ onBeforeUnmount(() => {
 
 <CreateCategoryNews />
 <UpdateCategoryNews />
-<PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
   <v-data-table-server class="category-table elevation-0"

@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount} from 'vue'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
-import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
 import { ROUTES } from '@/shared/constants/routes';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 import { useImageBlockManageStore } from '@/stores/admin/image-block/useImageBlockManageStore';
 import { IMAGE_BLOCK_PAGE_OPTIONS, IMAGE_BLOCK_POSITION_OPTIONS } from '@/shared/constants/image-block';
 
@@ -14,9 +12,6 @@ definePageMeta({
 
 const store = useImageBlockManageStore();
 const storeFileManage = useFileManageFolderStore();
-const folderName = FOLDER_UPLOAD.IMAGE_BLOCK
-
-useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.resetState()
@@ -32,7 +27,7 @@ onBeforeUnmount(() => {
 
 <PopupCreateImageBlock />
 <PopupUpdateImageBlock />
-<PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
   <client-only>

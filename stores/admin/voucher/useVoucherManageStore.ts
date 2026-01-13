@@ -5,12 +5,14 @@ import { useVoucherUtils } from "@/composables/shared/voucher/useVoucherUtils";
 import { useFileManageFolderStore } from "../file-manage/useFileManageStore";
 import { useVoucherManageState } from "@/composables/admin/voucher/useVoucherManageState";
 import { useVoucherManageOperations } from "@/composables/admin/voucher/useVoucherManageOperations";
+import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
 
 export const useVoucherManageStore = defineStore("VoucherManage", () => {
 
   const { isDiscountVoucherType } = useVoucherUtils()
   const storeFileManage = useFileManageFolderStore();
 
+  const folderName = FOLDER_UPLOAD.VOUCHER
   const state = useVoucherManageState()
   const operations = useVoucherManageOperations(
     state.defaultForm,
@@ -35,7 +37,7 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
   )
 
   const handleAddImage = () => {
-    storeFileManage.handleTogglePopup(true);
+    storeFileManage.handleTogglePopup(true, folderName);
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {
@@ -62,5 +64,6 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     handleAddImage,
     resetState,
     ...operations,
+    folderName,
   };
 });

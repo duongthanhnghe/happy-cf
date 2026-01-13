@@ -3,7 +3,6 @@ import { onBeforeUnmount } from 'vue'
 import { useAboutManageStore } from '@/stores/admin/about/useAboutManageStore'
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { ROUTES } from '@/shared/constants/routes';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ABOUT.layout,
@@ -12,8 +11,6 @@ definePageMeta({
 
 const store = useAboutManageStore();
 const storeFileManage = useFileManageFolderStore();
-
-useFileManageWatchers(storeFileManage, store.folderName);
 
 onBeforeUnmount(() => {
   storeFileManage.resetState()

@@ -3,11 +3,12 @@ import { defineStore } from "pinia";
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useAdminBannerState } from "@/composables/admin/banner/useAdminBannerState";
 import { useAdminBannerOperations } from "@/composables/admin/banner/useAdminBannerOperations";
-import { nullRules } from "@/utils/validation";
+import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
 
 export const useBannerManageStore = defineStore("BannerManage", () => {
   const storeFileManage = useFileManageFolderStore();
 
+  const folderName = FOLDER_UPLOAD.BANNER
   const state = useAdminBannerState()
   const operations = useAdminBannerOperations(
     state.defaultForm,
@@ -20,7 +21,7 @@ export const useBannerManageStore = defineStore("BannerManage", () => {
   )
 
   const handleAddImage = () => {
-    storeFileManage.handleTogglePopup(true)
+    storeFileManage.handleTogglePopup(true, folderName)
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {
@@ -32,7 +33,7 @@ export const useBannerManageStore = defineStore("BannerManage", () => {
   return {
     ...state,
     ...operations,
-    nullRules,
+    folderName,
     handleAddImage,
   };
 });

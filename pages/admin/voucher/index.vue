@@ -4,9 +4,6 @@ import { useVoucherManageStore } from '@/stores/admin/voucher/useVoucherManageSt
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDateTime, formatCurrency } from '@/utils/global';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
-import { useFileManageFolderStore } from "@/stores/admin/file-manage/useFileManageStore";
-import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
-import { useFileManageWatchers } from "@/composables/shared/file-manage/useFileManageWatchers";
 
 definePageMeta({
   layout: ROUTES.ADMIN.VOUCHER.children?.LIST.layout,
@@ -14,10 +11,6 @@ definePageMeta({
 });
 
 const store = useVoucherManageStore();
-const storeFileManage = useFileManageFolderStore();
-const folderName = FOLDER_UPLOAD.VOUCHER
-
-useFileManageWatchers(storeFileManage, folderName);
 
 onBeforeUnmount(() => {
   store.resetFilter()
@@ -54,7 +47,7 @@ onBeforeUnmount(() => {
 
   <CreateVoucher />
   <UpdateVoucher />
-  <PopupFileManageImage :folderName="folderName" :chooseImage="true" column="col-6 col-md-4"/>
+  <PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
 
   <v-container>
     <v-data-table-server class="voucher-table elevation-0"

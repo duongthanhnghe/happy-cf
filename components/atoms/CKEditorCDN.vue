@@ -15,9 +15,6 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue"
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useFileSelectContextStore } from '@/stores/admin/file-manage/useFileSelectContextStore'
 import { fileManageAPI } from "@/services/v1/admin/file-manage.service";
-import {
-  Loading
-} from '@/utils/global'
 
 const contextStore = useFileSelectContextStore()
 const fmStore = useFileManageFolderStore()

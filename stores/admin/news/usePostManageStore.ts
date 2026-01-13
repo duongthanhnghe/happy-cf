@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore'
 import { useFileSelectContextStore } from "@/stores/admin/file-manage/useFileSelectContextStore"
 import { FOLDER_UPLOAD } from "@/shared/constants/folder-upload";
-import { nullRules } from '@/utils/validation'
 import { useSeoWatchers } from "@/utils/seoHandle";
 import { useAdminPostNewsState } from "@/composables/admin/news/useAdminPostNewsState";
 import { useAdminPostNewsOperations } from "@/composables/admin/news/useAdminPostNewsOperations";
@@ -50,7 +49,6 @@ export const usePostManageStore = defineStore("PostManage", () => {
 
   return {
     ...state,
-    nullRules,
     folderName,
     ...operations,
     handleAddImage,
