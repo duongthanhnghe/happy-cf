@@ -1,6 +1,7 @@
 import { apiAdmin } from "@/services/http/apiAdmin";
 import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
-import type { VoucherUsagePaginationDTO } from "@/server/types/dto/v1/voucher-usage.dto";
+import type { VoucherUsageDTO, VoucherUsagePaginationDTO } from "@/server/types/dto/v1/voucher-usage.dto";
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const vouchersUsageAPI = {
   getAll: async (
@@ -33,17 +34,7 @@ export const vouchersUsageAPI = {
       return await apiAdmin().get<VoucherUsagePaginationDTO>(url);
     } catch (err: any) {
       console.error("Error fetching voucher usage:", err);
-      return {
-        code: 1,
-        message: "Failed to fetch voucher usage",
-        data: [],
-        pagination: {
-          page,
-          limit,
-          total: 0,
-          totalPages: 0,
-        },
-      };
+      return paginationError<VoucherUsageDTO>(page, limit, err)
     }
   },
 };

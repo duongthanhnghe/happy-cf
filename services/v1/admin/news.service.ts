@@ -11,6 +11,8 @@ import type {
   CategoryNewsPaginationDTO
 } from "@/server/types/dto/v1/news.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const newsAPI = {
   // CATEGORY
@@ -22,12 +24,7 @@ export const newsAPI = {
       );
     } catch (err: any) {
       console.error("Error fetching categories:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch category news",
-        data: [],
-        pagination: { page, limit, total: 0, totalPages: 0 },
-      };
+      return paginationError<CategoryNewsDTO>(page, limit, err)
     }
   },
 
@@ -36,7 +33,7 @@ export const newsAPI = {
       return await apiAdmin().post<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.CREATE, bodyData);
     } catch (err: any) {
       console.error("Error creating category:", err);
-      return { code: 1, message: err.message ?? "Failed to create category", data: null as any };
+      return apiError<CategoryNewsDTO>(err)
     }
   },
 
@@ -45,7 +42,7 @@ export const newsAPI = {
       return await apiAdmin().get<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.GET_BY_ID(id));
     } catch (err: any) {
       console.error(`Error fetching category with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? `Failed to fetch category with ID ${id}`, data: null as any };
+      return apiError<CategoryNewsDTO>(err)
     }
   },
 
@@ -54,7 +51,7 @@ export const newsAPI = {
       return await apiAdmin().put<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.UPDATE(id), bodyData);
     } catch (err: any) {
       console.error(`Error updating category with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to update category", data: null as any };
+      return apiError<CategoryNewsDTO>(err)
     }
   },
 
@@ -63,7 +60,7 @@ export const newsAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.DELETE(id));
     } catch (err: any) {
       console.error(`Error deleting category with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to delete category", data: null };
+      return apiError<null>(err)
     }
   },
 
@@ -72,7 +69,7 @@ export const newsAPI = {
       return await apiAdmin().patch<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.TOGGLE_ACTIVE(id));
     } catch (err: any) {
       console.error(`Error toggling active status for category news ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Unexpected error while toggling active status", data: undefined as any };
+      return apiError<CategoryNewsDTO>(err)
     }
   },
 
@@ -81,7 +78,7 @@ export const newsAPI = {
       return await apiAdmin().patch<ApiResponse<CategoryNewsDTO>>(API_ENDPOINTS_ADMIN.CATEGORIES_NEWS.UPDATE_ORDER(id), { order: newOrder });
     } catch (err: any) {
       console.error(`Error updating order for category ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Unexpected error while updating order", data: undefined as any };
+      return apiError<CategoryNewsDTO>(err)
     }
   },
 
@@ -94,12 +91,7 @@ export const newsAPI = {
       );
     } catch (err: any) {
       console.error("Error fetching posts:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch posts",
-        data: [],
-        pagination: { page, limit, total: 0, totalPages: 0 },
-      };
+      return paginationError<PostNewsDTO>(page, limit, err)
     }
   },
 
@@ -108,7 +100,7 @@ export const newsAPI = {
       return await apiAdmin().post<ApiResponse<PostNewsDTO>>(API_ENDPOINTS_ADMIN.NEWS_POSTS.CREATE, bodyData);
     } catch (err: any) {
       console.error("Error creating post:", err);
-      return { code: 1, message: err.message ?? "Failed to create post", data: null as any };
+      return apiError<PostNewsDTO>(err)
     }
   },
 
@@ -117,7 +109,7 @@ export const newsAPI = {
       return await apiAdmin().get<ApiResponse<PostNewsDTO>>(API_ENDPOINTS_ADMIN.NEWS_POSTS.GET_BY_ID(id));
     } catch (err: any) {
       console.error(`Error fetching post with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? `Failed to fetch post with ID ${id}`, data: null as any };
+      return apiError<PostNewsDTO>(err)
     }
   },
 
@@ -126,7 +118,7 @@ export const newsAPI = {
       return await apiAdmin().put<ApiResponse<PostNewsDTO>>(API_ENDPOINTS_ADMIN.NEWS_POSTS.UPDATE(id), postData);
     } catch (err: any) {
       console.error(`Error updating post with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to update post", data: null as any };
+      return apiError<PostNewsDTO>(err)
     }
   },
 
@@ -135,7 +127,7 @@ export const newsAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.NEWS_POSTS.DELETE(id));
     } catch (err: any) {
       console.error(`Error deleting post with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to delete post", data: null };
+      return apiError<null>(err)
     }
   },
 
@@ -144,7 +136,7 @@ export const newsAPI = {
       return await apiAdmin().patch<ApiResponse<PostNewsDTO>>(API_ENDPOINTS_ADMIN.NEWS_POSTS.TOGGLE_ACTIVE(id));
     } catch (err: any) {
       console.error(`Error toggling active status for post ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Unexpected error while toggling active status", data: undefined as any };
+      return apiError<PostNewsDTO>(err)
     }
   },
 };

@@ -2,6 +2,7 @@ import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
 import { apiAdmin } from "@/services/http/apiAdmin";
 import type { CreateAboutBody, UpdateAboutBody, AboutDTO } from "@/server/types/dto/v1/about.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
+import { apiError } from "@/server/types/common/api-response"
 
 export const aboutAPI = {
   getAll: async (): Promise<ApiResponse<AboutDTO[]>> => {
@@ -9,11 +10,7 @@ export const aboutAPI = {
       return await apiAdmin().get<ApiResponse<AboutDTO[]>>(API_ENDPOINTS_ADMIN.ABOUT.LIST);
     } catch (err: any) {
       console.error("Error fetching Abouts:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch Abouts",
-        data: [],
-      };
+      return apiError<AboutDTO[]>(err)
     }
   },
 
@@ -22,11 +19,7 @@ export const aboutAPI = {
       return await apiAdmin().post<ApiResponse<AboutDTO>>(API_ENDPOINTS_ADMIN.ABOUT.CREATE, bodyData);
     } catch (err: any) {
       console.error("Error creating About:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while creating About",
-        data: undefined as any,
-      };
+      return apiError<AboutDTO>(err)
     }
   },
 
@@ -35,11 +28,7 @@ export const aboutAPI = {
       return await apiAdmin().get<ApiResponse<AboutDTO>>(API_ENDPOINTS_ADMIN.ABOUT.GET_BY_ID(id));
     } catch (err: any) {
       console.error(`Error getting About detail with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch About with ID ${id}`,
-        data: undefined as any,
-      };
+      return apiError<AboutDTO>(err)
     }
   },
 
@@ -48,11 +37,7 @@ export const aboutAPI = {
       return await apiAdmin().put<ApiResponse<AboutDTO>>(API_ENDPOINTS_ADMIN.ABOUT.UPDATE(id), bodyData);
     } catch (err: any) {
       console.error(`Error updating About with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Error updating About with ID ${id}`,
-        data: undefined as any,
-      };
+      return apiError<AboutDTO>(err)
     }
   },
 
@@ -61,11 +46,7 @@ export const aboutAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.ABOUT.DELETE(id));
     } catch (err: any) {
       console.error(`Error deleting About with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Failed to delete About with ID ${id}`,
-        data: null,
-      };
+      return apiError<null>(err)
     }
   },
 
@@ -74,11 +55,7 @@ export const aboutAPI = {
       return await apiAdmin().patch<ApiResponse<AboutDTO>>(API_ENDPOINTS_ADMIN.ABOUT.UPDATE_ORDER(id), { order: newOrder });
     } catch (err: any) {
       console.error(`Error updating order for About ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while updating order",
-        data: undefined as any,
-      };
+      return apiError<AboutDTO>(err)
     }
   },
 
@@ -87,11 +64,7 @@ export const aboutAPI = {
       return await apiAdmin().patch<ApiResponse<AboutDTO>>(API_ENDPOINTS_ADMIN.ABOUT.TOGGLE_ACTIVE(id));
     } catch (err: any) {
       console.error(`Error toggling active status for About ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while toggling active status",
-        data: undefined as any,
-      };
+      return apiError<AboutDTO>(err)
     }
   },
 };

@@ -1,6 +1,7 @@
 import type { ApiResponse } from "../../common/api-response"
 
 export interface CursorPaginationDTO<T> {
+  code: number
   success: boolean
   data: T[]
   message?: string
@@ -44,3 +45,15 @@ export type DeleteImageResponse =
 
   export type GetFoldersResponse =
   ApiResponse<FileManageFolder[]>
+
+  export const cursorPaginationError = <T>(
+  err: any,
+  limit?: number
+): CursorPaginationDTO<T> => ({
+  code: 1,
+  message: err?.message ?? 'Request failed',
+  data: [],
+  limit,
+  next_cursor: null,
+  success: false,
+})

@@ -2,6 +2,7 @@ import { apiClient } from '@/services/http/apiClient'
 import { API_ENDPOINTS_SHARED } from '@/services/const/api.endpoints-shared'
 import type { ApiResponse } from '@/server/types/common/api-response'
 import type { ProvinceDTO, DistrictDTO, WardDTO } from '@/server/types/dto/v1/location.dto'
+import { apiError } from '@/server/types/common/api-response'
 
 export const locationAPI = {
   getProvinces: async (): Promise<ApiResponse<ProvinceDTO[]>> => {
@@ -9,7 +10,7 @@ export const locationAPI = {
       return await apiClient().get<ApiResponse<ProvinceDTO[]>>(API_ENDPOINTS_SHARED.LOCATION.PROVINCES)
     } catch (err: any) {
       console.error('Error fetching provinces:', err)
-      return { code: 1, message: err.message ?? 'Failed to fetch provinces', data: [] }
+      return apiError<ProvinceDTO[]>(err)
     }
   },
 
@@ -18,7 +19,7 @@ export const locationAPI = {
       return await apiClient().get<ApiResponse<DistrictDTO[]>>(API_ENDPOINTS_SHARED.LOCATION.DISTRICTS(provinceCode))
     } catch (err: any) {
       console.error(`Error fetching districts for province ${provinceCode}:`, err)
-      return { code: 1, message: err.message ?? 'Failed to fetch districts', data: [] }
+      return apiError<DistrictDTO[]>(err)
     }
   },
 
@@ -27,7 +28,7 @@ export const locationAPI = {
       return await apiClient().get<ApiResponse<WardDTO[]>>(API_ENDPOINTS_SHARED.LOCATION.WARDS(districtCode))
     } catch (err: any) {
       console.error(`Error fetching wards for district ${districtCode}:`, err)
-      return { code: 1, message: err.message ?? 'Failed to fetch wards', data: [] }
+      return apiError<WardDTO[]>(err)
     }
   },
 
@@ -36,7 +37,7 @@ export const locationAPI = {
       return await apiClient().get<ApiResponse<ProvinceDTO>>(API_ENDPOINTS_SHARED.LOCATION.PROVINCE_DETAIL(provinceCode))
     } catch (err: any) {
       console.error(`Error fetching province ${provinceCode}:`, err)
-      return { code: 1, message: err.message ?? 'Failed to fetch province detail', data: null as any }
+      return apiError<ProvinceDTO>(err)
     }
   },
 
@@ -45,7 +46,7 @@ export const locationAPI = {
       return await apiClient().get<ApiResponse<DistrictDTO>>(API_ENDPOINTS_SHARED.LOCATION.DISTRICT_DETAIL(districtCode))
     } catch (err: any) {
       console.error(`Error fetching district ${districtCode}:`, err)
-      return { code: 1, message: err.message ?? 'Failed to fetch district detail', data: null as any }
+      return apiError<DistrictDTO>(err)
     }
   },
 
@@ -54,7 +55,7 @@ export const locationAPI = {
       return await apiClient().get<ApiResponse<WardDTO>>(API_ENDPOINTS_SHARED.LOCATION.WARD_DETAIL(wardCode, districtCode))
     } catch (err: any) {
       console.error(`Error fetching ward ${wardCode}:`, err)
-      return { code: 1, message: err.message ?? 'Failed to fetch ward detail', data: null as any }
+      return apiError<WardDTO>(err)
     }
   }
 }

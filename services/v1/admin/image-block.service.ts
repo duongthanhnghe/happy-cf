@@ -2,6 +2,7 @@ import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
 import { apiAdmin } from "@/services/http/apiAdmin";
 import type { ImageBlockDTO, CreateImageBlockBody, UpdateImageBlockBody } from "@/server/types/dto/v1/image-block.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
+import { apiError } from '@/server/types/common/api-response'
 
 export const imageBlocksAPI = {
   getAll: async (): Promise<ApiResponse<ImageBlockDTO[]>> => {
@@ -9,11 +10,7 @@ export const imageBlocksAPI = {
       return await apiAdmin().get<ApiResponse<ImageBlockDTO[]>>(API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.LIST);
     } catch (err: any) {
       console.error("Error fetching image blocks:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch image blocks",
-        data: [],
-      };
+      return apiError<ImageBlockDTO[]>(err)
     }
   },
 
@@ -22,11 +19,7 @@ export const imageBlocksAPI = {
       return await apiAdmin().post<ApiResponse<ImageBlockDTO>>(API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.CREATE, bodyData);
     } catch (err: any) {
       console.error("Error creating image block:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while creating image block",
-        data: undefined as any,
-      };
+      return apiError<ImageBlockDTO>(err)
     }
   },
 
@@ -35,11 +28,7 @@ export const imageBlocksAPI = {
       return await apiAdmin().get<ApiResponse<ImageBlockDTO>>(API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.GET_BY_ID(id));
     } catch (err: any) {
       console.error(`Error getting image block detail ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch image block with ID ${id}`,
-        data: undefined as any,
-      };
+      return apiError<ImageBlockDTO>(err)
     }
   },
 
@@ -48,11 +37,7 @@ export const imageBlocksAPI = {
       return await apiAdmin().put<ApiResponse<ImageBlockDTO>>(API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.UPDATE(id), bodyData);
     } catch (err: any) {
       console.error(`Error updating image block ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Error updating image block ${id}`,
-        data: undefined as any,
-      };
+      return apiError<ImageBlockDTO>(err)
     }
   },
 
@@ -61,11 +46,7 @@ export const imageBlocksAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.DELETE(id));
     } catch (err: any) {
       console.error(`Error deleting image block ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Failed to delete image block ${id}`,
-        data: null,
-      };
+      return apiError<null>(err)
     }
   },
 
@@ -74,11 +55,7 @@ export const imageBlocksAPI = {
       return await apiAdmin().patch<ApiResponse<ImageBlockDTO>>(API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.UPDATE_ORDER(id), { order: newOrder });
     } catch (err: any) {
       console.error(`Error updating order for image block ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while updating order",
-        data: undefined as any,
-      };
+      return apiError<ImageBlockDTO>(err)
     }
   },
 
@@ -87,11 +64,7 @@ export const imageBlocksAPI = {
       return await apiAdmin().patch<ApiResponse<ImageBlockDTO>>(API_ENDPOINTS_ADMIN.IMAGE_BLOCKS.TOGGLE_ACTIVE(id));
     } catch (err: any) {
       console.error(`Error toggling active status for image block ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while toggling active",
-        data: undefined as any,
-      };
+      return apiError<ImageBlockDTO>(err)
     }
   },
 };

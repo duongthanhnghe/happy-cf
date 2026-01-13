@@ -1,7 +1,7 @@
 import type { User } from "./user.dto"
 import type { PaginationDTO } from '../../common/pagination.dto'
 
-export type HistoryType = "earned" | "used" | "refunded" | "pending_reward" | "none"
+export type HistoryType = "earned" | "used" | "refunded" | "pending_reward" | "none" | null
 
 export interface HistoryTypeItem {
   color: string

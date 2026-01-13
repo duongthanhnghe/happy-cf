@@ -26,7 +26,7 @@ const listPolicy = [
 </script>
 
 <template>
-  <Text :text="t('product.detail.policy5')" align="center" weight="medium" :size="{normal:storeDisplay.isLaptop}" class="text-underline pt-sm pb-sm"/>
+  <Text :text="t('product.detail.policy5')" align="center" weight="medium" :size="storeDisplay.isLaptop ? 'normal':'base'" class="text-underline pt-sm pb-sm"/>
   <Card size="xs" class="rd-lg flex flex-wrap" bg="gray6">
     <div class="flex align-center gap-sm width-p50 pd-xs" v-for="item in listPolicy">
       <Button tag="span" color="secondary" :icon="item.icon" class="bg-transparent text-color-primary border-color-gray" />

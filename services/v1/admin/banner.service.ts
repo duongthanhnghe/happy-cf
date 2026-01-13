@@ -2,6 +2,7 @@ import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
 import { apiAdmin } from "@/services/http/apiAdmin";
 import type { CreateBannerBody, UpdateBannerBody, BannerDTO } from "@/server/types/dto/v1/banner.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
+import { apiError } from '@/server/types/common/api-response'
 
 export const bannersAPI = {
   getAll: async (): Promise<ApiResponse<BannerDTO[]>> => {
@@ -9,11 +10,7 @@ export const bannersAPI = {
       return await apiAdmin().get<ApiResponse<BannerDTO[]>>(API_ENDPOINTS_ADMIN.BANNERS.LIST);
     } catch (err: any) {
       console.error("Error fetching banners:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch banners",
-        data: [],
-      };
+      return apiError<BannerDTO[]>(err)
     }
   },
 
@@ -22,11 +19,7 @@ export const bannersAPI = {
       return await apiAdmin().post<ApiResponse<BannerDTO>>(API_ENDPOINTS_ADMIN.BANNERS.CREATE, bodyData);
     } catch (err: any) {
       console.error("Error creating banner:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while creating banner",
-        data: undefined as any,
-      };
+      return apiError<BannerDTO>(err)
     }
   },
 
@@ -35,11 +28,7 @@ export const bannersAPI = {
       return await apiAdmin().get<ApiResponse<BannerDTO>>(API_ENDPOINTS_ADMIN.BANNERS.GET_BY_ID(id));
     } catch (err: any) {
       console.error(`Error getting banner detail with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch banner with ID ${id}`,
-        data: undefined as any,
-      };
+      return apiError<BannerDTO>(err)
     }
   },
 
@@ -48,11 +37,7 @@ export const bannersAPI = {
       return await apiAdmin().put<ApiResponse<BannerDTO>>(API_ENDPOINTS_ADMIN.BANNERS.UPDATE(id), bodyData);
     } catch (err: any) {
       console.error(`Error updating banner with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Error updating banner with ID ${id}`,
-        data: undefined as any,
-      };
+      return apiError<BannerDTO>(err)
     }
   },
 
@@ -61,11 +46,7 @@ export const bannersAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.BANNERS.DELETE(id));
     } catch (err: any) {
       console.error(`Error deleting banner with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Failed to delete banner with ID ${id}`,
-        data: null,
-      };
+      return apiError<null>(err)
     }
   },
 
@@ -74,11 +55,7 @@ export const bannersAPI = {
       return await apiAdmin().patch<ApiResponse<BannerDTO>>(API_ENDPOINTS_ADMIN.BANNERS.UPDATE_ORDER(id), { order: newOrder });
     } catch (err: any) {
       console.error(`Error updating order for banner ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while updating order",
-        data: undefined as any,
-      };
+      return apiError<BannerDTO>(err)
     }
   },
 
@@ -87,11 +64,7 @@ export const bannersAPI = {
       return await apiAdmin().patch<ApiResponse<BannerDTO>>(API_ENDPOINTS_ADMIN.BANNERS.TOGGLE_ACTIVE(id));
     } catch (err: any) {
       console.error(`Error toggling active status for banner ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while toggling active status",
-        data: undefined as any,
-      };
+      return apiError<BannerDTO>(err)
     }
   },
 };

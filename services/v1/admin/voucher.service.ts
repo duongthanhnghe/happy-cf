@@ -6,6 +6,8 @@ import type {
   VoucherPaginationDTO,
 } from "@/server/types/dto/v1/voucher.dto";
 import type { ApiResponse } from "@/server/types/common/api-response";
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const vouchersAPI = {
   getAll: async (
@@ -36,17 +38,7 @@ export const vouchersAPI = {
       return await apiAdmin().get<VoucherPaginationDTO>(url);
     } catch (err: any) {
       console.error("Error fetching vouchers:", err);
-      return {
-        code: 1,
-        message: "Failed to fetch vouchers",
-        data: [],
-        pagination: {
-          total: 0,
-          totalPages: 0,
-          page,
-          limit,
-        },
-      };
+      return paginationError<VoucherDTO>(page, limit, err)
     }
   },
 
@@ -57,7 +49,7 @@ export const vouchersAPI = {
       );
     } catch (err: any) {
       console.error(`Error fetching voucher detail ${id}:`, err);
-      throw err;
+      return apiError<VoucherDTO>(err)
     }
   },
 
@@ -69,7 +61,7 @@ export const vouchersAPI = {
       );
     } catch (err: any) {
       console.error("Error creating voucher:", err);
-      throw err;
+      return apiError<VoucherDTO>(err)
     }
   },
 
@@ -84,7 +76,7 @@ export const vouchersAPI = {
       );
     } catch (err: any) {
       console.error(`Error updating voucher ${id}:`, err);
-      throw err;
+      return apiError<VoucherDTO>(err)
     }
   },
 
@@ -95,7 +87,7 @@ export const vouchersAPI = {
       );
     } catch (err: any) {
       console.error(`Error deleting voucher ${id}:`, err);
-      throw err;
+      return apiError<null>(err)
     }
   },
 
@@ -106,7 +98,7 @@ export const vouchersAPI = {
       );
     } catch (err: any) {
       console.error(`Error toggling voucher ${id}:`, err);
-      throw err;
+      return apiError<VoucherDTO>(err)
     }
   },
 };

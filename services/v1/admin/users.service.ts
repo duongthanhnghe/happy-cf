@@ -4,10 +4,15 @@ import type {
   User, 
   MembershipBenefitDTO, 
   CreateMembershipBenefit, 
-  UpdateMembershipBenefit 
+  UpdateMembershipBenefit, 
+  MembershipLevels,
+  UpdateMembershipLevels
 } from "@/server/types/dto/v1/user.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
 import type { PaginationDTO } from "@server/types/common/pagination.dto";
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
+import type { HistoryType, RewardHistoryDTO, RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-history.dto";
 
 export const usersAPI = {
   getDetailAccount: async (id: string): Promise<ApiResponse<User>> => {
@@ -15,7 +20,7 @@ export const usersAPI = {
       return await apiAdmin().get<ApiResponse<User>>(API_ENDPOINTS_ADMIN.USERS.GET_BY_ID(id));
     } catch (err: any) {
       console.error(`Error getting user detail with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? `Failed to fetch user with ID ${id}`, data: undefined as any };
+      return apiError<User>(err)
     }
   },
 
@@ -33,12 +38,7 @@ export const usersAPI = {
       return await apiAdmin().get<PaginationDTO<User>>(API_ENDPOINTS_ADMIN.USERS.LIST, params);
     } catch (err: any) {
       console.error("Error getAllUsers:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch users",
-        data: [],
-        pagination: { page, limit, total: 0, totalPages: 0 },
-      };
+      return paginationError<User>(page, limit, err)
     }
   },
 
@@ -47,34 +47,34 @@ export const usersAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.USERS.DELETE(id));
     } catch (err: any) {
       console.error(`Error deleting user with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to delete user", data: null };
+      return apiError<null>(err)
     }
   },
 
-  getAllMembershipLevel: async (): Promise<ApiResponse<any[]>> => {
+  getAllMembershipLevel: async (): Promise<ApiResponse<MembershipLevels[]>> => {
     try {
-      return await apiAdmin().get<ApiResponse<any[]>>(API_ENDPOINTS_ADMIN.USERS.LIST_MEMBERSHIP_LEVEL);
+      return await apiAdmin().get<ApiResponse<MembershipLevels[]>>(API_ENDPOINTS_ADMIN.USERS.LIST_MEMBERSHIP_LEVEL);
     } catch (err: any) {
       console.error("Error fetching all membership levels:", err);
-      return { code: 1, message: err.message ?? "Failed to fetch membership levels", data: [] };
+      return apiError<MembershipLevels[]>(err)
     }
   },
 
-  getMembershipLevelById: async (id: string): Promise<ApiResponse<any>> => {
+  getMembershipLevelById: async (id: string): Promise<ApiResponse<MembershipLevels>> => {
     try {
-      return await apiAdmin().get<ApiResponse<any>>(API_ENDPOINTS_ADMIN.USERS.GET_MEMBERSHIP_LEVEL_BY_ID(id));
+      return await apiAdmin().get<ApiResponse<MembershipLevels>>(API_ENDPOINTS_ADMIN.USERS.GET_MEMBERSHIP_LEVEL_BY_ID(id));
     } catch (err: any) {
       console.error(`Error fetching membership level ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to fetch membership level", data: undefined as any };
+      return apiError<MembershipLevels>(err)
     }
   },
 
-  updateMembershipLevel: async (id: string, payload: any): Promise<ApiResponse<any>> => {
+  updateMembershipLevel: async (id: string, payload: UpdateMembershipLevels): Promise<ApiResponse<MembershipLevels>> => {
     try {
-      return await apiAdmin().put<ApiResponse<any>>(API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_LEVEL(id), payload);
+      return await apiAdmin().put<ApiResponse<MembershipLevels>>(API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_LEVEL(id), payload);
     } catch (err: any) {
       console.error(`Error updating membership level ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to update membership level", data: undefined as any };
+      return apiError<MembershipLevels>(err)
     }
   },
 
@@ -83,16 +83,16 @@ export const usersAPI = {
       return await apiAdmin().patch<ApiResponse<User>>(API_ENDPOINTS_ADMIN.USERS.TOGGLE_ACTIVE(id));
     } catch (err: any) {
       console.error(`Error toggling active status for user ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to toggle active status", data: undefined as any };
+      return apiError<User>(err)
     }
   },
 
-  createMembershipBenefit: async (payload: CreateMembershipBenefit): Promise<ApiResponse<CreateMembershipBenefit>> => {
+  createMembershipBenefit: async (payload: CreateMembershipBenefit): Promise<ApiResponse<MembershipBenefitDTO>> => {
     try {
-      return await apiAdmin().post<ApiResponse<CreateMembershipBenefit>>(API_ENDPOINTS_ADMIN.USERS.CREATE_MEMBERSHIP_BENEFIT, payload);
+      return await apiAdmin().post<ApiResponse<MembershipBenefitDTO>>(API_ENDPOINTS_ADMIN.USERS.CREATE_MEMBERSHIP_BENEFIT, payload);
     } catch (err: any) {
       console.error("Error creating membership benefit:", err);
-      return { code: 1, message: err.message ?? "Failed to create benefit", data: undefined as any };
+      return apiError<MembershipBenefitDTO>(err)
     }
   },
 
@@ -101,7 +101,7 @@ export const usersAPI = {
       return await apiAdmin().get<ApiResponse<MembershipBenefitDTO[]>>(API_ENDPOINTS_ADMIN.USERS.LIST_MEMBERSHIP_BENEFIT);
     } catch (err: any) {
       console.error("Error fetching all benefits:", err);
-      return { code: 1, message: err.message ?? "Failed to fetch benefits", data: [] };
+      return apiError<MembershipBenefitDTO[]>(err)
     }
   },
 
@@ -110,16 +110,16 @@ export const usersAPI = {
       return await apiAdmin().get<ApiResponse<MembershipBenefitDTO>>(API_ENDPOINTS_ADMIN.USERS.GET_MEMBERSHIP_BENEFIT_BY_ID(id));
     } catch (err: any) {
       console.error(`Error fetching benefit ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to fetch benefit", data: undefined as any };
+      return apiError<MembershipBenefitDTO>(err)
     }
   },
 
-  updateMembershipBenefit: async (id: string, payload: UpdateMembershipBenefit): Promise<ApiResponse<UpdateMembershipBenefit>> => {
+  updateMembershipBenefit: async (id: string, payload: UpdateMembershipBenefit): Promise<ApiResponse<MembershipBenefitDTO>> => {
     try {
-      return await apiAdmin().put<ApiResponse<UpdateMembershipBenefit>>(API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_BENEFIT(id), payload);
+      return await apiAdmin().put<ApiResponse<MembershipBenefitDTO>>(API_ENDPOINTS_ADMIN.USERS.UPDATE_MEMBERSHIP_BENEFIT(id), payload);
     } catch (err: any) {
       console.error(`Error updating benefit ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to update benefit", data: undefined as any };
+      return apiError<MembershipBenefitDTO>(err)
     }
   },
 
@@ -128,7 +128,7 @@ export const usersAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.USERS.DELETE_MEMBERSHIP_BENEFIT(id));
     } catch (err: any) {
       console.error(`Error deleting benefit ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to delete benefit", data: null };
+      return apiError<null>(err)
     }
   },
 
@@ -137,10 +137,10 @@ export const usersAPI = {
     limit = 20,
     userId?: string,
     search?: string,
-    historyType?: "earned" | "used" | "refunded" | "pending_reward" | "none"| null,
+    historyType?: HistoryType,
     fromDate?: string,
     toDate?: string
-  ): Promise<PaginationDTO<any>> => {
+  ): Promise<RewardHistoryPaginationDTO> => {
     try {
       const params: Record<string,string> = { page: page.toString(), limit: limit.toString() };
       if (userId) params.userId = userId;
@@ -149,15 +149,10 @@ export const usersAPI = {
       if (fromDate) params.fromDate = fromDate;
       if (toDate) params.toDate = toDate;
 
-      return await apiAdmin().get<PaginationDTO<any>>(API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY, params);
+      return await apiAdmin().get<RewardHistoryPaginationDTO>(API_ENDPOINTS_ADMIN.USERS.REWARD_HISTORY, params);
     } catch (err: any) {
       console.error("Error fetching reward history:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch reward history",
-        data: [],
-        pagination: { page, limit, total: 0, totalPages: 0 },
-      };
+      return paginationError<RewardHistoryDTO>(page, limit, err)
     }
   },
 };

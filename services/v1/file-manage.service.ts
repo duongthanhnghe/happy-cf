@@ -1,7 +1,9 @@
 import { apiClient } from '../http/apiClient'
 import { API_ENDPOINTS } from '../const/api.const'
 import { fetchRawClient } from '../http/fetchRawClient'
-import type { DeleteImageResponse, GetImagesResponse, SearchImagesResponse, UploadImagesResponse } from '@/server/types/dto/v1/file-manage.dto'
+import type { DeleteImageResponse, FileManageImage, GetImagesResponse, SearchImagesResponse, UploadImagesResponse } from '@/server/types/dto/v1/file-manage.dto'
+import { cursorPaginationError } from '@/server/types/dto/v1/file-manage.dto'
+import { apiError } from '@/server/types/common/api-response'
 
 export const fileManageAPI = {
   getImages: async (
@@ -19,7 +21,7 @@ export const fileManageAPI = {
       )
     } catch (err: any) {
       console.error('Error fetching images:', err)
-      return { success: false, data: [], next_cursor: null }
+      return cursorPaginationError(err, max_results)
     }
   },
 
@@ -29,7 +31,7 @@ export const fileManageAPI = {
       return await apiClient().delete(API_ENDPOINTS.FILE_MANAGE.DELETE_IMAGE(encodedId))
     } catch (err: any) {
       console.error('Error deleting image:', err)
-      return { code: 1, message: err.message, data: {public_id: publicId} }
+      return apiError<{ public_id: string }>(err)
     }
   },
 
@@ -42,7 +44,7 @@ export const fileManageAPI = {
       return await apiClient().get(`${API_ENDPOINTS.FILE_MANAGE.SEARCH_IMAGE()}?${query}`)
     } catch (err: any) {
       console.error('Error searching image:', err)
-      return { success: false ,code: 1, message: err.message, data: [] }
+      return apiError<FileManageImage[]>(err)
     }
   },
 
@@ -60,7 +62,7 @@ export const fileManageAPI = {
       return res.json()
     } catch (err: any) {
       console.error('Upload image error:', err)
-      return { success: false, code: 1, message: 'Upload thất bại!', data: [] }
+      return apiError<FileManageImage[]>(err)
     }
   },
 
@@ -79,7 +81,7 @@ export const fileManageAPI = {
       return res.json()
     } catch (err: any) {
       console.error('Upload avatar error:', err)
-      return { success: false, code: 1, message: 'Upload thất bại!', data: [] }
+      return apiError<FileManageImage[]>(err)
     }
   },
 }

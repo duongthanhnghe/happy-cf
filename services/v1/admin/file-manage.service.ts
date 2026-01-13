@@ -1,7 +1,8 @@
 import { apiAdmin } from '@/services/http/apiAdmin'
 import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
 import { fetchRawAdmin } from '@/services/http/fetchRawAdmin';
-import type { DeleteImageResponse, DeleteImagesResponse, GetFoldersResponse, GetImagesResponse, SearchImagesResponse, UploadImagesResponse } from '@/server/types/dto/v1/file-manage.dto';
+import { cursorPaginationError, type DeleteImageResponse, type DeleteImagesResponse, type FileManageFolder, type FileManageImage, type GetFoldersResponse, type GetImagesResponse, type SearchImagesResponse, type UploadImagesResponse } from '@/server/types/dto/v1/file-manage.dto';
+import { apiError } from '@/server/types/common/api-response'
 
 export const fileManageAPI = {
   getImages: async (
@@ -18,7 +19,7 @@ export const fileManageAPI = {
       )
     } catch (err: any) {
       console.error('Error fetching images:', err)
-      return { success: false, data: [], next_cursor: null }
+      return cursorPaginationError(err, max_results)
     }
   },
 
@@ -27,7 +28,7 @@ export const fileManageAPI = {
       return await apiAdmin().get(API_ENDPOINTS_ADMIN.FILE_MANAGE.GET_FOLDERS())
     } catch (err: any) {
       console.error('Error fetching folders:', err)
-      return { success: false, message: err.message, data: [], code: 1 }
+      return apiError<FileManageFolder[]>(err)
     }
   },
 
@@ -37,7 +38,7 @@ export const fileManageAPI = {
       return await apiAdmin().delete(API_ENDPOINTS_ADMIN.FILE_MANAGE.DELETE_IMAGE(encodedId))
     } catch (err: any) {
       console.error('Error deleting image:', err)
-      return { success: false, code: 1, message: err.message, data: {public_id: publicId} }
+      return apiError<{public_id: string}>(err)
     }
   },
 
@@ -46,7 +47,7 @@ export const fileManageAPI = {
       return await apiAdmin().post(API_ENDPOINTS_ADMIN.FILE_MANAGE.DELETE_IMAGES, { publicIds })
     } catch (err: any) {
       console.error('Error deleting multiple images:', err)
-      return { success: false, code: 1, message: err.message, data: {public_id: publicIds} }
+      return apiError<{ public_id: string[] }>(err)
     }
   },
 
@@ -59,7 +60,7 @@ export const fileManageAPI = {
       return await apiAdmin().get(`${API_ENDPOINTS_ADMIN.FILE_MANAGE.SEARCH_IMAGE()}?${query}`)
     } catch (err: any) {
       console.error('Error searching image:', err)
-      return { success: false ,code: 1, message: err.message, data: [] }
+      return apiError<FileManageImage[]>(err)
     }
   },
 
@@ -78,7 +79,7 @@ export const fileManageAPI = {
       return res.json()
     } catch (err: any) {
       console.error('Error uploading images:', err)
-      return { success: false, code: 1, message: 'Upload thất bại!', data: [] }
+      return apiError<FileManageImage[]>(err)
     }
   },
 }

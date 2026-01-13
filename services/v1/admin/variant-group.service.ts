@@ -6,6 +6,7 @@ import type {
   UpdateVariantGroupDTO 
 } from "@/server/types/dto/v1/product.dto";
 import type { ApiResponse } from "@/server/types/common/api-response";
+import { apiError } from '@/server/types/common/api-response'
 
 export const variantGroupAPI = {
   getAll: async (): Promise<ApiResponse<VariantGroupDTO[]>> => {
@@ -13,7 +14,7 @@ export const variantGroupAPI = {
       return await apiAdmin().get<ApiResponse<VariantGroupDTO[]>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.LIST_ALL);
     } catch (err: any) {
       console.error("Error fetching all variant groups:", err);
-      return { code: 1, message: err.message ?? "Failed to fetch variant groups", data: [] };
+      return apiError<VariantGroupDTO[]>(err)
     }
   },
 
@@ -22,7 +23,7 @@ export const variantGroupAPI = {
       return await apiAdmin().get<ApiResponse<VariantGroupDTO[]>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.LIST_ACTIVE);
     } catch (err: any) {
       console.error("Error fetching active variant groups:", err);
-      return { code: 1, message: err.message ?? "Failed to fetch active variant groups", data: [] };
+      return apiError<VariantGroupDTO[]>(err)
     }
   },
 
@@ -31,7 +32,7 @@ export const variantGroupAPI = {
       return await apiAdmin().get<ApiResponse<VariantGroupDTO>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.DETAIL.replace(":id", id));
     } catch (err: any) {
       console.error(`Error fetching variant group by ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to fetch variant group", data: null as any };
+      return apiError<VariantGroupDTO>(err)
     }
   },
 
@@ -40,7 +41,7 @@ export const variantGroupAPI = {
       return await apiAdmin().post<ApiResponse<VariantGroupDTO>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.CREATE, bodyData);
     } catch (err: any) {
       console.error("Error creating variant group:", err);
-      return { code: 1, message: err.message ?? "Failed to create variant group", data: null as any };
+      return apiError<VariantGroupDTO>(err)
     }
   },
 
@@ -49,16 +50,16 @@ export const variantGroupAPI = {
       return await apiAdmin().put<ApiResponse<VariantGroupDTO>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.UPDATE.replace(":id", id), bodyData);
     } catch (err: any) {
       console.error(`Error updating variant group ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to update variant group", data: null as any };
+      return apiError<VariantGroupDTO>(err)
     }
   },
 
-  delete: async (id: string): Promise<ApiResponse<void>> => {
+  delete: async (id: string): Promise<ApiResponse<null>> => {
     try {
-      return await apiAdmin().delete<ApiResponse<void>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.DELETE.replace(":id", id));
+      return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.DELETE.replace(":id", id));
     } catch (err: any) {
       console.error(`Error deleting variant group ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to delete variant group", data: null as any };
+      return apiError<null>(err)
     }
   },
 
@@ -67,7 +68,7 @@ export const variantGroupAPI = {
       return await apiAdmin().patch<ApiResponse<VariantGroupDTO>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.TOGGLE_ACTIVE.replace(":id", id));
     } catch (err: any) {
       console.error(`Error toggling active status for variant group ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to toggle variant group", data: null as any };
+      return apiError<VariantGroupDTO>(err)
     }
   },
 
@@ -76,7 +77,7 @@ export const variantGroupAPI = {
       return await apiAdmin().get<ApiResponse<VariantGroupDTO[]>>(API_ENDPOINTS_ADMIN.VARIANT_GROUPS.BY_TYPE.replace(":type", type));
     } catch (err: any) {
       console.error(`Error fetching variant groups by type ${type}:`, err);
-      return { code: 1, message: err.message ?? "Failed to fetch variant groups by type", data: [] };
+      return apiError<VariantGroupDTO[]>(err)
     }
   },
 };

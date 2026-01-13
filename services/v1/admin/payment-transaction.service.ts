@@ -8,6 +8,8 @@ import type {
   PaymentTransactionPaginationDTO,
   PaymentTransactionStatus,
 } from "@/server/types/dto/v1/payment-transaction.dto"
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const paymentTransactionsAPI = {
   getAll: async (
@@ -23,17 +25,7 @@ export const paymentTransactionsAPI = {
       )
     } catch (err: any) {
       console.error("Error fetching payment transactions:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch payment transactions",
-        data: [],
-        pagination: {
-          total: 0,
-          totalPages: 0,
-          page,
-          limit,
-        },
-      }
+      return paginationError<PaymentTransactionDTO>(page, limit, err)
     }
   },
 
@@ -47,11 +39,7 @@ export const paymentTransactionsAPI = {
       )
     } catch (err: any) {
       console.error("Error creating payment transaction:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while creating payment transaction",
-        data: undefined as any,
-      }
+      return apiError<PaymentTransactionDTO>(err)
     }
   },
 
@@ -67,11 +55,7 @@ export const paymentTransactionsAPI = {
       )
     } catch (err: any) {
       console.error("Error updating payment transaction status:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while updating transaction status",
-        data: undefined as any,
-      }
+      return apiError<PaymentTransactionDTO>(err)
     }
   },
 
@@ -82,11 +66,7 @@ export const paymentTransactionsAPI = {
       )
     } catch (err: any) {
       console.error(`Error deleting payment transaction with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while deleting transaction",
-        data: null,
-      }
+      return apiError<null>(err)
     }
   },
 
@@ -97,11 +77,7 @@ export const paymentTransactionsAPI = {
       )
     } catch (err: any) {
       console.error(`Error getting payment transaction detail with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch payment transaction with ID ${id}`,
-        data: undefined as any,
-      }
+      return apiError<PaymentTransactionDTO>(err)
     }
   },
 }

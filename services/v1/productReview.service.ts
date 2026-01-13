@@ -6,6 +6,7 @@ import {
   type ProductReviewWithProductDTO,
   paginationReviewError,
   type ProductReviewWithUserDTO,
+  type ReviewStatus,
 } from "@/server/types/dto/v1/product-review.dto";
 import { apiError, type ApiResponse } from "@/server/types/common/api-response";
 import { apiClient } from "../http/apiClient";
@@ -36,7 +37,7 @@ export const productReviewAPI = {
 
   getReviewsByUser: async (
     userId: string,
-    status: string,
+    status: ReviewStatus,
     page: number = 1,
     limit: number = 10
   ): Promise<ProductReviewPaginationDTO> => {

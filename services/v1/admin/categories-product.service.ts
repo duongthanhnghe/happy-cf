@@ -7,6 +7,8 @@ import type {
 } from "@/server/types/dto/v1/product.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
 import type { PaginationDTO } from "@/server/types/common/pagination.dto";
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const categoriesAPI = {
   getAll: async (
@@ -20,12 +22,7 @@ export const categoriesAPI = {
       );
     } catch (err: any) {
       console.error("Error fetching categories:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch categories",
-        data: [],
-        pagination: { page, limit, total: 0, totalPages: 0 },
-      };
+      return paginationError<CategoryProductDTO>(page, limit, err)
     }
   },
 
@@ -36,30 +33,19 @@ export const categoriesAPI = {
       );
     } catch (err: any) {
       console.error("Error fetching category tree:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch category tree",
-        data: [],
-      };
+      return apiError<CategoryProductDTO[]>(err)
     }
   },
 
   create: async (bodyData: CreateCategoryProductDTO): Promise<ApiResponse<CategoryProductDTO>> => {
     try {
-      if (!bodyData.categoryName || !bodyData.image) {
-        throw new Error("Missing required fields: categoryName, image");
-      }
       return await apiAdmin().post<ApiResponse<CategoryProductDTO>>(
         API_ENDPOINTS_ADMIN.CATEGORIES.CREATE,
         bodyData
       );
     } catch (err: any) {
       console.error("Error creating category:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while creating category",
-        data: undefined as any,
-      };
+      return apiError<CategoryProductDTO>(err)
     }
   },
 
@@ -70,11 +56,7 @@ export const categoriesAPI = {
       );
     } catch (err: any) {
       console.error(`Error getting category detail with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch category with ID ${id}`,
-        data: undefined as any,
-      };
+      return apiError<CategoryProductDTO>(err)
     }
   },
 
@@ -87,11 +69,7 @@ export const categoriesAPI = {
       );
     } catch (err: any) {
       console.error(`Error updating category with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Error updating category with ID ${id}`,
-        data: undefined as any,
-      };
+      return apiError<CategoryProductDTO>(err)
     }
   },
 
@@ -102,11 +80,7 @@ export const categoriesAPI = {
       );
     } catch (err: any) {
       console.error(`Error deleting category with ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? `Failed to delete category with ID ${id}`,
-        data: null,
-      };
+      return apiError<null>(err)
     }
   },
 
@@ -118,11 +92,7 @@ export const categoriesAPI = {
       );
     } catch (err: any) {
       console.error(`Error updating order for category ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while updating order",
-        data: undefined as any,
-      };
+      return apiError<CategoryProductDTO>(err)
     }
   },
 
@@ -133,11 +103,7 @@ export const categoriesAPI = {
       );
     } catch (err: any) {
       console.error(`Error toggling active status for category ID ${id}:`, err);
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while toggling active status",
-        data: undefined as any,
-      };
+      return apiError<CategoryProductDTO>(err)
     }
   },
 };

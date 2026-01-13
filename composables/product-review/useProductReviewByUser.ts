@@ -1,13 +1,13 @@
 import { ref, computed } from "vue";
 import { productReviewAPI } from "@/services/v1/productReview.service";
-import type { ProductReviewPaginationDTO } from '@/server/types/dto/v1/product-review.dto';
+import type { ProductReviewPaginationDTO, ReviewStatus } from '@/server/types/dto/v1/product-review.dto';
 
 export const useProductReviewByUser = () => {
   
   const listData = ref<ProductReviewPaginationDTO>();
   const loadingData = ref<boolean>(false);
 
-  const fetchListReview = async (userId: string, status: string, page: number, limit: number) => {
+  const fetchListReview = async (userId: string, status: ReviewStatus, page: number, limit: number) => {
     loadingData.value = true
     try {
       const data: ProductReviewPaginationDTO = await productReviewAPI.getReviewsByUser(userId, status, page, limit)

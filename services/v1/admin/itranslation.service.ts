@@ -2,6 +2,8 @@ import { API_ENDPOINTS_ADMIN } from "@/services/const/api-endpoints-admin";
 import { apiAdmin } from "@/services/http/apiAdmin";
 import type { ApiResponse } from "@/server/types/common/api-response";
 import type { TranslationDTO, TranslationCreateDTO, TranslationUpdateDTO, TranslationPaginationDTO } from "@/server/types/dto/v1/itranslation.dto";
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const iTranslationAPI = {
   getTranslations: async (page: number, limit: number, search: string = ''): Promise<TranslationPaginationDTO> => {
@@ -10,17 +12,7 @@ export const iTranslationAPI = {
       return await apiAdmin().get<TranslationPaginationDTO>(API_ENDPOINTS_ADMIN.TRANSLATION.GET, params);
     } catch (err: any) {
       console.error("API getTranslations error:", err);
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch translations",
-        data: [],
-        pagination: {
-          page,
-          limit,
-          total: 0,
-          totalPages: 0,
-        },
-      };
+      return paginationError<TranslationDTO>(page, limit, err)
     }
   },
 
@@ -29,7 +21,7 @@ export const iTranslationAPI = {
       return await apiAdmin().get<ApiResponse<TranslationDTO>>(`${API_ENDPOINTS_ADMIN.TRANSLATION.DETAIL}/${id}`);
     } catch (err: any) {
       console.error(`Error getting translation detail with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to fetch translation detail", data: null as any };
+      return apiError<TranslationDTO>(err)
     }
   },
 
@@ -38,7 +30,7 @@ export const iTranslationAPI = {
       return await apiAdmin().post<ApiResponse<TranslationDTO>>(API_ENDPOINTS_ADMIN.TRANSLATION.CREATE, payload);
     } catch (err: any) {
       console.error("Error creating translation:", err);
-      return { code: 1, message: err.message ?? "Failed to create translation", data: undefined as any };
+      return apiError<TranslationDTO>(err)
     }
   },
 
@@ -47,7 +39,7 @@ export const iTranslationAPI = {
       return await apiAdmin().put<ApiResponse<TranslationDTO>>(`${API_ENDPOINTS_ADMIN.TRANSLATION.UPDATE}/${id}`, payload);
     } catch (err: any) {
       console.error(`Error updating translation with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? `Failed to update translation ${id}`, data: undefined as any };
+      return apiError<TranslationDTO>(err)
     }
   },
 
@@ -56,7 +48,7 @@ export const iTranslationAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(`${API_ENDPOINTS_ADMIN.TRANSLATION.DELETE}/${id}`);
     } catch (err: any) {
       console.error(`Error deleting translation with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? `Failed to delete translation ${id}`, data: null };
+      return apiError<null>(err)
     }
   },
 };

@@ -1,3 +1,5 @@
+import type { PaginationDTO } from "../../common/pagination.dto"
+
 export type PaymentMethod = "cash" | "bank_transfer"
 export type PaymentTransactionStatus = "pending" | "paid" | "failed" | "refunded"
 
@@ -24,14 +26,4 @@ export interface UpdatePaymentTransactionStatusBody {
   status: PaymentTransactionStatus
 }
 
-export interface PaymentTransactionPaginationDTO {
-  code: number
-  message: string
-  data: PaymentTransactionDTO[]
-  pagination: {
-    total: number
-    totalPages: number
-    page: number
-    limit: number
-  }
-}
+export type PaymentTransactionPaginationDTO = PaginationDTO<PaymentTransactionDTO>

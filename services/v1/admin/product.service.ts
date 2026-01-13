@@ -5,9 +5,12 @@ import type {
   ProductDTO,
   CreateProductDTO,
   UpdateProductDTO,
-  ProductPaginationDTO
+  ProductPaginationDTO,
+  ProductImportDTO
 } from "@/server/types/dto/v1/product.dto"
 import { fetchRawAdmin } from "@/services/http/fetchRawAdmin"
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const productsAPI = {
   getAll: async (
@@ -24,17 +27,7 @@ export const productsAPI = {
       )
     } catch (err: any) {
       console.error('Error fetching all products:', err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch products",
-        data: [],
-        pagination: {
-          page,
-          limit,
-          total: 0,
-          totalPages: 0
-        }
-      }
+      return paginationError<ProductDTO>(page, limit, err)
     }
   },
 
@@ -46,47 +39,35 @@ export const productsAPI = {
       )
     } catch (err: any) {
       console.error('Error creating product:', err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to create product",
-        data: undefined as any
-      }
+      return apiError<ProductDTO>(err)
     }
   },
 
-  importProducts: async (file: File): Promise<ApiResponse<any>> => {
+  importProducts: async (file: File): Promise<ApiResponse<ProductImportDTO>> => {
     try {
       const formData = new FormData()
       formData.append("file", file)
-      return await apiAdmin().post<ApiResponse<any>>(
+      return await apiAdmin().post<ApiResponse<ProductImportDTO>>(
         API_ENDPOINTS_ADMIN.PRODUCTS.IMPORT,
         formData
       )
     } catch (err: any) {
       console.error("Error importing products:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to import products",
-        data: null
-      }
+      return apiError<ProductImportDTO>(err)
     }
   },
 
-  updateImportProducts: async (file: File): Promise<ApiResponse<any>> => {
+  updateImportProducts: async (file: File): Promise<ApiResponse<ProductImportDTO>> => {
     try {
       const formData = new FormData()
       formData.append("file", file)
-      return await apiAdmin().post<ApiResponse<any>>(
+      return await apiAdmin().post<ApiResponse<ProductImportDTO>>(
         API_ENDPOINTS_ADMIN.PRODUCTS.UPDATE_IMPORT,
         formData
       )
     } catch (err: any) {
       console.error("Error updating import products:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to update import products",
-        data: null
-      }
+      return apiError<ProductImportDTO>(err)
     }
   },
 
@@ -145,11 +126,7 @@ export const productsAPI = {
       )
     } catch (err: any) {
       console.error(`Error getting product detail with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch product detail",
-        data: undefined as any
-      }
+      return apiError<ProductDTO>(err)
     }
   },
 
@@ -161,11 +138,7 @@ export const productsAPI = {
       )
     } catch (err: any) {
       console.error(`Error updating product with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to update product",
-        data: undefined as any
-      }
+      return apiError<ProductDTO>(err)
     }
   },
 
@@ -176,11 +149,7 @@ export const productsAPI = {
       )
     } catch (err: any) {
       console.error(`Error deleting product with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to delete product",
-        data: null
-      }
+      return apiError<null>(err)
     }
   },
 
@@ -191,11 +160,7 @@ export const productsAPI = {
       )
     } catch (err: any) {
       console.error("Error deleting multiple products:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to delete products",
-        data: null
-      }
+      return apiError<null>(err)
     }
   },
 
@@ -206,15 +171,10 @@ export const productsAPI = {
       )
     } catch (err: any) {
       console.error(`Error toggling active status for product ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while toggling active status",
-        data: undefined as any
-      }
+      return apiError<ProductDTO>(err)
     }
   }
 }
-
 
 // import { API_ENDPOINTS_ADMIN } from '@/services/const/api-endpoints-admin'
 // import type { 

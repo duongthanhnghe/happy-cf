@@ -13,6 +13,8 @@ import type {
   AccountCreateDTO, 
   AccountRoleType 
 } from '@/server/types/dto/v1/account.dto'
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const accountAPI = {
   verifyToken: async (): Promise<ApiResponse<AccountDTO | null>> => {
@@ -22,7 +24,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error verifying token:', err)
-      return { code: 1, message: err.message ?? 'Failed to verify token', data: null }
+      return apiError<AccountDTO>(err)
     }
   },
 
@@ -33,7 +35,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error refreshing token:', err)
-      return { code: 1, message: err.message ?? 'Failed to refresh token', data: null as any }
+      return apiError<{ accessToken: string }>(err)
     }
   },
 
@@ -50,7 +52,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error admin login:', err)
-      throw err
+      return apiError<AccountLoginResponse>(err)
     }
   },
 
@@ -62,7 +64,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error resetting password:', err)
-      throw err
+      return apiError<null>(err)
     }
   },
 
@@ -73,7 +75,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error(`Error fetching account ${id}:`, err)
-      throw err
+      return apiError<AccountDTO>(err)
     }
   },
 
@@ -85,7 +87,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error updating account:', err)
-      throw err
+      return apiError<AccountDTO>(err)
     }
   },
 
@@ -97,7 +99,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error changing password:', err)
-      throw err
+      return apiError<null>(err)
     }
   },
 
@@ -108,7 +110,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error logging out:', err)
-      throw err
+      return apiError<null>(err)
     }
   },
 
@@ -131,7 +133,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error fetching account list:', err)
-      return { code: 500, message: 'Lỗi kết nối server' } as any
+      return paginationError<AccountDTO>(page, limit, err)
     }
   },
 
@@ -142,7 +144,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error(`Error deleting account ${id}:`, err)
-      throw err
+      return apiError<null>(err)
     }
   },
 
@@ -153,11 +155,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error(`Error toggling active status for account ${id}:`, err)
-      return {
-        code: 1,
-        message: 'Unexpected error while toggling active status',
-        data: undefined as any
-      }
+      return apiError<AccountDTO>(err)
     }
   },
 
@@ -169,7 +167,7 @@ export const accountAPI = {
       )
     } catch (err: any) {
       console.error('Error creating account:', err)
-      throw err
+      return apiError<AccountDTO>(err)
     }
   },
 }

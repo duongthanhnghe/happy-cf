@@ -13,6 +13,8 @@ import type { ApiResponse } from "@/server/types/common/api-response";
 import { useRuntimeConfig } from 'nuxt/app'
 import { fetchRawAdmin } from "@/services/http/fetchRawAdmin";
 import { apiRaw } from "@/services/http/apiRaw";
+import { apiError } from '@/server/types/common/api-response'
+import { paginationError } from '@/server/types/common/pagination.dto'
 
 export const ordersAPI = {
   getAll: async (
@@ -40,12 +42,7 @@ export const ordersAPI = {
       return await apiAdmin().get<OrderPaginationDTO>(API_ENDPOINTS_ADMIN.ORDERS.LIST, params);
     } catch (err: any) {
       console.error("Error fetching orders:", err);
-      return {
-        code: 1,
-        message: "Failed to fetch orders",
-        data: [],
-        pagination: { total: 0, totalPages: 0, page: 1, limit },
-      };
+      return paginationError<OrderDTO>(page, limit, err)
     }
   },
 
@@ -54,7 +51,7 @@ export const ordersAPI = {
       return await apiAdmin().get<ApiResponse<OrderDTO>>(API_ENDPOINTS_ADMIN.ORDERS.GET_BY_ID(id));
     } catch (err: any) {
       console.error(`Error getting order detail with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to fetch order", data: undefined as any };
+      return apiError<OrderDTO>(err)
     }
   },
 
@@ -63,7 +60,7 @@ export const ordersAPI = {
       return await apiAdmin().delete<ApiResponse<null>>(API_ENDPOINTS_ADMIN.ORDERS.DELETE(id));
     } catch (err: any) {
       console.error(`Error deleting order with ID ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to delete order", data: null };
+      return apiError<null>(err)
     }
   },
 
@@ -72,7 +69,7 @@ export const ordersAPI = {
       return await apiAdmin().get<ApiResponse<OrderStatusDTO[]>>(API_ENDPOINTS_ADMIN.ORDERS.LIST_STATUS);
     } catch (err: any) {
       console.error("Error fetching order status:", err);
-      return { code: 1, message: "Failed to fetch order status", data: [] };
+      return apiError<OrderStatusDTO[]>(err)
     }
   },
 
@@ -81,7 +78,7 @@ export const ordersAPI = {
       return await apiAdmin().get<ApiResponse<PaymentDTO[]>>(API_ENDPOINTS_ADMIN.ORDERS.LIST_PAYMENTS);
     } catch (err: any) {
       console.error("Error fetching payments:", err);
-      return { code: 1, message: "Failed to fetch payments", data: [] };
+      return apiError<PaymentDTO[]>(err)
     }
   },
 
@@ -90,7 +87,7 @@ export const ordersAPI = {
       return await apiAdmin().put<ApiResponse<OrderDTO>>(API_ENDPOINTS_ADMIN.ORDERS.UPDATE_STATUS, { orderId, statusId });
     } catch (err: any) {
       console.error(`Error updating status for order ${orderId}:`, err);
-      return { code: 1, message: err.message ?? "Failed to update order status", data: undefined as any };
+      return apiError<OrderDTO>(err)
     }
   },
 
@@ -99,7 +96,7 @@ export const ordersAPI = {
       return await apiAdmin().get<ApiResponse<OrderStatusCountDTO[]>>(API_ENDPOINTS_ADMIN.ORDERS.COUNT_BY_STATUS);
     } catch (err: any) {
       console.error("Error fetching order count by status:", err);
-      return { code: 1, message: err.message ?? "Failed to fetch order count", data: [] };
+      return apiError<OrderStatusCountDTO[]>(err)
     }
   },
 
@@ -109,7 +106,7 @@ export const ordersAPI = {
       return await apiAdmin().get<ApiResponse<ShippingProviderDTO[]>>(API_ENDPOINTS_ADMIN.ORDERS.LIST_SHIPPING_PROVIDERS, params);
     } catch (err: any) {
       console.error("Error fetching shipping providers:", err);
-      return { code: 1, message: "Cannot fetch shipping providers", data: [] };
+      return apiError<ShippingProviderDTO[]>(err)
     }
   },
 
@@ -118,7 +115,7 @@ export const ordersAPI = {
       return await apiAdmin().get<ApiResponse<ShippingProviderDTO>>(API_ENDPOINTS_ADMIN.ORDERS.DETAIL_SHIPPING_PROVIDERS(id));
     } catch (err: any) {
       console.error(`Error fetching shipping provider ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to fetch shipping provider", data: undefined as any };
+      return apiError<ShippingProviderDTO>(err)
     }
   },
 
@@ -132,7 +129,7 @@ export const ordersAPI = {
       return await apiAdmin().post<ApiResponse<OrderShippingDTO>>(API_ENDPOINTS_ADMIN.ORDERS.CREATE_ORDER_SHIPPING, payload);
     } catch (err: any) {
       console.error("Error creating order shipping:", err);
-      return { code: 1, message: err.message ?? "Failed to create order shipping", data: undefined as any };
+      return apiError<OrderShippingDTO>(err)
     }
   },
 
@@ -141,7 +138,7 @@ export const ordersAPI = {
       return await apiAdmin().get<ApiResponse<OrderShippingDTO>>(API_ENDPOINTS_ADMIN.ORDERS.DETAIL_ORDER_SHIPPING(id));
     } catch (err: any) {
       console.error(`Error fetching order shipping ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to fetch order shipping", data: undefined as any };
+      return apiError<OrderShippingDTO>(err)
     }
   },
 
@@ -153,7 +150,7 @@ export const ordersAPI = {
       return await apiAdmin().put<ApiResponse<OrderShippingDTO>>(API_ENDPOINTS_ADMIN.ORDERS.UPDATE_STATUS_ORDER_SHIPPING(id), payload);
     } catch (err: any) {
       console.error(`Error updating shipping status for order shipping ${id}:`, err);
-      return { code: 1, message: err.message ?? "Failed to update shipping status", data: undefined as any };
+      return apiError<OrderShippingDTO>(err)
     }
   },
 

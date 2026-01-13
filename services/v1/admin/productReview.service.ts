@@ -5,7 +5,10 @@ import type {
   ProductReviewPaginationDTO,
   ProductReviewDTO,
   ProductReviewWithProductDTO,
+  ReviewStatus,
 } from "@/server/types/dto/v1/product-review.dto"
+import { apiError } from '@/server/types/common/api-response'
+import { paginationReviewError } from "@/server/types/dto/v1/product-review.dto"
 
 export const productReviewAPI = {
   getAll: async (
@@ -31,28 +34,11 @@ export const productReviewAPI = {
       )
     } catch (err: any) {
       console.error("Error fetching product reviews:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Failed to fetch product reviews",
-        data: [],
-        pagination: {
-          total: 0,
-          totalPages: 0,
-          page,
-          limit,
-        },
-        summary: {
-          averageRating: 0,
-          totalReviews: 0,
-          ratingsBreakdown: {
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0,
-            5: 0,
-          },
-        },
-      }
+      return paginationReviewError(
+        page,
+        limit,
+        err
+      )
     }
   },
 
@@ -63,15 +49,11 @@ export const productReviewAPI = {
       )
     } catch (err: any) {
       console.error(`Error fetching product review with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? `Failed to fetch product review with ID ${id}`,
-        data: undefined as any,
-      }
+      return apiError<ProductReviewWithProductDTO>(err)
     }
   },
 
-  updateStatus: async (id: string, status: string): Promise<ApiResponse<ProductReviewDTO>> => {
+  updateStatus: async (id: string, status: ReviewStatus): Promise<ApiResponse<ProductReviewDTO>> => {
     try {
       return await apiAdmin().put<ApiResponse<ProductReviewDTO>>(
         API_ENDPOINTS_ADMIN.PRODUCT_REVIEWS.UPDATE_STATUS,
@@ -79,11 +61,7 @@ export const productReviewAPI = {
       )
     } catch (err: any) {
       console.error("Error updating product review status:", err)
-      return {
-        code: 1,
-        message: err.message ?? "Unexpected error while updating product review status",
-        data: undefined as any,
-      }
+      return apiError<ProductReviewDTO>(err)
     }
   },
 
@@ -94,11 +72,7 @@ export const productReviewAPI = {
       )
     } catch (err: any) {
       console.error(`Error deleting product review with ID ${id}:`, err)
-      return {
-        code: 1,
-        message: err.message ?? `Unexpected error while deleting product review with ID ${id}`,
-        data: null,
-      }
+      return apiError<null>(err)
     }
   },
 }
