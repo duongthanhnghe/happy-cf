@@ -14,7 +14,6 @@ import { IMAGE_AVATAR_DEFAULT } from '@/const/image'
 import { useAccountEditStore } from '@/stores/client/users/useAccountEditStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
 import { useValidate } from '@/composables/validate/useValidate'
 import { updateUserProfileSchema } from '@/shared/validate/schemas/user.schema'
 import { showWarning } from '@/utils/toast'
@@ -40,8 +39,6 @@ watch(() => storeFileManage.getSelectImage, (newValue) => {
   storeAccountEdit.formUserItem.avatar = newValue
 }, { immediate: true })
 
-useFileManageWatchers(storeFileManage, folderName);
-
 onBeforeUnmount(() => {
   storeFileManage.resetState()
 })
@@ -53,7 +50,7 @@ onBeforeUnmount(() => {
 <Popup bodyClass="bg-gray6" v-model="storeAccountEdit.isTogglePopupUpdate" footerFixed :popupHeading="AUTH_TEXT_UPDATE_INFO" align="right">
   <template #body>
     <v-form @submit.prevent="handleSubmitUpdate">
-      <AvatarEdit :label="AUTH_TEXT_EDIT_AVATAR" className="mb-md width-200 height-200" @click.prevent="storeFileManage.handleTogglePopup(true)">
+      <AvatarEdit :label="AUTH_TEXT_EDIT_AVATAR" className="mb-md width-200 height-200" @click.prevent="storeFileManage.handleTogglePopup(true, folderName)">
         <slot>
           <Image 
             :src="storeAccountEdit.formUserItem.avatar" :alt="storeAccountEdit.formUserItem.fullname"
@@ -64,15 +61,15 @@ onBeforeUnmount(() => {
       </AvatarEdit>
       <LabelInput :label="AUTH_TEXT_FULLNAME" required />
       <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.fullname" :error="!!formErrors.fullname"
-  :error-messages="formErrors.fullname" label="Họ và tên" required></v-text-field>
+        :error-messages="formErrors.fullname" label="Họ và tên" required></v-text-field>
 
       <LabelInput :label="AUTH_TEXT_BIRTHDAY" required />
       <v-text-field variant="outlined" v-model="storeAccountEdit.getBirthday" type="date" label="Ngày sinh" class="input-date-custom" append-inner-icon="mdi-calendar" :error="!!formErrors.birthday"
-  :error-messages="formErrors.birthday"></v-text-field>
+        :error-messages="formErrors.birthday"></v-text-field>
 
       <LabelInput :label="AUTH_TEXT_PHONE" required />
       <v-text-field variant="outlined" v-model="storeAccountEdit.formUserItem.phone" type="tel" :counter="11" maxlength="11" :error="!!formErrors.phone"
-  :error-messages="formErrors.phone" label="Số điện thoại"></v-text-field>
+        :error-messages="formErrors.phone" label="Số điện thoại"></v-text-field>
       <v-radio-group inline v-model="storeAccountEdit.formUserItem.gender">
         <v-radio :label="GLOBAL_TEXT_MALE" value="male" class="mr-sm"></v-radio>
         <v-radio :label="GLOBAL_TEXT_FEMALE" value="female" class="mr-sm"></v-radio>

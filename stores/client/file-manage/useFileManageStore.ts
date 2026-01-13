@@ -34,9 +34,15 @@ export const useFileManageClientStore = defineStore("FileManageClient", () => {
   const nextCursor = ref<string | null>(null)
   const isEnd = ref(false)
   const currentFolder = ref<string | null>(null)
+  const isLoaded = ref(false)
 
-  const handleTogglePopup = async (value: boolean) => {
+  const handleTogglePopup = async (value: boolean, folderName: string) => {
     isTogglePopup.value = value;
+
+    if (!isLoaded.value && folderName) {
+      await getApiList(folderName)
+      isLoaded.value = true
+    }
   };
 
   const load = async ({ done }: { done: (status: 'ok' | 'empty') => void }) => {
@@ -173,6 +179,7 @@ export const useFileManageClientStore = defineStore("FileManageClient", () => {
     txtSearch.value = ''
     items.value = []
     dataSelectImage.value = null
+    isLoaded.value = false
   }
 
   const getItems = computed(() => items.value)
