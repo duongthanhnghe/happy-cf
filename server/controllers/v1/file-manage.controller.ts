@@ -3,6 +3,7 @@ import fs from 'fs'
 import { v2 as cloudinary } from 'cloudinary'
 import type { Request, Response } from 'express'
 import { toFileManageImageDTO, toFileManageImageListDTO } from "@/server/mappers/v1/file-manage.mapper"
+import { FOLDER_UPLOAD } from "../../../shared/constants/folder-upload" 
 
 const MAX_USER_STORAGE = 3 * 1024 * 1024 // 3MB
 
@@ -28,10 +29,13 @@ const getFolderTotalSize = async (folder: string): Promise<number> => {
   return total
 }
 
-export const getImages = async (req: Request, res: Response) => {
+export const getImages = async (req: any, res: Response) => {
   try {
-    const { folder, max_results, next_cursor } = req.query
+    const userId = req.user?.id
 
+    const { max_results, next_cursor } = req.query
+
+    const folder = `${FOLDER_UPLOAD.MEMBER}${userId}`
     if (!folder) {
       return res.status(400).json({
         success: false,
@@ -67,14 +71,25 @@ export const getImages = async (req: Request, res: Response) => {
   }
 }
 
-export const deleteImage = async (req: Request, res: Response) => {
+export const deleteImage = async (req: any, res: Response) => {
   try {
+    const userId = req.user?.id
+
     const { publicId } = req.query
+
     if (!publicId) {
       return res.status(400).json({ success: false, message: 'publicId is required' })
     }
 
     const decodedId = decodeURIComponent(publicId as string)
+
+    if (!decodedId.startsWith(`${FOLDER_UPLOAD.MEMBER}${userId}`)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bạn không có quyền xóa ảnh này',
+      })
+    }
+
     const result = await cloudinary.uploader.destroy(decodedId)
 
     return res.status(200).json({ success: true, data: result })
@@ -84,9 +99,19 @@ export const deleteImage = async (req: Request, res: Response) => {
   }
 }
 
-export const searchImage = async (req: Request, res: Response) => {
+export const searchImage = async (req: any, res: Response) => {
   try {
-    const { url, folder } = req.query
+    const userId = req.user.id
+
+    const folder = `${FOLDER_UPLOAD.MEMBER}${userId}`
+    if (!folder) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing folder name',
+      })
+    }
+
+    const { url } = req.query
 
     if (!url) {
       return res.status(400).json({
@@ -120,34 +145,29 @@ export const searchImage = async (req: Request, res: Response) => {
   }
 }
 
-export const uploadImage = async (req: Request, res: Response) => {
-  const userId = req.body?.userId;
-
+export const uploadImage = async (req: any, res: Response) => {
   try {
+    const userId = req.user?.id
+    const folder = `${FOLDER_UPLOAD.MEMBER}${userId}`
+
     if (!req.files || !(req.files instanceof Array) || req.files.length === 0) {
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
 
-    const folder = userId
-      ? `Member/member${userId}`
-      : req.body.folder || "Default";
+    const currentSize = await getFolderTotalSize(folder)
 
-    if (userId) {
-      const currentSize = await getFolderTotalSize(folder)
+    const uploadSize = (req.files as Express.Multer.File[])
+      .reduce((sum, f) => sum + f.size, 0)
 
-      const uploadSize = (req.files as Express.Multer.File[])
-        .reduce((sum, f) => sum + f.size, 0)
-
-      if (currentSize + uploadSize > MAX_USER_STORAGE) {
-        for (const file of req.files as Express.Multer.File[]) {
-          fs.unlinkSync(file.path)
-        }
-
-        return res.status(400).json({
-          success: false,
-          message: 'Dung lượng ảnh của bạn đã vượt quá 3MB',
-        })
+    if (currentSize + uploadSize > MAX_USER_STORAGE) {
+      for (const file of req.files as Express.Multer.File[]) {
+        fs.unlinkSync(file.path)
       }
+
+      return res.status(400).json({
+        success: false,
+        message: 'Dung lượng ảnh của bạn đã vượt quá 3MB',
+      })
     }
 
     const uploadedFiles: any[] = [];
