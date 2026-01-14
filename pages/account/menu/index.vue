@@ -13,9 +13,6 @@ const storeDisplay = useDisplayStore()
 const store = useAccountStore();
 const { getOrderStatusCounts, fetchOrderCountByStatus } = useOrderCountByStatus()
 
-const listMenu = [
-  ...store.accountMenu,
-];
 onMounted(async () => {
   if(!getOrderStatusCounts.value || getOrderStatusCounts.value.length === 0) await fetchOrderCountByStatus()
 })
@@ -25,9 +22,12 @@ onMounted(async () => {
     <SectionAccount showLevel/>
     <div class="container">
       <ListOrderCountByStatus v-if="getOrderStatusCounts" :listData="getOrderStatusCounts" class="mb-sm"/>
-      <div class="pt-ms">
-        <MenuAccount :menu="listMenu" heading="Tài khoản"/>
-        <div class="flex justify-center">
+      <div class="pt-sm">
+        <MenuAccount :menu="store.accountMenu" heading="Tài khoản"/>
+        <div class="mt-md">
+          <MenuAccount :menu="store.accountMenuInfo" heading="Thông tin"/>
+        </div>
+        <div class="flex justify-center pb-md">
           <Button @click.prevent="store.handleLogout()" color="danger" class="bg-gray6 mt-sm" icon="logout" label="Đăng xuất" />
         </div>
       </div>

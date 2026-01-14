@@ -4,10 +4,12 @@ import { ROUTES } from "@/shared/constants/routes";
 import { useProductCategoryStore } from "../product/useProductCategoryStore";
 import { getMenuDepth } from "@/utils/menuHelpers";
 import { useDisplayStore } from "@/stores/shared/useDisplayStore";
+import { useAccountStore } from "../users/useAccountStore";
 
 export const useHeaderStore = defineStore("HeaderStore", () => {
   const storeProductCategory = useProductCategoryStore()
   const storeDisplay = useDisplayStore()
+  const storeAccount = useAccountStore()
 
   const isTogglePopupMenu = ref<boolean>(false);
 
@@ -44,9 +46,7 @@ export const useHeaderStore = defineStore("HeaderStore", () => {
 
   const listMenuMore = computed(() => {
     return [
-      ROUTES.PUBLIC.PAGE?.children?.POINT_CLUB,
-      { label: 'Hoàn tiền', path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path},
-      { label: 'Hạng thành viên', path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path},
+      ...storeAccount.accountMenuInfo,
       ROUTES.PUBLIC.ABOUT,
       ROUTES.PUBLIC.NEWS?.children?.MAIN,
       ROUTES.PUBLIC.LOGIN,

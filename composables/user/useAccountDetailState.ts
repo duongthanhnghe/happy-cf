@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import type { User, InformationMembershipLevels } from "@/server/types/dto/v1/user.dto";
 import { ROUTES } from "@/shared/constants/routes";
 import type { MenuItem } from "@/server/types/common/menu-item";
@@ -19,7 +19,7 @@ export const useAccountDetailState = () => {
     label: route.label,
     icon: route.icon,
   }));
-  
+
   return {
     detailData,
     isTogglePopupBarcode,

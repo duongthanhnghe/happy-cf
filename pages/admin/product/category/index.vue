@@ -4,6 +4,7 @@ import { useCategoryManageStore } from '@/stores/admin/product/useCategoryManage
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
+import { BANNER_LAZY } from '@/const/image';
 
 definePageMeta({
   layout: ROUTES.ADMIN.PRODUCT.children?.CATEGORY.layout,
@@ -76,6 +77,7 @@ onBeforeUnmount(() => {
         :width="100"
         :height="50"
         preset="avatar"
+        :placeholder="BANNER_LAZY"
         class="rd-lg bg-gray6"
       />
     </template>
