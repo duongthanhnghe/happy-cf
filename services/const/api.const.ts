@@ -41,6 +41,7 @@ export const API_ENDPOINTS = {
     SHIPPING_FEE: "/orders/shipping/fee",
     CANCEL_REQUEST: "/orders/users/cancel-request",
     PENDING_REWARD: (userId: string) => `/orders/rewards/pending/${userId}`,
+    COUNT_BY_STATUS: '/orders/count-by-status',
   },
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',

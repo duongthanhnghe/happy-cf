@@ -14,7 +14,7 @@
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { computed, useSlots } from 'vue'
 
-type HeadingSize = 'base' | 'lg' | 'xl' | 'xxl'
+type HeadingSize = 'base' | 'normal' | 'lg' | 'xl' | 'xxl'
 
 const slots = useSlots()
 const storeDisplay = useDisplayStore();
@@ -44,6 +44,7 @@ const SIZE_MAP: Record<HeadingSize, { desktop: HeadingSize; mobile: HeadingSize 
   xxl: { desktop: 'xxl', mobile: 'xl' },
   xl:  { desktop: 'xl',  mobile: 'lg' },
   lg:  { desktop: 'lg',  mobile: 'lg' },
+  normal:  { desktop: 'lg',  mobile: 'normal' },
   base:  { desktop: 'base',  mobile: 'base' },
 }
 

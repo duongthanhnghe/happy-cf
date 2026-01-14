@@ -3,6 +3,7 @@ import type {
   CreateOrderBody,
   OrderDTO,
   OrderPaginationDTO,
+  OrderStatusCountDTO,
 } from "@/server/types/dto/v1/order.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
 import type { PendingRewardData, RewardHistoryDTO, RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-history.dto";
@@ -141,6 +142,17 @@ export const ordersAPI = {
       return apiError<PendingRewardData>(err)
     }
   },
+
+  getOrderCountByStatusByUser: async (): Promise<ApiResponse<OrderStatusCountDTO[]>> => {
+    try {
+      return await apiClient().authGet<ApiResponse<OrderStatusCountDTO[]>>(
+        API_ENDPOINTS.ORDERS.COUNT_BY_STATUS
+      )
+    } catch (err: any) {
+      console.error("Error fetching user order count by status:", err)
+      return apiError<OrderStatusCountDTO[]>(err)
+    }
+  }
 };
 
 // import { API_ENDPOINTS } from '@/services/const/api.const'

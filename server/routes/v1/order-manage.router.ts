@@ -9,6 +9,7 @@ import {
   getShippingFee,
   cancelOrderByUser,
   getPendingRewardPoints,
+  getOrderCountByStatusByUser
 } from '../../controllers/v1/order.controller'
 import { authenticate } from '../../middlewares/authenticate'
 import { validate } from '../../middlewares/validate/validate'
@@ -16,14 +17,16 @@ import { createOrderSchema, orderIdParamSchema } from '../../../shared/validate/
 
 const router = Router()
 
-router.get('/:id',       validate(orderIdParamSchema, 'params'), getOrderById)
-router.post('/',         validate(createOrderSchema), createOrder)
+
 router.post("/check-point", authenticate, checkPoint);
 router.post("/sepay-callback", sepayCallback);
 router.post("/shipping/fee", getShippingFee);
+router.get("/count-by-status", authenticate, getOrderCountByStatusByUser)
 router.get('/users/:userId/orders', authenticate, getOrdersByUserId)
 router.get('/users/:userId/rewards', authenticate, getRewardHistoryByUserId)
 router.post('/users/cancel-request', authenticate, cancelOrderByUser);
 router.get('/rewards/pending/:userId', authenticate, getPendingRewardPoints)
 
+router.get('/:id',       validate(orderIdParamSchema, 'params'), getOrderById)
+router.post('/',         validate(createOrderSchema), createOrder)
 export default router

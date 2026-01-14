@@ -1,6 +1,6 @@
 import type { Request, Response } from "express"
 import { UserModel } from "../../models/v1/user.entity"
-import { OrderEntity } from "../../models/v1/order.entity"
+import { OrderEntity, OrderStatusEntity } from "../../models/v1/order.entity"
 import type { Types } from "mongoose";
 import { toOrderDTO } from "../../mappers/v1/order.mapper"
 import { ORDER_STATUS } from "../../shared/constants/order-status";
@@ -13,6 +13,7 @@ import { VoucherEntity } from "../../models/v1/voucher.entity";
 import { VoucherUsageEntity } from "../../models/v1/voucher-usage.entity";
 import { checkProductStockService } from "../../utils/productStock"
 import { deductStockOrder } from "../../utils/deductStockOrder";
+import mongoose from "mongoose";
 
 export const getOrderById = async (req: Request, res: Response) => {
   try {
@@ -635,3 +636,62 @@ export const getPendingRewardPoints = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: error.message });
   }
 };
+
+export const getOrderCountByStatusByUser = async (req: any, res: Response) => {
+  try {
+    const userId = req.user?.id
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({
+        code: 401,
+        message: 'Unauthorized',
+      })
+    }
+
+    const statuses = await OrderStatusEntity.find().lean()
+
+    const counts = await OrderEntity.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+        }
+      },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        }
+      }
+    ])
+
+    const countMap = new Map(
+      counts.map(i => [i._id.toString(), i.count])
+    )
+
+    const statusItems = statuses
+      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+      .map(s => ({
+        statusId: s._id.toString(),
+        status: s.status,
+        name: s.name,
+        icon: s.icon,
+        index: s.index,
+        count: countMap.get(s._id.toString()) ?? 0,
+      }))
+
+    const result = [
+      ...statusItems,
+    ]
+
+    return res.json({
+      code: 0,
+      data: result,
+    })
+  } catch (error) {
+    console.error("getOrderCountByStatusByUser error:", error)
+    return res.status(500).json({
+      code: 1,
+      message: "Lỗi lấy số lượng đơn hàng theo trạng thái",
+    })
+  }
+}

@@ -2,13 +2,21 @@
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { ROUTES } from '@/shared/constants/routes'
 import { useAccountStore } from '@/stores/client/users/useAccountStore'
+import { onMounted } from 'vue';
+import { useOrderCountByStatus } from '@/composables/order/useOrderCountByStatus';
 
 const store = useAccountStore();
 const storeDisplay = useDisplayStore()
+const { getOrderStatusCounts, fetchOrderCountByStatus } = useOrderCountByStatus()
+
 const listMenu = [
   ...store.accountMenu,
   { label: 'Đăng xuất', action: () => store.handleLogout(), icon: 'logout' }
 ];
+
+onMounted(async () => {
+  if(!getOrderStatusCounts.value || getOrderStatusCounts.value.length === 0) await fetchOrderCountByStatus()
+})
 </script>
 
 <template>
@@ -17,6 +25,7 @@ const listMenu = [
     <template v-if="storeDisplay.isLaptop">
       <SectionAccount showLevel />
       <div class="container">
+        <ListOrderCountByStatus v-if="getOrderStatusCounts" :listData="getOrderStatusCounts" class="mb-sm"/>
         <div class="row">
           <div class="col-12 col-lg-3">
             <div class="sticky sticky-cover-header pt-ms">
