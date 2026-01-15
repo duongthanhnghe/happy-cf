@@ -1,5 +1,5 @@
 import { computed } from "vue";
-import { ordersAPI } from "@/services/v1/admin/orders.service";
+import { ordersAPI } from "@/services/v1/orders.service";
 import type { PaymentDTO } from '@/server/types/dto/v1/order.dto'
 import { useState } from "nuxt/app";
 

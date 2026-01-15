@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useOrderDetail } from '@/composables/order/useOrderDetail'
 import { useOrderStatusStore } from '@/stores/client/order/useOrderStatusStore';
-import { useSharedOrderDetailHandlers } from '@/composables/shared/order/useSharedOrderDetailHandlers';
+import { useSharedOrderDetailHandlers } from '@/composables/order/useSharedOrderDetailHandlers';
 
 export const useSharedOrderDetailStore = defineStore('useSharedOrderDetailStore', () => {
 
