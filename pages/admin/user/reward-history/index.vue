@@ -3,9 +3,9 @@ import { formatDateTime } from '@/utils/global'
 import { useRewardHistoryStore } from '@/stores/admin/users/useRewardHistoryStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { REWARD_HISTORY_TYPE } from '@/shared/constants/history-reward-type'
-import { useSharedOrderDetailStore } from "@/stores/shared/order/useSharedOrderDetailStore";
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 import { onBeforeUnmount } from 'vue';
+import { useAdminOrderDetailStore } from '@/stores/admin/order/useOrderDetailStore';
 
 definePageMeta({
   layout: ROUTES.ADMIN.USER.children?.CUSTOMER.layout,
@@ -14,7 +14,7 @@ definePageMeta({
 
 const store = useRewardHistoryStore();
 const storeDetailUser = useAdminUserDetailStore();
-const storeDetailOrder = useSharedOrderDetailStore()
+const storeDetailOrder = useAdminOrderDetailStore()
 
 onBeforeUnmount(() => {
   store.resetFilter()

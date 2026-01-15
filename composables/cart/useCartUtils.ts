@@ -99,7 +99,7 @@ export const useCartUtils = (
     );
   };
 
-  const handleCheckPoint = async (userId?: string) => {
+  const handleCheckPoint = async (userId: string) => {
     if (!userId || usedPointOrder.pointInput == 0 || totalPriceCurrent.value === 0) {
       showWarning('Vui lòng kiểm tra lại thông tin!')
       return

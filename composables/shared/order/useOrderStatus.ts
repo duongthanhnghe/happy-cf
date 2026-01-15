@@ -1,9 +1,10 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { ordersAPI } from "@/services/v1/admin/orders.service";
 import type { OrderStatusDTO } from '@/server/types/dto/v1/order.dto'
+import { useState } from "nuxt/app";
 
 export const useOrderStatus = () => {
-  const listOrderStatus = ref<OrderStatusDTO[]>([])
+  const listOrderStatus = useState<OrderStatusDTO[]>('admin-list-order-status', () => [])
 
   const fetchOrderStatus = async () => {
     try {
@@ -16,16 +17,10 @@ export const useOrderStatus = () => {
     }
   }
 
-  const getOrderStatusItem = (id: string) => {
-    if(listOrderStatus.value.length === 0) fetchOrderStatus()
-    return listOrderStatus.value.find(item => item.id === id) || { name: '', status: '' }
-  }
-
   const getListOrderStatus = computed(() => listOrderStatus.value);
 
   return {
     fetchOrderStatus,
-    getOrderStatusItem,
     getListOrderStatus
   }
 }

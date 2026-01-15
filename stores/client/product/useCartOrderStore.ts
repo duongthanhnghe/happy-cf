@@ -380,7 +380,8 @@ export const useCartStore = defineStore("Cart", () => {
   );
 
   const handleCheckPoint = async () => {
-    await utils.handleCheckPoint(storeAccount.getDetailValue?.id);
+    if(!storeAccount.getUserId) return
+    await utils.handleCheckPoint(storeAccount.getUserId);
   };
 
   const handleGetDefaultAddress = async () => {

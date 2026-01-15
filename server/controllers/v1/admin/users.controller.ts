@@ -7,6 +7,7 @@ import { toMembershipLevelListDTO, toMembershipLevelDTO } from "../../../mappers
 import { toMembershipBenefitDTO, toMembershipBenefitListDTO } from "../../../mappers/v1/membership-benefit.mapper"
 import { OrderEntity } from "../../../models/v1/order.entity";
 import { toOrderDTO } from "../../../mappers/v1/order.mapper";
+import { ORDER_STATUS } from "../../../shared/constants/order-status";
 
 export const deleteUsers = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -282,6 +283,63 @@ export const deleteMembershipBenefit = async (req: Request, res: Response) => {
   }
 }
 
+
+    // let history = result.docs.map((order: any) => {
+    //   let type = "";
+    //   let points = 0;
+
+    //   if (order.usedPoints > 0 && order.pointsRefunded) {
+    //     type = "refunded";
+    //     points = order.usedPoints;
+    //   } else if (order.usedPoints > 0) {
+    //     type = "used";
+    //     points = order.usedPoints;
+    //   } else if (order.reward?.points > 0 && order.reward.awarded) {
+    //     type = "earned";
+    //     points = order.reward.points;
+    //   } else if (order.reward?.points > 0 && !order.reward.awarded) {
+    //     type = "pending_reward";
+    //     points = order.reward.points;
+    //   } else {
+    //     type = "none";
+    //   }
+
+    //   return {
+    //     orderId: order._id,
+    //     code: order.code,
+    //     createdAt: order.createdAt,
+    //     user: order.userId
+    //       ? {
+    //           id: order.userId._id,
+    //           fullname: order.userId.fullname,
+    //           email: order.userId.email,
+    //           phone: order.userId.phone,
+    //           currentPoint: order.userId.membership?.balancePoint || 0,
+    //         }
+    //       : null,
+    //     historyType: type,
+    //     points,
+    //   };
+    // });
+
+const buildHistory = (order: any, type: string, points: number) => ({
+  orderId: order._id,
+  code: order.code,
+  createdAt: order.createdAt,
+  user: order.userId
+    ? {
+        id: order.userId._id,
+        fullname: order.userId.fullname,
+        email: order.userId.email,
+        phone: order.userId.phone,
+        currentPoint: order.userId.membership?.balancePoint || 0,
+      }
+    : null,
+  historyType: type,
+  points,
+});
+
+
 export const getRewardHistory = async (req: Request, res: Response) => {
   try {
     let {
@@ -354,43 +412,34 @@ export const getRewardHistory = async (req: Request, res: Response) => {
       ],
     });
 
-    let history = result.docs.map((order: any) => {
-      let type = "";
-      let points = 0;
 
-      if (order.usedPoints > 0 && order.pointsRefunded) {
-        type = "refunded";
-        points = order.usedPoints;
-      } else if (order.usedPoints > 0) {
-        type = "used";
-        points = order.usedPoints;
-      } else if (order.reward?.points > 0 && order.reward.awarded) {
-        type = "earned";
-        points = order.reward.points;
-      } else if (order.reward?.points > 0 && !order.reward.awarded) {
-        type = "pending_reward";
-        points = order.reward.points;
-      } else {
-        type = "none";
+    let history = result.docs.flatMap((order: any) => {
+      const records: any[] = [];
+      const isCancelled = order.status?.id === ORDER_STATUS.CANCELLED;
+
+      switch (true) {
+        case order.usedPoints > 0 && order.pointsRefunded:
+          records.push(buildHistory(order, "refunded", order.usedPoints));
+          break;
+
+        case order.usedPoints > 0:
+          records.push(buildHistory(order, "used", order.usedPoints));
+          break;
       }
 
-      return {
-        orderId: order._id,
-        code: order.code,
-        createdAt: order.createdAt,
-        user: order.userId
-          ? {
-              id: order.userId._id,
-              fullname: order.userId.fullname,
-              email: order.userId.email,
-              phone: order.userId.phone,
-              currentPoint: order.userId.membership?.balancePoint || 0,
-            }
-          : null,
-        historyType: type,
-        points,
-      };
+      switch (true) {
+        case order.reward?.points > 0 && order.reward.awarded:
+          records.push(buildHistory(order, "earned", order.reward.points));
+          break;
+
+        case order.reward?.points > 0 && !isCancelled:
+          records.push(buildHistory(order, "pending_reward", order.reward.points));
+          break;
+      }
+
+      return records;
     });
+
 
     if (historyType) {
       history = history.filter(item => item.historyType === historyType);

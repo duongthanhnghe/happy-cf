@@ -15,6 +15,7 @@ const handleSubmit = async (event: SubmitEventPromise) => {
 <template>
   <Popup
     v-model="store.isTogglePopupCreateShipping"
+    important
     popupHeading="Tạo vận đơn"
     align="right"
   >

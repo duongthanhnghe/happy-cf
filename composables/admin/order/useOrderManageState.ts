@@ -14,7 +14,7 @@ export const useOrderManageState = () => {
     { title: 'Tổng tiền', key: 'totalPrice', sortable: false, },
     { title: 'Tình trạng đơn', key: 'status', sortable: false, },
     { title: 'Địa chỉ', key: 'address', sortable: false, },
-    { title: 'Thời gian lấy hàng', key: 'time', sortable: false, },
+    { title: 'Thời gian đề xuất', key: 'time', sortable: false, },
     { title: 'Thời gian đặt hàng', key: 'createdAt', sortable: false, },
     { title: 'HTTT', key: 'paymentId', sortable: false, },
     { title: 'Tình trạng Vận đơn', key: 'shipping.status', sortable: false, },

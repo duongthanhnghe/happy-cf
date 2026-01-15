@@ -4,7 +4,7 @@ import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore
 import { ORDER_STATUS } from '@/shared/constants/order-status';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { useOrderHelpers } from '@/utils/orderHelpers';
-import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';
+import { useSharedOrderDetailStore } from '@/stores/admin/order/useSharedOrderDetailStore';
 import type { OrderDTO } from '@/server/types/dto/v1/order.dto';
 
 const store = useOrderHistoryStore()

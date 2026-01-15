@@ -35,6 +35,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  important: {
+    type: Boolean,
+    default: false,
+  },
   variant: {
     type: String,
     default: 'modal-right',
@@ -66,6 +70,7 @@ const handleClosePopup = () => {
       'portal-popup',
       modelValue ? `active` : '',
       children ? `portal-popup-children` : '',
+      important ? `portal-popup-important` : '',
       popupClass
     ]"
   >

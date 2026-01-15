@@ -10,6 +10,7 @@ const store = useAdminUserDetailStore();
 <Popup 
   v-model="store.isTogglePopup" 
   :popupHeading="store.getDetailUser?.fullname" 
+  important
   bodyClass="bg-gray6"
   align="right"
   >

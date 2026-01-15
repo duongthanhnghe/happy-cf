@@ -235,6 +235,45 @@ export const createOrder = async (req: Request, res: Response) => {
 };
 
 
+// const history = result.docs.map((order: any) => {
+    //   let historyType = "";
+    //   let points = 0;
+
+    //   if (order.usedPoints > 0 && order.pointsRefunded) {
+    //     historyType = "refunded";   // đã hoàn điểm
+    //     points = order.usedPoints;
+    //   } else if (order.usedPoints > 0) {
+    //     historyType = "used";      // đã dùng điểm
+    //     points = order.usedPoints;
+    //   } else if (order.reward.points > 0 && order.reward.awarded) {
+    //     historyType = "earned";    // đã được cộng điểm
+    //     points = order.reward.points;
+    //   } else if (order.reward.points > 0 && !order.reward.awarded) {
+    //     historyType = "pending_reward"; // chờ cộng điểm
+    //     points = order.reward.points;
+    //   } else {
+    //     historyType = "none"; // không có biến động điểm
+    //   }
+
+    //   return {
+    //     orderId: order._id,
+    //     code: order.code,
+    //     createdAt: order.createdAt,
+    //     historyType,
+    //     points,
+    //     order: toOrderDTO(order)
+    //   };
+    // });
+
+const buildHistory = (order: any, type: string, points: number) => ({
+  orderId: order._id,
+  code: order.code,
+  createdAt: order.createdAt,
+  historyType: type,
+  points,
+  order: toOrderDTO(order),
+});
+
 export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -263,35 +302,27 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
       ]
     });
 
-    const history = result.docs.map((order: any) => {
-      let historyType = "";
-      let points = 0;
+    const history = result.docs.flatMap((order: any) => {
+      const records: any[] = [];
+      const isCancelled = order.status?.id === ORDER_STATUS.CANCELLED;
 
       if (order.usedPoints > 0 && order.pointsRefunded) {
-        historyType = "refunded";   // đã hoàn điểm
-        points = order.usedPoints;
+        records.push(buildHistory(order, "refunded", order.usedPoints));
       } else if (order.usedPoints > 0) {
-        historyType = "used";      // đã dùng điểm
-        points = order.usedPoints;
-      } else if (order.reward.points > 0 && order.reward.awarded) {
-        historyType = "earned";    // đã được cộng điểm
-        points = order.reward.points;
-      } else if (order.reward.points > 0 && !order.reward.awarded) {
-        historyType = "pending_reward"; // chờ cộng điểm
-        points = order.reward.points;
-      } else {
-        historyType = "none"; // không có biến động điểm
+        records.push(buildHistory(order, "used", order.usedPoints));
       }
 
-      return {
-        orderId: order._id,
-        code: order.code,
-        createdAt: order.createdAt,
-        historyType,
-        points,
-        order: toOrderDTO(order)
-      };
+      if (!isCancelled && order.reward?.points > 0) {
+        if (order.reward.awarded) {
+          records.push(buildHistory(order, "earned", order.reward.points));
+        } else {
+          records.push(buildHistory(order, "pending_reward", order.reward.points));
+        }
+      }
+
+      return records;
     });
+
 
     return res.json({
       code: 0,
@@ -616,7 +647,8 @@ export const getPendingRewardPoints = async (req: Request, res: Response) => {
     const orders = await OrderEntity.find({
       userId,
       "reward.points": { $gt: 0 },
-      "reward.awarded": false
+      "reward.awarded": false,
+      status: { $ne: ORDER_STATUS.CANCELLED },
     }).select("reward.points");
 
     const totalPendingPoints = orders.reduce((sum, order: any) => {

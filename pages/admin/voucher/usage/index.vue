@@ -4,8 +4,8 @@ import { useVoucherUsageManageStore } from '@/stores/admin/voucher/useVoucherUsa
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDateTime, formatCurrency, copyText } from '@/utils/global';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
-import { useSharedOrderDetailStore } from "@/stores/shared/order/useSharedOrderDetailStore";
 import { useAdminUserDetailStore } from "@/stores/admin/users/useUserDetailStore";
+import { useAdminOrderDetailStore } from "@/stores/admin/order/useOrderDetailStore";
 
 definePageMeta({
   layout: ROUTES.ADMIN.VOUCHER.children?.USAGE.layout,
@@ -13,7 +13,7 @@ definePageMeta({
 });
 
 const store = useVoucherUsageManageStore();
-const storeDetailOrder = useSharedOrderDetailStore()
+const storeDetailOrder = useAdminOrderDetailStore()
 const storeDetailUser = useAdminUserDetailStore();
 
 onBeforeUnmount(() => {

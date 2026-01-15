@@ -75,7 +75,7 @@ export const getAllOrder = async (req: Request, res: Response) => {
         .populate({
           path: "cartItems.idProduct",
           model: "Product",
-          select: "image productName"
+          select: "image productName amount"
         })
         .populate({
           path: "shipping",
@@ -125,7 +125,7 @@ export const getAllOrder = async (req: Request, res: Response) => {
             model: "ShippingProvider",
           }
         },
-        { path: "cartItems.idProduct", model: "Product", select: "image productName" }
+        { path: "cartItems.idProduct", model: "Product", select: "image productName amount" }
       ]
     };
 
@@ -173,9 +173,17 @@ export const getOrderById = async (req: Request, res: Response) => {
       .populate("userId")
       .populate({ path: "transaction", model: "PaymentTransaction" })
       .populate({
+        path: "shipping",
+        model: "OrderShipping",
+        populate: {
+          path: "providerId",
+          model: "ShippingProvider"
+        }
+      })
+      .populate({
         path: "cartItems.idProduct",
         model: "Product",
-        select: "productName image",
+        select: "productName image amount",
       });
 
     if (!order) {

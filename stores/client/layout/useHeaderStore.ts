@@ -57,8 +57,7 @@ export const useHeaderStore = defineStore("HeaderStore", () => {
   const listHeaderSubMenu = computed(() => {
     return [
       ROUTES.PUBLIC.ACCOUNT.children!.WALLET_VOUCHER,
-      { label: 'Hoàn tiền', path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path , icon: 'paid' },
-      { label: 'Hạng thành viên', path: ROUTES.PUBLIC.PAGE.children?.POINT_CLUB.path , icon: 'crown' },
+      ...storeAccount.accountMenuInfo.filter((item) => item.value === 2 || item.value === 3),
       ROUTES.PUBLIC.ACCOUNT.children!.INFO,
     ]
   })

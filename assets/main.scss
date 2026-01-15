@@ -356,6 +356,9 @@ a {
     &-400 {
       max-height: 400px;
     }
+    &-500 {
+      max-height: 500px;
+    }
     &-cover-header {
       max-height: calc(100dvh - $height-header);
     }
@@ -1724,7 +1727,7 @@ body .bg {
       opacity: 0.5;
       visibility: visible;
     }
-    &-children {
+    &-children, &-important {
       &.active {
         .portal-popup-main,
         .portal-popup-center {

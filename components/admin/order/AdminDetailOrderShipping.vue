@@ -19,6 +19,7 @@ const infoItems = computed(() => [
   <Popup
     v-model="store.isTogglePopupDetailShipping"
     :popupHeading="'Vận đơn: '+store.detailShipping?.trackingCode"
+    important
     bodyClass="bg-gray6"
     align="right"
   >

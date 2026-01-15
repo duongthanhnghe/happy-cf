@@ -11,6 +11,7 @@ import type { TableOpt } from '@/server/types';
 import { useOrderStatus } from '@/composables/shared/order/useOrderStatus';
 import { useAdminShippingProviders } from './useAdminShippingProviders';
 import { useAdminOrderShipping } from './useAdminOrderShipping';
+import { useAdminOrderDetailStore } from '@/stores/admin/order/useOrderDetailStore';
 type MaybeRef<T> = T | Ref<T>;
 
 export const useOrderOperations = (
@@ -36,6 +37,7 @@ export const useOrderOperations = (
   const { getListOrderStatus, fetchOrderStatus } = useOrderStatus();
   const { getShippingProviders, fetchAllShippingProviders } = useAdminShippingProviders();
   const { getOrderShippingDetail, fetchOrderShippingDetail } = useAdminOrderShipping()
+  const storeDetailOrder = useAdminOrderDetailStore()
 
   const getListAllProduct = async () => {
     const from = fromDay.value !== '' ? new Date(fromDay.value).toISOString().slice(0, 10) : ''
@@ -77,6 +79,7 @@ export const useOrderOperations = (
 
   async function loadItemsProduct(opt:TableOpt) {
     loadingTable.value = true;
+    if(getListOrderStatus.value.length === 0) await fetchOrderStatus()
 
     await getListAllProduct();
     if(!dataListOrder.value?.data) return
@@ -151,7 +154,12 @@ export const useOrderOperations = (
             await paymentTransactionsAPI.create({orderId, amount, method})
           }
         }
-        handleReload()
+
+        if (storeDetailOrder.togglePopupDetail && storeDetailOrder.getDetailOrder?.id === orderId) {
+          await storeDetailOrder.fetchOrderDetail(orderId)
+        }
+
+        await handleReload()
       } else {
         showWarning(data.message ?? '')
       }
@@ -162,12 +170,17 @@ export const useOrderOperations = (
     }
   }
 
-  const handleUpdateStatusTransactionOrder = async (transactionId:string, status: PaymentTransactionStatus) => {
+  const handleUpdateStatusTransactionOrder = async (transactionId:string, status: PaymentTransactionStatus, orderId: string) => {
     Loading(true);
     try {
       const data = await paymentTransactionsAPI.updateStatus(transactionId, status)
       if(data.code === 0) {
         showSuccess(data.message ?? '')
+
+        if (storeDetailOrder.togglePopupDetail && storeDetailOrder.getDetailOrder?.id === orderId) {
+          await storeDetailOrder.fetchOrderDetail(orderId)
+        }
+
         handleReload()
       } else {
         showWarning(data.message ?? '')
@@ -192,7 +205,6 @@ export const useOrderOperations = (
 
   const statusListToShow = (order: OrderDTO) => {
     if (order.status.id === ORDER_STATUS.CANCELLED) return [];
-    if(getListOrderStatus.value.length === 0) fetchOrderStatus()
 
     if (order.cancelRequested || order.status.id === ORDER_STATUS.COMPLETED) {
       return getListOrderStatus.value.filter(s => s.id === ORDER_STATUS.CANCELLED);
@@ -224,6 +236,11 @@ export const useOrderOperations = (
 
       if (res.code === 0) {
         showSuccess('Tạo vận đơn thành công')
+
+        if (storeDetailOrder.togglePopupDetail && storeDetailOrder.getDetailOrder?.id === payload.orderId) {
+          await storeDetailOrder.fetchOrderDetail(payload.orderId)
+        }
+
         await handleReload()
       } else {
         showWarning(res.message ?? 'Tạo vận đơn thất bại')
@@ -242,7 +259,8 @@ export const useOrderOperations = (
   const handleUpdateOrderShippingStatus = async (
     shippingId: string,
     status: string,
-    statusText?: string
+    statusText: string,
+    orderId: string,
   ) => {
     const confirmed = await showConfirm('Bạn có chắc cập nhật trạng thái vận đơn?')
     if (!confirmed) return
@@ -256,6 +274,11 @@ export const useOrderOperations = (
 
       if (res.code === 0) {
         showSuccess('Cập nhật trạng thái vận đơn thành công')
+
+        if (storeDetailOrder.togglePopupDetail && storeDetailOrder.getDetailOrder?.id === orderId) {
+          await storeDetailOrder.fetchOrderDetail(orderId)
+        }
+
         await handleReload()
       } else {
         showWarning(res.message ?? 'Cập nhật vận đơn thất bại')
@@ -280,17 +303,17 @@ export const useOrderOperations = (
 
   const handleExport = async () => {
     Loading(true)
-    const from = fromDay.value !== '' ? new Date(fromDay.value).toISOString().slice(0, 10) : ''
-    const to = toDay.value !== '' ? new Date(toDay.value).toISOString().slice(0, 10) : ''
+    const fromDate = fromDay.value !== '' ? new Date(fromDay.value).toISOString().slice(0, 10) : ''
+    const toDate = toDay.value !== '' ? new Date(toDay.value).toISOString().slice(0, 10) : ''
 
-    const res = await ordersAPI.exportOrders(
-      from, 
-      to, 
-      search.value, 
-      filterStatusOrder.value, 
-      filterStatusTransactionOrder.value,
-      filterStatusShipping.value
-    );
+    const res = await ordersAPI.exportOrders({
+      fromDate,
+      toDate,
+      search: search.value || undefined,
+      statusId: filterStatusOrder.value || undefined,
+      transactionId: filterStatusTransactionOrder.value || undefined,
+      shippingStatus: filterStatusShipping.value || undefined,
+    })
     Loading(false)
     if(res.code) showSuccess(res.message ?? 'Export thành công')
   };

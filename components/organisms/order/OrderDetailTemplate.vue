@@ -6,7 +6,7 @@ import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 import { useOrderStatusStore } from '@/stores/shared/order/useOrderStatusStore';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
-import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';
+import { useSharedOrderDetailStore } from '@/stores/admin/order/useSharedOrderDetailStore';
 
 const storeHistory = useOrderHistoryStore();
 const storeOrderStatus = useOrderStatusStore();

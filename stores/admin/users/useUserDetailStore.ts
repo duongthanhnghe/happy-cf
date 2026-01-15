@@ -19,7 +19,7 @@ export const useAdminUserDetailStore = defineStore("AdminUserDetail", () => {
     { label: 'Số điện thoại', value: getDetailUser.value?.phone, icon: 'phone' },
     { label: 'Giới tính', value: getDetailUser.value?.gender, icon: 'edit' },
     { label: 'Ngày sinh', value: formatDateTime(getDetailUser.value?.birthday,'vi-VN',false), icon: 'calendar_today' },
-    { label: 'Mã khách hàng', value: getDetailUser.value?.gender, icon: 'code' },
+    { label: 'Mã khách hàng', value: getDetailUser.value?.membership.code, icon: 'code' },
     { label: 'Ngày tham gia', value: formatDateTime(getDetailUser.value?.membership.joinedAt,'vi-VN',false), icon: 'calendar_check' },
   ])
 

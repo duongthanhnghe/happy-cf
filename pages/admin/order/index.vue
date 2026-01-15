@@ -7,9 +7,8 @@ import { PAYMENT_TRANSACTION_STATUS } from "@/shared/constants/payment-transacti
 import { getTransactionNote } from '@/composables/admin/order/useGetTransactionNote';
 import { getFilteredTransactionStatus } from '@/composables/admin/order/useFilteredTransactionStatus';
 import { useOrderHelpers } from '@/utils/orderHelpers';
-import { useSharedOrderDetailStore } from '@/stores/shared/order/useSharedOrderDetailStore';
+import { useAdminOrderDetailStore } from '@/stores/admin/order/useOrderDetailStore';
 import { onBeforeUnmount, onMounted } from 'vue';
-import { useOrderStatus } from '@/composables/shared/order/useOrderStatus';
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 import { SHIPPING_STATUS } from '@/shared/constants/shipping-status';
 import { useAdminOrderCountByStatus } from '@/composables/admin/order/useAdminOrderCountByStatus';
@@ -21,13 +20,11 @@ definePageMeta({
 
 const store = useOrderManageStore()
 const storeDetailUser = useAdminUserDetailStore();
-const storeDetailOrder = useSharedOrderDetailStore()
-const { getListOrderStatus, fetchOrderStatus } = useOrderStatus();
+const storeDetailOrder = useAdminOrderDetailStore()
 const { remainingProductNames } = useOrderHelpers()
 const { getOrderStatusCounts, fetchOrderCountByStatus } = useAdminOrderCountByStatus()
 
 onMounted(async () => {
-  if(getListOrderStatus.value.length === 0) await fetchOrderStatus()
   if(!getOrderStatusCounts.value || getOrderStatusCounts.value.length === 0) await fetchOrderCountByStatus()
 })
 
@@ -40,7 +37,6 @@ onBeforeUnmount(() => {
 <HeaderAdmin>
   <template #left>
     <v-text-field v-model="store.search"  placeholder="Tìm theo mã, tên, sđt..." variant="outlined" hide-details></v-text-field>
-    <!-- <v-select label="Tinh trang" v-model="store.filterStatusOrder" :items="[{ id: '', name: 'TT đơn hàng' }, ...getListOrderStatus]" item-title="name" item-value="id"  variant="outlined" hide-details /> -->
     <v-select label="Tinh trang" v-model="store.filterStatusShipping" :items="[{ status: '', name: 'TT vận đơn' }, ...Object.values(SHIPPING_STATUS)]" item-title="name" item-value="status" variant="outlined" hide-details />
     <v-select label="Thanh toan" v-model="store.filterStatusTransactionOrder" :items="[{ status: '', name: 'TT thanh toán' }, ...Object.values(PAYMENT_TRANSACTION_STATUS)
 ]" item-title="name" item-value="status" variant="outlined" hide-details />
@@ -91,7 +87,7 @@ onBeforeUnmount(() => {
     class="white-space rd-null-top-left rd-null-top-right"
     :items-per-page-options="[20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
     @update:options="options => {
-        store.currentTableOptions = options
+      store.currentTableOptions = options
     }">
     <template #item.index="{ index }">
       {{ (store.currentTableOptions.page - 1) * store.currentTableOptions.itemsPerPage + index + 1 }}
@@ -139,7 +135,12 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.status="{ item: order }">
-      <v-chip :color="order.status.status" label>
+      <AdminOrderStatusDropdown
+        :order="order"
+        :status-list="store.statusListToShow(order)"
+        :on-update-status="store.handleUpdateStatusOrder"
+      />
+      <!-- <v-chip :color="order.status.status" label>
         {{ order.status.name }}
         <template v-if="order.status.id !== ORDER_STATUS.CANCELLED">
           <MaterialIcon name="keyboard_arrow_down" />
@@ -163,7 +164,7 @@ onBeforeUnmount(() => {
             </v-list-item>
           </v-list>
         </v-menu>
-      </template>
+      </template> -->
     </template>
 
     <template #item.paymentId="{ item }">
@@ -174,7 +175,7 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.transaction="{ item }">
-      <div v-if="item.transaction">
+      <!-- <div v-if="item.transaction">
         <v-chip label :color="item.transaction?.statusColor">
           {{ item.transaction?.statusText }}
           <MaterialIcon name="keyboard_arrow_down" />
@@ -196,14 +197,21 @@ onBeforeUnmount(() => {
             </v-list>
           </v-menu>
         </template>
-      </div>
+      </div> -->
+      <AdminOrderTransactionDropdown
+        :orderId="item.id"
+        :transaction="item.transaction"
+        :order-status-id="item.status.id"
+        :status-list="getFilteredTransactionStatus(item.status.id)"
+        :on-update-status="store.handleUpdateStatusTransactionOrder"
+      />
       <div v-if="item.transaction" class="mt-xs text-size-xs text-color-gray5 max-width-200 text-limit text-limit-2 white-space-pre">
         {{ getTransactionNote(item.transaction?.status, item.status.id) }}
       </div>
     </template>
 
     <template #item.cancelRequested="{ item }">
-      <v-chip v-if="item.cancelRequested && item.status.id === ORDER_STATUS.PENDING" label color="orange">
+      <v-chip v-if="item.cancelRequested && item.status.id === ORDER_STATUS.PENDING" label color="red">
         {{ item.cancelRequested ? 'Cần xử lý' : null }}
       </v-chip>
     </template>
@@ -212,7 +220,13 @@ onBeforeUnmount(() => {
       <v-chip v-if="!item.shipping" label color="grey">
         Chưa vận đơn
       </v-chip>
-      <div v-else class="flex flex-direction-column gap-xs">
+      <AdminShippingStatusDropdown 
+        v-else
+        :orderId="item.id"
+        :shipping="item.shipping"
+        :on-update-status="store.handleUpdateOrderShippingStatus"
+      />
+      <!-- <div v-else class="flex flex-direction-column gap-xs">
         <div class="flex align-center gap-xs">
           <v-chip
             :color="SHIPPING_STATUS[item.shipping.status].color"
@@ -244,7 +258,7 @@ onBeforeUnmount(() => {
             </v-list>
           </v-menu>
         </div>
-      </div>
+      </div> -->
     </template>
 
     <template #item.shipping="{ item }">
