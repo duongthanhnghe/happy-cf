@@ -1,17 +1,6 @@
 @use "@/assets/variables" as *;
 
 .taskbar {
-  height: 100dvh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: $width-taskbar;
-  background: $cl-white;
-  padding: 12px;
-  border-right: 1px solid $cl-gray2;
-  z-index: 11;
-  -webkit-transform: translateX(-100%);
-  transform: translateX(-100%);
   &-icon {
     color: $cl-gray5;
     position: absolute;
@@ -96,10 +85,6 @@
     }
   }
   &.active {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
-  @media (min-width: 1025px){
     -webkit-transform: translateX(0);
     transform: translateX(0);
   }

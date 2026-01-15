@@ -44,7 +44,7 @@ onBeforeUnmount(() => {
 
 <CreatePost />
 <UpdatePost />
-<PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupFileManageImage :folderName="store.folderName" :children="false" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
   <v-data-table-server

@@ -71,8 +71,10 @@ $gutter-x: 1rem;
 $height-header: 68px;
 $height-header-sub: 40px;
 $height-menu-bottom: 53px;
-$height-header-admin: 74px;
+$height-header-admin: 76px;
+$height-header-admin-filter: $height-header-admin + 70;
 $width-taskbar: 240px;
+$width-taskbar-hide: 70px;
 
 //v-table
 $height-table-footer: 68px;

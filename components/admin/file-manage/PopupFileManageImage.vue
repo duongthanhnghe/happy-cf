@@ -14,12 +14,16 @@ const props = defineProps({
   },
   column: {
     type: String,
+  },
+  children: {
+    type: Boolean,
+    default: true,
   }
 })
 
 </script>
 <template>
-<Popup :children="true" v-model="store.isTogglePopup" bodyClass="pt-0" popupHeading="Thư viện ảnh" align="right">
+<Popup important :children="props.children" v-model="store.isTogglePopup" bodyClass="pt-0" popupHeading="Thư viện ảnh" align="right">
   <template #body>
     <FileManageImage :folderName="props.folderName" :chooseImage="props.chooseImage" :column="props.column"/>
   </template>

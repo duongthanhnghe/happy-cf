@@ -58,7 +58,7 @@ export const useAdminProductState = () => {
   const selectedCategoryName = ref<string[]>([])
   const dataList = ref<ProductDTO[]|null>(null);
   const headers = ref<TableHeaders[]>([
-      { title: 'STT', key: 'index', sortable: false },
+      { title: 'STT', key: 'index', sortable: false, headerProps: { class: 'white-space min-width-100' }, cellProps: { class: 'white-space min-width-100' }},
       { title: 'Hình ảnh', key: 'image', sortable: false, headerProps: { class: 'white-space min-width-200' }, cellProps: { class: 'white-space min-width-200' }},
       { title: 'Tên sản phẩm', key: 'productName', sortable: false, },
       { title: 'Giá gốc', key: 'price', sortable: false, },

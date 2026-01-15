@@ -20,7 +20,7 @@ const barcodePath = fileURLToPath(new URL('./public/barcodes', import.meta.url))
 // --- Middleware ---
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://stan-outlets-gnome-tanks.trycloudflare.com',
+  'https://spectrum-admission-reaches-syracuse.trycloudflare.com',
   process.env.DOMAIN,
 ].filter(Boolean) as string[]
 

@@ -7,7 +7,6 @@
 
 .main-admin {
   @media (min-width: 1025px){
-    padding-left: $width-taskbar;
     .v-table__wrapper {
       height: calc(100dvh - ($space-md + $height-header + $height-table-footer));
     }
@@ -16,6 +15,7 @@
     }
     & > .v-container {
       padding: 0 $space-md $space-sm $space-md;
+      max-width: inherit;
     }
   }
 }

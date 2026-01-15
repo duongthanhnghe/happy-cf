@@ -16,6 +16,15 @@ const store = useProductManageStore();
 const storeFileManage = useFileManageFolderStore();
 const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
 
+const getTotalVariantStock = (item: any) => {
+  if (item.variantCombinations.length === 0) return item.amount
+
+  return item.variantCombinations.reduce(
+    (sum: number, vc: any) => sum + (vc.stock || 0),
+    0
+  )
+}
+
 onMounted(async () => {
   if(!getListCategoryAll.value || getListCategoryAll.value.data.length === 0) await fetchCategoryList(1,9999,'')
 })
@@ -86,7 +95,7 @@ onBeforeUnmount(() => {
 <UpdateProduct />
 <CreateVariantProduct />
 <ImportProduct />
-<PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
+<PopupFileManageImage :folderName="store.folderName" :children="false" :chooseImage="true" column="col-6 col-md-4"/>
 
 <v-container>
     <v-data-table-server
@@ -103,7 +112,7 @@ onBeforeUnmount(() => {
         store.currentTableOptions = options
     }">
     <template #item.index="{ item,index }">
-      <div class="flex gap-xs align-center">
+      <div class="flex align-center">
         <VCheckbox
           :key="item.id"
           v-model="store.selectedIdsDelete"
@@ -166,6 +175,10 @@ onBeforeUnmount(() => {
         </v-chip>
         </div>
       </div>
+    </template>
+
+    <template #item.amount="{ item }">
+      {{ getTotalVariantStock(item) }}
     </template>
 
     <template #item.isActive="{ item }">

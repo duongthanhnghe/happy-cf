@@ -70,7 +70,7 @@ a {
   &-xs {
     margin-right: -0.5rem;
     margin-left: -0.5rem;
-    [class*="col-"] {
+    & > [class*="col-"] {
       padding-right: 0.5rem;
       padding-left: 0.5rem;
     }
@@ -84,7 +84,7 @@ a {
   &-sm {
     margin-right: -$space-sm;
     margin-left: -$space-sm;
-    [class*="col-"] {
+    & > [class*="col-"] {
       padding-right: $space-sm;
       padding-left: $space-sm;
     }
@@ -166,6 +166,12 @@ a {
   &-dvw {
     width: 100dvw;
   }
+  &-taskbar {
+    width: $width-taskbar;
+    &-hide {
+      width: $width-taskbar-hide;
+    }
+  }
   &-xl {
     width: $space-xl;
   }
@@ -208,6 +214,12 @@ a {
 }
 
 .height {
+  &-header-admin {
+    height: $height-header-admin;
+    &-filter {
+      height: $height-header-admin-filter;
+    }
+  }
   &-auto {
     height: auto !important;
   }
@@ -263,10 +275,13 @@ a {
     &-90 {
       min-width: 90px;
     }
+    &-100 {
+      min-width: 100px;
+    }
     &-150 {
       min-width: 150px;
     }
-    &-200 {
+    &-200, &-200-input .v-input {
       min-width: 200px;
     }
     &-300 {
@@ -276,6 +291,9 @@ a {
   &-height {
     &-lg {
       min-height: $space-lg;
+    }
+    &-xl {
+      min-height: $space-xl;
     }
     &-40 {
       min-height: 40px;
@@ -303,7 +321,7 @@ a {
     &-70 {
       max-width: 70px;
     }
-    &-200 {
+    &-200, &-200-input .v-input {
       max-width: 200px;
     }
     &-250 {
@@ -788,8 +806,17 @@ body .bg {
 }
 
 .pl {
+  &-taskbar {
+    padding-left: $width-taskbar;
+    &-hide {
+      padding-left: $width-taskbar-hide;
+    }
+  }
   &-0 {
     padding-left: 0 !important;
+  }
+  &-05 {
+    padding-left: 0.5rem !important;
   }
   &-xs {
     padding-left: $space-xs !important;
@@ -817,6 +844,9 @@ body .bg {
 .pr {
   &-0 {
     padding-right: 0 !important;
+  }
+  &-05 {
+    padding-right: 0.5rem !important;
   }
   &-xs {
     padding-right: $space-xs !important;
@@ -1270,6 +1300,11 @@ body .bg {
       border-bottom: none !important;
     }
   }
+  &-top {
+    &-default {
+      border-top: 1px solid $cl-gray6;
+    }
+  }
   &-left {
     &-default {
       border-left: 1px solid $cl-gray6;
@@ -1311,6 +1346,9 @@ body .bg {
   }
   &-4 {
     z-index: 4;
+  }
+  &-11 {
+    z-index: 11;
   }
   &-12 {
     z-index: 12;
@@ -1550,6 +1588,16 @@ body .bg {
 }
 
 .transform {
+  &-translate {
+    &-x {
+      &-0 {
+        transform: translateX(0);
+      }
+      &-hide {
+        transform: translateX(-100%);
+      }
+    }
+  }
   &-scale {
     &-0 {
       transform: scale(0)

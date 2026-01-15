@@ -121,7 +121,7 @@ onMounted(async () => {
     <div class="container">
       <BreadcrumbDefault v-if="breadcrumbItems.length" :items="breadcrumbItems" />
     </div>
-    <div>
+    <div class="pb-section">
       <ProductDetail />
       <client-only>
       <SectionProductListSwiper 
@@ -150,7 +150,7 @@ onMounted(async () => {
         :loading="storeViewed.loading" 
         container="container container-xxl" 
         :headingText="t('product.section.text1')" 
-        class="pt-section pb-section"
+        class="pt-section"
         fullScreen
       />
       </client-only>

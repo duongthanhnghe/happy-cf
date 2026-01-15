@@ -86,6 +86,7 @@ const reloadData = () => {
       height="auto"
       mode="manual"
       :class="{ 'hide-side': store.getItems.length < store.pageSize }"
+      class="overflow-hidden-x"
       @load="store.load"
     >
       <div class="row row-xs mb-sm">

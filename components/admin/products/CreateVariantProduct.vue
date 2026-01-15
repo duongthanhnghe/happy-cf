@@ -177,7 +177,7 @@ const handleSubmitVariantProduct = async () => {
 </script>
 
 <template>
-<Popup children v-model="productStore.isTogglePopupAddVariant" footerFixed popupHeading="Biến thể sản phẩm" align="right">
+<Popup important v-model="productStore.isTogglePopupAddVariant" footerFixed popupHeading="Biến thể sản phẩm" align="right">
   <template #body>
     <v-form ref="formRef" validate-on="submit lazy" @submit.prevent="handleSubmitVariantProduct">
      
@@ -271,7 +271,7 @@ const handleSubmitVariantProduct = async () => {
 
   <template #footer>
     <div class="flex gap-sm">
-      <Button v-if="variantCombinations.length" @click.prevent="productStore.handleTogglePopupAddVariant(false)" color="gray" label="Huy thay doi" class="w-full"/>
+      <Button v-if="variantCombinations.length" @click.prevent="productStore.handleTogglePopupAddVariant(false)" color="gray" label="Huỷ thay đổi" class="w-full"/>
       <Button @click="handleSubmitVariantProduct" color="primary" label="Lưu" class="w-full"/>
     </div>
   </template>

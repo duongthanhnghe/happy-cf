@@ -70,14 +70,6 @@ export const useAdminProductOperations = (
     loadingTable.value = false
   }
 
-  watch([search,categorySelectedFilter], () => {
-    loadItems(currentTableOptions.value);
-  })
-
-  watch(() => [currentTableOptions.value.page,currentTableOptions.value.itemsPerPage], () => {
-    loadItems(currentTableOptions.value);
-  })
-
   watch(
     () => ({
       search: search.value,
