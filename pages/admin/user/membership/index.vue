@@ -4,7 +4,7 @@ import { useMembershipStore } from '@/stores/admin/users/useMembershipStore'
 import { ROUTES } from '@/shared/constants/routes';
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { FOLDER_UPLOAD } from '@/shared/constants/folder-upload';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
+import { useFileManageWatchers } from '@/composables/admin/file-manage/useFileManageWatchers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.USER.children?.MEMBERSHIP_LEVEL.layout,

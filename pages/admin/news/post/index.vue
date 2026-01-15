@@ -3,7 +3,7 @@ import { onBeforeUnmount } from "vue";
 import { usePostManageStore } from '@/stores/admin/news/usePostManageStore';
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { ROUTES } from '@/shared/constants/routes';
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
+import { useFileManageWatchers } from '@/composables/admin/file-manage/useFileManageWatchers';
 import { ROUTE_HELPERS } from "@/shared/constants/routes-helpers";
 
 definePageMeta({

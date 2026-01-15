@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useTranslationManageStore } from '@/stores/admin/itranslation/useTranslationManageStore'
 import { ROUTES } from '@/shared/constants/routes'
-import { useFileManageWatchers } from '@/composables/shared/file-manage/useFileManageWatchers';
+import { useFileManageWatchers } from '@/composables/admin/file-manage/useFileManageWatchers';
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { useAccountAdminStore } from '@/stores/admin/account/useAccountAdminStore';
 import { ACCOUNT_ROLE } from '@/shared/constants/account-role';
