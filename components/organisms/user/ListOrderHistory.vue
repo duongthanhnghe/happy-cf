@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore';
-import { useOrderStatusStore } from '@/stores/shared/order/useOrderStatusStore';
+import { useOrderStatusStore } from '@/stores/client/order/useOrderStatusStore';
 import { useStickyObserver } from "@/utils/stickyObserver"
 
 const store = useOrderHistoryStore();

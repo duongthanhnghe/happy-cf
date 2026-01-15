@@ -3,7 +3,7 @@ import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore';
 import { nullRules, phoneRules } from '@/utils/validation'
 import { useLocationStore } from '@/stores/shared/useLocationStore';
-import { usePaymentStatusStore } from '@/stores/shared/order/usePaymentStatusStore'
+import { usePaymentStatusStore } from '@/stores/client/order/usePaymentStatusStore'
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 const { t } = useITranslations()

@@ -4,9 +4,9 @@ import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore
 import { formatCurrency, formatDateTime } from '@/utils/global'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
-import { useOrderStatusStore } from '@/stores/shared/order/useOrderStatusStore';
+import { useOrderStatusStore } from '@/stores/client/order/useOrderStatusStore';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
-import { useSharedOrderDetailStore } from '@/stores/admin/order/useSharedOrderDetailStore';
+import { useSharedOrderDetailStore } from '@/stores/client/order/useSharedOrderDetailStore';
 
 const storeHistory = useOrderHistoryStore();
 const storeOrderStatus = useOrderStatusStore();

@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router'
 import { ROUTES } from '@/shared/constants/routes';
 import { onMounted } from 'vue';
-import { useSharedOrderDetailStore } from '@/stores/admin/order/useSharedOrderDetailStore';
+import { useSharedOrderDetailStore } from '@/stores/client/order/useSharedOrderDetailStore';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.ORDER.middleware,

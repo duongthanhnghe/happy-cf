@@ -32,6 +32,8 @@ export const API_ENDPOINTS = {
     LIST_ALL: '/variant-groups',
   },
   ORDERS: {
+    LIST_STATUS: '/orders/status',
+    LIST_PAYMENTS: '/orders/payments',
     CREATE: '/orders',
     LIST: '/orders',
     GET_BY_ID: (id: string) => `/orders/${id}`,

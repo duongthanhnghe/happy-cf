@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useOrderDetail } from '@/composables/order/useOrderDetail'
-import { useOrderStatusStore } from '@/stores/shared/order/useOrderStatusStore';
+import { useOrderStatusStore } from '@/stores/client/order/useOrderStatusStore';
 import { useSharedOrderDetailHandlers } from '@/composables/shared/order/useSharedOrderDetailHandlers';
 
 export const useSharedOrderDetailStore = defineStore('useSharedOrderDetailStore', () => {

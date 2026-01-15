@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useSharedOrderDetailStore } from '@/stores/admin/order/useSharedOrderDetailStore';
+import { useSharedOrderDetailStore } from '@/stores/client/order/useSharedOrderDetailStore';
 const storeDetailOrder = useSharedOrderDetailStore()
 </script>
 <template>

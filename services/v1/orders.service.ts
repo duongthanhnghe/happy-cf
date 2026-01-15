@@ -4,6 +4,8 @@ import type {
   OrderDTO,
   OrderPaginationDTO,
   OrderStatusCountDTO,
+  OrderStatusDTO,
+  PaymentDTO,
 } from "@/server/types/dto/v1/order.dto";
 import type { ApiResponse } from "@server/types/common/api-response";
 import type { PendingRewardData, RewardHistoryDTO, RewardHistoryPaginationDTO } from "@/server/types/dto/v1/reward-history.dto";
@@ -12,6 +14,24 @@ import { apiError } from "@/server/types/common/api-response"
 import { paginationError } from "@/server/types/common/pagination.dto";
 
 export const ordersAPI = {
+  getAllStatus: async (): Promise<ApiResponse<OrderStatusDTO[]>> => {
+    try {
+      return await apiClient().get<ApiResponse<OrderStatusDTO[]>>(API_ENDPOINTS.ORDERS.LIST_STATUS);
+    } catch (err: any) {
+      console.error("Error fetching order status:", err);
+      return apiError<OrderStatusDTO[]>(err)
+    }
+  },
+
+  getAllPayment: async (): Promise<ApiResponse<PaymentDTO[]>> => {
+    try {
+      return await apiClient().get<ApiResponse<PaymentDTO[]>>(API_ENDPOINTS.ORDERS.LIST_PAYMENTS);
+    } catch (err: any) {
+      console.error("Error fetching payments:", err);
+      return apiError<PaymentDTO[]>(err)
+    }
+  },
+
   create: async (
     bodyData: CreateOrderBody,
     point: number,

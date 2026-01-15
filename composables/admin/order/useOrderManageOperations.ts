@@ -8,7 +8,7 @@ import { showConfirm, showSuccess, showWarning } from '@/utils/toast';
 import { paymentTransactionsAPI } from '@/services/v1/admin/payment-transaction.service';
 import type { PaymentMethod, PaymentTransactionStatus } from '@/server/types/dto/v1/payment-transaction.dto';
 import type { TableOpt } from '@/server/types';
-import { useOrderStatus } from '@/composables/shared/order/useOrderStatus';
+import { useOrderStatus } from '@/composables/admin/order/useOrderStatus';
 import { useAdminShippingProviders } from './useAdminShippingProviders';
 import { useAdminOrderShipping } from './useAdminOrderShipping';
 import { useAdminOrderDetailStore } from '@/stores/admin/order/useOrderDetailStore';

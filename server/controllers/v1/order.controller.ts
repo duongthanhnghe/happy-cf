@@ -1,8 +1,8 @@
 import type { Request, Response } from "express"
 import { UserModel } from "../../models/v1/user.entity"
-import { OrderEntity, OrderStatusEntity } from "../../models/v1/order.entity"
+import { OrderEntity, OrderStatusEntity, PaymentEntity } from "../../models/v1/order.entity"
 import type { Types } from "mongoose";
-import { toOrderDTO } from "../../mappers/v1/order.mapper"
+import { toOrderDTO, toOrderStatusListDTO, toPaymentListDTO } from "../../mappers/v1/order.mapper"
 import { ORDER_STATUS } from "../../shared/constants/order-status";
 import { PaymentTransactionEntity } from "../../models/v1/payment-transaction.entity";
 import { PAYMENT_TRANSACTION_STATUS } from "../../shared/constants/payment-transaction-status"
@@ -14,6 +14,24 @@ import { VoucherUsageEntity } from "../../models/v1/voucher-usage.entity";
 import { checkProductStockService } from "../../utils/productStock"
 import { deductStockOrder } from "../../utils/deductStockOrder";
 import mongoose from "mongoose";
+
+export const getAllStatus = async (_: Request, res: Response) => {
+  try {
+    const status = await OrderStatusEntity.find().sort({ index: 1 })
+    return res.json({ code: 0, data: toOrderStatusListDTO(status) })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const getAllPayment = async (_: Request, res: Response) => {
+  try {
+    const payments = await PaymentEntity.find()
+    return res.json({ code: 0, data: toPaymentListDTO(payments) })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
 
 export const getOrderById = async (req: Request, res: Response) => {
   try {
