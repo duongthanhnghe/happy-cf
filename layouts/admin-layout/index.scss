@@ -1,10 +1,5 @@
 @use "@/assets/variables" as *;
 
-.admin-wrapper {
-  background: $cl-gray2;
-  min-height: 100vh;
-}
-
 .main-admin {
   @media (min-width: 1025px){
     .v-table__wrapper {

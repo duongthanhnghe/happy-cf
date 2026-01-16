@@ -41,6 +41,7 @@ const isShowSidebarContent = computed(() => {
     class="position-fixed left-0 top-0 height-full width-full bg-black-20 z-index-12">
   </div>
   <div 
+    v-if="storeAccount.getDetailAccount"
     :class="[
       isShowSidebarContent ? 'width-taskbar':'width-taskbar-hide', 
       storeDisplay.isLaptop ? 'transform-translate-x-0': {'transform-translate-x-hide': storeSidebar.getToggleSidebar}
@@ -58,6 +59,7 @@ const isShowSidebarContent = computed(() => {
           :to="{ path: ROUTES.PUBLIC.HOME.path }"
           class="taskbar-href flex min-height-xl"
           v-tooltip.right="!isShowSidebarContent && ROUTES.PUBLIC.HOME.label"
+          @click="!storeDisplay.isLaptop && storeSidebar.handleToggleSidebar()"
         >
           <Button
             :icon="ROUTES.PUBLIC.HOME.icon"
@@ -84,6 +86,7 @@ const isShowSidebarContent = computed(() => {
               class="taskbar-href flex min-height-xl"
               v-if="!item.children"
               v-tooltip.right="!isShowSidebarContent && item.label"
+              @click="!storeDisplay.isLaptop && storeSidebar.handleToggleSidebar()"
             >
               <Button
                 :icon="item.icon"
@@ -133,6 +136,7 @@ const isShowSidebarContent = computed(() => {
                       :to="{ path: child.path }"
                       class="taskbar-href flex taskbar-dropdown-href"
                       v-tooltip.right="!isShowSidebarContent && child.label"
+                      @click="!storeDisplay.isLaptop && storeSidebar.handleToggleSidebar()"
                     >
                       <Button
                         color="secondary"

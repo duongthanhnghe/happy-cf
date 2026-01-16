@@ -15,7 +15,8 @@ export const useUserManageState = () => {
     { title: 'Hạng thành viên', key: 'membership', sortable: false },
     { title: 'Trạng thái', key: 'active', sortable: false },
     { title: 'Ngày tham gia', key: 'createdAt', sortable: false },
-    { title: 'Thao tác', key: 'actions', sortable: false },
+    { title: 'Thao tác', key: 'actions', sortable: false, headerProps: { class: 'v-data-table-sticky-cl-right' },
+      cellProps: { class: 'v-data-table-sticky-cl-right' } },
   ])
     const serverItems = ref<User[]>([])
     const loadingTable = ref<boolean>(true)

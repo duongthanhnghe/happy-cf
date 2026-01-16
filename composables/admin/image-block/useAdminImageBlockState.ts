@@ -1,6 +1,8 @@
 import { reactive, ref } from 'vue';
 import type { TableHeaders } from "@/server/types";
 import type { CreateImageBlockBody, UpdateImageBlockBody, ImageBlockDTO } from '@/server/types/dto/v1/image-block.dto';
+import { IMAGE_BLOCK_PAGES,
+  IMAGE_BLOCK_POSITIONS, } from '@/shared/constants/image-block'
 
 export const useAdminImageBlockState = () => {
 
@@ -11,13 +13,13 @@ export const useAdminImageBlockState = () => {
     isActive: false,
     textButton: '',
     linkRedirect: '',
-    page: '',
-    position: '',
+    page: IMAGE_BLOCK_PAGES.HOME,
+    position: IMAGE_BLOCK_POSITIONS.HERO,
   };
   const formItem = reactive<CreateImageBlockBody>({ ...defaultForm })
   const formUpdate = reactive<UpdateImageBlockBody>({ ...defaultForm })
   const headers = ref<TableHeaders[]>([
-    { title: 'STT', key: 'index', sortable: false },
+    { title: 'STT', key: 'index', sortable: false, headerProps: { class: 'white-space min-width-90' }, cellProps: { class: 'white-space min-width-90' } },
 
     { title: 'Hình ảnh', key: 'image', sortable: false },
     { title: 'Tiêu đề', key: 'title', sortable: false },

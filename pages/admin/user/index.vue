@@ -84,8 +84,8 @@ onBeforeUnmount(() => {
     
     <template #item.actions="{ item }">
       <div class="flex gap-sm justify-end">
-      <Button color="gray" size="sm" icon="visibility" @click="storeDetailUser.handleTogglePopup(true,item.id)" />
-      <Button color="gray" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
+      <Button :border="false" color="secondary" size="sm" icon="visibility" @click="storeDetailUser.handleTogglePopup(true,item.id)" />
+      <Button :border="false" color="secondary" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>
     </template>
   </v-data-table-server>

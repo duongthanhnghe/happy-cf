@@ -11,7 +11,7 @@ export const useAdminAboutState = () => {
   const dataList = ref<AboutDTO[] | null>(null)
   const itemsPerPage = 10
   const headers = ref<TableHeaders[]>([
-    { title: 'STT', key: 'index', sortable: false },
+    { title: 'STT', key: 'index', sortable: false, headerProps: { class: 'white-space min-width-90' }, cellProps: { class: 'white-space min-width-90' } },
     { title: 'Hình ảnh', key: 'image', sortable: false },
     { title: 'Tiêu đề', key: 'title', sortable: false },
     { title: 'Mô tả', key: 'summaryContent', sortable: false },

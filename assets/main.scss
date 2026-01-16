@@ -2694,15 +2694,7 @@ body .v-data-table__td {
   padding: 12px 1rem !important;
 }
 
-body .v-data-table__thead th:first-child,
-body .v-data-table__tr td:first-child {
-  padding-left: 2rem !important;
-}
 
-body .v-data-table__thead th:last-child,
-body .v-data-table__tr td:last-child {
-  padding-right: 2rem !important;
-}
 
 /* Hover row effect */
 body tbody tr:hover td {
@@ -2772,6 +2764,18 @@ tr.v-data-table__tr:last-child td {
 
 body .text-primary {
   color: $cl-primary !important;
+}
+
+@media (min-width: 1025px){
+  body .v-data-table__thead th:first-child,
+  body .v-data-table__tr td:first-child {
+    padding-left: 2rem !important;
+  }
+
+  body .v-data-table__thead th:last-child,
+  body .v-data-table__tr td:last-child {
+    padding-right: 2rem !important;
+  }
 }
 
 // swal2

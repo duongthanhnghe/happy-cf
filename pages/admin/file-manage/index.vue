@@ -4,6 +4,7 @@ import { onMounted, onBeforeUnmount } from "vue";
 import { useFileManageFolderStore } from '@/stores/admin/file-manage/useFileManageStore';
 import { copyText } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
+import { useDisplayStore } from "@/stores/shared/useDisplayStore";
 
 definePageMeta({
   layout: ROUTES.ADMIN.FILE_MANAGE.layout,
@@ -11,9 +12,10 @@ definePageMeta({
 })
 
 const storeFileManage = useFileManageFolderStore()
+const storeDisplay = useDisplayStore()
 
 onMounted(() => {
-  if(process.client){
+  if(process.client && storeDisplay.isLaptop){
     storeFileManage.getApiListFolder()
     storeFileManage.getApiList('Default')
     storeFileManage.breadcrumb = ['Default']
@@ -69,7 +71,7 @@ onBeforeUnmount(() => {
   </HeaderAdmin>
 
   <v-container>
-    <div class="v-table">
+    <div class="v-table" v-if="storeDisplay.isLaptop">
       <div class="flex">
         <div class="file-manage-left">
           <LoadingData
@@ -84,5 +86,6 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
+    <NoData text="Vui lòng xem nội dung trên Máy tính!"/>
   </v-container>
 </template>

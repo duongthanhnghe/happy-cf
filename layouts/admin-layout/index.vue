@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import './index.scss'
+import './index.scss'
 import { useSidebarStore } from '@/stores/admin/layout/useSidebarStore';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 
@@ -8,7 +8,7 @@ const storeDisplay = useDisplayStore()
 
 </script>
 <template>
-  <div class="admin-wrapper">
+  <div class="min-height-dvh bg-gray2">
     <client-only>
       <Sidebar />
     </client-only>

@@ -26,7 +26,7 @@ export const useAdminProductCategoryState = () => {
   const maxOrder = ref<number>(0)
   const itemsPerPage = 50
   const headers = ref<TableHeaders[]>([
-    { title: 'STT', key: 'index', sortable: false },
+    { title: 'STT', key: 'index', sortable: false, headerProps: { class: 'white-space min-width-90' }, cellProps: { class: 'white-space min-width-90' } },
     { title: 'Hình ảnh', key: 'image', sortable: false, },
     { title: 'Banner', key: 'banner', sortable: false, },
     { title: 'Tên danh mục', sortable: false, key: 'categoryName'},

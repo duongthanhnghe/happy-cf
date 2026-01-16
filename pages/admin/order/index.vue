@@ -278,14 +278,14 @@ onBeforeUnmount(() => {
 
     <template #item.actions="{ item }">
       <div class=" flex gap-xs justify-end">
-        <Button v-tooltip.left="!item.shipping ? 'Tạo vận đơn':'Chi tiết vận đơn'" :border="false" color="secondary" size="sm" :icon="!item.shipping ? 'box_add':'box'" @click="!item.shipping ? store.handlePopupCreateOrderShipping(item.id) : store.handlePopupDetailOrderShipping(item.shipping.id)" />
+        <Button class="isLaptop" v-tooltip.left="!item.shipping ? 'Tạo vận đơn':'Chi tiết vận đơn'" :border="false" color="secondary" size="sm" :icon="!item.shipping ? 'box_add':'box'" @click="!item.shipping ? store.handlePopupCreateOrderShipping(item.id) : store.handlePopupDetailOrderShipping(item.shipping.id)" />
         <Button v-tooltip.left="'Chi tiết đơn hàng'" :border="false" color="secondary" size="sm" icon="visibility" @click="storeDetailOrder.handleTogglePopupDetail(true,item.id)" />
-        <Button v-tooltip.left="'In bill'" :border="false" color="secondary" size="sm" icon="receipt" @click="store.handlePrintBill(item.id)" />
+        <Button class="isLaptop" v-tooltip.left="'In bill'" :border="false" color="secondary" size="sm" icon="receipt" @click="store.handlePrintBill(item.id)" />
         <Button v-tooltip.left="'Xoá đơn hàng'" :border="false" color="secondary" size="sm" icon="delete" @click="store.handleDelete(item.id)" />
       </div>
     </template>
     <template #footer.prepend>
-      <div class="mr-md">
+      <div class="mr-md isLaptop">
         Tổng số: <Text tag="span" :text="store.totalItems" color="primary" size="lg" weight="semibold" /> đơn hàng
       </div>
     </template>
