@@ -4,6 +4,7 @@
     :class="classList"
     v-if="props.text?.type=== 'html'"
     v-html="props.text.text"
+    :data-key="props.text.key"
   />
 
   <component
@@ -11,6 +12,7 @@
     :is="componentTag"
     :to="props.slug ? props.slug : undefined"
     :class="classList"
+    :data-key="props.text.key"
   >
     {{ props.text.text ? props.text.text : props.text }}
     <slot />

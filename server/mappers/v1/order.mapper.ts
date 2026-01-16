@@ -53,7 +53,9 @@ export function toOrderShippingDTO(entity: OrderShipping): OrderShippingDTO {
         : 'pending',
       description: log.description,
       time: new Date(log.time).toISOString()
-    }))
+    })),
+    createdAt: entity.createdAt?.toISOString() || '',
+    updatedAt: entity.updatedAt?.toISOString() || '',
   }
 }
 

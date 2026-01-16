@@ -64,6 +64,8 @@ export interface OrderShippingDTO {
   shippedAt: string | null
   deliveredAt: string | null
   logs: OrderShippingLogDTO[]
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateOrderShippingDTO {

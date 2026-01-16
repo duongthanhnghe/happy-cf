@@ -97,6 +97,10 @@ onBeforeUnmount(() => {
       {{ formatCurrency(item.totalPrice) }}
     </template>
 
+    <template #item.shippingFee="{ item }">
+      {{ formatCurrency(item.shippingFee) }}
+    </template>
+
     <template #item.fullname="{ item }">
       <div class="min-width-200 flex gap-sm align-center white-space">
         <Button v-if="item.userId" color="gray" size="sm" icon="person" @click="storeDetailUser.handleTogglePopup(true,item.userId)" />

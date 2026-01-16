@@ -32,7 +32,7 @@ const props = defineProps<{
         Ghi chú: {{ item.note }}
       </div>
       
-      <div class="flex justify-between align-end mt-xs">
+      <div class="flex flex-wrap justify-between align-end mt-xs">
         <div class="flex gap-xs">
           <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`Đặt: ${item.quantity}`"/>
           <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`Tồn kho: ${item.variantCombination ? item.variantCombination.stock : item.idProduct?.amount}`"/>

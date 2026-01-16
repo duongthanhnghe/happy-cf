@@ -44,6 +44,13 @@ export const API_ENDPOINTS_ADMIN = {
     TOGGLE_ACTIVE: (id: string) => `/account/toggleActive/${id}`,
     CREATE: '/account/create',
   },
+  DASHBOARD: {
+    SUMMARY: "/dashboard/summary",
+    REVENUE_CHART: "/dashboard/revenue-chart",
+    ORDER_STATUS_CHART: "/dashboard/order-status",
+    SHIPPING_STATUS_CHART: "/dashboard/shipping-status",
+    CUSTOMER_MEMBERSHIP: "/dashboard/customer-membership",
+  },
   ABOUT: {
     LIST: '/about',
     GET_BY_ID: (id: string) => `/about/${id}`,

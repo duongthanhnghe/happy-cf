@@ -36,7 +36,10 @@ export interface OrderShipping {
     status: string
     description: string
     time: Date
-  }[]
+  }[],
+
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Payment {
@@ -140,6 +143,9 @@ const OrderShippingSchema = new Schema<OrderShipping>(
         time: { type: Date, default: Date.now },
       },
     ],
+  },
+  {
+    timestamps: true
   }
 )
 

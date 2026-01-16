@@ -9,7 +9,7 @@ export function useITranslations() {
     const text = i18n.t(key, params) as string
     const type = translationTypeMap[key] || "text"
 
-    return { text, type }
+    return { text, type, key }
   }
 
   const locale = () => i18n.locale.value

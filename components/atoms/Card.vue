@@ -7,18 +7,18 @@
       props.border ? 'card-border' : '',
     ]"
   >
-    <Heading v-if="props.heading" :text="props.heading" />
+    <Heading v-if="props.heading" :text="props.heading" :size="props.headingSize" />
     <slot></slot>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
 const props = defineProps({
   size: {
     type: String,
     default: 'sm',
-    validator: (value) => ['xs', 'ms','sm', 'md', 'lg', 'xl'].includes(value)
+    validator: (value: string) => ['xs', 'ms','sm', 'md', 'lg', 'xl'].includes(value)
   },
   bg: {
     type: String,
@@ -31,6 +31,11 @@ const props = defineProps({
   },
   heading: {
     type: String,
+  },
+  headingSize: {
+    type: String,
+    default: 'lg',
+    validator: (value: string) => ['base' , 'normal' , 'lg' , 'xl' , 'xxl'].includes(value)
   }
 })
 </script>
