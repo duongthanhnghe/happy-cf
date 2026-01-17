@@ -205,6 +205,37 @@ onBeforeUnmount(() => {
         </div>
       </Card>
 
+      <Card class="rd-lg mt-md" size="sm">
+        <Text size="md" weight="semibold" class="mb-sm" text="Điểm thưởng" />
+        <div class="row row-xs">
+          <div class="col-12 col-lg-4">
+            <v-switch
+              :label="`Tích điểm khi mua hàng: ${storeSettingUpdate.formItem.systemConfig.reward.enableEarnPoint ? 'Bật' : 'Tắt'}`"
+              v-model="storeSettingUpdate.formItem.systemConfig.reward.enableEarnPoint"
+              inset
+            />
+          </div>
+          <div class="col-12 col-lg-4">
+            <v-switch
+              :label="`Dùng điểm khi thanh toán: ${storeSettingUpdate.formItem.systemConfig.reward.enableUsePoint ? 'Bật' : 'Tắt'}`"
+              v-model="storeSettingUpdate.formItem.systemConfig.reward.enableUsePoint"
+              inset
+            />
+          </div>
+          <div class="col-12 col-lg-4">
+            <LabelInput label="Tỉ lệ sử dụng điểm" required />
+            <v-text-field
+              v-model="storeSettingUpdate.formItem.systemConfig.reward.rateUsePoint"
+              :error="!!formErrors.name"
+              :error-messages="formErrors.name"
+              label="Nhập tỉ lệ"
+              variant="outlined"
+              required
+            />
+          </div>
+        </div>
+      </Card>
+
       <div class="flex justify-end mt-md">
         <Button type="submit" color="primary" :shadow="true" label="Lưu cài đặt" :class="storeDisplay.isMobileTable ? 'w-full':''" />
       </div>

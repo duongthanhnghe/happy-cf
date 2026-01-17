@@ -70,21 +70,6 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
 
   const getListReviewProduct = computed(() => getListReview.value?.data);
 
-  const getTotalPoint = computed(() => {
-    if (!getDetailProduct.value?.priceDiscounts) {
-      return null
-    }
-
-    const pointRate = storeAccount.getDetailValue?.membership?.pointRate
-    if (!pointRate) {
-      return 0
-    }
-
-    return Math.round(
-      getDetailProduct.value.priceDiscounts * (pointRate / 100)
-    )
-  })
-
   const variantPrice = computed<number|null>(() => {
     if (!getDetailProduct.value?.variantCombinations.length){
       if(getDetailProduct.value?.priceDiscounts && getDetailProduct.value?.price) {
@@ -101,6 +86,12 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     return storeCart.getSelectedVariantPrice(
       getDetailProduct.value.variantCombinations
     )
+  })
+
+   const getTotalPoint = computed(() => {
+    if (!variantPrice.value) return null
+
+    return storeAccount.calcEarnPoint(variantPrice.value)
   })
 
   const getVariantGroupsUI = computed(() => {

@@ -8,6 +8,7 @@ import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
 import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 
 const { t } = useITranslations()
 const store = useProductDetailStore();
@@ -15,9 +16,11 @@ const storeCart = useCartStore();
 const storeWishlist = useWishlistStore();
 const storeAccount = useAccountStore();
 const storeDisplay = useDisplayStore();
+const storeSetting = useBaseInformationStore();
 const detail: ProductDTO | null = store.getDetailProduct
 
 onMounted(async() => {
+  await storeSetting.fetchSystemConfig()
   if (storeAccount.getUserId) {
     await storeWishlist.fetchWishlist(storeAccount.getUserId);
   }

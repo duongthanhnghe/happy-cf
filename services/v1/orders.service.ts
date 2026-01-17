@@ -34,13 +34,12 @@ export const ordersAPI = {
 
   create: async (
     bodyData: CreateOrderBody,
-    point: number,
     usedPoint: number
   ): Promise<ApiResponse<OrderDTO>> => {
     try {
       return await apiClient().post<ApiResponse<OrderDTO>>(
         API_ENDPOINTS.ORDERS.CREATE,
-        { data: bodyData, point, usedPoint }
+        { data: bodyData, usedPoint }
       );
     } catch (err: any) {
       console.error("Error creating order:", err);

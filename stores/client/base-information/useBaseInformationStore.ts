@@ -39,7 +39,22 @@ export const useBaseInformationStore = defineStore("BaseInformationStore", () =>
     }
   }
 
+  const fetchSystemConfig = async () => {
+    try {
+      const res = await baseInformationAPI.getBaseInformation()
+      if (res.code === 0) {
+        detailData.value = res.data
+        lastFetched.value = Date.now()
+        return res.data.systemConfig
+      }
+    } catch (err) {
+      console.error(err)
+    }
+    return null
+  }
+
   const getBaseInformation = computed(() => detailData.value)
+  const getConfigSystem = computed(() => detailData.value?.systemConfig)
 
   const iconMap: Record<string, any> = {
     Facebook: markRaw(Facebook),
@@ -51,7 +66,9 @@ export const useBaseInformationStore = defineStore("BaseInformationStore", () =>
     detailData,
     lastFetched,
     fetchBaseInformation,
+    fetchSystemConfig,
     getBaseInformation,
+    getConfigSystem,
     iconMap,
   }
 })

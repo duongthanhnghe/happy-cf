@@ -71,7 +71,7 @@ const props = defineProps<{
           </Text>
         </div>
 
-        <div v-if="props.userId" class="flex justify-between gap-xs cart-mb-submit-item pb-05 mb-05 border-bottom-default" @click.prevent="store.handleTogglePopupPoint(true)">
+        <div v-if="props.userId && store.Config_EnableUsePoint" class="flex justify-between gap-xs cart-mb-submit-item pb-05 mb-05 border-bottom-default" @click.prevent="store.handleTogglePopupPoint(true)">
           <Text color="gray5" :text="t('cart.text7')" />
           <Text v-if="!store.usedPointOrder.pointInput" color="gray5" class="line-height-1 flex align-center gap-xs">
             Đang có: {{ formatCurrency(props.balancePoint).replace('đ','') }}

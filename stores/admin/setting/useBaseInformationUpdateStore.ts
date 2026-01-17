@@ -23,6 +23,13 @@ export const useBaseInformationUpdateStore = defineStore("BaseInformationUpdateS
     provinceCode: 0,
     districtCode: 0,
     wardCode: 0,
+    systemConfig: {
+    reward: {
+      enableEarnPoint: true,
+      enableUsePoint: true,
+      rateUsePoint: 0,
+    },
+  },
   });
 
   const update = async () => {
@@ -53,15 +60,6 @@ export const useBaseInformationUpdateStore = defineStore("BaseInformationUpdateS
     storeLocation.selectedDistrict = formItem.districtCode ?? null
     storeLocation.selectedWard = formItem.wardCode ?? null
   }
-
-  // watch(() => storeSetting.getBaseInformation, async (newValue) => {
-  //   if (newValue) {
-  //     handleInitStore();
-  //   }
-  // }, { 
-  //   // immediate: true,
-  //   deep: true
-  // });
 
   //set value location
   watch(() => storeLocation.selectedProvince,

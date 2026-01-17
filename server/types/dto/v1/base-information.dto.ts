@@ -4,6 +4,16 @@ export interface SocialLinkDTO {
   src: string
 }
 
+export interface RewardConfigDTO {
+  enableEarnPoint: boolean
+  enableUsePoint: boolean
+  rateUsePoint: number
+}
+
+export interface SystemConfigDTO {
+  reward: RewardConfigDTO
+}
+
 export interface BaseInformationDTO {
   name: string
   logoUrl: string
@@ -16,6 +26,7 @@ export interface BaseInformationDTO {
   provinceCode?: number
   districtCode?: number
   wardCode?: number
+  systemConfig: SystemConfigDTO;
   createdAt: string
   updatedAt: string
 }

@@ -13,6 +13,8 @@ export const useCartUtils = (
   idAddressChoose: Ref<string>,
   selectedOptionsData: Ref<SelectedOptionPushDTO[]>,
   usedPointOrder: any,
+  Config_EnableUsePoint: Ref<boolean>,
+  getMaxPointCanUse: Ref<number>,
   totalPriceCurrent: Ref<number>,
   isTogglePopup: Ref<boolean>,
   fetchProductCart: () => Promise<void>,
@@ -100,13 +102,15 @@ export const useCartUtils = (
   };
 
   const handleCheckPoint = async (userId: string) => {
+    if(!Config_EnableUsePoint.value || getMaxPointCanUse.value === 0) return showWarning('Chức năng tích điểm đang tạm không hoạt động!')
+
     if (!userId || usedPointOrder.pointInput == 0 || totalPriceCurrent.value === 0) {
       showWarning('Vui lòng kiểm tra lại thông tin!')
       return
     }
 
-    if (usedPointOrder.pointInput > Math.floor(totalPriceCurrent.value * 0.1)) {
-      showWarning(`Chỉ được dùng tối đa ${Math.floor(totalPriceCurrent.value * 0.1)} điểm`)
+    if (usedPointOrder.pointInput > getMaxPointCanUse.value) {
+      showWarning(`Chỉ được dùng tối đa ${getMaxPointCanUse.value} điểm`)
       resetPoint()
       return
     }
@@ -117,13 +121,13 @@ export const useCartUtils = (
       if (res.code === 0) {
         usedPointOrder.checkBalancePoint = true;
         usedPointOrder.usedPoint = Number(res.data.appliedPoint);
+        showSuccess('Áp dụng điểm thành công');
+        handleCalcTotalPriceCurrent();
       } else {
         usedPointOrder.checkBalancePoint = false;
         usedPointOrder.usedPoint = 0;
         showWarning(res.message ?? '');
       }
-      handleCalcTotalPriceCurrent();
-      showSuccess('Áp dụng điểm thành công');
     } catch (err: any) {
       showWarning(err.message);
     } finally {

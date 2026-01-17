@@ -1,6 +1,20 @@
 import { z } from 'zod'
 import { phoneSchema, emailSchema } from './common.schema'
 
+export const rewardConfigSchema = z.object({
+  enableEarnPoint: z.boolean().default(true),
+  enableUsePoint: z.boolean().default(true),
+
+  rateUsePoint: z.preprocess(
+    v => (v === '' || v === null ? 0 : Number(v)),
+    z.number().min(0).default(0)
+  ),
+})
+
+export const systemConfigSchema = z.object({
+  reward: rewardConfigSchema,
+})
+
 export const socialLinkSchema = z.object({
   name: z.string().min(1),
   icon: z.string().min(1),
@@ -53,6 +67,17 @@ export const baseInformationSchema = z.object({
     v => (v === '' || v === null ? undefined : Number(v)),
     z.number().optional()
   ),
+
+  systemConfig: systemConfigSchema
+    .optional()
+    .default({
+      reward: {
+        enableEarnPoint: true,
+        enableUsePoint: true,
+        rateUsePoint: 0,
+      }
+    }),
+    
 })
 
 export const updateBaseInformationSchema = baseInformationSchema.partial()

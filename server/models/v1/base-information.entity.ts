@@ -6,6 +6,16 @@ export interface SocialLink {
   src: string;
 }
 
+export interface RewardConfig {
+  enableEarnPoint: boolean;   // tích điểm khi mua hàng
+  enableUsePoint: boolean;    // dùng điểm khi thanh toán
+  rateUsePoint: number;
+}
+
+export interface SystemConfig {
+  reward: RewardConfig;
+}
+
 export interface BaseInformation {
   _id: Types.ObjectId;
   name: string;
@@ -19,6 +29,7 @@ export interface BaseInformation {
   provinceCode?: number;
   districtCode?: number;
   wardCode?: number;
+  systemConfig: SystemConfig;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,6 +42,26 @@ const SocialLinkSchema = new Schema<SocialLink>(
   },
   { _id: false }
 );
+
+
+const RewardConfigSchema = new Schema(
+  {
+    enableEarnPoint: { type: Boolean, default: true },
+    enableUsePoint: { type: Boolean, default: true },
+    rateUsePoint: { type: Number, default: 0 },
+  },
+  { _id: false }
+)
+
+const SystemConfigSchema = new Schema(
+  {
+    reward: {
+      type: RewardConfigSchema,
+      default: () => ({})
+    }
+  },
+  { _id: false }
+)
 
 const BaseInformationSchema = new Schema<BaseInformation>(
   {
@@ -45,6 +76,10 @@ const BaseInformationSchema = new Schema<BaseInformation>(
     provinceCode: { type: Number },
     districtCode: { type: Number },
     wardCode: { type: Number },
+    systemConfig: {
+      type: SystemConfigSchema,
+      default: () => ({})
+    }
   },
   { timestamps: true }
 );

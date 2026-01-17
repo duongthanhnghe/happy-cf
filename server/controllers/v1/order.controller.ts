@@ -14,6 +14,7 @@ import { VoucherUsageEntity } from "../../models/v1/voucher-usage.entity";
 import { checkProductStockService } from "../../utils/productStock"
 import { deductStockOrder } from "../../utils/deductStockOrder";
 import mongoose from "mongoose";
+import { BaseInformationEntity } from "@/server/models/v1/base-information.entity";
 
 export const getAllStatus = async (_: Request, res: Response) => {
   try {
@@ -57,7 +58,7 @@ export const getOrderById = async (req: Request, res: Response) => {
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { data, point, usedPoint } = req.body
+    const { data, usedPoint } = req.body
     const userId = data.userId
 
     for (const item of data.cartItems) {
@@ -84,40 +85,87 @@ export const createOrder = async (req: Request, res: Response) => {
       }
     }
 
-    let membershipDiscountRate = 0
-    let membershipDiscountAmount = 0
+    let user: any = null;
 
     if (userId) {
-      const user = await UserModel.findById(userId)
-      if (user) {
-        membershipDiscountRate = user.membership.discountRate || 0
+      user = await UserModel.findById(userId);
 
-        if (membershipDiscountRate > 0) {
-          membershipDiscountAmount = Math.floor(data.totalPriceCurrent * (membershipDiscountRate / 100))
-          // cập nhật lại totalPriceDiscount trước khi tính tiếp
-          data.totalPriceDiscount = data.totalPriceCurrent - membershipDiscountAmount
-        }
+      if (!user) {
+        return res.status(404).json({
+          code: 1,
+          message: "Không tìm thấy user",
+        });
       }
     }
 
-    let deductedPoints = 0;
+    let membershipDiscountRate = 0
+    let membershipDiscountAmount = 0
 
-    // ✅ Nếu có user và muốn dùng điểm
-    if (userId && usedPoint && usedPoint > 0) {
-      const user = await UserModel.findById(userId);
-      if (!user) {
-        return res.status(404).json({ code: 1, message: "Không tìm thấy user" });
+    if (user) {
+      membershipDiscountRate = user.membership.discountRate || 0
+
+      if (membershipDiscountRate > 0) {
+        membershipDiscountAmount = Math.floor(data.totalPriceCurrent * (membershipDiscountRate / 100))
+        // cập nhật lại totalPriceDiscount trước khi tính tiếp
+        data.totalPriceDiscount = data.totalPriceCurrent - membershipDiscountAmount
+      }
+    }
+
+    const baseInfo = await BaseInformationEntity.findOne().lean()
+
+    const rewardConfig = baseInfo?.systemConfig?.reward
+    const rateUsePoint = rewardConfig?.rateUsePoint || 0
+    let deductedPoints = 0
+    let earnPoints = 0
+
+    if (usedPoint && usedPoint > 0) {
+
+      if (!rewardConfig?.enableUsePoint) {
+        return res.status(400).json({
+          code: 1,
+          message: "Hệ thống hiện không cho phép sử dụng điểm khi thanh toán",
+        });
       }
 
+      if (!rateUsePoint || rateUsePoint <= 0) {
+        return res.status(400).json({
+          code: 1,
+          message: "Hệ thống chưa cấu hình tỉ lệ sử dụng điểm",
+        });
+      }
+
+      const maxPointCanUse = Math.floor(
+        data.totalPriceCurrent * rateUsePoint
+      );
+
+      if (usedPoint > maxPointCanUse) {
+        return res.status(400).json({
+          code: 1,
+          message: `Số điểm sử dụng vượt quá giới hạn cho phép (${maxPointCanUse})`,
+        });
+      }
+
+    }
+
+    // Nếu có user và muốn dùng điểm
+    if (rewardConfig?.enableUsePoint && user && usedPoint && usedPoint > 0) {
       if (user.membership.balancePoint < usedPoint) {
         return res.status(400).json({ code: 1, message: "Điểm tích lũy không đủ" });
       }
 
-      // ✅ Trừ điểm từ balancePoint trong DB
+      // Trừ điểm từ balancePoint trong DB
       user.membership.balancePoint -= usedPoint;
-      await user.save();
-
       deductedPoints = usedPoint;
+    }
+
+    // Nếu có user và tich điểm
+    if (rewardConfig?.enableEarnPoint && user) {
+      const rate = user.membership.pointRate || 0
+      const orderPayAmount = data.totalPriceCurrent
+
+      if (rate > 0 && orderPayAmount > 0) {
+        earnPoints = Math.round(orderPayAmount * (rate / 100))
+      }
     }
 
     await deductStockOrder(data.cartItems)
@@ -126,13 +174,17 @@ export const createOrder = async (req: Request, res: Response) => {
       ...data,
       userId,
       stockDeducted: true,
-      reward: { points: point || 0, awarded: false, awardedAt: null },
+      reward: { points: earnPoints || 0, awarded: false, awardedAt: null },
       usedPoints: deductedPoints,
       pointsRefunded: false,
       membershipDiscountRate,
       membershipDiscountAmount,
       cancelRequested: false,
     })
+
+    if (deductedPoints > 0) {
+      await user.save();
+    }
 
     //tao log voucher
     if (Array.isArray(data.voucherUsage) && data.voucherUsage.length > 0 && userId) {
@@ -358,42 +410,125 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
   }
 };
 
+// export const checkPoint = async (req: Request, res: Response) => {
+//   try {
+//     const { userId, usedPoint, orderTotal } = req.body;
+
+//     if (!userId || !usedPoint || !orderTotal) {
+//       return res.status(400).json({ success: false, message: "Thiếu dữ liệu" });
+//     }
+
+//     const user = await UserModel.findById(userId).select("membership.balancePoint");
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: "Không tìm thấy user" });
+//     }
+
+//     const balancePoint = user.membership.balancePoint || 0;
+//     const maxPointAllow = Math.floor(orderTotal * 0.1); // toi da 10%
+
+//     if (usedPoint > balancePoint) {
+//       return res.json({
+//         code: 2,
+//         message: "Số điểm bạn có không đủ để sử dụng",
+//       });
+//     }
+
+//     if (usedPoint > maxPointAllow) {
+//       return res.json({
+//         code: 1,
+//         message: `Bạn chỉ được sử dụng tối đa ${maxPointAllow} điểm cho đơn hàng này`,
+//       });
+//     }
+
+//     return res.json({
+//       code: 0,
+//       data: { appliedPoint: usedPoint },
+//     });
+//   } catch (error) {
+//     return res.status(500).json({ success: false, message: "Lỗi server" });
+//   }
+// };
+
 export const checkPoint = async (req: Request, res: Response) => {
   try {
     const { userId, usedPoint, orderTotal } = req.body;
 
-    if (!userId || !usedPoint || !orderTotal) {
-      return res.status(400).json({ success: false, message: "Thiếu dữ liệu" });
+    if (!userId || usedPoint === undefined || orderTotal === undefined) {
+      return res.status(400).json({
+        code: 1,
+        message: "Thiếu dữ liệu",
+      });
     }
 
-    const user = await UserModel.findById(userId).select("membership.balancePoint");
+    const baseInfo = await BaseInformationEntity.findOne().lean();
+    const rewardConfig = baseInfo?.systemConfig?.reward;
+
+    if (!rewardConfig?.enableUsePoint) {
+      return res.json({
+        code: 2,
+        message: "Hệ thống hiện không cho phép sử dụng điểm",
+      });
+    }
+
+    const rateUsePoint = rewardConfig.rateUsePoint || 0;
+
+    if (rateUsePoint <= 0) {
+      return res.json({
+        code: 3,
+        message: "Hệ thống chưa cấu hình tỉ lệ sử dụng điểm",
+      });
+    }
+
+    const user = await UserModel.findById(userId).select(
+      "membership.balancePoint"
+    );
+
     if (!user) {
-      return res.status(404).json({ success: false, message: "Không tìm thấy user" });
+      return res.status(404).json({
+        code: 4,
+        message: "Không tìm thấy user",
+      });
     }
 
     const balancePoint = user.membership.balancePoint || 0;
-    const maxPointAllow = Math.floor(orderTotal * 0.1); // toi da 10%
+
+    const maxPointAllow = Math.floor(orderTotal * rateUsePoint);
 
     if (usedPoint > balancePoint) {
       return res.json({
-        code: 2,
+        code: 5,
         message: "Số điểm bạn có không đủ để sử dụng",
+        data: {
+          balancePoint,
+        },
       });
     }
 
     if (usedPoint > maxPointAllow) {
       return res.json({
-        code: 1,
+        code: 6,
         message: `Bạn chỉ được sử dụng tối đa ${maxPointAllow} điểm cho đơn hàng này`,
+        data: {
+          maxPointAllow,
+        },
       });
     }
 
     return res.json({
       code: 0,
-      data: { appliedPoint: usedPoint },
+      data: {
+        appliedPoint: usedPoint,
+        maxPointAllow,
+        balancePoint,
+        rateUsePoint,
+      },
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Lỗi server" });
+    console.error("checkPoint error:", error);
+    return res.status(500).json({
+      code: 500,
+      message: "Lỗi server",
+    });
   }
 };
 

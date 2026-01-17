@@ -14,6 +14,15 @@ export function toBaseInformationDTO(entity: BaseInformation): BaseInformationDT
     provinceCode: entity.provinceCode,
     districtCode: entity.districtCode,
     wardCode: entity.wardCode,
+    systemConfig: {
+      reward: {
+        enableEarnPoint:
+          entity.systemConfig?.reward?.enableEarnPoint ?? true,
+        enableUsePoint:
+          entity.systemConfig?.reward?.enableUsePoint ?? true,
+        rateUsePoint: entity.systemConfig?.reward?.rateUsePoint ?? 0, 
+      }
+    },
     createdAt: entity.createdAt?.toISOString(),
     updatedAt: entity.updatedAt?.toISOString(),
   };

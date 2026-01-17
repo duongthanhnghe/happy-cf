@@ -56,9 +56,6 @@ export const createOrderDataSchema = z.object({
 export const createOrderSchema = z.object({
   data: createOrderDataSchema,
 
-
-  point: z.number().optional().default(0),
-
   usedPoint: z.number().optional().default(0),
 })
 

@@ -16,7 +16,6 @@ const items = computed(() => {
   const d = props.data
 
   return [
-    // Orders
     {
       key: 'totalRevenue',
       title: 'Doanh thu',
@@ -56,7 +55,6 @@ const items = computed(() => {
       icon: 'insights',
       color: 'deep-purple',
     },
-    // Revenue
     {
       key: 'avgOrderValue',
       title: 'Giá trị TB / đơn',
@@ -73,8 +71,6 @@ const items = computed(() => {
       icon: d.revenueGrowth >= 0 ? 'trending_up' : 'trending_down',
       color: d.revenueGrowth >= 0 ? 'success' : 'error',
     },
-
-    // Customers
     {
       key: 'totalCustomers',
       title: 'Khách đăng ký mới',
@@ -105,14 +101,13 @@ const items = computed(() => {
       color: 'teal',
     },
     {
-  key: 'conversionRate',
-  title: 'Tỷ lệ chuyển đổi',
-  value: `${d.conversionRate}%`,
-  sub: 'Đăng ký → mua hàng',
-  icon: 'published_with_changes',
-  color: d.conversionRate >= 30 ? 'success' : 'warning',
-},
-      
+      key: 'conversionRate',
+      title: 'Tỷ lệ chuyển đổi',
+      value: `${d.conversionRate}%`,
+      sub: 'Đăng ký → mua hàng',
+      icon: 'published_with_changes',
+      color: d.conversionRate >= 30 ? 'success' : 'warning',
+    },
   ]
 })
 

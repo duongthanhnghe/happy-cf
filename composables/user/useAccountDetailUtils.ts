@@ -135,6 +135,13 @@ export const useAccountDetailUtils = (state: {
     isTogglePopupAccountMenuInfo.value = value;
   }
 
+  const calcEarnPoint = (orderTotal: number) => {
+    const rate = detailData.value?.membership.pointRate || 0
+    if (!orderTotal || rate <= 0) return 0
+
+    return Math.round(orderTotal * (rate / 100))
+  }
+
   return {
     handleGetDetailAccount,
     handleTogglePopupBarcode,
@@ -145,6 +152,7 @@ export const useAccountDetailUtils = (state: {
     refreshToken,
     handleTogglePopupAccountMenuInfo,
     fetchPendingRewardPoints,
+    calcEarnPoint,
     getPendingReward,
   };
 };

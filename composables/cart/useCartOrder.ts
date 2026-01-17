@@ -22,6 +22,7 @@ export const useCartOrder = (
   orderPriceDiscount: Ref<number>,
   shippingFee: Ref<number>,
   usedPointOrder: any,
+  Config_EnableUsePoint: Ref<boolean>,
   totalDiscountRateMembership: Ref<number>,
   voucherUsage: Ref<ApplyVoucherResponse[]>,
   discountVoucherFreeship: Ref<number>,
@@ -56,8 +57,7 @@ export const useCartOrder = (
       };
     });
 
-    const point = unref(userId) ? Math.round(totalPriceDiscount.value * 0.05) : 0;
-    const newUsedPoint = usedPointOrder.checkBalancePoint ? usedPointOrder.usedPoint : 0;
+    const newUsedPoint = usedPointOrder.checkBalancePoint && Config_EnableUsePoint.value ? usedPointOrder.usedPoint : 0;
 
     const newVoucherUsage = voucherUsage.value.map(v => {
       const updated = { ...v };
@@ -94,17 +94,15 @@ export const useCartOrder = (
 
     if (!validate({
       data: orderData,
-      point,
       usedPoint: newUsedPoint,
     })) {
-      console.log(formErrors.value)
       showWarning('Vui lòng nhập đầy đủ thông tin đặt hàng hợp lệ')
       Loading(false)
       return
     }
 
     try {
-      const result = await ordersAPI.create(orderData, point, newUsedPoint);
+      const result = await ordersAPI.create(orderData, newUsedPoint);
       
       if (result.code === 0 && result.data.id) {
         if (paymentSelected.value === PAYMENT_STATUS.BANK) {

@@ -42,7 +42,6 @@ watch(
         :items="DASHBOARD_RANGES"
         item-title="label"
         item-value="key"
-        label="Thời gian"
         prepend-inner-icon="mdi-calendar-range"
         density="compact"
         variant="outlined"
@@ -78,13 +77,11 @@ watch(
           <ShippingStatusChart :data="getShippingStatus" />
         </Card>
       </div>
-
       <div class="col-12 col-md-6">
         <Card size="md" class="rd-xl height-full" heading="Membership" bg="white">
           <CustomerMembershipChart :data="getCustomerMembership" />
         </Card>
       </div>
-
     </div>
   </v-container>
 </template>

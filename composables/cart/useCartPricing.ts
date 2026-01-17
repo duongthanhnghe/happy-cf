@@ -12,7 +12,8 @@ export const useCartPricing = (
   discountVoucher: Ref<number>,
   discountVoucherFreeship: Ref<number>,
   usedPointOrder: { usedPoint: number },
-  isCalculating: Ref<boolean>
+  isCalculating: Ref<boolean>,
+  Config_EnableUsePoint: Ref<boolean>,
 ) => {
 
   const calculateTotalPriceCurrent = () => {
@@ -43,7 +44,7 @@ export const useCartPricing = (
     let value = orderPriceDiscount.value + totalDiscountRateMembership.value + discountVoucher.value + discountVoucherFreeship.value;
 
     // su dung diem
-    if (usedPointOrder.usedPoint) {
+    if (usedPointOrder.usedPoint && Config_EnableUsePoint.value) {
       value = value + usedPointOrder.usedPoint;
     }
 

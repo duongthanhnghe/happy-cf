@@ -12,6 +12,7 @@ import { useLocationWatchers } from '@/composables/shared/location/useLocationWa
 import { useCartLocationWatchers } from '@/composables/cart/useCartLocationWatchers';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useBaseInformationStore } from '../../stores/client/base-information/useBaseInformationStore';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.CART.middleware,
@@ -27,6 +28,7 @@ const storePaymentStatus = usePaymentStatusStore();
 const storeLocation = useLocationStore();
 const eventBus = useEventBus();
 const storeDisplay = useDisplayStore()
+const storeSetting = useBaseInformationStore();
 
 const submitOrder = async (event: SubmitEventPromise) => {
   const results = await event;
@@ -53,6 +55,7 @@ watch(
 onMounted(async () => {
   if (!store.cartListItem) return
 
+  await storeSetting.fetchSystemConfig()
   if (store.cartListItem.length > 0 && store.getCartListItem?.length === 0) await store.fetchProductCart()
   await storeLocation.fetchProvincesStore()
   if(storeAccount.getUserId) store.handleGetDefaultAddress()
@@ -105,7 +108,7 @@ onBeforeUnmount(() => {
       
         <!-- POINT AND VOUCHER -->
         <template v-if="!storeDisplay.isMobileTable">
-          <CartPointPC v-if="storeAccount.getUserId" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership.balancePoint"/>
+          <CartPointPC v-if="storeAccount.getUserId && store.Config_EnableUsePoint" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership.balancePoint"/>
           <CartVoucherPC />
         </template>
 
@@ -123,7 +126,7 @@ onBeforeUnmount(() => {
 
   <template v-if="storeDisplay.isMobileTable">
     <!-- POPUP USE POINT -->
-    <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue?.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
+    <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue?.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints && store.Config_EnableUsePoint" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
     <!-- POPUP CHOOSE VOUCHER -->
     <CartVoucherMobile />
   </template>

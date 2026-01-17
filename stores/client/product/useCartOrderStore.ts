@@ -39,6 +39,13 @@ export const useCartStore = defineStore("Cart", () => {
   const route = useRoute();
 
   const state = useCartState();
+
+  const rewardConfig = computed(() => storeSetting.getConfigSystem?.reward)
+  const Config_EnableEarnPoint = computed(() => !!rewardConfig.value?.enableEarnPoint || false);
+  const Config_EnableUsePoint = computed(() => !!rewardConfig.value?.enableUsePoint || false);
+  const Config_RateUsePoint = computed<number>(() => rewardConfig.value?.rateUsePoint ?? 0);
+  const getMaxPointCanUse = computed(() =>  Math.floor(state.totalPriceCurrent.value * Config_RateUsePoint.value ));
+  const getTotalPoint = computed(() => storeAccount.calcEarnPoint(state.totalPriceCurrent.value));
   
   const fetchProductCart = async () => {
     const productIds = state.cartListItem.value.map((item: any) => item.product);
@@ -237,7 +244,8 @@ export const useCartStore = defineStore("Cart", () => {
     state.discountVoucher,
     state.discountVoucherFreeship,
     state.usedPointOrder,
-    state.isCalculating
+    state.isCalculating,
+    Config_EnableUsePoint
   );
 
   const handleCalcTotalPriceCurrent = () => {
@@ -274,6 +282,8 @@ export const useCartStore = defineStore("Cart", () => {
     state.idAddressChoose,
     state.selectedOptionsData,
     state.usedPointOrder,
+    Config_EnableUsePoint,
+    getMaxPointCanUse,
     state.totalPriceCurrent,
     state.isTogglePopup,
     fetchProductCart,
@@ -339,6 +349,7 @@ export const useCartStore = defineStore("Cart", () => {
     state.orderPriceDiscount,
     state.shippingFee,
     state.usedPointOrder,
+    Config_EnableUsePoint,
     state.totalDiscountRateMembership,
     state.voucherUsage,
     state.discountVoucherFreeship,
@@ -347,6 +358,12 @@ export const useCartStore = defineStore("Cart", () => {
     router,
     storeLocation
   );
+
+  const ensureSystemConfig = async () => {
+    if (!storeSetting.getConfigSystem) {
+      await storeSetting.fetchSystemConfig()
+    }
+  }
 
   const addProductToCart = (product: any, quantity: number, note: string) => {
     return productOps.addProductToCart(
@@ -359,6 +376,7 @@ export const useCartStore = defineStore("Cart", () => {
   };
 
   const submitOrder = async () => {
+    await ensureSystemConfig()
     await order.submitOrder();
   };
 
@@ -393,9 +411,7 @@ export const useCartStore = defineStore("Cart", () => {
   const getIsTogglePopup = computed(() => state.isTogglePopup.value);
   const getTotalPriceCurrent = computed(() => state.totalPriceCurrent.value);
   const getTotalPriceDiscount = computed(() => state.totalPriceDiscount.value);
-  const getTotalPoint = computed(() => storeAccount.getDetailValue?.membership.pointRate ? 
-    Math.round(state.totalPriceCurrent.value * (storeAccount.getDetailValue.membership.pointRate / 100)) : 0
-  );
+ 
   const getTotalPriceSave = computed(() => state.totalPriceSave.value);
   const getOrderPriceDiscount = computed(() => state.orderPriceDiscount.value);
   const getTotalPriceOrder = computed(() => state.totalPriceDiscount.value);
@@ -406,7 +422,6 @@ export const useCartStore = defineStore("Cart", () => {
   const getIdAddressChoose = computed(() => state.idAddressChoose.value);
   const getNameAddressChoose = computed(() => state.informationOrder.address);
   const getProductDetailDataEdit = computed(() => state.productDetailEdit.value);
-  const getMaxPointCanUse = computed(() =>  Math.floor(state.totalPriceCurrent.value * 0.1 ));
   
   return {
     ...state,
@@ -459,6 +474,8 @@ export const useCartStore = defineStore("Cart", () => {
     ...handlesVoucher,
     
     // Getters
+    Config_EnableUsePoint,
+    Config_EnableEarnPoint,
     getCartCount,
     getCartListItem,
     getIsTogglePopup,

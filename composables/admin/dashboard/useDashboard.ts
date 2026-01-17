@@ -55,8 +55,6 @@ export const useDashboard = () => {
 
   return {
     fetchDashboardAll,
-
-    // getters
     getSummary: computed(() => summary.value),
     getRevenueChart: computed(() => revenueChart.value),
     getOrderStatus: computed(() => orderStatus.value),
