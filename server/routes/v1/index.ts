@@ -18,6 +18,7 @@ import productReviewRouter from './product-review.router'
 import voucherRouter from './voucher.router'
 import fileManageRoutes from './file-manage.router'
 import baseInformationRoutes from './base-information.router'
+import paymentTransactionRoutes from './payment-transaction.routes'
 
 const router = Router()
 
@@ -32,6 +33,7 @@ router.use('/banners', bannerRoutes)
 router.use('/categoriesNews', categoriesNewsRoutes)
 router.use('/newsPosts', postsNewsRoutes)
 router.use('/orders', orderManageRoutes)
+router.use('/payment-transactions', paymentTransactionRoutes)
 router.use('/categories', categoriesProductRoutes)
 router.use('/products', productRoutes)
 router.use('/variant-groups', variantGroupRoutes)

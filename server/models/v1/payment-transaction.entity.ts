@@ -7,9 +7,13 @@ import type { PaymentTransactionStatus } from "../../shared/constants/payment-tr
 
 export interface PaymentTransactionDocument extends Document {
   orderId: Types.ObjectId
+  txnRef: string
   amount: number
   method: PaymentMethod
   status: PaymentTransactionStatus
+  vnpTransactionNo?: string;         // VNPay transaction id
+  paidAt?: Date;                     // thời điểm thanh toán
+  rawIpn?: Record<string, any>;      // log IPN
   createdAt: Date
   updatedAt: Date
 }
@@ -17,13 +21,30 @@ export interface PaymentTransactionDocument extends Document {
 const PaymentTransactionSchema = new Schema<PaymentTransactionDocument>(
   {
     orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true },
+    txnRef: {
+      type: String,
+      required: true,
+      unique: true,                
+      index: true,
+    },
     amount: { type: Number, required: true },
-    method: { type: String, enum: ["cash", "bank_transfer"], required: true },
+    method: { type: String, enum: ["cash", "bank_transfer","momo","vnpay"], required: true },
     status: {
       type: String,
       enum: Object.values(PAYMENT_TRANSACTION_STATUS),
       default: PAYMENT_TRANSACTION_STATUS.PENDING,
-    }
+    },
+    vnpTransactionNo: {
+      type: String,
+    },
+
+    paidAt: {
+      type: Date,
+    },
+
+    rawIpn: {
+      type: Schema.Types.Mixed,
+    },
   },
   { timestamps: true }
 )

@@ -8,14 +8,28 @@ import {
 export function toPaymentTransactionDTO(
   entity: PaymentTransactionDocument
 ): PaymentTransactionDTO {
+  
+  const order: any = entity.orderId
+
   return {
     id: entity._id?.toString() || "",
-    orderId: entity.orderId?.toString() || "",
+    orderId:
+      typeof order === "string"
+        ? order
+        : order?._id?.toString() || "",
+
+    orderCode:
+      typeof order === "object" && order?.code
+        ? order.code
+        : undefined,
+    txnRef: entity.txnRef,
     amount: entity.amount,
     method: entity.method,
     status: entity.status,
     statusText: PaymentTransactionStatusText[entity.status],
     statusColor: PaymentTransactionStatusColor[entity.status],
+    vnpTransactionNo: entity.vnpTransactionNo,
+    paidAt: entity.paidAt ? entity.paidAt.toISOString() : undefined,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
   }

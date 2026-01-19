@@ -92,6 +92,11 @@ onBeforeUnmount(() => {
     <template #item.index="{ index }">
       {{ (store.currentTableOptions.page - 1) * store.currentTableOptions.itemsPerPage + index + 1 }}
     </template>
+    
+    <template #item.code="{ item }">
+      Code: {{ item.code }}
+      <Text :text="'ID: '+item.id" color="gray5"/>
+    </template>
 
     <template #item.totalPrice="{ item }">
       {{ formatCurrency(item.totalPrice) }}

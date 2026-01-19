@@ -69,8 +69,6 @@ export const getAllOrder = async (req: Request, res: Response) => {
         .populate("userId")
         .populate({
           path: "transaction",
-          model: "PaymentTransaction",
-          match: transactionMatch
         })
         .populate({
           path: "cartItems.idProduct",
@@ -113,8 +111,6 @@ export const getAllOrder = async (req: Request, res: Response) => {
         { path: "userId", model: "User" },
         {
           path: "transaction",
-          model: "PaymentTransaction",
-          match: transactionMatch
         },
         {
           path: "shipping",
@@ -171,7 +167,8 @@ export const getOrderById = async (req: Request, res: Response) => {
       .populate("paymentId")
       .populate("status")
       .populate("userId")
-      .populate({ path: "transaction", model: "PaymentTransaction" })
+      // .populate({ path: "transaction", model: "PaymentTransaction" })
+      .populate("transaction")
       .populate({
         path: "shipping",
         model: "OrderShipping",

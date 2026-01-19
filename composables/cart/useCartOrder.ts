@@ -115,6 +115,13 @@ export const useCartOrder = (
               amount: result.data.totalPrice
             }
           });
+        } else if (paymentSelected.value === PAYMENT_STATUS.VNPAY) {
+          const res = await ordersAPI.createVnpayPayment(result.data.id)
+          if (res.code === 0 && res.data.paymentUrl) {
+            window.location.href = res.data.paymentUrl
+          } else {
+            showWarning('Không thể tạo thanh toán VNPay!')
+          }
         } else {
           const handleSubmitOk = (id: string) => {
             router.push({ path: `${ROUTES.PUBLIC.ORDER_TRACKING.path}/${id}` });

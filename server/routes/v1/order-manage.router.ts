@@ -12,12 +12,22 @@ import {
   getOrderCountByStatusByUser,
   getAllStatus,
   getAllPayment,
+  createVnpayPayment,
+  vnpayIPN,
+  vnpayReturn
 } from '../../controllers/v1/order.controller'
 import { authenticate } from '../../middlewares/authenticate'
 import { validate } from '../../middlewares/validate/validate'
 import { createOrderSchema, orderIdParamSchema } from '../../../shared/validate/schemas/order.schema'
 
 const router = Router()
+
+
+router.post("/payment/vnpay/create", createVnpayPayment);
+router.get("/payment/vnpay-return", vnpayReturn); 
+// router.post("/payment/vnpay-return", vnpayReturn); 
+router.get("/payment/vnpay-ipn", vnpayIPN);
+
 
 router.get('/status', getAllStatus)
 router.get('/payments', getAllPayment)

@@ -44,6 +44,7 @@ export const API_ENDPOINTS = {
     CANCEL_REQUEST: "/orders/users/cancel-request",
     PENDING_REWARD: (userId: string) => `/orders/rewards/pending/${userId}`,
     COUNT_BY_STATUS: '/orders/count-by-status',
+    PAYMENT_VNPAY: '/orders/payment/vnpay/create',
   },
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',
@@ -113,5 +114,8 @@ export const API_ENDPOINTS = {
   },
   BASE_INFORMATION: {
     GET: '/base-information',
+  },
+  PAYMENT_TRANSACTIONS: {
+    GET_BY_ID: (id: string) => `/payment-transactions/${id}`,
   },
 }

@@ -15,6 +15,8 @@ import { checkProductStockService } from "../../utils/productStock"
 import { deductStockOrder } from "../../utils/deductStockOrder";
 import mongoose from "mongoose";
 import { BaseInformationEntity } from "@/server/models/v1/base-information.entity";
+import qs from "qs";
+import { createSecureHash, sortObject } from "../../utils/vnpay";
 
 export const getAllStatus = async (_: Request, res: Response) => {
   try {
@@ -40,7 +42,6 @@ export const getOrderById = async (req: Request, res: Response) => {
       .populate("paymentId")
       .populate("status")
       .populate("userId")
-      .populate({ path: "transaction", model: "PaymentTransaction" })
       .populate({
         path: "cartItems.idProduct",
         model: "Product",
@@ -410,45 +411,6 @@ export const getRewardHistoryByUserId = async (req: Request, res: Response) => {
   }
 };
 
-// export const checkPoint = async (req: Request, res: Response) => {
-//   try {
-//     const { userId, usedPoint, orderTotal } = req.body;
-
-//     if (!userId || !usedPoint || !orderTotal) {
-//       return res.status(400).json({ success: false, message: "Thiếu dữ liệu" });
-//     }
-
-//     const user = await UserModel.findById(userId).select("membership.balancePoint");
-//     if (!user) {
-//       return res.status(404).json({ success: false, message: "Không tìm thấy user" });
-//     }
-
-//     const balancePoint = user.membership.balancePoint || 0;
-//     const maxPointAllow = Math.floor(orderTotal * 0.1); // toi da 10%
-
-//     if (usedPoint > balancePoint) {
-//       return res.json({
-//         code: 2,
-//         message: "Số điểm bạn có không đủ để sử dụng",
-//       });
-//     }
-
-//     if (usedPoint > maxPointAllow) {
-//       return res.json({
-//         code: 1,
-//         message: `Bạn chỉ được sử dụng tối đa ${maxPointAllow} điểm cho đơn hàng này`,
-//       });
-//     }
-
-//     return res.json({
-//       code: 0,
-//       data: { appliedPoint: usedPoint },
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ success: false, message: "Lỗi server" });
-//   }
-// };
-
 export const checkPoint = async (req: Request, res: Response) => {
   try {
     const { userId, usedPoint, orderTotal } = req.body;
@@ -581,10 +543,11 @@ export const sepayCallback = async (req: Request, res: Response) => {
     // Tạo transaction
     const transaction = await PaymentTransactionEntity.create({
       orderId: order._id,
+      txnRef: order._id,
       transactionId: referenceNumber,
       amount: transferAmount,
-      method: PAYMENT_METHOD_STATUS.BANK,
-      status: PAYMENT_TRANSACTION_STATUS.PAID,
+      method: PAYMENT_METHOD_STATUS.VNPAY,
+      status: PAYMENT_TRANSACTION_STATUS.PENDING,
     });
 
     order.transaction = transaction._id as Types.ObjectId;
@@ -880,3 +843,192 @@ export const getOrderCountByStatusByUser = async (req: any, res: Response) => {
     })
   }
 }
+
+export const createVnpayPayment = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.body;
+    const order = await OrderEntity.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order không tồn tại" });
+    }
+
+    const txnRef2 = order._id.toString();
+
+    const existing = await PaymentTransactionEntity.findOne({ txnRef2 });
+    if (!existing) {
+      await PaymentTransactionEntity.create({
+        orderId: order._id,
+        txnRef: txnRef2,
+        amount: order.totalPrice,
+        method: PAYMENT_METHOD_STATUS.VNPAY,
+        status: PAYMENT_TRANSACTION_STATUS.PENDING,
+      });
+    }
+
+    const ipAddr =
+    (req.headers['cf-connecting-ip'] as string) ||
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0] ||
+    '0.0.0.0';
+
+    const tmnCode = process.env.VNP_TMNCODE!;
+    const secretKey = process.env.VNP_HASH_SECRET!;
+    const vnpUrl = process.env.VNP_URL!;
+    const returnUrl = process.env.VNP_RETURN_URL!;
+
+    const pad = (n: number) => n.toString().padStart(2, "0");
+
+    const now = new Date();
+    const createDate =
+      now.getFullYear().toString() +
+      pad(now.getMonth() + 1) +
+      pad(now.getDate()) +
+      pad(now.getHours()) +
+      pad(now.getMinutes()) +
+      pad(now.getSeconds());
+      
+    const txnRef = order._id.toString();
+
+    let vnp_Params: any = {};
+    vnp_Params['vnp_Version'] = '2.1.0';
+    vnp_Params['vnp_Command'] = 'pay';
+    vnp_Params['vnp_TmnCode'] = tmnCode;
+    vnp_Params['vnp_Locale'] = 'vn';
+    vnp_Params['vnp_CurrCode'] = 'VND';
+    vnp_Params['vnp_TxnRef'] = txnRef;
+    vnp_Params['vnp_OrderInfo'] = `Thanh toan don hang ${txnRef}`;
+    vnp_Params['vnp_OrderType'] = 'other';
+    vnp_Params['vnp_Amount'] = Math.floor(order.totalPrice * 100);
+    vnp_Params['vnp_ReturnUrl'] = returnUrl;
+    vnp_Params['vnp_IpAddr'] = ipAddr;
+    vnp_Params['vnp_CreateDate'] = createDate;
+
+    // console.log("VNP Params:", vnp_Params);
+
+    vnp_Params = sortObject(vnp_Params);
+    
+    const signed = createSecureHash(vnp_Params, secretKey);
+    vnp_Params['vnp_SecureHash'] = signed;
+
+    const paymentUrl = vnpUrl + '?' + qs.stringify(vnp_Params, { encode: false });
+
+    return res.json({
+      code: 0,
+      data: { paymentUrl },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ code: 2, message: "Lỗi server" });
+  }
+};
+
+export const vnpayReturn = async (req: Request, res: Response) => {
+  const siteUrl = process.env.DOMAIN
+
+  try {
+    let vnp_Params = req.query;
+    const secureHash = vnp_Params['vnp_SecureHash'];
+    
+    delete vnp_Params['vnp_SecureHash'];
+    delete vnp_Params['vnp_SecureHashType'];
+
+    vnp_Params = sortObject(vnp_Params);
+
+    const secretKey = process.env.VNP_HASH_SECRET!;
+    const signed = createSecureHash(vnp_Params, secretKey);
+
+    // console.log("Return - Received Hash:", secureHash);
+
+    if (secureHash === signed) {
+      const orderId = vnp_Params['vnp_TxnRef'];
+      const rspCode = vnp_Params['vnp_ResponseCode'];
+
+      const transaction = await PaymentTransactionEntity.findOne({
+        orderId
+      }).select("_id");
+
+      if (!transaction) {
+        return res.redirect(`${siteUrl}/payment/result?status=failed`);
+      }
+
+      if (rspCode === '00') {
+        return res.redirect(`${siteUrl}/payment/transactionId=${transaction._id}&status=success`);
+      } else {
+        return res.redirect(`${siteUrl}/payment/result?status=failed`);
+      }
+    } else {
+      return res.redirect(`${siteUrl}/payment/result?status=failed&reason=invalid_signature`);
+    }
+  } catch (err) {
+    console.error(err);
+    return res.redirect(`${siteUrl}/payment/result?status=failed&reason=system_error`);
+  }
+};
+
+export const vnpayIPN = async (req: Request, res: Response) => {
+  try {
+    let vnpParams: any = { ...req.query };
+    const secureHash = vnpParams["vnp_SecureHash"];
+
+    delete vnpParams["vnp_SecureHash"];
+    delete vnpParams["vnp_SecureHashType"];
+
+    vnpParams = sortObject(vnpParams);
+
+    const checkHash = createSecureHash(
+      vnpParams,
+      process.env.VNP_HASH_SECRET!
+    );
+
+    if (secureHash !== checkHash) {
+      return res.json({ RspCode: "97", Message: "Invalid signature" });
+    }
+
+    const txnRef = vnpParams["vnp_TxnRef"];
+    const rspCode = vnpParams["vnp_ResponseCode"];
+    const vnpTransactionNo = vnpParams["vnp_TransactionNo"];
+    const vnpAmount = Number(vnpParams["vnp_Amount"]) / 100;
+
+    const transaction = await PaymentTransactionEntity.findOne({ txnRef });
+
+    if (!transaction) {
+      return res.json({ RspCode: "01", Message: "Transaction not found" });
+    }
+
+    if (transaction.status === PAYMENT_TRANSACTION_STATUS.PAID) {
+      return res.json({ RspCode: "00", Message: "Already processed" });
+    }
+
+    if (transaction.amount !== vnpAmount) {
+      transaction.status = PAYMENT_TRANSACTION_STATUS.FAILED;
+      transaction.rawIpn = vnpParams;
+      await transaction.save();
+
+      return res.json({ RspCode: "04", Message: "Invalid amount" });
+    }
+
+    if (rspCode === "00") {
+      transaction.status = PAYMENT_TRANSACTION_STATUS.PAID;
+      transaction.vnpTransactionNo = vnpTransactionNo;
+      transaction.paidAt = new Date();
+      transaction.rawIpn = vnpParams;
+      await transaction.save();
+
+      // UPDATE ORDER STATUS
+      // await OrderEntity.findByIdAndUpdate(transaction.orderId, {
+      //   status: ORDER_STATUS.CONFIRMED,
+      // });
+
+    } else {
+      transaction.status = PAYMENT_TRANSACTION_STATUS.FAILED;
+      transaction.rawIpn = vnpParams;
+      await transaction.save();
+    }
+
+    return res.json({ RspCode: "00", Message: "Success" });
+
+  } catch (err) {
+    console.error("VNPay IPN error:", err);
+    return res.json({ RspCode: "99", Message: "Unknown error" });
+  }
+};

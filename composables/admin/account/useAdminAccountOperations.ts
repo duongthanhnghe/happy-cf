@@ -143,7 +143,7 @@ export const useAdminAccountOperations = (
     return false
   }
 
-    async function refreshToken() {
+  async function refreshToken() {
     const res = await accountAPI.refreshToken();
     if (res.code === 0 && res.data?.accessToken ) {
       token.value = res.data?.accessToken

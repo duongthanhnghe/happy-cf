@@ -1,4 +1,6 @@
 export const PAYMENT_STATUS = {
   BANK: "68a93333c9f7de47a9f3a7ea",
-  CASH: "68a93333c9f7de47a9f3a7e9"
+  CASH: "68a93333c9f7de47a9f3a7e9",
+  VNPAY: "696c83417a113ef2ceb238f8",
+  MOMO: "696c83417a113ef2ceb238f9",
 }

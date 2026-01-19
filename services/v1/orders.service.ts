@@ -171,7 +171,22 @@ export const ordersAPI = {
       console.error("Error fetching user order count by status:", err)
       return apiError<OrderStatusCountDTO[]>(err)
     }
-  }
+  },
+
+  createVnpayPayment: async (
+    orderId: string
+  ): Promise<ApiResponse<any>> => {
+    try {
+      return await apiClient().post<ApiResponse<any>>(
+        API_ENDPOINTS.ORDERS.PAYMENT_VNPAY,
+        {orderId}
+      );
+    } catch (err: any) {
+      console.error("Error create vnpay payment:", err);
+      return apiError<any>(err);
+    }
+  },
+
 };
 
 // import { API_ENDPOINTS } from '@/services/const/api.const'

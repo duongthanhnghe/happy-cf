@@ -25,8 +25,8 @@ const allowedOrigins = [
 ].filter(Boolean) as string[]
 
 app.use(cors({
-  origin: allowedOrigins,
-  // origin: true,
+  // origin: allowedOrigins,
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
