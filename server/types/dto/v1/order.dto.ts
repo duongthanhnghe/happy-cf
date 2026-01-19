@@ -80,7 +80,8 @@ export interface PaymentDTO {
   name: string;
   description: string;
   image: string;
-  method: PaymentMethod,
+  method: PaymentMethod;
+  isActive: boolean
 }
 
 export interface OrderStatusDTO {

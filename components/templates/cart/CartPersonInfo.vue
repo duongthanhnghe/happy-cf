@@ -3,14 +3,14 @@ import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAddressesManageStore } from '@/stores/client/users/useAddressesStore';
 import { nullRules, phoneRules } from '@/utils/validation'
 import { useLocationStore } from '@/stores/shared/useLocationStore';
-import { usePaymentStatusStore } from '@/stores/client/order/usePaymentStatusStore'
+import { usePaymentMethodStore } from '@/stores/client/order/usePaymentMethodStore'
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 
 const { t } = useITranslations()
 const store = useCartStore();
 const storeAddress = useAddressesManageStore();
 const storeLocation = useLocationStore();
-const storePaymentStatus = usePaymentStatusStore();
+const storePaymentStatus = usePaymentMethodStore();
 
 const props = defineProps<{
   userId: string | null;

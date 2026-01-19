@@ -67,6 +67,7 @@ export function toPaymentDTO(entity: Payment): PaymentDTO {
     description: entity.description || "",
     image: entity.image || "",
     method: entity.method || null,
+    isActive: entity.isActive,
   };
 }
 

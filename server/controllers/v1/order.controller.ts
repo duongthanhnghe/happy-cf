@@ -29,7 +29,7 @@ export const getAllStatus = async (_: Request, res: Response) => {
 
 export const getAllPayment = async (_: Request, res: Response) => {
   try {
-    const payments = await PaymentEntity.find()
+    const payments = await PaymentEntity.find({ isActive: true })
     return res.json({ code: 0, data: toPaymentListDTO(payments) })
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message })

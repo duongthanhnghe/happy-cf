@@ -14,8 +14,8 @@ import { SHIPPING_STATUS } from '@/shared/constants/shipping-status';
 import { useAdminOrderCountByStatus } from '@/composables/admin/order/useAdminOrderCountByStatus';
 
 definePageMeta({
-  layout: ROUTES.ADMIN.ORDER.layout,
-  middleware: ROUTES.ADMIN.ORDER.middleware,
+  layout: ROUTES.ADMIN.ORDER.children?.LIST.layout,
+  middleware: ROUTES.ADMIN.ORDER.children?.LIST.middleware,
 })
 
 const store = useOrderManageStore()

@@ -14,6 +14,7 @@ import {
   getOrderCountByStatus,
   exportOrders,
   printOrderBill,
+  toggleActivePayment,
 } from '../../../controllers/v1/admin/order.controller'
 import { authenticateAdmin } from '../../../middlewares/authenticate-admin'
 import { validate } from '../../../middlewares/validate/validate'
@@ -25,7 +26,9 @@ router.get('/', authenticateAdmin, getAllOrder)
 router.get("/count-by-status", authenticateAdmin, getOrderCountByStatus)
 router.get("/export", authenticateAdmin, exportOrders)
 router.get('/status', getAllStatus)
-router.get('/payments', getAllPayment)
+router.get('/payment-method', getAllPayment)
+router.patch("/payment-method/:id/toggle-active", toggleActivePayment)
+
 router.put('/status', authenticateAdmin, validate(updateOrderStatusSchema), updateOrderStatus)
 
 // shipping

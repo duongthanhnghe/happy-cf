@@ -47,6 +47,7 @@ export interface Payment {
   name: string;
   description?: string;
   image?: string;
+  isActive: boolean;
   method: PaymentMethod;
 }
 
@@ -168,6 +169,7 @@ const PaymentSchema = new Schema<Payment>(
     description: { type: String },
     image: { type: String },
     method: { type: String },
+    isActive: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

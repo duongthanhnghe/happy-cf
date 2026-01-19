@@ -82,6 +82,15 @@ export const ordersAPI = {
     }
   },
 
+  toggleActivePayment: async (id: string): Promise<ApiResponse<PaymentDTO>> => {
+    try {
+      return await apiAdmin().patch<ApiResponse<PaymentDTO>>(API_ENDPOINTS_ADMIN.ORDERS.TOGGLE_ACTIVE_PAYMENT(id));
+    } catch (err: any) {
+      console.error(`Error toggling active ${id}:`, err);
+      return apiError<PaymentDTO>(err)
+    }
+  },
+
   updateStatusOrder: async (orderId: string, statusId: string): Promise<ApiResponse<OrderDTO>> => {
     try {
       return await apiAdmin().put<ApiResponse<OrderDTO>>(API_ENDPOINTS_ADMIN.ORDERS.UPDATE_STATUS, { orderId, statusId });

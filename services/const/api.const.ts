@@ -33,7 +33,7 @@ export const API_ENDPOINTS = {
   },
   ORDERS: {
     LIST_STATUS: '/orders/status',
-    LIST_PAYMENTS: '/orders/payments',
+    LIST_PAYMENTS: '/orders/payment-method',
     CREATE: '/orders',
     LIST: '/orders',
     GET_BY_ID: (id: string) => `/orders/${id}`,

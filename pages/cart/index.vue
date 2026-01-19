@@ -5,7 +5,7 @@ import { showWarning } from '@/utils/toast'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
-import { usePaymentStatusStore } from '@/stores/client/order/usePaymentStatusStore'
+import { usePaymentMethodStore } from '@/stores/client/order/usePaymentMethodStore'
 import { useLocationStore } from '@/stores/shared/useLocationStore';
 import { useEventBus } from "@/composables/voucher/useEventBus";
 import { useLocationWatchers } from '@/composables/shared/location/useLocationWatchers';
@@ -24,7 +24,7 @@ definePageMeta({
 const { t } = useITranslations()
 const store = useCartStore();
 const storeAccount = useAccountStore();
-const storePaymentStatus = usePaymentStatusStore();
+const storePaymentStatus = usePaymentMethodStore();
 const storeLocation = useLocationStore();
 const eventBus = useEventBus();
 const storeDisplay = useDisplayStore()
@@ -61,7 +61,7 @@ onMounted(async () => {
   if(storeAccount.getUserId) store.handleGetDefaultAddress()
 
   if (storePaymentStatus.getListData.length === 0) {
-    storePaymentStatus.fetchPaymentStatusStore()
+    storePaymentStatus.fetchPaymentMethodStore()
   }
 })
 

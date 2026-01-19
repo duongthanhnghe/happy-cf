@@ -3,7 +3,7 @@ import { UserModel } from "../../../models/v1/user.entity"
 import { OrderEntity, OrderShippingEntity, OrderStatusEntity, PaymentEntity, ShippingProviderEntity } from "../../../models/v1/order.entity"
 import { MembershipLevelModel } from "../../../models/v1/membership-level.entity"
 import type { MembershipLevel } from "@/server/types/dto/v1/user.dto"
-import { toOrderDTO, toOrderExport, toOrderListDTO, toOrderShippingDTO, toOrderStatusListDTO, toPaymentListDTO, toShippingProviderDTO, toShippingProviderListDTO } from "../../../mappers/v1/order.mapper"
+import { toOrderDTO, toOrderExport, toOrderListDTO, toOrderShippingDTO, toOrderStatusListDTO, toPaymentDTO, toPaymentListDTO, toShippingProviderDTO, toShippingProviderListDTO } from "../../../mappers/v1/order.mapper"
 import { ORDER_STATUS } from "../../../shared/constants/order-status";
 import { ProductReviewEntity } from "../../../models/v1/product-review.entity";
 import { VoucherEntity } from "../../../models/v1/voucher.entity";
@@ -359,6 +359,34 @@ export const getAllPayment = async (_: Request, res: Response) => {
     return res.json({ code: 0, data: toPaymentListDTO(payments) })
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const toggleActivePayment = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+
+    const payment = await PaymentEntity.findById(id)
+    if (!payment) {
+      return res.status(404).json({
+        code: 1,
+        message: "Phương thức thanh toán không tồn tại"
+      })
+    }
+
+    payment.isActive = !payment.isActive
+    await payment.save()
+
+    return res.json({
+      code: 0,
+      message: "Cập nhật trạng thái phương thức thanh toán thành công",
+      data: toPaymentDTO(payment)
+    })
+  } catch (err: any) {
+    return res.status(500).json({
+      code: 1,
+      message: err.message
+    })
   }
 }
 

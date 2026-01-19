@@ -22,15 +22,11 @@ import { createOrderSchema, orderIdParamSchema } from '../../../shared/validate/
 
 const router = Router()
 
-
 router.post("/payment/vnpay/create", createVnpayPayment);
-router.get("/payment/vnpay-return", vnpayReturn); 
-// router.post("/payment/vnpay-return", vnpayReturn); 
+router.get("/payment/vnpay-return", vnpayReturn);
 router.get("/payment/vnpay-ipn", vnpayIPN);
-
-
 router.get('/status', getAllStatus)
-router.get('/payments', getAllPayment)
+router.get('/payment-method', getAllPayment)
 router.post("/check-point", authenticate, checkPoint);
 router.post("/sepay-callback", sepayCallback);
 router.post("/shipping/fee", getShippingFee);
