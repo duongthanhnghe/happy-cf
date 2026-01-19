@@ -4,7 +4,6 @@ import type { PaymentMethod } from "../../types/dto/v1/payment-transaction.dto"
 import { PAYMENT_TRANSACTION_STATUS } from "../../shared/constants/payment-transaction-status";
 import type { PaymentTransactionStatus } from "../../shared/constants/payment-transaction-status";
 
-
 export interface PaymentTransactionDocument extends Document {
   orderId: Types.ObjectId
   txnRef: string

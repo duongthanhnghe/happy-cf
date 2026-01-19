@@ -154,11 +154,8 @@ export const API_ENDPOINTS_ADMIN = {
     REWARD_HISTORY: '/users/reward-history',
   },
   PAYMENT_TRANSACTIONS: {
-    CREATE: '/payment-transactions',
     LIST: '/payment-transactions',
     GET_BY_ID: (id: string) => `/payment-transactions/${id}`,
-    DELETE: (id: string) => `/payment-transactions/${id}`,
-    UPDATE_STATUS: '/payment-transactions/status',
   },
   PRODUCT_REVIEWS: {
     LIST: '/product-reviews',

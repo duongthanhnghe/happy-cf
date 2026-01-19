@@ -19,15 +19,4 @@ export interface PaymentTransactionDTO {
   updatedAt: string
 }
 
-export interface CreatePaymentTransactionBody {
-  orderId: string
-  amount: number
-  method: PaymentMethod
-}
-
-export interface UpdatePaymentTransactionStatusBody {
-  transactionId: string
-  status: PaymentTransactionStatus
-}
-
 export type PaymentTransactionPaginationDTO = PaginationDTO<PaymentTransactionDTO>
