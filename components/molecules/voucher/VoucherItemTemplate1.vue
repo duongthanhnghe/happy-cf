@@ -23,6 +23,7 @@ const isSelected = computed(() => props.selectedCode === props.item.code);
 const handleClick = () => {
   if (!storeAccount.getDetailValue?.id) return showWarning('Vui lòng đăng nhập để sử dụng voucher!');
   if (props.item.isDisabled) return;
+  if(props.selectedCode && props.selectedCode === props.item.code) return;
 
   emit('select', props.item);
 };
@@ -54,7 +55,7 @@ const handleClick = () => {
       <div v-if="action" class="flex">
         <v-radio
           :model-value="isSelected"
-          :disabled="item.isDisabled"
+          disabled
           color="primary"
           hide-details
           density="compact"
