@@ -118,47 +118,6 @@ export const filterActiveVariantGroupsForProducts = async (products: Product[]):
 };
 ////// END HELPERS
 
-// export const getProductById = async (req: Request<{ id: string }>, res: Response) => {
-//   try {
-
-//     let product
-//     if (/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
-//       product = await ProductEntity
-//         .findById(req.params.id)
-//         .populate({
-//           path: 'category',
-//           select: 'categoryName slug parentId'
-//         })
-//     } else {
-//       product = await ProductEntity
-//         .findOne({ slug: req.params.id })
-//         .populate({
-//           path: 'category',
-//           select: 'categoryName slug parentId'
-//         })
-//     }
-
-//     if (!product) {
-//       return res.status(404).json({ code: 1, message: "Product không tồn tại" })
-//     }
-
-//     const isActiveChain = await isCategoryChainActive(product.categoryId);
-//     if (!isActiveChain) {
-//       return res.status(404).json({ code: 1, message: "Danh mục của sản phẩm đã bị vô hiệu hóa" });
-//     }
-
-//     product = await filterActiveVariantGroupsForProduct(product) as Product;
-
-//     const voucher = await getApplicableVouchersForProduct(product);
-
-//     const finalResult = toProductDTO(product);
-//     finalResult.vouchers = voucher;
-
-//     return res.json({ code: 0, data: finalResult })
-//   } catch (err: any) {
-//     return res.status(500).json({ code: 1, message: err.message })
-//   }
-// }
 export const getProductById = async (
   req: Request<{ id: string }>,
   res: Response

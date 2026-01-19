@@ -5,10 +5,13 @@ import type { ApiResponse } from "@/server/types/common/api-response";
 import { apiError } from "@/server/types/common/api-response"
 
 export const variantGroupAPI = {
-  getAll: async (): Promise<ApiResponse<VariantGroupDTO[]>> => {
+  getAll: async (categoryIds: string[]): Promise<ApiResponse<VariantGroupDTO[]>> => {
     try {
       return await apiClient().get<ApiResponse<VariantGroupDTO[]>>(
-        API_ENDPOINTS.VARIANT_GROUPS.LIST_ALL
+        API_ENDPOINTS.VARIANT_GROUPS.LIST_ALL,
+        {
+          categoryIds: categoryIds.join(',')
+        }
       );
     } catch (err: any) {
       console.error("Error fetching active variant groups:", err);

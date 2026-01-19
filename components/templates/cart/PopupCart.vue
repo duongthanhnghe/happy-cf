@@ -6,10 +6,16 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { formatCurrency } from "@/utils/global";
 import { useITranslations } from "@/composables/shared/itranslation/useITranslations";
+import { useProductMostOrderStore } from "@/stores/client/product/useProductMostOrderStore";
+import { COLUMN } from '@/shared/constants/column';
+import { POPUP_HEADER_SEARCH } from '@/shared/constants/breakpoints';
+import { useProductViewedStore } from "@/stores/client/product/useProductViewedStore";
 
 const { t } = useITranslations()
 const store = useCartStore();
 const storeAccount = useAccountStore();
+const storeProductMostOrder = useProductMostOrderStore()
+const storeViewed = useProductViewedStore()
 
 onMounted(async() => {
   if(store.cartListItem.length === 0) store.syncCartCookie();
@@ -49,7 +55,32 @@ onMounted(async() => {
       </Text>
     </template>
     <div v-else>
-      <NoData />
+      <div class="text-center">
+        <NoData :text="t('cart.text19').text" class="mb-ms"/>
+        <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }" @click="store.isTogglePopup = false">
+          <Button tag="div" :label="t('cart.text20').text" color="primary" />
+        </NuxtLink>
+      </div>
+      <SectionProductListSwiper 
+        :items="storeProductMostOrder.getListProductMostOrder?.data" 
+        :loading="storeProductMostOrder.loadingData" 
+        :breakpoints="POPUP_HEADER_SEARCH" 
+        :headingText="t('product.section.text2')" 
+        headingSize="lg"
+        class="mt-md pb-mt"
+        :skCount="3"
+        :skColumn="COLUMN.PRODUCT_LG"
+      />
+
+      <SectionProductListSwiper 
+        v-if="storeViewed.listItems && storeViewed.listItems.length > 0" 
+        :items="storeViewed.listItems" 
+        :loading="storeViewed.loading"
+        :breakpoints="POPUP_HEADER_SEARCH"
+        :headingText="t('product.section.text1')"
+        headingSize="lg"
+        class="pt-md"
+      />
     </div>
   </template>
   <template #footer>

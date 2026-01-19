@@ -4,7 +4,6 @@ import { useCategoryMainStore } from '@/stores/client/product/useCategoryMainSto
 import { useDisplayStore } from "@/stores/shared/useDisplayStore";
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
-import { useVariantGroupStore } from '@/stores/client/product/useVariantGroupStore';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
 import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
@@ -13,6 +12,7 @@ import { useCategoryProductSEO } from '@/composables/seo/useCategoryProductSEO';
 import { useProductCategoryChildren } from '@/composables/product/useProductCategoryChildren';
 import { useRoute } from 'vue-router'
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useVariantGroupAll } from '@/composables/product/useVariantGroupAll';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
@@ -24,14 +24,14 @@ const { t } = useITranslations()
 const storeCategoryMain = useCategoryMainStore()
 const storeDisplay = useDisplayStore()
 const storeAccount = useAccountStore()
-const storeVariant = useVariantGroupStore()
 const storeViewed = useProductViewedStore()
 const route = useRoute()
 
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 const { fetchProductCategoryDetailSlug, getProductCategoryDetail } = useProductCategoryDetail()
 const { setCategoryProductSEO } = useCategoryProductSEO()
-const { fetchCategoryChildrenList } = useProductCategoryChildren()
+const { getListCategoryChildren ,fetchCategoryChildrenList } = useProductCategoryChildren()
+const { getListVariantGroup, fetchListVariantGroup } = useVariantGroupAll();
 
 const slug = route.params.categorySlug as string
 
@@ -76,9 +76,15 @@ const bannerHero = getByPosition(
 )
 
 onMounted(async () => {
-  if (storeVariant.listVariantGroup.length === 0) {
-    await storeVariant.fetchVariantGroupStore()
-  }
+  if(!getProductCategoryDetail.value) return
+  const childCategoryIds = getListCategoryChildren.value.map(
+    (item) => item.id
+  )
+  const ids = [getProductCategoryDetail.value?.id ,...childCategoryIds]
+
+  if(!ids || ids.length === 0) return
+
+  await fetchListVariantGroup(ids)
 })
 
 onBeforeUnmount(() => {
@@ -99,7 +105,7 @@ onBeforeUnmount(() => {
           />
           <PopupProductFilterMobile 
             :categoryName="detail.categoryName" 
-            :variantGroups="storeVariant.getListVariantGroup"
+            :variantGroups="getListVariantGroup"
             :hasFilter="storeCategoryMain.hasFilter"
             :listCategory="storeCategoryMain.getListCategoryChildren"
             :onResetFilter="storeCategoryMain.resetFilter"
@@ -126,7 +132,7 @@ onBeforeUnmount(() => {
         <ProductFilterPC 
           v-if="storeDisplay.isLaptop"
           :categoryName="detail.categoryName" 
-          :variantGroups="storeVariant.getListVariantGroup"
+          :variantGroups="getListVariantGroup"
           :hasFilter="storeCategoryMain.hasFilter"
           :listCategory="storeCategoryMain.getListCategoryChildren"
           :onResetFilter="storeCategoryMain.resetFilter"

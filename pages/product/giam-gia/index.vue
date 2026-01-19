@@ -3,13 +3,13 @@ import { ROUTES } from '@/shared/constants/routes'
 import { useDisplayStore } from "@/stores/shared/useDisplayStore";
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
-import { useVariantGroupStore } from '@/stores/client/product/useVariantGroupStore';
 import { useProductSaleStore } from '@/stores/client/product/useProductSaleStore';
 import { useProductCategoryStore } from '@/stores/client/product/useProductCategoryStore';
 import { useProductViewedStore } from '@/stores/client/product/useProductViewedStore';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
+import { useVariantGroupAll } from '@/composables/product/useVariantGroupAll';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.SALE.middleware,
@@ -19,12 +19,12 @@ definePageMeta({
 
 const storeDisplay = useDisplayStore()
 const storeAccount = useAccountStore()
-const storeVariant = useVariantGroupStore()
 const storeProductSale = useProductSaleStore()
 const storeProductCategory = useProductCategoryStore()
 const storeViewed = useProductViewedStore()
 const { t } = useITranslations()
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
+const { getListVariantGroup, fetchListVariantGroup } = useVariantGroupAll();
 
 const { data, error } = await useAsyncData(
   `product-sale`,
@@ -49,10 +49,15 @@ const bannerHero = getByPosition(
 )
 
 onMounted(async () => {
-  if (storeVariant.listVariantGroup.length === 0) {
-    await storeVariant.fetchVariantGroupStore()
-  }
+  const categoryIds = storeProductCategory.getFlatCategoryList.map(
+    (item) => item.id
+  )
+
+  if(!categoryIds || categoryIds.length === 0) return
+
+  await fetchListVariantGroup(categoryIds)
 })
+
 
 onBeforeUnmount(() => {
   storeProductSale.resetFilter()
@@ -73,7 +78,7 @@ onBeforeUnmount(() => {
           />
           <PopupProductFilterMobile 
             categoryName="Tất cả" 
-            :variantGroups="storeVariant.getListVariantGroup"
+            :variantGroups="getListVariantGroup"
             :hasFilter="storeProductSale.hasFilter"
             :listCategory="storeProductCategory.getListData"
             :onResetFilter="storeProductSale.resetFilter"
@@ -98,7 +103,7 @@ onBeforeUnmount(() => {
         <ProductFilterPC 
           v-if="storeDisplay.isLaptop"
           categoryName="Tất cả"
-          :variantGroups="storeVariant.getListVariantGroup"
+          :variantGroups="getListVariantGroup"
           :hasFilter="storeProductSale.hasFilter"
           :listCategory="storeProductCategory.getListData"
           :onResetFilter="storeProductSale.resetFilter"

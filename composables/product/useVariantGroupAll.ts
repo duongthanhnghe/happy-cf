@@ -7,10 +7,10 @@ export const useVariantGroupAll = () => {
   const listVariantGroup = ref<VariantGroupDTO[]>([]);
   const loading = ref(false)
 
-  const fetchListVariantGroup = async () => {
+  const fetchListVariantGroup = async (ids: string[]) => {
     loading.value = true;
     try {
-      const data = await variantGroupAPI.getAll()
+      const data = await variantGroupAPI.getAll(ids)
       if(data.code === 0) listVariantGroup.value = data.data
     } catch (err) {
       console.error('Error variant all', err)
