@@ -24,12 +24,16 @@ export const useBaseInformationUpdateStore = defineStore("BaseInformationUpdateS
     districtCode: 0,
     wardCode: 0,
     systemConfig: {
-    reward: {
-      enableEarnPoint: true,
-      enableUsePoint: true,
-      rateUsePoint: 0,
+      reward: {
+        enableEarnPoint: true,
+        enableUsePoint: true,
+        rateUsePoint: 0,
+      },
+      shipping: {
+        enabled: false,
+        minOrderAmount: 0,
+      }
     },
-  },
   });
 
   const update = async () => {

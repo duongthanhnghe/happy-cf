@@ -226,9 +226,35 @@ onBeforeUnmount(() => {
             <LabelInput label="Tỉ lệ sử dụng điểm" required />
             <v-text-field
               v-model="storeSettingUpdate.formItem.systemConfig.reward.rateUsePoint"
-              :error="!!formErrors.name"
-              :error-messages="formErrors.name"
+              :error="!!formErrors['systemConfig.reward.rateUsePoint']"
+              :error-messages="formErrors['systemConfig.reward.rateUsePoint']"
+              type="number"
               label="Nhập tỉ lệ"
+              variant="outlined"
+              required
+            />
+          </div>
+        </div>
+      </Card>
+
+      <Card class="rd-lg mt-md" size="sm">
+        <Text size="md" weight="semibold" class="mb-sm" text="Freeship" />
+        <div class="row row-xs">
+          <div class="col-12 col-lg-4">
+            <v-switch
+              :label="`Freeship khi mua hàng: ${storeSettingUpdate.formItem.systemConfig.shipping.enabled ? 'Bật' : 'Tắt'}`"
+              v-model="storeSettingUpdate.formItem.systemConfig.shipping.enabled"
+              inset
+            />
+          </div>
+          <div class="col-12 col-lg-4">
+            <LabelInput label="Đơn tối thiểu để freeship (VND)" required />
+            <v-text-field
+              v-model="storeSettingUpdate.formItem.systemConfig.shipping.minOrderAmount"
+              :error="!!formErrors['systemConfig.shipping.minOrderAmount']"
+              :error-messages="formErrors['systemConfig.shipping.minOrderAmount']"
+              type="number"
+              label="Nhập tối thiểu"
               variant="outlined"
               required
             />

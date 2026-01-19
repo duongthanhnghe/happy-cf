@@ -30,7 +30,7 @@ const storeAccount = useAccountStore();
             <v-progress-circular indeterminate ></v-progress-circular>
           </div>
           <div v-if="store.allVouchers?.length > 0" class="flex flex-direction-column gap-sm">
-            <CartVoucherList />
+            <CartVoucherList :classElFreeship="store.shippingEnabled && store.getShippingFee === 0 ? '_hidden':''" />
           </div>
         </div>
       </div>

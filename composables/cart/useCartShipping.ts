@@ -7,15 +7,22 @@ export const useCartShipping = (
   cartListItem: Ref<CartDTO[]>,
   totalPriceDiscount: Ref<number>,
   shippingFee: Ref<number>,
+  shippingEnabled: Ref<boolean>,
+  calcFreeship: (total: number) => void,
   handleCalcTotalPriceCurrent: () => void,
   reapplyFreeshippVoucher: () => Promise<void>,
   storeLocation: any,
   storeSetting: any,
   userId?: string,
-  activeFreeshipVoucher?: Ref<string | null>
+  activeFreeshipVoucher?: Ref<string | null>,
 ) => {
 
   const handleGetFee = async () => {
+    if(shippingEnabled.value && calcFreeship(totalPriceDiscount.value)) {
+      shippingFee.value = 0
+      return
+    }
+
     try {
       const productWeight = cartListItem.value.reduce((total, item) => {
         return total + (item.weight || 0) * item.quantity;

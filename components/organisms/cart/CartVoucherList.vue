@@ -5,6 +5,7 @@ import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 const store = useCartStore();
 const props = defineProps<{
   classEl?: string;
+  classElFreeship?: string;
 }>();
 
 </script>
@@ -16,7 +17,7 @@ const props = defineProps<{
     action
     :selectedCode="store.selectedFreeship"
     @select="store.handleSelectVoucher"
-    :class="props.classEl"
+    :class="[props.classEl, props.classElFreeship]"
   />
   <VoucherItemTemplate1
     v-for="(voucher, index) in store.allVouchers.filter(v => v.type !== VOUCHER_TYPE.freeship.type)"

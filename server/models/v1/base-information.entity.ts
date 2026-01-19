@@ -12,8 +12,14 @@ export interface RewardConfig {
   rateUsePoint: number;
 }
 
+export interface ShippingConfig {
+  enabled: boolean;          // bật / tắt freeship
+  minOrderAmount: number;    // đơn tối thiểu để freeship
+}
+
 export interface SystemConfig {
   reward: RewardConfig;
+  shipping: ShippingConfig;
 }
 
 export interface BaseInformation {
@@ -53,10 +59,22 @@ const RewardConfigSchema = new Schema(
   { _id: false }
 )
 
+const ShippingConfigSchema = new Schema(
+  {
+    enabled: { type: Boolean, default: false },
+    minOrderAmount: { type: Number, default: 0 },
+  },
+  { _id: false }
+)
+
 const SystemConfigSchema = new Schema(
   {
     reward: {
       type: RewardConfigSchema,
+      default: () => ({})
+    },
+    shipping: {
+      type: ShippingConfigSchema,
       default: () => ({})
     }
   },

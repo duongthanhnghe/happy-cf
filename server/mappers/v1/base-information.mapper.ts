@@ -21,6 +21,12 @@ export function toBaseInformationDTO(entity: BaseInformation): BaseInformationDT
         enableUsePoint:
           entity.systemConfig?.reward?.enableUsePoint ?? true,
         rateUsePoint: entity.systemConfig?.reward?.rateUsePoint ?? 0, 
+      },
+      shipping: {
+        enabled:
+          entity.systemConfig?.shipping?.enabled ?? true,
+        minOrderAmount:
+          entity.systemConfig?.shipping?.minOrderAmount ?? 0,
       }
     },
     createdAt: entity.createdAt?.toISOString(),

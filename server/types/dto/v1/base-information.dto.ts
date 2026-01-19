@@ -10,8 +10,14 @@ export interface RewardConfigDTO {
   rateUsePoint: number
 }
 
+export interface FreeShippingConfigDTO {
+  enabled: boolean;
+  minOrderAmount: number;
+}
+
 export interface SystemConfigDTO {
   reward: RewardConfigDTO
+  shipping: FreeShippingConfigDTO
 }
 
 export interface BaseInformationDTO {

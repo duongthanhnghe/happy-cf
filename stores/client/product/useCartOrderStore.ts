@@ -46,7 +46,10 @@ export const useCartStore = defineStore("Cart", () => {
   const Config_RateUsePoint = computed<number>(() => rewardConfig.value?.rateUsePoint ?? 0);
   const getMaxPointCanUse = computed(() =>  Math.floor(state.totalPriceCurrent.value * Config_RateUsePoint.value ));
   const getTotalPoint = computed(() => storeAccount.calcEarnPoint(state.totalPriceCurrent.value));
-  
+  const shippingEnabled = computed(
+    () => storeSetting.getConfigShipping?.enabled ?? false
+  )
+
   const fetchProductCart = async () => {
     const productIds = state.cartListItem.value.map((item: any) => item.product);
     await fetchCartProducts(productIds);
@@ -331,12 +334,14 @@ export const useCartStore = defineStore("Cart", () => {
     state.cartListItem,
     state.totalPriceDiscount,
     state.shippingFee,
+    shippingEnabled,
+    storeSetting.calcFreeship,
     handleCalcTotalPriceCurrent,
     voucher.reapplyFreeshippVoucher,
     storeLocation,
     storeSetting,
     storeAccount.getDetailValue?.id,
-    state.activeFreeshipVoucher
+    state.activeFreeshipVoucher,
   );
 
   const order = useCartOrder(
@@ -348,6 +353,7 @@ export const useCartStore = defineStore("Cart", () => {
     state.totalPriceCurrent,
     state.orderPriceDiscount,
     state.shippingFee,
+    shippingEnabled,
     state.usedPointOrder,
     Config_EnableUsePoint,
     state.totalDiscountRateMembership,
@@ -476,6 +482,7 @@ export const useCartStore = defineStore("Cart", () => {
     // Getters
     Config_EnableUsePoint,
     Config_EnableEarnPoint,
+    shippingEnabled,
     getCartCount,
     getCartListItem,
     getIsTogglePopup,

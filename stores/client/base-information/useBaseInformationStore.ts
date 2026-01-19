@@ -5,6 +5,7 @@ import Facebook from "@/components/atoms/icons/Facebook.vue"
 import Instagram from "@/components/atoms/icons/Instagram.vue"
 import Tiktok from "@/components/atoms/icons/Tiktok.vue"
 import type { BaseInformationDTO } from "@/server/types/dto/v1/base-information.dto";
+import { formatCurrency } from '@/utils/global';
 
 const CACHE_TTL = 3 * 24 * 60 * 60 * 1000 // 3 ngày
 
@@ -53,8 +54,20 @@ export const useBaseInformationStore = defineStore("BaseInformationStore", () =>
     return null
   }
 
+  const calcFreeship = (total: number) => {
+    const minPrice = getBaseInformation.value?.systemConfig.shipping.minOrderAmount || 0
+    if (minPrice <= total ) return true
+
+    return false
+  }
+
   const getBaseInformation = computed(() => detailData.value)
   const getConfigSystem = computed(() => detailData.value?.systemConfig)
+  const getConfigShipping = computed(() => detailData.value?.systemConfig.shipping)
+  const getShippingTooltip = computed(() => {
+    if(!detailData.value?.systemConfig.shipping.enabled) return null
+    return `Đơn hàng từ ${formatCurrency(detailData.value?.systemConfig.shipping.minOrderAmount)} được miễn phí vận chuyển`
+  })
 
   const iconMap: Record<string, any> = {
     Facebook: markRaw(Facebook),
@@ -67,8 +80,11 @@ export const useBaseInformationStore = defineStore("BaseInformationStore", () =>
     lastFetched,
     fetchBaseInformation,
     fetchSystemConfig,
+    calcFreeship,
     getBaseInformation,
     getConfigSystem,
+    getConfigShipping,
+    getShippingTooltip,
     iconMap,
   }
 })

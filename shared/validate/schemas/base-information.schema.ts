@@ -11,8 +11,22 @@ export const rewardConfigSchema = z.object({
   ),
 })
 
+export const shippingConfigSchema = z.object({
+  enabled: z.boolean().default(false),
+  minOrderAmount: z.preprocess(
+    v => (v === '' || v === null ? 0 : Number(v)),
+    z.number().min(0).default(0)
+  ),
+})
+
 export const systemConfigSchema = z.object({
   reward: rewardConfigSchema,
+  shipping: shippingConfigSchema,
+})
+
+export const updateSystemConfigSchema = z.object({
+  reward: rewardConfigSchema.partial().optional(),
+  shipping: shippingConfigSchema.partial().optional(),
 })
 
 export const socialLinkSchema = z.object({
@@ -75,9 +89,27 @@ export const baseInformationSchema = z.object({
         enableEarnPoint: true,
         enableUsePoint: true,
         rateUsePoint: 0,
-      }
+      },
+      shipping: {
+        enabled: false,
+        minOrderAmount: 0,
+      },
     }),
-    
 })
 
-export const updateBaseInformationSchema = baseInformationSchema.partial()
+export const updateBaseInformationSchema = z.object({
+  name: z.string().min(1).optional(),
+  logoUrl: z.string().optional(),
+  phone: phoneSchema.optional(),
+  email: emailSchema.optional(),
+  address: z.string().optional(),
+  openingHours: z.string().optional(),
+  description: z.string().optional(),
+  socialLinks: z.array(socialLinkSchema).optional(),
+
+  provinceCode: z.number().optional(),
+  districtCode: z.number().optional(),
+  wardCode: z.number().optional(),
+
+  systemConfig: updateSystemConfigSchema.optional()
+})

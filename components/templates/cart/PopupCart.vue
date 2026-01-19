@@ -10,12 +10,14 @@ import { useProductMostOrderStore } from "@/stores/client/product/useProductMost
 import { COLUMN } from '@/shared/constants/column';
 import { POPUP_HEADER_SEARCH } from '@/shared/constants/breakpoints';
 import { useProductViewedStore } from "@/stores/client/product/useProductViewedStore";
+import { useBaseInformationStore } from "@/stores/client/base-information/useBaseInformationStore";
 
 const { t } = useITranslations()
 const store = useCartStore();
 const storeAccount = useAccountStore();
 const storeProductMostOrder = useProductMostOrderStore()
 const storeViewed = useProductViewedStore()
+const storeSetting = useBaseInformationStore();
 
 onMounted(async() => {
   if(store.cartListItem.length === 0) store.syncCartCookie();
@@ -85,6 +87,14 @@ onMounted(async() => {
   </template>
   <template #footer>
     <template v-if="store.getCartListItem && store.getCartListItem.length > 0">
+      <div v-if="storeSetting.getConfigShipping?.enabled" class="flex gap-xs mb-xs">
+        <MaterialIcon
+          name="delivery_truck_speed"
+          color="gray5"
+          weight="light"
+        />
+        <Text :text="storeSetting.getShippingTooltip" size="xs" />
+      </div>
       <NuxtLink :to="{ path: ROUTES.PUBLIC.CART.path }" @click="store.isTogglePopup = false">
         <Button tag="div" :label="t('cart.text11').text" color="primary" class="w-full" />
       </NuxtLink>

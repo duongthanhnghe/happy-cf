@@ -24,6 +24,7 @@ onMounted(async() => {
   if (storeAccount.getUserId) {
     await storeWishlist.fetchWishlist(storeAccount.getUserId);
   }
+
   window.addEventListener('scroll', store.onScroll);
 });
 
@@ -122,16 +123,32 @@ onBeforeUnmount(() => {
               <Text @click="scrollIntoView('list-review-by-product')" :text="t('product.detail.text7')" color="gray5" class="cursor-pointer line-height-1d2 text-underline ml-xs"/>
             </div>
 
-            <div class="flex align-end gap-sm align-center mt-xs">
+            <div class="flex align-end gap-sm align-center justify-between mt-xs">
               <template v-if="!detail.variantCombinations.length">
-                <Text :text="formatCurrency(detail.priceDiscounts)" size="lg" weight="semibold" color="black" />
-                <template v-if="detail.priceDiscounts !== detail.price">
-                  <Text :text="formatCurrency(detail.price)" size="lg" color="gray5" class="text-line-through" />
-                  <Button tag="span" color="primary" size="sm" :label="store.percentDiscount" class="pl-sm pr-sm" />
-                </template>
+                <div class="flex align-end gap-sm align-center">
+                  <Text :text="formatCurrency(detail.priceDiscounts)" size="lg" weight="semibold" color="black" />
+                  <template v-if="detail.priceDiscounts !== detail.price">
+                    <Text :text="formatCurrency(detail.price)" size="lg" color="gray5" class="text-line-through" />
+                    <Button tag="span" color="primary" size="sm" :label="store.percentDiscount" class="pl-sm pr-sm" />
+                  </template>
+                </div>
+                <client-only>
+                  <template v-if="detail.priceDiscounts && storeSetting.getConfigShipping?.enabled">
+                    <v-chip v-tooltip.left="storeSetting.getShippingTooltip" v-if="storeSetting.calcFreeship(detail.priceDiscounts)" label color="blue">
+                      Freeship
+                    </v-chip>
+                  </template>
+                </client-only>
               </template>
               <template v-else>
                 <Text :text="formatCurrency(store.variantPrice)" size="md" weight="semibold" color="black" />
+                <client-only>
+                  <template v-if="store.variantPrice && storeSetting.getConfigShipping?.enabled">
+                    <v-chip v-tooltip.left="storeSetting.getShippingTooltip" v-if="storeSetting.calcFreeship(store.variantPrice)" label color="blue">
+                      Freeship
+                    </v-chip>
+                  </template>
+                </client-only>
               </template>
             </div>
 

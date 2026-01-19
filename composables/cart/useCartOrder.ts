@@ -21,6 +21,7 @@ export const useCartOrder = (
   totalPriceCurrent: Ref<number>,
   orderPriceDiscount: Ref<number>,
   shippingFee: Ref<number>,
+  shippingEnabled: Ref<boolean>,
   usedPointOrder: any,
   Config_EnableUsePoint: Ref<boolean>,
   totalDiscountRateMembership: Ref<number>,
@@ -38,8 +39,8 @@ export const useCartOrder = (
     const confirm = await showConfirm('Xác nhận đặt hàng?');
     if (!confirm) return;
 
-    if (shippingFee.value === 0) {
-      showWarning('Vui lòng điền thông tin nhận hàng');
+    if (shippingFee.value === 0 && !shippingEnabled.value) {
+      showWarning('Địa chỉ không hợp lệ, vui lòng xem lại địa chỉ nhận hàng');
       return;
     }
 
