@@ -4,6 +4,8 @@ import type { ApiResponse } from "@server/types/common/api-response"
 import type {
   PaymentTransactionDTO,
   PaymentTransactionPaginationDTO,
+  PaymentTransactionStatus,
+  UpdatePaymentTransactionStatusBody,
 } from "@/server/types/dto/v1/payment-transaction.dto"
 import { apiError } from '@/server/types/common/api-response'
 import { paginationError } from '@/server/types/common/pagination.dto'
@@ -47,6 +49,22 @@ export const paymentTransactionsAPI = {
       )
     } catch (err: any) {
       console.error(`Error getting payment transaction detail with ID ${id}:`, err)
+      return apiError<PaymentTransactionDTO>(err)
+    }
+  },
+
+  updateStatus: async (
+    transactionId: string,
+    status: PaymentTransactionStatus
+  ): Promise<ApiResponse<PaymentTransactionDTO>> => {
+    try {
+      const bodyData: UpdatePaymentTransactionStatusBody = { transactionId, status }
+      return await apiAdmin().put<ApiResponse<PaymentTransactionDTO>>(
+        API_ENDPOINTS_ADMIN.PAYMENT_TRANSACTIONS.UPDATE_STATUS,
+        bodyData
+      )
+    } catch (err: any) {
+      console.error("Error updating payment transaction status:", err)
       return apiError<PaymentTransactionDTO>(err)
     }
   },

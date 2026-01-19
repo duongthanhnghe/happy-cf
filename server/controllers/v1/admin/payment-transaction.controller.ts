@@ -2,6 +2,7 @@ import type { Request, Response } from "express"
 import { PaymentTransactionEntity } from "../../../models/v1/payment-transaction.entity"
 import { toPaymentTransactionDTO, toPaymentTransactionListDTO } from "../../../mappers/v1/payment-transaction.mapper"
 import { Types } from "mongoose"
+import { PAYMENT_TRANSACTION_STATUS } from "@/shared/constants/payment-transaction-status"
 
 export const getDetail = async (req: Request, res: Response) => {
   try {
@@ -121,6 +122,58 @@ export const getAll = async (
     return res.status(500).json({
       code: 1,
       message: "Lỗi lấy danh sách giao dịch thanh toán",
+    })
+  }
+}
+
+export const updateStatus = async (req: Request, res: Response) => {
+  try {
+    const { transactionId, status } = req.body
+
+    const transaction = await PaymentTransactionEntity.findById(transactionId)
+    if (!transaction) {
+      return res.status(404).json({
+        code: 1,
+        message: "Không tìm thấy giao dịch"
+      })
+    }
+
+    const updateData: any = {
+      status,
+      updatedAt: new Date()
+    }
+
+    // xử lý paidAt
+    if (
+      status === PAYMENT_TRANSACTION_STATUS.paid.status &&
+      !transaction.paidAt
+    ) {
+      updateData.paidAt = new Date()
+    }
+
+    // nếu chuyển ngược từ PAID → trạng thái khác
+    if (
+      transaction.status === PAYMENT_TRANSACTION_STATUS.paid.status &&
+      status !== PAYMENT_TRANSACTION_STATUS.paid.status
+    ) {
+      updateData.paidAt = null
+    }
+
+    const updated = await PaymentTransactionEntity.findByIdAndUpdate(
+      transactionId,
+      updateData,
+      { new: true }
+    )
+
+    return res.json({
+      code: 0,
+      message: "Cập nhật trạng thái giao dịch thành công",
+      data: updated
+    })
+  } catch (err: any) {
+    return res.status(500).json({
+      code: 1,
+      message: err.message
     })
   }
 }

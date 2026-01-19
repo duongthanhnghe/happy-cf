@@ -20,3 +20,8 @@ export interface PaymentTransactionDTO {
 }
 
 export type PaymentTransactionPaginationDTO = PaginationDTO<PaymentTransactionDTO>
+
+export interface UpdatePaymentTransactionStatusBody {
+  transactionId: string
+  status: PaymentTransactionStatus
+}

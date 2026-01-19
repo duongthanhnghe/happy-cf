@@ -4,6 +4,8 @@ import { ORDER_STATUS } from "../../../shared/constants/order-status"
 import { OrderShippingEntity } from "../../../models/v1/order.entity"
 import { Types } from "mongoose"
 import { UserModel } from "@/server/models/v1/user.entity";
+import { PaymentTransactionEntity } from "../../../models/v1/payment-transaction.entity"
+import { PAYMENT_TRANSACTION_STATUS } from "@/shared/constants/payment-transaction-status"
 
 const parseDateRange = (req: Request) => {
   const fromDate = req.query.fromDate
@@ -33,6 +35,47 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
     const completedStatusId = new Types.ObjectId(ORDER_STATUS.COMPLETED)
     const cancelledStatusId = new Types.ObjectId(ORDER_STATUS.CANCELLED)
 
+    /* ========= TRANSACTION AGGREGATES ========= */
+    const revenueAggQuery = PaymentTransactionEntity.aggregate([
+      {
+        $match: {
+          status: PAYMENT_TRANSACTION_STATUS.paid.status,
+          paidAt: { $exists: true, $gte: fromDate, $lte: toDate }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" }
+        }
+      }
+    ])
+
+    const prevRevenueAggQuery = PaymentTransactionEntity.aggregate([
+      {
+        $match: {
+          status: PAYMENT_TRANSACTION_STATUS.paid.status,
+          paidAt: { $exists: true, $gte: prevFrom, $lte: prevTo }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" }
+        }
+      }
+    ])
+
+    const paidTransactionCountAggQuery = PaymentTransactionEntity.aggregate([
+      {
+        $match: {
+          status: PAYMENT_TRANSACTION_STATUS.paid.status,
+          paidAt: { $exists: true, $gte: fromDate, $lte: toDate }
+        }
+      },
+      { $count: "count" }
+    ])
+
     const [
       totalOrders,
       completedOrders,
@@ -40,13 +83,14 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
 
       revenueAgg,
       prevRevenueAgg,
+      paidTransactionCountAgg,
 
       totalCustomers,
       activeCustomersAgg,
       repeatCustomersAgg,
       newCustomersAgg,
     ] = await Promise.all([
-      //  orders
+      // orders
       OrderEntity.countDocuments({
         createdAt: { $gte: fromDate, $lte: toDate }
       }),
@@ -61,29 +105,12 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
         createdAt: { $gte: fromDate, $lte: toDate }
       }),
 
-      // revenue (current)
-      OrderEntity.aggregate([
-        {
-          $match: {
-            status: completedStatusId,
-            createdAt: { $gte: fromDate, $lte: toDate }
-          }
-        },
-        { $group: { _id: null, total: { $sum: "$totalPrice" } } }
-      ]),
+      // revenue
+      revenueAggQuery,
+      prevRevenueAggQuery,
+      paidTransactionCountAggQuery,
 
-      // revenue (previous)
-      OrderEntity.aggregate([
-        {
-          $match: {
-            status: completedStatusId,
-            createdAt: { $gte: prevFrom, $lte: prevTo }
-          }
-        },
-        { $group: { _id: null, total: { $sum: "$totalPrice" } } }
-      ]),
-
-      // total customers
+      // customers
       UserModel.countDocuments({
         createdAt: { $gte: fromDate, $lte: toDate }
       }),
@@ -108,7 +135,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
         { $count: "count" }
       ]),
 
-      // new customers (first order)
+      // new customers
       OrderEntity.aggregate([
         {
           $group: {
@@ -127,6 +154,8 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
 
     const totalRevenue = revenueAgg[0]?.total || 0
     const prevRevenue = prevRevenueAgg[0]?.total || 0
+    const paidTransactions = paidTransactionCountAgg[0]?.count || 0
+
     const activeCustomers = activeCustomersAgg[0]?.count || 0
     const repeatCustomers = repeatCustomersAgg[0]?.count || 0
     const newCustomers = newCustomersAgg[0]?.count || 0
@@ -134,20 +163,24 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
     return res.json({
       code: 0,
       data: {
+        // order
         totalOrders,
         completedOrders,
         cancelledOrders,
+
+        // revenue
         totalRevenue,
 
+        // customers
         totalCustomers,
         activeCustomers,
         repeatCustomers,
         newCustomers,
 
         // order metrics
-        avgOrderValue: completedOrders
-        ? Math.round(totalRevenue / completedOrders)
-        : 0,
+        avgOrderValue: paidTransactions
+          ? Math.round(totalRevenue / paidTransactions)
+          : 0,
 
         completionRate: totalOrders
           ? +(completedOrders / totalOrders * 100).toFixed(2)
@@ -158,8 +191,8 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
           : 0,
 
         // revenue metrics
-        revenuePerOrder: completedOrders
-          ? Math.round(totalRevenue / completedOrders)
+        revenuePerOrder: paidTransactions
+          ? Math.round(totalRevenue / paidTransactions)
           : 0,
 
         revenueGrowth: prevRevenue
@@ -177,8 +210,7 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
 
         ordersPerCustomer: activeCustomers
           ? +(totalOrders / activeCustomers).toFixed(2)
-        : 0,
-
+          : 0,
       }
     })
   } catch (err: any) {
@@ -189,31 +221,53 @@ export const getDashboardSummary = async (req: Request, res: Response) => {
   }
 }
 
+
 export const getRevenueChart = async (req: Request, res: Response) => {
   try {
     const { fromDate, toDate } = parseDateRange(req)
-    const completedStatusId = new Types.ObjectId(ORDER_STATUS.COMPLETED)
 
-    const data = await OrderEntity.aggregate([
+    const data = await PaymentTransactionEntity.aggregate([
       {
         $match: {
-          status: completedStatusId,
-          createdAt: { $gte: fromDate, $lte: toDate }
+          status: PAYMENT_TRANSACTION_STATUS.paid.status,
+          paidAt: { $gte: fromDate, $lte: toDate }
         }
       },
+
+      {
+        $lookup: {
+          from: "orders",
+          localField: "orderId",
+          foreignField: "_id",
+          as: "order"
+        }
+      },
+      { $unwind: "$order" },
+
       {
         $group: {
           _id: {
             $dateToString: {
               format: "%Y-%m-%d",
-              date: "$createdAt",
+              date: "$paidAt",
               timezone: "Asia/Ho_Chi_Minh"
             }
           },
-          revenue: { $sum: "$totalPrice" },
-          orders: { $sum: 1 }
+          revenue: { $sum: "$amount" },
+          transactions: { $sum: 1 },
+          orders: { $addToSet: "$order._id" }
         }
       },
+
+      {
+        $project: {
+          _id: 1,
+          revenue: 1,
+          transactions: 1,
+          orders: { $size: "$orders" }
+        }
+      },
+
       { $sort: { _id: 1 } }
     ])
 

@@ -156,6 +156,7 @@ export const API_ENDPOINTS_ADMIN = {
   PAYMENT_TRANSACTIONS: {
     LIST: '/payment-transactions',
     GET_BY_ID: (id: string) => `/payment-transactions/${id}`,
+    UPDATE_STATUS: '/payment-transactions/update-status',
   },
   PRODUCT_REVIEWS: {
     LIST: '/product-reviews',
