@@ -5,6 +5,8 @@ import { type Ref } from 'vue';
 import { useProductDetail } from '@/composables/product/useProductDetail'
 import type { ProductVariantCombinationDTO } from "@/server/types/dto/v1/product.dto"; 
 import { useProductCheckStock } from "../product/useProductCheckStock";
+import { showAddToCartToast } from "@/utils/toast";
+import { formatCurrency } from "@/utils/global";
 
 export const useCartProductOperations = (
   cartListItem: Ref<CartDTO[]>,
@@ -17,6 +19,7 @@ export const useCartProductOperations = (
   syncTempSelectedFromCombination: (options: any) => void,
   togglePopup: (popupId: string, value: boolean) => void,
   getSelectedCombinationId: (variantCombinations: ProductVariantCombinationDTO[]) => string | undefined,
+  handleTogglePopup: (value: boolean) => Promise<void>,
 ) => {
 
   const { getDetailProduct, fetchDetailProduct } = useProductDetail()
@@ -84,6 +87,13 @@ export const useCartProductOperations = (
 
     cartCount.value += quantity
     updateCookie()
+
+    showAddToCartToast({
+      image: product.image,
+      name: product.productName,
+      price: formatCurrency(product.price),
+      onViewCart: () => handleTogglePopup(true)
+    })
   }
 
   const addProductWithOptions = async (
@@ -148,6 +158,19 @@ export const useCartProductOperations = (
     cartCount.value += quantity
     updateCookie()
     resetValuePopupOrder()
+
+
+    const variantText = matchedCombination.variants
+    .map(v => v.variantName)
+    .join(' / ')
+
+    showAddToCartToast({
+      image: product.image,
+      name: product.productName,
+      variant: `${variantText}`,
+      price: formatCurrency(matchedCombination.priceModifier),
+      onViewCart: () => handleTogglePopup(true)
+    })
   }
 
   const updateProductWithOptions = async (

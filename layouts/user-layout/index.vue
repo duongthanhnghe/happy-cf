@@ -23,7 +23,7 @@ onMounted(async () => {
   <div :class="['min-height-dvh pb-section',storeDisplay.isLaptop ? 'bg-gray2':'bg-gray6']">
     <Header />
     <template v-if="storeDisplay.isLaptop">
-      <SectionAccount showLevel />
+      <CardAccount showLevel />
       <div class="container">
         <ListOrderCountByStatus v-if="getOrderStatusCounts" :listData="getOrderStatusCounts" class="mb-sm"/>
         <div class="row">

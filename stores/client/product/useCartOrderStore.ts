@@ -310,6 +310,7 @@ export const useCartStore = defineStore("Cart", () => {
     options.syncTempSelectedFromCombination,
     utilShared.togglePopup as (popupId: string, value: boolean) => void,
     getSelectedCombinationId,
+    utils.handleTogglePopup,
   );
 
   const voucher = useCartVoucher(

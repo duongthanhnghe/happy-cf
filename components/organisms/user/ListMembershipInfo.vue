@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import type { MembershipLevels } from '@/server/types/dto/v1/user.dto';
+import { formatCurrency } from '@/utils/global';
 
 const props = defineProps<{
   listData: MembershipLevels[],
@@ -43,6 +44,10 @@ watch(() => props.listData, (newVal) => {
       :value="n.id"
     >
       <div class="container pt-ms pb-ms">
+        <div>
+          <Text :text="n.name" color="black" weight="semibold" size="normal" />
+          <Text :text="`Cần ${formatCurrency(n.minPoint, false)} điểm để thăng lên hạng này`" color="gray5" class="mb-ms mt-xs"/>
+        </div>
         <div v-for="item in n.benefits" :key="item.id">
           <Card size="xs" class="rd-xs mb-sm border-default">
             <div class="flex gap-sm align-center">

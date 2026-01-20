@@ -19,7 +19,7 @@ onMounted(async () => {
 </script>
 <template>
   <div :class="['min-height-dvh',storeDisplay.isLaptop ? 'bg-gray2':'bg-gray6']">
-    <SectionAccount showLevel/>
+    <CardAccount showLevel showBarcode />
     <div class="container">
       <ListOrderCountByStatus v-if="getOrderStatusCounts" :listData="getOrderStatusCounts" class="mb-sm"/>
       <div class="pt-sm">

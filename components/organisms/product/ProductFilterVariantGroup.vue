@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { VariantGroupDTO } from '@/server/types/dto/v1/product.dto'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     variantGroups: VariantGroupDTO[]
     selectedVariants?: string[]
     onToggleVariant: (variantId: string) => void
   }>(),
   {
-    selectedVariants: () => []
+    selectedVariants: () => [],
   }
 )
 </script>

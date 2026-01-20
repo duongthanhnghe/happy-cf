@@ -12,6 +12,7 @@ const props = defineProps<{
   showHeading?: boolean
   showStock?: boolean
   classCustom?: string
+  sizeButton?: string
 }>()
 
 const variantGroupsUI = computed(() =>
@@ -62,6 +63,7 @@ const selectedStock = computed(() =>
         >
           <template #label>
             <Button 
+              :size="props.sizeButton ? props.sizeButton : 'md'"
               :label="variant.variantName" 
               :border="false" color="gray" 
               class="pl-ms pr-ms weight-normal" />

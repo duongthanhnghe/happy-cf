@@ -31,7 +31,7 @@ const props = defineProps({
                 :src="storeAccount.getDetailValue?.avatar"
                 :alt="storeAccount.getDetailValue?.fullname"
                 :width="50"
-                class="information-account-avatar avatar-src"
+                class="height-50 width-50 object-cover bg-white border-color-gray border-default rd-full"
                 preset="avatar"
                 :placeholder="IMAGE_AVATAR_DEFAULT"
               />
@@ -48,19 +48,10 @@ const props = defineProps({
             </div>
             <div class="flex gap-sm">
               <Button @click.prevent="storeHistoryReward.handleTogglePopup(true)" color="secondary" :label="`${formatCurrency(storeAccount.getDetailValue?.membership.balancePoint).replace('đ','') || 0}`" icon="diamond_shine" class="information-account-point" size="sm" />
-              <Button @click.prevent="storeAccount.handleTogglePopupBarcode(true)" :border="false" color="gray" icon="qr_code_scanner" size="sm"/>
+              <Button v-if="!props.showBarcode" @click.prevent="storeAccount.handleTogglePopupBarcode(true)" :border="false" color="gray" icon="qr_code_scanner" size="sm"/>
             </div>
           </div>
-        
-          <div v-if="props.showBarcode" class="information-account-code">
-              <Image 
-                :src="storeAccount.getDetailValue?.membership.barcode"
-                :alt="storeAccount.getDetailValue?.fullname"
-                :width="150"
-                :height="50"
-              />
-              {{ storeAccount.getDetailValue?.membership.code }}
-          </div>
+          
           <div v-if="props.showLevel" class="mt-md">
             <template v-if="storeAccount.getInformationMembershipLevel && storeAccount.getDetailValue?.membership.point">
               <div class="text-size-normal weight-semibold mb-xs">
@@ -90,6 +81,18 @@ const props = defineProps({
               </div>
             </template>
           </div>
+
+          <div v-if="props.showBarcode" class="information-account-code bg-white rd-md pd-sm mt-md flex flex-direction-column align-center line-height-1">
+            <Image 
+              :src="storeAccount.getDetailValue?.membership.barcode"
+              :alt="storeAccount.getDetailValue?.fullname"
+              :width="150"
+              :height="50"
+              class="mb-sm"
+            />
+            {{ storeAccount.getDetailValue?.membership.code }}
+          </div>
+
       </div>
     </div>
   </div>

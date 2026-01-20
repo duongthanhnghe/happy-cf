@@ -8,9 +8,21 @@ export const Loading = (value) => {
   }
 }
 
-export const formatCurrency = (number) => {
-  const value = typeof number === 'string' ? parseFloat(number) : number;
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + 'đ';
+// export const formatCurrency = (number, suffix = true) => {
+//   const value = typeof number === 'string' ? parseFloat(number) : number;
+//   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + suffix ? 'đ' : '';
+// }
+
+export const formatCurrency = (number, suffix = true) => {
+  const value = typeof number === 'string' ? parseFloat(number) : number
+
+  if (value === null || value === undefined || Number.isNaN(value)) return '0'
+
+  const formatted = value
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
+  return suffix ? `${formatted}đ` : formatted
 }
 
 export function formatDateTime(

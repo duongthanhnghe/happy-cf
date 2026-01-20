@@ -29,6 +29,7 @@ const props = defineProps<{
       <div v-if="detail?.variantCombinations.length" class="border-left-default border-right-default border-color-gray2 gap-md pl-md pr-md pt-05 pb-05 flex options max-width-600">
         <ProductDetailOptions 
           :variantCombinations="detail.variantCombinations"
+          sizeButton="sm"
           showHeading
         />
       </div>
