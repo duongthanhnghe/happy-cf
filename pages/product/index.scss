@@ -29,9 +29,9 @@ $height-product-fixed-bottom: 180px;
         border-radius: 12px;
         overflow: hidden;
         aspect-ratio: 1 / 1;
-        &.swiper-slide-thumb-active {
-          border: 1px solid $cl-primary;
-        }
+      }
+      .swiper-slide-thumb-active &-slide {
+        border: 1px solid $cl-primary;
       }
     }
     @media (min-width: 1025px){

@@ -60,16 +60,17 @@ const props = defineProps<{
       <swiper-slide
         v-for="(item, index) in store.galleryImages"
         :key="index"
-        class="cursor-pointer product-detail-gallery-thumbs-slide"
       >
-        <Image 
-          :src="item.src" 
-          :alt="detail.productName"
-          :width="150"
-          :height="150"
-          preset="avatar"
-          class="rd-lg bg-gray6"
-        />
+        <div class="cursor-pointer product-detail-gallery-thumbs-slide">
+          <Image 
+            :src="item.src" 
+            :alt="detail.productName"
+            :width="150"
+            :height="150"
+            preset="avatar"
+            class="rd-lg bg-gray6"
+          />
+        </div>
       </swiper-slide>
     </swiper>
   </div>
