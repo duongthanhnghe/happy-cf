@@ -14,7 +14,8 @@ definePageMeta({
 
 const route = useRoute()
 const transactionId = route.query.transactionId as string
-const status = route.query.status as string
+// const status = route.query.status as string
+const message = route.query.message as string
 
 const { getDetail, fetchDetailTransaction } = usePaymentTransactionDetail()
 
@@ -33,7 +34,7 @@ const headingInfo = computed(() => {
   }
 
   return {
-    text: 'Hóa đơn thanh toán',
+    text: message ? message : 'Hóa đơn thanh toán',
     icon: 'error',
     color: 'orange'
   }
@@ -60,7 +61,8 @@ Vui lòng kiểm tra và hoàn tất thanh toán để tiếp tục.`
 </script>
 
 <template>
-  <div class="pt-section pb-section" v-if="route.query.transactionId && getDetail && status === 'success'">
+  <!-- <div class="pt-section pb-section" v-if="route.query.transactionId && getDetail && status === 'success'"> -->
+  <div class="pt-section pb-section" v-if="route.query.transactionId && getDetail">
     <div class="container">
       <Card size="md" class="rd-xl max-width-600 m-auto mt-xl">
         <div v-if="headingInfo" :class="`width-100 height-100 rd-full bg-${headingInfo?.color} flex justify-center align-center m-auto shadow-1`" style="margin-top: -80px;">
@@ -120,7 +122,7 @@ Vui lòng kiểm tra và hoàn tất thanh toán để tiếp tục.`
         <div :class="`width-100 height-100 rd-full bg-orange flex justify-center align-center m-auto`" style="margin-top: -80px;">
           <MaterialIcon name="error" color="white" weight="light" style="font-size: 70px"/>
         </div>        
-        <Text text="Thanh toán thất bại" color="black" size="lg" weight="semibold" align="center" class="text-uppercase mt-ms" />
+        <Text :text="message ? message : 'Thanh toán thất bại'" color="black" size="lg" weight="semibold" align="center" class="text-uppercase mt-ms" />
         <Text text="Vui lòng thử lại hoặc chọn phương thức khác" color="gray8" align="center" class="mt-xs" />
       </Card>
     </div>

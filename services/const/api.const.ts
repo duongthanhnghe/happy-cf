@@ -45,6 +45,7 @@ export const API_ENDPOINTS = {
     PENDING_REWARD: (userId: string) => `/orders/rewards/pending/${userId}`,
     COUNT_BY_STATUS: '/orders/count-by-status',
     PAYMENT_VNPAY: '/orders/payment/vnpay/create',
+    PAYMENT_MOMO: '/orders/payment/momo/create',
   },
   CATEGORIES_NEWS: {
     LIST: '/categoriesNews',

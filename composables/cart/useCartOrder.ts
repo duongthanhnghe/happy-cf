@@ -11,6 +11,7 @@ import type { ApplyVoucherResponse } from "@/server/types/dto/v1/voucher.dto";
 import { useValidate } from "../validate/useValidate";
 import { createOrderSchema } from "@/shared/validate/schemas/order.schema";
 import { unref } from "vue";
+import { usePayment } from "../order/usePayment";
 
 export const useCartOrder = (
   cartListItem: Ref<CartDTO[]>,
@@ -34,6 +35,7 @@ export const useCartOrder = (
 ) => {
 
   const { validate, formErrors } = useValidate(createOrderSchema)
+  const { payWithVnpay, payWithMomo } = usePayment()
 
   const submitOrder = async () => {
     const confirm = await showConfirm('Xác nhận đặt hàng?');
@@ -117,12 +119,9 @@ export const useCartOrder = (
             }
           });
         } else if (paymentSelected.value === PAYMENT_STATUS.VNPAY) {
-          const res = await ordersAPI.createVnpayPayment(result.data.id)
-          if (res.code === 0 && res.data.paymentUrl) {
-            window.location.href = res.data.paymentUrl
-          } else {
-            showWarning('Không thể tạo thanh toán VNPay!')
-          }
+          await payWithVnpay(result.data.id)
+        } else if (paymentSelected.value === PAYMENT_STATUS.MOMO) {
+          await payWithMomo(result.data.id)
         } else {
           const handleSubmitOk = (id: string) => {
             router.push({ path: `${ROUTES.PUBLIC.ORDER_TRACKING.path}/${id}` });

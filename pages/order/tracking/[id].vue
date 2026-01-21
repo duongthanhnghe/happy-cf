@@ -18,7 +18,7 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <div class="bg-gradient-1 pd-md pt-md">
+  <div class="bg-gradient-1 pb-md pt-md">
     <div class="container">
       <OrderDetailTemplate />
     </div>

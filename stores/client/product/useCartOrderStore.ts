@@ -119,7 +119,7 @@ export const useCartStore = defineStore("Cart", () => {
           const selected = state.tempSelected ?? {}
 
           const hasStock = validCombos.some(c => {
-            if (c.stock <= 0) return false
+            if (c.stock as any <= 0) return false
 
             const matchSelected = Object.entries(selected).every(
               ([gId, vId]) =>

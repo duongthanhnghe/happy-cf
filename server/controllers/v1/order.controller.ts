@@ -17,6 +17,12 @@ import mongoose from "mongoose";
 import { BaseInformationEntity } from "@/server/models/v1/base-information.entity";
 import qs from "qs";
 import { createSecureHash, sortObject } from "../../utils/vnpay";
+import crypto from "crypto";
+import { createMomoSignature } from "@/server/utils/momo";
+import { PAYMENT_STATUS } from '@/shared/constants/payment-status';
+
+const siteUrl = process.env.DOMAIN
+const paymentResultUrl = `${siteUrl}/payment/result`
 
 export const getAllStatus = async (_: Request, res: Response) => {
   try {
@@ -42,6 +48,7 @@ export const getOrderById = async (req: Request, res: Response) => {
       .populate("paymentId")
       .populate("status")
       .populate("userId")
+      .populate("transaction")
       .populate({
         path: "cartItems.idProduct",
         model: "Product",
@@ -281,6 +288,7 @@ export const createOrder = async (req: Request, res: Response) => {
       .populate("paymentId")
       .populate("status")
       .populate("userId")
+      .populate("transaction")
       .populate({
         path: "cartItems.idProduct",
         model: "Product",
@@ -853,18 +861,38 @@ export const createVnpayPayment = async (req: Request, res: Response) => {
       return res.status(404).json({ code: 1, message: "Order không tồn tại" });
     }
 
-    const txnRef2 = order._id.toString();
+    // const txnRef2 = order._id.toString();
 
-    const existing = await PaymentTransactionEntity.findOne({ txnRef2 });
-    if (!existing) {
-      await PaymentTransactionEntity.create({
+    // const existing = await PaymentTransactionEntity.findOne({ txnRef2 });
+    // if (!existing) {
+    //   await PaymentTransactionEntity.create({
+    //     orderId: order._id,
+    //     txnRef: txnRef2,
+    //     amount: order.totalPrice,
+    //     method: PAYMENT_METHOD_STATUS.VNPAY,
+    //     status: PAYMENT_TRANSACTION_STATUS.PENDING,
+    //   });
+    // }
+
+    await OrderEntity.findByIdAndUpdate(order._id, {
+      paymentId: PAYMENT_STATUS.VNPAY
+    });
+
+    await PaymentTransactionEntity.findOneAndUpdate(
+      {
         orderId: order._id,
-        txnRef: txnRef2,
+        method: PAYMENT_METHOD_STATUS.VNPAY,
+      },
+      {
+        orderId: order._id,
+        txnRef: order._id.toString(),
         amount: order.totalPrice,
         method: PAYMENT_METHOD_STATUS.VNPAY,
         status: PAYMENT_TRANSACTION_STATUS.PENDING,
-      });
-    }
+      },
+      { upsert: true, new: true }
+    );
+
 
     const ipAddr =
     (req.headers['cf-connecting-ip'] as string) ||
@@ -923,7 +951,6 @@ export const createVnpayPayment = async (req: Request, res: Response) => {
 };
 
 export const vnpayReturn = async (req: Request, res: Response) => {
-  const siteUrl = process.env.DOMAIN
 
   try {
     let vnp_Params = req.query;
@@ -948,20 +975,55 @@ export const vnpayReturn = async (req: Request, res: Response) => {
       }).select("_id");
 
       if (!transaction) {
-        return res.redirect(`${siteUrl}/payment/result?status=failed`);
+        return res.redirect(
+        `${paymentResultUrl}?message=${encodeURIComponent(
+          "Không tìm thấy giao dịch. Vui lòng kiểm tra lại mã đơn hàng."
+        )}`
+      );
       }
 
       if (rspCode === '00') {
-        return res.redirect(`${siteUrl}/payment/transactionId=${transaction._id}&status=success`);
+        return res.redirect(`${paymentResultUrl}?transactionId=${transaction._id}`);
       } else {
-        return res.redirect(`${siteUrl}/payment/result?status=failed`);
+        const errorMessages: Record<string, string> = {
+          "07": "Giao dịch bị nghi ngờ gian lận. Vui lòng liên hệ ngân hàng.",
+          "09": "Thẻ chưa đăng ký Internet Banking. Vui lòng liên hệ ngân hàng để kích hoạt.",
+          "10": "Xác thực thông tin thẻ không chính xác quá số lần quy định.",
+          "11": "Giao dịch đã hết thời gian thanh toán. Vui lòng thực hiện lại.",
+          "12": "Thẻ bị khóa. Vui lòng liên hệ ngân hàng.",
+          "13": "Mật khẩu xác thực giao dịch không chính xác.",
+          "24": "Bạn đã hủy giao dịch. Vui lòng thử lại nếu muốn tiếp tục thanh toán.",
+          "51": "Tài khoản không đủ số dư để thực hiện giao dịch.",
+          "65": "Tài khoản đã vượt quá hạn mức giao dịch trong ngày.",
+          "75": "Ngân hàng thanh toán đang bảo trì. Vui lòng thử lại sau.",
+          "79": "Giao dịch vượt quá số tiền cho phép.",
+          "99": "Giao dịch thất bại do lỗi hệ thống. Vui lòng thử lại sau."
+        };
+        
+        const errorMessage =
+        errorMessages[rspCode as string] ||
+        "Giao dịch không thành công. Vui lòng thử lại hoặc chọn phương thức thanh toán khác.";
+
+         return res.redirect(
+          `${paymentResultUrl}?transactionId=${transaction._id}&message=${encodeURIComponent(
+            errorMessage
+          )}`
+        );
       }
     } else {
-      return res.redirect(`${siteUrl}/payment/result?status=failed&reason=invalid_signature`);
+      return res.redirect(
+        `${paymentResultUrl}?message=${encodeURIComponent(
+          "Xác thực chữ ký không hợp lệ. Vui lòng liên hệ hỗ trợ."
+        )}`
+      );
     }
   } catch (err) {
     console.error(err);
-    return res.redirect(`${siteUrl}/payment/result?status=failed&reason=system_error`);
+    return res.redirect(
+      `${paymentResultUrl}?message=${encodeURIComponent(
+        "Có lỗi xảy ra trong quá trình xử lý. Vui lòng liên hệ hỗ trợ."
+      )}`
+    );
   }
 };
 
@@ -1030,5 +1092,315 @@ export const vnpayIPN = async (req: Request, res: Response) => {
   } catch (err) {
     console.error("VNPay IPN error:", err);
     return res.json({ RspCode: "99", Message: "Unknown error" });
+  }
+};
+
+export const createMomoPayment = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.body;
+    const order = await OrderEntity.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order không tồn tại" });
+    }
+
+    const partnerCode = process.env.MOMO_PARTNER_CODE!;
+    const accessKey = process.env.MOMO_ACCESS_KEY!;
+    const secretKey = process.env.MOMO_SECRET_KEY!;
+    const endpoint = process.env.MOMO_ENDPOINT!;
+    const ipnUrl = process.env.MOMO_IPN_URL!;
+    const redirectUrl = process.env.MOMO_RETURN_URL!;
+
+    const requestId = order._id.toString();
+    const orderIdMomo = order._id.toString();
+    const amount = order.totalPrice.toString();
+    const orderInfo = `Thanh toán đơn hàng ${orderIdMomo}`;
+    const requestType = "captureWallet";
+    const extraData = "";
+
+    // await PaymentTransactionEntity.findOneAndUpdate(
+    //   { orderId: order._id },
+    //   {
+    //     orderId: order._id,
+    //     txnRef: orderIdMomo,
+    //     amount: order.totalPrice,
+    //     method: PAYMENT_METHOD_STATUS.MOMO,
+    //     status: PAYMENT_TRANSACTION_STATUS.PENDING,
+    //   },
+    //   { upsert: true }
+    // );
+
+    await PaymentTransactionEntity.findOneAndUpdate(
+      {
+        orderId: order._id,
+        method: PAYMENT_METHOD_STATUS.MOMO,
+      },
+      {
+        orderId: order._id,
+        txnRef: orderIdMomo,
+        amount: order.totalPrice,
+        method: PAYMENT_METHOD_STATUS.MOMO,
+        status: PAYMENT_TRANSACTION_STATUS.PENDING,
+      },
+      { upsert: true, new: true }
+    );
+
+    await OrderEntity.findByIdAndUpdate(order._id, {
+      paymentId: PAYMENT_STATUS.MOMO
+    });
+
+    const rawSignature =
+      `accessKey=${accessKey}` +
+      `&amount=${amount}` +
+      `&extraData=${extraData}` +
+      `&ipnUrl=${ipnUrl}` +
+      `&orderId=${orderIdMomo}` +
+      `&orderInfo=${orderInfo}` +
+      `&partnerCode=${partnerCode}` +
+      `&redirectUrl=${redirectUrl}` +
+      `&requestId=${requestId}` +
+      `&requestType=${requestType}`;
+
+    const signature = createMomoSignature(rawSignature, secretKey);
+
+    const requestBody = {
+      partnerCode,
+      accessKey,
+      requestId,
+      amount,
+      orderId: orderIdMomo,
+      orderInfo,
+      redirectUrl,
+      ipnUrl,
+      extraData,
+      requestType,
+      signature,
+      lang: "vi",
+    };
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
+    });
+
+    const result = await response.json();
+
+    if (result.resultCode !== 0 || !result.payUrl) {
+      return res.status(400).json({
+        code: result.resultCode,
+        message: result.message || "Tạo payment thất bại",
+      });
+    }
+
+    return res.json({
+      code: 0,
+      data: {
+        payUrl: result.payUrl,
+      },
+    });
+  } catch (err) {
+    console.error("MoMo create error:", err);
+    return res.status(500).json({ code: 3, message: "Server error" });
+  }
+};
+
+export const momoIPN = async (req: Request, res: Response) => {
+  try {
+    const secretKey = process.env.MOMO_SECRET_KEY!;
+    const {
+      partnerCode,
+      orderId,
+      requestId,
+      amount,
+      orderInfo,
+      orderType,
+      transId,
+      resultCode,
+      message,
+      payType,
+      responseTime,
+      extraData,
+      signature,
+    } = req.body;
+
+    const rawSignature =
+      `accessKey=${process.env.MOMO_ACCESS_KEY}` +
+      `&amount=${amount}` +
+      `&extraData=${extraData}` +
+      `&message=${message}` +
+      `&orderId=${orderId}` +
+      `&orderInfo=${orderInfo}` +
+      `&orderType=${orderType}` +
+      `&partnerCode=${partnerCode}` +
+      `&payType=${payType}` +
+      `&requestId=${requestId}` +
+      `&responseTime=${responseTime}` +
+      `&resultCode=${resultCode}` +
+      `&transId=${transId}`;
+
+    const checkSignature = createMomoSignature(rawSignature, secretKey);
+
+    if (signature !== checkSignature) {
+      console.error("Signature mismatch:", {
+        received: signature,
+        expected: checkSignature,
+      });
+      return res.json({ code: 97, message: "Invalid signature" });
+    }
+
+    const transaction = await PaymentTransactionEntity.findOne({
+      txnRef: orderId,
+    });
+
+    if (!transaction) {
+      return res.json({ code: 1, message: "Transaction not found" });
+    }
+
+    if (transaction.status === PAYMENT_TRANSACTION_STATUS.PAID) {
+      return res.json({ code: 0, message: "Already processed" });
+    }
+
+    if (resultCode === 0) {
+      transaction.status = PAYMENT_TRANSACTION_STATUS.PAID;
+      transaction.rawIpn = req.body;
+      transaction.paidAt = new Date();
+      await transaction.save();
+
+      // ✅ Update order status
+      // await OrderEntity.findByIdAndUpdate(transaction.orderId, {
+      //   paymentStatus: "PAID",
+      //   status: "CONFIRMED", // hoặc status phù hợp logic của bạn
+      // });
+    } else {
+      console.log("IPN resultCode:", resultCode);
+      transaction.status = PAYMENT_TRANSACTION_STATUS.FAILED;
+      transaction.rawIpn = req.body;
+      await transaction.save();
+    }
+
+    return res.json({ code: 0, message: "Success" });
+  } catch (err) {
+    console.error("MoMo IPN error:", err);
+    return res.json({ code: 99, message: "Unknown error" });
+  }
+};
+
+export const momoReturn = async (req: Request, res: Response) => {
+  try {
+    const {
+      partnerCode,
+      orderId,
+      requestId,
+      amount,
+      orderInfo,
+      orderType,
+      transId,
+      resultCode,
+      message,
+      payType,
+      responseTime,
+      extraData,
+      signature,
+    } = req.query;
+
+    const secretKey = process.env.MOMO_SECRET_KEY!;
+    const rawSignature =
+      `accessKey=${process.env.MOMO_ACCESS_KEY}` +
+      `&amount=${amount}` +
+      `&extraData=${extraData}` +
+      `&message=${message}` +
+      `&orderId=${orderId}` +
+      `&orderInfo=${orderInfo}` +
+      `&orderType=${orderType}` +
+      `&partnerCode=${partnerCode}` +
+      `&payType=${payType}` +
+      `&requestId=${requestId}` +
+      `&responseTime=${responseTime}` +
+      `&resultCode=${resultCode}` +
+      `&transId=${transId}`;
+
+    const checkSignature = createMomoSignature(rawSignature, secretKey);
+
+    if (signature !== checkSignature) {
+      return res.redirect(
+        `${paymentResultUrl}?&message=${encodeURIComponent(
+          "Xác thực chữ ký không hợp lệ. Vui lòng liên hệ hỗ trợ."
+        )}`
+      );
+    }
+
+    const transaction = await PaymentTransactionEntity.findOne({
+      txnRef: orderId as string,
+    });
+
+    if (!transaction) {
+      return res.redirect(
+        `${paymentResultUrl}?&message=${encodeURIComponent(
+          "Không tìm thấy giao dịch. Vui lòng kiểm tra lại mã đơn hàng."
+        )}`
+      );
+    }
+
+    if (transaction.status !== PAYMENT_TRANSACTION_STATUS.PENDING) {
+      const statusMessage =
+        transaction.status === PAYMENT_TRANSACTION_STATUS.PAID
+          ? "Thanh toán thành công! Đơn hàng của bạn đang được xử lý."
+          : "Giao dịch đã thất bại trước đó. Vui lòng thử lại hoặc chọn phương thức thanh toán khác.";
+
+      return res.redirect(
+        `${paymentResultUrl}?transactionId=${transaction._id}&message=${encodeURIComponent(statusMessage)}`
+      );
+    }
+
+    if (resultCode === "0") {
+      transaction.status = PAYMENT_TRANSACTION_STATUS.PAID;
+      transaction.rawIpn = req.query;
+      transaction.paidAt = new Date();
+      await transaction.save();
+
+      // await OrderEntity.findByIdAndUpdate(transaction.orderId, {
+      //   paymentStatus: "PAID",
+      //   status: "CONFIRMED",
+      // });
+
+      return res.redirect(
+        `${paymentResultUrl}?transactionId=${transaction._id}&message=${encodeURIComponent(
+          "Thanh toán thành công! Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng của bạn sớm nhất."
+        )}`
+      );
+    } else {
+      transaction.status = PAYMENT_TRANSACTION_STATUS.FAILED;
+      transaction.rawIpn = req.query;
+      await transaction.save();
+
+      const errorMessages: Record<string, string> = {
+        "1006": "Bạn đã hủy giao dịch. Vui lòng thử lại nếu muốn tiếp tục thanh toán.",
+        "1001": "Giao dịch thất bại do lỗi từ MoMo. Vui lòng thử lại sau.",
+        "1002": "Giao dịch bị từ chối. Vui lòng kiểm tra số dư hoặc liên hệ MoMo.",
+        "1003": "Giao dịch bị hủy do hết thời gian chờ.",
+        "1004": "Số tiền giao dịch vượt quá hạn mức cho phép.",
+        "1005": "Giao dịch bị từ chối do lý do bảo mật.",
+        "1007": "Giao dịch đang được xử lý. Vui lòng đợi trong giây lát.",
+        "9000": "Giao dịch bị hủy bởi hệ thống. Vui lòng thử lại.",
+      };
+
+      const errorMessage =
+        errorMessages[resultCode as string] ||
+        (message as string) ||
+        "Giao dịch không thành công. Vui lòng thử lại hoặc chọn phương thức thanh toán khác.";
+
+      return res.redirect(
+        `${paymentResultUrl}?transactionId=${transaction._id}&message=${encodeURIComponent(
+          errorMessage
+        )}`
+      );
+    }
+  } catch (err) {
+    return res.redirect(
+      `${paymentResultUrl}?&message=${encodeURIComponent(
+        "Có lỗi xảy ra trong quá trình xử lý. Vui lòng liên hệ hỗ trợ."
+      )}`
+    );
   }
 };

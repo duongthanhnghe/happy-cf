@@ -2,14 +2,18 @@
 import { formatCurrency, formatDateTime } from '@/utils/global'
 import { useOrderHistoryStore } from '@/stores/client/order/useOrderHistoryStore'
 import { ORDER_STATUS } from '@/shared/constants/order-status';
+import { PAYMENT_TRANSACTION_STATUS } from '@/shared/constants/payment-transaction-status';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { useOrderHelpers } from '@/utils/orderHelpers';
 import { useSharedOrderDetailStore } from '@/stores/client/order/useSharedOrderDetailStore';
 import type { OrderDTO } from '@/server/types/dto/v1/order.dto';
+import { usePaymentMethodStore } from '@/stores/client/order/usePaymentMethodStore';
 
 const store = useOrderHistoryStore()
 const storeDisplay = useDisplayStore()
 const storeDetailOrder = useSharedOrderDetailStore()
+const storePaymentStatus = usePaymentMethodStore();
+
 const { remainingProductNames } = useOrderHelpers()
 const props = defineProps<{
   item: OrderDTO
@@ -57,12 +61,41 @@ const props = defineProps<{
           />
           {{ props.item?.paymentId.name }}
         </v-chip>
-        <Button v-if="props.item?.transaction === null && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handlePaymentOrder(props.item?.id, props.item?.code, props.item?.totalPrice)" size="sm" color="black" label="Thanh toán"/>
+        <v-menu location="bottom start" transition="slide-y-transition">
+          <template #activator="{ props: menuProps }">
+            <Button
+              v-bind="menuProps"
+              v-if="(props.item?.transaction === null 
+                || props.item?.transaction?.status !== PAYMENT_TRANSACTION_STATUS.paid.status
+                || props.item?.transaction?.status !== PAYMENT_TRANSACTION_STATUS.refunded.status
+                )
+                && props.item?.status.id !== ORDER_STATUS.CANCELLED"
+              size="sm"
+              color="black"
+              label="Thanh toán"
+            />
+          </template>
+
+          <v-list class="min-width-180" v-if="storePaymentStatus.getListData && storePaymentStatus.getListData.length > 0">
+            <v-list-item v-for="item in storePaymentStatus.getListData.filter(
+                bank => bank.method !== 'cash'
+              )"
+              :key="item.id"
+              @click="store.handlePaymentOrder(props.item?.id, item.id, props.item?.code, props.item?.totalPrice)"
+            >
+              <v-list-item-title class="flex align-center gap-sm">
+                <Image :src="item.image" :width="20" />
+                Thanh toán {{ item.name }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
       </div>
       <div class="flex gap-xs">
         <template v-if="storeDisplay.isLaptop">
           <template v-if="props.item?.status.id === ORDER_STATUS.PENDING || props.item?.status.id === ORDER_STATUS.CANCELLED">
-            <Button v-if="!props.item?.cancelRequested && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handleCancelOrder(props.item?.id, props.item?.userId)" size="sm" color="secondary" label="Yêu cầu huỷ đơn"/>
+            <Button v-if="!props.item?.cancelRequested && props.item?.status.id !== ORDER_STATUS.CANCELLED" @click.prevent="store.handleCancelOrder(props.item?.id, props.item?.userId as string)" size="sm" color="secondary" label="Yêu cầu huỷ đơn"/>
             <Button v-else-if="props.item?.cancelRequested" v-tooltip.left="'Đã gửi yêu cầu huỷ đơn đến admin'" tag="span" size="sm" color="gray" :border="false" label="Đã yêu cầu" />
             <template v-else />
           </template>

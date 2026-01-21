@@ -1,53 +1,59 @@
 @use "@/assets/variables" as *;
 
 .popup-detail-order {
-    &-status {
-      &-item {
-        position: relative;
+  &-status {
+    &-item {
+      position: relative;
+      &:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        height: 2px;
+        background-color: $cl-white;
+        opacity: 0.4;
+      }
+      &.is-active {
         &:not(:last-child)::before {
-          content: '';
-          position: absolute;
-          top: 20px;
-          width: 100%;
-          height: 2px;
-          background-color: $cl-white;
-          opacity: 0.4;
+          opacity: 1;
         }
-        &.is-active {
-          &:not(:last-child)::before {
-            opacity: 1;
-          }
-          .popup-detail-order {
-            &-status {
-              &-icon {
-                background-color: $cl-white;
-                color: $cl-primary ;
-                span {
-                  opacity: 1;
-                }
-              }
-              &-title {
+        .popup-detail-order {
+          &-status {
+            &-icon {
+              background-color: $cl-white;
+              color: $cl-primary ;
+              span {
                 opacity: 1;
               }
+            }
+            &-title {
+              opacity: 1;
             }
           }
         }
       }
-      &-icon {
-        background-color: $cl-primary;
-        position: relative;
-        border-width: 2px;
-        border-color: #ffffff53;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        span {
-          opacity: 0.6;
-        }
-      }
-      &-title {
+    }
+    &-icon {
+      background-color: $cl-primary;
+      position: relative;
+      border-width: 2px;
+      border-color: #ffffff53;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      span {
         opacity: 0.6;
-        line-height: 1.4;
       }
     }
+    &-title {
+      opacity: 0.6;
+      line-height: 1.4;
+      font-size: $fz-xs;
+    }
   }
+  @media (min-width: 1025px){
+    &-title {
+      font-size: $fz-base;
+    }
+  }
+}

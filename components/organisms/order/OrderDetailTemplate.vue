@@ -85,10 +85,13 @@ const storeDetailOrder = useSharedOrderDetailStore()
           {{ formatCurrency(storeDetailOrder.getDetailOrder?.totalPriceCurrent) }}
         </span>
       </div>
-      <div v-if="storeDetailOrder.getDetailOrder?.shippingFee" class="flex justify-between text-color-gray5">
+      <div v-if="storeDetailOrder.getDetailOrder?.shippingFee !== null" class="flex justify-between text-color-gray5">
         Phí vận chuyển
-        <span>
+        <span class="flex gap-xs align-center">
           {{ formatCurrency(storeDetailOrder.getDetailOrder?.shippingFee) }}
+          <v-chip v-if="storeDetailOrder.getDetailOrder?.shippingFee === 0" label color="blue" size="small">
+            Freeship
+          </v-chip>
         </span>
       </div>
       <div v-if="storeDetailOrder.getDetailOrder?.totalDiscountOrder && storeDetailOrder.getDetailOrder?.totalDiscountOrder != 0" class="flex justify-between text-color-gray5">

@@ -14,7 +14,10 @@ import {
   getAllPayment,
   createVnpayPayment,
   vnpayIPN,
-  vnpayReturn
+  vnpayReturn,
+  createMomoPayment,
+  momoIPN,
+  momoReturn,
 } from '../../controllers/v1/order.controller'
 import { authenticate } from '../../middlewares/authenticate'
 import { validate } from '../../middlewares/validate/validate'
@@ -25,6 +28,11 @@ const router = Router()
 router.post("/payment/vnpay/create", createVnpayPayment);
 router.get("/payment/vnpay-return", vnpayReturn);
 router.get("/payment/vnpay-ipn", vnpayIPN);
+
+router.post("/payment/momo/create", createMomoPayment)
+router.post("/payment/momo-ipn", momoIPN)
+router.get("/payment/momo-return", momoReturn);
+
 router.get('/status', getAllStatus)
 router.get('/payment-method', getAllPayment)
 router.post("/check-point", authenticate, checkPoint);

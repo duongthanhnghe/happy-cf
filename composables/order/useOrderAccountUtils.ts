@@ -5,21 +5,32 @@ import { type Ref } from 'vue';
 import { useRouter } from 'vue-router'
 import type { OrderPaginationDTO } from "@/server/types/dto/v1/order.dto";
 import { ROUTES } from "@/shared/constants/routes";
+import { PAYMENT_STATUS } from '@/shared/constants/payment-status';
+import { usePayment } from '@/composables/order/usePayment';
 
 export const useOrderAccountUtils = (
   items: Ref<OrderPaginationDTO|null>,
 ) => {
   const router = useRouter()
+  const { payWithVnpay, payWithMomo } = usePayment()
 
-  const handlePaymentOrder = (orderId: string, orderCode: string, amount: number) => {
-    router.push({
-      path: ROUTES.PUBLIC.PAYMENT.path,
-      query: {
-        orderId,
-        orderCode,
-        amount,
-      }
-    })
+  const handlePaymentOrder = async (orderId: string, methodId: string, orderCode: string, amount: number) => {
+    if(methodId === PAYMENT_STATUS.BANK){
+      router.push({
+        path: ROUTES.PUBLIC.PAYMENT.path,
+        query: {
+          orderId,
+          orderCode,
+          amount,
+        }
+      })
+    } else if (methodId === PAYMENT_STATUS.MOMO) {
+      await payWithMomo(orderId)
+    } else if (methodId === PAYMENT_STATUS.VNPAY) {
+      await payWithVnpay(orderId)
+    } else {
+      return false
+    }
   }
 
   const handleCancelOrder = async (orderId: string, userId: string) => {

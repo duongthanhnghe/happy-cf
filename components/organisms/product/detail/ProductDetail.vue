@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
             </div>
            
             <div class="mt-md">
-              <ProductDetailButtonOrder classButton="text-size-normal" />
+              <ProductDetailButtonOrder :classButton="storeDisplay.isLaptop ? 'text-size-normal':''" />
             </div>
             <ProductDetailPolicy />
           </div>

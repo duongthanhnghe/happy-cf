@@ -18,7 +18,7 @@ const storeCart = useCartStore();
         :src="item.image"
         :alt="item.productName"
         :width="100"
-        class="rd-lg"
+        class="rd-lg object-fit-cover"
         preset="avatar"
       />
     </div>

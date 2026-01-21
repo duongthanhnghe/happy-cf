@@ -187,6 +187,20 @@ export const ordersAPI = {
     }
   },
 
+  createMomoPayment: async (
+    orderId: string
+  ): Promise<ApiResponse<any>> => {
+    try {
+      return await apiClient().post<ApiResponse<any>>(
+        API_ENDPOINTS.ORDERS.PAYMENT_MOMO,
+        {orderId}
+      );
+    } catch (err: any) {
+      console.error("Error create vnpay payment:", err);
+      return apiError<any>(err);
+    }
+  },
+
 };
 
 // import { API_ENDPOINTS } from '@/services/const/api.const'
