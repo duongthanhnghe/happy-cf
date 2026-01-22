@@ -10,7 +10,7 @@ export interface ProductSelectedVariant {
   image: string;
 }
 
-export interface ProductVariantOption { //new
+export interface ProductVariantOption {
   variantId: string;
   variantName: string;
 }
@@ -20,7 +20,6 @@ export interface ProductVariantGroup {
   groupName: string;
   required: boolean;
   options: ProductVariantOption[];
-  // selectedVariants: ProductSelectedVariant[];
 }
 
 

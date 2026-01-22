@@ -75,7 +75,7 @@ export interface VoucherUsage extends Document {
 
 const VoucherSchema = new Schema(
   {
-    code: { type: String, required: true, unique: true }, // Mã voucher
+    code: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     description: { type: String },
     image: { type: String },

@@ -175,4 +175,11 @@ export const API_ENDPOINTS_ADMIN = {
   VOUCHERS_USAGE: {
     LIST: "/voucher-usage",
   },
+  PROMOTION_GIFT: {
+    LIST: "/promotion-gift",
+    CREATE: "/promotion-gift",
+    GET_BY_ID: (id: string) => `/promotion-gift/${id}`,
+    UPDATE: (id: string) => `/promotion-gift/${id}`,
+    DELETE: (id: string) => `/promotion-gift/${id}`,
+  },
 }

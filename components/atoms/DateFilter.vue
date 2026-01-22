@@ -96,8 +96,8 @@ const onSelectToDay = (val: string | null) => {
       <v-date-picker
         :model-value="props.toDay ? new Date(new Date(props.toDay).getTime() - 1).toISOString().split('T')[0] : null"
         @update:model-value="onSelectToDay"
-        :max="todayIso"            
       />
+      <!-- :max="todayIso" -->
     </v-menu>
   </div>
 </template>

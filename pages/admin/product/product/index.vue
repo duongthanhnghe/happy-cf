@@ -16,15 +16,6 @@ const store = useProductManageStore();
 const storeFileManage = useFileManageFolderStore();
 const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
 
-const getTotalVariantStock = (item: any) => {
-  if (item.variantCombinations.length === 0) return item.amount
-
-  return item.variantCombinations.reduce(
-    (sum: number, vc: any) => sum + (vc.stock || 0),
-    0
-  )
-}
-
 onMounted(async () => {
   if(!getListCategoryAll.value || getListCategoryAll.value.data.length === 0) await fetchCategoryList(1,9999,'')
 })
@@ -178,7 +169,7 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.amount="{ item }">
-      {{ getTotalVariantStock(item) }}
+      {{ store.getTotalVariantStock(item) }}
     </template>
 
     <template #item.isActive="{ item }">

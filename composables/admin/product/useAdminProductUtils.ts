@@ -1,4 +1,4 @@
-import type { CategoryProductDTO, CreateProductDTO, UpdateProductDTO } from '@/server/types/dto/v1/product.dto';
+import type { CategoryProductDTO, CreateProductDTO, ProductDTO, UpdateProductDTO } from '@/server/types/dto/v1/product.dto';
 import { unref, type Ref } from 'vue';
 type MaybeRef<T> = T | Ref<T>;
 
@@ -38,10 +38,20 @@ export const useAdminProductUtils = (
     isTogglePopupAddVariant.value = value;
   };
 
+  const getTotalVariantStock = (item: ProductDTO) => {
+    if (item.variantCombinations.length === 0) return item.amount
+
+    return item.variantCombinations.reduce(
+      (sum: number, vc: any) => sum + (vc.stock || 0),
+      0
+    )
+  }
+
   return {
     handleTogglePopupAdd,
     handleTogglePopupAddVariant,
     handleTogglePopupUpdate,
     handleReset,
+    getTotalVariantStock,
   };
 };

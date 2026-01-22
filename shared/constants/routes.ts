@@ -107,6 +107,34 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
         },
       },
     },
+
+    PROMOTION_GIFT: {
+      label: 'Promotion Gift',
+      icon: 'sell',
+      isShowSidebar: true,
+      roles: ["superadmin"],
+      children: {
+        LIST: {
+          path: '/admin/promotion-gift',
+          label: 'QL Promotion',
+          icon: 'list',
+          middleware: ['admin-role'],
+          layout: 'admin-layout',
+          isShowSidebar: true,
+          roles: ["superadmin"],
+        },
+        // USAGE: {
+        //   path: '/admin/voucher/usage',
+        //   label: 'Đã sử dụng',
+        //   icon: 'list',
+        //   middleware: ['admin-role'],
+        //   layout: 'admin-layout',
+        //   isShowSidebar: true,
+        //   roles: ["superadmin"],
+        // },
+      },
+    },
+
     ORDER: {
       label: 'Đơn hàng',
       icon: 'assignment',

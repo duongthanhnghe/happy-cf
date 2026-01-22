@@ -105,6 +105,7 @@ export const useVoucherManageOperations = (
   };
 
   const handleResetForm = () => {
+    selectedCategory.value = []
     Object.assign(formItem, defaultForm);
     Object.assign(updateItem, defaultForm);
   };
