@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { formatCurrency } from '@/utils/global'
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
-import { useProductManageStore } from '@/stores/admin/product/useProductManageStore';
-const store = useProductManageStore();
+import { useAdminProductHelpers } from '@/composables/admin/product/useAdminProductHelpers';
 
+const { getTotalVariantStock } = useAdminProductHelpers();
 const props = defineProps<{
   item: ProductDTO
 }>()
@@ -36,7 +36,7 @@ const props = defineProps<{
      
       <div class="flex flex-wrap justify-between align-end mt-xs">
         <div class="flex gap-xs">
-          <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`Tồn kho: ${store.getTotalVariantStock(props.item)}`"/>
+          <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`Tồn kho: ${getTotalVariantStock(props.item)}`"/>
         </div>
         <Text v-if="item.price && props.item.variantCombinations.length === 0" :text="`${formatCurrency(item.price)}`" color="gray5" />
       </div>

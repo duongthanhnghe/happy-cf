@@ -34,23 +34,6 @@ export const getAllPromotionGifts = async (req: Request, res: Response) => {
       }
     }
 
-    if (numLimit === -1) {
-      const items = await PromotionGiftEntity
-        .find(filter)
-        .sort({ createdAt: -1 })
-
-      return res.json({
-        code: 0,
-        data: items.map(toPromotionGiftDTO),
-        pagination: {
-          page: 1,
-          limit: items.length,
-          totalPages: 1,
-          total: items.length,
-        },
-      })
-    }
-
     const result = await PromotionGiftEntity.paginate(filter, {
       page: numPage,
       limit: numLimit,
@@ -164,3 +147,30 @@ export const deletePromotionGift = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message });
   }
 };
+
+export const toggleActive = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+
+    const item = await PromotionGiftEntity.findById(id)
+    if (!item) {
+      return res.status(404).json({ code: 1, message: "Promotion gift không tồn tại" })
+    }
+
+    item.isActive = !item.isActive
+    await item.save()
+
+    await item.populate({
+      path: 'gifts.productId',
+      select: 'productName image',
+    })
+
+    return res.json({
+      code: 0,
+      message: "Cập nhật trạng thái thành công",
+      data: toPromotionGiftDTO(item)
+    })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}

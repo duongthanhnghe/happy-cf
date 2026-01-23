@@ -48,7 +48,7 @@ const isShowSidebarContent = computed(() => {
     ]" 
     class="taskbar scroll-hide position-fixed height-dvh left-0 top-0 pd-sm border-right-default z-index-12 bg-white transition-0d3">
     <div class="taskbar-content">
-      <div class="flex justify-between align-center pd-xs">
+      <div class="flex justify-between align-center pd-xs sticky bg-white z-index-2">
         <AdminLogo maxHeight="xl" link v-show="isShowSidebarContent" />
         <Button color="secondary" :border="false" icon="dock_to_left" size="sm" @click="storeSidebar.handleToggleSidebar()"/>
       </div>

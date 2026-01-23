@@ -181,5 +181,6 @@ export const API_ENDPOINTS_ADMIN = {
     GET_BY_ID: (id: string) => `/promotion-gift/${id}`,
     UPDATE: (id: string) => `/promotion-gift/${id}`,
     DELETE: (id: string) => `/promotion-gift/${id}`,
+    TOGGLE_ACTIVE: (id: string) => `/promotion-gift/toggleActive/${id}`,
   },
 }

@@ -6,6 +6,7 @@ import { formatCurrency } from '@/utils/global'
 import { ROUTES } from '@/shared/constants/routes';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 import { useAdminProductCategory } from '@/composables/admin/product/category/useAdminProductCategory';
+import { useAdminProductHelpers } from '@/composables/admin/product/useAdminProductHelpers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.PRODUCT.children?.LIST.layout,
@@ -15,6 +16,7 @@ definePageMeta({
 const store = useProductManageStore();
 const storeFileManage = useFileManageFolderStore();
 const { getListCategoryAll, fetchCategoryList } = useAdminProductCategory()
+const { getTotalVariantStock } = useAdminProductHelpers();
 
 onMounted(async () => {
   if(!getListCategoryAll.value || getListCategoryAll.value.data.length === 0) await fetchCategoryList(1,9999,'')
@@ -169,7 +171,7 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.amount="{ item }">
-      {{ store.getTotalVariantStock(item) }}
+      {{ getTotalVariantStock(item) }}
     </template>
 
     <template #item.isActive="{ item }">

@@ -127,6 +127,7 @@ onBeforeUnmount(() => {
         <v-chip
           label
           :color="item.isActive ? 'green' : 'red'"
+          v-tooltip.right="'Đổi trạng thái'" @click="store.toggleActive(item.id)"
         >
           {{ item.isActive ? 'Đang áp dụng' : 'Tắt' }}
         </v-chip>

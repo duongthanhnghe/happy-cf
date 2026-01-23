@@ -88,4 +88,13 @@ export const promotionGiftAPI = {
       return apiError<null>(err);
     }
   },
+
+  toggleActive: async (id: string): Promise<ApiResponse<PromotionGiftDTO>> => {
+    try {
+      return await apiAdmin().patch<ApiResponse<PromotionGiftDTO>>(API_ENDPOINTS_ADMIN.PROMOTION_GIFT.TOGGLE_ACTIVE(id));
+    } catch (err: any) {
+      console.error(`Error toggling active status for Promotion Gift ID ${id}:`, err);
+      return apiError<PromotionGiftDTO>(err)
+    }
+  },
 };

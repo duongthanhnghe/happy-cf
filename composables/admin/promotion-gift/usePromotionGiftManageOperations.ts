@@ -14,6 +14,7 @@ import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { useAdminProductDetailMap } from '@/composables/admin/product/useAdminProductDetailMap'
 import { useDebounceFn } from '@/composables/utils/useDebounceFn'
+import { useToggleActiveStatus } from '@/composables/utils/useToggleActiveStatus'
 
 type MaybeRef<T> = T | Ref<T>
 
@@ -152,6 +153,8 @@ export const usePromotionGiftManageOperations = (
     }
   }
 
+  const { toggleActive } = useToggleActiveStatus(promotionGiftAPI.toggleActive, serverItems );
+
   const handleDelete = async (id: string) => {
     const ok = await showConfirm('Bạn có chắc muốn xoá CTKM tặng quà này?')
     if (!ok) return
@@ -283,6 +286,7 @@ export const usePromotionGiftManageOperations = (
     resetFilter,
     hasFilter,
     addGiftItem,
-    removeGiftItem
+    removeGiftItem,
+    toggleActive,
   }
 }
