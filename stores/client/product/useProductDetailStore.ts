@@ -10,12 +10,17 @@ import { useAvailableVouchersForOrder } from "@/composables/voucher/useAvailable
 import { useProductDetailOperations } from "@/composables/product/useProductDetailOperations";
 import { useProductDetailState } from "@/composables/product/useProductDetailState";
 import { useAccountStore } from "../users/useAccountStore";
+import { useAvailablePromotionGifts } from "@/composables/promotion-gift/useAvailablePromotionGifts";
 
 export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   const { getDetailProduct } = useProductDetail()
   const { getListProductRelated, loading: loadingListRelated } = useProductRelated()
   const { getListReview, fetchListReview, loading: loadingListReviews } = useProductReviewByProduct()
   const { getVoucherProduct, loading: loadingListVoucher } = useAvailableVouchersForOrder();
+  const {
+   loadingData: loadingDataPromotionGift,
+  getAvailablePromotionGiftsApi,
+} = useAvailablePromotionGifts()
   
   const storeCart = useCartStore();
   const storeAccount = useAccountStore();
@@ -127,7 +132,9 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     loadingListRelated,
     loadingListReviews,
     loadingListVoucher,
+    loadingDataPromotionGift,
     getVoucherProduct,
+    getAvailablePromotionGiftsApi,
     getListProductRelated,
     getTotalPages,
     getTotalPoint,

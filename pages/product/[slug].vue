@@ -15,6 +15,7 @@ import { useAvailableVouchersForOrder } from '@/composables/voucher/useAvailable
 import { useProductRelated } from '@/composables/product/useProductRelated';
 import { useProductReviewByProduct } from '@/composables/product-review/useProductReviewByProduct';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useAvailablePromotionGifts } from '@/composables/promotion-gift/useAvailablePromotionGifts';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.DETAIL.middleware ?? { middleware: ['product-detail'] },
@@ -35,6 +36,9 @@ const { setProductSEO } = useProductSEO()
 const { fetchAvailableVouchers } = useAvailableVouchersForOrder();
 const { fetchProductRelated } = useProductRelated()
 const { fetchListReview } = useProductReviewByProduct()
+const {
+  fetchAvailablePromotionGifts,
+} = useAvailablePromotionGifts()
 
 const { data, error, pending } = await useAsyncData(
   `product-detail-${slug}`,
@@ -95,13 +99,19 @@ onMounted(async () => {
 
   const userId = storeAccount.getUserId || ''
   const categoryIds = detail.categoryId ? [detail.categoryId] : []
-  const orderTotal = detail.priceDiscounts
+  const orderTotal = store.variantPrice
 
   if (categoryIds.length && orderTotal) {
     fetchAvailableVouchers({
       userId,
       categoryIds,
       orderTotal
+    })
+
+    fetchAvailablePromotionGifts({
+      productIds: [detail.id],
+      categoryIds: categoryIds,
+      orderTotal: orderTotal,
     })
   }
 

@@ -14,6 +14,7 @@ import XLSX from "xlsx";
 import { buildVietQR } from "../../../utils/qrcode-payment"
 import { buildBillHTML } from "../../../utils/print-bill"
 import { createProductReviewEntity } from "../../../factories/v1/product-review.factory"
+import { PromotionGiftEntity } from "@/server/models/v1/promotion-gift.entity"
 
 export const getAllOrder = async (req: Request, res: Response) => {
   try {
@@ -167,7 +168,6 @@ export const getOrderById = async (req: Request, res: Response) => {
       .populate("paymentId")
       .populate("status")
       .populate("userId")
-      // .populate({ path: "transaction", model: "PaymentTransaction" })
       .populate("transaction")
       .populate({
         path: "shipping",
@@ -241,7 +241,7 @@ export const rollbackVoucherUsage = async (order: any) => {
       }
 
     } catch (err) {
-      console.error(`❌ Lỗi rollback voucher ${vu.code}:`, err);
+      console.error(`Lỗi rollback voucher ${vu.code}:`, err);
     }
   }
 
@@ -333,6 +333,27 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
 
       // hoàn voucher
       await rollbackVoucherUsage(order)
+
+      // update lai usedCount Gift Promotion
+      if (order.promotionGiftApplied) {
+        const promotionGiftIds = [
+          ...new Set(
+            (order.giftItems || [])
+              .map(g => g.promotionGiftId?.toString())
+              .filter(Boolean)
+          )
+        ]
+
+        if (promotionGiftIds.length > 0) {
+          await PromotionGiftEntity.updateMany(
+            {
+              _id: { $in: promotionGiftIds },
+              usedCount: { $gt: 0 },
+            },
+            { $inc: { usedCount: -1 } }
+          )
+        }
+      }
     }
 
     await order.save()

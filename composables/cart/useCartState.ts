@@ -68,6 +68,13 @@ export const useCartState = () => {
   const selectedVoucher = ref<string | null>(null);
   const voucherCode = ref<string>('');
   const needAutoSelect = ref(0)
+  const giftItems = ref<{
+    promotionId: string
+    productId: string
+    quantity: number
+    combinationId?: string
+    }[]>([])
+  const pendingGiftVariants = ref<Record<string, string | null>>({})
 
   return {
     informationOrder,
@@ -105,5 +112,9 @@ export const useCartState = () => {
     selectedVoucher,
     voucherCode,
     needAutoSelect,
+    // giftCombinationId,
+    // selectedGiftProductId,
+    giftItems,
+    pendingGiftVariants,
   };
 };

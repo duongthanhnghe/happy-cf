@@ -1,4 +1,5 @@
 import type { PaginationDTO } from "../../common/pagination.dto";
+import type { ProductDTO } from "./product.dto";
 
 export interface PromotionGiftDTO {
   id: string;
@@ -16,12 +17,7 @@ export interface PromotionGiftDTO {
   startDate: string;
   endDate: string;
 
-  gifts: {
-    productId: string;
-    quantity: number;
-    productName?: string;
-    image?: string;
-  }[];
+  gifts: PromotionGiftItemDTO[];
 
   usageLimit: number;
   usedCount: number;
@@ -32,6 +28,12 @@ export interface PromotionGiftDTO {
   updatedAt: string;
 }
 
+export interface AvailablePromotionGiftDTO extends PromotionGiftDTO {
+  locked: boolean
+  message: string
+  missingAmount: number
+}
+
 export type CreatePromotionGiftBody = Omit<
   PromotionGiftDTO,
   "id" | "usedCount" | "createdAt" | "updatedAt"
@@ -40,3 +42,17 @@ export type CreatePromotionGiftBody = Omit<
 export type UpdatePromotionGiftBody = Partial<CreatePromotionGiftBody>;
 
 export type PromotionGiftPaginationDTO = PaginationDTO<PromotionGiftDTO>
+
+export interface PromotionGiftItemDTO {
+  productId: string
+  quantity: number
+  productName?: string;
+  image?: string;
+  product?: ProductDTO
+}
+
+export interface GetAvailablePromotionGiftsBody {
+  productIds: string[]
+  categoryIds: string[]
+  orderTotal: number
+}

@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import type { cartItems } from "../../types/dto/v1/order.dto"
+import type { cartItems, GiftItems } from "../../types/dto/v1/order.dto"
 import mongoosePaginate from "mongoose-paginate-v2";
 import type { PaginateModel } from "mongoose";
 import type { PaymentMethod } from "../../types/dto/v1/payment-transaction.dto"
@@ -75,6 +75,8 @@ export interface Order {
   note?: string;
   paymentId: Types.ObjectId;
   cartItems: cartItems[];
+  giftItems?: GiftItems[];
+  promotionGiftApplied: boolean;
   stockDeducted: boolean;
   totalPrice: number;
   totalPriceSave: number;
@@ -82,7 +84,6 @@ export interface Order {
   totalDiscountOrder: number;
   shippingFee: number;
   shipping?: Types.ObjectId
-  // point?: number;
   status: Types.ObjectId;
   userId?: Types.ObjectId | null;
   cancelRequested: boolean;
@@ -163,6 +164,19 @@ const CartItemsSchema = new Schema<cartItems>(
   { _id: false }
 );
 
+const GiftItemsSchema = new Schema<GiftItems>(
+  {
+    promotionGiftId: { type: Schema.Types.ObjectId as any, ref: "PromotionGift", required: true, index: true },
+    idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true },
+    sku: { type: String },
+    combinationId: { type: String },
+    variantCombination: { type: VariantCombinationSchema },
+  },
+  { _id: false }
+);
+
 const PaymentSchema = new Schema<Payment>(
   {
     name: { type: String, required: true },
@@ -200,6 +214,8 @@ const OrderSchema = new Schema<Order>(
     note: { type: String },
     paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
     cartItems: { type: [CartItemsSchema], required: true },
+    giftItems: { type: [GiftItemsSchema], default: [],},
+    promotionGiftApplied: {type: Boolean, default: false },
     stockDeducted: {type: Boolean, default: false },
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },

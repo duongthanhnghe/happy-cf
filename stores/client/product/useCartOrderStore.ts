@@ -361,6 +361,7 @@ export const useCartStore = defineStore("Cart", () => {
     state.voucherUsage,
     state.discountVoucherFreeship,
     storeAccount.getUserId,
+    state.giftItems,
     productOps.deleteCartAll,
     router,
     storeLocation
@@ -412,6 +413,37 @@ export const useCartStore = defineStore("Cart", () => {
   const handleGetDefaultAddress = async () => {
     await utils.handleGetDefaultAddress();
   };
+
+  const setGiftCombinationId = (
+    productId: string,
+    combinationId?: string
+  ) => {
+    const gift = state.giftItems.value.find(i => i.productId === productId)
+    if (!gift) return
+
+    gift.combinationId = combinationId
+  }
+
+  const setGiftItems = (
+    promotionId: string,
+    items: {
+      productId: string
+      quantity: number
+      combinationId?: string
+    }[]
+  ) => {
+    state.giftItems.value = items.map(i => ({
+      ...i,
+      promotionId,
+    }))
+  }
+
+  const setPendingGiftVariant = (
+  productId: string,
+  combinationId?: string
+) => {
+  state.pendingGiftVariants.value[productId] = combinationId ?? null
+}
 
   const getCartCount = computed(() => state.cartCount.value);
   const getCartListItem = computed(() => state.cartListItem.value);
@@ -479,6 +511,11 @@ export const useCartStore = defineStore("Cart", () => {
 
     //voucher handle
     ...handlesVoucher,
+
+    //gift handle
+    setGiftCombinationId,
+    setGiftItems,
+    setPendingGiftVariant,
     
     // Getters
     Config_EnableUsePoint,
@@ -507,5 +544,6 @@ export const useCartStore = defineStore("Cart", () => {
     getSelectedVariantPrice,
     autoSelectFirstVariants,
     getSelectedVariantStock,
+    getSelectedCombinationId,
   };
 });

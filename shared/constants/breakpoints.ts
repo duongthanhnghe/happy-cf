@@ -73,3 +73,8 @@ export const NEWS_LIST_SWIPER_DEFAULT: SwiperOptions['breakpoints'] = {
   1200: { slidesPerView: 3, spaceBetween: 16 },
   1920: { slidesPerView: 4, spaceBetween: 16 },
 }
+
+export const GIFT_CART: SwiperOptions['breakpoints'] = {
+  320: { slidesPerView: 1, spaceBetween: 0 },
+  640: { slidesPerView: 2, spaceBetween: 12 },
+} as const;

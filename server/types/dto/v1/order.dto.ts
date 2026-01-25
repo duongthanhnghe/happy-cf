@@ -21,6 +21,16 @@ export interface cartItems {
   combinationId: string
 }
 
+export interface GiftItems {
+  promotionGiftId: string
+  idProduct: { image: string; productName: string } | string
+  price: 0
+  quantity: number
+  sku: string | null
+  combinationId: string | null
+  variantCombination: ProductVariantCombinationDTO | null
+}
+
 export type IdOrder = { id: string }
 
 export type IdUser = { userId: string }
@@ -108,6 +118,8 @@ export interface OrderDTO {
   note: string;
   paymentId: PaymentDTO;
   cartItems: cartItems[];
+  giftItems?: GiftItems[];
+  promotionGiftApplied: boolean;
   stockDeducted: boolean;
   totalPrice: number;
   totalPriceSave: number;
@@ -134,7 +146,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping"> {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "giftItems" | "promotionGiftApplied" > {
   paymentId: string;
   status: string;
   provinceCode: number;
@@ -143,18 +155,18 @@ export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "up
   provinceName: string;
   districtName: string;
   wardName: string;
+  giftItems?: GiftItemDTO[]
+}
+
+export interface GiftItemDTO {
+  promotionGiftId: string
+  productId: string
+  combinationId?: string
+  quantity: number
 }
 
 export type OrderPaginationDTO = PaginationDTO<OrderDTO>
 
 export interface ShippingFeeDTO {
-  // MONEY_TOTAL_OLD: number,
   MONEY_TOTAL: number,
-  // MONEY_TOTAL_FEE: number,
-  // MONEY_FEE: number,
-  // MONEY_COLLECTION_FEE: number,
-  // MONEY_OTHER_FEE: number,
-  // MONEY_VAS: number,
-  // MONEY_VAT: number,
-  // KPI_HT: number,
 }

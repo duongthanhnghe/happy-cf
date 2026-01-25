@@ -324,6 +324,9 @@ a {
     &-70 {
       max-width: 70px;
     }
+    &-150 {
+      max-width: 150px;
+    }
     &-200, &-200-input .v-input {
       max-width: 200px;
     }
@@ -440,11 +443,16 @@ body .bg {
   &-black2 {
     background-color: $cl-black2;
   }
-  &-gradient-1 {
-    background: $cl-gradient-1;
-  }
-  &-gradient-2 {
-    background: $cl-gradient-2;
+  &-gradient {
+    &-1 {
+      background: $cl-gradient-1;
+    }
+    &-2 {
+      background: $cl-gradient-2;
+    }
+    &-3 {
+      background: $cl-gradient-3;
+    }
   }
   &-gray {
     background-color: $cl-gray;
@@ -1118,6 +1126,9 @@ body .bg {
   &-underline{
     text-decoration: underline;
   }
+  &-italic {
+    font-style: italic;
+  }
   &-hover {
     &-primary:hover {
       color: $cl-primary !important;
@@ -1455,9 +1466,18 @@ body .bg {
   &-sm {
     right: $space-sm !important;
   }
+   &-lg {
+    right: $space-lg !important;
+  }
+  &-xl {
+    right: $space-xl !important;
+  }
 }
 
 .left {
+  &-auto {
+    left: auto !important;
+  }
   &-0 {
     left: 0 !important;
   }

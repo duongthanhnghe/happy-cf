@@ -18,6 +18,13 @@ export const voucherUsageSchema = z.object({
   discount: z.number().min(0),
 }).passthrough()
 
+export const giftItemSchema = z.object({
+  promotionGiftId: objectIdSchema,
+  productId: objectIdSchema,
+  quantity: z.number().int().min(1),
+  combinationId: objectIdSchema.optional().nullable(),
+})
+
 export const createOrderDataSchema = z.object({
   code: z.string().min(1),
   time: z.string().min(1),
@@ -29,7 +36,7 @@ export const createOrderDataSchema = z.object({
     message: 'Phương thức thanh toán không hợp lệ',
   }),
   cartItems: z.array(cartItemSchema).min(1, 'Giỏ hàng trống'),
-
+  giftItems: z.array(giftItemSchema).optional().default([]),
   totalPrice: z.number().min(0),
   totalPriceSave: z.number().min(0),
   totalPriceCurrent: z.number().min(0),

@@ -1,4 +1,5 @@
 import type {
+  GiftItems,
   OrderDTO,
   OrderShippingDTO,
   OrderStatusDTO,
@@ -59,7 +60,6 @@ export function toOrderShippingDTO(entity: OrderShipping): OrderShippingDTO {
   }
 }
 
-
 export function toPaymentDTO(entity: Payment): PaymentDTO {
   return {
     id: entity._id?.toString() || "",
@@ -106,6 +106,10 @@ export function toOrderDTO(entity: Order): OrderDTO {
     cartItems: Array.isArray(entity.cartItems)
       ? entity.cartItems.map(toCartItemDTO)
       : [],
+    giftItems: Array.isArray(entity.giftItems)
+      ? entity.giftItems.map(toGiftItemDTO)
+      : [],
+    promotionGiftApplied: entity.promotionGiftApplied,
     stockDeducted: entity.stockDeducted,
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,
@@ -258,6 +262,32 @@ function toCartItemDTO(entity: cartItems): cartItems {
     price: entity.price,
     quantity: entity.quantity,
     note: entity.note || "",
+    sku: entity.sku,
+    variantCombination: entity.variantCombination,
+    combinationId: entity.combinationId || "",
+  };
+}
+
+function toGiftItemDTO(entity: GiftItems): GiftItems {
+  let idProduct: any = entity.idProduct;
+
+  if (typeof idProduct === "string") {
+    idProduct = new Types.ObjectId(idProduct);
+  }
+  else if (idProduct instanceof Types.ObjectId) {
+  }
+  else if (typeof idProduct === "object" && idProduct !== null) {
+    // giữ nguyên object
+  }
+  else {
+    idProduct = new Types.ObjectId()
+  }
+
+  return {
+    promotionGiftId: entity.promotionGiftId,
+    idProduct,
+    price: entity.price,
+    quantity: entity.quantity,
     sku: entity.sku,
     variantCombination: entity.variantCombination,
     combinationId: entity.combinationId || "",

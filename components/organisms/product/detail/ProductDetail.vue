@@ -164,6 +164,8 @@ onBeforeUnmount(() => {
             <div class="mt-md">
               <ProductDetailButtonOrder :classButton="storeDisplay.isLaptop ? 'text-size-normal':''" />
             </div>
+
+            <PromotionGiftProductDetail :items="store.getAvailablePromotionGiftsApi" :loading="store.loadingDataPromotionGift" />
             <ProductDetailPolicy />
           </div>
         </div>

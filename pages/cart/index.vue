@@ -13,6 +13,7 @@ import { useCartLocationWatchers } from '@/composables/cart/useCartLocationWatch
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { useBaseInformationStore } from '../../stores/client/base-information/useBaseInformationStore';
+import { useAvailablePromotionGifts } from '@/composables/promotion-gift/useAvailablePromotionGifts';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.CART.middleware,
@@ -29,6 +30,11 @@ const storeLocation = useLocationStore();
 const eventBus = useEventBus();
 const storeDisplay = useDisplayStore()
 const storeSetting = useBaseInformationStore();
+const {
+  loadingData: loadingDataPromotionGift,
+  getAvailablePromotionGiftsApi,
+  fetchAvailablePromotionGifts,
+} = useAvailablePromotionGifts()
 
 const submitOrder = async (event: SubmitEventPromise) => {
   const results = await event;
@@ -47,13 +53,50 @@ watch(
   async (items) => {
     if (!items.length) return
     store.handleVoucherReset();
-    // eventBus.on('voucher:reset', store.handleVoucherReset);
   },
   { deep: true }
 )
 
+watch(
+  () => [
+    store.getTotalPriceOrder,
+    store.cartListItem.length
+  ],
+  ([total]) => {
+    if (total <= 0) return
+
+    const categoryIds = [
+      ...new Set(
+        store.cartListItem
+          .map(i => i.categoryId)
+          .filter((id): id is string => typeof id === 'string')
+      )
+    ]
+
+    const productIds = [
+      ...new Set(
+        store.cartListItem
+          .map(i =>
+            typeof i.product === 'string'
+              ? i.product
+              : i.product?.id
+          )
+          .filter((id): id is string => Boolean(id))
+      )
+    ]
+
+    fetchAvailablePromotionGifts({
+      productIds,
+      categoryIds,
+      orderTotal: total,
+    })
+  },
+  { immediate: true, deep: true }
+)
+
 onMounted(async () => {
   if (!store.cartListItem) return
+
 
   await storeSetting.fetchSystemConfig()
   if (store.cartListItem.length > 0 && store.getCartListItem?.length === 0) await store.fetchProductCart()
@@ -73,9 +116,7 @@ onBeforeUnmount(() => {
   store.messageVoucher = '';
   store.voucherUsage = [];
   store.activeFreeshipVoucher = null;
-  // storeLocation.resetLocation();
   store.handleVoucherReset;
-  // eventBus.off('voucher:reset', store.handleVoucherReset);
   store.isTogglePopupVoucher = false;
   store.isTogglePopupPoint = false;
 });
@@ -111,6 +152,8 @@ onBeforeUnmount(() => {
           <CartPointPC v-if="storeAccount.getUserId && store.Config_EnableUsePoint" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership.balancePoint"/>
           <CartVoucherPC />
         </template>
+
+        <PromotionGiftCart v-if="getAvailablePromotionGiftsApi" :items="getAvailablePromotionGiftsApi" :loading="loadingDataPromotionGift" />
 
         <!-- PAYMENT INFO -->
         <CartPaymentInfo :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint || 0"/>

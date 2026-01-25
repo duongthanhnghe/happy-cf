@@ -119,4 +119,7 @@ export const API_ENDPOINTS = {
   PAYMENT_TRANSACTIONS: {
     GET_BY_ID: (id: string) => `/payment-transactions/${id}`,
   },
+  PROMOTION_GIFT: {
+    LIST: "/promotion-gift",
+  },
 }

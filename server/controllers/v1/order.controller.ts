@@ -20,6 +20,10 @@ import { createSecureHash, sortObject } from "../../utils/vnpay";
 import crypto from "crypto";
 import { createMomoSignature } from "@/server/utils/momo";
 import { PAYMENT_STATUS } from '@/shared/constants/payment-status';
+import { ProductEntity } from "@/server/models/v1/product.entity";
+import { resolveGiftItems } from "@/server/utils/resolve-gift";
+import { PromotionGiftEntity } from "@/server/models/v1/promotion-gift.entity";
+import { restoreStockOrder } from "@/server/utils/restoreStockOrder";
 
 const siteUrl = process.env.DOMAIN
 const paymentResultUrl = `${siteUrl}/payment/result`
@@ -67,6 +71,11 @@ export const getOrderById = async (req: Request, res: Response) => {
 export const createOrder = async (req: Request, res: Response) => {
   try {
     const { data, usedPoint } = req.body
+    const {
+      cartItems,
+      giftItems,
+      ...orderPayload
+    } = data
     const userId = data.userId
 
     for (const item of data.cartItems) {
@@ -176,10 +185,59 @@ export const createOrder = async (req: Request, res: Response) => {
       }
     }
 
-    await deductStockOrder(data.cartItems)
+    const resolvedGiftItems = giftItems.length
+      ? await resolveGiftItems(giftItems)
+      : [];
+
+    const promotionGiftIds = [
+      ...new Set(
+        resolvedGiftItems
+          .map(g => g.promotionGiftId?.toString())
+          .filter(Boolean)
+      )
+    ]
+
+    if (promotionGiftIds.length > 0) {
+      const promotions = await PromotionGiftEntity.find({
+        _id: { $in: promotionGiftIds },
+        isActive: true,
+      })
+
+      const promotionMap = new Map(
+        promotions.map(p => [p._id.toString(), p])
+      )
+
+      for (const promoId of promotionGiftIds) {
+        const promotion = promotionMap.get(promoId)
+
+        if (!promotion) {
+          return res.status(400).json({
+            code: 1,
+            message: "CTKM quà tặng không tồn tại hoặc đã bị tắt",
+          })
+        }
+
+        if (
+          promotion.usageLimit > 0 &&
+          promotion.usedCount >= promotion.usageLimit
+        ) {
+          return res.status(400).json({
+            code: 1,
+            message: `CTKM "${promotion.name}" đã hết lượt`,
+          })
+        }
+      }
+    }
+
+    await deductStockOrder([
+      ...data.cartItems,
+      ...resolvedGiftItems,
+    ])
 
     const newOrder = await OrderEntity.create({
-      ...data,
+      ...orderPayload,
+      cartItems,
+      giftItems: resolvedGiftItems,
       userId,
       stockDeducted: true,
       reward: { points: earnPoints || 0, awarded: false, awardedAt: null },
@@ -188,10 +246,40 @@ export const createOrder = async (req: Request, res: Response) => {
       membershipDiscountRate,
       membershipDiscountAmount,
       cancelRequested: false,
+      promotionGiftApplied: promotionGiftIds.length > 0
     })
 
     if (deductedPoints > 0) {
       await user.save();
+    }
+
+    if (promotionGiftIds.length > 0) {
+      
+      for (const promoId of promotionGiftIds) {
+        const updated = await PromotionGiftEntity.findOneAndUpdate(
+          {
+            _id: promoId,
+            $or: [
+              { usageLimit: 0 },
+              { $expr: { $lt: ['$usedCount', '$usageLimit'] } },
+            ],
+          },
+          { $inc: { usedCount: 1 } },
+          { new: true }
+        )
+
+        if (!updated) {
+          await restoreStockOrder(newOrder)
+          await OrderEntity.deleteOne({ _id: newOrder._id })
+
+          if (deductedPoints > 0 && user) {
+            user.membership.balancePoint += deductedPoints
+            await user.save()
+          }
+
+          throw new Error("CTKM quà tặng đã hết lượt trong lúc đặt hàng")
+        }
+      }
     }
 
     //tao log voucher
@@ -215,9 +303,6 @@ export const createOrder = async (req: Request, res: Response) => {
             userAgent: req.headers["user-agent"] || "",
           },
         });
-
-        // Cập nhật lượt dùng
-        voucher.usedCount = (voucher.usedCount || 0) + 1;
 
         // Kiểm tra xem user đã sử dụng voucher này chưa
         const exists = voucher.usedBy?.some(

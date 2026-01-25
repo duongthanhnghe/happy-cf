@@ -29,9 +29,15 @@ export const useCartOrder = (
   voucherUsage: Ref<ApplyVoucherResponse[]>,
   discountVoucherFreeship: Ref<number>,
   userId: MaybeRef<string | null>,
+  giftItems: Ref<{
+    promotionId: string
+    productId: string
+    quantity: number
+    combinationId?: string
+  }[]>,
   deleteCartAll: () => void,
   router: any,
-  storeLocation: any
+  storeLocation: any,
 ) => {
 
   const { validate, formErrors } = useValidate(createOrderSchema)
@@ -54,11 +60,17 @@ export const useCartOrder = (
         sku: item.variantCombination ? item.variantCombination.sku : item.sku,
         price: item.variantCombination ? item.variantCombination.priceModifier : item.priceDiscounts,
         quantity: item.quantity,
-        note: item.note || null,
         variantCombination: item.variantCombination || null,
         combinationId: item.combinationId || ''
       };
     });
+
+    const newGiftItems = giftItems.value.map(gift => ({
+      promotionGiftId: gift.promotionId,
+      productId: gift.productId,
+      quantity: gift.quantity,
+      combinationId: gift.combinationId ?? undefined,
+    }))
 
     const newUsedPoint = usedPointOrder.checkBalancePoint && Config_EnableUsePoint.value ? usedPointOrder.usedPoint : 0;
 
@@ -79,6 +91,7 @@ export const useCartOrder = (
       note: informationOrder.note,
       paymentId: paymentSelected.value,
       cartItems: newCartItems as cartItems[],
+      giftItems: newGiftItems,
       totalPrice: totalPriceDiscount.value,
       totalPriceSave: totalPriceSave.value,
       totalPriceCurrent: totalPriceCurrent.value,
