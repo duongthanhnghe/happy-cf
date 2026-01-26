@@ -1,6 +1,31 @@
 import type { PromotionGiftDTO } from "../../types/dto/v1/promotion-gift.dto";
 import type { PromotionGift } from "../../models/v1/promotion-gift.entity";
 import { toProductDTO } from "./product.mapper";
+import { Types } from "mongoose";
+
+function mapIdOrObject<T extends Record<string, any>>(
+  value?: (Types.ObjectId | (T & { _id?: any; toObject?: () => any }))[]
+): (string | ({ id: string } & Partial<T>))[] | undefined {
+  if (!value) return undefined;
+
+  return value.map(v => {
+    if (typeof v === 'object') {
+      const raw = typeof (v as any).toObject === 'function'
+        ? (v as any).toObject()
+        : v;
+
+      if (raw._id) {
+        const { _id, ...rest } = raw;
+        return {
+          id: _id.toString(),
+          ...rest,
+        };
+      }
+    }
+
+    return v.toString();
+  });
+}
 
 export function toPromotionGiftDTO(
   entity: PromotionGift
@@ -15,8 +40,13 @@ export function toPromotionGiftDTO(
 
     minOrderValue: entity.minOrderValue,
 
-    requiredProducts: entity.requiredProducts?.map(id => id.toString()),
-    requiredCategories: entity.requiredCategories?.map(id => id.toString()),
+    requiredProducts: mapIdOrObject<{
+      productName?: string
+    }>(entity.requiredProducts),
+
+    requiredCategories: mapIdOrObject<{
+      categoryName?: string
+    }>(entity.requiredCategories),
 
     startDate: entity.startDate.toISOString(),
     endDate: entity.endDate.toISOString(),
@@ -64,8 +94,15 @@ export function toAvailablePromotionGiftDTO(
     isActive: entity.isActive,
     minOrderValue: entity.minOrderValue,
 
-    requiredProducts: entity.requiredProducts?.map(id => id.toString()),
-    requiredCategories: entity.requiredCategories?.map(id => id.toString()),
+    requiredProducts: mapIdOrObject<{
+      productName?: string
+    }>(entity.requiredProducts),
+
+    requiredCategories: mapIdOrObject<{
+      categoryName?: string
+    }>(entity.requiredCategories),
+    // requiredProducts: entity.requiredProducts?.map(id => id.toString()),
+    // requiredCategories: entity.requiredCategories?.map(id => id.toString()),
 
     startDate: entity.startDate.toISOString(),
     endDate: entity.endDate.toISOString(),

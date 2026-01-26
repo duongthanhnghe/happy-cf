@@ -58,6 +58,11 @@ onBeforeUnmount(() => {
         {{ index + 1 }}
       </template>
 
+      <template #item.name="{ item }">
+        <Text :text="item.name" color="black" weight="medium" />
+        <Text :text="'ID: '+item.id" color="gray5" class="white-space"/>
+      </template>
+
       <template #item.minOrderValue="{ item }">
         {{ item.minOrderValue ? formatCurrency(item.minOrderValue) : '-' }}
       </template>
@@ -67,7 +72,7 @@ onBeforeUnmount(() => {
           <div
             v-for="(gift, idx) in item.gifts"
             :key="idx"
-            class="position-relative"
+            class="position-relative min-width-50"
             v-tooltip.bottom="gift.productName"
           >
             <Image 
@@ -76,7 +81,7 @@ onBeforeUnmount(() => {
               :width="50"
               :height="50"
               preset="avatar"
-              class="rd-lg bg-gray6"
+              class="rd-lg bg-gray6 min-width-50"
             />
             <div class="el-absolute bg-black-20 rd-lg top-0 left-0 text-color-white flex justify-center align-center">
             × {{ gift.quantity }}
@@ -85,8 +90,20 @@ onBeforeUnmount(() => {
         </div>
       </template>
 
+      <template #item.requiredCategories="{ item }">
+        <div class="flex gap-xs flex-wrap">
+          <v-chip
+            v-for="cat in item.requiredCategories"
+            :key="typeof cat === 'string' ? cat : cat.id"
+            label
+          >
+            {{ typeof cat === 'string' ? cat : cat.categoryName }}
+          </v-chip>
+        </div>
+      </template>
+
       <template #item.dateRange="{ item }">
-        <div class="flex flex-col gap-xs">
+        <div class="flex align-center gap-xs white-space">
           <div>
             {{ formatDateTime(item.startDate,'vi-VN', false) }}
             →

@@ -53,6 +53,7 @@ export const usePromotionGiftManageState = () => {
     { title: 'Quà tặng', key: 'gifts', sortable: false },
     { title: 'Đã dùng', key: 'usedCount', sortable: false },
     { title: 'Giới hạn', key: 'usageLimit', sortable: false },
+    { title: 'Danh mục áp dụng', key: 'requiredCategories', sortable: false },
     { title: 'Cộng dồn', key: 'stackable', sortable: false },
     { title: 'Trạng thái', key: 'isActive', sortable: false },
     { title: 'Thời gian', key: 'dateRange', sortable: false },

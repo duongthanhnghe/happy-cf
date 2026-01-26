@@ -1,6 +1,17 @@
 import type { PaginationDTO } from "../../common/pagination.dto";
 import type { ProductDTO } from "./product.dto";
 
+export type IdOrObject<T> = string | T;
+
+export interface PromotionGiftConditionProductDTO {
+  id: string
+  productName?: string
+}
+
+export interface PromotionGiftConditionCategoryDTO {
+  id: string
+  categoryName?: string
+}
 export interface PromotionGiftDTO {
   id: string;
 
@@ -11,8 +22,8 @@ export interface PromotionGiftDTO {
 
   minOrderValue: number;
 
-  requiredProducts?: string[];
-  requiredCategories?: string[];
+  requiredProducts?: IdOrObject<PromotionGiftConditionProductDTO>[];
+  requiredCategories?: IdOrObject<PromotionGiftConditionCategoryDTO>[];
 
   startDate: string;
   endDate: string;

@@ -98,7 +98,7 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
         },
         USAGE: {
           path: '/admin/voucher/usage',
-          label: 'Voucher đã dùng',
+          label: 'Đã sử dụng',
           icon: 'list',
           middleware: ['admin-role'],
           layout: 'admin-layout',

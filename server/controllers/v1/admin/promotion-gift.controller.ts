@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import { PromotionGiftEntity } from "../../../models/v1/promotion-gift.entity";
 import {
   toPromotionGiftDTO,
-  toPromotionGiftListDTO,
 } from "../../../mappers/v1/promotion-gift.mapper";
 
 export const getAllPromotionGifts = async (req: Request, res: Response) => {
@@ -38,10 +37,21 @@ export const getAllPromotionGifts = async (req: Request, res: Response) => {
       page: numPage,
       limit: numLimit,
       sort: { createdAt: -1 },
-      populate: {
-        path: 'gifts.productId',
-        select: 'productName image',
-      },
+      populate: [
+        {
+          path: 'gifts.productId',
+          select: 'productName image',
+        },
+        {
+          path: 'requiredCategories',
+          select: 'categoryName',
+        },
+        {
+          path: 'requiredProducts',
+          select: 'productName image',
+        },
+      ],
+      lean: true,
     })
 
     return res.json({
