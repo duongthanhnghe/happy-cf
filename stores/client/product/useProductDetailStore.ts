@@ -115,11 +115,19 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
   })
 
   const getCheckButtonOrder = computed(() => {
-    if (getDetailProduct.value?.variantCombinations) {
-      if(getSelectedStock.value === 0) return false
-      return true
-    } else if (getDetailProduct.value?.amount === 0) return false
-    else return true
+    const product = getDetailProduct.value
+    if (!product) return false
+
+    const hasVariant =
+      Array.isArray(product.variantCombinations) &&
+      product.variantCombinations.length > 0
+
+    if (hasVariant) {
+      if (getSelectedStock.value == null) return false
+      return getSelectedStock.value > 0
+    }
+
+    return product.amount > 0
   })
 
   return {
