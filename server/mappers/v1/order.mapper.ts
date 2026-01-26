@@ -109,7 +109,6 @@ export function toOrderDTO(entity: Order): OrderDTO {
     giftItems: Array.isArray(entity.giftItems)
       ? entity.giftItems.map(toGiftItemDTO)
       : [],
-    promotionGiftApplied: entity.promotionGiftApplied,
     stockDeducted: entity.stockDeducted,
     totalPrice: entity.totalPrice,
     totalPriceSave: entity.totalPriceSave,

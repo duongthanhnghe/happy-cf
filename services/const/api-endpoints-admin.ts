@@ -183,4 +183,7 @@ export const API_ENDPOINTS_ADMIN = {
     DELETE: (id: string) => `/promotion-gift/${id}`,
     TOGGLE_ACTIVE: (id: string) => `/promotion-gift/toggleActive/${id}`,
   },
+  PROMOTION_GIFT_USAGE: {
+    LIST: "/promotion-gift-usage",
+  },
 }

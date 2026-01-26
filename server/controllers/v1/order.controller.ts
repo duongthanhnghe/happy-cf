@@ -24,6 +24,8 @@ import { ProductEntity } from "@/server/models/v1/product.entity";
 import { resolveGiftItems } from "@/server/utils/resolve-gift";
 import { PromotionGiftEntity } from "@/server/models/v1/promotion-gift.entity";
 import { restoreStockOrder } from "@/server/utils/restoreStockOrder";
+import { toCreatePromotionGiftUsageEntity } from "@/server/mappers/v1/promotion-gift-usage.mapper";
+import { PromotionGiftUsageEntity } from "@/server/models/v1/promotion-gift-usage.entity";
 
 const siteUrl = process.env.DOMAIN
 const paymentResultUrl = `${siteUrl}/payment/result`
@@ -55,6 +57,11 @@ export const getOrderById = async (req: Request, res: Response) => {
       .populate("transaction")
       .populate({
         path: "cartItems.idProduct",
+        model: "Product",
+        select: "productName image",
+      })
+      .populate({
+        path: "giftItems.idProduct",
         model: "Product",
         select: "productName image",
       });
@@ -246,7 +253,6 @@ export const createOrder = async (req: Request, res: Response) => {
       membershipDiscountRate,
       membershipDiscountAmount,
       cancelRequested: false,
-      promotionGiftApplied: promotionGiftIds.length > 0
     })
 
     if (deductedPoints > 0) {
@@ -254,7 +260,19 @@ export const createOrder = async (req: Request, res: Response) => {
     }
 
     if (promotionGiftIds.length > 0) {
-      
+      //tao log promotion gift
+      const usageDocs = promotionGiftIds.map(promoId =>
+        toCreatePromotionGiftUsageEntity({
+          promotionGiftId: promoId,
+          orderId: newOrder._id,
+          userId,
+          ip: req.ip,
+          userAgent: req.headers["user-agent"] || "",
+        })
+      );
+
+      await PromotionGiftUsageEntity.insertMany(usageDocs);
+
       for (const promoId of promotionGiftIds) {
         const updated = await PromotionGiftEntity.findOneAndUpdate(
           {

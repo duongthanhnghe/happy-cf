@@ -68,6 +68,9 @@ const storeDetailOrder = useSharedOrderDetailStore()
         <div v-for="(items, index) in storeDetailOrder.getDetailOrder?.cartItems" :key="index">
           <CartItemTemplate2 :item="items" class="mt-sm"/>
         </div>
+        <div v-if="storeDetailOrder.getDetailOrder.giftItems" v-for="(items, index) in storeDetailOrder.getDetailOrder.giftItems" :key="index">
+          <CartItemTemplate2 :item="items" :gift="true" class="mt-sm"/>
+        </div>
       </div>
       <div class="flex flex-direction-column gap-xs mt-xs">
       <div class="flex justify-between text-size-normal mt-sm weight-medium line-height-1">

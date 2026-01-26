@@ -15,6 +15,7 @@ import { buildVietQR } from "../../../utils/qrcode-payment"
 import { buildBillHTML } from "../../../utils/print-bill"
 import { createProductReviewEntity } from "../../../factories/v1/product-review.factory"
 import { PromotionGiftEntity } from "@/server/models/v1/promotion-gift.entity"
+import { PromotionGiftUsageEntity } from "@/server/models/v1/promotion-gift-usage.entity"
 
 export const getAllOrder = async (req: Request, res: Response) => {
   try {
@@ -181,6 +182,11 @@ export const getOrderById = async (req: Request, res: Response) => {
         path: "cartItems.idProduct",
         model: "Product",
         select: "productName image amount",
+      })
+      .populate({
+        path: "giftItems.idProduct",
+        model: "Product",
+        select: "productName image amount",
       });
 
     if (!order) {
@@ -246,6 +252,37 @@ export const rollbackVoucherUsage = async (order: any) => {
   }
 
   await OrderEntity.findByIdAndUpdate(order._id, { voucherRefunded: true });
+};
+
+export const rollbackPromotionGiftUsage = async (order: any) => {
+  if (!order?._id) return;
+
+  const logs = await PromotionGiftUsageEntity.find({
+    orderId: order._id,
+    reverted: false,
+  });
+
+  if (!logs.length) return;
+
+  const promoCountMap = new Map<string, number>();
+
+  for (const log of logs) {
+    const id = log.promotionGiftId.toString();
+    promoCountMap.set(id, (promoCountMap.get(id) || 0) + 1);
+  }
+
+  for (const [promoId, count] of promoCountMap.entries()) {
+    await PromotionGiftEntity.updateOne(
+      { _id: promoId, usedCount: { $gte: count } },
+      { $inc: { usedCount: -count } }
+    );
+  }
+
+  // mark log reverted
+  await PromotionGiftUsageEntity.updateMany(
+    { orderId: order._id, reverted: false },
+    { $set: { reverted: true, revertedAt: new Date() } }
+  );
 };
 
 export const updateOrderStatus = async (req: Request, res: Response) => {
@@ -331,29 +368,11 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
         await user?.save();
       }
 
-      // hoàn voucher
+      // hoàn lai voucher
       await rollbackVoucherUsage(order)
 
-      // update lai usedCount Gift Promotion
-      if (order.promotionGiftApplied) {
-        const promotionGiftIds = [
-          ...new Set(
-            (order.giftItems || [])
-              .map(g => g.promotionGiftId?.toString())
-              .filter(Boolean)
-          )
-        ]
-
-        if (promotionGiftIds.length > 0) {
-          await PromotionGiftEntity.updateMany(
-            {
-              _id: { $in: promotionGiftIds },
-              usedCount: { $gt: 0 },
-            },
-            { $inc: { usedCount: -1 } }
-          )
-        }
-      }
+      // hoàn lai Gift Promotion
+      await rollbackPromotionGiftUsage(order)
     }
 
     await order.save()

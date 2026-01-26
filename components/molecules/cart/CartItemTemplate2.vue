@@ -4,6 +4,7 @@ import type { cartItems } from '@/server/types/dto/v1/order.dto';
 
 const props = defineProps<{
   item: cartItems
+  gift: boolean
 }>()
 
 </script>
@@ -19,6 +20,9 @@ const props = defineProps<{
       />
     </div>
     <div class="flex-1 pd-xs pl-sm">
+      <v-chip v-if="gift" label size="small" color="green" class="mb-sm">
+        Quà tặng
+      </v-chip>
       <Text size="sm" weight="medium" limit="1" class="mb-xs pr-0" :text="props.item?.idProduct?.productName" />
       <div class="text-color-gray5 text-size-xs" v-if="item.variantCombination">
         <div v-for="itemV in item.variantCombination.variants" :key="itemV.variantId">

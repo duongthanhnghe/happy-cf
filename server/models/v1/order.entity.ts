@@ -76,7 +76,6 @@ export interface Order {
   paymentId: Types.ObjectId;
   cartItems: cartItems[];
   giftItems?: GiftItems[];
-  promotionGiftApplied: boolean;
   stockDeducted: boolean;
   totalPrice: number;
   totalPriceSave: number;
@@ -215,7 +214,6 @@ const OrderSchema = new Schema<Order>(
     paymentId: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
     cartItems: { type: [CartItemsSchema], required: true },
     giftItems: { type: [GiftItemsSchema], default: [],},
-    promotionGiftApplied: {type: Boolean, default: false },
     stockDeducted: {type: Boolean, default: false },
     totalPrice: { type: Number, required: true },
     totalPriceSave: { type: Number, required: true },

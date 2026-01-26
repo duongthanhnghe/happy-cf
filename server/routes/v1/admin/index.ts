@@ -21,6 +21,7 @@ import fileManageRoutes from './file-manage.router'
 import baseInformationRoutes from './base-information.router'
 import dashboardRouter from "./dashboard.router"
 import promotionGiftRouter from "./promotion-gift.route"
+import promotionGiftUsageRouter from "./promotion-gift-usage.route"
 
 const router = Router()
 
@@ -45,5 +46,6 @@ router.use('/fileManage', fileManageRoutes)
 router.use('/base-information', baseInformationRoutes)
 router.use("/dashboard", dashboardRouter)
 router.use("/promotion-gift", promotionGiftRouter)
+router.use("/promotion-gift-usage", promotionGiftUsageRouter)
 
 export default router

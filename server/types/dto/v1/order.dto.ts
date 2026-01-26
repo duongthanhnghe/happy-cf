@@ -119,7 +119,6 @@ export interface OrderDTO {
   paymentId: PaymentDTO;
   cartItems: cartItems[];
   giftItems?: GiftItems[];
-  promotionGiftApplied: boolean;
   stockDeducted: boolean;
   totalPrice: number;
   totalPriceSave: number;
@@ -146,7 +145,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "giftItems" | "promotionGiftApplied" > {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "giftItems" > {
   paymentId: string;
   status: string;
   provinceCode: number;

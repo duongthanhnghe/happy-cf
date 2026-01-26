@@ -16,6 +16,7 @@ const storeDetailUser = useAdminUserDetailStore()
 <template>
   <template v-if="storeDetailOrder.getDetailOrder">
     <div class="row row-sm">
+      <!-- Sản phẩm -->
       <div class="col-12 col-lg-4 mb-md">
         <Card size="sm" class="rd-lg height-full" heading="Sản phẩm">
           <div class="overflow-auto scroll-hide max-height-500">
@@ -25,6 +26,8 @@ const storeDetailUser = useAdminUserDetailStore()
           </div>
         </Card>
       </div>
+
+      <!-- Đơn hàng -->
       <div class="col-12 col-lg-4 mb-md">
         <Card size="sm" class="rd-lg height-full" heading="Đơn hàng">
           <div class="flex flex-direction-column gap-sm">
@@ -73,6 +76,8 @@ const storeDetailUser = useAdminUserDetailStore()
           </div>
         </Card>
       </div>
+
+      <!-- Thông tin -->
       <div class="col-12 col-lg-4 mb-md">
         <Card size="sm" class="rd-lg height-full" heading="Thông tin">
           <div class="flex flex-direction-column gap-sm">
@@ -169,6 +174,8 @@ const storeDetailUser = useAdminUserDetailStore()
           </div>
         </Card>
       </div>
+
+      <!-- Voucher -->
       <div v-if="storeDetailOrder.getDetailOrder?.voucherUsage?.length > 0" class="col-12 col-lg-4 mb-md">
         <Card size="sm" class="rd-lg height-full" heading="Voucher áp dụng">
           <div class="flex flex-direction-column gap-sm">
@@ -189,7 +196,20 @@ const storeDetailUser = useAdminUserDetailStore()
           </div>
         </Card>
       </div>
-      <div  class="col-12 col-lg-4 mb-md">
+
+      <!-- Quà tặng -->
+      <div v-if="storeDetailOrder.getDetailOrder?.giftItems" class="col-12 col-lg-4">
+        <Card size="sm" class="rd-lg height-full" heading="Quà tặng">
+          <div class="flex flex-direction-column gap-sm">
+            <template v-for="(items, index) in storeDetailOrder.getDetailOrder.giftItems" :key="index">
+              <AdminOrderItemTemplate1 :item="items" />
+            </template>
+          </div>
+        </Card>
+      </div>
+
+      <!-- Điểm tích luỹ -->
+      <div class="col-12 col-lg-4 mb-md">
         <Card size="sm" class="rd-lg height-full">
           <template v-if="storeDetailOrder.getDetailOrder?.usedPoints !== 0">
             <Heading text="Điểm sử dụng" />
@@ -228,6 +248,8 @@ const storeDetailUser = useAdminUserDetailStore()
           </template>
         </Card>
       </div>
+
+      <!-- Vận đơn -->
       <div class="col-12 col-lg-4">
         <Card size="sm" class="rd-lg height-full" heading="Vận đơn">
           <div v-if="storeDetailOrder.getDetailOrder?.shipping" class="flex flex-direction-column gap-sm">
@@ -261,8 +283,9 @@ const storeDetailUser = useAdminUserDetailStore()
           </div>
         </Card>
       </div>
+
+      
     </div>
-    
 
   </template>
   <NoData v-else />
