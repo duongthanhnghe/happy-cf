@@ -47,20 +47,6 @@ const { data, error, pending } = await useAsyncData(
     if(data?.data.id) {
       const routePath = ROUTES.PUBLIC.PRODUCT.children?.DETAIL?.path ?? '/product'
       setProductSEO(data.data, routePath)
-
-      // if(categoryIds && orderTotal){
-      //   await fetchAvailableVouchers({
-      //     userId,
-      //     categoryIds,
-      //     orderTotal
-      //   })
-      // }
-
-      // await fetchProductRelated(slug, store.limitRelated)
-
-      // await fetchListReview(data.data.id, 1, store.limitReview)
-
-      // if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
     }
 
     return data

@@ -4,7 +4,7 @@ import { ordersAPI } from "@/services/v1/orders.service";
 import { ORDER_STATUS } from "@/shared/constants/order-status";
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
 import { ROUTES } from '@/shared/constants/routes';
-import type { CreateOrderBody, cartItems } from '@/server/types/dto/v1/order.dto';
+import type { CreateOrderBody, cartItems, GiftItemDTO } from '@/server/types/dto/v1/order.dto';
 import type { MaybeRef, Ref } from 'vue';
 import type { CartDTO } from '@/server/types/dto/v1/product.dto';
 import type { ApplyVoucherResponse } from "@/server/types/dto/v1/voucher.dto";
@@ -29,12 +29,7 @@ export const useCartOrder = (
   voucherUsage: Ref<ApplyVoucherResponse[]>,
   discountVoucherFreeship: Ref<number>,
   userId: MaybeRef<string | null>,
-  giftItems: Ref<{
-    promotionId: string
-    productId: string
-    quantity: number
-    combinationId?: string
-  }[]>,
+  giftItems: Ref<GiftItemDTO[]>,
   deleteCartAll: () => void,
   router: any,
   storeLocation: any,
@@ -66,7 +61,7 @@ export const useCartOrder = (
     });
 
     const newGiftItems = giftItems.value.map(gift => ({
-      promotionGiftId: gift.promotionId,
+      promotionGiftId: gift.promotionGiftId,
       productId: gift.productId,
       quantity: gift.quantity,
       combinationId: gift.combinationId ?? undefined,

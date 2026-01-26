@@ -425,7 +425,7 @@ export const useCartStore = defineStore("Cart", () => {
   }
 
   const setGiftItems = (
-    promotionId: string,
+    promotionGiftId: string,
     items: {
       productId: string
       quantity: number
@@ -434,7 +434,7 @@ export const useCartStore = defineStore("Cart", () => {
   ) => {
     state.giftItems.value = items.map(i => ({
       ...i,
-      promotionId,
+      promotionGiftId,
     }))
   }
 

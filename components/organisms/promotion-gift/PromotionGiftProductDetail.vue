@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
-import { computed, toRef } from 'vue'
-import type { PromotionGiftItemDTO, AvailablePromotionGiftDTO } from '@/server/types/dto/v1/promotion-gift.dto'
-import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
+import { toRef } from 'vue'
+import type { AvailablePromotionGiftDTO } from '@/server/types/dto/v1/promotion-gift.dto'
 import { usePromotionGiftCart } from '@/composables/promotion-gift/usePromotionGiftCart'
 
 const props = defineProps<{

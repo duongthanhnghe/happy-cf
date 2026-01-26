@@ -18,13 +18,13 @@ export const usePromotionGiftCart = (
     if (cartStore.giftItems.length === 0) return false
 
     return !cartStore.giftItems.some(
-      gift => gift.promotionId === promoId
+      gift => gift.promotionGiftId === promoId
     )
   }
 
   const isSelectedPromo = (promoId: string) => {
     return cartStore.giftItems.some(
-      gift => gift.promotionId === promoId
+      gift => gift.promotionGiftId === promoId
     )
   }
 

@@ -153,6 +153,7 @@ onBeforeUnmount(() => {
           <CartVoucherPC />
         </template>
 
+        <!-- GIFT -->
         <PromotionGiftCart v-if="getAvailablePromotionGiftsApi" :items="getAvailablePromotionGiftsApi" :loading="loadingDataPromotionGift" />
 
         <!-- PAYMENT INFO -->

@@ -3,6 +3,7 @@ import { getCurrentDateTime } from "@/utils/global";
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
 import type { CartDTO, SelectedOptionPushDTO } from '@/server/types/dto/v1/product.dto';
 import type { ApplyVoucherResponse } from "@/server/types/dto/v1/voucher.dto";
+import type { GiftItemDTO } from "@/server/types/dto/v1/order.dto";
 
 export const useCartState = () => {
   const timeCurrent = getCurrentDateTime('time');
@@ -68,12 +69,7 @@ export const useCartState = () => {
   const selectedVoucher = ref<string | null>(null);
   const voucherCode = ref<string>('');
   const needAutoSelect = ref(0)
-  const giftItems = ref<{
-    promotionId: string
-    productId: string
-    quantity: number
-    combinationId?: string
-    }[]>([])
+  const giftItems = ref<GiftItemDTO[]>([])
   const pendingGiftVariants = ref<Record<string, string | null>>({})
 
   return {
