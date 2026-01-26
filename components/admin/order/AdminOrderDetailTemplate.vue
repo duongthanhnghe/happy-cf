@@ -199,7 +199,38 @@ const storeDetailUser = useAdminUserDetailStore()
 
       <!-- Quà tặng -->
       <div v-if="storeDetailOrder.getDetailOrder?.giftItems" class="col-12 col-lg-4">
-        <Card size="sm" class="rd-lg height-full" heading="Quà tặng">
+        <Card size="sm" class="rd-lg height-full" heading="Quà tặng kèm">
+          
+          <!-- logs -->
+          <div v-if="storeDetailOrder.getDetailOrder.promotionGiftUsages?.length" class="mb-ms">
+            <div
+              v-for="usage in storeDetailOrder.getDetailOrder.promotionGiftUsages"
+              :key="usage._id"
+              class="flex flex-direction-column gap-sm"
+            >
+              <div class="flex justify-between">
+                <Text color="gray5" :text="usage.promotionGiftId.name" />
+                <v-chip
+                  size="small"
+                  :color="usage.reverted ? 'orange' : 'green'"
+                >
+                  {{ usage.reverted ? 'Đã hoàn lại' : 'Đang áp dụng' }}
+                </v-chip>
+              </div>
+
+              <div class="flex justify-between">
+                <Text color="gray5" text="Áp dụng lúc:" />
+                {{ formatDateTime(usage.usedAt, 'vi-VN') }}
+              </div>
+
+              <div v-if="usage.revertedAt" class="flex justify-between">
+                <Text color="gray5" text="Hoàn lại lúc:" />
+                {{ formatDateTime(usage.revertedAt, 'vi-VN') }}
+              </div>
+            </div>
+          </div>
+          
+          <!-- gift -->
           <div class="flex flex-direction-column gap-sm">
             <template v-for="(items, index) in storeDetailOrder.getDetailOrder.giftItems" :key="index">
               <AdminOrderItemTemplate1 :item="items" />

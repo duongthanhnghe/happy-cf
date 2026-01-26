@@ -3,6 +3,7 @@ import type { PaymentTransactionDTO, PaymentMethod } from './payment-transaction
 import type { PaginationDTO } from '../../common/pagination.dto'
 import type { ApplyVoucherResponse } from './voucher.dto';
 import type { ProductVariantCombinationDTO } from './product.dto';
+import type { PromotionGiftUsageDTO } from './promotion-gift-usage.dto';
 export interface ProductInOrder extends cartItems {
   data: ProductDTO
 }
@@ -141,6 +142,7 @@ export interface OrderDTO {
   membershipDiscountAmount: number;
   voucherUsage: ApplyVoucherResponse[];
   voucherRefunded: boolean;
+  promotionGiftUsages?: PromotionGiftUsageDTO[];
   createdAt: string;
   updatedAt: string;
 }

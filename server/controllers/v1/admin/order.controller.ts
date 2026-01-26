@@ -192,7 +192,21 @@ export const getOrderById = async (req: Request, res: Response) => {
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order không tồn tại" })
     }
-    return res.json({ code: 0, data: toOrderDTO(order) })
+
+    const promotionGiftUsages = await PromotionGiftUsageEntity.find({
+      orderId: order._id,
+    })
+    .populate("promotionGiftId", "name usageLimit")
+    .sort({ usedAt: 1 })
+    .lean();
+
+    return res.json({ 
+      code: 0,
+      data: {
+        ...toOrderDTO(order),
+        promotionGiftUsages,
+      },
+    })
   } catch (err: any) {
     return res.status(500).json({ code: 1, message: err.message })
   }
@@ -278,7 +292,6 @@ export const rollbackPromotionGiftUsage = async (order: any) => {
     );
   }
 
-  // mark log reverted
   await PromotionGiftUsageEntity.updateMany(
     { orderId: order._id, reverted: false },
     { $set: { reverted: true, revertedAt: new Date() } }

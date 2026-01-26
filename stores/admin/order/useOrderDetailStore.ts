@@ -21,11 +21,16 @@ export const useAdminOrderDetailStore = defineStore('useAdminOrderDetailStore', 
     fetchOrderDetail,
   )
 
+  const promotionGiftUsages = computed(() => {
+    return getDetailOrder.value?.promotionGiftUsages ?? []
+  })
+
   return {
     togglePopupDetail,
     getDetailOrder,
     totalDiscountVoucher,
     handleTogglePopupDetail,
     fetchOrderDetail,
+    promotionGiftUsages,
   }
 })
