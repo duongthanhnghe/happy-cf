@@ -142,19 +142,21 @@ onBeforeUnmount(() => {
               </template>
               <template v-else>
                 <Text :text="formatCurrency(store.variantPrice)" size="md" weight="semibold" color="black" />
-                <client-only>
-                  <template v-if="store.variantPrice && storeSetting.getConfigShipping?.enabled">
-                    <v-chip v-tooltip.left="storeSetting.getShippingTooltip" v-if="storeSetting.calcFreeship(store.variantPrice)" label color="blue">
-                      Freeship
-                    </v-chip>
-                  </template>
-                </client-only>
               </template>
             </div>
 
             <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" class="mt-ms" />
             <client-only>
             <CartPointInfoLabel v-if="detail.priceDiscounts !== 0" :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId" />
+
+            <template v-if="store.variantPrice && storeSetting.getConfigShipping?.enabled">
+              <v-chip v-tooltip.left="storeSetting.getShippingTooltip" v-if="storeSetting.calcFreeship(store.variantPrice)" label color="green" class="mt-sm">
+                Freeship
+              </v-chip>
+            </template>
+            <v-chip v-else label color="green" class="width-full mt-sm">
+              {{ storeSetting.getShippingTooltip }}
+            </v-chip>
             </client-only>
 
             <div class="flex flex-direction-column gap-ms mt-ms" v-if="detail.variantCombinations.length">
@@ -165,7 +167,7 @@ onBeforeUnmount(() => {
               <ProductDetailButtonOrder :classButton="storeDisplay.isLaptop ? 'text-size-normal':''" />
             </div>
 
-            <PromotionGiftProductDetail :items="store.getAvailablePromotionGiftsApi" :loading="store.loadingDataPromotionGift" />
+            <PromotionGiftProductDetail v-if="store.getAvailablePromotionGiftsApi" :items="store.getAvailablePromotionGiftsApi" :loading="store.loadingDataPromotionGift" />
             <ProductDetailPolicy />
           </div>
         </div>

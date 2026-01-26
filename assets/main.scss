@@ -734,7 +734,7 @@ body .bg {
     padding: $space-xs;
   }
   &-sm {
-    padding: $space-sm;
+    padding: $space-sm !important;
   }
   &-ms {
     padding: $space-ms;

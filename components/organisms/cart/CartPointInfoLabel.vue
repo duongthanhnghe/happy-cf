@@ -12,7 +12,7 @@ const storeSetting = useBaseInformationStore();
 
 </script>
 <template>
-  <Card v-if="storeSetting.getConfigSystem?.reward.enableEarnPoint && props.getTotalPoint !== 0" border class="rd-xl flex justify-between mt-sm cart-point-info-label">
+  <Card v-if="storeSetting.getConfigSystem?.reward.enableEarnPoint && props.getTotalPoint !== 0" size="xs" bg="gray2" class="rd-lg flex justify-between mt-md pd-sm pt-05 pb-05">
     <template v-if="userId">
       {{ t('point.text1').text }}
       <span  class="flex gap-xs weight-semibold">
