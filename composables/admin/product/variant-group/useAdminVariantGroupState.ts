@@ -27,6 +27,7 @@ export const useAdminVariantGroupState = () => {
 
   const itemsPerPage = 10;
   const search = ref<string>("");
+  const searchInput = ref<string>("");
   const headers = ref([
     { title: 'STT', key: 'index', sortable: false },
     { title: 'Tên nhóm biến thể', key: 'groupName', sortable: false },
@@ -51,6 +52,7 @@ export const useAdminVariantGroupState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     itemsPerPage,
     headers,
     currentTableOptions,

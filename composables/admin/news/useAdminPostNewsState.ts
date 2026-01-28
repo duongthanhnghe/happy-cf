@@ -34,6 +34,7 @@ export const useAdminPostNewsState = () => {
   const loadingTable = ref<boolean>(true)
   const totalItems = ref<number>(0)
   const search = ref<string>('')
+  const searchInput = ref<string>('')
   const currentTableOptions = ref<TableOpt>({
     page: 1,
     itemsPerPage: 20,
@@ -56,6 +57,7 @@ export const useAdminPostNewsState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     headers,
     currentTableOptions,
     filterCategory,

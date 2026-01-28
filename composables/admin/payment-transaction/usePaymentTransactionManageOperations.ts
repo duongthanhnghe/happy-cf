@@ -5,6 +5,7 @@ import type { PaymentTransactionDTO, PaymentTransactionPaginationDTO } from '@/s
 import type { TableOpt } from '@/server/types';
 import { useOrderStatus } from '@/composables/admin/order/useOrderStatus';
 import { usePaymentTransactionDetail } from './usePaymentTransactionDetail';
+import { useTableUtils } from '@/composables/utils/useTableSearch';
 
 export const usePaymentTransactionManageOperations = (
   dataList: Ref<PaymentTransactionPaginationDTO|null>,
@@ -12,6 +13,7 @@ export const usePaymentTransactionManageOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   fromDay: Ref<string>,
   toDay: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
@@ -78,7 +80,6 @@ export const usePaymentTransactionManageOperations = (
 
    watch(
     () => ({
-      search: search.value,
       filterStatus: filterStatus.value,
       filterPaymentMethod: filterPaymentMethod.value,
       fromDay: fromDay.value,
@@ -97,7 +98,10 @@ export const usePaymentTransactionManageOperations = (
     togglePopupDetail.value = !togglePopupDetail.value;
   };
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
+    searchInput.value = ''
     search.value = ''
     fromDay.value = ''
     toDay.value = ''
@@ -114,5 +118,6 @@ export const usePaymentTransactionManageOperations = (
     resetFilter,
     getDetail,
     fetchDetailTransaction,
+    handleSearch,
   };
 };

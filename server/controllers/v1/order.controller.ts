@@ -17,10 +17,8 @@ import mongoose from "mongoose";
 import { BaseInformationEntity } from "@/server/models/v1/base-information.entity";
 import qs from "qs";
 import { createSecureHash, sortObject } from "../../utils/vnpay";
-import crypto from "crypto";
 import { createMomoSignature } from "@/server/utils/momo";
 import { PAYMENT_STATUS } from '@/shared/constants/payment-status';
-import { ProductEntity } from "@/server/models/v1/product.entity";
 import { resolveGiftItems } from "@/server/utils/resolve-gift";
 import { PromotionGiftEntity } from "@/server/models/v1/promotion-gift.entity";
 import { restoreStockOrder } from "@/server/utils/restoreStockOrder";
@@ -453,36 +451,6 @@ export const getOrdersByUserId = async (req: Request, res: Response) => {
 };
 
 
-// const history = result.docs.map((order: any) => {
-    //   let historyType = "";
-    //   let points = 0;
-
-    //   if (order.usedPoints > 0 && order.pointsRefunded) {
-    //     historyType = "refunded";   // đã hoàn điểm
-    //     points = order.usedPoints;
-    //   } else if (order.usedPoints > 0) {
-    //     historyType = "used";      // đã dùng điểm
-    //     points = order.usedPoints;
-    //   } else if (order.reward.points > 0 && order.reward.awarded) {
-    //     historyType = "earned";    // đã được cộng điểm
-    //     points = order.reward.points;
-    //   } else if (order.reward.points > 0 && !order.reward.awarded) {
-    //     historyType = "pending_reward"; // chờ cộng điểm
-    //     points = order.reward.points;
-    //   } else {
-    //     historyType = "none"; // không có biến động điểm
-    //   }
-
-    //   return {
-    //     orderId: order._id,
-    //     code: order.code,
-    //     createdAt: order.createdAt,
-    //     historyType,
-    //     points,
-    //     order: toOrderDTO(order)
-    //   };
-    // });
-
 const buildHistory = (order: any, type: string, points: number) => ({
   orderId: order._id,
   code: order.code,
@@ -708,7 +676,6 @@ export const sepayCallback = async (req: Request, res: Response) => {
     return res.status(500).send("Internal Server Error");
   }
 };
-
 
 const tokenCachePath = path.resolve("./storage/vtp_token_cache.json");
 
@@ -984,19 +951,6 @@ export const createVnpayPayment = async (req: Request, res: Response) => {
       return res.status(404).json({ code: 1, message: "Order không tồn tại" });
     }
 
-    // const txnRef2 = order._id.toString();
-
-    // const existing = await PaymentTransactionEntity.findOne({ txnRef2 });
-    // if (!existing) {
-    //   await PaymentTransactionEntity.create({
-    //     orderId: order._id,
-    //     txnRef: txnRef2,
-    //     amount: order.totalPrice,
-    //     method: PAYMENT_METHOD_STATUS.VNPAY,
-    //     status: PAYMENT_TRANSACTION_STATUS.PENDING,
-    //   });
-    // }
-
     await OrderEntity.findByIdAndUpdate(order._id, {
       paymentId: PAYMENT_STATUS.VNPAY
     });
@@ -1241,18 +1195,6 @@ export const createMomoPayment = async (req: Request, res: Response) => {
     const requestType = "captureWallet";
     const extraData = "";
 
-    // await PaymentTransactionEntity.findOneAndUpdate(
-    //   { orderId: order._id },
-    //   {
-    //     orderId: order._id,
-    //     txnRef: orderIdMomo,
-    //     amount: order.totalPrice,
-    //     method: PAYMENT_METHOD_STATUS.MOMO,
-    //     status: PAYMENT_TRANSACTION_STATUS.PENDING,
-    //   },
-    //   { upsert: true }
-    // );
-
     await PaymentTransactionEntity.findOneAndUpdate(
       {
         orderId: order._id,
@@ -1390,13 +1332,12 @@ export const momoIPN = async (req: Request, res: Response) => {
       transaction.paidAt = new Date();
       await transaction.save();
 
-      // ✅ Update order status
+      // Update order status
       // await OrderEntity.findByIdAndUpdate(transaction.orderId, {
       //   paymentStatus: "PAID",
       //   status: "CONFIRMED", // hoặc status phù hợp logic của bạn
       // });
     } else {
-      console.log("IPN resultCode:", resultCode);
       transaction.status = PAYMENT_TRANSACTION_STATUS.FAILED;
       transaction.rawIpn = req.body;
       await transaction.save();

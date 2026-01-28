@@ -3,6 +3,7 @@ import { computed, watch } from 'vue';
 import type { TableOpt } from '@/server/types';
 import type { HistoryType, RewardHistoryDTO } from '@/server/types/dto/v1/reward-history.dto';
 import { useAdminHistoryReward } from '@/composables/user/useAdminHistoryReward';
+import { useTableUtils } from '@/composables/utils/useTableSearch';
 
 export const useRewardHistoryOperations = (
   dataList: Ref<RewardHistoryDTO[]>,
@@ -10,6 +11,7 @@ export const useRewardHistoryOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   fromDay: Ref<string>,
   toDay: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
@@ -61,7 +63,6 @@ export const useRewardHistoryOperations = (
 
   watch(
     () => ({
-      search: search.value,
       filterTypeReward: filterTypeReward.value,
       fromDay: fromDay.value,
       toDay: toDay.value,
@@ -78,7 +79,10 @@ export const useRewardHistoryOperations = (
     await loadItems(currentTableOptions.value);
   }
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
+    searchInput.value = ''
     search.value = ''
     filterTypeReward.value = null
     fromDay.value = ''
@@ -104,5 +108,6 @@ export const useRewardHistoryOperations = (
     loadItems,
     handleReload,
     resetFilter,
+    handleSearch,
   };
 };

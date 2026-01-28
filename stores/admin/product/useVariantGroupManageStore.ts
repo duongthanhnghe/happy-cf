@@ -17,6 +17,7 @@ export const useVariantGroupStore = defineStore("VariantGroupManage", () => {
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.isTogglePopupAdd,
     state.isTogglePopupUpdate,
     state.currentTableOptions,

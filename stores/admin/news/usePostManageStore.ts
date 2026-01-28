@@ -24,6 +24,7 @@ export const usePostManageStore = defineStore("PostManage", () => {
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.currentTableOptions,
     state.isTogglePopupAdd,
     state.isTogglePopupUpdate,

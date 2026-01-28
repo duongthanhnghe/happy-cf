@@ -13,6 +13,7 @@ export const useProductReviewManageStore = defineStore("ProductReviewManageStore
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.fromDay,
     state.toDay,
     state.currentTableOptions,

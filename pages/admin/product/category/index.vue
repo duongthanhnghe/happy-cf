@@ -23,12 +23,13 @@ onBeforeUnmount(() => {
 <HeaderAdmin>
   <template #left>
     <v-text-field 
-      v-model="store.search" 
+      v-model="store.searchInput" 
       placeholder="Tìm kiếm tên..." 
       variant="outlined" 
       hide-details
       clearable
-      @update:modelValue="value => store.search = value ?? ''"
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
       ></v-text-field>
     <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>

@@ -23,7 +23,7 @@ onBeforeUnmount(() => {
       <v-text-field 
         v-model="store.searchInput" 
         placeholder="Tìm tên..." 
-        variant="outlined" 
+        variant="outlined"
         hide-details clearable
         @keyup.enter="store.handleSearch"
         @click:clear="store.handleSearch(false)"

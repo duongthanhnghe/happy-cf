@@ -23,6 +23,7 @@ export const useAdminITranslationState = () => {
   const totalItems = ref<number>(0);
   const detailData = ref<TranslationDTO | null>(null);
   const search = ref<string>("");
+  const searchInput = ref<string>("");
   const isTogglePopupAdd = ref<boolean>(false);
   const isTogglePopupUpdate = ref<boolean>(false);
   const itemsPerPage = 50;
@@ -53,5 +54,6 @@ export const useAdminITranslationState = () => {
     updateItem,
     detailData,
     search,
+    searchInput,
   };
 };

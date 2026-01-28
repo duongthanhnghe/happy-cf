@@ -13,6 +13,7 @@ export const useAccountListStore = defineStore("AccountListStore", () => {
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.filterTypeMember,
     state.currentTableOptions,
     state.newPassword,

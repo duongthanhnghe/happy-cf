@@ -18,6 +18,7 @@ export const useRewardHistoryState = () => {
     const fromDay = ref<string>('')
     const toDay = ref<string>('')
     const search = ref<string>('')
+    const searchInput = ref<string>('')
     const filterTypeReward = ref<HistoryType | null>(null)
     const currentTableOptions = ref<TableOpt>({
     page: 1,
@@ -31,6 +32,7 @@ export const useRewardHistoryState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     fromDay,
     toDay,
     headers,

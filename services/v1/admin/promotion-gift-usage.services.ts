@@ -11,9 +11,7 @@ export const promotionGiftUsageAPI = {
     page = 1,
     limit = 10,
     options?: {
-      userId?: string;
-      orderId?: string;
-      promotionGiftId?: string;
+      search?: string;
       reverted?: boolean;
       fromDate?: string;
       toDate?: string;
@@ -25,14 +23,8 @@ export const promotionGiftUsageAPI = {
         limit: limit.toString(),
       });
 
-      if (options?.userId)
-        params.append("userId", options.userId);
-
-      if (options?.orderId)
-        params.append("orderId", options.orderId);
-
-      if (options?.promotionGiftId)
-        params.append("promotionGiftId", options.promotionGiftId);
+      if (options?.search)
+        params.append("search", options.search);
 
       if (options?.reverted !== undefined)
         params.append("reverted", String(options.reverted));

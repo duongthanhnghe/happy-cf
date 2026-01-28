@@ -21,8 +21,10 @@ onBeforeUnmount(() => {
 <template>
   <HeaderAdmin>
     <template #left>
-      <v-text-field v-model="store.search" placeholder="Tìm mã..." variant="outlined" hide-details clearable
-      @update:modelValue="value => store.search = value ?? ''"></v-text-field>
+      <v-text-field v-model="store.searchInput" placeholder="Tìm mã..." variant="outlined" hide-details clearable
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
+      ></v-text-field>
       <v-select
         v-model="store.filterType"
         label="Loại voucher"

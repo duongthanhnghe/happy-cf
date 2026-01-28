@@ -8,6 +8,7 @@ import type { CategoryNewsDTO, CreateCategoryNewsDTO, UpdateCategoryNewsDTO } fr
 import { newsAPI } from "@/services/v1/admin/news.service";
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
 import { useChangeOrder } from "@/composables/utils/useChangeOrder";
+import { useTableUtils } from "@/composables/utils/useTableSearch";
 type MaybeRef<T> = T | Ref<T>;
 
 export const useAdminNewsCategoryOperations = (
@@ -20,6 +21,7 @@ export const useAdminNewsCategoryOperations = (
   loadingTable: Ref<Boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
@@ -69,7 +71,6 @@ export const useAdminNewsCategoryOperations = (
 
   watch(
     () => ({
-      search: search.value,
       page: currentTableOptions.value.page,
       limit: currentTableOptions.value.itemsPerPage,
     }),
@@ -181,6 +182,8 @@ export const useAdminNewsCategoryOperations = (
   const { toggleActive } = useToggleActiveStatus(newsAPI.toggleActiveCategory, serverItems );
 
   const { handleChangeOrder } = useChangeOrder(newsAPI.updateOrderCategory, () => loadItems(currentTableOptions.value));
+
+  const { handleSearch } = useTableUtils(search, searchInput );
   
   const getListOrder = computed(() => {
     return Array.from({ length: maxOrder.value }, (_, i) => i + 1)
@@ -197,8 +200,9 @@ export const useAdminNewsCategoryOperations = (
     submitUpdate,
     handleReload,
     handleResetForm,
-     toggleActive,
+    toggleActive,
     handleChangeOrder,
+    handleSearch,
     getListOrder,
   };
 };

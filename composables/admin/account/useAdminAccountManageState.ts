@@ -22,6 +22,7 @@ export const useAdminAccountManageState = () => {
     const loadingTable = ref<boolean>(true)
     const totalItems = ref<number>(0)
     const search = ref<string>('')
+    const searchInput = ref<string>('')
     const filterTypeMember = ref<AccountRoleType|null>(null)
     const currentTableOptions = ref<TableOpt>({
     page: 1,
@@ -44,6 +45,7 @@ export const useAdminAccountManageState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     headers,
     currentTableOptions,
     filterTypeMember,

@@ -4,6 +4,7 @@ import { unref, type Ref } from 'vue';
 import type { TableOpt } from "@/server/types";
 import { Loading } from "@/utils/global";
 import { variantGroupAPI } from "@/services/v1/admin/variant-group.service";
+import { useTableUtils } from "@/composables/utils/useTableSearch";
 type MaybeRef<T> = T | Ref<T>;
 
 export const useAdminVariantGroupOperations = (
@@ -15,6 +16,7 @@ export const useAdminVariantGroupOperations = (
   loadingTable: Ref<Boolean>,
   totalItems: Ref<Number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
   currentTableOptions: Ref<TableOpt>,
@@ -153,6 +155,8 @@ const handleTogglePopupAdd = (value: boolean) => {
     }
   }
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const addVariant = (target: 'form' | 'update' = 'form') => {
     const variant = {
       id: crypto.randomUUID(),
@@ -182,5 +186,6 @@ const handleTogglePopupAdd = (value: boolean) => {
     getListAllVariantGroup,
     addVariant,
     removeVariant,
+    handleSearch,
   };
 };

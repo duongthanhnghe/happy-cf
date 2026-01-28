@@ -32,6 +32,7 @@ export const useAdminNewsCategoryState = () => {
   const loadingTable = ref<boolean>(true)
   const totalItems = ref<number>(0)
   const search = ref<string>('')
+  const searchInput = ref<string>('')
   const currentTableOptions = ref<TableOpt>({
     page: 1,
     itemsPerPage: itemsPerPage,
@@ -53,6 +54,7 @@ export const useAdminNewsCategoryState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     itemsPerPage,
     headers,
     currentTableOptions,

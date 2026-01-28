@@ -6,6 +6,7 @@ import type { TableOpt } from '@/server/types';
 import type { ProductReviewPaginationDTO, ProductReviewWithUserDTO, ReviewStatus } from '@/server/types/dto/v1/product-review.dto';
 import { useAdminProductReviewAll } from '@/composables/admin/product/review/useAdminProductReviewAll';
 import { productReviewAPI } from '@/services/v1/admin/productReview.service';
+import { useTableUtils } from '@/composables/utils/useTableSearch';
 
 export const useProductReviewManageOperations = (
   dataList: Ref<ProductReviewPaginationDTO|null>,
@@ -13,6 +14,7 @@ export const useProductReviewManageOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   fromDay: Ref<string>,
   toDay: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
@@ -70,7 +72,6 @@ export const useProductReviewManageOperations = (
 
   watch(
     () => ({
-      search: search.value,
       filterStatusOrder: filterStatusOrder.value,
       filterNumberStar: filterNumberStar.value,
       fromDay: fromDay.value,
@@ -129,7 +130,10 @@ export const useProductReviewManageOperations = (
     }
   }
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
+    searchInput.value = ''
     search.value = ''
     fromDay.value = ''
     toDay.value = ''
@@ -147,5 +151,6 @@ export const useProductReviewManageOperations = (
     handleDelete,
     handleUpdateStatus,
     resetFilter,
+    handleSearch,
   };
 };

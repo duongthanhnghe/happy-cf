@@ -26,7 +26,10 @@ onBeforeUnmount(() => {
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.search" placeholder="Tìm theo mã, đơn hàng..." variant="outlined" hide-details></v-text-field>
+    <v-text-field v-model="store.searchInput" placeholder="Tìm theo mã, đơn hàng..." variant="outlined" hide-details clearable
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
+    ></v-text-field>
     <v-select label="Tinh trang" v-model="store.filterStatus" :items="[{ status: '', name: 'TT thanh toán' }, ...Object.values(PAYMENT_TRANSACTION_STATUS)]" item-title="name" item-value="status" variant="outlined" hide-details />
     <v-select label="Thanh toan" v-model="store.filterPaymentMethod" :items="[{ status: '', name: 'PT thanh toán' }, ...getListPayment
 ]" item-title="name" item-value="status" variant="outlined" hide-details />

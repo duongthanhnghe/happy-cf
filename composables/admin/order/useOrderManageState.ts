@@ -28,6 +28,7 @@ export const useOrderManageState = () => {
   const loadingTable = ref<boolean>(true)
   const totalItems = ref<number>(0)
   const search = ref<string>('')
+  const searchInput = ref<string>('')
   const fromDay = ref<string>('')
   const toDay = ref<string>('')
   const currentTableOptions = ref<TableOpt>({
@@ -57,6 +58,7 @@ export const useOrderManageState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     fromDay,
     toDay,
     headers,

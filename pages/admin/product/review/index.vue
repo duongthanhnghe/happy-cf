@@ -7,8 +7,8 @@ import { onBeforeUnmount } from 'vue';
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 
 definePageMeta({
-  layout: ROUTES.ADMIN.ORDER.layout,
-  middleware: ROUTES.ADMIN.ORDER.middleware,
+  layout: ROUTES.ADMIN.PRODUCT.children?.REVIEW.layout,
+  middleware: ROUTES.ADMIN.PRODUCT.children?.REVIEW.middleware,
 })
 
 const store = useProductReviewManageStore();
@@ -23,12 +23,14 @@ onBeforeUnmount(() => {
 <HeaderAdmin>
   <template #left>
     <v-text-field 
-      v-model="store.search"  
+      v-model="store.searchInput" 
       placeholder="Tìm kiếm..." 
       variant="outlined"
       clearable 
       hide-details 
-      @update:modelValue="value => store.search = value ?? ''">
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
+    >
     </v-text-field>
     <v-select 
       label="Tình trạng" 

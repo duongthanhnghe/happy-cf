@@ -54,6 +54,7 @@ export const useVoucherManageState = () => {
   const loadingTable = ref<boolean>(true);
   const totalItems = ref<number>(0);
   const search = ref<string>('');
+  const searchInput = ref<string>('');
   const currentTableOptions = ref<TableOpt>({
     page: 1,
     itemsPerPage: itemsPerPage,
@@ -66,7 +67,6 @@ export const useVoucherManageState = () => {
   const checkEdit = ref<boolean>(true);
   const selectedCategory = ref<CategoryProductDTO[]>([])
   const selectedCategoryName = ref<string[]>([])
-  
   const fromDay = ref<string>('')
   const toDay = ref<string>('')
 
@@ -77,6 +77,7 @@ export const useVoucherManageState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     headers,
     formItem,
     updateItem,

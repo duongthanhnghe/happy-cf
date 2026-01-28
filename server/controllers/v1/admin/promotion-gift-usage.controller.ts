@@ -7,9 +7,7 @@ export const getAllPromotionGiftUsage = async (req: Request, res: Response) => {
     let {
       page = 1,
       limit = 10,
-      userId,
-      orderId,
-      promotionGiftId,
+      search,
       reverted,
       fromDate,
       toDate,
@@ -21,16 +19,14 @@ export const getAllPromotionGiftUsage = async (req: Request, res: Response) => {
 
     const filter: any = {};
 
-    if (userId) {
-      filter.userId = new mongoose.Types.ObjectId(userId as string);
-    }
+    if (search && mongoose.Types.ObjectId.isValid(search as string)) {
+      const objectId = new mongoose.Types.ObjectId(search as string);
 
-    if (orderId) {
-      filter.orderId = new mongoose.Types.ObjectId(orderId as string);
-    }
-
-    if (promotionGiftId) {
-      filter.promotionGiftId = new mongoose.Types.ObjectId(promotionGiftId as string);
+      filter.$or = [
+        { promotionGiftId: objectId },
+        { orderId: objectId },
+        { userId: objectId },
+      ];
     }
 
     if (reverted !== undefined) {

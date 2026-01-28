@@ -14,6 +14,7 @@ import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { useAdminProductDetailMap } from '@/composables/admin/product/useAdminProductDetailMap'
 import { useToggleActiveStatus } from '@/composables/utils/useToggleActiveStatus'
+import { useTableUtils } from '@/composables/utils/useTableSearch'
 
 type MaybeRef<T> = T | Ref<T>
 
@@ -175,13 +176,7 @@ export const usePromotionGiftManageOperations = (
     }
   }
 
-  const handleSearch = (clear = true) => {
-    if(clear) search.value = searchInput.value.trim()
-    else {
-      search.value = ''
-      searchInput.value = ''
-    }
-  }
+  const { handleSearch } = useTableUtils(search, searchInput );
 
   const treeItems = computed(() => {
     const items = getListCategoryAllTree.value ?? []

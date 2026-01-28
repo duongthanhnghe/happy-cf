@@ -12,6 +12,7 @@ import { useOrderStatus } from '@/composables/admin/order/useOrderStatus';
 import { useAdminShippingProviders } from './useAdminShippingProviders';
 import { useAdminOrderShipping } from './useAdminOrderShipping';
 import { useAdminOrderDetailStore } from '@/stores/admin/order/useOrderDetailStore';
+import { useTableUtils } from '@/composables/utils/useTableSearch';
 type MaybeRef<T> = T | Ref<T>;
 
 export const useOrderOperations = (
@@ -20,6 +21,7 @@ export const useOrderOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   fromDay: Ref<string>,
   toDay: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
@@ -95,7 +97,7 @@ export const useOrderOperations = (
 
    watch(
     () => ({
-      search: search.value,
+      // search: search.value,
       filterStatusOrder: filterStatusOrder.value,
       filterStatusTransactionOrder: filterStatusTransactionOrder.value,
       filterStatusShipping: filterStatusShipping.value,
@@ -137,6 +139,8 @@ export const useOrderOperations = (
       Loading(false);
     }
   }
+
+  const { handleSearch } = useTableUtils(search, searchInput);
 
   const handleUpdateStatusOrder = async (orderId:string, idStatusNew:string, statusName: string, transactionId: string | undefined, amount: number, method: PaymentMethod) => {
     if(idStatusNew === ORDER_STATUS.CANCELLED || idStatusNew === ORDER_STATUS.COMPLETED ) {
@@ -194,6 +198,7 @@ export const useOrderOperations = (
 
   const resetFilter = () => {
     search.value = ''
+    searchInput.value = ''
     fromDay.value = ''
     toDay.value = ''
     filterStatusOrder.value = ''
@@ -346,5 +351,6 @@ export const useOrderOperations = (
     handleFilterByOrderStatus,
     handleExport,
     handlePrintBill,
+    handleSearch,
   };
 };

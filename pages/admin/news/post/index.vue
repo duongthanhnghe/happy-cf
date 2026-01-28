@@ -26,12 +26,13 @@ onBeforeUnmount(() => {
 <HeaderAdmin>
   <template #left>
     <v-text-field 
-      v-model="store.search" 
+      v-model="store.searchInput" 
       placeholder="Tìm kiếm tên..." 
       variant="outlined"
       hide-details
       clearable
-      @update:modelValue="value => store.search = value ?? ''"
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
       ></v-text-field>
     <v-select v-if="store.getListCategory" label="Chon danh muc" v-model="store.filterCategory" :items="[{ id: '', categoryName: 'Tất cả' }, ...store.getListCategory]" item-title="categoryName" item-value="id" variant="outlined" hide-details />
     <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
@@ -58,7 +59,7 @@ onBeforeUnmount(() => {
     item-value="name"
     :items-per-page-options="[10, 20, 50, 100, 200, { title: 'Tất cả', value: -1 }]"
     @update:options="options => {
-        store.currentTableOptions = options
+      store.currentTableOptions = options
     }">
     <template #item.index="{ index }">
       {{ (store.currentTableOptions.page - 1) * store.currentTableOptions.itemsPerPage + index + 1 }}

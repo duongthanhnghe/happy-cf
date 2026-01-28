@@ -12,6 +12,7 @@ export const useRewardHistoryStore = defineStore("RewardHistoryAdmin", () => {
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.fromDay,
     state.toDay,
     state.currentTableOptions,

@@ -6,6 +6,7 @@ import { generateSkuProduct, Loading } from "@/utils/global";
 import { useAdminProductAll } from "./useAdminProductAll";
 import { useAdminProductDetail } from "./useAdminProductDetail";
 import { productsAPI } from "@/services/v1/admin/product.service";
+import { useTableUtils } from "@/composables/utils/useTableSearch";
 type MaybeRef<T> = T | Ref<T>;
 
 export const useAdminProductOperations = (
@@ -17,6 +18,7 @@ export const useAdminProductOperations = (
   loadingTable: Ref<Boolean>,
   totalItems: Ref<Number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   categorySelectedFilter: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
   detailData: Ref<ProductDTO|null>,
@@ -72,7 +74,6 @@ export const useAdminProductOperations = (
 
   watch(
     () => ({
-      search: search.value,
       categorySelectedFilter: categorySelectedFilter.value,
       page: currentTableOptions.value.page,
       limit: currentTableOptions.value.itemsPerPage,
@@ -192,8 +193,11 @@ export const useAdminProductOperations = (
     }
   };
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
     search.value = ''
+    searchInput.value = ''
     categorySelectedFilter.value = ''
     currentTableOptions.value.page = 1
     currentTableOptions.value.itemsPerPage = itemsPerPage
@@ -217,6 +221,7 @@ export const useAdminProductOperations = (
     submitUpdate,
     handleReload,
     handleDeleteManyProducts,
+    handleSearch,
     resetFilter,
     hasFilter,
   };

@@ -30,7 +30,11 @@ onBeforeUnmount(() => {
 
 <HeaderAdmin>
   <template #left>
-    <v-text-field v-model="store.search" density="compact" placeholder="Tìm kiếm tên, email..." variant="outlined" hide-details></v-text-field>
+    <v-text-field v-model="store.searchInput" placeholder="Tìm kiếm tên, email..." variant="outlined" hide-details
+      clearable
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
+    ></v-text-field>
     <v-select v-model="store.filterTypeMember" variant="outlined" :items="[{ id: null, name: null, text: 'Tất cả' }, ...storeMembership.getListData ?? []]" :item-title="item => item.name ?? item.text" item-value="name" hide-details />
     <Button v-if="store.hasFilter" color="black" size="md" icon="filter_alt_off" @click="store.resetFilter()" />
   </template>

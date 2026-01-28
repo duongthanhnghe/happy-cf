@@ -25,27 +25,13 @@ onBeforeUnmount(() => {
   <HeaderAdmin>
     <template #left>
       <v-text-field
-        v-model="store.searchPromotionGiftId"
-        placeholder="ID / tên CTKM quà tặng"
+        v-model="store.searchInput" 
+        placeholder="Mã CTKM, Order, User..."
         variant="outlined"
         hide-details
         clearable
-      />
-
-      <v-text-field
-        v-model="store.searchOrderId"
-        placeholder="Order ID"
-        variant="outlined"
-        hide-details
-        clearable
-      />
-
-      <v-text-field
-        v-model="store.searchUserId"
-        placeholder="User ID"
-        variant="outlined"
-        hide-details
-        clearable
+        @keyup.enter="store.handleSearch"
+        @click:clear="store.handleSearch(false)"
       />
 
       <v-select
@@ -89,7 +75,10 @@ onBeforeUnmount(() => {
       :items-length="store.totalItems"
       :loading="store.loadingTable"
       :items-per-page-options="[20, 50, 100, 200]"
-      @update:options="opt => store.currentTableOptions = opt"
+      item-value="name"
+      @update:options="options => {
+        store.currentTableOptions = options;
+      }"
     >
       <template #item.index="{ index }">
         {{ index + 1 }}

@@ -8,6 +8,7 @@ import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus
 import { useAdminPostDetail } from '@/composables/admin/news/useAdminPostDetail'
 import { useAdminPostAll } from '@/composables/admin/news/useAdminPostAll'
 import { useAdminNewsCategory } from '@/composables/admin/news/useAdminNewsCategory'
+import { useTableUtils } from "@/composables/utils/useTableSearch";
 type MaybeRef<T> = T | Ref<T>;
 
 export const useAdminPostNewsOperations = (
@@ -19,6 +20,7 @@ export const useAdminPostNewsOperations = (
   loadingTable: Ref<Boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
@@ -73,7 +75,6 @@ export const useAdminPostNewsOperations = (
 
   watch(
     () => ({
-      search: search.value,
       filterCategory: filterCategory.value,
       page: currentTableOptions.value.page,
       limit: currentTableOptions.value.itemsPerPage,
@@ -179,9 +180,12 @@ export const useAdminPostNewsOperations = (
 
   const { toggleActive } = useToggleActiveStatus(newsAPI.toggleActivePost, serverItems );
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const getListCategory = computed(() => getListCategoryApi.value?.data)
 
   const resetFilter = () => {
+    searchInput.value,
     search.value = ''
     filterCategory.value = ''
     currentTableOptions.value.page = 1
@@ -211,6 +215,7 @@ export const useAdminPostNewsOperations = (
     toggleActive,
     getListCategory,
     resetFilter,
+    handleSearch,
     hasFilter,
   };
 };

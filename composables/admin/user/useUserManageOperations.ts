@@ -7,6 +7,7 @@ import { useAdminUserAll } from '@/composables/user/useAdminUserAll'
 import type { User } from '@/server/types/dto/v1/user.dto';
 import { usersAPI } from '@/services/v1/admin/users.service';
 import { useToggleActiveStatus } from '@/composables/utils/useToggleActiveStatus';
+import { useTableUtils } from '@/composables/utils/useTableSearch';
 
 export const useUserManageOperations = (
   dataList: Ref<User[]>,
@@ -14,6 +15,7 @@ export const useUserManageOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
   filterTypeMember: Ref<string|null>,
 ) => {
@@ -60,7 +62,6 @@ export const useUserManageOperations = (
 
   watch(
     () => ({
-      search: search.value,
       filterTypeMember: filterTypeMember.value,
       page: currentTableOptions.value.page,
       limit: currentTableOptions.value.itemsPerPage,
@@ -83,9 +84,9 @@ export const useUserManageOperations = (
     try {
       const data =  await usersAPI.delete(id)
       if(data.code === 200){
-        showSuccess(data.message)
+        showSuccess(data.message ?? '')
         handleReload()
-      } else showWarning(data.message)
+      } else showWarning(data.message ?? '')
     } catch (err) {
       console.error('Error submitting form:', err)
     } finally {
@@ -95,7 +96,10 @@ export const useUserManageOperations = (
 
   const { toggleActive } = useToggleActiveStatus(usersAPI.toggleActive, serverItems );
   
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
+    searchInput.value = ''
     search.value = ''
     filterTypeMember.value = null
     currentTableOptions.value.page = 1
@@ -118,6 +122,7 @@ export const useUserManageOperations = (
     handleReload,
     toggleActive,
     resetFilter,
+    handleSearch,
     hasFilter,
   };
 };

@@ -23,6 +23,7 @@ export const useVoucherManageStore = defineStore("VoucherManage", () => {
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.fromDay,
     state.toDay,
     state.currentTableOptions,

@@ -6,6 +6,7 @@ import { useAdminProductCategory } from "@/composables/admin/product/category/us
 import { Loading } from "@/utils/global";
 import { categoriesAPI } from "@/services/v1/admin/categories-product.service";
 import { useAdminProductCategoryDetail } from "@/composables/admin/product/category/useAdminProductCategoryDetail";
+import { useTableUtils } from "@/composables/utils/useTableSearch";
 type MaybeRef<T> = T | Ref<T>;
 export const useAdminProductCategoryOperations = (
   formCategoryItem: MaybeRef<CreateCategoryProductDTO>,
@@ -16,6 +17,7 @@ export const useAdminProductCategoryOperations = (
   loadingTable: Ref<Boolean>,
   totalItems: Ref<Number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
@@ -67,7 +69,7 @@ export const useAdminProductCategoryOperations = (
   }
 
   watch(
-    async () => [search.value, currentTableOptions.value.page, currentTableOptions.value.itemsPerPage],
+    async () => [currentTableOptions.value.page, currentTableOptions.value.itemsPerPage],
     async () => {
       await loadItemsCategory(currentTableOptions.value);
       if(getListCategoryAll.value) {
@@ -84,11 +86,11 @@ export const useAdminProductCategoryOperations = (
       const newCategory = toValue(formCategoryItem);
       const data = await categoriesAPI.create(newCategory)
       if(data.code === 0) {
-        showSuccess(data.message)
+        showSuccess(data.message ?? '')
         isTogglePopupAdd.value = false;
         handleResetFormCategoryItem()
         await loadItemsCategory(currentTableOptions.value);
-      } else showWarning(data.message)
+      } else showWarning(data.message ?? '')
     } catch (err) {
       console.error('Error submitting form:', err)
     } finally {
@@ -117,11 +119,11 @@ export const useAdminProductCategoryOperations = (
       
       const data = await categoriesAPI.update(newCategory.id, newCategory)
       if(data.code === 0){
-        showSuccess(data.message)
+        showSuccess(data.message ?? '')
         isTogglePopupUpdate.value = false;
         handleResetFormCategoryItem()
         await loadItemsCategory(currentTableOptions.value);
-      } else showWarning(data.message)
+      } else showWarning(data.message ?? '')
     } catch (err) {
       console.error('Error submitting form:', err)
     } finally {
@@ -136,10 +138,10 @@ export const useAdminProductCategoryOperations = (
     Loading(true);
     try {
       const data = await categoriesAPI.delete(id)
-      if(data.code === 1) showWarning(data.message)
+      if(data.code === 1) showWarning(data.message ?? '')
       else {
         await loadItemsCategory(currentTableOptions.value);
-        showSuccess(data.message)
+        showSuccess(data.message ?? '')
       }
     } catch (err) {
       console.error('Error submitting form:', err)
@@ -148,8 +150,11 @@ export const useAdminProductCategoryOperations = (
     }
   }
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
     search.value = ''
+    searchInput.value = ''
     currentTableOptions.value.page = 1
     currentTableOptions.value.itemsPerPage = itemsPerPage
   }
@@ -170,6 +175,7 @@ export const useAdminProductCategoryOperations = (
     submitCreate,
     submitUpdate,
     resetFilter,
+    handleSearch,
     hasFilter,
   };
 };

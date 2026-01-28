@@ -21,12 +21,13 @@ onBeforeUnmount(() => {
 <HeaderAdmin>
   <template #left>
     <v-text-field 
-      v-model="store.search" 
+      v-model="store.searchInput" 
       placeholder="Tìm kiếm tên..." 
       variant="outlined" 
       hide-details
       clearable
-      @update:modelValue="value => store.search = value ?? ''"
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
       ></v-text-field>
   </template>
 
@@ -50,7 +51,6 @@ onBeforeUnmount(() => {
     item-value="name"
     @update:options="options => {
       store.currentTableOptions = options
-      store.loadItems(options)
     }">
     
     <template #item.index="{ item }">

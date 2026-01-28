@@ -3,6 +3,7 @@ import { computed, watch } from 'vue';
 import type { TableOpt } from '@/server/types';
 import { vouchersUsageAPI } from '@/services/v1/admin/voucher-usage.service';
 import type { VoucherUsageDTO, VoucherUsagePaginationDTO } from '@/server/types/dto/v1/voucher-usage.dto';
+import { useTableUtils } from '@/composables/utils/useTableSearch';
 
 export const useVoucherUsageOperations = (
   dataList: Ref<VoucherUsagePaginationDTO|null>,
@@ -10,6 +11,7 @@ export const useVoucherUsageOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   fromDay: Ref<string>,
   toDay: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
@@ -63,7 +65,6 @@ export const useVoucherUsageOperations = (
 
   watch(
     () => ({
-      search: search.value,
       filterType: filterType.value,
       fromDay: fromDay.value,
       toDay: toDay.value,
@@ -76,7 +77,10 @@ export const useVoucherUsageOperations = (
     { deep: true }
   )
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
+    searchInput.value = ''
     search.value = ''
     fromDay.value = ''
     toDay.value = ''
@@ -104,6 +108,7 @@ export const useVoucherUsageOperations = (
     hasFilter,
     loadItems,
     handleReload,
-    resetFilter
+    resetFilter,
+    handleSearch,
   };
 };

@@ -7,6 +7,7 @@ import { useAccountAll } from "./useAccountAll";
 import { useForbiddenHandler } from "@/utils/handle403";
 import type { TableOpt } from "@/server/types";
 import { useToggleActiveStatus } from "@/composables/utils/useToggleActiveStatus";
+import { useTableUtils } from "@/composables/utils/useTableSearch";
 type MaybeRef<T> = T | Ref<T>;
 
 export const useAdminAccountManageOperations = (
@@ -17,6 +18,7 @@ export const useAdminAccountManageOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   filterTypeMember: Ref<AccountRoleType|null>,
   currentTableOptions: Ref<TableOpt>,
   newPassword: Ref<string>,
@@ -93,9 +95,9 @@ export const useAdminAccountManageOperations = (
           return;
         }
         if(data.code === 0){
-          showSuccess(data.message)
+          showSuccess(data.message ?? '')
           handleReload()
-        } else showWarning(data.message)
+        } else showWarning(data.message ?? '')
       } catch (err) {
         console.error('Error submitting form:', err)
       } finally {
@@ -115,7 +117,7 @@ export const useAdminAccountManageOperations = (
           handleForbiddenAccess(res.message);
           return;
         }
-        showSuccess(res.message);
+        showSuccess(res.message ?? '');
       } catch (err: any) {
         console.log(err.message);
       } finally {
@@ -134,11 +136,11 @@ export const useAdminAccountManageOperations = (
           return;
         }
         if(data.code === 0){
-          showSuccess(data.message);
+          showSuccess(data.message ?? '');
           handleReload()
           Object.assign(formCreate, defaultForm)
         }
-        else showWarning(data.message);
+        else showWarning(data.message ?? '');
         isTogglePopupCreate.value = false;
       } catch (err: any) {
         console.error('Error submitting form:', err)
@@ -153,6 +155,8 @@ export const useAdminAccountManageOperations = (
 
     const { toggleActive } = useToggleActiveStatus(accountAPI.toggleActive, serverItems );
 
+    const { handleSearch } = useTableUtils(search, searchInput );
+
   return {
     handleDelete,
     getListData,
@@ -162,5 +166,6 @@ export const useAdminAccountManageOperations = (
     handleResetPassword,
     submitCreate,
     handleCreate,
+    handleSearch,
   };
 };

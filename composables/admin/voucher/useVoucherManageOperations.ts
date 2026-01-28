@@ -10,6 +10,7 @@ import type { Ref } from 'vue';
 import type { TableOpt } from '@/server/types';
 import type { CreateVoucherBody, VoucherDTO, VoucherPaginationDTO } from '@/server/types/dto/v1/voucher.dto';
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto';
+import { useTableUtils } from '@/composables/utils/useTableSearch';
 type MaybeRef<T> = T | Ref<T>;
 
 export const useVoucherManageOperations = (
@@ -21,6 +22,7 @@ export const useVoucherManageOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   fromDay: Ref<string>,
   toDay: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
@@ -86,7 +88,7 @@ export const useVoucherManageOperations = (
 
   }
 
-  watch([search,filterType,fromDay, toDay], () => {
+  watch([filterType,fromDay,toDay], () => {
     loadItems(currentTableOptions.value);
   });
 
@@ -219,7 +221,10 @@ export const useVoucherManageOperations = (
     resetFormType()
   })
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
+    searchInput.value = ''
     search.value = ''
     fromDay.value = ''
     toDay.value = ''
@@ -297,6 +302,7 @@ export const useVoucherManageOperations = (
     handleDelete,
     toggleActive,
     resetFilter,
+    handleSearch,
     treeItems,
     typeHasImage,
   };

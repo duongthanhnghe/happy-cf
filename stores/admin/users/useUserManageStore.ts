@@ -12,6 +12,7 @@ export const useUserManageStore = defineStore("UserManage", () => {
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.currentTableOptions,
     state.filterTypeMember,
   )

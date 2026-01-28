@@ -13,6 +13,7 @@ export const usePaymentTransactionManageStore = defineStore("PaymentTransactionM
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.fromDay,
     state.toDay,
     state.currentTableOptions,

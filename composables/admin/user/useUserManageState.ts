@@ -22,6 +22,7 @@ export const useUserManageState = () => {
     const loadingTable = ref<boolean>(true)
     const totalItems = ref<number>(0)
     const search = ref<string>('')
+    const searchInput = ref<string>('')
     const filterTypeMember = ref<string|null>(null)
     const currentTableOptions = ref<TableOpt>({
     page: 1,
@@ -35,6 +36,7 @@ export const useUserManageState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     currentTableOptions,
     filterTypeMember,
     headers,

@@ -17,12 +17,13 @@ const store = useAccountListStore();
 <HeaderAdmin>
   <template #left>
     <v-text-field 
-      v-model="store.search" 
+      v-model="store.searchInput" 
       placeholder="Tìm kiếm tên, email..." 
       variant="outlined" 
       clearable 
       hide-details
-      @update:modelValue="value => store.search = value ?? ''"
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
       >
       </v-text-field>
     <v-select label="Loại người dùng" v-model="store.filterTypeMember" :items="[{ value: '', label: 'Tất cả' }, ...Object.values(ACCOUNT_ROLE) ?? []]" item-title="label" item-value="value" variant="outlined" hide-details />

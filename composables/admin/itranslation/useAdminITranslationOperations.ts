@@ -6,6 +6,7 @@ import { iTranslationAPI } from "@/services/v1/admin/itranslation.service";
 import { useAdminITranslationDetail } from "@/composables/itranslation/useAdminITranslationDetail";
 import { useAdminITranslationAll } from "@/composables/admin/itranslation/useAdminITranslationAll";
 import type { TranslationCreateDTO, TranslationDTO, TranslationUpdateDTO } from "@/server/types/dto/v1/itranslation.dto";
+import { useTableUtils } from "@/composables/utils/useTableSearch";
 type MaybeRef<T> = T | Ref<T>;
 
 export const useAdminITranslationOperations = (
@@ -17,6 +18,7 @@ export const useAdminITranslationOperations = (
   loadingTable: Ref<Boolean>,
   totalItems: Ref<number>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   currentTableOptions: Ref<TableOpt>,
   isTogglePopupAdd: Ref<boolean>,
   isTogglePopupUpdate: Ref<boolean>,
@@ -179,6 +181,8 @@ export const useAdminITranslationOperations = (
     }
   }
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   return {
     loadItems,
     submitCreate,
@@ -188,5 +192,6 @@ export const useAdminITranslationOperations = (
     handleTogglePopupAdd,
     handleTogglePopupUpdate,
     handleResetForm,
+    handleSearch,
   };
 };

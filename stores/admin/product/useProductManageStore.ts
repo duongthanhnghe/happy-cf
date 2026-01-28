@@ -114,6 +114,7 @@ export const useProductManageStore = defineStore("ProductManage", () => {
     state.loadingTable,
     state.totalItems,
     state.search,
+    state.searchInput,
     state.categorySelectedFilter,
     state.currentTableOptions,
     state.detailData,

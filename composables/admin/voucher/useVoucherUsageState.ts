@@ -30,6 +30,7 @@ export const useVoucherUsageState = () => {
   const loadingTable = ref<boolean>(true);
   const totalItems = ref<number>(0);
   const search = ref<string>('');
+  const searchInput = ref<string>('');
   const currentTableOptions = ref<TableOpt>({
     page: 1,
     itemsPerPage: itemsPerPage,
@@ -46,6 +47,7 @@ export const useVoucherUsageState = () => {
     loadingTable,
     totalItems,
     search,
+    searchInput,
     headers,
     detailData,
     currentTableOptions,

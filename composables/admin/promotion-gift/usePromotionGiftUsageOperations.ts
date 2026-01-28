@@ -6,6 +6,7 @@ import type {
   PromotionGiftUsageDTO,
   PromotionGiftUsagePaginationDTO,
 } from "@/server/types/dto/v1/promotion-gift-usage.dto";
+import { useTableUtils } from "@/composables/utils/useTableSearch";
 
 export const usePromotionGiftUsageOperations = (
   dataList: Ref<PromotionGiftUsagePaginationDTO | null>,
@@ -13,9 +14,8 @@ export const usePromotionGiftUsageOperations = (
   loadingTable: Ref<boolean>,
   totalItems: Ref<number>,
 
-  searchOrderId: Ref<string>,
-  searchUserId: Ref<string>,
-  searchPromotionGiftId: Ref<string>,
+  search: Ref<string>,
+  searchInput: Ref<string>,
   fromDay: Ref<string>,
   toDay: Ref<string>,
   reverted: Ref<boolean | null>,
@@ -38,9 +38,7 @@ export const usePromotionGiftUsageOperations = (
       currentTableOptions.value.page,
       currentTableOptions.value.itemsPerPage,
       {
-        orderId: searchOrderId.value || undefined,
-        userId: searchUserId.value || undefined,
-        promotionGiftId: searchPromotionGiftId.value || undefined,
+        search: search.value || undefined,
         reverted: reverted.value ?? undefined,
         fromDate: from,
         toDate: to,
@@ -83,9 +81,7 @@ export const usePromotionGiftUsageOperations = (
 
   watch(
     () => ({
-      orderId: searchOrderId.value,
-      userId: searchUserId.value,
-      promotionGiftId: searchPromotionGiftId.value,
+      search: search.value,
       reverted: reverted.value,
       fromDay: fromDay.value,
       toDay: toDay.value,
@@ -98,10 +94,11 @@ export const usePromotionGiftUsageOperations = (
     { deep: true }
   );
 
+  const { handleSearch } = useTableUtils(search, searchInput );
+
   const resetFilter = () => {
-    searchOrderId.value = "";
-    searchUserId.value = "";
-    searchPromotionGiftId.value = "";
+    searchInput.value = '';
+    search.value = "";
     reverted.value = null;
     fromDay.value = "";
     toDay.value = "";
@@ -111,9 +108,7 @@ export const usePromotionGiftUsageOperations = (
 
   const hasFilter = computed(() => {
     return (
-      searchOrderId.value !== "" ||
-      searchUserId.value !== "" ||
-      searchPromotionGiftId.value !== "" ||
+      search.value !== "" ||
       reverted.value !== null ||
       fromDay.value !== "" ||
       toDay.value !== "" ||
@@ -129,6 +124,7 @@ export const usePromotionGiftUsageOperations = (
   return {
     hasFilter,
     loadItems,
+    handleSearch,
     handleReload,
     resetFilter,
   };

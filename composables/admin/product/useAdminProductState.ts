@@ -76,13 +76,14 @@ export const useAdminProductState = () => {
       { title: '', key: 'actions', sortable: false , headerProps: { class: 'v-data-table-sticky-cl-right' },
       cellProps: { class: 'v-data-table-sticky-cl-right' }},
     ])
-    const serverItems = ref<ProductDTO[]>([])
-    const loadingTable = ref<boolean>(true)
-    const totalItems = ref<number>(0)
-    const search = ref<string>('')
-    const categorySelectedFilter = ref<string>('')
-    const itemsPerPage = 50
-    const currentTableOptions = ref<TableOpt>({
+  const serverItems = ref<ProductDTO[]>([])
+  const loadingTable = ref<boolean>(true)
+  const totalItems = ref<number>(0)
+  const search = ref<string>('')
+  const searchInput = ref<string>('')
+  const categorySelectedFilter = ref<string>('')
+  const itemsPerPage = 50
+  const currentTableOptions = ref<TableOpt>({
     page: 1,
     itemsPerPage: itemsPerPage,
     sortBy: [],
@@ -147,5 +148,6 @@ export const useAdminProductState = () => {
     currentTypeImport,
     selectedIdsDelete,
     itemsPerPage,
+    searchInput,
   };
 };

@@ -14,10 +14,13 @@ const store = useVariantGroupStore();
 <HeaderAdmin>
   <template #left>
     <v-text-field
-      v-model="store.search"
+      v-model="store.searchInput"
       placeholder="Tìm theo tên nhóm..."
       variant="outlined"
       hide-details
+      clearable
+      @keyup.enter="store.handleSearch"
+      @click:clear="store.handleSearch(false)"
     ></v-text-field>
   </template>
 

@@ -24,9 +24,8 @@ export const usePromotionGiftUsageState = () => {
   const loadingTable = ref<boolean>(true);
   const totalItems = ref<number>(0);
 
-  const searchOrderId = ref<string>("");
-  const searchUserId = ref<string>("");
-  const searchPromotionGiftId = ref<string>("");
+  const search = ref<string>("");
+  const searchInput = ref<string>("");
   const reverted = ref<boolean | null>(null);
   const fromDay = ref<string>("");
   const toDay = ref<string>("");
@@ -48,9 +47,8 @@ export const usePromotionGiftUsageState = () => {
     detailData,
     currentTableOptions,
     itemsPerPage,
-    searchOrderId,
-    searchUserId,
-    searchPromotionGiftId,
+    searchInput,
+    search,
     reverted,
     fromDay,
     toDay,
