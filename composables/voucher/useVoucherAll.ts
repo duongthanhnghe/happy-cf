@@ -1,9 +1,11 @@
 import { ref, computed } from "vue";
 import { vouchersAPI } from "@/services/v1/voucher.service";
 import type { VoucherAvailableDTO } from "@/server/types/dto/v1/voucher.dto";
+import { useState } from "nuxt/app";
 
 export const useVoucherAll = () => {
-  const vouchers = ref<VoucherAvailableDTO[]>([]);
+  const vouchers = useState<VoucherAvailableDTO[]>('list-voucher-all', () => [])
+  
   const loadingData = ref(false);
 
   const fetchVoucherAll = async () => {

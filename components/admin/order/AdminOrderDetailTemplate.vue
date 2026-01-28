@@ -283,7 +283,7 @@ const storeDetailUser = useAdminUserDetailStore()
       <!-- Vận đơn -->
       <div class="col-12 col-lg-4">
         <Card size="sm" class="rd-lg height-full" heading="Vận đơn">
-          <div v-if="storeDetailOrder.getDetailOrder?.shipping" class="flex flex-direction-column gap-sm">
+          <div v-if="storeDetailOrder.getDetailOrder.shipping" class="flex flex-direction-column gap-sm">
             <div class="flex justify-between" v-if="storeDetailOrder?.getDetailOrder?.shipping?.trackingCode">
               <Text color="gray5" text="Mã đơn:" />
               <div class="flex align-center">
@@ -310,12 +310,11 @@ const storeDetailUser = useAdminUserDetailStore()
             <Button color="secondary" label="Chi tiết" @click="store.handlePopupDetailOrderShipping(storeDetailOrder.getDetailOrder.shipping.id)" />
           </div>
           <div v-else class="flex justify-center">
-            <Button color="primary" label="Tạo vận đơn" @click="store.handlePopupCreateOrderShipping(storeDetailOrder.getDetailOrder.id)" />
+            <Button v-if="!ORDER_STATUS.CANCELLED" color="primary" label="Tạo vận đơn" @click="store.handlePopupCreateOrderShipping(storeDetailOrder.getDetailOrder.id)" />
+            <NoData text="Chưa vận đơn"/>
           </div>
         </Card>
       </div>
-
-      
     </div>
 
   </template>

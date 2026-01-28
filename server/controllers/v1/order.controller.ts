@@ -76,6 +76,10 @@ export const getOrderById = async (req: Request, res: Response) => {
 }
 
 export const createOrder = async (req: Request, res: Response) => {
+  let user: any = null;
+  let pointDeducted = false;
+  let deductedPoints = 0;
+
   try {
     const { data, usedPoint } = req.body
     const {
@@ -109,8 +113,6 @@ export const createOrder = async (req: Request, res: Response) => {
       }
     }
 
-    let user: any = null;
-
     if (userId) {
       user = await UserModel.findById(userId);
 
@@ -136,13 +138,17 @@ export const createOrder = async (req: Request, res: Response) => {
     }
 
     const baseInfo = await BaseInformationEntity.findOne().lean()
-
     const rewardConfig = baseInfo?.systemConfig?.reward
     const rateUsePoint = rewardConfig?.rateUsePoint || 0
-    let deductedPoints = 0
     let earnPoints = 0
 
     if (usedPoint && usedPoint > 0) {
+      if (usedPoint > 0 && !user) {
+        return res.status(400).json({
+          code: 1,
+          message: "Cần đăng nhập để sử dụng điểm"
+        })
+      }
 
       if (!rewardConfig?.enableUsePoint) {
         return res.status(400).json({
@@ -168,7 +174,30 @@ export const createOrder = async (req: Request, res: Response) => {
           message: `Số điểm sử dụng vượt quá giới hạn cho phép (${maxPointCanUse})`,
         });
       }
+    }
 
+    // validate voucher
+    if (Array.isArray(data.voucherUsage) && data.voucherUsage.length > 0) {
+      for (const v of data.voucherUsage) {
+        const voucher = await VoucherEntity.findOne({ code: v.code });
+
+        if (!voucher || !voucher.isActive) {
+          return res.status(400).json({
+            code: 1,
+            message: `Voucher ${v.code} không hợp lệ`,
+          });
+        }
+
+        if (
+          voucher.usageLimit > 0 &&
+          voucher.usedCount >= voucher.usageLimit
+        ) {
+          return res.status(400).json({
+            code: 1,
+            message: `Voucher ${v.code} đã hết lượt`,
+          });
+        }
+      }
     }
 
     // Nếu có user và muốn dùng điểm
@@ -180,6 +209,7 @@ export const createOrder = async (req: Request, res: Response) => {
       // Trừ điểm từ balancePoint trong DB
       user.membership.balancePoint -= usedPoint;
       deductedPoints = usedPoint;
+      pointDeducted = true;
     }
 
     // Nếu có user và tich điểm
@@ -192,6 +222,7 @@ export const createOrder = async (req: Request, res: Response) => {
       }
     }
 
+    // resolved promotion gift
     const resolvedGiftItems = giftItems.length
       ? await resolveGiftItems(giftItems)
       : [];
@@ -255,12 +286,12 @@ export const createOrder = async (req: Request, res: Response) => {
       cancelRequested: false,
     })
 
-    if (deductedPoints > 0) {
+    if (pointDeducted && deductedPoints > 0) {
       await user.save();
     }
 
+    //tao log promotion gift
     if (promotionGiftIds.length > 0) {
-      //tao log promotion gift
       const usageDocs = promotionGiftIds.map(promoId =>
         toCreatePromotionGiftUsageEntity({
           promotionGiftId: promoId,
@@ -289,26 +320,51 @@ export const createOrder = async (req: Request, res: Response) => {
         if (!updated) {
           await restoreStockOrder(newOrder)
           await OrderEntity.deleteOne({ _id: newOrder._id })
-
-          if (deductedPoints > 0 && user) {
-            user.membership.balancePoint += deductedPoints
-            await user.save()
-          }
-
           throw new Error("CTKM quà tặng đã hết lượt trong lúc đặt hàng")
         }
       }
     }
 
     //tao log voucher
-    if (Array.isArray(data.voucherUsage) && data.voucherUsage.length > 0 && userId) {
+    if (Array.isArray(data.voucherUsage) && data.voucherUsage.length > 0) {
       for (const v of data.voucherUsage) {
-        const voucher = await VoucherEntity.findOne({ code: v.code });
-        if (!voucher) continue;
+        let updatedVoucher = await VoucherEntity.findOneAndUpdate(
+          {
+            code: v.code,
+            isActive: true,
+            $or: [
+              { usageLimit: 0 },
+              { $expr: { $lt: ["$usedCount", "$usageLimit"] } }
+            ],
+            "usedBy.userId": userId,
+          },
+          {
+            $inc: {
+              usedCount: 1,
+              "usedBy.$.count": 1,
+            },
+          },
+          { new: true }
+        );
+
+        if (!updatedVoucher) {
+          updatedVoucher = await VoucherEntity.findOneAndUpdate(
+            { code: v.code, isActive: true },
+            {
+              $inc: { usedCount: 1 },
+              $push: { usedBy: { userId, count: 1 } },
+            },
+            { new: true }
+          );
+        }
+
+        if (!updatedVoucher) {
+          throw new Error(`Voucher ${v.code} không thể sử dụng`);
+        }
 
         await VoucherUsageEntity.create({
-          voucherId: voucher._id,
-          userId: userId || null,
+          voucherId: updatedVoucher._id,
+          userId,
           orderId: newOrder._id,
           code: v.code,
           type: v.type,
@@ -322,40 +378,13 @@ export const createOrder = async (req: Request, res: Response) => {
           },
         });
 
-        // Kiểm tra xem user đã sử dụng voucher này chưa
-        const exists = voucher.usedBy?.some(
-          (u) => u.userId?.toString() === userId.toString()
-        );
-
-        if (exists) {
-          await VoucherEntity.updateOne(
-            { code: v.code },
-            {
-              $inc: {
-                usedCount: 1,
-                "usedBy.$[u].count": 1,
-              },
-            },
-            {
-              arrayFilters: [{ "u.userId": userId }],
-            }
-          );
-        } else {
-          // Nếu chưa có user trong usedBy → thêm mới
-          await VoucherEntity.updateOne(
-            { code: v.code },
-            {
-              $inc: { usedCount: 1 },
-              $push: { usedBy: { userId, count: 1 } },
-            }
-          );
+        if (
+          updatedVoucher.usageLimit > 0 &&
+          updatedVoucher.usedCount >= updatedVoucher.usageLimit
+        ) {
+          updatedVoucher.isActive = false;
+          await updatedVoucher.save();
         }
-
-        // disable voucher luon neu hết lượt
-        if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit) {
-          voucher.isActive = false;
-        }
-        await voucher.save();
       }
     }
 
@@ -366,11 +395,18 @@ export const createOrder = async (req: Request, res: Response) => {
     })
   } catch (err: any) {
     console.error("Lỗi createOrder:", err)
+
+    // ROLLBACK POINT
+    if (pointDeducted && user) {
+      user.membership.balancePoint += deductedPoints;
+      await user.save();
+    }
+
     return res.status(500).json({ code: 2, message: "Lỗi server" })
   }
 }
 
- export const getOrdersByUserId = async (req: Request, res: Response) => {
+export const getOrdersByUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const page = Number(req.query.page) || 1;
@@ -662,22 +698,6 @@ export const sepayCallback = async (req: Request, res: Response) => {
     });
 
     order.transaction = transaction._id as Types.ObjectId;
-
-    // Cập nhật status = COMPLETED
-    // const completedStatus = await OrderStatusEntity.findOne({ 
-    //   id: ORDER_STATUS.COMPLETED 
-    // });
-    
-    // if (completedStatus) {
-    //   order.status = completedStatus._id;
-      
-    //   // Cộng điểm
-    //   if (order.userId && !order.reward.awarded) {
-    //     await setPointAndUpgrade(order.userId.toString(), order.reward.points);
-    //     order.reward.awarded = true;
-    //     order.reward.awardedAt = new Date();
-    //   }
-    // }
 
     await order.save();
 

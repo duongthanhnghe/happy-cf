@@ -172,6 +172,12 @@ a {
       width: $width-taskbar-hide;
     }
   }
+  &-md {
+    width: $space-md;
+  }
+  &-lg {
+    width: $space-lg;
+  }
   &-xl {
     width: $space-xl;
   }
@@ -225,6 +231,9 @@ a {
   }
   &-dvh {
     height: 100dvh;
+  }
+  &-lg {
+    height: $space-lg !important;
   }
   &-xl {
     height: $space-xl;

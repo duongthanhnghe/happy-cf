@@ -11,7 +11,7 @@ definePageMeta({
   showHeaderSub: ROUTES.PUBLIC.ACCOUNT.showHeaderSub,
 })
 
-const storeAccount = useAccountStore();
+const storeAccount = useAccountStore()
 const storeAccountEdit = useAccountEditStore()
 const storeDisplay = useDisplayStore()
 const user = storeAccount.getDetailValue || null
@@ -37,6 +37,12 @@ const infoItems = [
         class="rd-full position-absolute right-1 bottom-1"
         @click.prevent="storeAccountEdit.handleEditAccount"
       />
+    </div>
+
+    <div v-if="storeAccount.hasWarningInfo">
+      <v-chip label color="warning" class="mb-sm">
+        Vui lòng cập nhật thông tin đầy đủ để nhận thêm nhiều ưu đãi
+      </v-chip>
     </div>
 
     <Button

@@ -149,31 +149,6 @@ onBeforeUnmount(() => {
         :status-list="store.statusListToShow(order)"
         :on-update-status="store.handleUpdateStatusOrder"
       />
-      <!-- <v-chip :color="order.status.status" label>
-        {{ order.status.name }}
-        <template v-if="order.status.id !== ORDER_STATUS.CANCELLED">
-          <MaterialIcon name="keyboard_arrow_down" />
-        </template>
-      </v-chip>
-      <template v-if="order.status.id !== ORDER_STATUS.CANCELLED">
-        <v-menu transition="slide-x-transition" activator="parent">
-          <v-list>
-            <v-list-item
-              v-for="statusItem in store.statusListToShow(order)"
-              :key="statusItem.id"
-              @click.prevent="store.handleUpdateStatusOrder(order.id, statusItem.id, statusItem.name, order.transaction?.id, order.totalPrice, order.paymentId.method)"
-              :class="{ active: statusItem.index == order.status.index }"
-            >
-              <v-list-item-title>
-                <div class="flex align-center gap-sm">
-                  <MaterialIcon v-if="statusItem.icon" :name="statusItem.icon" />
-                  {{ statusItem.name }}
-                </div>
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </template> -->
     </template>
 
     <template #item.paymentId="{ item }">
@@ -184,29 +159,6 @@ onBeforeUnmount(() => {
     </template>
 
     <template #item.transaction="{ item }">
-      <!-- <div v-if="item.transaction">
-        <v-chip label :color="item.transaction?.statusColor">
-          {{ item.transaction?.statusText }}
-          <MaterialIcon name="keyboard_arrow_down" />
-        </v-chip>
-        
-        <template v-if="PAYMENT_TRANSACTION_STATUS && item.transaction">
-          <v-menu transition="slide-x-transition" activator="parent">
-            <v-list>
-              <v-list-item
-                v-for="statusItem in getFilteredTransactionStatus(item.status.id)"
-                :key="statusItem.status"
-                :class="{ active: statusItem.status == item.transaction?.status }"
-                @click.prevent="store.handleUpdateStatusTransactionOrder(item.transaction?.id, statusItem.status)"
-              >
-                <v-list-item-title>
-                    {{ statusItem.name }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
-      </div> -->
       <AdminOrderTransactionDropdown
         :orderId="item.id"
         :transaction="item.transaction"
@@ -235,39 +187,6 @@ onBeforeUnmount(() => {
         :shipping="item.shipping"
         :on-update-status="store.handleUpdateOrderShippingStatus"
       />
-      <!-- <div v-else class="flex flex-direction-column gap-xs">
-        <div class="flex align-center gap-xs">
-          <v-chip
-            :color="SHIPPING_STATUS[item.shipping.status].color"
-            label
-            class="cursor-pointer"
-          >
-            {{ SHIPPING_STATUS[item.shipping.status].name }}
-            <MaterialIcon name="keyboard_arrow_down" />
-          </v-chip>
-
-          <v-menu transition="slide-x-transition" activator="parent">
-            <v-list>
-              <v-list-item
-                v-for="statusItem in Object.values(SHIPPING_STATUS)"
-                :key="statusItem.status"
-                @click.prevent="
-                  store.handleUpdateOrderShippingStatus(
-                    item.shipping.id,
-                    statusItem.status,
-                    statusItem.name
-                  )
-                "
-                :class="{ active: statusItem.status === item.shipping.status }"
-              >
-                <v-list-item-title>
-                  {{ statusItem.name }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-      </div> -->
     </template>
 
     <template #item.shipping="{ item }">
@@ -287,7 +206,15 @@ onBeforeUnmount(() => {
 
     <template #item.actions="{ item }">
       <div class=" flex gap-xs justify-end">
-        <Button class="isLaptop" v-tooltip.left="!item.shipping ? 'Tạo vận đơn':'Chi tiết vận đơn'" :border="false" color="secondary" size="sm" :icon="!item.shipping ? 'box_add':'box'" @click="!item.shipping ? store.handlePopupCreateOrderShipping(item.id) : store.handlePopupDetailOrderShipping(item.shipping.id)" />
+        <Button 
+          class="isLaptop" 
+          v-tooltip.left="!item.shipping ? 'Tạo vận đơn':'Chi tiết vận đơn'" 
+          :border="false" color="secondary" 
+          size="sm"
+          :icon="!item.shipping ? 'box_add':'box'"
+          v-if="item.status.id !== ORDER_STATUS.CANCELLED || item.shipping"
+          @click="!item.shipping ? store.handlePopupCreateOrderShipping(item.id) : store.handlePopupDetailOrderShipping(item.shipping.id)" 
+        />
         <Button v-tooltip.left="'Chi tiết đơn hàng'" :border="false" color="secondary" size="sm" icon="visibility" @click="storeDetailOrder.handleTogglePopupDetail(true,item.id)" />
         <Button class="isLaptop" v-tooltip.left="'In bill'" :border="false" color="secondary" size="sm" icon="receipt" @click="store.handlePrintBill(item.id)" />
         <Button v-tooltip.left="'Xoá đơn hàng'" :border="false" color="secondary" size="sm" icon="delete" @click="store.handleDelete(item.id)" />

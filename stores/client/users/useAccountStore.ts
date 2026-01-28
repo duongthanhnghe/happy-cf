@@ -14,6 +14,10 @@ export const useAccountStore = defineStore("AccountStore", () => {
   const getDetailValue = computed(() => state.detailData.value)
   const getUserId = computed(() => state.userId.value)
   const getInformationMembershipLevel = computed(() => state.informationMembershipLevel.value)
+  const hasWarningInfo = computed(() => {
+    const d = state.detailData.value
+    return !d?.phone || !d?.birthday
+  })
 
   const accountMenuInfo = computed(() => {
     return [
@@ -31,5 +35,6 @@ export const useAccountStore = defineStore("AccountStore", () => {
     getUserId,
     getInformationMembershipLevel,
     accountMenuInfo,
+    hasWarningInfo
   };
 });

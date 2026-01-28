@@ -76,8 +76,14 @@ const props = defineProps({
                   :width="50"
                 />
               </div>
-              <div v-if="storeAccount.getDetailValue?.membership.point < storeAccount.getInformationMembershipLevel?.nextLevel.minPoint" class="mt-xs">
-                Tích luỹ thêm <span class="weight-semibold">{{ formatCurrency(storeAccount.getInformationMembershipLevel?.nextLevel.minPoint - storeAccount.getDetailValue?.membership.point).replace('đ','') }} điểm</span> để thăng hạng {{ storeAccount.getInformationMembershipLevel?.nextLevel.name }}
+              <div v-if="storeAccount.getDetailValue?.membership.point < storeAccount.getInformationMembershipLevel?.nextLevel.minPoint" class="flex flex-wrap gap-xs mt-xs">
+                Tích luỹ thêm <span class="weight-semibold">{{ formatCurrency(storeAccount.getInformationMembershipLevel?.nextLevel.minPoint - storeAccount.getDetailValue?.membership.point).replace('đ','') }} điểm</span> để thăng hạng {{ storeAccount.getInformationMembershipLevel?.nextLevel.name }}.
+                <Text
+                   @click="storeAccount.handleTogglePopupMembershipInformation(true)"
+                   color="gray8" 
+                   text="Xem quyền lợi" 
+                   class="cursor-pointer text-underline"
+                />
               </div>
             </template>
           </div>

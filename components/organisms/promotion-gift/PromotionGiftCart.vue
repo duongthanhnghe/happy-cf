@@ -20,7 +20,7 @@ const {
 
 </script>
 <template>
-  <Card v-if="giftPromotions.length" bg="gradient-3" class="rd-xl mt-md">
+  <Card v-if="giftPromotions.length" bg="gradient-3" class="rd-xl mt-ms">
     <div class="mb-sm position-relative">
       <Text text="Quà tặng đi kèm" size="md" weight="semibold" />
       <button class="gift-prev swiper-button-prev top-0 mt-0 mr-xs left-auto right-lg"></button>

@@ -1,6 +1,7 @@
 import type { Request, Response } from "express"
 import { UserModel } from "../../../models/v1/user.entity"
 import { OrderEntity, OrderShippingEntity, OrderStatusEntity, PaymentEntity, ShippingProviderEntity } from "../../../models/v1/order.entity"
+import type { Order } from "../../../models/v1/order.entity"
 import { MembershipLevelModel } from "../../../models/v1/membership-level.entity"
 import type { MembershipLevel } from "@/server/types/dto/v1/user.dto"
 import { toOrderDTO, toOrderExport, toOrderListDTO, toOrderShippingDTO, toOrderStatusListDTO, toPaymentDTO, toPaymentListDTO, toShippingProviderDTO, toShippingProviderListDTO } from "../../../mappers/v1/order.mapper"
@@ -212,19 +213,7 @@ export const getOrderById = async (req: Request, res: Response) => {
   }
 }
 
-export const deleteOrder = async (req: Request, res: Response) => {
-  try {
-    const deleted = await OrderEntity.findByIdAndDelete(req.params.id)
-    if (!deleted) {
-      return res.status(404).json({ code: 1, message: "Order không tồn tại" })
-    }
-    return res.json({ code: 0, message: "Xoá thành công" })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
-
-export const rollbackVoucherUsage = async (order: any) => {
+export const rollbackVoucherUsage = async (order: Order) => {
   if (!order?.userId || !Array.isArray(order.voucherUsage)) return;
   if (order.voucherRefunded) return;
 
@@ -233,7 +222,7 @@ export const rollbackVoucherUsage = async (order: any) => {
       const voucher = await VoucherEntity.findOne({ code: vu.code });
       if (!voucher) continue;
 
-      // ✅ rollback log
+      // rollback log
       await VoucherUsageEntity.updateMany(
         { userId: order.userId, orderId: order._id, code: vu.code },
         { $set: { reverted: true, revertedAt: new Date() } }
@@ -241,7 +230,7 @@ export const rollbackVoucherUsage = async (order: any) => {
 
       const userObjId = new mongoose.Types.ObjectId(order.userId);
 
-      // ✅ rollback usedBy.count nếu user có trong usedBy
+      // rollback usedBy.count nếu user có trong usedBy
       const exists = await VoucherEntity.exists({
         code: vu.code,
         "usedBy.userId": userObjId,
@@ -268,7 +257,7 @@ export const rollbackVoucherUsage = async (order: any) => {
   await OrderEntity.findByIdAndUpdate(order._id, { voucherRefunded: true });
 };
 
-export const rollbackPromotionGiftUsage = async (order: any) => {
+export const rollbackPromotionGiftUsage = async (order: Order) => {
   if (!order?._id) return;
 
   const logs = await PromotionGiftUsageEntity.find({
@@ -298,150 +287,25 @@ export const rollbackPromotionGiftUsage = async (order: any) => {
   );
 };
 
-export const updateOrderStatus = async (req: Request, res: Response) => {
-  try {
-    const { orderId, statusId } = req.body
+export const rollbackUserReward = async (order: Order) => {
+  if (!order?.userId) return;
 
-    const status = await OrderStatusEntity.findById(statusId)
-    if (!status) {
-      return res.status(404).json({ code: 1, message: "Status không tồn tại" })
-    }
-
-    const order = await OrderEntity.findById(orderId)
-    if (!order) {
-      return res.status(404).json({ code: 1, message: "Order không tồn tại" })
-    }
-
-    if (order.cancelRequested && statusId !== ORDER_STATUS.CANCELLED) {
-      return res.status(400).json({
-        code: 1,
-        message: "Khách đang yêu cầu hủy đơn, không thể thay đổi sang trạng thái này"
-      })
-    }
-
-    if (order.status?.toString() === ORDER_STATUS.CANCELLED) {
-      return res.status(400).json({
-        code: 1,
-        message: "Đơn hàng đã đã hủy, không thể thay đổi trạng thái nữa"
-      })
-    }
-
-    order.status = statusId
-
-    // Nếu status = COMPLETED → tạo danh sách đánh giá
-    if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
-      const existingReviews = await ProductReviewEntity.find({ orderId: orderId });
-
-      if (existingReviews.length === 0) {
-
-        const reviews = order.cartItems.map(item =>
-          createProductReviewEntity({
-            orderId: order._id,
-            userId: order.userId!,
-            productId: item.idProduct as string,
-          })
-        );
-
-        await ProductReviewEntity.insertMany(reviews);
-      }
-    }
-
-    // Nếu status = done → cộng điểm cho user (nếu chưa cộng)
-    if (status.id === ORDER_STATUS.COMPLETED && order.userId && !order.reward.awarded) {
-      await setPointAndUpgrade(order.userId.toString(), order.reward.points)
-      order.reward.awarded = true
-      order.reward.awardedAt = new Date()
-      await order.save()
-    }
-
-    if (status.id === ORDER_STATUS.CANCELLED) {
-      // hoàn kho
-      if (order.stockDeducted) {
-        await restoreStockOrder(order)
-        order.stockDeducted = false
-      }
-      
-      if(order.userId){
-        const user = await UserModel.findById(order.userId);
-
-        // Refund điểm người dùng
-        if (!order.pointsRefunded && order.usedPoints > 0 && user) {
-            user.membership.balancePoint += order.usedPoints; // cong lai điểm người dùng
-            user.membership.balancePoint -= order.reward.points; // tru di điểm order da cong
-            order.pointsRefunded = true;
-        }
-
-        // Nếu đơn này từng cộng điểm thưởng → rollback lại
-        if (order.reward?.awarded && order.reward.points > 0) {
-          await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
-          order.reward.awarded = false; 
-          order.reward.awardedAt = new Date();
-        }
-
-        await user?.save();
-      }
-
-      // hoàn lai voucher
-      await rollbackVoucherUsage(order)
-
-      // hoàn lai Gift Promotion
-      await rollbackPromotionGiftUsage(order)
-    }
-
-    await order.save()
-
-    return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) })
-  } catch (err: any) {
-    console.error("Lỗi updateOrderStatus:", err)
-    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" })
+  // hoàn điểm đã dùng
+  if (!order.pointsRefunded && order.usedPoints > 0) {
+      await UserModel.updateOne( 
+      { _id: order.userId },
+      { $inc: { "membership.balancePoint": order.usedPoints } }
+    );
+    order.pointsRefunded = true;
   }
-}
 
-export const getAllStatus = async (_: Request, res: Response) => {
-  try {
-    const status = await OrderStatusEntity.find().sort({ index: 1 })
-    return res.json({ code: 0, data: toOrderStatusListDTO(status) })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
+  // Nếu đơn này từng cộng điểm thưởng > rollback lại
+  if (order.reward?.awarded && order.reward.points > 0) {
+    await revertPointAndDowngrade(order.userId.toString(), order.reward.points);
+    order.reward.awarded = false; 
+    order.reward.awardedAt = new Date();
   }
-}
-
-export const getAllPayment = async (_: Request, res: Response) => {
-  try {
-    const payments = await PaymentEntity.find()
-    return res.json({ code: 0, data: toPaymentListDTO(payments) })
-  } catch (err: any) {
-    return res.status(500).json({ code: 1, message: err.message })
-  }
-}
-
-export const toggleActivePayment = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-
-    const payment = await PaymentEntity.findById(id)
-    if (!payment) {
-      return res.status(404).json({
-        code: 1,
-        message: "Phương thức thanh toán không tồn tại"
-      })
-    }
-
-    payment.isActive = !payment.isActive
-    await payment.save()
-
-    return res.json({
-      code: 0,
-      message: "Cập nhật trạng thái phương thức thanh toán thành công",
-      data: toPaymentDTO(payment)
-    })
-  } catch (err: any) {
-    return res.status(500).json({
-      code: 1,
-      message: err.message
-    })
-  }
-}
+};
 
 export const setPointAndUpgrade = async (userId: string, point: number) => {
   const user = await UserModel.findById(userId)
@@ -496,6 +360,174 @@ export const revertPointAndDowngrade = async (userId: string, pointsToRevert: nu
 
   await user.save();
 };
+
+export const updateOrderStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId, statusId } = req.body
+
+    const status = await OrderStatusEntity.findById(statusId)
+    if (!status) {
+      return res.status(404).json({ code: 1, message: "Status không tồn tại" })
+    }
+
+    const order = await OrderEntity.findById(orderId)
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order không tồn tại" })
+    }
+
+    if (order.cancelRequested && statusId !== ORDER_STATUS.CANCELLED) {
+      return res.status(400).json({
+        code: 1,
+        message: "Khách đang yêu cầu hủy đơn, không thể thay đổi sang trạng thái này"
+      })
+    }
+
+    if (order.status?.toString() === ORDER_STATUS.CANCELLED) {
+      return res.status(400).json({
+        code: 1,
+        message: "Đơn hàng đã đã hủy, không thể thay đổi trạng thái nữa"
+      })
+    }
+
+    order.status = statusId
+
+    // Nếu status = COMPLETED 
+    if (status.id === ORDER_STATUS.COMPLETED && order.userId) {
+
+      // tạo danh sách đánh giá
+      const existingReviews = await ProductReviewEntity.find({ orderId: orderId });
+      if (existingReviews.length === 0) {
+
+        const reviews = order.cartItems.map(item =>
+          createProductReviewEntity({
+            orderId: order._id,
+            userId: order.userId!,
+            productId: item.idProduct as string,
+          })
+        );
+
+        await ProductReviewEntity.insertMany(reviews);
+      }
+
+      // cộng điểm cho user (nếu chưa cộng)
+      if (!order.reward.awarded) {
+        await setPointAndUpgrade(order.userId.toString(), order.reward.points)
+        order.reward.awarded = true
+        order.reward.awardedAt = new Date()
+        await order.save()
+      }
+
+    }
+
+    // Nếu status = CANCELLED 
+    if (status.id === ORDER_STATUS.CANCELLED) {
+      // hoàn kho
+      if (order.stockDeducted) {
+        await restoreStockOrder(order)
+        order.stockDeducted = false
+      }
+      
+      // hoàn lai point
+      await rollbackUserReward(order)
+
+      // hoàn lai voucher
+      await rollbackVoucherUsage(order)
+
+      // hoàn lai Gift Promotion
+      await rollbackPromotionGiftUsage(order)
+    }
+
+    await order.save()
+
+    return res.json({ code: 0, message: "Cập nhật status thành công", data: toOrderDTO(order) })
+  } catch (err: any) {
+    console.error("Lỗi updateOrderStatus:", err)
+    return res.status(500).json({ code: 1, message: err.message || "Internal Server Error" })
+  }
+}
+
+export const deleteOrder = async (req: Request, res: Response) => {
+  try {
+    const order = await OrderEntity.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ code: 1, message: "Order không tồn tại" });
+    }
+
+    // Nếu order chưa bị hủy > rollback như CANCELLED
+    if (order.status?.toString() !== ORDER_STATUS.CANCELLED) {
+
+      // hoàn kho
+      if (order.stockDeducted) {
+        await restoreStockOrder(order);
+        order.stockDeducted = false;
+      }
+
+      // hoàn lai point
+      await rollbackUserReward(order);
+
+      // rollback voucher
+      await rollbackVoucherUsage(order);
+
+      // rollback promotion gift
+      await rollbackPromotionGiftUsage(order);
+    }
+
+    // delete order
+    await OrderEntity.deleteOne({ _id: order._id });
+
+    return res.json({ code: 0, message: "Xoá order thành công" });
+
+  } catch (err: any) {
+    console.error("Lỗi deleteOrder:", err);
+    return res.status(500).json({ code: 1, message: err.message });
+  }
+};
+
+export const getAllStatus = async (_: Request, res: Response) => {
+  try {
+    const status = await OrderStatusEntity.find().sort({ index: 1 })
+    return res.json({ code: 0, data: toOrderStatusListDTO(status) })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const getAllPayment = async (_: Request, res: Response) => {
+  try {
+    const payments = await PaymentEntity.find()
+    return res.json({ code: 0, data: toPaymentListDTO(payments) })
+  } catch (err: any) {
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const toggleActivePayment = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+
+    const payment = await PaymentEntity.findById(id)
+    if (!payment) {
+      return res.status(404).json({
+        code: 1,
+        message: "Phương thức thanh toán không tồn tại"
+      })
+    }
+
+    payment.isActive = !payment.isActive
+    await payment.save()
+
+    return res.json({
+      code: 0,
+      message: "Cập nhật trạng thái phương thức thanh toán thành công",
+      data: toPaymentDTO(payment)
+    })
+  } catch (err: any) {
+    return res.status(500).json({
+      code: 1,
+      message: err.message
+    })
+  }
+}
 
 export const getOrderCountByStatus = async (req: Request, res: Response) => {
   try {
