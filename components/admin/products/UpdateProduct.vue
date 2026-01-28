@@ -3,6 +3,7 @@ import { useValidate } from '@/composables/validate/useValidate';
 import { updateProductSchema } from '@/shared/validate/schemas/product.schema';
 import { useProductManageStore } from '@/stores/admin/product/useProductManageStore'
 import { showWarning } from '@/utils/toast';
+import { copyText } from '@/utils/global';
 
 const store = useProductManageStore();
 const { formErrors, validate } = useValidate(updateProductSchema)
@@ -26,7 +27,14 @@ const handleSubmitUpdate = async () => {
       <div class="col-12 col-lg-8 mb-ms">
         <Card class="rd-lg">
 
-          <LabelInput label="Tên sản phẩm" required/>
+          <div class="flex justify-between mb-xs">
+            <LabelInput label="Tên sản phẩm" required/>
+            <v-chip label @click="copyText(`t('${store.updateProductItem.id}')`)">
+              ID: {{ store.updateProductItem.id }}
+              <MaterialIcon name="content_copy" class="ml-xs" />
+            </v-chip>
+          </div>
+
           <v-text-field
             v-model="store.updateProductItem.productName"
             :counter="100"

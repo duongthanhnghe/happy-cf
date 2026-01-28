@@ -73,7 +73,8 @@ export const usePromotionGiftManageState = () => {
   const selectedCategory = ref<CategoryProductDTO[]>([])
   const selectedCategoryName = ref<string[]>([])
 
-  const search = ref<string>('');
+  const search = ref<string>('')
+  const searchInput = ref<string>('')
   const fromDay = ref<string>('')
   const toDay = ref<string>('')
 
@@ -94,6 +95,7 @@ export const usePromotionGiftManageState = () => {
     selectedCategory,
     selectedCategoryName,
     search,
+    searchInput,
     fromDay,
     toDay,
   }

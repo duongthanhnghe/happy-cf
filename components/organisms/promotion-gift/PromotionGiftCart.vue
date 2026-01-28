@@ -37,13 +37,19 @@ const {
       }"
     >
       <swiper-slide v-for="(promo, index) in giftPromotions" :key="index">
-        <Card v-if="promo" size="sm" class="flex flex-direction-column gap-sm rd-lg">
+        <Card 
+          v-if="promo" 
+          size="sm" 
+          class="flex flex-direction-column gap-sm rd-lg"
+          :class="isSelectedPromo(promo.id) ? 'border-solid border-width-2 border-color-black':''"
+          >
           <Text v-if="promo.locked" :text="promo.message" color="danger" class="text-italic" />
           <div v-else>
             <Button
               size="sm"
               :color="isLockedPromo(promo.id) ? 'gray':'black'"
               :label="isSelectedPromo(promo.id) ? 'Đã chọn':'Lấy ngay'"
+              :icon="isSelectedPromo(promo.id) ? 'check_small':''"
               :disabled="isLockedPromo(promo.id)"
               @click.prevent="handleSelectGift(promo.id, promo.gifts)"
             />

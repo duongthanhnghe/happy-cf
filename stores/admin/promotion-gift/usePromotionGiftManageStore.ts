@@ -20,6 +20,7 @@ export const usePromotionGiftManageStore = defineStore("PromotionGiftManageStore
     state.selectedCategory,
     state.selectedCategoryName,
     state.search,
+    state.searchInput,
     state.fromDay,
     state.toDay,
     state.itemsPerPage,

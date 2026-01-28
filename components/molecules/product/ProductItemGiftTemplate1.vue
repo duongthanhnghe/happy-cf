@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { formatCurrency } from '@/utils/global'
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
+import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 
 const props = defineProps<{
   item: ProductDTO
@@ -21,7 +22,13 @@ const props = defineProps<{
       />
     </div>
     <div class="flex-1 pd-xs pl-sm">
-      <Text size="sm" weight="semibold" limit="1" class="mb-xs" :text="props.item?.productName" />
+      <NuxtLink 
+        v-if="item.slug" 
+        :to="ROUTE_HELPERS.productDetail(item.slug)"
+        target="_blank"
+      >
+        <Text size="sm" weight="semibold" limit="1" class="mb-xs" :text="props.item?.productName" />
+      </NuxtLink>
       <div class="mt-xs">
         <div class="flex gap-xs align-center mt-sm mb-sm">
           <Text class="line-height-1" weight="semibold" >{{ formatCurrency(0) }}</Text>

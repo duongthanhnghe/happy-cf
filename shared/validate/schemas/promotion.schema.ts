@@ -32,8 +32,8 @@ export const basePromotionGiftObjectSchema = z.object({
 
   requiredCategories: z
     .array(objectIdSchema)
-    .optional(),
-
+    .min(1, 'Phải chọn ít nhất 1 danh mục'),
+    
   startDate: z
     .string()
     .refine(val => !isNaN(Date.parse(val)), {

@@ -13,7 +13,6 @@ import { useAdminProductCategoryTree } from '../product/category/useAdminProduct
 import { findItemInTree, markAllSelectable } from '@/utils/treeHelpers'
 import type { CategoryProductDTO } from '@/server/types/dto/v1/product.dto'
 import { useAdminProductDetailMap } from '@/composables/admin/product/useAdminProductDetailMap'
-import { useDebounceFn } from '@/composables/utils/useDebounceFn'
 import { useToggleActiveStatus } from '@/composables/utils/useToggleActiveStatus'
 
 type MaybeRef<T> = T | Ref<T>
@@ -33,6 +32,7 @@ export const usePromotionGiftManageOperations = (
   selectedCategory: Ref<CategoryProductDTO[]>,
   selectedCategoryName: Ref<string[]>,
   search: Ref<string>,
+  searchInput: Ref<string>,
   fromDay: Ref<string>,
   toDay: Ref<string>,
   itemsPerPage: number,
@@ -43,6 +43,8 @@ export const usePromotionGiftManageOperations = (
     getProductDetail,
     resetProductCache,
   } = useAdminProductDetailMap()
+
+   const { getListCategoryAllTree, fetchCategoryListTree } = useAdminProductCategoryTree()
 
   const loadItems = async (opt: TableOpt) => {
     const from = fromDay.value !== '' ? new Date(fromDay.value).toISOString().slice(0, 10) : ''
@@ -126,7 +128,7 @@ export const usePromotionGiftManageOperations = (
     detailData.value = data
     Object.assign(updateItem, data)
 
-    setSelectedCategory(unref(updateItem).requiredCategories)
+    setSelectedCategory(unref(updateItem).requiredCategories as string [])
 
     handleTogglePopupUpdate(true)
   }
@@ -173,8 +175,13 @@ export const usePromotionGiftManageOperations = (
     }
   }
 
-  const { getListCategoryAllTree, fetchCategoryListTree } =
-      useAdminProductCategoryTree()
+  const handleSearch = (clear = true) => {
+    if(clear) search.value = searchInput.value.trim()
+    else {
+      search.value = ''
+      searchInput.value = ''
+    }
+  }
 
   const treeItems = computed(() => {
     const items = getListCategoryAllTree.value ?? []
@@ -255,6 +262,7 @@ export const usePromotionGiftManageOperations = (
   }
 
   const resetFilter = () => {
+    searchInput.value = ''
     search.value = ''
     fromDay.value = ''
     toDay.value = ''
@@ -288,5 +296,6 @@ export const usePromotionGiftManageOperations = (
     addGiftItem,
     removeGiftItem,
     toggleActive,
+    handleSearch,
   }
 }

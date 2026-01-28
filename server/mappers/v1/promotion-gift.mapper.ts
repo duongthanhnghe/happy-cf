@@ -4,15 +4,28 @@ import { toProductDTO } from "./product.mapper";
 import { Types } from "mongoose";
 
 function mapIdOrObject<T extends Record<string, any>>(
-  value?: (Types.ObjectId | (T & { _id?: any; toObject?: () => any }))[]
+  value?: Array<
+    Types.ObjectId |
+    string |
+    (T & { _id?: any; toObject?: () => any })
+  >
 ): (string | ({ id: string } & Partial<T>))[] | undefined {
   if (!value) return undefined;
 
   return value.map(v => {
+    if (typeof v === 'string') {
+      return v;
+    }
+
+    if (v instanceof Types.ObjectId) {
+      return v.toString();
+    }
+
     if (typeof v === 'object') {
-      const raw = typeof (v as any).toObject === 'function'
-        ? (v as any).toObject()
-        : v;
+      const raw =
+        typeof (v as any).toObject === 'function'
+          ? (v as any).toObject()
+          : v;
 
       if (raw._id) {
         const { _id, ...rest } = raw;
@@ -23,7 +36,7 @@ function mapIdOrObject<T extends Record<string, any>>(
       }
     }
 
-    return v.toString();
+    return String(v);
   });
 }
 

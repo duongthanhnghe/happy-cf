@@ -3,6 +3,7 @@ import { formatCurrency } from '@/utils/global'
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
 import { computed, ref, watch } from 'vue'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 
 const props = defineProps<{
   item: ProductDTO
@@ -71,8 +72,13 @@ watch(giftCombinationId, (val) => {
     </div>
 
     <div class="flex-1 pd-xs pl-sm">
-      <Text size="sm" weight="semibold" limit="1" class="mb-xs" :text="item.productName" />
-
+      <NuxtLink 
+        v-if="item.slug" 
+        :to="ROUTE_HELPERS.productDetail(item.slug)"
+        target="_blank"
+      >
+        <Text size="sm" weight="semibold" limit="1" class="mb-xs" :text="item.productName" />
+      </NuxtLink>
       <div class="flex justify-between mt-xs">
         <div class="flex gap-xs align-center">
           <Text weight="semibold">{{ formatCurrency(0) }}</Text>
@@ -89,7 +95,7 @@ watch(giftCombinationId, (val) => {
           :key="group.groupId"
           class="width-full max-width-150"
         >
-          <Text size="xs" class="mb-xs">{{ group.groupName }}</Text>
+            <Text size="xs" class="mb-xs">{{ group.groupName }}</Text>
           <v-select
             v-model="giftSelectedVariants[group.groupId]"
             :items="group.variants"

@@ -143,6 +143,11 @@ onBeforeUnmount(() => {
         <template v-if="store.getTotalPriceDiscount != 0">
           <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId"/>
         </template>
+
+        <!-- LABEL FREESHIP -->
+        <v-chip label color="green" class="width-full mt-sm">
+          {{ storeSetting.getShippingTooltip }}
+        </v-chip>
         
         <!-- PERSION INFO -->
         <CartPersonInfo :userId="storeAccount.getUserId" />

@@ -1333,6 +1333,9 @@ body .bg {
     border: 1px solid $cl-gray2;
   }
   &-color {
+    &-black {
+      border-color: $cl-black;
+    }
     &-gray {
       border-color: $cl-gray;
     }
@@ -1344,6 +1347,14 @@ body .bg {
     }
     &-gray8 {
       border-color: $cl-gray8;
+    }
+  }
+  &-solid {
+    border-style: solid;
+  }
+  &-width {
+    &-2 {
+      border-width: 2px;
     }
   }
 }
