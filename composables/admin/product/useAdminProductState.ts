@@ -73,6 +73,7 @@ export const useAdminProductState = () => {
       },
       { title: 'Tình trạng', key: 'isActive', sortable: false, },
       { title: 'SKU', key: 'sku', sortable: false, },
+      { title: 'ID', key: 'id', sortable: false, },
       { title: '', key: 'actions', sortable: false , headerProps: { class: 'v-data-table-sticky-cl-right' },
       cellProps: { class: 'v-data-table-sticky-cl-right' }},
     ])

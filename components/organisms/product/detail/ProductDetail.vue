@@ -153,10 +153,11 @@ onBeforeUnmount(() => {
               <v-chip v-tooltip.left="storeSetting.getShippingTooltip" v-if="storeSetting.calcFreeship(store.variantPrice)" label color="green" class="mt-sm">
                 Freeship
               </v-chip>
+              <v-chip v-else label color="green" class="width-full mt-sm">
+                {{ storeSetting.getShippingTooltip }}
+              </v-chip>
             </template>
-            <v-chip v-else label color="green" class="width-full mt-sm">
-              {{ storeSetting.getShippingTooltip }}
-            </v-chip>
+            
             </client-only>
 
             <div class="flex flex-direction-column gap-ms mt-ms" v-if="detail.variantCombinations.length">

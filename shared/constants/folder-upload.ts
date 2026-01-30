@@ -11,4 +11,5 @@ export const FOLDER_UPLOAD = {
   POST: 'PostsNews',
   PRODUCT: 'Product',
   VOUCHER: 'Voucher',
+  FLASH_SALE: 'FlashSale',
 }

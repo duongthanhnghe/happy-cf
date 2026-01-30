@@ -56,6 +56,14 @@ export function formatDateTime(
   return new Intl.DateTimeFormat(locale, options).format(date)
 }
 
+export const toDatetimeLocal = (iso) => {
+  const d = new Date(iso)
+
+  const pad = (n) => n.toString().padStart(2, '0')
+
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 export const scrollIntoView = (elementId) => {
   const element = document.getElementById(elementId);
   if (element) {

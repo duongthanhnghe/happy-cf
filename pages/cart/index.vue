@@ -145,7 +145,7 @@ onBeforeUnmount(() => {
         </template>
 
         <!-- LABEL FREESHIP -->
-        <v-chip label color="green" class="width-full mt-sm">
+        <v-chip v-if="storeSetting.getConfigShipping?.enabled" label color="green" class="width-full mt-sm">
           {{ storeSetting.getShippingTooltip }}
         </v-chip>
         

@@ -135,6 +135,33 @@ export const ROUTES : { ADMIN: Record<string, MenuItem>; PUBLIC: Record<string, 
       },
     },
 
+    FLASH_SALE: {
+      label: 'CT Flash Sale',
+      icon: 'featured_seasonal_and_gifts',
+      isShowSidebar: true,
+      roles: ["superadmin"],
+      children: {
+        LIST: {
+          path: '/admin/flash-sale',
+          label: 'QL Flash Sale',
+          icon: 'list',
+          middleware: ['admin-role'],
+          layout: 'admin-layout',
+          isShowSidebar: true,
+          roles: ["superadmin"],
+        },
+        // USAGE: {
+        //   path: '/admin/flash-sale/usage',
+        //   label: 'Đã sử dụng',
+        //   icon: 'list',
+        //   middleware: ['admin-role'],
+        //   layout: 'admin-layout',
+        //   isShowSidebar: true,
+        //   roles: ["superadmin"],
+        // },
+      },
+    },
+
     ORDER: {
       label: 'Đơn hàng',
       icon: 'assignment',

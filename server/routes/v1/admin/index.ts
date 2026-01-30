@@ -22,6 +22,7 @@ import baseInformationRoutes from './base-information.router'
 import dashboardRouter from "./dashboard.router"
 import promotionGiftRouter from "./promotion-gift.route"
 import promotionGiftUsageRouter from "./promotion-gift-usage.route"
+import flashSaleRouter from "./flash-sale.route"
 
 const router = Router()
 
@@ -47,5 +48,6 @@ router.use('/base-information', baseInformationRoutes)
 router.use("/dashboard", dashboardRouter)
 router.use("/promotion-gift", promotionGiftRouter)
 router.use("/promotion-gift-usage", promotionGiftUsageRouter)
+router.use("/flash-sales", flashSaleRouter)
 
 export default router

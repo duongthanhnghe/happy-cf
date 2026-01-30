@@ -26,6 +26,7 @@ export const useAdminProductDetailMap = () => {
   }
 
   return {
+    productMap,
     fetchDetailProduct,
     getProductDetail,
     resetProductCache,

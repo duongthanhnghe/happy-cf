@@ -130,6 +130,12 @@ export interface ProductImportTableItem {
   message?: string;
 }
 
+export interface ProductLiteDTO {
+  id: string
+  productName: string
+  image: string[]
+}
+
 export type ProductPaginationDTO = PaginationDTO<ProductDTO>
 
 export type ProductImportDTO = ImportDTO<ProductDTO>

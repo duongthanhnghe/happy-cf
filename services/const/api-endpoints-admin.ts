@@ -186,4 +186,12 @@ export const API_ENDPOINTS_ADMIN = {
   PROMOTION_GIFT_USAGE: {
     LIST: "/promotion-gift-usage",
   },
+  FLASH_SALES: {
+    LIST: "/flash-sales",
+    CREATE: "/flash-sales",
+    GET_BY_ID: (id: string) => `/flash-sales/${id}`,
+    UPDATE: (id: string) => `/flash-sales/${id}`,
+    DELETE: (id: string) => `/flash-sales/${id}`,
+    TOGGLE_ACTIVE: (id: string) => `/flash-sales/${id}/toggle-active`,
+  }
 }

@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
       <div class="flex gap-xs position-relative white-space">
         <template v-for="(itemImage, index) in item.cartItems" :key="index" >
           <Image 
-            v-tooltip="itemImage.idProduct.productName" v-if="index < 3 && itemImage.idProduct.image"
+            v-tooltip="itemImage.idProduct.productName" v-if="index < 3 && typeof itemImage.idProduct === 'object' && itemImage.idProduct.image"
             :src="itemImage.idProduct.image" :alt="itemImage.idProduct.productName"
             :width="50"
             :height="50"
