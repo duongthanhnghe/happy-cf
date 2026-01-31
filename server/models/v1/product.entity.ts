@@ -51,6 +51,20 @@ export interface Product {
   vouchers: {
   image: string;
 } | null;
+  //flash sale
+  isFlashSale?: boolean,
+  flashSale?: {
+    id: string            
+    name?: string        
+    slug?: string         
+    badgeImage?: string
+    items: {
+      variantSku: string | null
+      originalPrice: number
+      salePrice: number
+      percentDiscount: number
+    }[]
+  }
   //SEO
   titleSEO: string;
   descriptionSEO: string;

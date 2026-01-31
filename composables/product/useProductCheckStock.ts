@@ -6,13 +6,14 @@ interface CheckStockPayload {
   productId: string
   quantity: number
   combinationId?: string
+  sku?: string
 }
 
 export const useProductCheckStock = () => {
   const loading = ref(false)
   const availableStock = ref<number | null>(null)
 
-    const checkStock = async (payload: CheckStockPayload): Promise<boolean> => {
+  const checkStock = async (payload: CheckStockPayload): Promise<boolean> => {
     loading.value = true
     Loading(true)
 
@@ -23,7 +24,7 @@ export const useProductCheckStock = () => {
       }
 
       if (payload.combinationId) {
-        apiPayload.combinationId = payload.combinationId
+        apiPayload.sku = payload.combinationId
       }
 
       const res = await productsAPI.checkProductStock(apiPayload)

@@ -75,21 +75,46 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
 
   const getListReviewProduct = computed(() => getListReview.value?.data);
 
-  const variantPrice = computed<number|null>(() => {
-    if (!getDetailProduct.value?.variantCombinations.length){
-      if(getDetailProduct.value?.priceDiscounts && getDetailProduct.value?.price) {
-        if(getDetailProduct.value?.priceDiscounts !== getDetailProduct.value?.price) {
-         return getDetailProduct.value?.priceDiscounts
-        } else {
-         return getDetailProduct.value?.price
-        }
-      } else {
-        return null
+  // const variantPrice = computed<number|null>(() => {
+  //   if (!getDetailProduct.value?.variantCombinations.length){
+  //     if(getDetailProduct.value?.priceDiscounts && getDetailProduct.value?.price) {
+  //       if(getDetailProduct.value?.priceDiscounts !== getDetailProduct.value?.price) {
+  //        return getDetailProduct.value?.priceDiscounts
+  //       } else {
+  //        return getDetailProduct.value?.price
+  //       }
+  //     } else {
+  //       return null
+  //     }
+  //   }
+
+  //   return storeCart.getSelectedVariantPrice(
+  //     getDetailProduct.value.variantCombinations
+  //   )
+  // })
+
+  const variantPrice = computed<number | null>(() => {
+    const detail = getDetailProduct.value
+    if (!detail) return null
+
+    // product KHÔNG variant
+    if (!detail.variantCombinations.length) {
+      if (detail.isFlashSale && detail.flashSale?.items?.length) {
+        const fsItem = detail.flashSale.items.find(
+          i => i.variantSku === null
+        )
+        if (fsItem) return fsItem.salePrice
       }
+
+      return detail.priceDiscounts !== detail.price
+        ? detail.priceDiscounts
+        : detail.price
     }
 
+    // product CÓ variant
     return storeCart.getSelectedVariantPrice(
-      getDetailProduct.value.variantCombinations
+      detail.variantCombinations,
+      detail.flashSale
     )
   })
 

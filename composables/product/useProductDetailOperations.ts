@@ -47,6 +47,8 @@ export const useProductDetailOperations = (
       storeCart.note
     )
 
+    console.log('qua day?',res)
+
     if (res) {
       showSuccess('Thêm giỏ hàng thành công')
       storeCart.resetFormCart()

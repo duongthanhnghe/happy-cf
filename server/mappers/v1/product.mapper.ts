@@ -28,13 +28,22 @@ export function toVariantCombinationDTO(
 }
 
 export function toProductDTO(entity: Product): ProductDTO {
+  const isFlashSale =
+    !!entity.isFlashSale &&
+    !!entity.flashSale &&
+    Array.isArray(entity.flashSale.items)
+
   const price = Number(entity.price) || 0
   const priceDiscount = Number(entity.priceDiscounts) || 0
 
   const percentDiscount =
-    price > 0 && priceDiscount > 0 && priceDiscount < price
+    !isFlashSale && price > 0 && priceDiscount > 0 && priceDiscount < price
       ? Math.round(((price - priceDiscount) / price) * 100)
       : 0
+  // const percentDiscount =
+  //   price > 0 && priceDiscount > 0 && priceDiscount < price
+  //     ? Math.round(((price - priceDiscount) / price) * 100)
+  //     : 0
 
   return {
     id: entity._id?.toString() || "",
@@ -63,6 +72,8 @@ export function toProductDTO(entity: Product): ProductDTO {
     weight: entity.weight,
     sku: entity.sku,
     isActive: entity.isActive,
+    isFlashSale,
+    flashSale: isFlashSale ? entity.flashSale : undefined,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
     vouchers: entity.vouchers ?? null,

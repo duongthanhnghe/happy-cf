@@ -580,6 +580,11 @@ body .bg {
       border-color: $cl-gray4;
     }
   }
+  &-four {
+    background: $cl-four;
+    border-color: $cl-four;
+    color: $cl-white !important;
+  }
   &-blur {
     background-color: $cl-blur2;
     border-color: rgb(18 18 18 / 3%);

@@ -1,4 +1,4 @@
-import type { Ref } from 'vue';
+import { computed, type Ref } from 'vue';
 import type { CartDTO } from '@/server/types/dto/v1/product.dto';
 
 export const useCartPricing = (
@@ -25,20 +25,87 @@ export const useCartPricing = (
     }, 0);
   };
 
+  // const calculateOrderPriceDiscount = () => {
+  //   let value = cartListItem.value.reduce((total, item) => {
+
+  //     // FLASH SALE
+  //     if (item.isFlashSale && item.flashSale?.items?.length) {
+  //       const flashItem = item.flashSale.items.find(
+  //         fs => fs.variantSku === item.variantCombination?.sku
+  //       )
+
+  //       if (flashItem?.originalPrice && flashItem?.salePrice) {
+  //         return (
+  //           total +
+  //           (flashItem.originalPrice - flashItem.salePrice) * item.quantity
+  //         )
+  //       }
+  //     }
+
+  //     if (item.variantCombination && !item.isFlashSale) {
+  //       return 0
+  //     }
+      
+  //     if (item.price && item.priceDiscounts) {
+  //       return total + (item.price - item.priceDiscounts) * item.quantity
+  //     }
+
+  //     return total
+  //   }, 0)
+
+  //   return value || 0
+  // }
+
   const calculateOrderPriceDiscount = () => {
     let value = cartListItem.value.reduce((total, item) => {
-      if (item.variantCombination) {
-        return 0
+
+      // FLASH SALE: chỉ áp dụng cho 1 qty
+      if (item.isFlashSale && item.flashSale?.items?.length) {
+        const flashItem = item.flashSale.items.find(
+          fs => fs.variantSku === item.variantCombination?.sku
+        )
+
+        if (flashItem?.originalPrice && flashItem?.salePrice) {
+          return (
+            total +
+            (flashItem.originalPrice - flashItem.salePrice) * 1
+          )
+        }
       }
-      if(item.price && item.priceDiscounts) {
-        return total + (item.price - item.priceDiscounts || 0) * item.quantity;
+
+      // Variant thường (không flash)
+      if (item.variantCombination && !item.isFlashSale) {
+        return total
+      }
+
+      // Discount thường
+      if (item.price && item.priceDiscounts) {
+        return total + (item.price - item.priceDiscounts) * item.quantity
       }
 
       return total
-    }, 0);
+    }, 0)
 
     return value || 0
   }
+
+  const totalSaveFlashSale = computed(() => {
+    return cartListItem.value.reduce((total, item) => {
+      if (item.isFlashSale && item.flashSale?.items?.length) {
+        const flashItem = item.flashSale.items.find(
+          fs => fs.variantSku === item.variantCombination?.sku
+        )
+
+        if (flashItem?.originalPrice && flashItem?.salePrice) {
+          return (
+            total +
+            (flashItem.originalPrice - flashItem.salePrice) * 1
+          )
+        }
+      }
+      return total
+    }, 0)
+  })
 
   const calculatePriceSave = () => {
     let value = orderPriceDiscount.value + totalDiscountRateMembership.value + discountVoucher.value + discountVoucherFreeship.value;
@@ -68,7 +135,7 @@ export const useCartPricing = (
   const calculatePriceTotalOrder = () => {
     let value = totalPriceCurrent.value + shippingFee.value - totalPriceSave.value;
 
-    return value || 0
+    return value < 0 || !value ? 0 : value
   }
 
   const handleCalcTotalPriceCurrent = (membershipDiscountRate?: number) => {
@@ -98,5 +165,6 @@ export const useCartPricing = (
   return {
     calculateTotalPriceCurrent,
     handleCalcTotalPriceCurrent,
+    totalSaveFlashSale,
   };
 };

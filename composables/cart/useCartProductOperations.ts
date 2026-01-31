@@ -129,6 +129,9 @@ export const useCartProductOperations = (
     const currentQty = existingProduct?.quantity ?? 0
     const nextQty = currentQty + quantity
 
+    // alert(matchedCombination.id)
+    // return
+
     const ok = await checkAvailableStock({
       productId: product.id,
       nextQty,
@@ -298,11 +301,12 @@ export const useCartProductOperations = (
     tempSelected: Record<string, string>,
     popupOrderState: boolean
   ) => {
-    if (!product || product.amount <= 0) return false
+    if (!product) return false
 
     if (product.variantCombinations?.length > 0) {
       addProductWithOptions(product, quantity, note, tempSelected, popupOrderState)
     } else {
+      if (product.amount <= 0) return false
       addNormalProduct(product, quantity)
     }
 
@@ -433,8 +437,9 @@ export const useCartProductOperations = (
       if (quantity.value > 1) quantity.value--
       return
     }
-
+    
     const product = getDetailProduct.value
+
     if (!product) return
 
     const combinationId = getSelectedCombinationId(

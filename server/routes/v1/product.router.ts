@@ -12,11 +12,18 @@ import {
   getProductsByCategory,
   checkProductStock,
   getProductsByIds,
+  getTopFlashSaleProducts,
+  getProductsByFlashSale
 } from '../../controllers/v1/product.controller'
 import { authenticate } from '../../middlewares/authenticate'
 
 const router = Router()
 
+// Flash sale
+router.get('/flash-sales/top-products', getTopFlashSaleProducts)
+router.get('/flash-sales/:id/products', getProductsByFlashSale)
+
+// Product
 router.post('/cart-detail', getCartProducts)
 router.post('/check-stock', checkProductStock)
 router.get('/promotion', getPromotionalProducts)

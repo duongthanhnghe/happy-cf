@@ -20,7 +20,8 @@ export const checkProductStockService = async ({
     Array.isArray(product.variantCombinations) &&
     product.variantCombinations.length > 0
 
-  if (!hasVariants || !sku || sku === product.sku) {
+  if (!hasVariants) {
+    console.log('log o serverrrrrr',hasVariants)
     const stock = product.amount || 0
     return {
       ok: quantity <= stock,
@@ -29,7 +30,7 @@ export const checkProductStockService = async ({
   }
 
   const combination = product.variantCombinations.find(
-    c => c.sku === sku
+    c => c.sku === sku || c._id.toString() === sku
   )
 
   if (!combination) {
@@ -37,6 +38,7 @@ export const checkProductStockService = async ({
   }
 
   const stock = combination.stock || 0
+
   return {
     ok: quantity <= stock,
     availableStock: stock,

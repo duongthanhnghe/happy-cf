@@ -45,7 +45,7 @@ const props = defineProps({
   },
   color: {
     type: String,
-    validator: (value) => ['primary','secondary','third','black','gray','blur','transparent','danger'].includes(value)
+    validator: (value) => ['primary','secondary','third','black','gray','blur','transparent','danger','four'].includes(value)
   },
   size: {
     type: String,

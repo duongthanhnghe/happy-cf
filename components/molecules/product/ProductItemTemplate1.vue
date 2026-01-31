@@ -92,7 +92,9 @@ function handleShowAction () {
         <template v-else />
       </template>
     </client-only>
+      
     <template v-if="product.amount === 0 && !product.variantCombinations.length">
+      <!-- tag het hang -->
       <Button v-if="!listView"
         :class="[storeDisplay.isLaptop ? 'left-sm top-sm':'left-xs top-xs','position-absolute z-index-1 weight-medium text-size-xs']" 
         color="black" 
@@ -102,6 +104,8 @@ function handleShowAction () {
       />
     </template>
     <div v-else>
+      <!-- tag flash sale -->
+      <TagFlashSale v-if="product.isFlashSale" :class="[storeDisplay.isLaptop ? 'left-sm top-sm':'left-xs top-xs','position-absolute z-index-2']" />
       <div v-if="storeCart.getTemplate1Amount(product.id) < 1">
         <Button 
           color="primary" 
@@ -176,6 +180,7 @@ function handleShowAction () {
     >
       <Text :text="product.productName" limit="2" :class="[storeDisplay.isLaptop ? 'mb-sm':'mb-05','line-height-1d4']" />
     </NuxtLink>
+
     <div class="product-template1-price flex gap-xs align-center">
       <Text class="line-height-1" weight="semibold" :size="storeDisplay.isLaptop ? 'base':'xs'" >{{ formatCurrency(product.priceDiscounts) }}</Text>
       <template v-if="product.percentDiscount && product.percentDiscount !== 0">
@@ -183,6 +188,70 @@ function handleShowAction () {
         <Button tag="div" color="primary" size="xs" :label="`-${product.percentDiscount}%`" :class="[{'text-size-xs': !storeDisplay.isLaptop } ,'pl-xs pr-xs rd-lg height-auto line-height-1d2']" />
       </template>
     </div>
+
+    <!-- <div class="product-template1-price flex gap-xs align-center">
+
+      <template v-if="product.isFlashSale && product.flashSale">
+        <Text
+          class="line-height-1"
+          weight="semibold"
+          :size="storeDisplay.isLaptop ? 'base':'xs'"
+        >
+          {{ formatCurrency(product.flashSale.salePrice) }}
+        </Text>
+
+        <Text
+          color="gray5"
+          size="xs"
+          class="line-height-1 text-line-through"
+        >
+          {{ formatCurrency(product.flashSale.originalPrice) }}
+        </Text>
+
+        <Button
+          tag="div"
+          color="primary"
+          size="xs"
+          :label="`-${product.flashSale.percentDiscount}%`"
+          :class="[
+            {'text-size-xs': !storeDisplay.isLaptop},
+            'pl-xs pr-xs rd-lg height-auto line-height-1d2'
+          ]"
+        />
+      </template>
+
+      <template v-else>
+        <Text
+          class="line-height-1"
+          weight="semibold"
+          :size="storeDisplay.isLaptop ? 'base':'xs'"
+        >
+          {{ formatCurrency(product.priceDiscounts) }}
+        </Text>
+
+        <template v-if="product.percentDiscount && product.percentDiscount !== 0">
+          <Text
+            color="gray5"
+            size="xs"
+            class="line-height-1 text-line-through"
+          >
+            {{ formatCurrency(product.price) }}
+          </Text>
+
+          <Button
+            tag="div"
+            color="primary"
+            size="xs"
+            :label="`-${product.percentDiscount}%`"
+            :class="[
+              {'text-size-xs': !storeDisplay.isLaptop},
+              'pl-xs pr-xs rd-lg height-auto line-height-1d2'
+            ]"
+          />
+        </template>
+      </template>
+
+    </div> -->
   </div>
 </div>
 </template>

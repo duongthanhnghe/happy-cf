@@ -9,6 +9,7 @@ import type { ApiResponse } from '@/server/types/common/api-response'
 import { apiClient } from '@/services/http/apiClient'
 import { paginationError, type PaginationDTO } from '@/server/types/common/pagination.dto'
 import { apiError } from "@/server/types/common/api-response"
+import type { FlashSaleProductDTO } from '@/server/types/dto/v1/flash-sale.dto'
 
 export const productsAPI = {
 
@@ -212,6 +213,36 @@ export const productsAPI = {
     } catch (err: any) {
       console.error('Error checking product stock:', err)
       return apiError<CheckStockResult>(err)
+    }
+  },
+
+  getTopFlashSaleProducts: async (): Promise<FlashSaleProductDTO[]> => {
+    try {
+      return await apiClient().get<FlashSaleProductDTO[]>(
+        API_ENDPOINTS.PRODUCTS.FLASH_SALE_TOP_PRODUCTS
+      )
+    } catch (err: any) {
+      console.error('[getTopFlashSaleProducts]', err)
+      return []
+    }
+  },
+
+  getProductsByFlashSale: async (
+    flashSaleId: string,
+    page: number,
+    limit: number
+  ): Promise<PaginationDTO<FlashSaleProductDTO>> => {
+    try {
+      return await apiClient().get<PaginationDTO<FlashSaleProductDTO>>(
+        API_ENDPOINTS.PRODUCTS.FLASH_SALE_PRODUCTS(flashSaleId),
+        {
+          page,
+          limit,
+        }
+      )
+    } catch (err: any) {
+      console.error('[getProductsByFlashSale]', err)
+      return paginationError<FlashSaleProductDTO>(page, limit, err)
     }
   },
 

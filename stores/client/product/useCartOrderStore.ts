@@ -23,7 +23,7 @@ import { useCartUtils } from '@/composables/cart/useCartUtils';
 
 import { useCartSharedUtils } from "@/composables/cart/useCartSharedUtils";
 import { useCartVoucherHandlers } from "@/composables/cart/useCartVoucherHandlers";
-import type { CartDTO, ProductVariantCombinationDTO, VariantGroupUI } from "@/server/types/dto/v1/product.dto";
+import type { CartDTO, ProductDTO, ProductVariantCombinationDTO, VariantGroupUI } from "@/server/types/dto/v1/product.dto";
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
@@ -83,6 +83,8 @@ export const useCartStore = defineStore("Cart", () => {
         priceDiscounts: productDetail.priceDiscounts,
         sku: variantCombination?.sku ?? productDetail.sku,
         variantCombination,
+        isFlashSale: productDetail.isFlashSale === true,
+        flashSale: productDetail.flashSale
       };
 
       return cartItem;
@@ -161,11 +163,30 @@ export const useCartStore = defineStore("Cart", () => {
     )
   }
 
+  // const getSelectedVariantPrice = (
+  //   variantCombinations: ProductVariantCombinationDTO[]
+  // ): number => {
+  //   const matched = getMatchedCombination(variantCombinations)
+  //   return matched?.priceModifier ?? 0
+  // }
+
   const getSelectedVariantPrice = (
-    variantCombinations: ProductVariantCombinationDTO[]
+    variantCombinations: ProductVariantCombinationDTO[],
+    flashSale?: ProductDTO['flashSale']
   ): number => {
     const matched = getMatchedCombination(variantCombinations)
-    return matched?.priceModifier ?? 0
+    if (!matched) return 0
+
+    // 1️⃣ ưu tiên flash sale theo variantSku
+    if (flashSale?.items?.length) {
+      const fsItem = flashSale.items.find(
+        i => i.variantSku === matched.sku
+      )
+      if (fsItem) return fsItem.salePrice
+    }
+
+    // 2️⃣ fallback giá variant thường
+    return matched.priceModifier ?? 0
   }
 
   const getSelectedVariantName = computed(
@@ -248,7 +269,7 @@ export const useCartStore = defineStore("Cart", () => {
     state.discountVoucherFreeship,
     state.usedPointOrder,
     state.isCalculating,
-    Config_EnableUsePoint
+    Config_EnableUsePoint,
   );
 
   const handleCalcTotalPriceCurrent = () => {
@@ -508,6 +529,7 @@ export const useCartStore = defineStore("Cart", () => {
     // Pricing
     handleCalcTotalPriceCurrent,
     fetchProductCart,
+    totalSaveFlashSale: pricing.totalSaveFlashSale,
 
     //voucher handle
     ...handlesVoucher,

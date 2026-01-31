@@ -10,6 +10,7 @@ import { useITranslations } from '@/composables/shared/itranslation/useITranslat
 import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 import { onMounted } from 'vue';
+import { useProductTopFlashSaleStore } from '@/stores/client/product/useProductTopFlashSaleStore';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.HOME.middleware,
@@ -26,11 +27,16 @@ const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeNewsLatest = usePostLatestStore()
 const storeProductCategory = useProductCategoryStore()
+const storeProductTopFlashSale = useProductTopFlashSaleStore()
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 
 if(storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
 if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
 if(!storeProductMostOrder.getListProductMostOrder) await storeProductMostOrder.fetchListProductMostOrder('',Number(storeProductMostOrder.page),storeProductMostOrder.limit,'')
+if (storeProductTopFlashSale.flashSaleProducts.length === 0) {
+  await storeProductTopFlashSale.fetchTopFlashSaleProducts()
+}
+
 if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.HOME]) {
   await fetchImageBlock(IMAGE_BLOCK_PAGES.HOME, {
     [IMAGE_BLOCK_POSITIONS.FEATURED]: 3,
@@ -82,6 +88,17 @@ onMounted(async () => {
       </div>
 
       <div :class="storeDisplay.isMobileTable ? 'bg-white pt-section overflow-hidden rd-xl rd-null-bottom-left rd-null-bottom-right':''">
+
+        <SectionProductListSwiper
+          v-if="storeProductTopFlashSale.flashSaleProducts.length > 0"
+          :items="storeProductTopFlashSale.flashSaleProducts"
+          :loading="storeProductTopFlashSale.loadingData"
+          fullScreen
+          container="container container-xxl"
+          headingText="Flash sale"
+          class="pb-section"
+        />
+
         <SectionProductListSwiper 
           v-if="storeProductSale.getListProductSales && storeProductSale.getListProductSales.data.length > 0" 
           :items="storeProductSale.getListProductSales.data" 

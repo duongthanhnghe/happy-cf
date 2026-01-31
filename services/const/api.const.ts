@@ -26,7 +26,9 @@ export const API_ENDPOINTS = {
     DELETE_WISHLIST: (userId: string, productId: string) =>
       `/users/${userId}/wishlist/${productId}`,
     CART_DETAIL: '/products/cart-detail',
-    CHECK_STOCK: '/products/check-stock'
+    CHECK_STOCK: '/products/check-stock',
+    FLASH_SALE_TOP_PRODUCTS: '/products/flash-sales/top-products',
+    FLASH_SALE_PRODUCTS: (flashSaleId: string) => `/products/flash-sales/${flashSaleId}/products`,
   },
   VARIANT_GROUPS: {
     LIST_ALL: '/variant-groups',

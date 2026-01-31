@@ -14,6 +14,7 @@ import { getApplicableVouchersForProduct } from "./voucher-controller"
 import { checkProductStockService } from "../../utils/productStock"
 import { buildCategoryBreadcrumb, buildCategoryTree } from "./categories-product.controller"
 import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
+import { FlashSaleEntity } from "@/server/models/v1/flash-sale.entity"
 
 export const getAllActiveCategoryIds = async (): Promise<Types.ObjectId[]> => {
   const categories = await CategoryProductEntity.find({ isActive: true })
@@ -116,6 +117,141 @@ export const filterActiveVariantGroupsForProducts = async (products: Product[]):
 
   return products;
 };
+
+// export const applyFlashSaleToProducts = async (
+//   products: Product[]
+// ): Promise<Product[]> => {
+//   if (!products.length) return products
+
+//   const now = new Date()
+//   const productIds = products.map(p => p._id)
+
+//   const flashSales = await FlashSaleEntity.aggregate([
+//     {
+//       $match: {
+//         isActive: true,
+//         startDate: { $lte: now },
+//         endDate: { $gte: now }
+//       }
+//     },
+//     { $unwind: "$items" },
+//     {
+//       $match: {
+//         "items.productId": { $in: productIds },
+//         $expr: { $gt: ["$items.quantity", "$items.sold"] }
+//       }
+//     }
+//   ])
+
+//   if (!flashSales.length) return products
+
+//   // Map theo productId (ưu tiên product-level cho listing)
+//   const flashSaleMap = new Map<string, any>()
+
+//   for (const fs of flashSales) {
+//     const item = fs.items
+//     const productId = item.productId.toString()
+
+//     // chỉ lấy 1 flash sale cho product (ưu tiên)
+//     if (!flashSaleMap.has(productId)) {
+//       flashSaleMap.set(productId, {
+//         originalPrice: item.originalPrice,
+//         salePrice: item.salePrice,
+//         percentDiscount: Math.round(
+//           ((item.originalPrice - item.salePrice) / item.originalPrice) * 100
+//         )
+//       })
+//     }
+//   }
+
+//   return products.map(product => {
+//     const fs = flashSaleMap.get(product._id.toString())
+//     if (!fs) return product
+
+//     return {
+//       ...product,
+//       isFlashSale: true,
+//       flashSale: fs,
+//       price: fs.originalPrice,
+//       priceDiscounts: fs.salePrice,
+//       percentDiscount: fs.percentDiscount
+//     }
+//   })
+// }
+export const applyFlashSaleToProducts = async (
+  products: Product[]
+): Promise<Product[]> => {
+  if (!products.length) return products
+
+  const now = new Date()
+  const productIds = products.map(p => p._id)
+
+  const flashSales = await FlashSaleEntity.aggregate([
+    {
+      $match: {
+        isActive: true,
+        startDate: { $lte: now },
+        endDate: { $gte: now }
+      }
+    },
+    { $unwind: "$items" },
+    {
+      $match: {
+        "items.productId": { $in: productIds },
+        $expr: { $gt: ["$items.quantity", "$items.sold"] }
+      }
+    }
+  ])
+
+  if (!flashSales.length) return products
+
+  // Map productId -> flash sale items
+  const flashSaleMap = new Map<
+    string,
+    {
+      id: string
+      name?: string
+      slug?: string
+      badgeImage?: string
+      items: any[]
+    }
+  >()
+
+  for (const fs of flashSales) {
+    const item = fs.items
+    const productId = item.productId.toString()
+
+    if (!flashSaleMap.has(productId)) {
+      flashSaleMap.set(productId, {
+        id: fs._id.toString(),
+        name: fs.name,
+        slug: fs.slug,
+        badgeImage: fs.badgeImage,
+        items: []
+      })
+    }
+
+    flashSaleMap.get(productId)!.items.push({
+      variantSku: item.variantSku ?? null,
+      originalPrice: item.originalPrice,
+      salePrice: item.salePrice,
+      percentDiscount: Math.round(
+        ((item.originalPrice - item.salePrice) / item.originalPrice) * 100
+      )
+    })
+  }
+
+  return products.map(product => {
+    const fs = flashSaleMap.get(product._id.toString())
+    if (!fs) return product
+
+    return {
+      ...product,
+      isFlashSale: true,
+      flashSale: fs
+    }
+  })
+}
 ////// END HELPERS
 
 export const getProductById = async (
@@ -180,10 +316,14 @@ export const getProductById = async (
 
     const filteredProduct =
       (await filterActiveVariantGroupsForProduct(product)) as Product
+   
+    const [productWithFlashSale] = await applyFlashSaleToProducts([
+      filteredProduct
+    ])
 
-    const voucher = await getApplicableVouchersForProduct(filteredProduct)
+    const voucher = await getApplicableVouchersForProduct(productWithFlashSale)
 
-    const finalResult = toProductDTO(filteredProduct)
+    const finalResult = toProductDTO(productWithFlashSale)
     finalResult.vouchers = voucher
 
     finalResult.categoryBreadcrumb = breadcrumbCategories.map(cat => ({
@@ -691,8 +831,11 @@ export const getMostOrderedProduct = async (
     const productsWithVariants =
       await filterActiveVariantGroupsForProducts(products)
 
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
+
     const finalResult = []
-    for (const p of productsWithVariants) {
+    for (const p of productsWithFlashSale) {
       const vouchers = await getApplicableVouchersForProduct(p)
       finalResult.push({ ...p, vouchers })
     }
@@ -944,6 +1087,45 @@ export const searchProducts = async (
   }
 }
 
+// export const getCartProducts = async (
+//   req: Request<{}, {}, { ids: string[] }>,
+//   res: Response
+// ) => {
+//   try {
+//     const { ids } = req.body
+
+//     if (!ids || !Array.isArray(ids) || ids.length === 0) {
+//       return res.status(400).json({ code: 1, message: "Danh sách sản phẩm không hợp lệ" })
+//     }
+
+//     const productIds = ids
+//       .filter(id => Types.ObjectId.isValid(id))
+//       .map(id => new Types.ObjectId(id))
+
+//     const products = await ProductEntity.find({
+//       _id: { $in: productIds },
+//       isActive: true
+//     })
+//       .lean()
+
+//     const filtered = [];
+//     for (const p of products) {
+//       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
+//     }  
+
+//     const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+
+//     return res.json({
+//       code: 0,
+//       data: toProductListDTO(productsWithVariants),
+//       message: "Load cart success"
+//     })
+//   } catch (error: any) {
+//     console.error("getCartProducts error:", error)
+//     return res.status(500).json({ code: 1, message: "Server error" })
+//   }
+// }
+
 export const getCartProducts = async (
   req: Request<{}, {}, { ids: string[] }>,
   res: Response
@@ -952,34 +1134,50 @@ export const getCartProducts = async (
     const { ids } = req.body
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ code: 1, message: "Danh sách sản phẩm không hợp lệ" })
+      return res.status(400).json({
+        code: 1,
+        message: "Danh sách sản phẩm không hợp lệ"
+      })
     }
 
     const productIds = ids
       .filter(id => Types.ObjectId.isValid(id))
       .map(id => new Types.ObjectId(id))
 
+    /** 1️⃣ LOAD PRODUCT */
     const products = await ProductEntity.find({
       _id: { $in: productIds },
       isActive: true
-    })
-      .lean()
+    }).lean()
 
-    const filtered = [];
+    /** 2️⃣ CHECK CATEGORY ACTIVE */
+    const filtered: any[] = []
     for (const p of products) {
-      if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
-    }  
+      if (await isCategoryChainActive(p.categoryId)) {
+        filtered.push(p)
+      }
+    }
 
-    const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+    /** 3️⃣ FILTER VARIANT ACTIVE */
+    const productsWithVariants =
+      await filterActiveVariantGroupsForProducts(filtered)
 
+    /** 4️⃣ APPLY FLASH SALE (🔥 CHỖ QUAN TRỌNG) */
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
+
+    /** 5️⃣ TO DTO */
     return res.json({
       code: 0,
-      data: toProductListDTO(productsWithVariants),
+      data: toProductListDTO(productsWithFlashSale),
       message: "Load cart success"
     })
-  } catch (error: any) {
+  } catch (error) {
     console.error("getCartProducts error:", error)
-    return res.status(500).json({ code: 1, message: "Server error" })
+    return res.status(500).json({
+      code: 1,
+      message: "Server error"
+    })
   }
 }
 
@@ -989,5 +1187,170 @@ export const checkProductStock = async (req: Request, res: Response) => {
     return res.json({ code: 0, ...result })
   } catch (e: any) {
     return res.status(400).json({ code: 1, message: e.message })
+  }
+}
+
+export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
+  try {
+    const limit = 20
+    const now = new Date()
+
+    const raws = await FlashSaleEntity.aggregate([
+      {
+        $match: {
+          isActive: true,
+          startDate: { $lte: now },
+          endDate: { $gte: now }
+        }
+      },
+
+      { $unwind: "$items" },
+
+      // ✅ chỉ lấy item còn bán được
+      {
+        $match: {
+          $expr: {
+            $gt: ["$items.quantity", "$items.sold"]
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          discountValue: {
+            $subtract: ["$items.originalPrice", "$items.salePrice"]
+          },
+          discountPercent: {
+            $cond: [
+              { $gt: ["$items.originalPrice", 0] },
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      {
+                        $divide: [
+                          { $subtract: ["$items.originalPrice", "$items.salePrice"] },
+                          "$items.originalPrice"
+                        ]
+                      },
+                      100
+                    ]
+                  },
+                  0
+                ]
+              },
+              0
+            ]
+          }
+        }
+      },
+
+      {
+        $group: {
+          _id: {
+            productId: "$items.productId",
+            variantSku: "$items.variantSku"
+          },
+          productId: { $first: "$items.productId" },
+          variantSku: { $first: "$items.variantSku" },
+          maxDiscountValue: { $max: "$discountValue" },
+          maxDiscountPercent: { $max: "$discountPercent" },
+          totalSold: { $sum: "$items.sold" },
+          salePrice: { $min: "$items.salePrice" }
+        }
+      },
+
+      // ✅ sort sau khi đã làm tròn %
+      { $sort: { maxDiscountPercent: -1, totalSold: -1 } },
+      { $limit: limit },
+
+      {
+        $lookup: {
+          from: "products",
+          localField: "productId",
+          foreignField: "_id",
+          as: "product"
+        }
+      },
+      { $unwind: "$product" }
+    ])
+
+    const data = raws.map(raw => ({
+      product: toProductDTO(raw.product),
+      variantSku: raw.variantSku,
+      salePrice: raw.salePrice,
+      maxDiscountValue: raw.maxDiscountValue,
+      maxDiscountPercent: raw.maxDiscountPercent,
+      totalSold: raw.totalSold
+    }))
+
+    return res.json({ code: 0, data })
+  } catch (err: any) {
+    console.error("getTopFlashSaleProducts error:", err)
+    return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const getProductsByFlashSale = async (
+  req: Request<{ id: string }, {}, {}, { page?: number; limit?: number }>,
+  res: Response
+) => {
+  try {
+    const { id } = req.params
+    const page = Math.max(Number(req.query.page) || 1, 1)
+    const limit = Math.max(Number(req.query.limit) || 20, 1)
+    const skip = (page - 1) * limit
+
+    if (!Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ code: 1, message: "FlashSale ID không hợp lệ" })
+    }
+
+    const flashSale = await FlashSaleEntity.findById(id)
+    if (!flashSale) {
+      return res.status(404).json({ code: 1, message: "Flash Sale không tồn tại" })
+    }
+
+    const total = flashSale.items.length
+
+    const raws = await FlashSaleEntity.aggregate([
+      { $match: { _id: new Types.ObjectId(id) } },
+      { $unwind: "$items" },
+
+      { $skip: skip },
+      { $limit: limit },
+
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.productId",
+          foreignField: "_id",
+          as: "product"
+        }
+      },
+      { $unwind: "$product" }
+    ])
+
+    const data = raws.map(raw => ({
+      product: toProductDTO(raw.product),
+      variantSku: raw.items.variantSku,
+      originalPrice: raw.items.originalPrice,
+      salePrice: raw.items.salePrice,
+      quantity: raw.items.quantity,
+      sold: raw.items.sold
+    }))
+
+    return res.json({
+      code: 0,
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    })
+  } catch (err: any) {
+    console.error("getProductsByFlashSale error:", err)
+    return res.status(500).json({ code: 1, message: err.message })
   }
 }

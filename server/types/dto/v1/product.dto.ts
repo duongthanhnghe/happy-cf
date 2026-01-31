@@ -78,6 +78,20 @@ export interface ProductDTO {
 } | null;
   createdAt: string;
   updatedAt: string;
+  //flash sale
+  isFlashSale?: boolean,
+  flashSale?: {
+    id: string            
+    name?: string        
+    slug?: string         
+    badgeImage?: string
+    items: {
+      variantSku: string | null
+      originalPrice: number
+      salePrice: number
+      percentDiscount: number
+    }[]
+  }
   //SEO
   categoryBreadcrumb?: {
     label: string
@@ -202,7 +216,6 @@ export interface CategoryWithProductsDTO
   children?: CategoryProductDTO[] | null
 }
 
-
 export interface SelectedOptionPushDTO {
   id?: string
   optionName: string
@@ -231,6 +244,7 @@ export interface CartDTO {
   note?: string;
   price?: number;
   priceDiscounts?: number;
+  percentDiscount?: number;
   weight?: number;
   categoryId?: string;
   productName?: string;
@@ -239,6 +253,19 @@ export interface CartDTO {
   variantGroups?: ProductVariantGroupDTO[];
   variantCombination?: ProductVariantCombinationDTO;
   variantCombinations?: ProductVariantCombinationDTO[];
+  isFlashSale?: boolean,
+  flashSale?: {
+    id: string;
+    name?: string;
+    slug?: string;
+    badgeImage?: string;
+    items: {
+      variantSku: string | null
+      originalPrice: number
+      salePrice: number
+      percentDiscount: number
+    }[]
+  };
 }
 
 export type SelectedOptionDTO = SelectedOptionPushDTO & {id: string}
