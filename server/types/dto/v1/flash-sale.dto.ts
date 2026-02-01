@@ -69,15 +69,3 @@ export type CreateFlashSaleBody = Omit<
 export type UpdateFlashSaleBody = Partial<CreateFlashSaleBody>;
 
 export type FlashSalePaginationDTO = PaginationDTO<FlashSaleDTO>;
-
-export interface FlashSaleProductDTO {
-  product: ProductDTO
-  variantSku?: string
-  salePrice: number
-  originalPrice?: number
-  quantity?: number
-  sold?: number
-  maxDiscountValue?: number
-  maxDiscountPercent?: number
-  totalSold?: number
-}

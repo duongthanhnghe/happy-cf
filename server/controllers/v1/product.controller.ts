@@ -1262,23 +1262,23 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
 
     const productIds = raws.map(r => r.productId)
 
-    // 3️⃣ LOAD PRODUCT
+    const activeCategories = await getAllActiveCategoryIds()
+
     const products = await ProductEntity.find({
       _id: { $in: productIds },
-      isActive: true
+      isActive: true,
+      categoryId: { $in: activeCategories }
     }).lean()
 
-    // 4️⃣ PIPELINE CHUẨN (GIỐNG getMostOrderedProduct)
     const productsWithVariants =
       await filterActiveVariantGroupsForProducts(products)
 
     const productsWithFlashSale =
       await applyFlashSaleToProducts(productsWithVariants)
 
-    const voucherMap =
-      await getApplicableVouchersForProducts(productsWithFlashSale)
+    // const voucherMap =
+    //   await getApplicableVouchersForProducts(productsWithFlashSale)
 
-    // 5️⃣ MERGE PRODUCT + FLASH SALE STATS
     const finalResult = productsWithFlashSale.map(p => {
       const stat = flashSaleStatMap.get(p._id.toString())
 

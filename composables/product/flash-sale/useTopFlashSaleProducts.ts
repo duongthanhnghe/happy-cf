@@ -1,10 +1,10 @@
 import { computed } from 'vue'
 import { useState } from 'nuxt/app'
 import { productsAPI } from '@/services/v1/product.service'
-import type { FlashSaleProductDTO } from '@/server/types/dto/v1/flash-sale.dto'
+import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
 
 export const useTopFlashSaleProducts = () => {
-  const listData = useState<FlashSaleProductDTO[]>(
+  const listData = useState<ProductDTO[]>(
     'flash-sale-top-products',
     () => []
   )
@@ -19,7 +19,7 @@ export const useTopFlashSaleProducts = () => {
       loadingData.value = true
       const res = await productsAPI.getTopFlashSaleProducts()
 
-      if (res.code === 0 && Array.isArray(res.data)) {
+      if (res.code === 0) {
         listData.value = res.data
       } else {
         listData.value = []

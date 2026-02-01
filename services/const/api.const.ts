@@ -126,5 +126,6 @@ export const API_ENDPOINTS = {
   },
   FLASH_SALES: {
     LIST_PRIORITY: "/flash-sales",
+    GET_BY_ID: (id: string) => `/flash-sales/${id}`,
   }
 }

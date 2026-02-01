@@ -10,9 +10,8 @@ import { useITranslations } from '@/composables/shared/itranslation/useITranslat
 import { useImageBlockByPage } from '@/composables/image-block/useImageBlockByPage';
 import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/image-block';
 import { onMounted } from 'vue';
-import { useProductTopFlashSaleStore } from '@/stores/client/product/useProductTopFlashSaleStore';
 import { useTopPriority } from '@/composables/product/flash-sale/useTopPriority';
-import { useFlashSaleCountdown } from '@/composables/product/flash-sale/useFlashSaleCountdown';
+import { useTopFlashSaleProducts } from '@/composables/product/flash-sale/useTopFlashSaleProducts';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.HOME.middleware,
@@ -29,22 +28,15 @@ const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeNewsLatest = usePostLatestStore()
 const storeProductCategory = useProductCategoryStore()
-const storeProductTopFlashSale = useProductTopFlashSaleStore()
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 const { fetchTopPriority, getTopPriority } = useTopPriority()
+const { fetchTopFlashSaleProducts, getTopFlashSaleProducts, loadingData } = useTopFlashSaleProducts()
 
-if(storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
-if(!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
-if(!storeProductMostOrder.getListProductMostOrder) await storeProductMostOrder.fetchListProductMostOrder('',Number(storeProductMostOrder.page),storeProductMostOrder.limit,'')
-if (storeProductTopFlashSale.getTopFlashSaleProducts.length === 0) {
-  await storeProductTopFlashSale.fetchTopFlashSaleProducts()
-}
-if (!getTopPriority.value && storeProductTopFlashSale.getTopFlashSaleProducts.length > 0) await fetchTopPriority()
-const { status, time, formatted } = useFlashSaleCountdown(
-  getTopPriority.value.startDate,
-  getTopPriority.value.endDate
-)
-
+if (storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
+if (!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
+if (!storeProductMostOrder.getListProductMostOrder) await storeProductMostOrder.fetchListProductMostOrder('',Number(storeProductMostOrder.page),storeProductMostOrder.limit,'')
+if (getTopFlashSaleProducts.value.length === 0) await fetchTopFlashSaleProducts()
+if (!getTopPriority.value && getTopFlashSaleProducts.value.length > 0) await fetchTopPriority()
 if (!dataImageBlock.value[IMAGE_BLOCK_PAGES.HOME]) {
   await fetchImageBlock(IMAGE_BLOCK_PAGES.HOME, {
     [IMAGE_BLOCK_POSITIONS.FEATURED]: 3,
@@ -97,40 +89,13 @@ onMounted(async () => {
 
       <div :class="storeDisplay.isMobileTable ? 'bg-white pt-section overflow-hidden rd-xl rd-null-bottom-left rd-null-bottom-right':''">
 
-        <div v-if="storeProductTopFlashSale.getTopFlashSaleProducts.length > 0" class="container container-xxl pb-section">
-          <div class="rd-xl pd-0 overflow-hidden" :style="`background-color: ${getTopPriority.theme.backgroundColor} !important`">
-            <Image 
-              :src="getTopPriority.banners[0].src"
-              :alt="getTopPriority.name"
-              class="w-full"
-              :width="1800"
-            />
-            <div class="pt-ms pb-ms">
-              <div class="position-relative">
-                <client-only>
-                  <div v-if="status !== 'ended'" class="flex gap-xs align-center position-absolute right-1">
-                    <Text text="Kết thúc sau" weight="medium" class="text-uppercase" :style="{ color: getTopPriority.theme.textColor }" />
-                    <div v-for="(v, i) in formatted.split(':')" class="flex align-center gap-xs line-height-1">
-                      <Text text=":" weight="medium" :style="{ color: getTopPriority.theme.textColor }" />
-                      <Button size="sm" tag="span" color="black" :border="false" :key="i">
-                        {{ v }}
-                      </Button>
-                    </div>
-                  </div>
-                </client-only>
-                <SectionProductListSwiper
-                  :items="storeProductTopFlashSale.getTopFlashSaleProducts"
-                  :loading="storeProductTopFlashSale.loadingData"
-                  fullScreen
-                  :headingText="getTopPriority.name || 'Flash sale'"
-                  :headingColor="getTopPriority.theme.textColor"
-                  variantItem="card"
-                />
-              </div>
-            </div>
-          </div>
+        <div v-if="getTopFlashSaleProducts.length > 0" class="container container-xxl pb-section">
+          <ProductTopFlashSale 
+            :getTopPriority="getTopPriority" 
+            :getTopFlashSaleProducts="getTopFlashSaleProducts"
+            :loading="loadingData"
+          />
         </div>
-
         <SectionProductListSwiper 
           v-if="storeProductSale.getListProductSales && storeProductSale.getListProductSales.data.length > 0" 
           :items="storeProductSale.getListProductSales.data" 

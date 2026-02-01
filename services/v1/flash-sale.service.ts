@@ -18,4 +18,14 @@ export const flashSalesAPI = {
     }
   },
 
+  getDetail: async (id: string): Promise<ApiResponse<FlashSaleDTO>> => {
+    try {
+      return await apiClient().get<ApiResponse<FlashSaleDTO>>(
+        API_ENDPOINTS.FLASH_SALES.GET_BY_ID(id)
+      );
+    } catch (err: any) {
+      return apiError<FlashSaleDTO>(err);
+    }
+  },
+
 };

@@ -133,41 +133,45 @@ const flashSalePercent = computed(() => {
         </template>
       </client-only>
         
-      <template v-if="product.amount === 0 && !product.variantCombinations.length">
-        <!-- tag het hang -->
-        <Button v-if="!listView"
-          :class="[storeDisplay.isLaptop ? 'left-sm top-sm':'left-xs top-xs','position-absolute z-index-1 weight-medium text-size-xs']" 
-          color="black" 
-          size="xs" 
-          :label="t('product.detail.text2').text" 
-          tag="span"
-        />
-      </template>
-      <div v-else>
-        <!-- tag flash sale -->
-        <TagFlashSale v-if="product.isFlashSale" :class="[storeDisplay.isLaptop ? 'left-sm top-sm':'left-xs top-xs','position-absolute z-index-2']" />
-        <div v-if="storeCart.getTemplate1Amount(product.id) < 1">
-          <Button 
-            color="primary" 
+      <div :class="[storeDisplay.isLaptop ? 'left-sm top-sm':'left-xs top-xs','position-absolute z-index-1']" >
+        <template v-if="product.amount === 0 && !product.variantCombinations.length">
+          <!-- tag het hang -->
+          <Button v-if="!listView"
+            class="weight-medium text-size-xs" 
+            color="black" 
             size="xs" 
-            :class="[storeDisplay.isLaptop ? 'right-sm bottom-sm':'right-xs bottom-xs','z-index-2 position-absolute']" 
+            :label="t('product.detail.text2').text" 
+            tag="span"
+          />
+        </template>
+        <template v-else>
+          <!-- tag flash sale -->
+          <TagFlashSale v-if="product.isFlashSale" />
+        </template>
+      </div>
+
+      <div class="el-absolute left-0 bottom-0 height-auto">
+        <!-- add cart -->
+        <div class="justify-end flex position-relative z-index-2" :class="[storeDisplay.isLaptop ? 'mr-sm bottom-sm':'mr-xs mb-xs']" >
+          <Button 
+            v-if="storeCart.getTemplate1Amount(product.id) < 1"
+            color="primary" 
+            class="button-no-text" 
+            size="xs" 
             icon="add"
             @click="() => { product.variantCombinations.length > 0 ? storeCart.getProductDetailApi(product.id) : storeCart.addProductToCart(product, 1, '')}"
           />
-        </div>
-        <div v-else>
           <Button 
-            :class="[storeDisplay.isLaptop ? 'right-sm bottom-sm':'right-xs bottom-xs', 'button-no-text z-index-2 position-absolute']" 
+            v-else
+            class="button-no-text" 
             color="secondary"
             size="xs"
             @click="() => { product.variantCombinations.length > 0 ? storeCart.getProductDetailApi(product.id) : handleShowAction()}"
             :label="storeCart.getTemplate1Amount(product.id)"
           />
         </div>
-      </div>
 
-      <!-- Badge Image -->
-      <div class="el-absolute left-0 bottom-0 height-auto">
+        <!-- Badge Image voucher-->
         <Image 
           v-if="product.vouchers?.image"
           :alt="product.productName" 
@@ -175,6 +179,7 @@ const flashSalePercent = computed(() => {
           class="width-full height-auto"
           :width="400"
         />
+        <!-- Badge Image flash sale-->
         <Image 
           v-if="!product.vouchers?.image && product.flashSale?.badgeImage"
           :alt="product.productName" 

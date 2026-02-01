@@ -2,10 +2,10 @@ import { computed } from 'vue'
 import { useState } from 'nuxt/app'
 import { productsAPI } from '@/services/v1/product.service'
 import type { PaginationDTO } from '@/server/types/common/pagination.dto'
-import type { FlashSaleProductDTO } from '@/server/types/dto/v1/flash-sale.dto'
+import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
 
 export const useProductsByFlashSale = () => {
-  const listData = useState<PaginationDTO<FlashSaleProductDTO> | null>(
+  const listData = useState<PaginationDTO<ProductDTO> | null>(
     'flash-sale-products',
     () => null
   )

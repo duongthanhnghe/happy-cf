@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { FlashSaleEntity } from "../../models/v1/flash-sale.entity";
 import { toFlashSaleDTO } from "../../mappers/v1/flash-sale.mapper";
+import { Types } from "mongoose";
 
 export const getTopPriorityFlashSaleRandom = async (
   req: Request,
@@ -74,5 +75,44 @@ export const getTopPriorityFlashSaleRandom = async (
   } catch (err: any) {
     console.error("getTopPriorityFlashSaleRandom error:", err)
     return res.status(500).json({ code: 1, message: err.message })
+  }
+}
+
+export const getFlashSaleById = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
+  try {
+    const { id } = req.params
+    const now = new Date()
+
+    if (!Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        code: 1,
+        message: "Flash Sale ID không hợp lệ"
+      })
+    }
+
+    const flashSale = await FlashSaleEntity.findOne({
+      _id: id,
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now }
+    }).lean()
+
+    if (!flashSale) {
+      return res.json({ code: 0, data: null })
+    }
+
+    return res.json({
+      code: 0,
+      data: toFlashSaleDTO(flashSale)
+    })
+  } catch (err: any) {
+    console.error("getFlashSaleByIdPublic error:", err)
+    return res.status(500).json({
+      code: 1,
+      message: err.message || "Server error"
+    })
   }
 }

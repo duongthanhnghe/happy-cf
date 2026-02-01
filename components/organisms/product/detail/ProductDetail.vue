@@ -9,6 +9,7 @@ import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
 import { useCartStore } from '@/stores/client/product/useCartOrderStore';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
+import { useFlashSaleDetail } from '@/composables/product/flash-sale/useFlashSaleDetail';
 
 const { t } = useITranslations()
 const store = useProductDetailStore();
@@ -18,14 +19,17 @@ const storeAccount = useAccountStore();
 const storeDisplay = useDisplayStore();
 const storeSetting = useBaseInformationStore();
 const detail: ProductDTO | null = store.getDetailProduct
-
+const { getFlashSaleDetail, fetchFlashSaleDetail, loadingData} = useFlashSaleDetail()
 onMounted(async() => {
   await storeSetting.fetchSystemConfig()
   if (storeAccount.getUserId) {
     await storeWishlist.fetchWishlist(storeAccount.getUserId);
   }
 
+  if(detail && detail.flashSale?.id) await fetchFlashSaleDetail(detail.flashSale?.id)
+
   window.addEventListener('scroll', store.onScroll);
+  
 });
 
 // auto select variant lan dau vao trang
@@ -69,20 +73,22 @@ onBeforeUnmount(() => {
     <div id="product-detail-info" :class="storeDisplay.isLaptop ? 'container pb-3xl':'overflow-hidden pb-section'">
       <div class="row">
         <div class="col-12 col-lg-6">
-          <template v-if="store.galleryImages.length > 1">
-            <client-only>
-              <ProductDetailGallerySwiper :detail="detail" />
-            </client-only>
-          </template>
-          <div v-else class="product-detail-gallery bg-gray6">
-            <div>
-              <Image 
-                :src="detail.image" 
-                :alt="detail.productName"
-                :width="700"
-              />
+          <div class="sticky">
+            <template v-if="store.galleryImages.length > 1">
+              <client-only>
+                <ProductDetailGallerySwiper :detail="detail" />
+              </client-only>
+            </template>
+            <div v-else class="product-detail-gallery bg-gray6">
+              <div>
+                <Image 
+                  :src="detail.image" 
+                  :alt="detail.productName"
+                  :width="700"
+                />
+              </div>
+              <ProductDetailBadgeImage :detail="detail"/>
             </div>
-            <ProductDetailBadgeImage :detail="detail"/>
           </div>
         </div>
         <div class="col-12 col-lg-6">
@@ -105,8 +111,29 @@ onBeforeUnmount(() => {
               <Text :text="`(${store.getSummaryReview?.averageRating})`" color="gray5" class="line-height-1d2"/>
               <Text @click="scrollIntoView('list-review-by-product')" :text="t('product.detail.text7')" color="gray5" class="cursor-pointer line-height-1d2 text-underline ml-xs"/>
             </div>
-
-            <div class="flex align-end gap-sm align-center justify-between mt-xs">
+          
+            <template v-if="detail.flashSale">
+              <client-only>
+              <ProductDetailFlashSaleInfo
+                :getFlashSaleDetail="getFlashSaleDetail"
+              >
+                <ProductDetailPrice
+                  :detail="detail"
+                  :variantPrice="store.variantPrice"
+                  :percentDiscount="store.percentDiscount"
+                  isFlashSale
+                />
+              </ProductDetailFlashSaleInfo>
+              </client-only>
+            </template>
+            <ProductDetailPrice
+              v-else
+              :detail="detail"
+              :variantPrice="store.variantPrice"
+              :percentDiscount="store.percentDiscount"
+              class="mt-xs"
+            />
+            <!-- <div class="flex align-end gap-sm align-center justify-between mt-xs">
               <template v-if="!detail.variantCombinations.length">
                 <div class="flex align-end gap-sm align-center">
                   <Text :text="formatCurrency(detail.priceDiscounts)" size="lg" weight="semibold" color="black" />
@@ -126,7 +153,8 @@ onBeforeUnmount(() => {
               <template v-else>
                 <Text :text="formatCurrency(store.variantPrice)" size="md" weight="semibold" color="black" />
               </template>
-            </div>
+            </div> -->
+
 
             <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" class="mt-ms" />
             <client-only>
