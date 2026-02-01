@@ -20,6 +20,7 @@ import fileManageRoutes from './file-manage.router'
 import baseInformationRoutes from './base-information.router'
 import paymentTransactionRoutes from './payment-transaction.routes'
 import promotionGiftRouter from "./promotion-gift.route"
+import flashSaleRouter from "./flash-sale.route"
 
 const router = Router()
 
@@ -44,6 +45,7 @@ router.use('/voucher', voucherRouter)
 router.use('/fileManage', fileManageRoutes)
 router.use('/base-information', baseInformationRoutes)
 router.use("/promotion-gift", promotionGiftRouter)
+router.use("/flash-sales", flashSaleRouter)
 router.use('/', wishlistRoutes)
 
 export default router

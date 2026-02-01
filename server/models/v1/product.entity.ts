@@ -22,10 +22,16 @@ export interface ProductVariantGroup {
   options: ProductVariantOption[];
 }
 
-
 export interface ListImage {
   id: string;
   src: string;
+}
+
+export interface FlashSaleInfoDTO {
+  maxDiscountValue: number
+  maxDiscountPercent: number
+  totalSold: number
+  totalQuantity: number
 }
 
 export interface Product {
@@ -65,6 +71,7 @@ export interface Product {
       percentDiscount: number
     }[]
   }
+  flashSaleInfo?: FlashSaleInfoDTO
   //SEO
   titleSEO: string;
   descriptionSEO: string;

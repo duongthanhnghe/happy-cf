@@ -10,7 +10,7 @@ import {
   toProductListDTO,
 } from "../../mappers/v1/product.mapper"
 import { VariantGroupEntity } from "../../../server/models/v1/variant-group.entity"
-import { getApplicableVouchersForProduct } from "./voucher-controller"
+import { getApplicableVouchersForProducts } from "./voucher-controller"
 import { checkProductStockService } from "../../utils/productStock"
 import { buildCategoryBreadcrumb, buildCategoryTree } from "./categories-product.controller"
 import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
@@ -118,66 +118,6 @@ export const filterActiveVariantGroupsForProducts = async (products: Product[]):
   return products;
 };
 
-// export const applyFlashSaleToProducts = async (
-//   products: Product[]
-// ): Promise<Product[]> => {
-//   if (!products.length) return products
-
-//   const now = new Date()
-//   const productIds = products.map(p => p._id)
-
-//   const flashSales = await FlashSaleEntity.aggregate([
-//     {
-//       $match: {
-//         isActive: true,
-//         startDate: { $lte: now },
-//         endDate: { $gte: now }
-//       }
-//     },
-//     { $unwind: "$items" },
-//     {
-//       $match: {
-//         "items.productId": { $in: productIds },
-//         $expr: { $gt: ["$items.quantity", "$items.sold"] }
-//       }
-//     }
-//   ])
-
-//   if (!flashSales.length) return products
-
-//   // Map theo productId (ưu tiên product-level cho listing)
-//   const flashSaleMap = new Map<string, any>()
-
-//   for (const fs of flashSales) {
-//     const item = fs.items
-//     const productId = item.productId.toString()
-
-//     // chỉ lấy 1 flash sale cho product (ưu tiên)
-//     if (!flashSaleMap.has(productId)) {
-//       flashSaleMap.set(productId, {
-//         originalPrice: item.originalPrice,
-//         salePrice: item.salePrice,
-//         percentDiscount: Math.round(
-//           ((item.originalPrice - item.salePrice) / item.originalPrice) * 100
-//         )
-//       })
-//     }
-//   }
-
-//   return products.map(product => {
-//     const fs = flashSaleMap.get(product._id.toString())
-//     if (!fs) return product
-
-//     return {
-//       ...product,
-//       isFlashSale: true,
-//       flashSale: fs,
-//       price: fs.originalPrice,
-//       priceDiscounts: fs.salePrice,
-//       percentDiscount: fs.percentDiscount
-//     }
-//   })
-// }
 export const applyFlashSaleToProducts = async (
   products: Product[]
 ): Promise<Product[]> => {
@@ -205,7 +145,6 @@ export const applyFlashSaleToProducts = async (
 
   if (!flashSales.length) return products
 
-  // Map productId -> flash sale items
   const flashSaleMap = new Map<
     string,
     {
@@ -213,7 +152,12 @@ export const applyFlashSaleToProducts = async (
       name?: string
       slug?: string
       badgeImage?: string
-      items: any[]
+      items: {
+        variantSku: string | null
+        originalPrice: number
+        salePrice: number
+        percentDiscount: number
+      }[]
     }
   >()
 
@@ -252,6 +196,7 @@ export const applyFlashSaleToProducts = async (
     }
   })
 }
+
 ////// END HELPERS
 
 export const getProductById = async (
@@ -321,7 +266,11 @@ export const getProductById = async (
       filteredProduct
     ])
 
-    const voucher = await getApplicableVouchersForProduct(productWithFlashSale)
+    const voucherMap =
+      await getApplicableVouchersForProducts([productWithFlashSale])
+
+    const voucher =
+      voucherMap.get(productWithFlashSale._id.toString()) || null
 
     const finalResult = toProductDTO(productWithFlashSale)
     finalResult.vouchers = voucher
@@ -331,7 +280,17 @@ export const getProductById = async (
       slug: cat.slug
     }))
 
-    return res.json({ code: 0, data: finalResult })
+    // const voucher = await getApplicableVouchersForProducts(productWithFlashSale)
+
+    // const finalResult = toProductDTO(productWithFlashSale)
+    // finalResult.vouchers = voucher
+
+    // finalResult.categoryBreadcrumb = breadcrumbCategories.map(cat => ({
+    //   label: cat.categoryName,
+    //   slug: cat.slug
+    // }))
+
+    return res.json({ code: 0, data: finalResult, message: "Success" })
   } catch (err: any) {
     console.error('getProductById error:', err)
     return res.status(500).json({ code: 1, message: err.message })
@@ -365,16 +324,19 @@ export const getRelatedProducts = async (
       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
     }
 
-    const relatedWithVariants = await filterActiveVariantGroupsForProducts(filtered);
+    const productsWithVariants =
+      await filterActiveVariantGroupsForProducts(filtered)
 
-    const finalResult = [];
-    for (const p of relatedWithVariants) {
-      const voucher = await getApplicableVouchersForProduct(p);
-      finalResult.push({
-        ...p,
-        vouchers: voucher
-      });
-    }
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
+
+    const voucherMap =
+      await getApplicableVouchersForProducts(productsWithFlashSale)
+
+    const finalResult = productsWithFlashSale.map(p => ({
+      ...p,
+      vouchers: voucherMap.get(p._id.toString())
+    }))
 
     return res.json({
       code: 0,
@@ -425,22 +387,20 @@ export const getProductsByIds = async (
     const productsWithVariants =
       await filterActiveVariantGroupsForProducts(filtered)
 
-    const finalResult: any[] = []
-    for (const p of productsWithVariants) {
-      const voucher = await getApplicableVouchersForProduct(p)
-      finalResult.push({
-        ...p,
-        vouchers: voucher
-      })
-    }
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
 
-    const orderedResult = idList
-      .map(id => finalResult.find(p => p._id.toString() === id))
-      .filter(Boolean)
+    const voucherMap =
+      await getApplicableVouchersForProducts(productsWithFlashSale)
+
+    const finalResult: any[] = productsWithFlashSale.map(p => ({
+      ...p,
+      vouchers: voucherMap.get(p._id.toString())
+    }))
 
     return res.json({
       code: 0,
-      data: toProductListDTO(orderedResult),
+      data: toProductListDTO(finalResult),
       message: 'Success'
     })
   } catch (err: any) {
@@ -672,11 +632,16 @@ export const getPromotionalProducts = async (
     const productsWithVariants =
       await filterActiveVariantGroupsForProducts(products)
 
-    const finalResult = []
-    for (const p of productsWithVariants) {
-      const vouchers = await getApplicableVouchersForProduct(p)
-      finalResult.push({ ...p, vouchers })
-    }
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
+
+    const voucherMap =
+      await getApplicableVouchersForProducts(productsWithFlashSale)
+
+    const finalResult = productsWithFlashSale.map(p => ({
+      ...p,
+      vouchers: voucherMap.get(p._id.toString())
+    }))
 
     return res.json({
       code: 0,
@@ -714,7 +679,6 @@ export const getMostOrderedProduct = async (
 
     let activeCategories: Types.ObjectId[] | null = null
 
-    /* ---------------- CATEGORY FILTER ---------------- */
     if (req.query.categoryId) {
       if (!Types.ObjectId.isValid(req.query.categoryId)) {
         return res.status(400).json({
@@ -834,11 +798,13 @@ export const getMostOrderedProduct = async (
     const productsWithFlashSale =
       await applyFlashSaleToProducts(productsWithVariants)
 
-    const finalResult = []
-    for (const p of productsWithFlashSale) {
-      const vouchers = await getApplicableVouchersForProduct(p)
-      finalResult.push({ ...p, vouchers })
-    }
+    const voucherMap =
+      await getApplicableVouchersForProducts(productsWithFlashSale)
+
+    const finalResult = productsWithFlashSale.map(p => ({
+      ...p,
+      vouchers: voucherMap.get(p._id.toString())
+    }))
 
     return res.json({
       code: 0,
@@ -975,11 +941,16 @@ export const getProductsByCategory = async (
     const productsWithVariants =
       await filterActiveVariantGroupsForProducts(products)
 
-    const productResults = []
-    for (const p of productsWithVariants) {
-      const vouchers = await getApplicableVouchersForProduct(p)
-      productResults.push({ ...p, vouchers })
-    }
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
+
+    const voucherMap =
+      await getApplicableVouchersForProducts(productsWithFlashSale)
+
+    const productResults = productsWithFlashSale.map(p => ({
+      ...p,
+      vouchers: voucherMap.get(p._id.toString())
+    }))
 
     return res.json({
       code: 0,
@@ -1065,14 +1036,25 @@ export const searchProducts = async (
 
     const products = await ProductEntity.aggregate(pipeline)
 
-    // ✅ Không cần filter lại vì đã filter trong query
-    const productsWithVariants = await filterActiveVariantGroupsForProducts(products)
+    const productsWithVariants =
+      await filterActiveVariantGroupsForProducts(products)
+
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
+
+    const voucherMap =
+      await getApplicableVouchersForProducts(productsWithFlashSale)
+
+    const finalResult = productsWithFlashSale.map(p => ({
+      ...p,
+      vouchers: voucherMap.get(p._id.toString())
+    }))
 
     res.json({
       code: 0,
-      data: toProductListDTO(productsWithVariants),
+      data: toProductListDTO(finalResult),
       pagination: {
-        total: totalCount,  // ✅ Đúng số lượng
+        total: totalCount,
         page: page,
         totalPages: Math.ceil(totalCount / limit),
         limit: limit
@@ -1203,18 +1185,12 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
           endDate: { $gte: now }
         }
       },
-
       { $unwind: "$items" },
-
-      // ✅ chỉ lấy item còn bán được
       {
         $match: {
-          $expr: {
-            $gt: ["$items.quantity", "$items.sold"]
-          }
+          $expr: { $gt: ["$items.quantity", "$items.sold"] }
         }
       },
-
       {
         $addFields: {
           discountValue: {
@@ -1244,47 +1220,81 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
           }
         }
       },
-
       {
         $group: {
-          _id: {
-            productId: "$items.productId",
-            variantSku: "$items.variantSku"
-          },
+          _id: "$items.productId",
           productId: { $first: "$items.productId" },
-          variantSku: { $first: "$items.variantSku" },
+
           maxDiscountValue: { $max: "$discountValue" },
           maxDiscountPercent: { $max: "$discountPercent" },
+
           totalSold: { $sum: "$items.sold" },
-          salePrice: { $min: "$items.salePrice" }
+          totalQuantity: { $sum: "$items.quantity" }
         }
       },
-
-      // ✅ sort sau khi đã làm tròn %
-      { $sort: { maxDiscountPercent: -1, totalSold: -1 } },
-      { $limit: limit },
-
-      {
-        $lookup: {
-          from: "products",
-          localField: "productId",
-          foreignField: "_id",
-          as: "product"
-        }
-      },
-      { $unwind: "$product" }
+      { $sort: { maxDiscountPercent: -1, maxDiscountValue: -1, totalSold: -1 } },
+      { $limit: limit }
     ])
 
-    const data = raws.map(raw => ({
-      product: toProductDTO(raw.product),
-      variantSku: raw.variantSku,
-      salePrice: raw.salePrice,
-      maxDiscountValue: raw.maxDiscountValue,
-      maxDiscountPercent: raw.maxDiscountPercent,
-      totalSold: raw.totalSold
-    }))
+    if (!raws.length) {
+      return res.json({ code: 0, data: [] })
+    }
 
-    return res.json({ code: 0, data })
+    // 2️⃣ MAP STATS THEO PRODUCT ID
+    const flashSaleStatMap = new Map<
+      string,
+      {
+        maxDiscountValue: number
+        maxDiscountPercent: number
+        totalSold: number
+        totalQuantity: number
+      }
+    >()
+
+    raws.forEach(r => {
+      flashSaleStatMap.set(r.productId.toString(), {
+        maxDiscountValue: r.maxDiscountValue,
+        maxDiscountPercent: r.maxDiscountPercent,
+        totalSold: r.totalSold,
+        totalQuantity: r.totalQuantity
+      })
+    })
+
+    const productIds = raws.map(r => r.productId)
+
+    // 3️⃣ LOAD PRODUCT
+    const products = await ProductEntity.find({
+      _id: { $in: productIds },
+      isActive: true
+    }).lean()
+
+    // 4️⃣ PIPELINE CHUẨN (GIỐNG getMostOrderedProduct)
+    const productsWithVariants =
+      await filterActiveVariantGroupsForProducts(products)
+
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
+
+    const voucherMap =
+      await getApplicableVouchersForProducts(productsWithFlashSale)
+
+    // 5️⃣ MERGE PRODUCT + FLASH SALE STATS
+    const finalResult = productsWithFlashSale.map(p => {
+      const stat = flashSaleStatMap.get(p._id.toString())
+
+      return {
+        ...p,
+        maxDiscountValue: stat?.maxDiscountValue ?? 0,
+        maxDiscountPercent: stat?.maxDiscountPercent ?? 0,
+        totalSold: stat?.totalSold ?? 0,
+        totalQuantity: stat?.totalQuantity ?? 0
+      }
+    })
+
+    return res.json({
+      code: 0,
+      data: toProductListDTO(finalResult)
+    })
   } catch (err: any) {
     console.error("getTopFlashSaleProducts error:", err)
     return res.status(500).json({ code: 1, message: err.message })
@@ -1305,7 +1315,7 @@ export const getProductsByFlashSale = async (
       return res.status(400).json({ code: 1, message: "FlashSale ID không hợp lệ" })
     }
 
-    const flashSale = await FlashSaleEntity.findById(id)
+    const flashSale = await FlashSaleEntity.findById(id).lean()
     if (!flashSale) {
       return res.status(404).json({ code: 1, message: "Flash Sale không tồn tại" })
     }
@@ -1316,9 +1326,6 @@ export const getProductsByFlashSale = async (
       { $match: { _id: new Types.ObjectId(id) } },
       { $unwind: "$items" },
 
-      { $skip: skip },
-      { $limit: limit },
-
       {
         $lookup: {
           from: "products",
@@ -1327,12 +1334,15 @@ export const getProductsByFlashSale = async (
           as: "product"
         }
       },
-      { $unwind: "$product" }
+      { $unwind: "$product" },
+
+      { $skip: skip },
+      { $limit: limit }
     ])
 
     const data = raws.map(raw => ({
       product: toProductDTO(raw.product),
-      variantSku: raw.items.variantSku,
+      variantSku: raw.items.variantSku ?? null,
       originalPrice: raw.items.originalPrice,
       salePrice: raw.items.salePrice,
       quantity: raw.items.quantity,

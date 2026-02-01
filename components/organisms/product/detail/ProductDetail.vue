@@ -40,17 +40,6 @@ watch(
   { immediate: true }
 )
 
-// auto select variant sau khi submit button order
-// watch(
-//   () => storeCart.needAutoSelect,
-//   () => {
-//     const groups = store.getVariantGroupsUI
-//     if (!groups?.length) return
-
-//     storeCart.autoSelectFirstVariants(groups)
-//   }
-// )
-
 watch(
   () => storeCart.getPopupState('edit'),
   (isOpen) => {
@@ -93,13 +82,7 @@ onBeforeUnmount(() => {
                 :width="700"
               />
             </div>
-            <div v-if="detail.vouchers?.image" class="w-full">
-              <Image 
-                :src="detail.vouchers?.image"
-                :alt="detail.productName"
-                :width="700"
-              />
-            </div>
+            <ProductDetailBadgeImage :detail="detail"/>
           </div>
         </div>
         <div class="col-12 col-lg-6">

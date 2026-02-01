@@ -232,6 +232,9 @@ a {
   &-dvh {
     height: 100dvh;
   }
+  &-md {
+    height: $space-md !important;
+  }
   &-lg {
     height: $space-lg !important;
   }
@@ -289,6 +292,9 @@ a {
     }
     &-100 {
       min-width: 100px;
+    }
+    &-120 {
+      min-width: 120px;
     }
     &-150 {
       min-width: 150px;

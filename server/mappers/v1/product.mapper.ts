@@ -37,13 +37,19 @@ export function toProductDTO(entity: Product): ProductDTO {
   const priceDiscount = Number(entity.priceDiscounts) || 0
 
   const percentDiscount =
-    !isFlashSale && price > 0 && priceDiscount > 0 && priceDiscount < price
+    price > 0 && priceDiscount > 0 && priceDiscount < price
       ? Math.round(((price - priceDiscount) / price) * 100)
       : 0
-  // const percentDiscount =
-  //   price > 0 && priceDiscount > 0 && priceDiscount < price
-  //     ? Math.round(((price - priceDiscount) / price) * 100)
-  //     : 0
+
+  const flashSaleInfo =
+    (entity as any).maxDiscountPercent != null
+      ? {
+          maxDiscountValue: (entity as any).maxDiscountValue ?? 0,
+          maxDiscountPercent: (entity as any).maxDiscountPercent ?? 0,
+          totalSold: (entity as any).totalSold ?? 0,
+          totalQuantity: (entity as any).totalQuantity ?? 0
+        }
+      : undefined
 
   return {
     id: entity._id?.toString() || "",
@@ -74,6 +80,7 @@ export function toProductDTO(entity: Product): ProductDTO {
     isActive: entity.isActive,
     isFlashSale,
     flashSale: isFlashSale ? entity.flashSale : undefined,
+    flashSaleInfo,
     createdAt: entity.createdAt?.toISOString() || "",
     updatedAt: entity.updatedAt?.toISOString() || "",
     vouchers: entity.vouchers ?? null,

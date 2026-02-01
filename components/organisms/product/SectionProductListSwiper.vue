@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<{
   loading?: boolean
   headingText: string | ITranslationText
   headingSize?: HeadingSize
+  headingColor?: any
   backgroundItem?: string
   breakpoints?: SwiperOptions['breakpoints']
   container?: string
@@ -28,6 +29,7 @@ const props = withDefaults(defineProps<{
   slug?: string
   skColumn?: string
   skCount?: number
+  variantItem?: string
 }>(), {
   items: () => [],
   showNoData: false,
@@ -50,11 +52,11 @@ const props = withDefaults(defineProps<{
         heading
       />
       <template v-else-if="items.length > 0">
-        <Heading :text="props.headingText" :slug="props.slug" :class="fullScreen ? 'pl-ms pr-ms':''" :size="props.headingSize" />
+        <Heading :text="props.headingText" :slug="props.slug" :class="fullScreen ? 'pl-ms pr-ms':''" :size="props.headingSize" :style="{ color: props.headingColor }" />
         <client-only>
           <swiper :modules="[Navigation, Autoplay]" :breakpoints='props.breakpoints ? props.breakpoints : PRODUCT_LIST_SWIPER_DEFAULT' :space-between="10" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }" :class="fullScreen ? 'pl-ms pr-ms':''">
             <swiper-slide v-for="(product, index) in props.items" :key="index">
-              <ProductItemTemplate1 :product="product" :background="props.backgroundItem" />
+              <ProductItemTemplate1 :product="product" :background="props.backgroundItem" :variant="props.variantItem" />
             </swiper-slide>
           </swiper>
         </client-only>

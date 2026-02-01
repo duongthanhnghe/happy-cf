@@ -37,13 +37,7 @@ const props = defineProps<{
         />
       </swiper-slide>
     </swiper>
-    <div v-if="detail.vouchers?.image" class="w-full">
-      <Image 
-        :src="detail.vouchers?.image" 
-        :alt="detail.productName"
-        :width="700"
-      />
-    </div>
+    <ProductDetailBadgeImage :detail="detail"/>
   </div>
 
   <div :class="storeDisplay.isMobileTable ? 'container mt-ms':'mt-sm' " >

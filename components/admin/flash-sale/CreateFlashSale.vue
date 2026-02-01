@@ -266,7 +266,6 @@ const handleSubmitCreate = async () => {
                     v-model="store.formItem.badgeImage"
                     label="Đường dẫn ảnh..."
                     variant="outlined"
-                    disabled
                     :error="!!formErrors.image"
                     :error-messages="formErrors.image"
                   />

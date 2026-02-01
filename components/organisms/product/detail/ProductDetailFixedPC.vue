@@ -22,7 +22,7 @@ const props = defineProps<{
           </div>
           <div>
             <Text :text="detail.productName" size="normal" limit="2" weight="semibold" color="black" />
-            <Text :text="formatCurrency(props.variantPrice !== null ? props.variantPrice : detail.priceDiscounts)" size="base" weight="medium" color="gray5" class="mt-xs" />
+            <Text :text="formatCurrency(detail.variantCombinations.length > 0 ? props.variantPrice : detail.priceDiscounts)" size="base" weight="medium" color="gray5" class="mt-xs" />
           </div>
         </div>
       </div>

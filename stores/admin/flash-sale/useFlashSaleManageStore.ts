@@ -9,7 +9,7 @@ export const useFlashSaleManageStore = defineStore(
   "FlashSaleManage",
   () => {
     const storeFileManage = useFileManageFolderStore()
-    const folderName = FOLDER_UPLOAD.ABOUT
+    const folderName = FOLDER_UPLOAD.FLASH_SALE
 
     const state = useFlashSaleManageState();
     const operations = useFlashSaleManageOperations(
@@ -53,7 +53,7 @@ export const useFlashSaleManageStore = defineStore(
     watch(() => storeFileManage.getSelectImage, (newValue) => {
       if (!newValue) return
   
-      const target = state.formItem
+      const target = state.isTogglePopupAdd.value ? state.formItem : state.updateItem
         if (state.checkSelectImage.value) {
           target.badgeImage = newValue.url
         } else {

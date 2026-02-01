@@ -2,7 +2,7 @@
   <div v-if="props.text" :class="[props.marginBottom
         ? (computedSize === 'xxl' ? 'mb-ms' : 'mb-sm')
         : '', {'flex flex-wrap gap-sm justify-between': props.slug || hasContent }]">
-    <Text :tag="props.tag" :text="props.text" :weight="props.weight" :size="computedSize" :color="props.color" :align="props.align" :slug="props.headingSlug" />
+    <Text :tag="props.tag" :text="props.text" :weight="props.weight" :size="computedSize" :color="props.color" :align="props.align" :slug="props.headingSlug" :style="props.style" />
     <NuxtLink v-if="props.slug" :to="{ path: props.slug }">
       <Button tag="span" color="secondary" size="sm" icon="keyboard_arrow_right" class="rd-full" />
     </NuxtLink>
@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<{
   slug?: string
   headingSlug?: string
   marginBottom?: boolean
+  style?: any
 }>(), {
   tag: 'div',
   color: 'black',

@@ -124,4 +124,7 @@ export const API_ENDPOINTS = {
   PROMOTION_GIFT: {
     LIST: "/promotion-gift",
   },
+  FLASH_SALES: {
+    LIST_PRIORITY: "/flash-sales",
+  }
 }

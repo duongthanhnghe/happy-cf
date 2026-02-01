@@ -49,6 +49,13 @@ export interface ProductVariantCombinationDTO {
   }[];
 }
 
+export interface FlashSaleInfoDTO {
+  maxDiscountValue: number
+  maxDiscountPercent: number
+  totalSold: number
+  totalQuantity: number
+}
+
 export interface ListImageDTO {
   id: string;
   src: string;
@@ -92,6 +99,7 @@ export interface ProductDTO {
       percentDiscount: number
     }[]
   }
+  flashSaleInfo?: FlashSaleInfoDTO
   //SEO
   categoryBreadcrumb?: {
     label: string

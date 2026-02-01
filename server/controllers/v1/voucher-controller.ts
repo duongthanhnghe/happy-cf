@@ -268,51 +268,121 @@ export const getAllVouchers = async (req: Request, res: Response) => {
   }
 }
 
-export const getApplicableVouchersForProduct = async (product: any) => {
-  const now = new Date();
+// export const getApplicableVouchersForProduct = async (product: any) => {
+//   const now = new Date();
+
+//   const vouchers = await VoucherEntity.find({
+//     isActive: true,
+//     startDate: { $lte: now },
+//     endDate: { $gte: now },
+//     type: { $in: ["product", "percentage", "fixed"] }
+//   }).sort({ createdAt: -1 });
+
+//   const categoryId = product.categoryId?.toString();
+//   const productPrice = product.priceDiscounts ?? 0;
+
+//   const PRIORITY: any = {
+//     product: 1,
+//     percentage: 2,
+//     fixed: 3
+//   };
+
+//   const sorted = vouchers.sort((a, b) => {
+//     return PRIORITY[a.type] - PRIORITY[b.type];
+//   });
+
+//   for (const v of sorted) {
+//     const minOrderValue = v.minOrderValue ?? 0;
+
+//     if (["product"].includes(v.type)) {
+//       const applicableCategories = (v.applicableCategories ?? []).map(String);
+//       if (applicableCategories.length > 0) {
+//         if (!categoryId || !applicableCategories.includes(categoryId)) continue;
+
+//         if (productPrice < minOrderValue) continue;
+//       }
+//     } else {
+//       if (["percentage", "fixed"].includes(v.type)) {
+//         if (productPrice < minOrderValue) continue;
+//       }
+//     }
+
+//     if (!v.image || v.image.trim() === "") continue;
+
+//     return {
+//       image: v.image,
+//     };
+//   }
+
+//   return null;
+// };
+
+const pickVoucherForProduct = (
+  vouchers: any[],
+  product: any
+) => {
+  const categoryId = product.categoryId?.toString()
+  const productPrice = product.priceDiscounts ?? 0
+
+  const PRIORITY: Record<string, number> = {
+    product: 1,
+    percentage: 2,
+    fixed: 3
+  }
+
+  const sorted = [...vouchers].sort(
+    (a, b) => PRIORITY[a.type] - PRIORITY[b.type]
+  )
+
+  for (const v of sorted) {
+    const minOrderValue = v.minOrderValue ?? 0
+
+    if (v.type === "product") {
+      const applicableCategories =
+        (v.applicableCategories ?? []).map(String)
+
+      if (
+        applicableCategories.length > 0 &&
+        (!categoryId || !applicableCategories.includes(categoryId))
+      ) continue
+
+      if (productPrice < minOrderValue) continue
+    }
+
+    if (["percentage", "fixed"].includes(v.type)) {
+      if (productPrice < minOrderValue) continue
+    }
+
+    if (!v.image || v.image.trim() === "") continue
+
+    return { image: v.image }
+  }
+
+  return null
+}
+
+export const getApplicableVouchersForProducts = async (
+  products: any[]
+) => {
+  if (!products.length) return new Map<string, any>()
+
+  const now = new Date()
 
   const vouchers = await VoucherEntity.find({
     isActive: true,
     startDate: { $lte: now },
     endDate: { $gte: now },
     type: { $in: ["product", "percentage", "fixed"] }
-  }).sort({ createdAt: -1 });
+  })
+    .sort({ createdAt: -1 })
+    .lean()
 
-  const categoryId = product.categoryId?.toString();
-  const productPrice = product.priceDiscounts ?? 0;
+  const voucherMap = new Map<string, any>()
 
-  const PRIORITY: any = {
-    product: 1,
-    percentage: 2,
-    fixed: 3
-  };
-
-  const sorted = vouchers.sort((a, b) => {
-    return PRIORITY[a.type] - PRIORITY[b.type];
-  });
-
-  for (const v of sorted) {
-    const minOrderValue = v.minOrderValue ?? 0;
-
-    if (["product"].includes(v.type)) {
-      const applicableCategories = (v.applicableCategories ?? []).map(String);
-      if (applicableCategories.length > 0) {
-        if (!categoryId || !applicableCategories.includes(categoryId)) continue;
-
-        if (productPrice < minOrderValue) continue;
-      }
-    } else {
-      if (["percentage", "fixed"].includes(v.type)) {
-        if (productPrice < minOrderValue) continue;
-      }
-    }
-
-    if (!v.image || v.image.trim() === "") continue;
-
-    return {
-      image: v.image,
-    };
+  for (const product of products) {
+    const voucher = pickVoucherForProduct(vouchers, product)
+    voucherMap.set(product._id.toString(), voucher)
   }
 
-  return null;
-};
+  return voucherMap
+}
