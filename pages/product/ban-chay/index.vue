@@ -152,4 +152,6 @@ onBeforeUnmount(() => {
     <div v-else class="pt-section"></div>
     <PopupManageAddress v-if="storeAccount.getUserId" />
   </client-only>
+
+  <PopupProductTopFlashSale />
 </template>

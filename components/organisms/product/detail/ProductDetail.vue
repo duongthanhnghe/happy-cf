@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, watch } from 'vue';
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
-import { formatCurrency, scrollIntoView } from '@/utils/global';
+import { scrollIntoView } from '@/utils/global';
 import { useAccountStore } from "@/stores/client/users/useAccountStore";
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import type { ProductDTO } from "@/server/types/dto/v1/product.dto";
@@ -20,6 +20,7 @@ const storeDisplay = useDisplayStore();
 const storeSetting = useBaseInformationStore();
 const detail: ProductDTO | null = store.getDetailProduct
 const { getFlashSaleDetail, fetchFlashSaleDetail, loadingData} = useFlashSaleDetail()
+
 onMounted(async() => {
   await storeSetting.fetchSystemConfig()
   if (storeAccount.getUserId) {
@@ -74,21 +75,7 @@ onBeforeUnmount(() => {
       <div class="row">
         <div class="col-12 col-lg-6">
           <div class="sticky">
-            <template v-if="store.galleryImages.length > 1">
-              <client-only>
-                <ProductDetailGallerySwiper :detail="detail" />
-              </client-only>
-            </template>
-            <div v-else class="product-detail-gallery bg-gray6">
-              <div>
-                <Image 
-                  :src="detail.image" 
-                  :alt="detail.productName"
-                  :width="700"
-                />
-              </div>
-              <ProductDetailBadgeImage :detail="detail"/>
-            </div>
+            <ProductDetailGallerySwiper :detail="detail" />
           </div>
         </div>
         <div class="col-12 col-lg-6">
@@ -115,6 +102,7 @@ onBeforeUnmount(() => {
             <template v-if="detail.flashSale">
               <client-only>
               <ProductDetailFlashSaleInfo
+                v-if="getFlashSaleDetail"
                 :getFlashSaleDetail="getFlashSaleDetail"
               >
                 <ProductDetailPrice
@@ -122,6 +110,7 @@ onBeforeUnmount(() => {
                   :variantPrice="store.variantPrice"
                   :percentDiscount="store.percentDiscount"
                   isFlashSale
+                  :selectedFlashSaleItem="store.selectedFlashSaleItem"
                 />
               </ProductDetailFlashSaleInfo>
               </client-only>
@@ -133,28 +122,6 @@ onBeforeUnmount(() => {
               :percentDiscount="store.percentDiscount"
               class="mt-xs"
             />
-            <!-- <div class="flex align-end gap-sm align-center justify-between mt-xs">
-              <template v-if="!detail.variantCombinations.length">
-                <div class="flex align-end gap-sm align-center">
-                  <Text :text="formatCurrency(detail.priceDiscounts)" size="lg" weight="semibold" color="black" />
-                  <template v-if="detail.priceDiscounts !== detail.price">
-                    <Text :text="formatCurrency(detail.price)" size="lg" color="gray5" class="text-line-through" />
-                    <Button tag="span" color="primary" size="sm" :label="store.percentDiscount" class="pl-sm pr-sm" />
-                  </template>
-                </div>
-                <client-only>
-                  <template v-if="detail.priceDiscounts && storeSetting.getConfigShipping?.enabled">
-                    <v-chip v-tooltip.left="storeSetting.getShippingTooltip" v-if="storeSetting.calcFreeship(detail.priceDiscounts)" label color="blue">
-                      Freeship
-                    </v-chip>
-                  </template>
-                </client-only>
-              </template>
-              <template v-else>
-                <Text :text="formatCurrency(store.variantPrice)" size="md" weight="semibold" color="black" />
-              </template>
-            </div> -->
-
 
             <ListVoucherByProduct :items="store.getVoucherProduct" :loading="store.loadingListVoucher" v-if="store.getVoucherProduct.length > 0" class="mt-ms" />
             <client-only>

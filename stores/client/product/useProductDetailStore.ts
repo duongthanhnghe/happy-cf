@@ -75,29 +75,11 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
 
   const getListReviewProduct = computed(() => getListReview.value?.data);
 
-  // const variantPrice = computed<number|null>(() => {
-  //   if (!getDetailProduct.value?.variantCombinations.length){
-  //     if(getDetailProduct.value?.priceDiscounts && getDetailProduct.value?.price) {
-  //       if(getDetailProduct.value?.priceDiscounts !== getDetailProduct.value?.price) {
-  //        return getDetailProduct.value?.priceDiscounts
-  //       } else {
-  //        return getDetailProduct.value?.price
-  //       }
-  //     } else {
-  //       return null
-  //     }
-  //   }
-
-  //   return storeCart.getSelectedVariantPrice(
-  //     getDetailProduct.value.variantCombinations
-  //   )
-  // })
-
   const variantPrice = computed<number | null>(() => {
     const detail = getDetailProduct.value
     if (!detail) return null
 
-    // product KHÔNG variant
+    // KHÔNG variant
     if (!detail.variantCombinations.length) {
       if (detail.isFlashSale && detail.flashSale?.items?.length) {
         const fsItem = detail.flashSale.items.find(
@@ -111,7 +93,7 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
         : detail.price
     }
 
-    // product CÓ variant
+    // CÓ variant
     return storeCart.getSelectedVariantPrice(
       detail.variantCombinations,
       detail.flashSale
@@ -155,6 +137,31 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     return product.amount > 0
   })
 
+  const selectedFlashSaleItem = computed(() => {
+    const detail = getDetailProduct.value
+    if (!detail?.isFlashSale || !detail.flashSale?.items?.length) return null
+
+    // KHÔNG VARIANT
+    if (!detail.variantCombinations.length) {
+      return detail.flashSale.items.find(
+        i => i.variantSku === null
+      ) || null
+    }
+
+    // CÓ VARIANT
+    const selectedSku = storeCart.getSelectedVariantSku(
+      detail.variantCombinations
+    )
+
+    if (!selectedSku) return null
+
+    return (
+      detail.flashSale.items.find(
+        i => i.variantSku === selectedSku
+      ) || null
+    )
+  })
+
   return {
     ...state,
     ...utils,
@@ -177,5 +184,6 @@ export const useProductDetailStore = defineStore("ProductDetailStore", () => {
     getVariantGroupsUI,
     getSelectedStock,
     getCheckButtonOrder,
+    selectedFlashSaleItem,
   };
 });

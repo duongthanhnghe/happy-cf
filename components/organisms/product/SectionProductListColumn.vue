@@ -15,13 +15,15 @@ const props = withDefaults(defineProps<{
   variant?: string
   deleteFavorite?: boolean
   showNoData?: boolean
+  listView?: boolean
 }>(), {
   items: () => [],
   loading: false,
   deleteFavorite: false,
   showNoData: false,
   headingSize: 'xl',
-  headingText: ''
+  headingText: '',
+  listView: false
 })
 </script>
 
@@ -40,7 +42,7 @@ const props = withDefaults(defineProps<{
 
         <div :class="COLUMN.ROW">
           <div v-for="(product, index) in props.items" :key="index" :class="column ? column : 'col-6 mb-sm'">
-            <ProductItemTemplate1 :product="product" :background="props.backgroundItem" :variant="props.variant" :deleteFavorite="props.deleteFavorite" />
+            <ProductItemTemplate1 :product="product" :background="props.backgroundItem" :variant="props.variant" :deleteFavorite="props.deleteFavorite" :listView="props.listView" />
           </div>
         </div>
       </template>

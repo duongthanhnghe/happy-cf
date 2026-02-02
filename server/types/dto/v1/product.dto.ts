@@ -1,6 +1,8 @@
 import type { ProductVariantOption } from '@/server/models/v1/product.entity';
 import type { ImportDTO, ImportItemDTO } from '../../common/import.dto';
 import type { PaginationDTO } from '../../common/pagination.dto'
+import type { FlashSaleDTO } from './flash-sale.dto';
+import type { Types } from 'mongoose';
 
 export interface VariantItemDTO {
   id: string;
@@ -285,4 +287,23 @@ export type ProductSortType = ""|"discount" | "popular" | "price_desc" | "price_
 export type ProductFilterOption = {
   title: string
   value: ProductSortType
+}
+
+export type ProductWithFlashSale = {
+  flashSale: FlashSaleDTO
+  products: ProductDTO[]
+}
+
+export type FlashSaleProductStat = {
+  productId: Types.ObjectId
+  maxDiscountValue: number
+  maxDiscountPercent: number
+  totalSold: number
+  totalQuantity: number
+}
+
+export type FlashSaleAggregateRaw = {
+  _id: Types.ObjectId
+  flashSale: any
+  products: FlashSaleProductStat[]
 }

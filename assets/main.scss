@@ -433,6 +433,9 @@ body .bg {
   }
   &-four {
     background-color: $cl-four;
+    &-60 {
+      background-color: rgba($cl-four, 0.6);
+    }
   }
   &-white {
     background-color: $cl-white;
@@ -1270,6 +1273,12 @@ body .bg {
   }
   &-contain {
     object-fit: contain;
+  }
+}
+
+.blur {
+  &-10 {
+    backdrop-filter: blur(10px);
   }
 }
 

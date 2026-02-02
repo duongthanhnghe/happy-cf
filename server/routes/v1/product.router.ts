@@ -13,7 +13,8 @@ import {
   checkProductStock,
   getProductsByIds,
   getTopFlashSaleProducts,
-  getProductsByFlashSale
+  getProductsByFlashSale,
+  getAllFlashSalesWithProducts
 } from '../../controllers/v1/product.controller'
 import { authenticate } from '../../middlewares/authenticate'
 
@@ -21,6 +22,7 @@ const router = Router()
 
 // Flash sale
 router.get('/flash-sales/top-products', getTopFlashSaleProducts)
+router.get('/flash-sales/all', getAllFlashSalesWithProducts)
 router.get('/flash-sales/:id/products', getProductsByFlashSale)
 
 // Product

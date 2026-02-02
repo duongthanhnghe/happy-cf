@@ -1,11 +1,10 @@
 import { computed } from 'vue'
 import { useState } from 'nuxt/app'
 import { productsAPI } from '@/services/v1/product.service'
-import type { PaginationDTO } from '@/server/types/common/pagination.dto'
-import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
+import type { ProductPaginationDTO } from '@/server/types/dto/v1/product.dto'
 
 export const useProductsByFlashSale = () => {
-  const listData = useState<PaginationDTO<ProductDTO> | null>(
+  const listData = useState<ProductPaginationDTO | null>(
     'flash-sale-products',
     () => null
   )
@@ -17,8 +16,8 @@ export const useProductsByFlashSale = () => {
 
   const fetchProductsByFlashSale = async (
     flashSaleId: string,
-    page = 1,
-    limit = 20
+    page: number,
+    limit: number
   ) => {
     try {
       loadingData.value = true
@@ -44,7 +43,6 @@ export const useProductsByFlashSale = () => {
   return {
     fetchProductsByFlashSale,
     getProductsByFlashSale,
-    listData,
     loadingData
   }
 }

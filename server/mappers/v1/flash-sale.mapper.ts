@@ -7,6 +7,12 @@ const isObjectId = (val: any): val is Types.ObjectId => {
 };
 
 export function toFlashSaleDTO(entity: FlashSale): FlashSaleDTO {
+  const rawItems = Array.isArray(entity.items)
+  ? entity.items
+  : entity.items
+    ? [entity.items]
+    : []
+
   return {
     id: entity._id.toString(),
 
@@ -29,7 +35,7 @@ export function toFlashSaleDTO(entity: FlashSale): FlashSaleDTO {
 
     badgeImage: entity.badgeImage,
 
-    items: entity.items.map((item) => ({
+    items: rawItems.map((item) => ({
       productId: isObjectId(item.productId)
         ? item.productId.toString()
         : {
@@ -55,3 +61,4 @@ export function toFlashSaleDTO(entity: FlashSale): FlashSaleDTO {
 
 export const toFlashSaleListDTO = (entities: FlashSale[]): FlashSaleDTO[] =>
   entities.map(toFlashSaleDTO);
+

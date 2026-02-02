@@ -150,4 +150,6 @@ const bannerSeller = getByPosition(
   <client-only>
     <PopupManageAddress v-if="storeAccount.getUserId" />
   </client-only>
+
+  <PopupProductTopFlashSale />
 </template>

@@ -90,10 +90,11 @@ onMounted(async () => {
       <div :class="storeDisplay.isMobileTable ? 'bg-white pt-section overflow-hidden rd-xl rd-null-bottom-left rd-null-bottom-right':''">
 
         <div v-if="getTopFlashSaleProducts.length > 0" class="container container-xxl pb-section">
-          <ProductTopFlashSale 
-            :getTopPriority="getTopPriority" 
-            :getTopFlashSaleProducts="getTopFlashSaleProducts"
+          <ProductWithFlashSale 
+            :flashSaleInfo="getTopPriority" 
+            :listProduct="getTopFlashSaleProducts"
             :loading="loadingData"
+            linkMoreToMain
           />
         </div>
         <SectionProductListSwiper 
@@ -133,5 +134,6 @@ onMounted(async () => {
       </div>
     </div>
     <ImageBlockPopupFixed />
+    <PopupProductTopFlashSale />
   </div>
 </template>

@@ -146,13 +146,13 @@ const flashSalePercent = computed(() => {
         </template>
         <template v-else>
           <!-- tag flash sale -->
-          <TagFlashSale v-if="product.isFlashSale" />
+          <TagFlashSale v-if="product.isFlashSale && !listView" />
         </template>
       </div>
 
-      <div class="el-absolute left-0 bottom-0 height-auto">
+      <div class="el-absolute left-0 bottom-0 height-auto flex flex-direction-column">
         <!-- add cart -->
-        <div class="justify-end flex position-relative z-index-2" :class="[storeDisplay.isLaptop ? 'mr-sm bottom-sm':'mr-xs mb-xs']" >
+        <div class="justify-end flex position-relative z-index-2" :class="[storeDisplay.isLaptop ? 'mr-sm mb-sm':'mr-xs mb-xs']" >
           <Button 
             v-if="storeCart.getTemplate1Amount(product.id) < 1"
             color="primary" 

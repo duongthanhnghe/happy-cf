@@ -163,13 +163,6 @@ export const useCartStore = defineStore("Cart", () => {
     )
   }
 
-  // const getSelectedVariantPrice = (
-  //   variantCombinations: ProductVariantCombinationDTO[]
-  // ): number => {
-  //   const matched = getMatchedCombination(variantCombinations)
-  //   return matched?.priceModifier ?? 0
-  // }
-
   const getSelectedVariantPrice = (
     variantCombinations: ProductVariantCombinationDTO[],
     flashSale?: ProductDTO['flashSale']
@@ -255,6 +248,13 @@ export const useCartStore = defineStore("Cart", () => {
     )
 
     return matched?.id
+  }
+
+  const getSelectedVariantSku = (
+    variantCombinations: ProductVariantCombinationDTO[]
+  ): string | null => {
+    const matched = getMatchedCombination(variantCombinations)
+    return matched?.sku ?? null
   }
 
   const pricing = useCartPricing(
@@ -567,5 +567,6 @@ export const useCartStore = defineStore("Cart", () => {
     autoSelectFirstVariants,
     getSelectedVariantStock,
     getSelectedCombinationId,
+    getSelectedVariantSku,
   };
 });

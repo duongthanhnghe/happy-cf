@@ -5,6 +5,29 @@ import { toFlashSaleDTO } from "../../../mappers/v1/flash-sale.mapper";
 const makeItemKey = (item: any) =>
   `${item.productId}-${item.variantSku ?? "default"}`;
 
+// const findOverlappingFlashSales = async (
+//   productId: string,
+//   variantSku: string | null | undefined,
+//   startDate: Date,
+//   endDate: Date,
+//   excludeId?: string
+// ) => {
+//   return FlashSaleEntity.findOne({
+//     ...(excludeId && { _id: { $ne: excludeId } }),
+//     startDate: { $lt: endDate },
+//     endDate: { $gt: startDate },
+//     items: {
+//       $elemMatch: {
+//         productId,
+//         ...(variantSku
+//           ? { variantSku }
+//           : { $or: [{ variantSku: null }, { variantSku: "" }] }),
+//       },
+//     },
+//   });
+// };
+
+
 const findOverlappingFlashSales = async (
   productId: string,
   variantSku: string | null | undefined,
@@ -12,20 +35,30 @@ const findOverlappingFlashSales = async (
   endDate: Date,
   excludeId?: string
 ) => {
+  const now = new Date()
+
   return FlashSaleEntity.findOne({
     ...(excludeId && { _id: { $ne: excludeId } }),
-    startDate: { $lt: endDate },
-    endDate: { $gt: startDate },
+
+    $and: [
+      // ❗ BỎ QUA flash sale đã kết thúc
+      { endDate: { $gt: now } },
+
+      // ❗ CHECK overlap thời gian
+      { startDate: { $lt: endDate } },
+      { endDate: { $gt: startDate } },
+    ],
+
     items: {
       $elemMatch: {
         productId,
         ...(variantSku
           ? { variantSku }
-          : { $or: [{ variantSku: null }, { variantSku: "" }] }),
-      },
-    },
-  });
-};
+          : { $or: [{ variantSku: null }, { variantSku: "" }] })
+      }
+    }
+  })
+}
 
 export const getAllFlashSales = async (req: Request, res: Response) => {
   try {

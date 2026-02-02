@@ -153,4 +153,6 @@ onMounted(async () => {
     </div>
   </template>
   <NoData v-else />
+
+  <PopupProductTopFlashSale />
 </template>

@@ -79,22 +79,20 @@ export const getTopPriorityFlashSaleRandom = async (
 }
 
 export const getFlashSaleById = async (
-  req: Request<{ id: string }>,
+  req: Request<{ slug: string }>,
   res: Response
 ) => {
   try {
-    const { id } = req.params
+    const { slug } = req.params
     const now = new Date()
 
-    if (!Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        code: 1,
-        message: "Flash Sale ID không hợp lệ"
-      })
-    }
+    const isObjectId = Types.ObjectId.isValid(slug)
 
     const flashSale = await FlashSaleEntity.findOne({
-      _id: id,
+      ...(isObjectId
+        ? { _id: slug }
+        : { slug }
+      ),
       isActive: true,
       startDate: { $lte: now },
       endDate: { $gte: now }
@@ -109,7 +107,7 @@ export const getFlashSaleById = async (
       data: toFlashSaleDTO(flashSale)
     })
   } catch (err: any) {
-    console.error("getFlashSaleByIdPublic error:", err)
+    console.error("getFlashSaleBySlug error:", err)
     return res.status(500).json({
       code: 1,
       message: err.message || "Server error"

@@ -3,7 +3,9 @@ import type {
   ProductDTO, 
   WishlistItem, 
   ProductSortType,
-  CheckStockResult
+  CheckStockResult,
+  ProductWithFlashSale,
+  ProductPaginationDTO
 } from '@/server/types/dto/v1/product.dto'
 import type { ApiResponse } from '@/server/types/common/api-response'
 import { apiClient } from '@/services/http/apiClient'
@@ -230,9 +232,9 @@ export const productsAPI = {
     flashSaleId: string,
     page: number,
     limit: number
-  ): Promise<PaginationDTO<ProductDTO>> => {
+  ): Promise<ProductPaginationDTO> => {
     try {
-      return await apiClient().get<PaginationDTO<ProductDTO>>(
+      return await apiClient().get<ProductPaginationDTO>(
         API_ENDPOINTS.PRODUCTS.FLASH_SALE_PRODUCTS(flashSaleId),
         {
           page,
@@ -242,6 +244,17 @@ export const productsAPI = {
     } catch (err: any) {
       console.error('[getProductsByFlashSale]', err)
       return paginationError<ProductDTO>(page, limit, err)
+    }
+  },
+
+  getAllFlashSaleProducts: async (): Promise<ApiResponse<ProductWithFlashSale>> => {
+    try {
+      return await apiClient().get<ApiResponse<ProductWithFlashSale>>(
+        API_ENDPOINTS.PRODUCTS.FLASH_SALE_LIST_ALL
+      )
+    } catch (err: any) {
+      console.error('[getAllFlashSaleProducts]', err)
+      return apiError<ProductWithFlashSale>(err)
     }
   },
 

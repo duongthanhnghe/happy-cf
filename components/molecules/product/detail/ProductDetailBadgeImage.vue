@@ -15,7 +15,7 @@ const props = defineProps<{
       :width="700"
     />
     <Image 
-      v-if="detail.flashSale?.badgeImage"
+      v-if="detail.flashSale?.badgeImage && !detail.vouchers?.image"
       :src="detail.flashSale?.badgeImage" 
       :alt="detail.productName"
       :width="700"

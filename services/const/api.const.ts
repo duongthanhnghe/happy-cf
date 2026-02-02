@@ -28,6 +28,7 @@ export const API_ENDPOINTS = {
     CART_DETAIL: '/products/cart-detail',
     CHECK_STOCK: '/products/check-stock',
     FLASH_SALE_TOP_PRODUCTS: '/products/flash-sales/top-products',
+    FLASH_SALE_LIST_ALL: "/products/flash-sales/all",
     FLASH_SALE_PRODUCTS: (flashSaleId: string) => `/products/flash-sales/${flashSaleId}/products`,
   },
   VARIANT_GROUPS: {

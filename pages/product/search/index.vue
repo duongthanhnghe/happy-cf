@@ -78,4 +78,6 @@ watch(
       <NoData v-else="store.getListProductResult && store.getListProductResult.data.length === 0" class="mt-sm" text="Không có kết quả phù hợp" />
     </div>
   </div>
+  
+  <PopupProductTopFlashSale />
 </template>

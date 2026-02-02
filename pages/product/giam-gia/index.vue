@@ -151,4 +151,5 @@ onBeforeUnmount(() => {
 
     <PopupManageAddress v-if="storeAccount.getUserId" />
   </client-only>
+  <PopupProductTopFlashSale />
 </template>

@@ -13,8 +13,9 @@ import { VariantGroupEntity } from "../../../server/models/v1/variant-group.enti
 import { getApplicableVouchersForProducts } from "./voucher-controller"
 import { checkProductStockService } from "../../utils/productStock"
 import { buildCategoryBreadcrumb, buildCategoryTree } from "./categories-product.controller"
-import type { CategoryProductDTO } from "@/server/types/dto/v1/product.dto"
+import type { CategoryProductDTO, FlashSaleAggregateRaw, ProductDTO, ProductWithFlashSale } from "@/server/types/dto/v1/product.dto"
 import { FlashSaleEntity } from "@/server/models/v1/flash-sale.entity"
+import { toFlashSaleDTO } from "@/server/mappers/v1/flash-sale.mapper"
 
 export const getAllActiveCategoryIds = async (): Promise<Types.ObjectId[]> => {
   const categories = await CategoryProductEntity.find({ isActive: true })
@@ -1300,7 +1301,6 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message })
   }
 }
-
 export const getProductsByFlashSale = async (
   req: Request<{ id: string }, {}, {}, { page?: number; limit?: number }>,
   res: Response
@@ -1310,45 +1310,161 @@ export const getProductsByFlashSale = async (
     const page = Math.max(Number(req.query.page) || 1, 1)
     const limit = Math.max(Number(req.query.limit) || 20, 1)
     const skip = (page - 1) * limit
+    const now = new Date()
 
     if (!Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ code: 1, message: "FlashSale ID không hợp lệ" })
+      return res.status(400).json({
+        code: 1,
+        message: 'FlashSale ID không hợp lệ'
+      })
     }
 
-    const flashSale = await FlashSaleEntity.findById(id).lean()
-    if (!flashSale) {
-      return res.status(404).json({ code: 1, message: "Flash Sale không tồn tại" })
-    }
-
-    const total = flashSale.items.length
-
+    /**
+     * 1️⃣ AGGREGATE ITEMS CỦA FLASH SALE
+     */
     const raws = await FlashSaleEntity.aggregate([
-      { $match: { _id: new Types.ObjectId(id) } },
-      { $unwind: "$items" },
-
       {
-        $lookup: {
-          from: "products",
-          localField: "items.productId",
-          foreignField: "_id",
-          as: "product"
+        $match: {
+          _id: new Types.ObjectId(id),
+          isActive: true,
+          startDate: { $lte: now },
+          endDate: { $gte: now }
         }
       },
-      { $unwind: "$product" },
 
+      { $unwind: '$items' },
+
+      // chỉ lấy item còn hàng
+      {
+        $match: {
+          $expr: { $gt: ['$items.quantity', '$items.sold'] }
+        }
+      },
+
+      // join product
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'items.productId',
+          foreignField: '_id',
+          as: 'product'
+        }
+      },
+      { $unwind: '$product' },
+
+      // chỉ lấy product active
+      {
+        $match: {
+          'product.isActive': true
+        }
+      },
+
+      // tính % giảm
+      {
+        $addFields: {
+          discountPercent: {
+            $cond: [
+              { $gt: ['$items.originalPrice', 0] },
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      {
+                        $divide: [
+                          {
+                            $subtract: [
+                              '$items.originalPrice',
+                              '$items.salePrice'
+                            ]
+                          },
+                          '$items.originalPrice'
+                        ]
+                      },
+                      100
+                    ]
+                  },
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          flashSaleInfoRoot: {
+            id: '$_id',
+            name: '$name',
+            slug: '$slug',
+            badgeImage: '$badgeImage'
+          }
+        }
+      },
+
+      // ưu tiên giảm mạnh + bán chạy
+      { $sort: { discountPercent: -1, 'items.sold': -1 } },
+
+      // pagination
       { $skip: skip },
       { $limit: limit }
     ])
 
-    const data = raws.map(raw => ({
-      product: toProductDTO(raw.product),
-      variantSku: raw.items.variantSku ?? null,
-      originalPrice: raw.items.originalPrice,
-      salePrice: raw.items.salePrice,
-      quantity: raw.items.quantity,
-      sold: raw.items.sold
-    }))
+    /**
+     * 2️⃣ TOTAL COUNT (CHO PAGINATION)
+     */
+    const totalRaw = await FlashSaleEntity.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(id),
+          isActive: true,
+          startDate: { $lte: now },
+          endDate: { $gte: now }
+        }
+      },
+      { $unwind: '$items' },
+      {
+        $match: {
+          $expr: { $gt: ['$items.quantity', '$items.sold'] }
+        }
+      },
+      { $count: 'total' }
+    ])
 
+    const total = totalRaw[0]?.total ?? 0
+
+    /**
+     * 3️⃣ MAP → ProductDTO[] (CHUẨN FE)
+     */
+    const data: ProductDTO[] = raws.map(r => {
+      const productDTO = toProductDTO(r.product)
+
+      return {
+        ...productDTO,
+        isFlashSale: true,
+        flashSale: {
+          id,
+          name: r.name,
+          slug: r.slug,
+          badgeImage: r.badgeImage,
+          items: [
+            {
+              variantSku: r.items.variantSku ?? null,
+              originalPrice: r.items.originalPrice,
+              salePrice: r.items.salePrice,
+              percentDiscount: r.discountPercent
+            }
+          ]
+        },
+        flashSaleInfo: {
+          maxDiscountValue:
+            r.items.originalPrice - r.items.salePrice,
+          maxDiscountPercent: r.discountPercent,
+          totalSold: r.items.sold,
+          totalQuantity: r.items.quantity
+        }
+      }
+    })
+
+    /**
+     * 4️⃣ RESPONSE ĐÚNG PaginationDTO<ProductDTO>
+     */
     return res.json({
       code: 0,
       data,
@@ -1360,7 +1476,158 @@ export const getProductsByFlashSale = async (
       }
     })
   } catch (err: any) {
-    console.error("getProductsByFlashSale error:", err)
+    console.error('getProductsByFlashSale error:', err)
+    return res.status(500).json({
+      code: 1,
+      message: err.message || 'Server error'
+    })
+  }
+}
+
+export const getAllFlashSalesWithProducts = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const now = new Date()
+    const activeCategories = await getAllActiveCategoryIds()
+
+    const raws = await FlashSaleEntity.aggregate([
+      {
+        $match: {
+          isActive: true,
+          startDate: { $lte: now },
+          endDate: { $gte: now }
+        }
+      },
+      { $unwind: "$items" },
+      {
+        $match: {
+          $expr: { $gt: ["$items.quantity", "$items.sold"] }
+        }
+      },
+      {
+        $addFields: {
+          discountValue: {
+            $subtract: ["$items.originalPrice", "$items.salePrice"]
+          },
+          discountPercent: {
+            $cond: [
+              { $gt: ["$items.originalPrice", 0] },
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      {
+                        $divide: [
+                          { $subtract: ["$items.originalPrice", "$items.salePrice"] },
+                          "$items.originalPrice"
+                        ]
+                      },
+                      100
+                    ]
+                  },
+                  0
+                ]
+              },
+              0
+            ]
+          }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            flashSaleId: "$_id",
+            productId: "$items.productId"
+          },
+          flashSale: { $first: "$$ROOT" },
+          productId: { $first: "$items.productId" },
+          maxDiscountValue: { $max: "$discountValue" },
+          maxDiscountPercent: { $max: "$discountPercent" },
+          totalSold: { $sum: "$items.sold" },
+          totalQuantity: { $sum: "$items.quantity" }
+        }
+      },
+      {
+        $group: {
+          _id: "$_id.flashSaleId",
+          flashSale: { $first: "$flashSale" },
+          products: {
+            $push: {
+              productId: "$productId",
+              maxDiscountValue: "$maxDiscountValue",
+              maxDiscountPercent: "$maxDiscountPercent",
+              totalSold: "$totalSold",
+              totalQuantity: "$totalQuantity"
+            }
+          }
+        }
+      },
+      {
+        $sort: {
+          "flashSale.priority": -1,
+          "flashSale.startDate": -1 
+        }
+      }
+    ]) as FlashSaleAggregateRaw[]
+
+    if (!raws.length) {
+      return res.json({ code: 0, data: [] })
+    }
+
+    const allProductIds = raws.flatMap(r =>
+      r.products.map(p => p.productId)
+    )
+
+    const products = await ProductEntity.find({
+      _id: { $in: allProductIds },
+      isActive: true,
+      categoryId: { $in: activeCategories }
+    }).lean()
+
+    const productsWithVariants =
+      await filterActiveVariantGroupsForProducts(products)
+
+    const productsWithFlashSale =
+      await applyFlashSaleToProducts(productsWithVariants)
+
+    const productMap = new Map(
+      productsWithFlashSale.map(p => [p._id.toString(), p])
+    )
+
+    const data: ProductWithFlashSale[] = raws.map(r => {
+      const enrichedProducts = r.products
+        .map(stat => {
+          const p = productMap.get(stat.productId.toString())
+          if (!p) return null
+
+          return {
+            ...p,
+            flashSaleInfo: {
+              maxDiscountValue: stat.maxDiscountValue,
+              maxDiscountPercent: stat.maxDiscountPercent,
+              totalSold: stat.totalSold,
+              totalQuantity: stat.totalQuantity
+            }
+          }
+        })
+        .filter(p => p !== null)
+
+      const productDTOs = toProductListDTO(enrichedProducts)
+
+      return {
+        flashSale: toFlashSaleDTO(r.flashSale),
+        products: productDTOs
+      }
+    })
+
+    return res.json({
+      code: 0,
+      data
+    })
+  } catch (err: any) {
+    console.error("getAllFlashSalesWithProducts error:", err)
     return res.status(500).json({ code: 1, message: err.message })
   }
 }
