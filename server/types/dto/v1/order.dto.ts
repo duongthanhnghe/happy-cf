@@ -5,6 +5,7 @@ import type { ApplyVoucherResponse } from './voucher.dto';
 import type { ProductVariantCombinationDTO } from './product.dto';
 import type { PromotionGiftUsageDTO } from './promotion-gift-usage.dto';
 import { Types } from "mongoose"
+import type { FlashSaleLiteDTO } from './flash-sale.dto';
 
 export interface ProductInOrder extends cartItems {
   data: ProductDTO
@@ -17,6 +18,9 @@ export interface OrderMappingNew extends OrderDTO {
 export interface cartItems {
   idProduct: { image: string, productName: string} | string
   price: number
+  originalPrice: number
+  priceDiscount: number
+  salePrice: number
   quantity: number
   sku: string | null
   note: string | null
@@ -26,6 +30,7 @@ export interface cartItems {
   isFlashSale: boolean;
   stackableWithVoucher: boolean;
   stackableWithPromotionGift: boolean
+  flashSale: FlashSaleLiteDTO | null
 }
 
 export interface GiftItems {
@@ -131,6 +136,7 @@ export interface OrderDTO {
   totalPriceSave: number;
   totalPriceCurrent: number;
   totalDiscountOrder: number;
+  totalQuantity: number;
   shippingFee: number;
   shipping?: OrderShippingDTO | null;
   status: OrderStatusDTO;
@@ -153,7 +159,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "userId" |"transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "giftItems" > {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "userId" |"transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "totalQuantity" | "giftItems" > {
   paymentId: string;
   provinceCode: number;
   districtCode: number;

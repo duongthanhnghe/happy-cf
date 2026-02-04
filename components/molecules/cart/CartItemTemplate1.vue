@@ -112,7 +112,7 @@ const flashItem = computed(() => {
 
           <!-- KHÔNG FLASH SALE -->
           <template v-else>
-            <div v-if="item.priceDiscounts" class="flex gap-xs">
+            <div v-if="item.priceDiscounts && !item.variantCombination?.priceModifier" class="flex gap-xs">
               <Text color="danger" :text="formatCurrency(item.priceDiscounts)" />
               <Text
                 v-if="item.priceDiscounts !== item.price"
@@ -124,7 +124,7 @@ const flashItem = computed(() => {
             <template v-else>
               <Text
                 color="danger"
-                :text="formatCurrency(item.variantCombination?.priceModifier || item.price)"
+                :text="formatCurrency(item.variantCombination?.priceModifier)"
               />
             </template>
           </template>

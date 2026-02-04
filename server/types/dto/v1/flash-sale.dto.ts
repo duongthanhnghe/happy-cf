@@ -1,6 +1,13 @@
 import type { PaginationDTO } from "../../common/pagination.dto";
 import type { ProductLiteDTO } from "./product.dto";
 
+export interface FlashSaleLiteDTO {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+}
 export interface FlashSaleItemDTO {
   productId: string | ProductLiteDTO
   variantSku: string | null;
@@ -69,3 +76,4 @@ export type CreateFlashSaleBody = Omit<
 export type UpdateFlashSaleBody = Partial<CreateFlashSaleBody>;
 
 export type FlashSalePaginationDTO = PaginationDTO<FlashSaleDTO>;
+

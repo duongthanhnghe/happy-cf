@@ -3,16 +3,19 @@ import { objectIdSchema } from './common.schema'
 
 export const cartItemSchema = z.object({
   idProduct: objectIdSchema,
-  price: z.number().min(0, 'Giá sản phẩm không hợp lệ'),
+  price: z.number().min(0, 'Tổng giá sản phẩm không hợp lệ'),
+  originalPrice: z.number().min(0, 'Giá niêm yết của sản phẩm không hợp lệ'),
+  priceDiscount: z.number().min(0, 'Giá giảm của sản phẩm không hợp lệ'),
+  salePrice: z.number().min(0, 'Giá giảm flash sale của sản phẩm không hợp lệ'),
   quantity: z.number().int().min(1, 'Số lượng phải >= 1'),
   note: z.string().optional().nullable(),
   sku: z.string().optional(),
   combinationId: z.string().optional(),
   variantCombination: z.any().optional().nullable(),
-  flashSaleId: z.string().optional(),
-  isFlashSale: z.boolean().optional(),
-  stackableWithPromotionGift: z.boolean().optional(),
-  stackableWithVoucher: z.boolean().optional(),
+  flashSaleId: z.string().optional().nullable(),
+  isFlashSale: z.boolean().optional().nullable(),
+  stackableWithPromotionGift: z.boolean().optional().nullable(),
+  stackableWithVoucher: z.boolean().optional().nullable(),
 })
 
 export const voucherUsageSchema = z.object({
@@ -45,11 +48,11 @@ export const createOrderDataSchema = z.object({
   totalPriceSave: z.number().min(0),
   totalPriceCurrent: z.number().min(0),
   totalDiscountOrder: z.number().min(0),
+  // totalQuantity: z.number().min(0),
   shippingFee: z.number().min(0),
   provinceCode: z.number(),
   districtCode: z.number(),
   wardCode: z.number(),
-
   provinceName: z.string(),
   districtName: z.string(),
   wardName: z.string(),

@@ -7,19 +7,30 @@ import { useOrderManageStore } from '@/stores/admin/order/useOrderManageStore';
 import { getFilteredTransactionStatus } from '@/composables/admin/order/useFilteredTransactionStatus';
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
+import { ref } from 'vue';
 
 const storeDetailOrder = useAdminOrderDetailStore()
 const store = useOrderManageStore()
 const storeDetailUser = useAdminUserDetailStore()
+
+const toggleAction = ref(false);
+
+const handleToggleProducts = () => {
+  toggleAction.value = !toggleAction.value;
+};
 
 </script>
 <template>
   <template v-if="storeDetailOrder.getDetailOrder">
     <div class="row row-sm">
       <!-- Sản phẩm -->
-      <div class="col-12 col-lg-4 mb-md">
-        <Card size="sm" class="rd-lg height-full" heading="Sản phẩm">
-          <div class="overflow-auto scroll-hide max-height-500">
+      <div :class="[toggleAction ? 'col-lg-12' : 'col-lg-4', 'col-lg-4 mb-md']">
+        <Card size="sm" class="rd-lg height-full" >
+          <div class="flex justify-between">
+            <Heading :text="'Sản phẩm: '+ storeDetailOrder.getDetailOrder?.totalQuantity" />
+            <Button size="sm" :color="toggleAction ? 'black':'secondary'" :icon="toggleAction ? 'pinch_zoom_in':'pinch'" @click.prevent="handleToggleProducts"/>
+          </div>
+          <div :class="[toggleAction ? '' : 'overflow-auto scroll-hide max-height-500']">
             <template v-for="(items, index) in storeDetailOrder.getDetailOrder?.cartItems" :key="index">
               <AdminOrderItemTemplate1 :item="items" class="mb-sm"/>
             </template>
@@ -41,12 +52,18 @@ const storeDetailUser = useAdminUserDetailStore()
               </div>
             </div>
             <div class="flex justify-between text-color-gray5">
+              SL Sản phẩm
+              <span>
+                {{ storeDetailOrder.getDetailOrder?.totalQuantity }}
+              </span>
+            </div>
+            <div class="flex justify-between text-color-gray5">
               Đơn hàng
               <span>
                 {{ formatCurrency(storeDetailOrder.getDetailOrder?.totalPriceCurrent) }}
               </span>
             </div>
-            <div v-if="storeDetailOrder.getDetailOrder?.shippingFee" class="flex justify-between text-color-gray5">
+            <div v-if="storeDetailOrder.getDetailOrder?.shippingFee !== undefined" class="flex justify-between text-color-gray5">
               Phí vận chuyển
               <span>
                 {{ formatCurrency(storeDetailOrder.getDetailOrder?.shippingFee) }}
@@ -63,8 +80,9 @@ const storeDetailUser = useAdminUserDetailStore()
             </div>
             <div v-if="storeDetailOrder.getDetailOrder?.membershipDiscountAmount !== 0" class="flex justify-between text-color-gray5">
               Ưu đãi thành viên
-              <span>
+              <span class="flex gap-xs">
                 -{{ formatCurrency(storeDetailOrder.getDetailOrder?.membershipDiscountAmount) }}
+                <Button v-tooltip="storeDetailOrder.getDetailOrder?.membershipDiscountRate+'% của đơn hàng'" tag="span" size="xs" color="secondary" class="text-size-xs" :label="storeDetailOrder.getDetailOrder?.membershipDiscountRate+'%'"/>
               </span>
             </div>
             <div v-if="storeDetailOrder.totalDiscountVoucher !== 0" class="flex justify-between text-color-gray5">
@@ -175,6 +193,41 @@ const storeDetailUser = useAdminUserDetailStore()
         </Card>
       </div>
 
+      <!-- Flash sale -->
+      <div class="col-12 col-lg-4 mb-md">
+        <Card size="sm" class="rd-lg height-full" heading="CT Flash sale">
+          <div class="flex flex-direction-column gap-sm">
+            <div class="flex justify-between text-color-gray5" v-for="item in storeDetailOrder.getDetailOrder?.cartItems">
+              {{ item.flashSale?.name }}
+              <span class="flex gap-xs align-center">
+                {{ item.flashSale?.name }}
+                <v-chip
+                  label
+                  small
+                  :color="item.flashSale?.isActive ? 'green' : 'red'"
+                >
+                  {{ item.flashSale?.isActive ? "Kích hoạt" : "Tắt" }}
+                </v-chip>
+                <v-chip
+                  v-if="item.flashSale?.startDate && new Date() < new Date(item.flashSale?.startDate)"
+                  color="blue"
+                  small
+                  >Chưa diễn ra</v-chip
+                >
+                <v-chip
+                  v-else-if="item.flashSale?.endDate && new Date() > new Date(item.flashSale?.endDate)"
+                  color="red"
+                  small
+                  >Đã kết thúc</v-chip
+                >
+                <v-chip v-else color="green" small>Đang diễn ra</v-chip>
+              </span>
+            </div>
+            
+          </div>
+        </Card>
+      </div>
+
       <!-- Voucher -->
       <div v-if="storeDetailOrder.getDetailOrder?.voucherUsage?.length > 0" class="col-12 col-lg-4 mb-md">
         <Card size="sm" class="rd-lg height-full" heading="Voucher áp dụng">
@@ -198,7 +251,7 @@ const storeDetailUser = useAdminUserDetailStore()
       </div>
 
       <!-- Quà tặng -->
-      <div v-if="storeDetailOrder.getDetailOrder?.giftItems" class="col-12 col-lg-4">
+      <div v-if="storeDetailOrder.getDetailOrder?.giftItems && storeDetailOrder.getDetailOrder?.giftItems.length > 0" class="col-12 col-lg-4">
         <Card size="sm" class="rd-lg height-full" heading="Quà tặng kèm">
           
           <!-- logs -->

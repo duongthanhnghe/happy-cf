@@ -52,11 +52,39 @@ export const useCartOrder = (
         i => i.variantSku === variantSku
       )
 
+      const quantity = item.quantity
+
+      const normalPrice =
+        (item.variantCombination?.priceModifier ??
+        item.priceDiscounts) || 0
+
+      const originalPrice =
+        (item.variantCombination?.priceModifier ??
+        item.price) || 0
+
+      const salePrice =
+        item.isFlashSale && flashSaleItem
+          ? flashSaleItem.salePrice
+          : null
+
+      const totalPrice =
+        salePrice && quantity > 0
+          ? salePrice + normalPrice * Math.max(quantity - 1, 0)
+          : normalPrice * quantity
+
+      const priceDiscount =
+        !item.isFlashSale && item.priceDiscounts && item.price !== item.priceDiscounts
+          ? item.priceDiscounts
+          : 0
+
       return {
         idProduct: item.id,
         note: item.note || '',
         sku: item.variantCombination ? item.variantCombination.sku : item.sku,
-        price: item.variantCombination ? item.variantCombination.priceModifier : item.priceDiscounts,
+        price: totalPrice,
+        originalPrice,
+        priceDiscount: priceDiscount,
+        salePrice: salePrice || 0,
         quantity: item.quantity,
         variantCombination: item.variantCombination || null,
         combinationId: item.combinationId || '',
@@ -66,6 +94,9 @@ export const useCartOrder = (
         stackableWithVoucher: flashSaleItem?.stackableWithVoucher
       };
     });
+
+    console.log(newCartItems)
+    // return
 
     const newGiftItems = giftItems.value.map(gift => ({
       promotionGiftId: gift.promotionGiftId,
@@ -107,6 +138,9 @@ export const useCartOrder = (
       wardName: storeLocation.selectedWardObj.WARDS_NAME,
       voucherUsage: newVoucherUsage
     };
+
+    // console.log(orderData)
+    // return
 
     if (!validate({
       data: orderData,

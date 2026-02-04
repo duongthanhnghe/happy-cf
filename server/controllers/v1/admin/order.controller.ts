@@ -80,6 +80,11 @@ export const getAllOrder = async (req: Request, res: Response) => {
           select: "image productName amount"
         })
         .populate({
+          path: "cartItems.flashSaleId",
+          model: "FlashSale",
+          select: "name startDate endDate isActive"
+        })
+        .populate({
           path: "shipping",
           model: "OrderShipping",
           match: shippingMatch,
@@ -125,7 +130,8 @@ export const getAllOrder = async (req: Request, res: Response) => {
             model: "ShippingProvider",
           }
         },
-        { path: "cartItems.idProduct", model: "Product", select: "image productName amount" }
+        { path: "cartItems.idProduct", model: "Product", select: "image productName amount" },
+        { path: "cartItems.flashSaleId", model: "FlashSale", select: "name startDate endDate isActive" }
       ]
     };
 
@@ -184,6 +190,11 @@ export const getOrderById = async (req: Request, res: Response) => {
         path: "cartItems.idProduct",
         model: "Product",
         select: "productName image amount",
+      })
+      .populate({
+        path: "cartItems.flashSaleId",
+        model: "FlashSale",
+        select: "name startDate endDate isActive"
       })
       .populate({
         path: "giftItems.idProduct",

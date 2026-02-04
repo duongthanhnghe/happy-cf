@@ -19,6 +19,7 @@ const props = defineProps<{
       />
     </div>
     <div class="flex-1 pd-xs pl-sm">
+      <TagFlashSale v-if="item.flashSale" class="mb-xs"/>
       <Text size="sm" weight="medium" limit="1" class="mb-xs pr-0" :text="props.item?.idProduct?.productName" />
       <div class="text-color-gray5 text-size-xs">
         SKU: {{ item.sku }}
@@ -37,7 +38,12 @@ const props = defineProps<{
           <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`Đặt: ${item.quantity}`"/>
           <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`Tồn kho: ${item.variantCombination ? item.variantCombination.stock : item.idProduct?.amount}`"/>
         </div>
-        <Text v-if="item.price" :text="`${formatCurrency(item.price)}`" color="gray5" />
+        <div>
+          <Text v-if="item.price" :text="`Tổng giá sau giảm: ${formatCurrency(item.price)}`" color="danger" />
+          <Text v-if="item.originalPrice" :text="`Giá niêm yết: ${formatCurrency(item.originalPrice)}`" />
+          <Text v-if="(item.priceDiscount !== null || item.priceDiscount !== undefined) && !item.variantCombination && !item.flashSale" :text="`Giá giảm: ${formatCurrency(item.priceDiscount)}`" color="gray5" />
+          <Text v-if="item.salePrice" :text="`Giá Flash sale: ${formatCurrency(item.salePrice)}`" color="gray5" />
+        </div>
       </div>
     </div>
   </div>

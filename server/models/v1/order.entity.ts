@@ -7,6 +7,7 @@ import { VoucherUsageOrderSchema } from "./voucher-usage.entity";
 import type { VoucherUsageOrder } from "./voucher-usage.entity";
 import { VariantCombinationSchema } from "./product.entity";
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
+import type { ProductVariantCombinationDTO } from "@/server/types/dto/v1/product.dto";
 
 export interface ShippingProvider {
   _id: Types.ObjectId
@@ -81,6 +82,7 @@ export interface Order {
   totalPriceSave: number;
   totalPriceCurrent: number;
   totalDiscountOrder: number;
+  totalQuantity: number;
   shippingFee: number;
   shipping?: Types.ObjectId
   status: Types.ObjectId;
@@ -100,6 +102,31 @@ export interface Order {
   voucherRefunded: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface FlashSaleLite {
+  _id: Types.ObjectId;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+}
+
+export interface CartItems {
+  idProduct: any;
+  price: number;
+  originalPrice: number
+  priceDiscount: number;
+  salePrice: number;
+  quantity: number;
+  sku: string | null;
+  note: string | null;
+  variantCombination: ProductVariantCombinationDTO;
+  combinationId: string;
+  flashSaleId?: Types.ObjectId | FlashSaleLite | null;
+  isFlashSale: boolean;
+  stackableWithVoucher: boolean;
+  stackableWithPromotionGift: boolean;
 }
 
 const ShippingProviderSchema = new Schema<ShippingProvider>(
@@ -154,6 +181,9 @@ const CartItemsSchema = new Schema<cartItems>(
   {
     idProduct: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     price: { type: Number, required: true },
+    originalPrice: { type: Number, required: true },
+    priceDiscount: { type: Number },
+    salePrice: { type: Number },
     quantity: { type: Number, required: true },
     note: { type: String },
     sku: { type: String },
@@ -223,6 +253,7 @@ const OrderSchema = new Schema<Order>(
     totalPriceSave: { type: Number, required: true },
     totalPriceCurrent: { type: Number, required: true },
     totalDiscountOrder: { type: Number, required: true },
+    totalQuantity: { type: Number, required: true },
     shippingFee: { type: Number, required: true },
     shipping: { type: Schema.Types.ObjectId, ref: "OrderShipping"},
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },

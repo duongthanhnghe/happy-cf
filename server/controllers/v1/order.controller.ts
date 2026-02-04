@@ -26,6 +26,7 @@ import { toCreatePromotionGiftUsageEntity } from "@/server/mappers/v1/promotion-
 import { PromotionGiftUsageEntity } from "@/server/models/v1/promotion-gift-usage.entity";
 import { isBlockedByFlashSale } from "@/server/utils/isBlockedByFlashSale";
 import { FlashSaleEntity } from "@/server/models/v1/flash-sale.entity";
+import type { CartDTO } from "@/server/types/dto/v1/product.dto";
 
 const siteUrl = process.env.DOMAIN
 const paymentResultUrl = `${siteUrl}/payment/result`
@@ -300,6 +301,10 @@ export const createOrder = async (req: any, res: Response) => {
       ...resolvedGiftItems,
     ])
 
+    const totalQuantity = Array.isArray(data.cartItems)
+      ? data.cartItems.reduce((sum: number, item: CartDTO) => sum + (item.quantity || 0), 0)
+      : 0
+
     const newOrder = await OrderEntity.create({
       ...orderPayload,
       cartItems: data.cartItems,
@@ -313,6 +318,7 @@ export const createOrder = async (req: any, res: Response) => {
       membershipDiscountAmount,
       cancelRequested: false,
       status: ORDER_STATUS.PENDING,
+      totalQuantity
     })
 
     if (pointDeducted && deductedPoints > 0) {

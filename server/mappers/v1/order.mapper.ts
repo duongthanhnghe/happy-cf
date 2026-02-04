@@ -8,9 +8,10 @@ import type {
   ShippingStatus,
   cartItems,
 } from "../../types/dto/v1/order.dto";
-import type { Order, OrderStatus, Payment, ShippingProvider, OrderShipping } from "../../models/v1/order.entity";
+import type { Order, OrderStatus, Payment, ShippingProvider, OrderShipping, CartItems, FlashSaleLite } from "../../models/v1/order.entity";
 import { Types } from "mongoose";
 import { toPaymentTransactionDTO } from "./payment-transaction.mapper"
+import type { FlashSaleLiteDTO } from "@/server/types/dto/v1/flash-sale.dto";
 
 export function toShippingProviderDTO(entity: ShippingProvider): ShippingProviderDTO {
   return {
@@ -104,8 +105,8 @@ export function toOrderDTO(entity: Order): OrderDTO {
     note: entity.note || "",
     paymentId: toPaymentDTO(entity.paymentId as any),
     cartItems: Array.isArray(entity.cartItems)
-      ? entity.cartItems.map(toCartItemDTO)
-      : [],
+  ? (entity.cartItems as CartItems[]).map(toCartItemDTO)
+  : [],
     giftItems: Array.isArray(entity.giftItems)
       ? entity.giftItems.map(toGiftItemDTO)
       : [],
@@ -114,6 +115,7 @@ export function toOrderDTO(entity: Order): OrderDTO {
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
     totalDiscountOrder: entity.totalDiscountOrder,
+    totalQuantity: entity.totalQuantity,
     shippingFee: entity.shippingFee,
     shipping: entity.shipping
       ? toOrderShippingDTO(entity.shipping as any)
@@ -196,6 +198,7 @@ export function toOrderExport(entity: any) {
     totalPriceSave: entity.totalPriceSave,
     totalPriceCurrent: entity.totalPriceCurrent,
     totalDiscountOrder: entity.totalDiscountOrder,
+    totalQuantity: entity.totalQuantity,
     shippingFee: entity.shippingFee,
 
     orderStatusCode: status?.status ?? "",
@@ -241,7 +244,7 @@ export function toOrderExport(entity: any) {
   };
 }
 
-function toCartItemDTO(entity: cartItems): cartItems {
+function toCartItemDTO(entity: CartItems): cartItems {
   let idProduct: any = entity.idProduct;
 
   if (typeof idProduct === "string") {
@@ -256,9 +259,30 @@ function toCartItemDTO(entity: cartItems): cartItems {
     idProduct = new Types.ObjectId()
   }
 
+  let flashSale: FlashSaleLiteDTO | null = null;
+
+  if (
+    entity.flashSaleId &&
+    typeof entity.flashSaleId === "object" &&
+    "_id" in entity.flashSaleId
+  ) {
+    const fs = entity.flashSaleId as FlashSaleLite;
+
+    flashSale = {
+      id: fs._id.toString(),
+      name: fs.name,
+      startDate: fs.startDate?.toISOString() || '',
+      endDate: fs.endDate?.toISOString() || '',
+      isActive: fs.isActive,
+    };
+  }
+
   return {
     idProduct,
     price: entity.price,
+    originalPrice: entity.originalPrice,
+    priceDiscount: entity.priceDiscount,
+    salePrice: entity.salePrice,
     quantity: entity.quantity,
     note: entity.note || "",
     sku: entity.sku,
@@ -268,6 +292,7 @@ function toCartItemDTO(entity: cartItems): cartItems {
     isFlashSale: entity.isFlashSale ?? false,
     stackableWithVoucher: entity.stackableWithVoucher ?? true,
     stackableWithPromotionGift: entity.stackableWithPromotionGift ?? true,
+    flashSale,
   };
 }
 

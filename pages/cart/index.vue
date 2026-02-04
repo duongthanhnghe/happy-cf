@@ -139,6 +139,10 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
+        <!-- <pre>
+          {{store.getCartListItem}}
+        </pre> -->
+
         <!-- LABEL POINT -->
         <template v-if="store.getTotalPriceDiscount != 0">
           <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId"/>
