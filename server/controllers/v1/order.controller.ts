@@ -75,33 +75,9 @@ export const getOrderById = async (req: Request, res: Response) => {
   }
 }
 
-
-// export const increaseFlashSaleSold = async (order: any) => {
-//   if (!Array.isArray(order.cartItems)) return
-
-//   console.log('order.cartItems:',order.cartItems)
-
-//   for (const item of order.cartItems) {
-//     if (!item.isFlashSale || !item.flashSaleId) continue
-
-//     await FlashSaleEntity.updateOne(
-//       {
-//         _id: item.flashSaleId,
-//         "items.productId": item.idProduct,
-//         "items.variantSku": item.sku ?? null
-//       },
-//       {
-//         $inc: { "items.$.sold": item.quantity }
-//       }
-//     )
-//   }
-// }
-
 export const increaseFlashSaleSold = async (order: any) => {
   for (const item of order.cartItems) {
     if (!item.isFlashSale || !item.flashSaleId) continue
-
-    console.log('order.increaseFlashSaleSold:',order.cartItems)
 
     const variantSku =
       item.variantCombination ? item.sku : null
@@ -323,8 +299,6 @@ export const createOrder = async (req: any, res: Response) => {
       ...data.cartItems,
       ...resolvedGiftItems,
     ])
-
-    console.log('data.cartItems:',data.cartItems)
 
     const newOrder = await OrderEntity.create({
       ...orderPayload,

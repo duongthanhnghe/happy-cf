@@ -14,10 +14,10 @@ export const useTopFlashSaleProducts = () => {
     () => false
   )
 
-  const fetchTopFlashSaleProducts = async () => {
+  const fetchTopFlashSaleProducts = async (categoryId?: string) => {
     try {
       loadingData.value = true
-      const res = await productsAPI.getTopFlashSaleProducts()
+      const res = await productsAPI.getTopFlashSaleProducts(categoryId)
 
       if (res.code === 0) {
         listData.value = res.data

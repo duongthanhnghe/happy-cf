@@ -52,6 +52,36 @@ export const getAllActiveCategoryIds = async (): Promise<Types.ObjectId[]> => {
     .map(c => c._id)
 }
 
+export const getActiveCategorySubtreeIds = async (
+  rootCategoryId: string
+): Promise<Types.ObjectId[]> => {
+  const categories = await CategoryProductEntity.find({ isActive: true })
+    .select("_id parentId")
+    .lean()
+
+  const childrenMap = new Map<string, Types.ObjectId[]>()
+
+  categories.forEach(c => {
+    if (!c.parentId) return
+    const key = c.parentId.toString()
+    if (!childrenMap.has(key)) childrenMap.set(key, [])
+    childrenMap.get(key)!.push(c._id)
+  })
+
+  const result: Types.ObjectId[] = []
+  const stack = [new Types.ObjectId(rootCategoryId)]
+
+  while (stack.length) {
+    const current = stack.pop()!
+    result.push(current)
+
+    const children = childrenMap.get(current.toString())
+    if (children) stack.push(...children)
+  }
+
+  return result
+}
+
 export const isCategoryChainActive = async (categoryId: Types.ObjectId | null, cache = new Map()): Promise<boolean> => {
   if (!categoryId) return false;
 
@@ -284,16 +314,6 @@ export const getProductById = async (
       label: cat.categoryName,
       slug: cat.slug
     }))
-
-    // const voucher = await getApplicableVouchersForProducts(productWithFlashSale)
-
-    // const finalResult = toProductDTO(productWithFlashSale)
-    // finalResult.vouchers = voucher
-
-    // finalResult.categoryBreadcrumb = breadcrumbCategories.map(cat => ({
-    //   label: cat.categoryName,
-    //   slug: cat.slug
-    // }))
 
     return res.json({ code: 0, data: finalResult, message: "Success" })
   } catch (err: any) {
@@ -1074,45 +1094,6 @@ export const searchProducts = async (
   }
 }
 
-// export const getCartProducts = async (
-//   req: Request<{}, {}, { ids: string[] }>,
-//   res: Response
-// ) => {
-//   try {
-//     const { ids } = req.body
-
-//     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-//       return res.status(400).json({ code: 1, message: "Danh sách sản phẩm không hợp lệ" })
-//     }
-
-//     const productIds = ids
-//       .filter(id => Types.ObjectId.isValid(id))
-//       .map(id => new Types.ObjectId(id))
-
-//     const products = await ProductEntity.find({
-//       _id: { $in: productIds },
-//       isActive: true
-//     })
-//       .lean()
-
-//     const filtered = [];
-//     for (const p of products) {
-//       if (await isCategoryChainActive(p.categoryId)) filtered.push(p);
-//     }  
-
-//     const productsWithVariants = await filterActiveVariantGroupsForProducts(filtered);
-
-//     return res.json({
-//       code: 0,
-//       data: toProductListDTO(productsWithVariants),
-//       message: "Load cart success"
-//     })
-//   } catch (error: any) {
-//     console.error("getCartProducts error:", error)
-//     return res.status(500).json({ code: 1, message: "Server error" })
-//   }
-// }
-
 export const getCartProducts = async (
   req: Request<{}, {}, { ids: string[] }>,
   res: Response
@@ -1176,6 +1157,7 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
   try {
     const limit = 20
     const now = new Date()
+    const { categoryId } = req.query
 
     const raws = await FlashSaleEntity.aggregate([
       {
@@ -1224,10 +1206,8 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
         $group: {
           _id: "$items.productId",
           productId: { $first: "$items.productId" },
-
           maxDiscountValue: { $max: "$discountValue" },
           maxDiscountPercent: { $max: "$discountPercent" },
-
           totalSold: { $sum: "$items.sold" },
           totalQuantity: { $sum: "$items.quantity" }
         }
@@ -1236,38 +1216,37 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
       { $limit: limit }
     ])
 
-    if (!raws.length) {
-      return res.json({ code: 0, data: [] })
-    }
+    if (!raws.length) return res.json({ code: 0, data: [] })
 
-    const flashSaleStatMap = new Map<
-      string,
-      {
-        maxDiscountValue: number
-        maxDiscountPercent: number
-        totalSold: number
-        totalQuantity: number
-      }
-    >()
-
-    raws.forEach(r => {
-      flashSaleStatMap.set(r.productId.toString(), {
-        maxDiscountValue: r.maxDiscountValue,
-        maxDiscountPercent: r.maxDiscountPercent,
-        totalSold: r.totalSold,
-        totalQuantity: r.totalQuantity
-      })
-    })
+    const statMap = new Map(
+      raws.map(r => [
+        r.productId.toString(),
+        {
+          maxDiscountValue: r.maxDiscountValue,
+          maxDiscountPercent: r.maxDiscountPercent,
+          totalSold: r.totalSold,
+          totalQuantity: r.totalQuantity
+        }
+      ])
+    )
 
     const productIds = raws.map(r => r.productId)
 
-    const activeCategories = await getAllActiveCategoryIds()
+    let allowedCategoryIds: Types.ObjectId[]
+
+    if (categoryId) {
+      allowedCategoryIds = await getActiveCategorySubtreeIds(categoryId as string)
+    } else {
+      allowedCategoryIds = await getAllActiveCategoryIds()
+    }
 
     const products = await ProductEntity.find({
       _id: { $in: productIds },
       isActive: true,
-      categoryId: { $in: activeCategories }
+      categoryId: { $in: allowedCategoryIds }
     }).lean()
+
+    if (!products.length) return res.json({ code: 0, data: [] })
 
     const productsWithVariants =
       await filterActiveVariantGroupsForProducts(products)
@@ -1275,18 +1254,11 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
     const productsWithFlashSale =
       await applyFlashSaleToProducts(productsWithVariants)
 
-    // const voucherMap =
-    //   await getApplicableVouchersForProducts(productsWithFlashSale)
-
     const finalResult = productsWithFlashSale.map(p => {
-      const stat = flashSaleStatMap.get(p._id.toString())
-
+      const stat = statMap.get(p._id.toString())
       return {
         ...p,
-        maxDiscountValue: stat?.maxDiscountValue ?? 0,
-        maxDiscountPercent: stat?.maxDiscountPercent ?? 0,
-        totalSold: stat?.totalSold ?? 0,
-        totalQuantity: stat?.totalQuantity ?? 0
+        ...stat
       }
     })
 
@@ -1299,6 +1271,7 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
     return res.status(500).json({ code: 1, message: err.message })
   }
 }
+
 export const getProductsByFlashSale = async (
   req: Request<{ id: string }, {}, {}, { page?: number; limit?: number }>,
   res: Response

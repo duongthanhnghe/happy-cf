@@ -93,9 +93,6 @@ const flashItem = computed(() => {
                 color="gray4"
                 text="-"
               />
-              
-              
-
               <Text
                 color="danger"
                 :text="`${formatCurrency(item.variantCombination?.priceModifier)}`"

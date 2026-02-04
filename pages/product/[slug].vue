@@ -16,6 +16,8 @@ import { useProductRelated } from '@/composables/product/useProductRelated';
 import { useProductReviewByProduct } from '@/composables/product-review/useProductReviewByProduct';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { useAvailablePromotionGifts } from '@/composables/promotion-gift/useAvailablePromotionGifts';
+import { useTopPriority } from '@/composables/product/flash-sale/useTopPriority';
+import { useTopFlashSaleProducts } from '@/composables/product/flash-sale/useTopFlashSaleProducts';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.DETAIL.middleware ?? { middleware: ['product-detail'] },
@@ -36,9 +38,9 @@ const { setProductSEO } = useProductSEO()
 const { fetchAvailableVouchers } = useAvailableVouchersForOrder();
 const { fetchProductRelated } = useProductRelated()
 const { fetchListReview } = useProductReviewByProduct()
-const {
-  fetchAvailablePromotionGifts,
-} = useAvailablePromotionGifts()
+const { fetchAvailablePromotionGifts } = useAvailablePromotionGifts()
+const { fetchTopPriority, getTopPriority } = useTopPriority()
+const { fetchTopFlashSaleProducts, getTopFlashSaleProducts, loadingData } = useTopFlashSaleProducts()
 
 const { data, error, pending } = await useAsyncData(
   `product-detail-${slug}`,
@@ -101,6 +103,9 @@ onMounted(async () => {
     })
   }
 
+  await fetchTopFlashSaleProducts(detail.categoryId)
+  if (getTopFlashSaleProducts.value.length > 0) await fetchTopPriority()
+
   fetchProductRelated(slug, store.limitRelated)
 
   fetchListReview(detail.id, 1, store.limitReview)
@@ -120,6 +125,16 @@ onMounted(async () => {
     <div class="pb-section">
       <ProductDetail />
       <client-only>
+      <div 
+        v-if="getTopFlashSaleProducts.length > 0 && getTopPriority" 
+        :class="['container container-xxl pt-section', store.getListProductRelated.length === 0 ? 'pb-section':'']">
+        <ProductWithFlashSale 
+          :flashSaleInfo="getTopPriority" 
+          :listProduct="getTopFlashSaleProducts"
+          :loading="loadingData"
+          linkMoreToMain
+        />
+      </div>
       <SectionProductListSwiper 
         v-if="store.getListProductRelated.length > 0" 
         :items="store.getListProductRelated" 

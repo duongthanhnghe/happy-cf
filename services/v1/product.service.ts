@@ -217,10 +217,12 @@ export const productsAPI = {
     }
   },
 
-  getTopFlashSaleProducts: async (): Promise<ApiResponse<ProductDTO[]>> => {
+  getTopFlashSaleProducts: async (categoryId?: string): Promise<ApiResponse<ProductDTO[]>> => {
     try {
       return await apiClient().get<ApiResponse<ProductDTO[]>>(
-        API_ENDPOINTS.PRODUCTS.FLASH_SALE_TOP_PRODUCTS
+        API_ENDPOINTS.PRODUCTS.FLASH_SALE_TOP_PRODUCTS, {
+          categoryId
+        }
       )
     } catch (err: any) {
       console.error('[getTopFlashSaleProducts]', err)

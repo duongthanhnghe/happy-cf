@@ -90,7 +90,7 @@ const flashSalePercent = computed(() => {
 <template>
   <div 
     v-if="product && product.isActive" 
-    :class="['product-template1-item position-relative overflow-hidden hover-visible-overlay', {'rd-lg pd-05 bg-white cl-shadow-1': props.variant === 'card'}, background ,listView ? 'product-template1-listView' : '']"
+    :class="['product-template1-item position-relative overflow-hidden hover-visible-overlay', {'rd-lg pd-xs bg-white cl-shadow-1': props.variant === 'card'}, background ,listView ? 'product-template1-listView' : '']"
     >
     <div class="product-template1-image bg-gray6 position-relative rd-lg text-center overflow-hidden">
       <NuxtLink v-if="product.slug" :to="ROUTE_HELPERS.productDetail(product.slug)">

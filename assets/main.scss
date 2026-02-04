@@ -275,6 +275,9 @@ a {
     &-inherit {
       min-width: inherit !important;
     }
+    &-full {
+      min-width: 100%;;
+    }
     &-xl {
       min-width: $space-xl;
     }

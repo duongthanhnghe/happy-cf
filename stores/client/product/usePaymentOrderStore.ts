@@ -8,7 +8,8 @@ export const usePaymentOrderStore = defineStore("PaymentOrderStore", () => {
   const isCheckingPayment = ref(false);
   const paymentCheckInterval = ref<any>(null);
   const checkPaymentAttempts = ref(0);
-  const MAX_CHECK_ATTEMPTS = 60; //5 phút
+  const MAX_CHECK_ATTEMPTS = 6; //1 minute
+  const paymentStartTimeout = ref<any>(null);
 
   const utils = usePaymentOrderUtils(
     qrCodeUrl,
@@ -16,6 +17,7 @@ export const usePaymentOrderStore = defineStore("PaymentOrderStore", () => {
     paymentCheckInterval,
     checkPaymentAttempts,
     MAX_CHECK_ATTEMPTS,
+    paymentStartTimeout,
   );
 
   return {

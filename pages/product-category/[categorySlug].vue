@@ -13,6 +13,8 @@ import { useProductCategoryChildren } from '@/composables/product/useProductCate
 import { useRoute } from 'vue-router'
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
 import { useVariantGroupAll } from '@/composables/product/useVariantGroupAll';
+import { useTopPriority } from '@/composables/product/flash-sale/useTopPriority';
+import { useTopFlashSaleProducts } from '@/composables/product/flash-sale/useTopFlashSaleProducts';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.PRODUCT.children?.CATEGORY.middleware || '',
@@ -32,6 +34,8 @@ const { fetchProductCategoryDetailSlug, getProductCategoryDetail } = useProductC
 const { setCategoryProductSEO } = useCategoryProductSEO()
 const { getListCategoryChildren ,fetchCategoryChildrenList } = useProductCategoryChildren()
 const { getListVariantGroup, fetchListVariantGroup } = useVariantGroupAll();
+const { fetchTopPriority, getTopPriority } = useTopPriority()
+const { fetchTopFlashSaleProducts, getTopFlashSaleProducts, loadingData } = useTopFlashSaleProducts()
 
 const slug = route.params.categorySlug as string
 
@@ -51,6 +55,7 @@ const { data, error } = await useAsyncData(
           [IMAGE_BLOCK_POSITIONS.HERO]: 1,
         })
       }
+
     }
 
     return false
@@ -84,7 +89,11 @@ onMounted(async () => {
 
   if(!ids || ids.length === 0) return
 
+  await fetchTopFlashSaleProducts(getProductCategoryDetail.value?.id)
+  if (getTopFlashSaleProducts.value.length > 0) await fetchTopPriority()
+
   await fetchListVariantGroup(ids)
+  
 })
 
 onBeforeUnmount(() => {
@@ -127,6 +136,15 @@ onBeforeUnmount(() => {
     </Breadcrumb>
 
     <div class="container container-xxl" >
+      <div v-if="getTopFlashSaleProducts.length > 0 && getTopPriority" class="pt-section">
+        <ProductWithFlashSale 
+          :flashSaleInfo="getTopPriority" 
+          :listProduct="getTopFlashSaleProducts"
+          :loading="loadingData"
+          linkMoreToMain
+        />
+      </div>
+      
       <div :class="[{ 'flex gap-md align-start': storeDisplay.isLaptop }]">
         <client-only>
         <ProductFilterPC 

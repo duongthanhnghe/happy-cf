@@ -12,19 +12,25 @@ export const usePaymentOrderUtils = (
   paymentCheckInterval: Ref<any>,
   checkPaymentAttempts: Ref<number>,
   MAX_CHECK_ATTEMPTS: number,
+  paymentStartTimeout: Ref<any>,
   ) => {
 
   const config = useRuntimeConfig()
   const router = useRouter()
     
-  const handleSepayPayment = (orderId: string, orderCode: string ,amount: string) => {
+  const handleSepayPayment = (orderId: string, orderCode: string, amount: string) => {
     try {
       const qrUrl = generateQRCodeUrl(orderCode, amount);
       qrCodeUrl.value = qrUrl;
-    
-      setTimeout(() => {
-        startPaymentCheck(orderId)
-      }, 2000)
+
+      if (paymentStartTimeout.value) {
+        clearTimeout(paymentStartTimeout.value);
+        paymentStartTimeout.value = null;
+      }
+
+      paymentStartTimeout.value = setTimeout(() => {
+        startPaymentCheck(orderId);
+      }, 2000);
     } catch (err: any) {
       console.error("Error:", err);
       showWarning("Lỗi khi tạo mã QR");
@@ -43,6 +49,8 @@ export const usePaymentOrderUtils = (
   };
 
   const checkPaymentStatus = async (orderId: string) => {
+    if (!isCheckingPayment.value) return false;
+
     try {
       const result = await ordersAPI.getDetail(orderId);
       
@@ -82,7 +90,7 @@ export const usePaymentOrderUtils = (
     
     paymentCheckInterval.value = setInterval(() => {
       checkPaymentStatus(orderId);
-    }, 5000);
+    }, 10000);
   };
 
   const clearPaymentCheck = () => {
@@ -90,10 +98,15 @@ export const usePaymentOrderUtils = (
       clearInterval(paymentCheckInterval.value);
       paymentCheckInterval.value = null;
     }
+
+    if (paymentStartTimeout.value) {
+      clearTimeout(paymentStartTimeout.value);
+      paymentStartTimeout.value = null;
+    }
+
     isCheckingPayment.value = false;
     checkPaymentAttempts.value = 0;
   };
-  
 
   return {
     handleSepayPayment,
