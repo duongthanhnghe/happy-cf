@@ -200,8 +200,8 @@ export const updateFlashSale = async (req: Request, res: Response) => {
     if (isStartedOrEnded) {
       delete updateData.startDate;
       delete updateData.endDate;
-      delete updateData.stackableWithVoucher;
-      delete updateData.stackableWithPromotionGift;
+      // delete updateData.stackableWithVoucher;
+      // delete updateData.stackableWithPromotionGift;
 
       if (Array.isArray(updateData.items)) {
         const existingKeys = new Set(

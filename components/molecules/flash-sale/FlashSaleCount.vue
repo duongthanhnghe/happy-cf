@@ -7,11 +7,13 @@ const props = withDefaults(defineProps<{
   color: any,
   flex?: boolean
   sizeCountMedium?: boolean
+  showText?: boolean
 }>(), {
   startDate: '',
   endDate: '',
   flex: false,
-  sizeCountMedium: false
+  sizeCountMedium: false,
+  showText: true
 })
 
 const { status, time, formatted } = useFlashSaleCountdown(
@@ -24,7 +26,7 @@ const { status, time, formatted } = useFlashSaleCountdown(
 <template>
   <client-only>
     <div v-if="status !== 'ended'" :class="[props.flex ? 'flex gap-xs align-center':'flex flex-direction-column gap-xs text-center']">
-      <Text text="Kết thúc sau:" :size="props.sizeCountMedium ? 'normal':'base'" weight="semibold" class="text-uppercase" :style="{ color: props.color }" />
+      <Text v-if="props.showText" text="Kết thúc sau:" :size="props.sizeCountMedium ? 'normal':'base'" weight="semibold" class="text-uppercase" :style="{ color: props.color }" />
       <div class="flex align-center gap-xs justify-center">
       <div v-for="(v, i) in formatted.split(':')" class="flex align-center gap-xs line-height-1">
         <Text v-if="i !== 0" text=":" weight="medium" :style="{ color: props.color}" />

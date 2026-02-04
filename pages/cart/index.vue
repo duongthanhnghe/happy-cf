@@ -155,11 +155,11 @@ onBeforeUnmount(() => {
         <!-- POINT AND VOUCHER -->
         <template v-if="!storeDisplay.isMobileTable">
           <CartPointPC v-if="storeAccount.getUserId && store.Config_EnableUsePoint" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership.balancePoint"/>
-          <CartVoucherPC />
+          <CartVoucherPC :stackable="store.blockedVoucherByFlashSale" />
         </template>
 
         <!-- GIFT -->
-        <PromotionGiftCart v-if="getAvailablePromotionGiftsApi" :items="getAvailablePromotionGiftsApi" :loading="loadingDataPromotionGift" />
+        <PromotionGiftCart v-if="getAvailablePromotionGiftsApi" :items="getAvailablePromotionGiftsApi" :loading="loadingDataPromotionGift" :stackable="store.blockedGiftByFlashSale" />
 
         <!-- PAYMENT INFO -->
         <CartPaymentInfo :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue?.membership?.balancePoint || 0"/>
@@ -177,7 +177,7 @@ onBeforeUnmount(() => {
     <!-- POPUP USE POINT -->
     <CartPointMobile v-if="storeAccount.getUserId && storeAccount.getDetailValue?.membership.balancePoint && storeAccount.getPendingReward?.totalPendingPoints && store.Config_EnableUsePoint" :userId="storeAccount.getUserId" :balancePoint="storeAccount.getDetailValue.membership.balancePoint" :totalPendingPoints="storeAccount.getPendingReward?.totalPendingPoints" />
     <!-- POPUP CHOOSE VOUCHER -->
-    <CartVoucherMobile />
+    <CartVoucherMobile :stackable="store.blockedVoucherByFlashSale" />
   </template>
 
   <PopupManageAddress v-if="storeAccount.getUserId" :idChoose="store.getIdAddressChoose"/>

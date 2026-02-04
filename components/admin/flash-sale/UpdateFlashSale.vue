@@ -233,7 +233,7 @@ const handleSubmitUpdate = async () => {
                         />
                         <Text :text="'Tồn kho: '+ store.getMaxStock(item)" color="black" weight="semibold" size="normal" />
                       </div>
-                      <Text :text="'Đã bán: '+ item.sold" color="black" weight="semibold" size="normal" />
+                      <Text v-if="item.sold !== null || item.sold !== undefined" :text="'Đã bán: '+ item.sold" color="black" weight="semibold" size="normal" />
                     </div>
                     </div>
                   </div>
@@ -319,7 +319,7 @@ const handleSubmitUpdate = async () => {
                   <LabelInput label="Màu chính" />
                   <div class="position-relative">
                     <div v-if="store.updateItem.theme.primaryColor" class="position-absolute top-xs right-sm z-index-1">
-                      <v-chip size="small" class="width-50" variant="flat" :color="store.updateItem.theme.primaryColor"></v-chip>
+                      <v-chip size="small" class="width-50" border variant="flat" :color="store.updateItem.theme.primaryColor"></v-chip>
                     </div>
                     <v-text-field
                       v-model="store.updateItem.theme.primaryColor"
@@ -333,7 +333,7 @@ const handleSubmitUpdate = async () => {
                   <LabelInput label="Màu nền" />
                   <div class="position-relative">
                     <div v-if="store.updateItem.theme.backgroundColor" class="position-absolute top-xs right-sm z-index-1">
-                      <v-chip size="small" class="width-50" variant="flat" :color="store.updateItem.theme.backgroundColor"></v-chip>
+                      <v-chip size="small" class="width-50" border variant="flat" :color="store.updateItem.theme.backgroundColor"></v-chip>
                     </div>
                     <v-text-field
                       v-model="store.updateItem.theme.backgroundColor"
@@ -347,7 +347,7 @@ const handleSubmitUpdate = async () => {
                   <LabelInput label="Màu chữ" />
                   <div class="position-relative">
                     <div v-if="store.updateItem.theme.textColor" class="position-absolute top-xs right-sm z-index-1">
-                      <v-chip size="small" class="width-50" variant="flat" :color="store.updateItem.theme.textColor"></v-chip>
+                      <v-chip size="small" class="width-50" border variant="flat" :color="store.updateItem.theme.textColor"></v-chip>
                     </div>
                     <v-text-field
                       v-model="store.updateItem.theme.textColor"

@@ -8,6 +8,8 @@ import { ROUTES } from '@/shared/constants/routes';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Autoplay, Thumbs } from 'swiper/modules';
+import { PRODUCT_FLASH_SALE_SWIPER } from '@/shared/constants/breakpoints';
+import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 
 const props = withDefaults(defineProps<{
   listProduct: ProductDTO[],
@@ -18,11 +20,16 @@ const props = withDefaults(defineProps<{
   loading: true,
   linkMoreToMain: false
 })
+const storeDisplay = useDisplayStore()
 
 </script>
 
 <template>
-  <div class="rd-xl pd-0 overflow-hidden bg-four" :style="`background-color: ${flashSaleInfo.theme.backgroundColor} !important`">
+  <div 
+    class="overflow-hidden bg-four"
+    :class="[!storeDisplay.isMobile ? 'rd-xl':'rd-lg']"
+    :style="`background-color: ${flashSaleInfo.theme.backgroundColor} !important`"
+  >
     <swiper
       v-if="flashSaleInfo.banners.length > 0"
       :modules="[Pagination, Autoplay, Thumbs]"
@@ -46,7 +53,8 @@ const props = withDefaults(defineProps<{
       <div class="position-relative">
         <FlashSaleCount :startDate="flashSaleInfo.startDate" :endDate="flashSaleInfo.endDate" :color="flashSaleInfo.theme.textColor"
           flex
-          class="position-absolute right-1"
+          :showText="!storeDisplay.isMobile"
+          :class="[!storeDisplay.isMobile ? 'position-absolute right-1':'justify-center pb-sm']"
         />
         <SectionProductListSwiper
           :items="listProduct"
@@ -55,11 +63,12 @@ const props = withDefaults(defineProps<{
           :headingText="flashSaleInfo.name || 'Flash sale'"
           :headingColor="flashSaleInfo.theme.textColor"
           variantItem="card"
+          :breakpoints="PRODUCT_FLASH_SALE_SWIPER"
         />
       </div>
       <div class="text-center mt-ms">
         <NuxtLink :to="props.linkMoreToMain ? ROUTES.PUBLIC.FLASH_SALE.path : ROUTE_HELPERS.flashSaleDetail(flashSaleInfo.slug)">
-          <Button color="secondary" label="Xem thêm sản phẩm" />
+          <Button color="third" :size="!storeDisplay.isMobile ? 'md':'sm'" label="Xem thêm sản phẩm" />
         </NuxtLink>
       </div>
     </div>

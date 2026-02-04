@@ -26,14 +26,31 @@ export const useCartVoucher = (
 
   const applyVoucher = async (code: string, userId?: string) => {
     const orderTotal = totalPriceDiscount.value;
+    
+    const products: ApplyVoucherProduct[] = cartListItem.value.map(item => {
+      const variantSku = item.variantCombination?.sku ?? null
 
-    const products: ApplyVoucherProduct[] = cartListItem.value.map(item => ({
-      productId: item.id || '',
-      name: item.productName || '',
-      categoryId: item.categoryId || '',
-      price: item.variantCombination ? item.variantCombination.priceModifier : item.priceDiscounts || 0,
-      quantity: item.quantity,
-    }));
+      const flashSaleItem = item.flashSale?.items?.find(
+        i => i.variantSku === variantSku
+      )
+
+      return {
+        productId: item.id || '',
+        name: item.productName || '',
+        categoryId: item.categoryId || '',
+        price: item.variantCombination
+          ? item.variantCombination.priceModifier
+          : item.priceDiscounts || 0,
+        quantity: item.quantity,
+
+        isFlashSale: item.isFlashSale === true,
+        stackableWithVoucher:
+          item.isFlashSale
+            ? flashSaleItem?.stackableWithVoucher ?? false
+            : true
+        }
+    })
+
     const orderCreatedAt = new Date().toISOString();
 
     if (!userId) {

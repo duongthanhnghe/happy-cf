@@ -66,6 +66,15 @@ export const PRODUCT_LIST_SWIPER_DEFAULT: SwiperOptions['breakpoints'] = {
   1920: { slidesPerView: 6, spaceBetween: 16 },
 }
 
+export const PRODUCT_FLASH_SALE_SWIPER: SwiperOptions['breakpoints'] = {
+  320: { slidesPerView: 2, spaceBetween: 10 },
+  640: { slidesPerView: 3, spaceBetween: 10 },
+  1024: { slidesPerView: 3, spaceBetween: 10 },
+  1200: { slidesPerView: 4, spaceBetween: 16 },
+  1400: { slidesPerView: 5, spaceBetween: 16 },
+  1920: { slidesPerView: 6, spaceBetween: 16 },
+}
+
 export const NEWS_LIST_SWIPER_DEFAULT: SwiperOptions['breakpoints'] = {
   320: { slidesPerView: 1, spaceBetween: 0 },
   640: { slidesPerView: 2, spaceBetween: 10 },

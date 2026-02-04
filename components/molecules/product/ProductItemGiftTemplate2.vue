@@ -96,15 +96,15 @@ watch(giftCombinationId, (val) => {
           class="width-full max-width-150"
         >
             <Text size="xs" class="mb-xs">{{ group.groupName }}</Text>
-          <v-select
-            v-model="giftSelectedVariants[group.groupId]"
-            :items="group.variants"
-            item-title="variantName"
-            item-value="variantId"
-            density="compact"
-            variant="outlined"
-            hide-details
-          />
+            <v-select
+              v-model="giftSelectedVariants[group.groupId]"
+              :items="group.variants"
+              item-title="variantName"
+              item-value="variantId"
+              density="compact"
+              variant="outlined"
+              hide-details
+            />
         </div>
       </div>
     </div>

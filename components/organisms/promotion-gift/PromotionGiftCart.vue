@@ -7,8 +7,14 @@ import { GIFT_CART } from '@/shared/constants/breakpoints'
 import type { AvailablePromotionGiftDTO } from '@/server/types/dto/v1/promotion-gift.dto'
 import { usePromotionGiftCart } from '@/composables/promotion-gift/usePromotionGiftCart'
 import { toRef } from 'vue'
+import { useITranslations } from '@/composables/shared/itranslation/useITranslations'
 
-const props = defineProps<{ items: AvailablePromotionGiftDTO[] }>()
+const props = defineProps<{ 
+  items: AvailablePromotionGiftDTO[],
+  stackable: boolean,
+  loading?: boolean
+}>()
+const { t } = useITranslations()
 
 const {
   giftPromotions,
@@ -43,7 +49,7 @@ const {
           class="flex flex-direction-column gap-sm rd-lg"
           :class="isSelectedPromo(promo.id) ? 'border-solid border-width-2 border-color-black':''"
           >
-          <Text v-if="promo.locked" :text="promo.message" color="danger" class="text-italic" />
+          <Text v-if="promo.locked || props.stackable" :text="promo.message || t('cart.text22')" color="danger" class="text-italic" />
           <div v-else>
             <Button
               size="sm"

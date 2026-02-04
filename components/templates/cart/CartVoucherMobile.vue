@@ -6,12 +6,17 @@ import { useAccountStore } from '@/stores/client/users/useAccountStore';
 const { t } = useITranslations()
 const store = useCartStore();
 const storeAccount = useAccountStore();
+const props = defineProps<{ 
+  stackable: boolean,
+}>()
 
 </script>
 <template>
   <Popup v-model="store.isTogglePopupVoucher" :popupHeading="t('cart.text8').text" bodyClass="bg-gray6" footerFixed align="right">
     <template #body>
       <div v-if="store.allVouchers?.length > 0">
+        <Text v-if="props.stackable" :text="t('cart.text21')" color="danger" class="text-italic mb-sm" />
+
         <div v-if="store.selectedVoucher || store.selectedFreeship" class="mb-md">
           <Text text="Voucher đang áp dụng" color="black" size="normal" weight="semibold" class="mb-sm" />
           <div v-if="store.voucherUsage.length > 0" class="flex gap-xs flex-wrap mb-sm">
@@ -21,7 +26,7 @@ const storeAccount = useAccountStore();
         </div>
 
         <div v-if="storeAccount.getUserId" class="mb-md">
-          <CartVoucherInput />
+          <CartVoucherInput :stackable="props.stackable" />
         </div>
 
         <div class="position-relative">
@@ -30,7 +35,7 @@ const storeAccount = useAccountStore();
             <v-progress-circular indeterminate ></v-progress-circular>
           </div>
           <div v-if="store.allVouchers?.length > 0" class="flex flex-direction-column gap-sm">
-            <CartVoucherList :classElFreeship="store.shippingEnabled && store.getShippingFee === 0 ? '_hidden':''" />
+            <CartVoucherList :classElFreeship="store.shippingEnabled && store.getShippingFee === 0 ? '_hidden':''" :stackable="props.stackable" />
           </div>
         </div>
       </div>

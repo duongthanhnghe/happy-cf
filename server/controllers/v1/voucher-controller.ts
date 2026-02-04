@@ -2,6 +2,7 @@ import type { Request, Response } from "express"
 import { VoucherEntity } from "../../models/v1/voucher.entity"
 import { VoucherUsageEntity } from "../../models/v1/voucher-usage.entity"
 import { toVoucherListDTO } from "../../mappers/v1/voucher.mapper";
+import { isBlockedByFlashSale } from "@/server/utils/isBlockedByFlashSale";
 
 export const applyVoucher = async (req: Request, res: Response) => {
   try {
@@ -23,15 +24,27 @@ export const applyVoucher = async (req: Request, res: Response) => {
     if (!voucher)
       return res.status(404).json({ code: 1, message: "Voucher không tồn tại hoặc không hoạt động" });
 
+    const blockedProducts = products.filter((p: any) =>
+      isBlockedByFlashSale(p, 'stackableWithVoucher')
+    )
+
+    if (blockedProducts.length > 0) {
+      return res.status(400).json({
+        code: 1,
+        message:
+          "Giỏ hàng có sản phẩm Flash Sale, voucher không áp dụng cho đơn hàng này."
+      })
+    }
+
     const now = new Date();
 
-    // 1️⃣ Kiểm tra hiệu lực thời gian
+    // check thời gian
     if (voucher.startDate > now)
       return res.status(400).json({ code: 1, message: "Chưa đến thời gian áp dụng voucher" });
     if (voucher.endDate < now)
       return res.status(400).json({ code: 1, message: "Voucher đã hết hạn" });
 
-    // 2️⃣ Kiểm tra lượt sử dụng
+    // check lượt sử dụng
     if (voucher.usageLimit > 0 && voucher.usedCount >= voucher.usageLimit)
       return res.status(400).json({ code: 1, message: "Voucher đã hết lượt sử dụng" });
 
@@ -42,14 +55,14 @@ export const applyVoucher = async (req: Request, res: Response) => {
     if (voucher.limitPerUser > 0 && userUsedCount >= voucher.limitPerUser)
       return res.status(400).json({ code: 1, message: "Bạn đã dùng hết lượt của voucher này" });
 
-    // 3️⃣ Kiểm tra giá trị đơn tối thiểu
+    // check đơn tối thiểu
     if (voucher.minOrderValue && orderTotal < voucher.minOrderValue)
       return res.status(400).json({
         code: 1,
         message: `Đơn hàng chưa đạt giá trị tối thiểu ${voucher.minOrderValue.toLocaleString()}đ`,
       });
 
-    // 4️⃣ Lọc sản phẩm hợp lệ theo danh mục hoặc danh sách sản phẩm
+    // Lọc sản phẩm hợp lệ theo danh mục hoặc danh sách sản phẩm
     let applicableProducts: any[] = [];
 
     if (voucher.type === "product") {
@@ -80,7 +93,7 @@ export const applyVoucher = async (req: Request, res: Response) => {
       applicableProducts = products;
     }
 
-    // 5️⃣ Tính giảm giá
+    // Tính giảm giá
     const subtotalApplicable = applicableProducts.reduce(
       (sum, p) => sum + p.price * p.quantity,
       0
@@ -145,10 +158,9 @@ export const applyVoucher = async (req: Request, res: Response) => {
         return res.status(400).json({ code: 1, message: "Loại voucher không hợp lệ" });
     }
 
-    // Làm tròn 2 chữ số
+    // Làm tròn
     discount = Math.round(discount * 1000) / 1000;
 
-    // ✅ Trả kết quả
     return res.json({
       code: 0,
       message,

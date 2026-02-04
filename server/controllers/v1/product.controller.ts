@@ -158,6 +158,8 @@ export const applyFlashSaleToProducts = async (
         originalPrice: number
         salePrice: number
         percentDiscount: number
+        stackableWithVoucher: boolean
+        stackableWithPromotionGift: boolean
       }[]
     }
   >()
@@ -182,7 +184,9 @@ export const applyFlashSaleToProducts = async (
       salePrice: item.salePrice,
       percentDiscount: Math.round(
         ((item.originalPrice - item.salePrice) / item.originalPrice) * 100
-      )
+      ),
+      stackableWithVoucher: fs.stackableWithVoucher,
+      stackableWithPromotionGift: fs.stackableWithPromotionGift,
     })
   }
 
@@ -1127,13 +1131,11 @@ export const getCartProducts = async (
       .filter(id => Types.ObjectId.isValid(id))
       .map(id => new Types.ObjectId(id))
 
-    /** 1️⃣ LOAD PRODUCT */
     const products = await ProductEntity.find({
       _id: { $in: productIds },
       isActive: true
     }).lean()
 
-    /** 2️⃣ CHECK CATEGORY ACTIVE */
     const filtered: any[] = []
     for (const p of products) {
       if (await isCategoryChainActive(p.categoryId)) {
@@ -1141,15 +1143,12 @@ export const getCartProducts = async (
       }
     }
 
-    /** 3️⃣ FILTER VARIANT ACTIVE */
     const productsWithVariants =
       await filterActiveVariantGroupsForProducts(filtered)
 
-    /** 4️⃣ APPLY FLASH SALE (🔥 CHỖ QUAN TRỌNG) */
     const productsWithFlashSale =
       await applyFlashSaleToProducts(productsWithVariants)
 
-    /** 5️⃣ TO DTO */
     return res.json({
       code: 0,
       data: toProductListDTO(productsWithFlashSale),
@@ -1241,7 +1240,6 @@ export const getTopFlashSaleProducts = async (req: Request, res: Response) => {
       return res.json({ code: 0, data: [] })
     }
 
-    // 2️⃣ MAP STATS THEO PRODUCT ID
     const flashSaleStatMap = new Map<
       string,
       {
@@ -1319,9 +1317,6 @@ export const getProductsByFlashSale = async (
       })
     }
 
-    /**
-     * 1️⃣ AGGREGATE ITEMS CỦA FLASH SALE
-     */
     const raws = await FlashSaleEntity.aggregate([
       {
         $match: {
@@ -1334,14 +1329,12 @@ export const getProductsByFlashSale = async (
 
       { $unwind: '$items' },
 
-      // chỉ lấy item còn hàng
       {
         $match: {
           $expr: { $gt: ['$items.quantity', '$items.sold'] }
         }
       },
 
-      // join product
       {
         $lookup: {
           from: 'products',
@@ -1352,14 +1345,12 @@ export const getProductsByFlashSale = async (
       },
       { $unwind: '$product' },
 
-      // chỉ lấy product active
       {
         $match: {
           'product.isActive': true
         }
       },
 
-      // tính % giảm
       {
         $addFields: {
           discountPercent: {
@@ -1398,17 +1389,12 @@ export const getProductsByFlashSale = async (
         }
       },
 
-      // ưu tiên giảm mạnh + bán chạy
       { $sort: { discountPercent: -1, 'items.sold': -1 } },
 
-      // pagination
       { $skip: skip },
       { $limit: limit }
     ])
 
-    /**
-     * 2️⃣ TOTAL COUNT (CHO PAGINATION)
-     */
     const totalRaw = await FlashSaleEntity.aggregate([
       {
         $match: {
@@ -1429,9 +1415,6 @@ export const getProductsByFlashSale = async (
 
     const total = totalRaw[0]?.total ?? 0
 
-    /**
-     * 3️⃣ MAP → ProductDTO[] (CHUẨN FE)
-     */
     const data: ProductDTO[] = raws.map(r => {
       const productDTO = toProductDTO(r.product)
 
@@ -1462,9 +1445,6 @@ export const getProductsByFlashSale = async (
       }
     })
 
-    /**
-     * 4️⃣ RESPONSE ĐÚNG PaginationDTO<ProductDTO>
-     */
     return res.json({
       code: 0,
       data,

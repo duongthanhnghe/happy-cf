@@ -22,6 +22,7 @@ import {
 import { authenticate } from '../../middlewares/authenticate'
 import { validate } from '../../middlewares/validate/validate'
 import { createOrderSchema, orderIdParamSchema } from '../../../shared/validate/schemas/order.schema'
+import { optionalAuthenticate } from '@/server/middlewares/authenticateOptional'
 
 const router = Router()
 
@@ -45,5 +46,5 @@ router.post('/users/cancel-request', authenticate, cancelOrderByUser);
 router.get('/rewards/pending/:userId', authenticate, getPendingRewardPoints)
 
 router.get('/:id',       validate(orderIdParamSchema, 'params'), getOrderById)
-router.post('/',         validate(createOrderSchema), createOrder)
+router.post('/',         optionalAuthenticate, validate(createOrderSchema), createOrder)
 export default router

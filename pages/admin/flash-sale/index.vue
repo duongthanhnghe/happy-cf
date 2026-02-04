@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
 
   <CreateFlashSale />
   <UpdateFlashSale />
-  <PopupFileManageImage :folderName="store.folderName" :chooseImage="true" column="col-6 col-md-4"/>
+  <PopupFileManageImage :folderName="store.folderName" :children="false" :chooseImage="true" column="col-6 col-md-4"/>
 
   <v-container>
     <v-data-table-server
@@ -154,12 +154,13 @@ onBeforeUnmount(() => {
       <template #item.banners="{ item }">
         <div v-if="item.banners.length > 0" class="flex gap-xs">
           <Image 
-            v-for="banner in item.banners"
+            v-for="banner in item.banners.slice(0,1)"
             :alt="banner.src"
             :src="banner.src"
             :height="50"
-            class="rd-lg bg-gray6"
+            class="rd-lg bg-gray6 max-width-200"
           />
+          <span v-if="item.banners.length > 2" class="width-50 min-width-50 flex-1 align-center flex justify-center bg-gray rd-lg">+{{ item.banners.length - 1 }}</span>
         </div>
       </template>
 

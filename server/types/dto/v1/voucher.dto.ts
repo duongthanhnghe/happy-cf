@@ -61,6 +61,7 @@ export interface ApplyVoucherProduct {
   categoryId: string;
   price: number;
   quantity: number;
+  isFlashSale?: boolean;
 }
 
 export interface ApplyVoucherResponse {

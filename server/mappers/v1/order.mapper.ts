@@ -264,6 +264,10 @@ function toCartItemDTO(entity: cartItems): cartItems {
     sku: entity.sku,
     variantCombination: entity.variantCombination,
     combinationId: entity.combinationId || "",
+    flashSaleId: entity.flashSaleId?.toString() ?? null,
+    isFlashSale: entity.isFlashSale ?? false,
+    stackableWithVoucher: entity.stackableWithVoucher ?? true,
+    stackableWithPromotionGift: entity.stackableWithPromotionGift ?? true,
   };
 }
 

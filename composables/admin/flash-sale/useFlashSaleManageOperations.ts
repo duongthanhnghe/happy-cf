@@ -224,9 +224,9 @@ export const useFlashSaleManageOperations = (
         item.variantSku = null
         item.originalPrice = product.price
 
-        if (!item.quantity || item.quantity > (product.amount ?? 0)) {
-          item.quantity = product.amount ?? 0
-        }
+        // if (!item.quantity || item.quantity > (product.amount ?? 0)) {
+        //   item.quantity = product.amount ?? 0
+        // }
 
         if (!item.salePrice || item.salePrice >= item.originalPrice) {
           item.salePrice = item.originalPrice
@@ -248,9 +248,9 @@ export const useFlashSaleManageOperations = (
           ? variant.priceModifier
           : product.price
 
-      if (!item.quantity || item.quantity > (variant.stock ?? 0)) {
-        item.quantity = variant.stock ?? 0
-      }
+      // if (!item.quantity || item.quantity > (variant.stock ?? 0)) {
+      //   item.quantity = variant.stock ?? 0
+      // }
 
       if (!item.salePrice || item.salePrice >= item.originalPrice) {
         item.salePrice = item.originalPrice

@@ -4,6 +4,7 @@ import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 
 const store = useCartStore();
 const props = defineProps<{
+  stackable: boolean;
   classEl?: string;
   classElFreeship?: string;
 }>();
@@ -17,7 +18,7 @@ const props = defineProps<{
     action
     :selectedCode="store.selectedFreeship"
     @select="store.handleSelectVoucher"
-    :class="[props.classEl, props.classElFreeship]"
+    :class="[props.classEl, props.classElFreeship, props.stackable ? 'pointer-events':'']"
   />
   <VoucherItemTemplate1
     v-for="(voucher, index) in store.allVouchers.filter(v => v.type !== VOUCHER_TYPE.freeship.type)"
@@ -26,6 +27,6 @@ const props = defineProps<{
     action
     :selectedCode="store.selectedVoucher"
     @select="store.handleSelectVoucher"
-    :class="props.classEl"
+    :class="[props.classEl, props.stackable ? 'pointer-events':'']"
   />
 </template>

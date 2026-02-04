@@ -9,6 +9,10 @@ export const cartItemSchema = z.object({
   sku: z.string().optional(),
   combinationId: z.string().optional(),
   variantCombination: z.any().optional().nullable(),
+  flashSaleId: z.string().optional(),
+  isFlashSale: z.boolean().optional(),
+  stackableWithPromotionGift: z.boolean().optional(),
+  stackableWithVoucher: z.boolean().optional(),
 })
 
 export const voucherUsageSchema = z.object({
@@ -42,13 +46,6 @@ export const createOrderDataSchema = z.object({
   totalPriceCurrent: z.number().min(0),
   totalDiscountOrder: z.number().min(0),
   shippingFee: z.number().min(0),
-
-  userId: objectIdSchema.optional().nullable(),
-
-  status: objectIdSchema.refine(Boolean, {
-    message: 'Trạng thái đơn hàng không hợp lệ',
-  }),
-
   provinceCode: z.number(),
   districtCode: z.number(),
   wardCode: z.number(),

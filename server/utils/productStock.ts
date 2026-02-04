@@ -21,7 +21,6 @@ export const checkProductStockService = async ({
     product.variantCombinations.length > 0
 
   if (!hasVariants) {
-    console.log('log o serverrrrrr',hasVariants)
     const stock = product.amount || 0
     return {
       ok: quantity <= stock,

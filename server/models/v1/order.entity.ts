@@ -159,6 +159,10 @@ const CartItemsSchema = new Schema<cartItems>(
     sku: { type: String },
     combinationId: { type: String },
     variantCombination: { type: VariantCombinationSchema },
+    flashSaleId: { type: Schema.Types.ObjectId, ref: "FlashSale" },
+    isFlashSale: { type: Boolean, default: false },
+    stackableWithVoucher: { type: Boolean, default: true },
+    stackableWithPromotionGift: { type: Boolean, default: true },
   },
   { _id: false }
 );

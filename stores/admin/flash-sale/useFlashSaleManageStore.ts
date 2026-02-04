@@ -42,7 +42,8 @@ export const useFlashSaleManageStore = defineStore(
     }
   
     const handleDeleteListImage = (id: string) => {
-      state.formItem.banners = state.formItem.banners?.filter(item => item.id !== id)
+      const target = state.isTogglePopupAdd.value ? state.formItem : state.updateItem
+      target.banners = target.banners?.filter(item => item.id !== id)
     }
   
     const handleAddListImage = () => {

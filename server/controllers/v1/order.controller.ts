@@ -24,6 +24,8 @@ import { PromotionGiftEntity } from "@/server/models/v1/promotion-gift.entity";
 import { restoreStockOrder } from "@/server/utils/restoreStockOrder";
 import { toCreatePromotionGiftUsageEntity } from "@/server/mappers/v1/promotion-gift-usage.mapper";
 import { PromotionGiftUsageEntity } from "@/server/models/v1/promotion-gift-usage.entity";
+import { isBlockedByFlashSale } from "@/server/utils/isBlockedByFlashSale";
+import { FlashSaleEntity } from "@/server/models/v1/flash-sale.entity";
 
 const siteUrl = process.env.DOMAIN
 const paymentResultUrl = `${siteUrl}/payment/result`
@@ -73,7 +75,51 @@ export const getOrderById = async (req: Request, res: Response) => {
   }
 }
 
-export const createOrder = async (req: Request, res: Response) => {
+
+// export const increaseFlashSaleSold = async (order: any) => {
+//   if (!Array.isArray(order.cartItems)) return
+
+//   console.log('order.cartItems:',order.cartItems)
+
+//   for (const item of order.cartItems) {
+//     if (!item.isFlashSale || !item.flashSaleId) continue
+
+//     await FlashSaleEntity.updateOne(
+//       {
+//         _id: item.flashSaleId,
+//         "items.productId": item.idProduct,
+//         "items.variantSku": item.sku ?? null
+//       },
+//       {
+//         $inc: { "items.$.sold": item.quantity }
+//       }
+//     )
+//   }
+// }
+
+export const increaseFlashSaleSold = async (order: any) => {
+  for (const item of order.cartItems) {
+    if (!item.isFlashSale || !item.flashSaleId) continue
+
+    console.log('order.increaseFlashSaleSold:',order.cartItems)
+
+    const variantSku =
+      item.variantCombination ? item.sku : null
+
+    await FlashSaleEntity.updateOne(
+      {
+        _id: item.flashSaleId,
+        "items.productId": item.idProduct,
+        "items.variantSku": variantSku,
+      },
+      {
+        $inc: { "items.$.sold": item.quantity },
+      }
+    )
+  }
+}
+
+export const createOrder = async (req: any, res: Response) => {
   let user: any = null;
   let pointDeducted = false;
   let deductedPoints = 0;
@@ -85,7 +131,7 @@ export const createOrder = async (req: Request, res: Response) => {
       giftItems,
       ...orderPayload
     } = data
-    const userId = data.userId
+    const userId = req.user?.id || null
 
     for (const item of data.cartItems) {
       const productId =
@@ -221,9 +267,17 @@ export const createOrder = async (req: Request, res: Response) => {
     }
 
     // resolved promotion gift
-    const resolvedGiftItems = giftItems.length
-      ? await resolveGiftItems(giftItems)
-      : [];
+    const blockedByFlashSale = data.cartItems.some((item: any) =>
+      isBlockedByFlashSale(item, 'stackableWithPromotionGift')
+    )
+
+    let resolvedGiftItems: any[] = []
+
+    if (!blockedByFlashSale) {
+      resolvedGiftItems = giftItems.length
+        ? await resolveGiftItems(giftItems)
+        : []
+    }
 
     const promotionGiftIds = [
       ...new Set(
@@ -270,9 +324,11 @@ export const createOrder = async (req: Request, res: Response) => {
       ...resolvedGiftItems,
     ])
 
+    console.log('data.cartItems:',data.cartItems)
+
     const newOrder = await OrderEntity.create({
       ...orderPayload,
-      cartItems,
+      cartItems: data.cartItems,
       giftItems: resolvedGiftItems,
       userId,
       stockDeducted: true,
@@ -282,11 +338,14 @@ export const createOrder = async (req: Request, res: Response) => {
       membershipDiscountRate,
       membershipDiscountAmount,
       cancelRequested: false,
+      status: ORDER_STATUS.PENDING,
     })
 
     if (pointDeducted && deductedPoints > 0) {
       await user.save();
     }
+
+    await increaseFlashSaleSold(newOrder)
 
     //tao log promotion gift
     if (promotionGiftIds.length > 0) {

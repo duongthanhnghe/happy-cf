@@ -1,16 +1,14 @@
 import { showWarning, showConfirm, showSuccess } from "@/utils/toast";
 import { Loading } from "@/utils/global";
 import { ordersAPI } from "@/services/v1/orders.service";
-import { ORDER_STATUS } from "@/shared/constants/order-status";
 import { PAYMENT_STATUS } from "@/shared/constants/payment-status";
 import { ROUTES } from '@/shared/constants/routes';
 import type { CreateOrderBody, cartItems, GiftItemDTO } from '@/server/types/dto/v1/order.dto';
-import type { MaybeRef, Ref } from 'vue';
+import type { Ref } from 'vue';
 import type { CartDTO } from '@/server/types/dto/v1/product.dto';
 import type { ApplyVoucherResponse } from "@/server/types/dto/v1/voucher.dto";
 import { useValidate } from "../validate/useValidate";
 import { createOrderSchema } from "@/shared/validate/schemas/order.schema";
-import { unref } from "vue";
 import { usePayment } from "../order/usePayment";
 
 export const useCartOrder = (
@@ -28,7 +26,6 @@ export const useCartOrder = (
   totalDiscountRateMembership: Ref<number>,
   voucherUsage: Ref<ApplyVoucherResponse[]>,
   discountVoucherFreeship: Ref<number>,
-  userId: MaybeRef<string | null>,
   giftItems: Ref<GiftItemDTO[]>,
   deleteCartAll: () => void,
   router: any,
@@ -50,13 +47,23 @@ export const useCartOrder = (
     Loading(true);
 
     const newCartItems = cartListItem.value.map((item) => {
+      const variantSku = item.variantCombination?.sku ?? null
+      const flashSaleItem = item.flashSale?.items?.find(
+        i => i.variantSku === variantSku
+      )
+
       return {
         idProduct: item.id,
+        note: item.note || '',
         sku: item.variantCombination ? item.variantCombination.sku : item.sku,
         price: item.variantCombination ? item.variantCombination.priceModifier : item.priceDiscounts,
         quantity: item.quantity,
         variantCombination: item.variantCombination || null,
-        combinationId: item.combinationId || ''
+        combinationId: item.combinationId || '',
+        flashSaleId: item.flashSale?.id ?? null,
+        isFlashSale: item.isFlashSale === true,
+        stackableWithPromotionGift: flashSaleItem?.stackableWithPromotionGift,
+        stackableWithVoucher: flashSaleItem?.stackableWithVoucher
       };
     });
 
@@ -92,8 +99,6 @@ export const useCartOrder = (
       totalPriceCurrent: totalPriceCurrent.value,
       totalDiscountOrder: orderPriceDiscount.value,
       shippingFee: shippingFee.value,
-      status: ORDER_STATUS.PENDING,
-      userId: unref(userId) || null,
       provinceCode: storeLocation.selectedProvince,
       districtCode: storeLocation.selectedDistrict,
       wardCode: storeLocation.selectedWard,

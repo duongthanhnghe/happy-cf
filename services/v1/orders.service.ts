@@ -37,7 +37,7 @@ export const ordersAPI = {
     usedPoint: number
   ): Promise<ApiResponse<OrderDTO>> => {
     try {
-      return await apiClient().post<ApiResponse<OrderDTO>>(
+      return await apiClient().authPost<ApiResponse<OrderDTO>>(
         API_ENDPOINTS.ORDERS.CREATE,
         { data: bodyData, usedPoint }
       );

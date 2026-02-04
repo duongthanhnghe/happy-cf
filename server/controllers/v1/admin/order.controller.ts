@@ -17,6 +17,7 @@ import { buildBillHTML } from "../../../utils/print-bill"
 import { createProductReviewEntity } from "../../../factories/v1/product-review.factory"
 import { PromotionGiftEntity } from "@/server/models/v1/promotion-gift.entity"
 import { PromotionGiftUsageEntity } from "@/server/models/v1/promotion-gift-usage.entity"
+import { FlashSaleEntity } from "@/server/models/v1/flash-sale.entity"
 
 export const getAllOrder = async (req: Request, res: Response) => {
   try {
@@ -361,6 +362,29 @@ export const revertPointAndDowngrade = async (userId: string, pointsToRevert: nu
   await user.save();
 };
 
+export const rollbackFlashSaleSold = async (order: any) => {
+  if (!Array.isArray(order.cartItems)) return
+
+  for (const item of order.cartItems) {
+    if (!item.isFlashSale || !item.flashSaleId) continue
+
+    const variantSku =
+      item.variantCombination ? item.sku : null
+
+    await FlashSaleEntity.updateOne(
+      {
+        _id: item.flashSaleId,
+        "items.productId": item.idProduct,
+        "items.variantSku": variantSku,
+        "items.sold": { $gte: item.quantity }, // tránh sold < 0
+      },
+      {
+        $inc: { "items.$.sold": -item.quantity },
+      }
+    )
+  }
+}
+
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const { orderId, statusId } = req.body
@@ -421,9 +445,12 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
 
     // Nếu status = CANCELLED 
     if (status.id === ORDER_STATUS.CANCELLED) {
-      // hoàn kho
       if (order.stockDeducted) {
+        // hoàn kho
         await restoreStockOrder(order)
+
+        // hoán sl bán trong flash sale
+        await rollbackFlashSaleSold(order)
         order.stockDeducted = false
       }
       
@@ -456,9 +483,12 @@ export const deleteOrder = async (req: Request, res: Response) => {
     // Nếu order chưa bị hủy > rollback như CANCELLED
     if (order.status?.toString() !== ORDER_STATUS.CANCELLED) {
 
-      // hoàn kho
       if (order.stockDeducted) {
+        // hoàn kho
         await restoreStockOrder(order);
+
+        // hoán sl bán trong flash sale
+        await rollbackFlashSaleSold(order)
         order.stockDeducted = false;
       }
 

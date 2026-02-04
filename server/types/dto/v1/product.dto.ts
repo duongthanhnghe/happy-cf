@@ -58,6 +58,21 @@ export interface FlashSaleInfoDTO {
   totalQuantity: number
 }
 
+export interface FlashSaleItemsDTO {
+  id: string            
+  name?: string        
+  slug?: string         
+  badgeImage?: string
+  items: {
+    variantSku: string | null
+    originalPrice: number
+    salePrice: number
+    percentDiscount: number
+    stackableWithVoucher?: boolean;
+    stackableWithPromotionGift?: boolean
+  }[]
+}
+
 export interface ListImageDTO {
   id: string;
   src: string;
@@ -87,20 +102,8 @@ export interface ProductDTO {
 } | null;
   createdAt: string;
   updatedAt: string;
-  //flash sale
   isFlashSale?: boolean,
-  flashSale?: {
-    id: string            
-    name?: string        
-    slug?: string         
-    badgeImage?: string
-    items: {
-      variantSku: string | null
-      originalPrice: number
-      salePrice: number
-      percentDiscount: number
-    }[]
-  }
+  flashSale?: FlashSaleItemsDTO
   flashSaleInfo?: FlashSaleInfoDTO
   //SEO
   categoryBreadcrumb?: {
@@ -264,18 +267,7 @@ export interface CartDTO {
   variantCombination?: ProductVariantCombinationDTO;
   variantCombinations?: ProductVariantCombinationDTO[];
   isFlashSale?: boolean,
-  flashSale?: {
-    id: string;
-    name?: string;
-    slug?: string;
-    badgeImage?: string;
-    items: {
-      variantSku: string | null
-      originalPrice: number
-      salePrice: number
-      percentDiscount: number
-    }[]
-  };
+  flashSale?: FlashSaleItemsDTO
 }
 
 export type SelectedOptionDTO = SelectedOptionPushDTO & {id: string}

@@ -1,5 +1,5 @@
 import type { PaginationDTO } from "../../common/pagination.dto";
-import type { ProductDTO, ProductLiteDTO } from "./product.dto";
+import type { ProductLiteDTO } from "./product.dto";
 
 export interface FlashSaleItemDTO {
   productId: string | ProductLiteDTO

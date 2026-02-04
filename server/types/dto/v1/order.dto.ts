@@ -4,6 +4,8 @@ import type { PaginationDTO } from '../../common/pagination.dto'
 import type { ApplyVoucherResponse } from './voucher.dto';
 import type { ProductVariantCombinationDTO } from './product.dto';
 import type { PromotionGiftUsageDTO } from './promotion-gift-usage.dto';
+import { Types } from "mongoose"
+
 export interface ProductInOrder extends cartItems {
   data: ProductDTO
 }
@@ -20,6 +22,10 @@ export interface cartItems {
   note: string | null
   variantCombination: ProductVariantCombinationDTO
   combinationId: string
+  flashSaleId?: string | Types.ObjectId | null
+  isFlashSale: boolean;
+  stackableWithVoucher: boolean;
+  stackableWithPromotionGift: boolean
 }
 
 export interface GiftItems {
@@ -147,9 +153,8 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "giftItems" > {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "userId" |"transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "giftItems" > {
   paymentId: string;
-  status: string;
   provinceCode: number;
   districtCode: number;
   wardCode: number;

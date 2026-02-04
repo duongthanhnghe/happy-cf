@@ -21,8 +21,8 @@ const props = withDefaults(defineProps<{
       :placeholder="BANNER_LAZY"
     />
     <div class="pd-ms">
-      <div class="flex align-center flex-wrap justify-between">
-        <FlashSaleCount :startDate="getFlashSaleDetail.startDate" :endDate="getFlashSaleDetail.endDate" :color="getFlashSaleDetail.theme.textColor" class="order-2"/>
+      <div class="flex align-center flex-wrap justify-between gap-sm">
+        <FlashSaleCount :startDate="getFlashSaleDetail.startDate" :endDate="getFlashSaleDetail.endDate" :color="getFlashSaleDetail.theme.textColor" class="order-2 flex-1"/>
         <slot />
       </div>
       <Card bg="white" class="rd-md mt-sm">

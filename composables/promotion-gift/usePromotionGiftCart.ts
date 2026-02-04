@@ -76,6 +76,8 @@ export const usePromotionGiftCart = (
       await checkStock({
         productId: gift.product.id,
         quantity: gift.quantity,
+        combinationId:
+          cartStore.pendingGiftVariants[gift.product.id] ?? undefined,
       })
 
       if (!availableStock.value || availableStock.value < gift.quantity) {

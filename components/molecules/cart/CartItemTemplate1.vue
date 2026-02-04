@@ -22,9 +22,14 @@ const normalQty = computed(() => {
 
 const flashItem = computed(() => {
   if (!props.item.isFlashSale) return null
-  return props.item.flashSale?.items?.find(
-    fs => fs.variantSku === props.item.variantCombination?.sku
-  ) || null
+
+  const sku = props.item.variantCombination?.sku ?? null
+
+  return (
+    props.item.flashSale?.items?.find(
+      fs => fs.variantSku === sku
+    ) || null
+  )
 })
 
 </script>
@@ -42,7 +47,7 @@ const flashItem = computed(() => {
     </div>
     <div class="flex justify-between flex-direction-column position-relative flex-1 pd-xs pl-sm">
       <div>
-        <TagFlashSale v-if="item.isFlashSale" class="mb-xs"/>
+        <TagFlashSale v-if="item.isFlashSale && (item.variantCombination ? flashItem : item)" class="mb-xs"/>
         <Text :text="item.productName" color="black" limit="2" class="mb-sm pr-xl" />
         <div class="mb-xs" v-if="item.variantCombination?.variants">
           <Text
@@ -63,7 +68,6 @@ const flashItem = computed(() => {
         <div class="flex gap-xs flex-direction-column align-end">
           <!-- FLASH SALE -->
           <template v-if="item.isFlashSale && flashItem">
-
             <!-- Giá flash sale -->
             <div class="flex gap-xs" v-if="flashAppliedQty">
               <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`x${flashAppliedQty}`"/>
@@ -89,12 +93,24 @@ const flashItem = computed(() => {
                 color="gray4"
                 text="-"
               />
+              
+              
+
               <Text
                 color="danger"
                 :text="`${formatCurrency(item.variantCombination?.priceModifier)}`"
+                v-if="item.variantCombination?.priceModifier"
               />
+              <template v-else>
+                <Text color="danger" :text="formatCurrency(item.priceDiscounts)" />
+                <Text
+                  v-if="item.priceDiscounts !== item.price"
+                  color="gray5"
+                  class="text-line-through"
+                  :text="formatCurrency(item.price)"
+                />
+              </template>
             </div>
-
           </template>
 
           <!-- KHÔNG FLASH SALE -->

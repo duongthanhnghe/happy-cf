@@ -24,6 +24,7 @@ import { useCartUtils } from '@/composables/cart/useCartUtils';
 import { useCartSharedUtils } from "@/composables/cart/useCartSharedUtils";
 import { useCartVoucherHandlers } from "@/composables/cart/useCartVoucherHandlers";
 import type { CartDTO, ProductDTO, ProductVariantCombinationDTO, VariantGroupUI } from "@/server/types/dto/v1/product.dto";
+import { useCartFlashSale } from "@/composables/cart/useCartFlashSale";
 
 export const useCartStore = defineStore("Cart", () => {
   const storeProduct = useProductDetailStore();
@@ -381,11 +382,14 @@ export const useCartStore = defineStore("Cart", () => {
     state.totalDiscountRateMembership,
     state.voucherUsage,
     state.discountVoucherFreeship,
-    storeAccount.getUserId,
     state.giftItems,
     productOps.deleteCartAll,
     router,
     storeLocation
+  );
+
+  const flashSale = useCartFlashSale(
+    state.cartListItem,
   );
 
   const ensureSystemConfig = async () => {
@@ -460,11 +464,11 @@ export const useCartStore = defineStore("Cart", () => {
   }
 
   const setPendingGiftVariant = (
-  productId: string,
-  combinationId?: string
-) => {
-  state.pendingGiftVariants.value[productId] = combinationId ?? null
-}
+    productId: string,
+    combinationId?: string
+  ) => {
+    state.pendingGiftVariants.value[productId] = combinationId ?? null
+  }
 
   const getCartCount = computed(() => state.cartCount.value);
   const getCartListItem = computed(() => state.cartListItem.value);
@@ -538,6 +542,9 @@ export const useCartStore = defineStore("Cart", () => {
     setGiftCombinationId,
     setGiftItems,
     setPendingGiftVariant,
+
+    //flash sale
+    ...flashSale,
     
     // Getters
     Config_EnableUsePoint,

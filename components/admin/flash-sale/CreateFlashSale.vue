@@ -316,7 +316,7 @@ const handleSubmitCreate = async () => {
                   <LabelInput label="Màu chính" />
                   <div class="position-relative">
                     <div v-if="store.formItem.theme.primaryColor" class="position-absolute top-xs right-sm z-index-1">
-                      <v-chip size="small" class="width-50" variant="flat" :color="store.formItem.theme.primaryColor"></v-chip>
+                      <v-chip size="small" class="width-50" border variant="flat" :color="store.formItem.theme.primaryColor"></v-chip>
                     </div>
                     <v-text-field
                       v-model="store.formItem.theme.primaryColor"
@@ -330,7 +330,7 @@ const handleSubmitCreate = async () => {
                   <LabelInput label="Màu nền" />
                   <div class="position-relative">
                     <div v-if="store.formItem.theme.backgroundColor" class="position-absolute top-xs right-sm z-index-1">
-                      <v-chip size="small" class="width-50" variant="flat" :color="store.formItem.theme.backgroundColor"></v-chip>
+                      <v-chip size="small" class="width-50" border variant="flat" :color="store.formItem.theme.backgroundColor"></v-chip>
                     </div>
                     <v-text-field
                       v-model="store.formItem.theme.backgroundColor"
@@ -344,7 +344,7 @@ const handleSubmitCreate = async () => {
                   <LabelInput label="Màu chữ" />
                   <div class="position-relative">
                     <div v-if="store.formItem.theme.textColor" class="position-absolute top-xs right-sm z-index-1">
-                      <v-chip size="small" class="width-50" variant="flat" :color="store.formItem.theme.textColor"></v-chip>
+                      <v-chip size="small" class="width-50" border variant="flat" :color="store.formItem.theme.textColor"></v-chip>
                     </div>
                     <v-text-field
                       v-model="store.formItem.theme.textColor"
