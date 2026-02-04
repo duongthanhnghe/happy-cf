@@ -16,7 +16,7 @@ export interface OrderMappingNew extends OrderDTO {
 }
 
 export interface cartItems {
-  idProduct: { image: string, productName: string} | string
+  idProduct: { image: string, productName: string, amount: number} | string
   price: number
   originalPrice: number
   priceDiscount: number
@@ -139,6 +139,10 @@ export interface OrderDTO {
   totalQuantity: number;
   shippingFee: number;
   shipping?: OrderShippingDTO | null;
+  shippingConfig: {
+    enabled: boolean,
+    minOrderAmount: number
+  };
   status: OrderStatusDTO;
   userId: string | null;
   cancelRequested: boolean;
@@ -159,7 +163,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "status" | "userId" |"transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "totalQuantity" | "giftItems" > {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "shippingConfig" |  "status" | "userId" |"transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "totalQuantity" | "giftItems" > {
   paymentId: string;
   provinceCode: number;
   districtCode: number;

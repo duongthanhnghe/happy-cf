@@ -32,6 +32,11 @@ export const giftItemSchema = z.object({
   combinationId: objectIdSchema.optional().nullable(),
 })
 
+export const shippingConfigSchema = z.object({
+  enabled: z.boolean(),
+  minOrderAmount: z.number().min(0),
+}).strict()
+
 export const createOrderDataSchema = z.object({
   code: z.string().min(1),
   time: z.string().min(1),
@@ -48,7 +53,6 @@ export const createOrderDataSchema = z.object({
   totalPriceSave: z.number().min(0),
   totalPriceCurrent: z.number().min(0),
   totalDiscountOrder: z.number().min(0),
-  // totalQuantity: z.number().min(0),
   shippingFee: z.number().min(0),
   provinceCode: z.number(),
   districtCode: z.number(),
@@ -56,7 +60,6 @@ export const createOrderDataSchema = z.object({
   provinceName: z.string(),
   districtName: z.string(),
   wardName: z.string(),
-
   voucherUsage: z.array(voucherUsageSchema).optional().default([]),
 })
 

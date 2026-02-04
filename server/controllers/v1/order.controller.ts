@@ -318,7 +318,11 @@ export const createOrder = async (req: any, res: Response) => {
       membershipDiscountAmount,
       cancelRequested: false,
       status: ORDER_STATUS.PENDING,
-      totalQuantity
+      totalQuantity,
+      shippingConfig: {
+        enabled: baseInfo?.systemConfig?.shipping.enabled || false,
+        minOrderAmount: baseInfo?.systemConfig?.shipping.minOrderAmount || 0
+      } 
     })
 
     if (pointDeducted && deductedPoints > 0) {

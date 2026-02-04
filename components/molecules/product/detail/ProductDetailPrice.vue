@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import type { ProductDTO } from '@/server/types/dto/v1/product.dto'
-import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 import { formatCurrency } from '@/utils/global';
 import { computed } from 'vue';
-
-const storeSetting = useBaseInformationStore();
 
 const props = defineProps<{
   detail: ProductDTO
@@ -98,26 +95,6 @@ const variantPriceInfo = computed(() => {
           />
         </template>
       </div>
-
-      <!-- FREESHIP -->
-      <client-only>
-        <template
-          v-if="
-            priceInfo.price &&
-            storeSetting.getConfigShipping?.enabled &&
-            !priceInfo.isFlashSale
-          "
-        >
-          <v-chip
-            v-if="storeSetting.calcFreeship(priceInfo.price)"
-            v-tooltip.left="storeSetting.getShippingTooltip"
-            label
-            color="blue"
-          >
-            Freeship
-          </v-chip>
-        </template>
-      </client-only>
     </template>
 
     <!-- CÓ VARIANT -->

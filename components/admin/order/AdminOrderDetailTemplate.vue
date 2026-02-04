@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import '@/styles/molecules/order/order-item-detail-template1.scss'
 import { formatCurrency, formatDateTime, copyText } from '@/utils/global'
 import { ORDER_STATUS } from "@/shared/constants/order-status"
 import { useAdminOrderDetailStore } from '@/stores/admin/order/useOrderDetailStore';
@@ -8,10 +7,12 @@ import { getFilteredTransactionStatus } from '@/composables/admin/order/useFilte
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
 import { ref } from 'vue';
+import { useShippingHelpers } from '@/utils/shippingHelpers';
 
 const storeDetailOrder = useAdminOrderDetailStore()
 const store = useOrderManageStore()
 const storeDetailUser = useAdminUserDetailStore()
+const { checkFreeShip, getDesFreeShip } = useShippingHelpers()
 
 const toggleAction = ref(false);
 
@@ -65,9 +66,12 @@ const handleToggleProducts = () => {
             </div>
             <div v-if="storeDetailOrder.getDetailOrder?.shippingFee !== undefined" class="flex justify-between text-color-gray5">
               Phí vận chuyển
-              <span>
+              <div class="flex align-center gap-xs">
+                <v-chip v-tooltip="getDesFreeShip(storeDetailOrder.getDetailOrder?.shippingConfig.minOrderAmount)" v-if="checkFreeShip(storeDetailOrder.getDetailOrder?.shippingFee,storeDetailOrder.getDetailOrder.shippingConfig.minOrderAmount,storeDetailOrder.getDetailOrder.shippingConfig.enabled)" color="green" size="small" label>
+                  Miễn phí
+                </v-chip>
                 {{ formatCurrency(storeDetailOrder.getDetailOrder?.shippingFee) }}
-              </span>
+              </div>
             </div>
             <div v-if="storeDetailOrder.getDetailOrder?.totalDiscountOrder && storeDetailOrder.getDetailOrder?.totalDiscountOrder !== 0" class="flex justify-between text-color-gray5">
               Giảm đơn hàng <span>-{{ formatCurrency(storeDetailOrder.getDetailOrder?.totalDiscountOrder) }}</span>
@@ -78,11 +82,13 @@ const handleToggleProducts = () => {
               -{{ formatCurrency(storeDetailOrder.getDetailOrder?.usedPoints) }}
               </span>
             </div>
-            <div v-if="storeDetailOrder.getDetailOrder?.membershipDiscountAmount !== 0" class="flex justify-between text-color-gray5">
+            <div v-if="storeDetailOrder.getDetailOrder?.membershipDiscountAmount !== 0" class="flex align-center justify-between text-color-gray5">
               Ưu đãi thành viên
-              <span class="flex gap-xs">
+              <span class="flex align-center gap-xs">
+                <v-chip v-tooltip="storeDetailOrder.getDetailOrder?.membershipDiscountRate+'% của đơn hàng'" size="small" label >
+                  {{ storeDetailOrder.getDetailOrder?.membershipDiscountRate+'%' }}
+                </v-chip>
                 -{{ formatCurrency(storeDetailOrder.getDetailOrder?.membershipDiscountAmount) }}
-                <Button v-tooltip="storeDetailOrder.getDetailOrder?.membershipDiscountRate+'% của đơn hàng'" tag="span" size="xs" color="secondary" class="text-size-xs" :label="storeDetailOrder.getDetailOrder?.membershipDiscountRate+'%'"/>
               </span>
             </div>
             <div v-if="storeDetailOrder.totalDiscountVoucher !== 0" class="flex justify-between text-color-gray5">
@@ -194,36 +200,54 @@ const handleToggleProducts = () => {
       </div>
 
       <!-- Flash sale -->
-      <div class="col-12 col-lg-4 mb-md">
+      <div class="col-12 col-lg-4 mb-md" v-if="storeDetailOrder.getDetailOrder?.cartItems.some(item => item.isFlashSale === true)">
         <Card size="sm" class="rd-lg height-full" heading="CT Flash sale">
           <div class="flex flex-direction-column gap-sm">
             <div class="flex justify-between text-color-gray5" v-for="item in storeDetailOrder.getDetailOrder?.cartItems">
-              {{ item.flashSale?.name }}
-              <span class="flex gap-xs align-center">
-                {{ item.flashSale?.name }}
-                <v-chip
-                  label
-                  small
-                  :color="item.flashSale?.isActive ? 'green' : 'red'"
-                >
-                  {{ item.flashSale?.isActive ? "Kích hoạt" : "Tắt" }}
-                </v-chip>
-                <v-chip
-                  v-if="item.flashSale?.startDate && new Date() < new Date(item.flashSale?.startDate)"
-                  color="blue"
-                  small
-                  >Chưa diễn ra</v-chip
-                >
-                <v-chip
-                  v-else-if="item.flashSale?.endDate && new Date() > new Date(item.flashSale?.endDate)"
-                  color="red"
-                  small
-                  >Đã kết thúc</v-chip
-                >
-                <v-chip v-else color="green" small>Đang diễn ra</v-chip>
-              </span>
+              <Card v-if="item.flashSale" bg="gray6" class="flex-1 rd-lg">
+                <Text :text="item.flashSale?.name" color="black" weight="medium" />
+                <Text :text="'Mã: '+item.flashSale.id" size="xs" color="gray5" class="mb-xs" />
+                <span class="flex gap-xs align-center">
+                  <v-chip
+                    label
+                    small
+                    :color="item.flashSale?.isActive ? 'green' : 'red'"
+                    v-tooltip="'Tình trạng chương trình'"
+                  >
+                    {{ item.flashSale?.isActive ? "Kích hoạt" : "Tắt" }}
+                  </v-chip>
+                  <v-chip
+                    v-if="item.flashSale?.startDate && new Date() < new Date(item.flashSale?.startDate)"
+                    color="blue"
+                    small
+                    v-tooltip="'Chương trình dưa diễn ra'"
+                    >Chưa diễn ra</v-chip
+                  >
+                  <v-chip
+                    v-else-if="item.flashSale?.endDate && new Date() > new Date(item.flashSale?.endDate)"
+                    color="red"
+                    small
+                    v-tooltip="'Chương trình đã kết thúc'"
+                    >Đã kết thúc</v-chip
+                  >
+                  <v-chip v-else color="green" small v-tooltip="'Chương trình đang diễn ra'">Đang diễn ra</v-chip>
+                  <v-chip
+                    small
+                    v-tooltip="!item.stackableWithPromotionGift ? 'Không áp dụng cùng Voucher':'Cho phép áp dụng cùng Voucher'"
+                    :color="item.stackableWithVoucher ? 'green' : 'gray'"
+                  >
+                    Voucher
+                  </v-chip>
+                  <v-chip
+                    small
+                    v-tooltip="!item.stackableWithPromotionGift ? 'Không áp dụng cùng Quà tặng':'Cho phép áp dụng cùng Quà tặng'"
+                    :color="item.stackableWithPromotionGift ? 'green' : 'gray'"
+                  >
+                    Quà tặng
+                  </v-chip>
+                </span>
+              </Card>
             </div>
-            
           </div>
         </Card>
       </div>
@@ -257,11 +281,11 @@ const handleToggleProducts = () => {
           <!-- logs -->
           <div v-if="storeDetailOrder.getDetailOrder.promotionGiftUsages?.length" class="mb-ms">
             <div
-              v-for="usage in storeDetailOrder.getDetailOrder.promotionGiftUsages"
-              :key="usage._id"
+              v-for="(usage,index) in storeDetailOrder.getDetailOrder.promotionGiftUsages"
+              :key="index"
               class="flex flex-direction-column gap-sm"
             >
-              <div class="flex justify-between">
+              <div v-if="typeof usage.promotionGiftId === 'object'" class="flex justify-between">
                 <Text color="gray5" :text="usage.promotionGiftId.name" />
                 <v-chip
                   size="small"

@@ -60,6 +60,11 @@ export interface OrderStatus {
   index: number;
 }
 
+export interface ShippingConfig {
+  enabled: boolean,
+  minOrderAmount: number
+}
+
 export interface Order {
   _id: Types.ObjectId;
   code: string;
@@ -85,6 +90,7 @@ export interface Order {
   totalQuantity: number;
   shippingFee: number;
   shipping?: Types.ObjectId
+  shippingConfig: ShippingConfig;
   status: Types.ObjectId;
   userId?: Types.ObjectId | null;
   cancelRequested: boolean;
@@ -231,6 +237,13 @@ const OrderStatusSchema = new Schema<OrderStatus>(
   { timestamps: true }
 );
 
+const ShippingConfigSchema = new Schema<ShippingConfig>(
+  {
+    enabled: { type: Boolean, required: true },
+    minOrderAmount: { type: Number, required: true },
+  }
+);
+
 const OrderSchema = new Schema<Order>(
   {
     code: { type: String, required: true },
@@ -256,6 +269,10 @@ const OrderSchema = new Schema<Order>(
     totalQuantity: { type: Number, required: true },
     shippingFee: { type: Number, required: true },
     shipping: { type: Schema.Types.ObjectId, ref: "OrderShipping"},
+    shippingConfig: { type: ShippingConfigSchema, default: {
+      enabled: false,
+      minOrderAmount: 0
+    }},
     status: { type: Schema.Types.ObjectId, ref: "OrderStatus", required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     cancelRequested: { type: Boolean, default: false },

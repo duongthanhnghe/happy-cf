@@ -128,10 +128,7 @@ onBeforeUnmount(() => {
             <CartPointInfoLabel v-if="detail.priceDiscounts !== 0" :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId" />
 
             <template v-if="store.variantPrice && storeSetting.getConfigShipping?.enabled">
-              <v-chip v-tooltip.left="storeSetting.getShippingTooltip" v-if="storeSetting.calcFreeship(store.variantPrice)" label color="green" class="mt-sm">
-                Freeship
-              </v-chip>
-              <v-chip v-else label color="green" class="width-full mt-sm">
+              <v-chip label color="green" class="width-full mt-sm">
                 {{ storeSetting.getShippingTooltip }}
               </v-chip>
             </template>

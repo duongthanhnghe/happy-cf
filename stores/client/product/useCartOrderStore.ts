@@ -47,9 +47,8 @@ export const useCartStore = defineStore("Cart", () => {
   const Config_RateUsePoint = computed<number>(() => rewardConfig.value?.rateUsePoint ?? 0);
   const getMaxPointCanUse = computed(() =>  Math.floor(state.totalPriceCurrent.value * Config_RateUsePoint.value ));
   const getTotalPoint = computed(() => storeAccount.calcEarnPoint(state.totalPriceCurrent.value));
-  const shippingEnabled = computed(
-    () => storeSetting.getConfigShipping?.enabled ?? false
-  )
+  const shippingEnabled = computed(() => storeSetting.getConfigShipping?.enabled ?? false)
+  const Config_Shipping_amount = computed(() => storeSetting.getConfigShipping?.minOrderAmount ?? 0)
 
   const fetchProductCart = async () => {
     const productIds = state.cartListItem.value.map((item: any) => item.product);
@@ -357,8 +356,6 @@ export const useCartStore = defineStore("Cart", () => {
     state.cartListItem,
     state.totalPriceDiscount,
     state.shippingFee,
-    shippingEnabled,
-    storeSetting.calcFreeship,
     handleCalcTotalPriceCurrent,
     voucher.reapplyFreeshippVoucher,
     storeLocation,
@@ -377,6 +374,7 @@ export const useCartStore = defineStore("Cart", () => {
     state.orderPriceDiscount,
     state.shippingFee,
     shippingEnabled,
+    Config_Shipping_amount,
     state.usedPointOrder,
     Config_EnableUsePoint,
     state.totalDiscountRateMembership,
@@ -480,6 +478,7 @@ export const useCartStore = defineStore("Cart", () => {
   const getOrderPriceDiscount = computed(() => state.orderPriceDiscount.value);
   const getTotalPriceOrder = computed(() => state.totalPriceDiscount.value);
   const getShippingFee = computed(() => state.shippingFee.value);
+  const getFreeShip = computed(() => state.shippingFee.value >= Config_Shipping_amount.value && shippingEnabled.value === true ? true : false);
 
   const getPaymentSelected = computed(() => state.paymentSelected.value);
   const getSelectedOptionsData = computed(() => state.selectedOptionsData.value);
@@ -563,6 +562,7 @@ export const useCartStore = defineStore("Cart", () => {
     getNameAddressChoose,
     getTotalPoint,
     getShippingFee,
+    getFreeShip,
     getOrderPriceDiscount,
     allVouchers,
     getProductDetailDataEdit,

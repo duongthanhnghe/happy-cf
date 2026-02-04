@@ -54,13 +54,6 @@ export const useBaseInformationStore = defineStore("BaseInformationStore", () =>
     return null
   }
 
-  const calcFreeship = (total: number) => {
-    const minPrice = getBaseInformation.value?.systemConfig.shipping.minOrderAmount || 0
-    if (minPrice <= total ) return true
-
-    return false
-  }
-
   const getBaseInformation = computed(() => detailData.value)
   const getConfigSystem = computed(() => detailData.value?.systemConfig)
   const getConfigShipping = computed(() => detailData.value?.systemConfig.shipping)
@@ -80,7 +73,6 @@ export const useBaseInformationStore = defineStore("BaseInformationStore", () =>
     lastFetched,
     fetchBaseInformation,
     fetchSystemConfig,
-    calcFreeship,
     getBaseInformation,
     getConfigSystem,
     getConfigShipping,

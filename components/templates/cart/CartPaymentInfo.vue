@@ -29,7 +29,10 @@ const props = defineProps<{
     </Text>
 
     <Text color="gray5" class="flex justify-between mt-xs">
-    Phí vận chuyển: <span>{{ formatCurrency(store.getShippingFee) }} <template v-if="store.shippingEnabled && store.getShippingFee === 0">(freeship)</template></span>
+      Phí vận chuyển: 
+      <span>
+        {{ store.getFreeShip ? 'Miễn phí' : formatCurrency(store.getShippingFee) }} 
+      </span>
     </Text>
 
     <Text v-if="store.discountVoucherFreeship" color="gray5" class="flex justify-between mt-xs">

@@ -37,11 +37,13 @@ export const useBaseInformationStore = defineStore("AdminBaseInformationStore", 
   }
 
   const getBaseInformation = computed(() => detailData.value)
+  const getConfigShipping = computed(() => detailData.value?.systemConfig.shipping)
 
   return {
     detailData,
     lastFetched,
     fetchBaseInformation,
     getBaseInformation,
+    getConfigShipping,
   }
 })

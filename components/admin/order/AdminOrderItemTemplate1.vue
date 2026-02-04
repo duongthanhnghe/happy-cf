@@ -8,7 +8,7 @@ const props = defineProps<{
 
 </script>
 <template>
-  <div class="flex bg-white pd-xs border-default rd-xl flex-1">
+  <div v-if="typeof props.item.idProduct === 'object'" class="flex bg-white pd-xs border-default rd-xl flex-1">
     <div class="width-100">
       <Image 
         v-if="props.item.idProduct?.image"
@@ -19,7 +19,7 @@ const props = defineProps<{
       />
     </div>
     <div class="flex-1 pd-xs pl-sm">
-      <TagFlashSale v-if="item.flashSale" class="mb-xs"/>
+      <TagFlashSale v-if="item.flashSale" :text="item.flashSale.name" class="mb-xs"/>
       <Text size="sm" weight="medium" limit="1" class="mb-xs pr-0" :text="props.item?.idProduct?.productName" />
       <div class="text-color-gray5 text-size-xs">
         SKU: {{ item.sku }}

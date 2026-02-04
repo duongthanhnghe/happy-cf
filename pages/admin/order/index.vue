@@ -12,6 +12,7 @@ import { onBeforeUnmount, onMounted } from 'vue';
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 import { SHIPPING_STATUS } from '@/shared/constants/shipping-status';
 import { useAdminOrderCountByStatus } from '@/composables/admin/order/useAdminOrderCountByStatus';
+import { useShippingHelpers } from '@/utils/shippingHelpers';
 
 definePageMeta({
   layout: ROUTES.ADMIN.ORDER.children?.LIST.layout,
@@ -23,6 +24,7 @@ const storeDetailUser = useAdminUserDetailStore();
 const storeDetailOrder = useAdminOrderDetailStore()
 const { remainingProductNames } = useOrderHelpers()
 const { getOrderStatusCounts, fetchOrderCountByStatus } = useAdminOrderCountByStatus()
+const { checkFreeShip, getDesFreeShip } = useShippingHelpers()
 
 onMounted(async () => {
   if(!getOrderStatusCounts.value || getOrderStatusCounts.value.length === 0) await fetchOrderCountByStatus()
@@ -111,6 +113,12 @@ onBeforeUnmount(() => {
 
     <template #item.shippingFee="{ item }">
       {{ formatCurrency(item.shippingFee) }}
+      <v-chip 
+        v-tooltip="getDesFreeShip(item.shippingConfig.minOrderAmount)" 
+        v-if="checkFreeShip(item.shippingFee,item.shippingConfig.minOrderAmount,item.shippingConfig.enabled)" 
+        color="green" size="small" label class="ml-xs">
+        Miễn phí
+      </v-chip>
     </template>
 
     <template #item.fullname="{ item }">

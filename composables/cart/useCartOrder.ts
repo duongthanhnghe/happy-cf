@@ -21,6 +21,7 @@ export const useCartOrder = (
   orderPriceDiscount: Ref<number>,
   shippingFee: Ref<number>,
   shippingEnabled: Ref<boolean>,
+  Config_Shipping_amount: Ref<number>,
   usedPointOrder: any,
   Config_EnableUsePoint: Ref<boolean>,
   totalDiscountRateMembership: Ref<number>,
@@ -91,11 +92,11 @@ export const useCartOrder = (
         flashSaleId: item.flashSale?.id ?? null,
         isFlashSale: item.isFlashSale === true,
         stackableWithPromotionGift: flashSaleItem?.stackableWithPromotionGift,
-        stackableWithVoucher: flashSaleItem?.stackableWithVoucher
+        stackableWithVoucher: flashSaleItem?.stackableWithVoucher,
       };
     });
 
-    console.log(newCartItems)
+    // console.log(newCartItems)
     // return
 
     const newGiftItems = giftItems.value.map(gift => ({
@@ -136,7 +137,7 @@ export const useCartOrder = (
       provinceName: storeLocation.selectedProvinceObj.PROVINCE_NAME,
       districtName: storeLocation.selectedDistrictObj.DISTRICT_NAME,
       wardName: storeLocation.selectedWardObj.WARDS_NAME,
-      voucherUsage: newVoucherUsage
+      voucherUsage: newVoucherUsage,
     };
 
     // console.log(orderData)

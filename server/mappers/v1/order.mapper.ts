@@ -120,6 +120,10 @@ export function toOrderDTO(entity: Order): OrderDTO {
     shipping: entity.shipping
       ? toOrderShippingDTO(entity.shipping as any)
       : null,
+    shippingConfig: {
+      enabled: entity.shippingConfig.enabled,
+      minOrderAmount: entity.shippingConfig.minOrderAmount
+    },
     status:toOrderStatusDTO(entity.status as any),
     userId: entity.userId
       ? (entity.userId as any)._id
