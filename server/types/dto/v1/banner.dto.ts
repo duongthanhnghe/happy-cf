@@ -1,8 +1,13 @@
+export interface BannerImageDTO {
+  desk: string;
+  mobile: string;
+}
+
 export interface BannerDTO {
   id: string
   title: string
   description?: string
-  image: string
+  image: BannerImageDTO
   order: number
   isActive: boolean
   createdAt: string

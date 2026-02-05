@@ -42,13 +42,22 @@ onBeforeUnmount(() => {
         <SelectOrder :order="item.order" :listOrder="store.getListOrder" @update:modelValue="(newOrder: number) => store.handleChangeOrder(item.id,newOrder)"/>
       </template>
 
-      <template #item.image="{ item }">
+      <template #item.image.desk="{ item }">
         <Image 
-          :src="item.image"
-          :alt="item.image"
+          :src="item.image.desk"
+          :alt="item.image.desk"
           :width="50"
           :height="50"
-          preset="avatar"
+          class="rd-lg bg-gray6"
+        />
+      </template>
+
+      <template #item.image.mobile="{ item }">
+        <Image 
+          :src="item.image.mobile"
+          :alt="item.image.mobile"
+          :width="50"
+          :height="50"
           class="rd-lg bg-gray6"
         />
       </template>

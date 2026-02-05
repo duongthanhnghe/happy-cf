@@ -6,7 +6,10 @@ export function toBannerDTO(entity: Banner): BannerDTO {
     id: entity._id.toString(),
     title: entity.title,
     description: entity.description,
-    image: entity.image,
+    image: {
+      desk: entity.image.desk,
+      mobile: entity.image.mobile
+    },
     order: entity.order,
     isActive: entity.isActive,
     createdAt: entity.createdAt.toISOString(),

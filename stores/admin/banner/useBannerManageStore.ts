@@ -20,14 +20,19 @@ export const useBannerManageStore = defineStore("BannerManage", () => {
     state.detailData,
   )
 
-  const handleAddImage = () => {
+  const handleAddImage = (type: 'desk' | 'mobile') => {
+    state.currentImageType.value = type;
     storeFileManage.handleTogglePopup(true, folderName)
   }
 
   watch(() => storeFileManage.getSelectImage, (newValue) => {
     if (!newValue) return
     const target = state.formBannerItem
-    target.image = newValue.url
+    if (state.currentImageType.value === 'desk') {
+      target.image.desk = newValue.url
+    } else if (state.currentImageType.value === 'mobile') {
+      target.image.mobile = newValue.url
+    } else {}
   })
 
   return {

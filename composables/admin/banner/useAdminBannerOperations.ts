@@ -108,10 +108,10 @@ export const useAdminBannerOperations = (
     try {
       const data = await bannersAPI.delete(id)
       if(data.code === 0){
-        showSuccess(data.message)
+        showSuccess(data.message ?? '')
         await loadItems();
       } else {
-        showWarning(data.message)
+        showWarning(data.message ?? '')
       }
     } catch (err) {
       console.error('Error submitting form:', err)

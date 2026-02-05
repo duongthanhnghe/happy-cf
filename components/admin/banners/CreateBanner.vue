@@ -50,18 +50,18 @@ const handleSubmitCreate = async () => {
           :error-messages="formErrors.description"
         />
 
-        <!-- Ảnh đại diện -->
-        <LabelInput label="Ảnh đại diện" required />
+        <!-- Ảnh đại diện Desk -->
+        <LabelInput label="Banner Desktop" required />
         <v-img
-          v-if="store.formBannerItem.image"
-          :src="store.formBannerItem.image"
+          v-if="store.formBannerItem.image.desk"
+          :src="store.formBannerItem.image.desk"
           class="mb-sm"
           alt="Ảnh banner"
         />
 
         <div class="flex gap-sm">
           <v-text-field
-            v-model="store.formBannerItem.image"
+            v-model="store.formBannerItem.image.desk"
             label="Đường dẫn ảnh..."
             variant="outlined"
             :error="!!formErrors.image"
@@ -70,7 +70,31 @@ const handleSubmitCreate = async () => {
           <Button
             color="black"
             :label="store.formBannerItem.image ? 'Đổi ảnh' : 'Chọn ảnh'"
-            @click.prevent="store.handleAddImage()"
+            @click.prevent="store.handleAddImage('desk')"
+          />
+        </div>
+
+        <!-- Ảnh đại diện Mobile -->
+        <LabelInput label="Banner Mobile" required />
+        <v-img
+          v-if="store.formBannerItem.image.mobile"
+          :src="store.formBannerItem.image.mobile"
+          class="mb-sm"
+          alt="Ảnh banner"
+        />
+
+        <div class="flex gap-sm">
+          <v-text-field
+            v-model="store.formBannerItem.image.mobile"
+            label="Đường dẫn ảnh..."
+            variant="outlined"
+            :error="!!formErrors.image"
+            :error-messages="formErrors.image"
+          />
+          <Button
+            color="black"
+            :label="store.formBannerItem.image ? 'Đổi ảnh' : 'Chọn ảnh'"
+            @click.prevent="store.handleAddImage('mobile')"
           />
         </div>
 

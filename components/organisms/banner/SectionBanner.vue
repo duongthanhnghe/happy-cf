@@ -24,10 +24,10 @@ const storeDisplay = useDisplayStore()
         <swiper :modules="[Pagination, Autoplay, Navigation]" :slides-per-view="1" :space-between="0" :pagination="{ clickable: true }" :navigation="storeDisplay.isMobileTable ? false:true" :autoplay="{ delay: 5000, disableOnInteraction: false }">
           <swiper-slide v-for="item in props.items" :key="item.id">
             <Image 
-              :src="item.image"
+              :src="storeDisplay.isLaptop ? item.image.desk : item.image.mobile"
               :alt="item.title"
               class="w-full"
-              :width="1800"
+              :width="storeDisplay.isLaptop ? 1800 : 1024"
               :placeholder="BANNER_LAZY"
             />
           </swiper-slide>

@@ -231,8 +231,7 @@ const isNew = computed(() =>
     <div :class="[{'pd-05': props.variant === 'card'},storeDisplay.isLaptop ? 'pt-ms':'pt-sm','product-template1-content']">
       <Button
         v-if="flashSaleVariant?.variant || cheapestVariant"
-        size="small"
-        color="grey"
+        size="xs"
         :border="false"
         :class="[
           storeDisplay.isLaptop ? 'mb-sm':'mb-05',

@@ -13,7 +13,7 @@ const {
 
 const props = defineProps<{
   item: cartItems
-  gift: boolean
+  gift?: boolean
 }>()
 
 </script>

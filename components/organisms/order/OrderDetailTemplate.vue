@@ -45,7 +45,7 @@ const { checkFreeShip } = useShippingHelpers()
     </div>
     
     <Card size="sm" class="rd-lg">
-      <div class="flex justify-between">
+      <div class="flex justify-between gap-xs">
         <span class="flex gap-xs align-center weight-semibold text-color-black">
           <Button size="xs" color="secondary" icon="location_on" :disable="true"/>
           {{ storeDetailOrder.getDetailOrder?.address }},

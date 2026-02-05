@@ -1,9 +1,13 @@
 import { z } from 'zod'
 import {
-  imageSchema,
   isActiveSchema,
   orderSchema,
 } from './common.schema'
+
+export const imageBannerSchema = z.object({
+  desk: z.string().optional().default(''),
+  mobile: z.string().optional().default(''),
+})
 
 export const baseBannerSchema = z.object({
   title: z
@@ -16,10 +20,8 @@ export const baseBannerSchema = z.object({
     .optional()
     .default(''),
 
-  image: imageSchema,
-
+  image: imageBannerSchema,
   order: orderSchema.optional().default(0),
-
   isActive: isActiveSchema,
 })
 
