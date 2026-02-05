@@ -12,6 +12,8 @@ import { IMAGE_BLOCK_PAGES, IMAGE_BLOCK_POSITIONS } from '@/shared/constants/ima
 import { onMounted } from 'vue';
 import { useTopPriority } from '@/composables/product/flash-sale/useTopPriority';
 import { useTopFlashSaleProducts } from '@/composables/product/flash-sale/useTopFlashSaleProducts';
+import { useVoucherAll } from '@/composables/voucher/useVoucherAll';
+import { useBaseInformationStore } from '@/stores/client/base-information/useBaseInformationStore';
 
 definePageMeta({
   middleware: ROUTES.PUBLIC.HOME.middleware,
@@ -28,9 +30,11 @@ const storeProductSale = useProductSaleStore()
 const storeProductMostOrder = useProductMostOrderStore()
 const storeNewsLatest = usePostLatestStore()
 const storeProductCategory = useProductCategoryStore()
+const storeSetting = useBaseInformationStore()
 const { fetchImageBlock, getByPosition, dataImageBlock } = useImageBlockByPage()
 const { fetchTopPriority, getTopPriority } = useTopPriority()
 const { fetchTopFlashSaleProducts, getTopFlashSaleProducts, loadingData } = useTopFlashSaleProducts()
+const { getVoucherDesc } = useVoucherAll();
 
 if (storeBanner.getListBanner.length === 0) await storeBanner.fetchBannerStore()
 if (!storeProductSale.getListProductSales) await storeProductSale.fetchListProductSales('',Number(storeProductSale.page),storeProductSale.limit,'')
@@ -59,7 +63,7 @@ onMounted(async () => {
     <div :class="storeDisplay.isMobileTable ? 'bg-gray6':''">
       <template v-if="storeDisplay.isMobileTable">
         <client-only>
-          <div class="bg-primary-90 text-center">
+          <div v-if="storeSetting.getConfigShipping?.enabled || getVoucherDesc.length > 0" class="bg-primary-90 text-center">
             <VoucherFeatureSwiper />
           </div>
           <CardAccount showLevel/>
