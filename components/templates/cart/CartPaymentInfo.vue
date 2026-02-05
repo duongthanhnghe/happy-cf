@@ -21,7 +21,9 @@ const props = defineProps<{
 
     <div class="line-height-1 flex justify-between mt-sm">
       <Text color="gray5" text="Thành tiền" />
-      <Text size="md" weight="semibold" class="black">{{ formatCurrency(store.getTotalPriceOrder) }} </Text>
+      <Text size="md" weight="semibold" class="black">
+      {{ store.getFreeShip ? formatCurrency((store.getTotalPriceOrder - store.getShippingFee)) : formatCurrency(store.getTotalPriceOrder) }} 
+      </Text>
     </div>
 
     <Text v-if="store.getTotalPriceSave != 0" color="gray5" class="flex justify-between mt-xs">

@@ -8,6 +8,7 @@ import { useOrderHelpers } from '@/utils/orderHelpers';
 import { useSharedOrderDetailStore } from '@/stores/client/order/useSharedOrderDetailStore';
 import type { OrderDTO } from '@/server/types/dto/v1/order.dto';
 import { usePaymentMethodStore } from '@/stores/client/order/usePaymentMethodStore';
+import { useShippingHelpers } from '@/utils/shippingHelpers';
 
 const store = useOrderHistoryStore()
 const storeDisplay = useDisplayStore()
@@ -15,6 +16,8 @@ const storeDetailOrder = useSharedOrderDetailStore()
 const storePaymentStatus = usePaymentMethodStore();
 
 const { remainingProductNames } = useOrderHelpers()
+const { checkFreeShip } = useShippingHelpers()
+
 const props = defineProps<{
   item: OrderDTO
 }>();
@@ -32,23 +35,29 @@ const props = defineProps<{
     <div :class="['flex gap-sm border-bottom-dashed mt-md mb-sm pb-sm', storeDisplay.isLaptop ? 'border-color-gray':'border-color-gray2']">
       <div class="flex gap-xs position-relative">
         <template v-for="(itemImage, index) in props.item?.cartItems" :key="index" >
-          <Image 
-            v-if="index < 3 && itemImage.idProduct.image"
-            v-tooltip="itemImage.idProduct.productName"
-            :src="itemImage.idProduct.image"
-            preset="label"
-            :alt="itemImage.idProduct.productName"
-            :class="[storeDisplay.isLaptop ? 'bg-white':'bg-gray6','rd-lg width-50']"
-          />
-          <span v-tooltip.html="remainingProductNames(props.item?.cartItems)" v-else-if="index < 4" class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ props.item?.cartItems.length - 3 }}</span>
-          <template v-else />
+          <template v-if="typeof itemImage.idProduct === 'object'">
+            <Image 
+              v-if="index < 3 && itemImage.idProduct.image"
+              v-tooltip="itemImage.idProduct.productName"
+              :src="itemImage.idProduct.image"
+              preset="label"
+              :alt="itemImage.idProduct.productName"
+              :class="[storeDisplay.isLaptop ? 'bg-white':'bg-gray6','rd-lg width-50']"
+            />
+            <span v-tooltip.html="remainingProductNames(props.item?.cartItems)" v-else-if="index < 4" class="el-absolute max-width-50 right-0 align-center flex justify-center bg-black-40 text-color-white rd-lg">+{{ props.item?.cartItems.length - 3 }}</span>
+            <template v-else />
+          </template>
         </template>
       </div>
       <div class="text-color-gray5">
         <div class="mb-xs">
           {{ props.item?.address }}
         </div>
-        <span class="text-color-black weight-semibold text-size-normal">{{ formatCurrency(props.item?.totalPrice) }}</span>
+        <span class="text-color-black weight-semibold text-size-normal">
+          {{ checkFreeShip(props.item?.shippingFee,props.item.shippingConfig.minOrderAmount,props.item.shippingConfig.enabled)
+          ? formatCurrency((props.item?.totalPrice - props.item?.shippingFee))
+          : formatCurrency(props.item?.totalPrice) }}
+        </span>
       </div>
     </div>
     <div class="flex justify-between align-center">

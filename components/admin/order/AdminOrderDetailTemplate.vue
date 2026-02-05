@@ -6,7 +6,6 @@ import { useOrderManageStore } from '@/stores/admin/order/useOrderManageStore';
 import { getFilteredTransactionStatus } from '@/composables/admin/order/useFilteredTransactionStatus';
 import { useAdminUserDetailStore } from '@/stores/admin/users/useUserDetailStore';
 import { VOUCHER_TYPE } from '@/shared/constants/voucher-type';
-import { ref } from 'vue';
 import { useShippingHelpers } from '@/utils/shippingHelpers';
 
 const storeDetailOrder = useAdminOrderDetailStore()
@@ -14,25 +13,19 @@ const store = useOrderManageStore()
 const storeDetailUser = useAdminUserDetailStore()
 const { checkFreeShip, getDesFreeShip } = useShippingHelpers()
 
-const toggleAction = ref(false);
-
-const handleToggleProducts = () => {
-  toggleAction.value = !toggleAction.value;
-};
-
 </script>
 <template>
   <template v-if="storeDetailOrder.getDetailOrder">
     <div class="row row-sm">
       <!-- Sản phẩm -->
-      <div :class="[toggleAction ? 'col-lg-12' : 'col-lg-4', 'col-lg-4 mb-md']">
+      <div :class="[storeDetailOrder.toggleAction ? 'col-lg-12' : 'col-lg-4', 'col-lg-4 mb-md']">
         <Card size="sm" class="rd-lg height-full" >
           <div class="flex justify-between">
             <Heading :text="'Sản phẩm: '+ storeDetailOrder.getDetailOrder?.totalQuantity" />
-            <Button size="sm" :color="toggleAction ? 'black':'secondary'" :icon="toggleAction ? 'pinch_zoom_in':'pinch'" @click.prevent="handleToggleProducts"/>
+            <Button size="sm" :color="storeDetailOrder.toggleAction ? 'black':'secondary'" :icon="storeDetailOrder.toggleAction ? 'pinch_zoom_in':'pinch'" @click.prevent="storeDetailOrder.handleToggleProducts"/>
           </div>
-          <div :class="[toggleAction ? '' : 'overflow-auto scroll-hide max-height-500']">
-            <template v-for="(items, index) in storeDetailOrder.getDetailOrder?.cartItems" :key="index">
+          <div :class="[storeDetailOrder.toggleAction ? '' : 'overflow-auto scroll-hide max-height-500']">
+            <template v-for="(items, index) in storeDetailOrder.getDetailOrder?.cartItems" :key="items.idProduct">
               <AdminOrderItemTemplate1 :item="items" class="mb-sm"/>
             </template>
           </div>
@@ -46,12 +39,22 @@ const handleToggleProducts = () => {
             <div class="flex justify-between weight-medium line-height-1">
               <div class="flex align-center gap-xs">
                 Tổng cộng
-                <span v-if="storeDetailOrder.getDetailOrder?.totalPriceSave && storeDetailOrder.getDetailOrder?.totalPriceSave !== 0" class="text-color-green">(Giảm giá: {{ formatCurrency(storeDetailOrder.getDetailOrder?.totalPriceSave) }})</span>
+                <span 
+                  v-if="storeDetailOrder.getDetailOrder?.totalPriceSave && storeDetailOrder.getDetailOrder?.totalPriceSave !== 0" 
+                  class="text-color-green">
+                    ( Giảm giá: 
+                      {{ formatCurrency(storeDetailOrder.getDetailOrder?.totalPriceSave) }}
+                      <template v-if="checkFreeShip(storeDetailOrder.getDetailOrder?.shippingFee,storeDetailOrder.getDetailOrder.shippingConfig.minOrderAmount,storeDetailOrder.getDetailOrder.shippingConfig.enabled)">
+                      + {{ formatCurrency(storeDetailOrder.getDetailOrder?.shippingFee) }}
+                      </template>
+                    )
+                  </span>
               </div>
               <div class="weight-semibold text-color-danger text-right mb-xs">
                 {{ formatCurrency(storeDetailOrder.getDetailOrder?.totalPrice) }}
               </div>
             </div>
+            
             <div class="flex justify-between text-color-gray5">
               SL Sản phẩm
               <span>
@@ -68,7 +71,7 @@ const handleToggleProducts = () => {
               Phí vận chuyển
               <div class="flex align-center gap-xs">
                 <v-chip v-tooltip="getDesFreeShip(storeDetailOrder.getDetailOrder?.shippingConfig.minOrderAmount)" v-if="checkFreeShip(storeDetailOrder.getDetailOrder?.shippingFee,storeDetailOrder.getDetailOrder.shippingConfig.minOrderAmount,storeDetailOrder.getDetailOrder.shippingConfig.enabled)" color="green" size="small" label>
-                  Miễn phí
+                  Freeship
                 </v-chip>
                 {{ formatCurrency(storeDetailOrder.getDetailOrder?.shippingFee) }}
               </div>
@@ -96,6 +99,16 @@ const handleToggleProducts = () => {
               <span>
                 -{{ formatCurrency(storeDetailOrder.totalDiscountVoucher) }} 
               </span>
+            </div>
+            <div class="flex justify-between weight-medium line-height-1">
+              <div class="flex align-center gap-xs">
+                Khách cần thanh toán
+              </div>
+              <div class="weight-semibold text-color-danger text-right mb-xs">
+                {{ checkFreeShip(storeDetailOrder.getDetailOrder?.shippingFee,storeDetailOrder.getDetailOrder.shippingConfig.minOrderAmount,storeDetailOrder.getDetailOrder.shippingConfig.enabled)
+                ? formatCurrency((storeDetailOrder.getDetailOrder?.totalPrice - storeDetailOrder.getDetailOrder?.shippingFee)) 
+                : formatCurrency(storeDetailOrder.getDetailOrder?.totalPrice) }}
+              </div>
             </div>
           </div>
         </Card>
@@ -256,7 +269,7 @@ const handleToggleProducts = () => {
       <div v-if="storeDetailOrder.getDetailOrder?.voucherUsage?.length > 0" class="col-12 col-lg-4 mb-md">
         <Card size="sm" class="rd-lg height-full" heading="Voucher áp dụng">
           <div class="flex flex-direction-column gap-sm">
-            <template v-for="(items, index) in storeDetailOrder.getDetailOrder?.voucherUsage" :key="index" label>
+            <template v-for="(items, index) in storeDetailOrder.getDetailOrder?.voucherUsage" :key="items.code" label>
               <div class="flex justify-between">
                 <Text color="gray5" :text="items.type === VOUCHER_TYPE.freeship.type ? 'Mã giảm PVC:' : 'Mã giảm giá:'" />
                   <div class="flex gap-xs">
@@ -282,7 +295,7 @@ const handleToggleProducts = () => {
           <div v-if="storeDetailOrder.getDetailOrder.promotionGiftUsages?.length" class="mb-ms">
             <div
               v-for="(usage,index) in storeDetailOrder.getDetailOrder.promotionGiftUsages"
-              :key="index"
+              :key="usage.id"
               class="flex flex-direction-column gap-sm"
             >
               <div v-if="typeof usage.promotionGiftId === 'object'" class="flex justify-between">
@@ -309,7 +322,7 @@ const handleToggleProducts = () => {
           
           <!-- gift -->
           <div class="flex flex-direction-column gap-sm">
-            <template v-for="(items, index) in storeDetailOrder.getDetailOrder.giftItems" :key="index">
+            <template v-for="(items, index) in storeDetailOrder.getDetailOrder.giftItems" :key="items.idProduct">
               <AdminOrderItemTemplate1 :item="items" />
             </template>
           </div>

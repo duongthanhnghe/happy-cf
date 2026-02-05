@@ -6,6 +6,7 @@ import { useOrderDetailHandlers } from '@/composables/admin/order/useOrderDetail
 export const useAdminOrderDetailStore = defineStore('useAdminOrderDetailStore', () => {
 
   const togglePopupDetail = ref(false)
+  const toggleAction = ref(false);
 
   const { getDetailOrder, fetchOrderDetail } = useOrderDetail()
 
@@ -16,8 +17,9 @@ export const useAdminOrderDetailStore = defineStore('useAdminOrderDetailStore', 
     ) || 0
   })
 
-  const { handleTogglePopupDetail } = useOrderDetailHandlers(
+  const operations = useOrderDetailHandlers(
     togglePopupDetail,
+    toggleAction,
     fetchOrderDetail,
   )
 
@@ -29,8 +31,9 @@ export const useAdminOrderDetailStore = defineStore('useAdminOrderDetailStore', 
     togglePopupDetail,
     getDetailOrder,
     totalDiscountVoucher,
-    handleTogglePopupDetail,
+    ...operations,
     fetchOrderDetail,
     promotionGiftUsages,
+    toggleAction,
   }
 })

@@ -1,29 +1,17 @@
 
 <script lang="ts" setup>
 import '@/styles/molecules/product/product-item-template1.scss'
-import {
-  formatCurrency
-} from '@/utils/global'
-import {
-  computed,
-  ref,
-} from 'vue'
-import {
-  useCartStore
-} from '@/stores/client/product/useCartOrderStore'
-import {
-  useProductDetailStore
-} from '@/stores/client/product/useProductDetailStore'
-import {
-  useWishlistStore
-} from '@/stores/client/users/useWishlistStore';
-import {
-  useAccountStore
-} from '@/stores/client/users/useAccountStore';
-import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
+import { formatCurrency } from '@/utils/global'
+import { computed, ref, } from 'vue'
+import { useCartStore } from '@/stores/client/product/useCartOrderStore'
+import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
+import { useWishlistStore } from '@/stores/client/users/useWishlistStore';
+import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { ROUTE_HELPERS } from '@/shared/constants/routes-helpers';
 import { useDisplayStore } from '@/stores/shared/useDisplayStore';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations';
+import { useProductPriceHelpers } from '@/utils/useProductPriceHelpers'
+import type { ProductDTO } from '@/server/types/dto/v1/product.dto';
 
 const props = defineProps<{
   product: ProductDTO
@@ -46,34 +34,33 @@ function handleShowAction () {
   toggleAction.value = !toggleAction.value;
 };
 
-const bestFlashSaleItem = computed(() => {
-  if (!props.product?.flashSale?.items?.length) return null
+const {
+  getDisplayPrice,
+  getOriginalPrice,
+  getPercentDiscount,
+  getMinPriceVariant,
+  getFlashSaleVariant
+} = useProductPriceHelpers()
 
-  return props.product.flashSale.items.reduce((max, cur) =>
-    cur.percentDiscount > max.percentDiscount ? cur : max
-  )
-})
+const displayPrice = computed(() =>
+  getDisplayPrice(props.product)
+)
 
-const displayPrice = computed(() => {
-  if (bestFlashSaleItem.value) {
-    return bestFlashSaleItem.value.salePrice
-  }
-  return props.product.priceDiscounts
-})
+const displayOriginalPrice = computed(() =>
+  getOriginalPrice(props.product)
+)
 
-const displayOriginalPrice = computed(() => {
-  if (bestFlashSaleItem.value) {
-    return bestFlashSaleItem.value.originalPrice
-  }
-  return props.product.price
-})
+const displayPercentDiscount = computed(() =>
+  getPercentDiscount(props.product)
+)
 
-const displayPercentDiscount = computed(() => {
-  if (bestFlashSaleItem.value) {
-    return bestFlashSaleItem.value.percentDiscount
-  }
-  return props.product.percentDiscount
-})
+const cheapestVariant = computed(() =>
+  getMinPriceVariant(props.product)
+)
+
+const flashSaleVariant = computed(() =>
+  getFlashSaleVariant(props.product)
+)
 
 const flashSalePercent = computed(() => {
   const info = props.product.flashSaleInfo
@@ -84,6 +71,10 @@ const flashSalePercent = computed(() => {
     Math.round((info.totalSold / info.totalQuantity) * 100)
   )
 })
+
+const isNew = computed(() =>
+  storeProduct.isNewProduct(props.product.createdAt, 30)
+)
 
 </script>
 
@@ -147,9 +138,17 @@ const flashSalePercent = computed(() => {
         <template v-else>
           <!-- tag flash sale -->
           <TagFlashSale v-if="product.isFlashSale && !listView" />
+          <Button v-else-if="isNew"
+            class="weight-medium text-size-xs" 
+            color="black" 
+            size="xs" 
+            label="New" 
+            tag="span"
+          />
+          <template v-else></template>
         </template>
       </div>
-
+     
       <div class="el-absolute left-0 bottom-0 height-auto flex flex-direction-column">
         <!-- add cart -->
         <div class="justify-end flex position-relative z-index-2" :class="[storeDisplay.isLaptop ? 'mr-sm mb-sm':'mr-xs mb-xs']" >
@@ -230,6 +229,18 @@ const flashSalePercent = computed(() => {
       </div>
     </div>
     <div :class="[{'pd-05': props.variant === 'card'},storeDisplay.isLaptop ? 'pt-ms':'pt-sm','product-template1-content']">
+      <Button
+        v-if="flashSaleVariant?.variant || cheapestVariant"
+        size="small"
+        color="grey"
+        :border="false"
+        :class="[
+          storeDisplay.isLaptop ? 'mb-sm':'mb-05',
+          'pl-xs pr-xs rd-lg height-auto line-height-1d6 weight-normal text-size-xs '
+        ]"
+        :label="flashSaleVariant?.variant ? flashSaleVariant.variant.variants.map(v => v.variantName).join(' / ') : cheapestVariant?.variants.map(v => v.variantName).join(' / ')"
+      />
+
       <NuxtLink 
         v-if="product.slug" 
         :to="ROUTE_HELPERS.productDetail(product.slug)"
@@ -247,25 +258,28 @@ const flashSalePercent = computed(() => {
           {{ formatCurrency(displayPrice) }}
         </Text>
 
-        <template v-if="displayPercentDiscount && displayPercentDiscount > 0">
-          <Text
-            color="gray5"
-            size="xs"
-            class="line-height-1 text-line-through"
-          >
-            {{ formatCurrency(displayOriginalPrice) }}
-          </Text>
+        <template v-if="displayPercentDiscount > 0">
+          <template v-if="product.isFlashSale || !product.variantCombinations.length">
+            <Text
+              color="gray5"
+              size="xs"
+              class="line-height-1 text-line-through"
+            >
+              {{ formatCurrency(displayOriginalPrice) }}
+            </Text>
 
-          <Button
-            tag="div"
-            color="primary"
-            size="xs"
-            :label="`-${displayPercentDiscount}%`"
-            :class="[
-              { 'text-size-xs': !storeDisplay.isLaptop },
-              'pl-xs pr-xs rd-lg height-auto line-height-1d2'
-            ]"
-          />
+            <Button
+              tag="div"
+              color="primary"
+              size="xs"
+              :label="`-${displayPercentDiscount}%`"
+              :class="[
+                { 'text-size-xs': !storeDisplay.isLaptop },
+                'pl-xs pr-xs rd-lg height-auto line-height-1d2'
+              ]"
+            />
+          </template>
+          
         </template>
       </div>
 

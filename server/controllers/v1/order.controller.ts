@@ -1,6 +1,6 @@
 import type { Request, Response } from "express"
 import { UserModel } from "../../models/v1/user.entity"
-import { OrderEntity, OrderStatusEntity, PaymentEntity } from "../../models/v1/order.entity"
+import { OrderEntity, OrderStatusEntity, PaymentEntity, type Order } from "../../models/v1/order.entity"
 import type { Types } from "mongoose";
 import { toOrderDTO, toOrderStatusListDTO, toPaymentListDTO } from "../../mappers/v1/order.mapper"
 import { ORDER_STATUS } from "../../shared/constants/order-status";
@@ -76,7 +76,7 @@ export const getOrderById = async (req: Request, res: Response) => {
   }
 }
 
-export const increaseFlashSaleSold = async (order: any) => {
+export const increaseFlashSaleSold = async (order: Order) => {
   for (const item of order.cartItems) {
     if (!item.isFlashSale || !item.flashSaleId) continue
 
@@ -90,7 +90,8 @@ export const increaseFlashSaleSold = async (order: any) => {
         "items.variantSku": variantSku,
       },
       {
-        $inc: { "items.$.sold": item.quantity },
+        // $inc: { "items.$.sold": item.quantity },
+        $inc: { "items.$.sold": 1 },
       }
     )
   }

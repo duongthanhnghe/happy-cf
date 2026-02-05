@@ -1,10 +1,19 @@
 <script lang="ts" setup>
 import { formatCurrency } from '@/utils/global'
 import type { cartItems } from '@/server/types/dto/v1/order.dto';
+import { useOrderHelpers } from '@/utils/orderHelpers';
 
 const props = defineProps<{
   item: cartItems
 }>()
+
+const {
+  getFlashAppliedQty,
+  getNormalQty,
+  getOriginalUnitPrice,
+  getFlashUnitPrice,
+  getNormalUnitPrice,
+} = useOrderHelpers()
 
 </script>
 <template>
@@ -39,10 +48,41 @@ const props = defineProps<{
           <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`Tồn kho: ${item.variantCombination ? item.variantCombination.stock : item.idProduct?.amount}`"/>
         </div>
         <div>
-          <Text v-if="item.price" :text="`Tổng giá sau giảm: ${formatCurrency(item.price)}`" color="danger" />
-          <Text v-if="item.originalPrice" :text="`Giá niêm yết: ${formatCurrency(item.originalPrice)}`" />
-          <Text v-if="(item.priceDiscount !== null || item.priceDiscount !== undefined) && !item.variantCombination && !item.flashSale" :text="`Giá giảm: ${formatCurrency(item.priceDiscount)}`" color="gray5" />
-          <Text v-if="item.salePrice" :text="`Giá Flash sale: ${formatCurrency(item.salePrice)}`" color="gray5" />
+          <div class="flex gap-xs flex-direction-column align-end">
+            <!-- FLASH SALE -->
+            <template v-if="item.isFlashSale && getFlashAppliedQty(item)">
+              <div class="flex gap-xs">
+                <Button size="xs" color="secondary" :label="`x${getFlashAppliedQty(item)}`" />
+                <Text text="-" color="gray4" />
+                <Text color="black" :text="formatCurrency(getFlashUnitPrice(item))" />
+                <Text
+                  class="text-line-through"
+                  color="gray5"
+                  :text="formatCurrency(getOriginalUnitPrice(item))"
+                />
+              </div>
+            </template>
+
+            <!-- GIÁ THƯỜNG -->
+            <template v-if="getNormalQty(item)">
+              <div class="flex gap-xs">
+                <Button size="xs" color="secondary" :label="`x${getNormalQty(item)}`" />
+                <Text text="-" color="gray4" />
+                <Text color="black" :text="formatCurrency(getNormalUnitPrice(item))" />
+                <Text
+                  v-if="getNormalUnitPrice(item) !== getOriginalUnitPrice(item)"
+                  class="text-line-through"
+                  color="gray5"
+                  :text="formatCurrency(getOriginalUnitPrice(item))"
+                />
+              </div>
+            </template>
+
+            <!-- TOTAL -->
+            <div class="flex gap-xs">
+              <Text color="danger" :text="'Total: '+formatCurrency(item.price)" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

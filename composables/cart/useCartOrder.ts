@@ -21,7 +21,6 @@ export const useCartOrder = (
   orderPriceDiscount: Ref<number>,
   shippingFee: Ref<number>,
   shippingEnabled: Ref<boolean>,
-  Config_Shipping_amount: Ref<number>,
   usedPointOrder: any,
   Config_EnableUsePoint: Ref<boolean>,
   totalDiscountRateMembership: Ref<number>,
@@ -74,7 +73,7 @@ export const useCartOrder = (
           : normalPrice * quantity
 
       const priceDiscount =
-        !item.isFlashSale && item.priceDiscounts && item.price !== item.priceDiscounts
+        item.price !== item.priceDiscounts
           ? item.priceDiscounts
           : 0
 

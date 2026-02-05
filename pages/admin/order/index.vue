@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
         v-tooltip="getDesFreeShip(item.shippingConfig.minOrderAmount)" 
         v-if="checkFreeShip(item.shippingFee,item.shippingConfig.minOrderAmount,item.shippingConfig.enabled)" 
         color="green" size="small" label class="ml-xs">
-        Miễn phí
+        Freeship
       </v-chip>
     </template>
 

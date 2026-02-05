@@ -11,7 +11,7 @@ export const useOrderManageState = () => {
     { title: 'Khách hàng', key: 'fullname', sortable: false, },
     { title: 'Sản phẩm', key: 'cartItems', sortable: false, headerProps: { class: 'white-space min-width-200' }, cellProps: { class: 'white-space min-width-200' }},
     { title: 'TT Thanh toán', key: 'transaction', sortable: false, },
-    { title: 'Thực thu', key: 'totalPrice', sortable: false, },
+    { title: 'Tổng cộng', key: 'totalPrice', sortable: false, },
     { title: 'Phí ship', key: 'shippingFee', sortable: false, },
     { title: 'Tình trạng đơn', key: 'status', sortable: false, },
     { title: 'Địa chỉ', key: 'address', sortable: false, },

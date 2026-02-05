@@ -3,22 +3,28 @@ import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { formatCurrency } from '@/utils/global'
 import type { CartDTO } from '@/server/types/dto/v1/product.dto';
 import { computed } from 'vue';
+import { useCartItemHelpers } from '@/utils/cartItemHelpers';
 
 const props = defineProps<{
   item: CartDTO
 }>()
 
 const storeCart = useCartStore();
+const {
+  getFlashAppliedQty,
+  getNormalQty,
+  getFlashUnitPrice,
+  getOriginalUnitPrice,
+  getNormalUnitPrice
+} = useCartItemHelpers()
 
-const flashAppliedQty = computed(() => {
-  if (!props.item.isFlashSale) return 0
-  return Math.min(props.item.quantity, 1)
-})
+const flashAppliedQty = computed(() =>
+  getFlashAppliedQty(props.item)
+)
 
-const normalQty = computed(() => {
-  if (!props.item.isFlashSale) return props.item.quantity
-  return Math.max(props.item.quantity - 1, 0)
-})
+const normalQty = computed(() =>
+  getNormalQty(props.item)
+)
 
 const flashItem = computed(() => {
   if (!props.item.isFlashSale) return null
@@ -70,61 +76,83 @@ const flashItem = computed(() => {
           <template v-if="item.isFlashSale && flashItem">
             <!-- Giá flash sale -->
             <div class="flex gap-xs" v-if="flashAppliedQty">
-              <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`x${flashAppliedQty}`"/>
-              <Text
-                color="gray4"
-                text="-"
+              <Button
+                tag="span"
+                size="xs"
+                color="secondary"
+                class="text-size-xs"
+                :label="`x${flashAppliedQty}`"
               />
+              <Text color="gray4" text="-" />
               <Text
                 color="danger"
-                :text="`${formatCurrency(flashItem.salePrice)}`"
+                :text="formatCurrency(
+                  getFlashUnitPrice(item, flashItem)
+                )"
               />
               <Text
                 color="gray5"
                 class="text-line-through"
-                :text="formatCurrency(flashItem.originalPrice)"
+                :text="formatCurrency(
+                  getOriginalUnitPrice(item, flashItem)
+                )"
               />
             </div>
 
             <!-- Giá thường còn lại -->
             <div class="flex gap-xs" v-if="normalQty">
-              <Button tag="span" size="xs" color="secondary" class="text-size-xs" :label="`x${normalQty}`"/>
-              <Text
-                color="gray4"
-                text="-"
+              <Button
+                tag="span"
+                size="xs"
+                color="secondary"
+                class="text-size-xs"
+                :label="`x${normalQty}`"
               />
+              <Text color="gray4" text="-" />
               <Text
                 color="danger"
-                :text="`${formatCurrency(item.variantCombination?.priceModifier)}`"
-                v-if="item.variantCombination?.priceModifier"
+                :text="formatCurrency(
+                  getNormalUnitPrice(item)
+                )"
               />
-              <template v-else>
-                <Text color="danger" :text="formatCurrency(item.priceDiscounts)" />
-                <Text
-                  v-if="item.priceDiscounts !== item.price"
-                  color="gray5"
-                  class="text-line-through"
-                  :text="formatCurrency(item.price)"
-                />
-              </template>
-            </div>
-          </template>
-
-          <!-- KHÔNG FLASH SALE -->
-          <template v-else>
-            <div v-if="item.priceDiscounts && !item.variantCombination?.priceModifier" class="flex gap-xs">
-              <Text color="danger" :text="formatCurrency(item.priceDiscounts)" />
               <Text
-                v-if="item.priceDiscounts !== item.price"
+                v-if="getNormalUnitPrice(item) !== getOriginalUnitPrice(item)"
                 color="gray5"
                 class="text-line-through"
-                :text="formatCurrency(item.price)"
+                :text="formatCurrency(
+                  getOriginalUnitPrice(item)
+                )"
               />
             </div>
+          </template>
+          <!-- KHÔNG FLASH SALE -->
+          <template v-else>
+            <div
+              v-if="item.priceDiscounts && !item.variantCombination?.priceModifier"
+              class="flex gap-xs"
+            >
+              <Text
+                color="danger"
+                :text="formatCurrency(
+                  getNormalUnitPrice(item)
+                )"
+              />
+              <Text
+                v-if="getNormalUnitPrice(item) !== getOriginalUnitPrice(item)"
+                color="gray5"
+                class="text-line-through"
+                :text="formatCurrency(
+                  getOriginalUnitPrice(item)
+                )"
+              />
+            </div>
+
             <template v-else>
               <Text
                 color="danger"
-                :text="formatCurrency(item.variantCombination?.priceModifier)"
+                :text="formatCurrency(
+                  getNormalUnitPrice(item)
+                )"
               />
             </template>
           </template>

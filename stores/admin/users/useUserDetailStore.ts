@@ -7,11 +7,12 @@ export const useAdminUserDetailStore = defineStore("AdminUserDetail", () => {
   const { getDetailUserApi, fetchDetailUser } = useAdminUserDetail()
 
   const isTogglePopup = ref<boolean>(false);
+
   const handleTogglePopup = async (value: boolean, idUser: string) => {
     await fetchDetailUser(idUser)
     isTogglePopup.value = value;
   };
-  
+
   const getDetailUser = computed(() => getDetailUserApi.value);
   
   const infoItems = computed(() => [

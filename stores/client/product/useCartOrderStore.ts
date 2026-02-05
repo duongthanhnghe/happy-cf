@@ -374,7 +374,6 @@ export const useCartStore = defineStore("Cart", () => {
     state.orderPriceDiscount,
     state.shippingFee,
     shippingEnabled,
-    Config_Shipping_amount,
     state.usedPointOrder,
     Config_EnableUsePoint,
     state.totalDiscountRateMembership,

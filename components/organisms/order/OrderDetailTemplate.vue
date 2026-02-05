@@ -7,12 +7,14 @@ import { useBaseInformationStore } from '@/stores/client/base-information/useBas
 import { useOrderStatusStore } from '@/stores/client/order/useOrderStatusStore';
 import { useAccountStore } from '@/stores/client/users/useAccountStore';
 import { useSharedOrderDetailStore } from '@/stores/client/order/useSharedOrderDetailStore';
+import { useShippingHelpers } from '@/utils/shippingHelpers';
 
 const storeHistory = useOrderHistoryStore();
 const storeOrderStatus = useOrderStatusStore();
 const storeSetting = useBaseInformationStore();
 const storeAccount = useAccountStore();
 const storeDetailOrder = useSharedOrderDetailStore()
+const { checkFreeShip } = useShippingHelpers()
 
 </script>
 <template>
@@ -65,10 +67,10 @@ const storeDetailOrder = useSharedOrderDetailStore()
         {{ storeDetailOrder.getDetailOrder?.note }}
       </div>
       <div class="mt-ms">
-        <div v-for="(items, index) in storeDetailOrder.getDetailOrder?.cartItems" :key="index">
+        <div v-for="(items, index) in storeDetailOrder.getDetailOrder?.cartItems" :key="items.combinationId">
           <CartItemTemplate2 :item="items" class="mt-sm"/>
         </div>
-        <div v-if="storeDetailOrder.getDetailOrder.giftItems" v-for="(items, index) in storeDetailOrder.getDetailOrder.giftItems" :key="index">
+        <div v-if="storeDetailOrder.getDetailOrder.giftItems" v-for="(items, index) in storeDetailOrder.getDetailOrder.giftItems" :key="items.promotionGiftId">
           <CartItemTemplate2 :item="items" :gift="true" class="mt-sm"/>
         </div>
       </div>
@@ -76,10 +78,21 @@ const storeDetailOrder = useSharedOrderDetailStore()
       <div class="flex justify-between text-size-normal mt-sm weight-medium line-height-1">
         <div class="flex align-center gap-xs">
           Tổng cộng
-          <span v-if="storeDetailOrder.getDetailOrder?.totalPriceSave && storeDetailOrder.getDetailOrder?.totalPriceSave !== 0" class="text-size-base text-color-green">(Tiết kiệm: {{ formatCurrency(storeDetailOrder.getDetailOrder?.totalPriceSave) }})</span>
+          <span 
+            v-if="storeDetailOrder.getDetailOrder?.totalPriceSave && storeDetailOrder.getDetailOrder?.totalPriceSave !== 0" 
+            class="text-size-base text-color-green">
+              (Tiết kiệm: 
+              {{ checkFreeShip(storeDetailOrder.getDetailOrder?.shippingFee,storeDetailOrder.getDetailOrder.shippingConfig.minOrderAmount,storeDetailOrder.getDetailOrder.shippingConfig.enabled)
+              ? formatCurrency((storeDetailOrder.getDetailOrder?.totalPriceSave + storeDetailOrder.getDetailOrder?.shippingFee))
+              : formatCurrency(storeDetailOrder.getDetailOrder?.totalPriceSave) }}
+              <!-- {{ formatCurrency(storeDetailOrder.getDetailOrder?.totalPriceSave) }} -->
+              )
+            </span>
         </div>
         <div class="weight-semibold text-color-danger text-right mb-xs">
-          {{ formatCurrency(storeDetailOrder.getDetailOrder?.totalPrice) }}
+          {{ checkFreeShip(storeDetailOrder.getDetailOrder?.shippingFee,storeDetailOrder.getDetailOrder.shippingConfig.minOrderAmount,storeDetailOrder.getDetailOrder.shippingConfig.enabled)
+          ? formatCurrency((storeDetailOrder.getDetailOrder?.totalPrice - storeDetailOrder.getDetailOrder?.shippingFee))
+          : formatCurrency(storeDetailOrder.getDetailOrder?.totalPrice) }}
         </div>
       </div>
       <div class="flex justify-between text-color-gray5">
@@ -90,11 +103,10 @@ const storeDetailOrder = useSharedOrderDetailStore()
       </div>
       <div v-if="storeDetailOrder.getDetailOrder?.shippingFee !== null" class="flex justify-between text-color-gray5">
         Phí vận chuyển
-        <span class="flex gap-xs align-center">
-          {{ formatCurrency(storeDetailOrder.getDetailOrder?.shippingFee) }}
-          <v-chip v-if="storeDetailOrder.getDetailOrder?.shippingFee === 0" label color="blue" size="small">
-            Freeship
-          </v-chip>
+        <span>
+          {{ checkFreeShip(storeDetailOrder.getDetailOrder?.shippingFee,storeDetailOrder.getDetailOrder.shippingConfig.minOrderAmount,storeDetailOrder.getDetailOrder.shippingConfig.enabled)
+          ? 'Miễn phí'
+          : formatCurrency(storeDetailOrder.getDetailOrder?.shippingFee) }}
         </span>
       </div>
       <div v-if="storeDetailOrder.getDetailOrder?.totalDiscountOrder && storeDetailOrder.getDetailOrder?.totalDiscountOrder != 0" class="flex justify-between text-color-gray5">

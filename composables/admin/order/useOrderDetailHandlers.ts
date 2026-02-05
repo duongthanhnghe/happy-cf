@@ -2,6 +2,7 @@ import type { Ref } from 'vue';
 
 export const useOrderDetailHandlers = (
   togglePopupDetail: Ref<boolean>,
+  toggleAction: Ref<boolean>,
   fetchOrderDetail: (id: string) => Promise<void>,
 ) => {
 
@@ -14,7 +15,12 @@ export const useOrderDetailHandlers = (
     }
   }
 
+  const handleToggleProducts = () => {
+    toggleAction.value = !toggleAction.value;
+  };
+
   return {
     handleTogglePopupDetail,
+    handleToggleProducts,
   }
 }

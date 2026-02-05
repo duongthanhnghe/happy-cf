@@ -94,6 +94,21 @@ export const useProductDetailHandle = (
     }
   }
 
+  const isNewProduct = (
+    createdAt?: string,
+    days = 7
+  ) => {
+    if (!createdAt) return false
+
+    const createdTime = new Date(createdAt).getTime()
+    const now = Date.now()
+
+    const diffDays =
+      (now - createdTime) / (1000 * 60 * 60 * 24)
+
+    return diffDays <= days
+  }
+
   return {
     percentDiscount,
     getSummaryReview,
@@ -105,5 +120,6 @@ export const useProductDetailHandle = (
     handleTogglePopupNote,
     onScroll,
     goToImageBySrc,
+    isNewProduct,
   }
 }
