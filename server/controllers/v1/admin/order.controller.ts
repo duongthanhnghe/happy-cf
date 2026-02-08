@@ -18,6 +18,9 @@ import { createProductReviewEntity } from "../../../factories/v1/product-review.
 import { PromotionGiftEntity } from "@/server/models/v1/promotion-gift.entity"
 import { PromotionGiftUsageEntity } from "@/server/models/v1/promotion-gift-usage.entity"
 import { FlashSaleEntity } from "@/server/models/v1/flash-sale.entity"
+import { PAYMENT_METHOD_STATUS } from "@/server/shared/constants/payment-method-status"
+import { PAYMENT_TRANSACTION_STATUS } from "@/server/shared/constants/payment-transaction-status"
+import { PaymentTransactionEntity } from "@/server/models/v1/payment-transaction.entity"
 
 export const getAllOrder = async (req: Request, res: Response) => {
   try {
@@ -405,7 +408,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
       return res.status(404).json({ code: 1, message: "Status không tồn tại" })
     }
 
-    const order = await OrderEntity.findById(orderId)
+    const order = await OrderEntity.findById(orderId).populate("paymentId")
     if (!order) {
       return res.status(404).json({ code: 1, message: "Order không tồn tại" })
     }
@@ -425,6 +428,17 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     }
 
     order.status = statusId
+
+    if (statusId !== ORDER_STATUS.CANCELLED && statusId !== ORDER_STATUS.PENDING && !order.transaction) {
+      await PaymentTransactionEntity.create({
+        orderId: order._id,
+        txnRef: order._id,
+        transactionId: order._id,
+        amount: order.totalPrice,
+        method: (order.paymentId as any)?.method,
+        status: PAYMENT_TRANSACTION_STATUS.PENDING,
+      });
+    }
 
     // Nếu status = COMPLETED 
     if (status.id === ORDER_STATUS.COMPLETED && order.userId) {

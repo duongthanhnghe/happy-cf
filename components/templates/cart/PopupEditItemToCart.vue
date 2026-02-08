@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import '@/styles/templates/cart/popup-add-item-to-cart.scss'
-import { computed } from 'vue'
 import { useProductDetailStore } from '@/stores/client/product/useProductDetailStore'
 import { useCartStore } from '@/stores/client/product/useCartOrderStore'
 import { useDisplayStore } from '@/stores/shared/useDisplayStore'
-import { formatCurrency } from '@/utils/global';
 import { useITranslations } from '@/composables/shared/itranslation/useITranslations'
+import { useFlashSaleDetail } from '@/composables/product/flash-sale/useFlashSaleDetail'
+import { computed, watch } from 'vue';
+import { useProductDetail } from '@/composables/product/useProductDetail';
+
+const { getFlashSaleDetail, fetchFlashSaleDetail } = useFlashSaleDetail()
+const { fetchDetailProduct } = useProductDetail()
 
 const { t } = useITranslations()
 const storeProduct = useProductDetailStore();
@@ -13,6 +17,19 @@ const storeCart = useCartStore();
 const storeDisplay = useDisplayStore()
 
 const detail = computed(() => storeCart.getProductDetailDataEdit);
+
+watch(
+  () => storeCart.getPopupState('edit'),
+  async (isOpen) => {
+    if (!isOpen) return
+
+    if(detail.value?.id) await fetchDetailProduct(detail.value?.id);
+
+    if(detail && storeCart.getProductDetailDataEdit?.flashSale?.id) {
+      await fetchFlashSaleDetail(storeCart.getProductDetailDataEdit?.flashSale?.id)
+    } 
+  }
+)
 
 </script>
 
@@ -38,9 +55,34 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
         </div>
         <div class="popup-detail-product-card popup-detail-product-info">
           <div class="popup-detail-product-right">
-            <Text size="lg" weight="semibold" class="mb-xs" color="black" :text="detail?.productName" />
+            <Text size="normal" class="mb-xs" color="black" :text="detail?.productName" />
 
-            <Text v-if="storeProduct.variantPrice !== undefined && storeProduct.variantPrice !== null" :text="formatCurrency(storeProduct.variantPrice)" color="gray5" class="pb-md"/>
+            <!-- <Text v-if="storeProduct.variantPrice !== undefined && storeProduct.variantPrice !== null" :text="formatCurrency(storeProduct.variantPrice)" color="gray5" class="pb-md"/> -->
+            <template v-if="detail">
+              <div v-if="detail.flashSale" class="mb-md">
+                <client-only>
+                <ProductDetailFlashSaleInfo
+                  v-if="getFlashSaleDetail"
+                  :getFlashSaleDetail="getFlashSaleDetail"
+                >
+                  <ProductDetailPrice
+                    :detail="detail"
+                    :variantPrice="storeProduct.variantPrice"
+                    :percentDiscount="storeProduct.percentDiscount"
+                    isFlashSale
+                    :selectedFlashSaleItem="storeProduct.selectedFlashSaleItem"
+                  />
+                </ProductDetailFlashSaleInfo>
+                </client-only>
+              </div>
+              <ProductDetailPrice
+                v-else
+                :detail="detail"
+                :variantPrice="storeProduct.variantPrice"
+                :percentDiscount="storeProduct.percentDiscount"
+              />
+            </template>
+
           </div>
           <div class="flex flex-direction-column gap-ms mb-sm pb-md" v-if="detail?.variantCombinations?.length">
             <ProductDetailOptions 
@@ -52,7 +94,7 @@ const detail = computed(() => storeCart.getProductDetailDataEdit);
         </div>
 
         <div class="popup-detail-product-card pb-md">
-          <Text size="md" weight="semibold" class="mb-sm" color="black" :text="t('product.detail.text6')" />
+          <Text size="normal" class="mb-sm" color="black" :text="t('product.detail.text6')" />
 
           <v-textarea class="mb-0" :rows="5" v-model="detail.note" :value="detail.note"/>
 

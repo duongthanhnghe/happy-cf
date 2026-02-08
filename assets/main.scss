@@ -2417,8 +2417,11 @@ body .swiper {
   }
   &-pagination {
     &-bullet {
+      border-radius: 50px;
+      transition: 0.3s all;
       &-active {
         background: $cl-primary !important;
+        width: 26px;
       }
     }
   }

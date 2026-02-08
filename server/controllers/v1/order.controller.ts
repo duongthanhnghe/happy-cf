@@ -27,6 +27,7 @@ import { PromotionGiftUsageEntity } from "@/server/models/v1/promotion-gift-usag
 import { isBlockedByFlashSale } from "@/server/utils/isBlockedByFlashSale";
 import { FlashSaleEntity } from "@/server/models/v1/flash-sale.entity";
 import type { CartDTO } from "@/server/types/dto/v1/product.dto";
+import { calcPricingOrder } from "@/server/utils/calcPricingOrder";
 
 const siteUrl = process.env.DOMAIN
 const paymentResultUrl = `${siteUrl}/payment/result`
@@ -147,17 +148,8 @@ export const createOrder = async (req: any, res: Response) => {
     }
 
     let membershipDiscountRate = 0
-    let membershipDiscountAmount = 0
 
-    if (user) {
-      membershipDiscountRate = user.membership.discountRate || 0
-
-      if (membershipDiscountRate > 0) {
-        membershipDiscountAmount = Math.floor(data.totalPriceCurrent * (membershipDiscountRate / 100))
-        // cập nhật lại totalPriceDiscount trước khi tính tiếp
-        data.totalPriceDiscount = data.totalPriceCurrent - membershipDiscountAmount
-      }
-    }
+    if (user) membershipDiscountRate = user.membership.discountRate || 0
 
     const baseInfo = await BaseInformationEntity.findOne().lean()
     const rewardConfig = baseInfo?.systemConfig?.reward
@@ -306,10 +298,34 @@ export const createOrder = async (req: any, res: Response) => {
       ? data.cartItems.reduce((sum: number, item: CartDTO) => sum + (item.quantity || 0), 0)
       : 0
 
+    const pricing = calcPricingOrder({
+      cartItems: data.cartItems,
+      shippingFee: data.shippingFee || 0,
+      membershipDiscountRate,
+      discountVoucher: 0,
+      discountVoucherFreeship: 0,
+      usedPoint: deductedPoints,
+      enableUsePoint: rewardConfig?.enableUsePoint || false,
+    })
+
+    const {
+      totalPriceCurrent,
+      totalDiscountOrder,
+      totalPriceSave,
+      totalPrice,
+      membershipDiscountAmount,
+        } = pricing
+
     const newOrder = await OrderEntity.create({
       ...orderPayload,
       cartItems: data.cartItems,
       giftItems: resolvedGiftItems,
+
+      totalPriceCurrent,
+      totalDiscountOrder,
+      totalPriceSave,
+      totalPrice,
+
       userId,
       stockDeducted: true,
       reward: { points: earnPoints || 0, awarded: false, awardedAt: null },

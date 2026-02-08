@@ -163,7 +163,7 @@ export interface OrderDTO {
   updatedAt: string;
 }
 
-export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "paymentId" | "shippingConfig" |  "status" | "userId" |"transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "totalQuantity" | "giftItems" > {
+export interface CreateOrderBody extends Omit<OrderDTO, "id" | "createdAt" | "updatedAt" | "totalPrice" | "totalPriceSave" | "totalPriceCurrent" | "totalDiscountOrder" | "paymentId" | "shippingConfig" |  "status" | "userId" |"transaction" | "reward" | "usedPoints" | "pointsRefunded" | "membershipDiscountRate" | "membershipDiscountAmount" | "voucherRefunded" | "cancelRequested" | "stockDeducted" | "shipping" | "totalQuantity" | "giftItems" > {
   paymentId: string;
   provinceCode: number;
   districtCode: number;

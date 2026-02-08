@@ -96,6 +96,7 @@ export const useCartOrder = (
     });
 
     // console.log(newCartItems)
+    // console.log(cartListItem.value)
     // return
 
     const newGiftItems = giftItems.value.map(gift => ({
@@ -125,10 +126,10 @@ export const useCartOrder = (
       paymentId: paymentSelected.value,
       cartItems: newCartItems as cartItems[],
       giftItems: newGiftItems,
-      totalPrice: totalPriceDiscount.value,
-      totalPriceSave: totalPriceSave.value,
-      totalPriceCurrent: totalPriceCurrent.value,
-      totalDiscountOrder: orderPriceDiscount.value,
+      // totalPrice: totalPriceDiscount.value,
+      // totalPriceSave: totalPriceSave.value,
+      // totalPriceCurrent: totalPriceCurrent.value,
+      // totalDiscountOrder: orderPriceDiscount.value,
       shippingFee: shippingFee.value,
       provinceCode: storeLocation.selectedProvince,
       districtCode: storeLocation.selectedDistrict,

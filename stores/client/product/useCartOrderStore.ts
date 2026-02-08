@@ -64,11 +64,18 @@ export const useCartStore = defineStore("Cart", () => {
       if (!productDetail) return item;
 
       let variantCombination: ProductVariantCombinationDTO | undefined;
+      let isFlashSale = false
 
       if (item.combinationId && productDetail.variantCombinations?.length) {
         variantCombination = productDetail.variantCombinations.find(
           vc => vc.id === item.combinationId
         );
+      }
+
+      if (variantCombination && productDetail.flashSale?.items?.length) {
+        isFlashSale = productDetail.flashSale.items.some(
+          i => i.variantSku === variantCombination.sku
+        )
       }
 
       const cartItem: CartDTO = {
@@ -83,8 +90,8 @@ export const useCartStore = defineStore("Cart", () => {
         priceDiscounts: productDetail.priceDiscounts,
         sku: variantCombination?.sku ?? productDetail.sku,
         variantCombination,
-        isFlashSale: productDetail.isFlashSale === true,
-        flashSale: productDetail.flashSale
+        isFlashSale,
+        flashSale: isFlashSale ? productDetail.flashSale : undefined
       };
 
       return cartItem;

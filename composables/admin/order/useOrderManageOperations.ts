@@ -144,7 +144,7 @@ export const useOrderOperations = (
 
   const handleUpdateStatusOrder = async (orderId:string, idStatusNew:string, statusName: string, transactionId: string | undefined, amount: number, method: PaymentMethod) => {
     if(idStatusNew === ORDER_STATUS.CANCELLED || idStatusNew === ORDER_STATUS.COMPLETED ) {
-      const confirmed = await showConfirm(`Bạn có chắc chan: ${statusName}?`)
+      const confirmed = await showConfirm(`Bạn có chắc chắn ${statusName}?`)
       if (!confirmed) return
     }
 
@@ -153,16 +153,9 @@ export const useOrderOperations = (
       const data = await ordersAPI.updateStatusOrder(orderId, idStatusNew)
       if(data.code === 0) {
         showSuccess(data.message ?? '')
-        if(!transactionId){
-          if(idStatusNew === ORDER_STATUS.CONFIRMED || idStatusNew === ORDER_STATUS.DELIVERING || idStatusNew === ORDER_STATUS.COMPLETED) {
-            await paymentTransactionsAPI.create({orderId, amount, method})
-          }
-        }
-
         if (storeDetailOrder.togglePopupDetail && storeDetailOrder.getDetailOrder?.id === orderId) {
           await storeDetailOrder.fetchOrderDetail(orderId)
         }
-
         await handleReload()
       } else {
         showWarning(data.message ?? '')
@@ -180,12 +173,10 @@ export const useOrderOperations = (
       const data = await paymentTransactionsAPI.updateStatus(transactionId, status)
       if(data.code === 0) {
         showSuccess(data.message ?? '')
-
         if (storeDetailOrder.togglePopupDetail && storeDetailOrder.getDetailOrder?.id === orderId) {
           await storeDetailOrder.fetchOrderDetail(orderId)
         }
-
-        handleReload()
+        await handleReload()
       } else {
         showWarning(data.message ?? '')
       }

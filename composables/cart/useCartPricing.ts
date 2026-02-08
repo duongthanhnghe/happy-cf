@@ -25,37 +25,6 @@ export const useCartPricing = (
     }, 0);
   };
 
-  // const calculateOrderPriceDiscount = () => {
-  //   let value = cartListItem.value.reduce((total, item) => {
-
-  //     // FLASH SALE
-  //     if (item.isFlashSale && item.flashSale?.items?.length) {
-  //       const flashItem = item.flashSale.items.find(
-  //         fs => fs.variantSku === item.variantCombination?.sku
-  //       )
-
-  //       if (flashItem?.originalPrice && flashItem?.salePrice) {
-  //         return (
-  //           total +
-  //           (flashItem.originalPrice - flashItem.salePrice) * item.quantity
-  //         )
-  //       }
-  //     }
-
-  //     if (item.variantCombination && !item.isFlashSale) {
-  //       return 0
-  //     }
-      
-  //     if (item.price && item.priceDiscounts) {
-  //       return total + (item.price - item.priceDiscounts) * item.quantity
-  //     }
-
-  //     return total
-  //   }, 0)
-
-  //   return value || 0
-  // }
-
   const calculateOrderPriceDiscount = () => {
     let value = cartListItem.value.reduce((total, item) => {
 

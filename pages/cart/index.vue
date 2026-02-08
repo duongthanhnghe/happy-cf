@@ -136,23 +136,23 @@ onBeforeUnmount(() => {
           </div>
           <div class="flex flex-direction-column gap-xs">
             <CartItemTemplate1 v-for="(item, index) in store.getCartListItem" :key="index" :item="item" />
+            <div class="flex flex-wrap gap-xs justify-between">
+              <NuxtLink :to="{ path: ROUTES.PUBLIC.ORDER.path }" >
+                <Button color="secondary" size="sm" icon="add" :label="t('cart.text23').text" class="text-size-base pl-05 pr-05" />
+              </NuxtLink>
+              <!-- LABEL FREESHIP -->
+              <v-chip v-if="storeSetting.getConfigShipping?.enabled" label color="green" >
+                {{ storeSetting.getShippingTooltip }}
+              </v-chip>
+            </div>
           </div>
         </div>
-
-        <!-- <pre>
-          {{store.getCartListItem}}
-        </pre> -->
 
         <!-- LABEL POINT -->
         <template v-if="store.getTotalPriceDiscount != 0">
           <CartPointInfoLabel :getTotalPoint="store.getTotalPoint" :userId="storeAccount.getUserId"/>
         </template>
 
-        <!-- LABEL FREESHIP -->
-        <v-chip v-if="storeSetting.getConfigShipping?.enabled" label color="green" class="width-full mt-sm">
-          {{ storeSetting.getShippingTooltip }}
-        </v-chip>
-        
         <!-- PERSION INFO -->
         <CartPersonInfo :userId="storeAccount.getUserId" />
       
